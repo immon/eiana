@@ -19,7 +19,7 @@ public class Removal extends AdditionOrRemoval {
         this.value = value;
     }
 
-    public Value getValue() {
+    public Value<Removal> getValue() {
         return value;
     }
 
