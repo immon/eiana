@@ -6,6 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Column;
 
 /**
+ * <p>
+ * It represents an administrator of the system. An administrator may be one of the following types:
+ * IANA, government (currently represented by USDoC) and zone publisher (currently represented by VeriSign).
+ * </p>
+ *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */

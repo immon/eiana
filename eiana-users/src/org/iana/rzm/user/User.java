@@ -7,6 +7,10 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
+ * <p>
+ * This class represents a user of the system, either an administrator or a normal user.
+ * </p>
+ *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */

@@ -10,6 +10,10 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
+ * <p>
+ * This class represents a system user role and various configuration for this role.
+ * </p>
+ *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */

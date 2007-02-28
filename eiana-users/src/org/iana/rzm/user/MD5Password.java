@@ -8,17 +8,29 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * <p>
+ * This class represents an MD5 encoded password.
+ * </p>
+ *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
 @Entity
 public class MD5Password implements Password {
 
-    private Long objId; 
-    String password;
+    private Long objId;
+    /**
+     * An MD5 encoded password.
+     */
+    private String password;
 
     private MD5Password() {}
 
+    /**
+     * Constructs a new MD5 encoded password.
+     *
+     * @param password the new plain-text password to be set.
+     */
     public MD5Password(String password) {
         setPassword(password);
     }
@@ -32,6 +44,13 @@ public class MD5Password implements Password {
         this.objId = objId;
     }
 
+    /**
+     * Sets a new password string which becomes an MD5 encoded. A null password is the same as an empty one.
+     *
+     * @param password the new plain-text password to be set
+     *
+     * @throws UnsupportedOperationException thrown when MD5 algorithm can not be found.
+     */
     public void setPassword(String password) {
         if (password == null) password = "";
         try {
@@ -42,7 +61,7 @@ public class MD5Password implements Password {
             for (byte m : md5) {
                 encoded.append(Integer.toHexString(m & 0xff));
             }
-            password = encoded.toString();
+            this.password = encoded.toString();
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -56,6 +75,13 @@ public class MD5Password implements Password {
         this.password = password;
     }
 
+
+    /**
+     * Checks whether a given plain-text password matches this MD5 encoded password.
+     *
+     * @param password the plain-text password
+     * @return true if the plain-text password matches this MD5 encoded password, false otherwise
+     */
     public boolean isValid(String password) {
         MD5Password pswd = new MD5Password(password);
         return equals(pswd);
