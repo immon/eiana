@@ -1,8 +1,14 @@
 package org.iana.rzm.trans.change;
 
+import javax.persistence.*;
 import java.util.List;
 
-public class ObjectValue<T extends Change> implements Value<T> {
+/**
+ * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
+ */
+@Entity
+public class ObjectValue<T extends Change> extends AbstractValue<T> implements Value<T> {
 
     private long id;
     private String name;
@@ -12,6 +18,7 @@ public class ObjectValue<T extends Change> implements Value<T> {
         this.changes = changes;
     }
 
+    @Column(name = "objectValueId")
     public long getId() {
         return id;
     }
@@ -20,6 +27,7 @@ public class ObjectValue<T extends Change> implements Value<T> {
         this.id = id;
     }
 
+    @Column(name = "objectValueName")
     public String getName() {
         return name;
     }
@@ -28,6 +36,9 @@ public class ObjectValue<T extends Change> implements Value<T> {
         this.name = name;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = Change.class)
+    @JoinTable(name = "ObjectValue_Changes",
+            inverseJoinColumns = @JoinColumn(name = "Change_objId"))
     public List<? extends Change> getChanges() {
         return changes;
     }

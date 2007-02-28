@@ -1,10 +1,17 @@
 package org.iana.rzm.domain;
 
+import org.hibernate.annotations.CollectionOfElements;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 
+import javax.persistence.*;
 import java.util.*;
 
+/**
+ * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
+ */
+@Entity
 public class Contact extends TrackedObject {
 
     final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
@@ -43,6 +50,7 @@ public class Contact extends TrackedObject {
         setRole(role);
     }
 
+    @Transient
     final public String getName() {
         return name;
     }
@@ -51,6 +59,15 @@ public class Contact extends TrackedObject {
         this.name = name;
     }
 
+    protected String getContactName() {
+        return name;
+    }
+
+    protected void setContactName(String name) {
+        this.name = name;
+    }
+
+    @Transient
     final public List<Address> getAddresses() {
         return Collections.unmodifiableList(addresses);
     }
@@ -69,6 +86,18 @@ public class Contact extends TrackedObject {
         return this.addresses.remove(address);
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Contact_Addresses",
+            inverseJoinColumns = @JoinColumn(name = "Address_objId"))
+    protected List<Address> getAddressesList() {
+        return addresses;
+    }
+    
+    protected void setAddressesList(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    @Transient
     final public List<String> getPhoneNumbers() {
         return Collections.unmodifiableList(phoneNumbers);
     }
@@ -87,6 +116,18 @@ public class Contact extends TrackedObject {
         return this.phoneNumbers.remove(phoneNumber);
     }
 
+    @CollectionOfElements
+    @JoinTable(name = "Contact_PhoneNumbers")
+    @Column(name = "phoneNumber", nullable = false)
+    protected List<String> getPhoneNumbersList() {
+        return phoneNumbers;
+    }
+
+    protected void setPhoneNumbersList(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    @Transient
     final public List<String> getFaxNumbers() {
         return Collections.unmodifiableList(faxNumbers);
     }
@@ -105,6 +146,18 @@ public class Contact extends TrackedObject {
         return this.faxNumbers.remove(faxNumber);
     }
 
+    @CollectionOfElements
+    @JoinTable(name = "Contact_FaxNumbers")
+    @Column(name = "faxNumber", nullable = false)
+    protected List<String> getFaxNumbersList() {
+        return faxNumbers;    
+    }
+
+    protected void setFaxNumbersList(List<String> faxNumbers) {
+        this.faxNumbers = faxNumbers; 
+    }
+
+    @Transient
     final public List<String> getEmails() {
         return Collections.unmodifiableList(emails);
     }
@@ -123,11 +176,31 @@ public class Contact extends TrackedObject {
         return this.emails.remove(email);
     }
 
+    @CollectionOfElements
+    @JoinTable(name = "Contact_Emails")
+    @Column(name = "email", nullable = false)
+    protected List<String> getEmailsList() {
+        return emails;
+    }
+
+    protected void setEmailsList(List<String> emails) {
+        this.emails = emails;
+    }
+
+    @Transient
     final public boolean isRole() {
         return role;
     }
 
     final public void setRole(boolean role) {
+        this.role = role;
+    }
+
+    protected boolean isContactRole() {
+        return role;
+    }
+
+    protected void setContactRole(boolean role) {
         this.role = role;
     }
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="eiana-deploy" default="all">
+
+    <import file="eiana.xml"/>
+
+    <property environment="env"/>
+
+    <property name="lib.dir" location="lib"/>
+    <property name="output.dir" value="assembly"/>
+    <property name="jar.output.dir" value="${output.dir}/jar"/>
+    <property name="war.output.dir" value="${output.dir}/war"/>
+    <property name="config.dir" value="conf"/>
+    <property name="hibernate.dir" value="${config.dir}/hibernate"/>
+
+    <target name="all.compile"
+            depends="init, compile.module.eiana-domains, compile.module.eiana-util"
+            description="build all"/>
+
+    <target name="tasks.define">
+        <path id="hibernatetool.classpath">
+            <fileset dir="${lib.dir}/hibernate">
+                <include name="**/*.jar"/>
+            </fileset>
+            <fileset dir="${lib.dir}/apache-commons">
+                <include name="**/*.jar"/>
+            </fileset>
+            <path location="${lib.dir}/dom4j/dom4j-1.6.1.jar"/>
+            <path location="${lib.dir}/javaee.jar"/>
+            <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
+        </path>
+        <taskdef name="hibernatetool"
+                 classname="org.hibernate.tool.ant.HibernateToolTask"
+                 classpathref="hibernatetool.classpath"/>
+    </target>
+
+    <target name="database.create"
+            depends="tasks.define, compile.module.eiana-domains, compile.module.eiana-util,
+            compile.module.eiana-users, compile.module.eiana-trans">
+        <hibernatetool destdir="${hibernate.dir}">
+            <classpath>
+                <path location="${eiana-domains.output.dir}"/>
+                <path location="${eiana-util.output.dir}"/>
+                <path location="${eiana-users.output.dir}"/>
+                <path location="${eiana-trans.output.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <annotationconfiguration
+                    configurationfile="${hibernate.dir}/hibernate.cfg.xml">
+            </annotationconfiguration>
+            <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
+        </hibernatetool>
+    </target>
+
+</project>

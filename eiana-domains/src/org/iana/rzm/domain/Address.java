@@ -1,15 +1,32 @@
 package org.iana.rzm.domain;
 
-import java.util.List;
-import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
+/**
+ * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
+ */
+@Entity
 public class Address {
 
+    private Long objId;
     private String street;
     private String city;
     private String postalCode;
     private String countryCode;
     private String state;
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
 
     public String getStreet() {
         return street;

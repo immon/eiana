@@ -1,13 +1,20 @@
 package org.iana.rzm.domain;
 
-import org.iana.rzm.common.TrackedObject;
+import org.hibernate.annotations.CollectionOfElements;
 import org.iana.rzm.common.Name;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.common.validators.CheckTool;
 
-import java.util.*;
+import javax.persistence.*;
 import java.net.URL;
+import java.util.*;
 
+/**
+ * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
+ */
+@Entity
 public class Domain extends TrackedObject {
 
     public static enum Breakpoint {
@@ -42,6 +49,8 @@ public class Domain extends TrackedObject {
     private Status status;
     private State state;
 
+    protected Domain() {}
+
     public Domain(String name) throws InvalidNameException {
         setName(name);
         this.adminContacts = new ArrayList<Contact>();
@@ -52,6 +61,7 @@ public class Domain extends TrackedObject {
         this.state = State.NO_ACTIVITY;
     }
 
+    @Transient
     final public String getName() {
         return name == null ? null : name.getName();
     }
@@ -60,6 +70,18 @@ public class Domain extends TrackedObject {
         this.name = new Name(name);
     }
 
+    @Embedded
+    @AttributeOverride(name = "nameStr",
+            column = @Column(name = "domainName"))
+    protected Name getDomainName() {
+        return name;
+    }
+
+    protected void setDomainName(Name name) {
+        this.name = name;
+    }
+
+    @Transient
     final public Contact getSupportingOrg() {
         return supportingOrg;
     }
@@ -68,6 +90,16 @@ public class Domain extends TrackedObject {
         this.supportingOrg = supportingOrg;
     }
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    protected Contact getDomainSupportingOrg() {
+        return supportingOrg;
+    }
+
+    protected void setDomainSupportingOrg(Contact supportingOrg) {
+        this.supportingOrg = supportingOrg;
+    }
+
+    @Transient
     final public List<Contact> getAdminContacts() {
         return Collections.unmodifiableList(adminContacts);
     }
@@ -87,6 +119,18 @@ public class Domain extends TrackedObject {
         return adminContacts.remove(contact);
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Domain_AdminContacts",
+            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
+    protected List<Contact> getAdminContactList() {
+        return adminContacts;
+    }
+
+    protected void setAdminContactList(List<Contact> contacts) {
+        adminContacts = contacts;
+    }
+
+    @Transient
     final public List<Contact> getTechContacts() {
         return Collections.unmodifiableList(techContacts);
     }
@@ -106,6 +150,18 @@ public class Domain extends TrackedObject {
         return techContacts.remove(contact);
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Domain_TechContacts",
+            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
+    protected List<Contact> getTechContactList() {
+        return techContacts;
+    }
+
+    protected void setTechContactList(List<Contact> contacts) {
+        techContacts = contacts;
+    }
+
+    @Transient
     final public List<Host> getNameServers() {
         return Collections.unmodifiableList(nameServers);
     }
@@ -146,6 +202,18 @@ public class Domain extends TrackedObject {
         return false;
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Domain_NameServers",
+            inverseJoinColumns = @JoinColumn(name = "Host_objId"))
+    protected List<Host> getNameServersList() {
+        return nameServers;
+    }
+
+    protected void setNameServersList(List<Host> nameServers) {
+        this.nameServers = nameServers;
+    }
+
+    @Transient
     final public URL getRegistryUrl() {
         return registryUrl;
     }
@@ -154,6 +222,15 @@ public class Domain extends TrackedObject {
         this.registryUrl = registryUrl;
     }
 
+    protected URL getDomainRegistryUrl() {
+        return registryUrl;
+    }
+
+    protected void setDomainRegistryUrl(URL registryUrl) {
+        this.registryUrl = registryUrl;
+    }
+
+    @Transient
     final public String getWhoisServer() {
         return whoisServer == null ? null : whoisServer.getName();
     }
@@ -162,6 +239,18 @@ public class Domain extends TrackedObject {
         this.whoisServer = new Name(whoisServer);
     }
 
+    @Embedded
+    @AttributeOverride(name = "nameStr",
+            column = @Column(name = "domainWhoisServer"))
+    protected Name getDomainWhoisServer() {
+        return whoisServer;
+    }
+
+    protected void setDomainWhoisServer(Name name) {
+        whoisServer = name;
+    }
+
+    @Transient
     final public Set<Breakpoint> getBreakpoints() {
         return Collections.unmodifiableSet(breakpoints);
     }
@@ -184,6 +273,18 @@ public class Domain extends TrackedObject {
         return this.breakpoints.contains(breakpoint);
     }
 
+    @CollectionOfElements
+    @JoinTable(name = "Domain_Breakpoints")
+    @Column(name = "breakpoint", nullable = false)
+    protected Set<Breakpoint> getDomainBreakpoints() {
+        return breakpoints;
+    }
+
+    protected void setDomainBreakpoints(Set<Breakpoint> breakpoints) {
+        this.breakpoints = breakpoints;
+    }
+
+    @Transient
     final public String getSpecialInstructions() {
         return specialInstructions;
     }
@@ -192,6 +293,15 @@ public class Domain extends TrackedObject {
         this.specialInstructions = specialInstructions;
     }
 
+    protected String getDomainSpecialInstructions() {
+        return specialInstructions;
+    }
+
+    protected void setDomainSpecialInstructions(String specialInstructions) {
+        this.specialInstructions = specialInstructions;
+    }
+
+    @Transient
     final public Status getStatus() {
         return status;
     }
@@ -201,12 +311,29 @@ public class Domain extends TrackedObject {
         this.status = status;
     }
 
+    protected Status getDomainStatus() {
+        return status;
+    }
+
+    protected void setDomainStatus(Status status) {
+        this.status = status;
+    }
+
+    @Transient
     final public State getState() {
         return state;
     }
 
     final public void setState(State state) {
         CheckTool.checkNull(status, "state");
+        this.state = state;
+    }
+
+    protected State getDomainState() {
+        return state;
+    }
+
+    protected void setDomainState(State state) {
         this.state = state;
     }
 
