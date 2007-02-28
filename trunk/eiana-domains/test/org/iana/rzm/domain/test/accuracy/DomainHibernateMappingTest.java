@@ -20,11 +20,6 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
     }
 
     protected Domain change(Domain o) throws Exception {
-        o.setCreated(new Timestamp(System.currentTimeMillis()));
-        o.setCreatedBy("changed creator");
-        o.setId(200L);
-        o.setModified(new Timestamp(System.currentTimeMillis()));
-        o.setModifiedBy("changed modifier");
         o.setName("changed-iana.org");
         o.setRegistryUrl(new URL("http://changed-registry.com"));
         o.setSpecialInstructions("changed special instructions");

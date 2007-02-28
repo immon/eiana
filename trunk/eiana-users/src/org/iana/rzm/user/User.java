@@ -1,15 +1,17 @@
 package org.iana.rzm.user;
 
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
 @Entity
-public abstract class User extends TrackedObject {
+public abstract class User implements TrackedObject {
 
     private String firstName;
     private String lastName;
@@ -19,6 +21,8 @@ public abstract class User extends TrackedObject {
     private Password password;
     private boolean securID;
     // todo: securid authenticator?, pgp certificate
+    private Long objId;
+    private TrackData trackData = new TrackData();
 
     protected User() {
         this(null, null, null, null, null, null, false);
@@ -34,7 +38,15 @@ public abstract class User extends TrackedObject {
         this.securID = securID;
     }
 
-    @Column(name = "userFirstName")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -43,7 +55,6 @@ public abstract class User extends TrackedObject {
         this.firstName = firstName;
     }
 
-    @Column(name = "userLastName")
     public String getLastName() {
         return lastName;
     }
@@ -52,7 +63,6 @@ public abstract class User extends TrackedObject {
         this.lastName = lastName;
     }
 
-    @Column(name = "userOrganization")
     public String getOrganization() {
         return organization;
     }
@@ -61,7 +71,6 @@ public abstract class User extends TrackedObject {
         this.organization = organization;
     }
 
-    @Column(name = "userLoginName")
     public String getLoginName() {
         return loginName;
     }
@@ -70,7 +79,6 @@ public abstract class User extends TrackedObject {
         this.loginName = loginName;
     }
 
-    @Column(name = "userEmail")
     public String getEmail() {
         return email;
     }
@@ -88,7 +96,7 @@ public abstract class User extends TrackedObject {
     }
 
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = MD5Password.class)
-    @JoinColumn(name="UserPassword_objId")
+    @JoinColumn(name="Password_objId")
     public Password getPassword() {
         return password;
     }
@@ -97,7 +105,7 @@ public abstract class User extends TrackedObject {
         this.password = password;
     }
 
-    @Column(name = "userSecurID")
+    @Column(name = "securID")
     public boolean isSecurID() {
         return securID;
     }
@@ -119,6 +127,7 @@ public abstract class User extends TrackedObject {
         if (loginName != null ? !loginName.equals(user.loginName) : user.loginName != null) return false;
         if (organization != null ? !organization.equals(user.organization) : user.organization != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (trackData != null ? !trackData.equals(user.trackData) : user.trackData != null) return false;
 
         return true;
     }
@@ -132,6 +141,41 @@ public abstract class User extends TrackedObject {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (securID ? 1 : 0);
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
+    }
+
+    @Transient
+    public Long getId() {
+        return trackData.getId();
+    }
+
+    @Transient
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    @Transient
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    @Transient
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    @Transient
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    @Embedded
+    public TrackData getTrackData() {
+        return trackData;
+    }
+
+    public void setTrackData(TrackData trackData) {
+        this.trackData = trackData;
     }
 }

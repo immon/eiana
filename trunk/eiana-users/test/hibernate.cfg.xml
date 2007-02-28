@@ -20,7 +20,7 @@
         <property name="hibernate.jdbc.batch_size">20</property>
 
         <mapping class="org.iana.rzm.common.Name"/>
-        <mapping class="org.iana.rzm.common.TrackedObject"/>
+        <mapping class="org.iana.rzm.common.TrackData"/>
 
         <mapping class="org.iana.rzm.user.AdminUser"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>

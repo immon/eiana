@@ -2,6 +2,7 @@ package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.iana.rzm.common.Name;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -9,13 +10,15 @@ import org.iana.rzm.common.validators.CheckTool;
 import javax.persistence.*;
 import java.net.URL;
 import java.util.*;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Domain extends TrackedObject {
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "state"}))
+public class Domain implements TrackedObject {
 
     public static enum Breakpoint {
         SO_CHANGE_EXT_REVIEW,
@@ -48,6 +51,8 @@ public class Domain extends TrackedObject {
     private String specialInstructions;
     private Status status;
     private State state;
+    private Long objId;
+    private TrackData trackData = new TrackData();
 
     protected Domain() {}
 
@@ -61,6 +66,15 @@ public class Domain extends TrackedObject {
         this.state = State.NO_ACTIVITY;
     }
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
+
     @Transient
     final public String getName() {
         return name == null ? null : name.getName();
@@ -72,7 +86,7 @@ public class Domain extends TrackedObject {
 
     @Embedded
     @AttributeOverride(name = "nameStr",
-            column = @Column(name = "domainName"))
+            column = @Column(name = "name"))
     protected Name getDomainName() {
         return name;
     }
@@ -91,6 +105,7 @@ public class Domain extends TrackedObject {
     }
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="supportingOrg_objId")
     protected Contact getDomainSupportingOrg() {
         return supportingOrg;
     }
@@ -222,6 +237,7 @@ public class Domain extends TrackedObject {
         this.registryUrl = registryUrl;
     }
 
+    @Column(name = "registryUrl")
     protected URL getDomainRegistryUrl() {
         return registryUrl;
     }
@@ -241,7 +257,7 @@ public class Domain extends TrackedObject {
 
     @Embedded
     @AttributeOverride(name = "nameStr",
-            column = @Column(name = "domainWhoisServer"))
+            column = @Column(name = "whoisServer"))
     protected Name getDomainWhoisServer() {
         return whoisServer;
     }
@@ -293,6 +309,7 @@ public class Domain extends TrackedObject {
         this.specialInstructions = specialInstructions;
     }
 
+    @Column(name = "specialInstructions")
     protected String getDomainSpecialInstructions() {
         return specialInstructions;
     }
@@ -311,6 +328,7 @@ public class Domain extends TrackedObject {
         this.status = status;
     }
 
+    @Column(name = "status")
     protected Status getDomainStatus() {
         return status;
     }
@@ -329,6 +347,7 @@ public class Domain extends TrackedObject {
         this.state = state;
     }
 
+    @Column(name = "state")
     protected State getDomainState() {
         return state;
     }
@@ -343,12 +362,74 @@ public class Domain extends TrackedObject {
 
         Domain domain = (Domain) o;
 
+        if (adminContacts != null ? !adminContacts.equals(domain.adminContacts) : domain.adminContacts != null)
+            return false;
+        if (breakpoints != null ? !breakpoints.equals(domain.breakpoints) : domain.breakpoints != null) return false;
         if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
+        if (nameServers != null ? !nameServers.equals(domain.nameServers) : domain.nameServers != null) return false;
+        if (registryUrl != null ? !registryUrl.equals(domain.registryUrl) : domain.registryUrl != null) return false;
+        if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
+            return false;
+        if (state != domain.state) return false;
+        if (status != domain.status) return false;
+        if (supportingOrg != null ? !supportingOrg.equals(domain.supportingOrg) : domain.supportingOrg != null)
+            return false;
+        if (techContacts != null ? !techContacts.equals(domain.techContacts) : domain.techContacts != null)
+            return false;
+        if (trackData != null ? !trackData.equals(domain.trackData) : domain.trackData != null) return false;
+        if (whoisServer != null ? !whoisServer.equals(domain.whoisServer) : domain.whoisServer != null) return false;
 
         return true;
     }
 
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (supportingOrg != null ? supportingOrg.hashCode() : 0);
+        result = 31 * result + (adminContacts != null ? adminContacts.hashCode() : 0);
+        result = 31 * result + (techContacts != null ? techContacts.hashCode() : 0);
+        result = 31 * result + (nameServers != null ? nameServers.hashCode() : 0);
+        result = 31 * result + (registryUrl != null ? registryUrl.hashCode() : 0);
+        result = 31 * result + (whoisServer != null ? whoisServer.hashCode() : 0);
+        result = 31 * result + (breakpoints != null ? breakpoints.hashCode() : 0);
+        result = 31 * result + (specialInstructions != null ? specialInstructions.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        return result;
+    }
+
+    @Transient
+    public Long getId() {
+        return trackData.getId();
+    }
+
+    @Transient
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    @Transient
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    @Transient
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    @Transient
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    @Embedded
+    public TrackData getTrackData() {
+        return trackData;
+    }
+
+    public void setTrackData(TrackData trackData) {
+        this.trackData = trackData;
     }
 }
