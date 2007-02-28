@@ -15,14 +15,23 @@ import java.util.Set;
 import java.sql.Timestamp;
 
 /**
- * @author Patrycja Wegrzynowicz
- * @author Jakub Laszkiewicz
+ * This class represents a computer machine available in the net which serves as a DNS name server to one or many domain names.
+ *
  */
 @Entity
 public class Host implements TrackedObject {
 
+    /**
+     * The name of this host.
+     */
     private Name name;
+    /**
+     * The set of IP addresses of this host, either IPv4 and IPv6.
+     */
     private Set<IPAddress> addresses;
+    /**
+     * The number of domain names delegated to this host.
+     */
     private int numDelegations;
     private Long objId;
     private TrackData trackData = new TrackData();
@@ -113,7 +122,7 @@ public class Host implements TrackedObject {
         CheckTool.checkNull(addr, "IP address");
         addIPAddress(IPAddress.createIPAddress(addr));
     }
-    
+
     final void incDelegations() { ++numDelegations; }
 
     final void decDelegations() { --numDelegations; }
@@ -178,4 +187,3 @@ public class Host implements TrackedObject {
         this.trackData = trackData;
     }
 }
- 
