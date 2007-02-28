@@ -1,6 +1,10 @@
 package org.iana.dao;
 
 /**
+ * <p>
+ * This exception is a general exception thrown by this data access package.
+ * </p>
+ *
  * @author Patrycja Wegrzynowicz
  */
 public class DataAccessException extends Exception {
