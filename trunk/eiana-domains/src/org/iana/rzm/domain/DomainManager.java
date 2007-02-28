@@ -3,7 +3,10 @@ package org.iana.rzm.domain;
 import java.util.List;
 
 /**
- * It provides services for direct access and modification of a given domain object.
+ * <p>
+ * This interface provides a way to access and modify domain objects directly
+ * i.e. without a mean of creating domain transactions.
+ * </p>
  *
  * @author Patrycja Wegrzynowicz
  */
@@ -14,8 +17,6 @@ public interface DomainManager {
     public Domain get(long id) throws DomainException;
 
     public void create(Domain domain) throws DomainException;
-
-    public void update(Domain domain) throws DomainException;
 
     public List<Domain> findAll() throws DomainException;
 
