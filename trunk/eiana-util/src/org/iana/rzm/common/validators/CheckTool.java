@@ -3,6 +3,11 @@ package org.iana.rzm.common.validators;
 import java.util.Collection;
 
 /**
+ * <p>
+ * A simple helper tool that validates given objects against null or empty values.
+ * In case of nulliness or emptiness an IllegalArgumentException is raised.
+ * </p> 
+ *
  * @author Patrycja Wegrzynowicz
  */
 public class CheckTool {
