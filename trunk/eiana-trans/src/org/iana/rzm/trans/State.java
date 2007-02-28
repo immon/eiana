@@ -1,11 +1,14 @@
 package org.iana.rzm.trans;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
+@Entity
 public class State {
 
     public static enum Name {
@@ -28,10 +31,20 @@ public class State {
         EXCEPTION
     }
 
+    private Long objId;
     private Name name;
     private Timestamp start;
     private Timestamp end;
     private Set<Transition> availableTransitions;
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
 
     public Name getName() {
         return name;
@@ -57,6 +70,9 @@ public class State {
         this.end = end;
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "State_AvailableTransitions",
+            inverseJoinColumns = @JoinColumn(name = "Transition_objId"))
     public Set<Transition> getAvailableTransitions() {
         return availableTransitions;
     }

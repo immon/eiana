@@ -4,6 +4,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.trans.Action;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import java.util.List;
  * This class represents a domain modification transaction.
  *
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
+@Entity
 public class Transaction extends TrackedObject {
 
     private Long transactionID;
@@ -31,6 +34,7 @@ public class Transaction extends TrackedObject {
         this.transactionID = transactionID;
     }
 
+    @Column(name = "transactionRtID")
     public Long getRtID() {
         return rtID;
     }
@@ -39,6 +43,7 @@ public class Transaction extends TrackedObject {
         this.rtID = rtID;
     }
 
+    @Column(name = "transactionName")
     public String getName() {
         return name;
     }
@@ -47,6 +52,8 @@ public class Transaction extends TrackedObject {
         this.name = name;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "transactionCurrentDomain_objId")
     public Domain getCurrentDomain() {
         return currentDomain;
     }
@@ -55,6 +62,9 @@ public class Transaction extends TrackedObject {
         this.currentDomain = currentDomain;
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Trasaction_Actions",
+            inverseJoinColumns = @JoinColumn(name = "Action_objId"))
     public List<Action> getActions() {
         return actions;
     }
@@ -63,6 +73,8 @@ public class Transaction extends TrackedObject {
         this.actions = actions;
     }
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "transactionState_objId")
     public State getState() {
         return state;
     }
@@ -71,6 +83,7 @@ public class Transaction extends TrackedObject {
         this.state = state;
     }
 
+    @Column(name = "transactionStart")
     public Timestamp getStart() {
         return start;
     }
@@ -79,6 +92,7 @@ public class Transaction extends TrackedObject {
         this.start = start;
     }
 
+    @Column(name = "transactionEnd")
     public Timestamp getEnd() {
         return end;
     }

@@ -1,12 +1,23 @@
 package org.iana.rzm.trans.change;
 
-public class PrimitiveValue<T extends AdditionOrRemoval> implements Value<T> {
+import javax.persistence.Entity;
+import javax.persistence.Column;
+import javax.persistence.Table;
+
+/**
+ * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
+ */
+@Entity
+@Table(name = "Value")
+public class PrimitiveValue<T extends AdditionOrRemoval> extends AbstractValue<T> implements Value<T> {
 
     private String value;
 
     public PrimitiveValue(String value) {
     }
 
+    @Column(name = "primitiveValue")
     public String getValue() {
         return value;
     }

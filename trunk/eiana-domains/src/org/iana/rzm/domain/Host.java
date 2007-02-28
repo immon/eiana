@@ -1,18 +1,29 @@
 package org.iana.rzm.domain;
 
-import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.Name;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.common.validators.CheckTool;
 
-import java.util.*;
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
+ */
+@Entity
 public class Host extends TrackedObject {
 
     private Name name;
     private Set<IPAddress> addresses;
     private int numDelegations;
+
+    protected Host() {}
 
     public Host(String name) throws InvalidNameException {
         setName(name);
@@ -20,6 +31,7 @@ public class Host extends TrackedObject {
         this.numDelegations = 0;
     }
 
+    @Transient
     final public String getName() {
         return name == null ? null : name.getName();
     }
@@ -28,6 +40,18 @@ public class Host extends TrackedObject {
         this.name = new Name(name);
     }
 
+    @Embedded
+    @AttributeOverride(name = "nameStr",
+            column = @Column(name = "hostName"))
+    protected Name getHostName() {
+        return name;
+    }
+
+    protected void setHostName(Name name) {
+        this.name = name;
+    }
+
+    @Transient
     final public Set<IPAddress> getAddresses() {
         return Collections.unmodifiableSet(this.addresses);
     }
@@ -36,6 +60,17 @@ public class Host extends TrackedObject {
         CheckTool.checkCollectionNull(addresses, "IP addresses");
         this.addresses.clear();
         this.addresses.addAll(addresses);
+    }
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Host_IPAddresses",
+            inverseJoinColumns = @JoinColumn(name = "IPAddress_objId"))
+    protected Set<IPAddress> getHostAddresses() {
+        return addresses;
+    }
+
+    protected void setHostAddresses(Set<IPAddress> addresses) {
+        this.addresses = addresses;
     }
 
     final public void addIPv4Address(IPv4Address addr) {
@@ -70,6 +105,7 @@ public class Host extends TrackedObject {
 
     final void decDelegations() { --numDelegations; }
 
+    @Transient
     final public boolean isShared() { return numDelegations > 1; }
 
     public boolean equals(Object o) {
