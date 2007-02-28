@@ -1,18 +1,20 @@
 package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
 import java.util.*;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Contact extends TrackedObject {
+public class Contact implements TrackedObject {
 
     final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
     final private static List<String> STRING_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<String>());
@@ -23,6 +25,8 @@ public class Contact extends TrackedObject {
     private List<String> faxNumbers;
     private List<String> emails;
     private boolean role;
+    private Long objId;
+    private TrackData trackData = new TrackData();
 
     public Contact() {
         this("");
@@ -50,6 +54,15 @@ public class Contact extends TrackedObject {
         setRole(role);
     }
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
+
     @Transient
     final public String getName() {
         return name;
@@ -59,6 +72,7 @@ public class Contact extends TrackedObject {
         this.name = name;
     }
 
+    @Column(name = "name")
     protected String getContactName() {
         return name;
     }
@@ -210,12 +224,61 @@ public class Contact extends TrackedObject {
 
         Contact contact = (Contact) o;
 
+        if (role != contact.role) return false;
+        if (addresses != null ? !addresses.equals(contact.addresses) : contact.addresses != null) return false;
+        if (emails != null ? !emails.equals(contact.emails) : contact.emails != null) return false;
+        if (faxNumbers != null ? !faxNumbers.equals(contact.faxNumbers) : contact.faxNumbers != null) return false;
         if (name != null ? !name.equals(contact.name) : contact.name != null) return false;
+        if (phoneNumbers != null ? !phoneNumbers.equals(contact.phoneNumbers) : contact.phoneNumbers != null)
+            return false;
+        if (trackData != null ? !trackData.equals(contact.trackData) : contact.trackData != null) return false;
 
         return true;
     }
 
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
+        result = 31 * result + (phoneNumbers != null ? phoneNumbers.hashCode() : 0);
+        result = 31 * result + (faxNumbers != null ? faxNumbers.hashCode() : 0);
+        result = 31 * result + (emails != null ? emails.hashCode() : 0);
+        result = 31 * result + (role ? 1 : 0);
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        return result;
+    }
+
+    @Transient
+    public Long getId() {
+        return trackData.getId();
+    }
+
+    @Transient
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    @Transient
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    @Transient
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    @Transient
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    @Embedded
+    public TrackData getTrackData() {
+        return trackData;
+    }
+
+    public void setTrackData(TrackData trackData) {
+        this.trackData = trackData;
     }
 }

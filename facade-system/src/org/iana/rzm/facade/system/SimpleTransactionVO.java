@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.system;
 
-import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.facade.common.TrackedObjectVO;
 
 /**

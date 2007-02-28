@@ -6,7 +6,7 @@
 package org.iana.rzm.trans.test.common;
 
 import org.iana.rzm.domain.*;
-import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.trans.change.ModifiedPrimitiveValue;
@@ -39,7 +39,7 @@ public class HibernateMappingTestUtil {
         return address;
     }
 
-    public static TrackedObject setupTrackedObject(TrackedObject to, String prefix, Long id) {
+    public static TrackData setupTrackedObject(TrackData to, String prefix, Long id) {
         to.setCreated(new Timestamp(System.currentTimeMillis()));
         to.setCreatedBy(prefix + "-creator");
         to.setId(id);
@@ -49,7 +49,6 @@ public class HibernateMappingTestUtil {
     }
 
     public static Contact setupContact(Contact contact, String prefix, boolean flag) {
-        HibernateMappingTestUtil.setupTrackedObject(contact, prefix, System.currentTimeMillis());
         contact.setName(prefix + " name");
         contact.setRole(flag);
         contact.addAddress(HibernateMappingTestUtil.setupAddress(new Address(), "contact"));
@@ -67,7 +66,6 @@ public class HibernateMappingTestUtil {
     }
 
     public static Host setupHost(Host host, String prefix) throws InvalidIPAddressException, InvalidNameException {
-        HibernateMappingTestUtil.setupTrackedObject(host, prefix, System.currentTimeMillis());
         host.setName(prefix + host.getName());
         host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
         host.addIPAddress(IPAddress.createIPv4Address("5.6.7.8"));
@@ -81,7 +79,6 @@ public class HibernateMappingTestUtil {
     }
 
     public static Domain setupDomain(Domain domain, String prefix) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
-        HibernateMappingTestUtil.setupTrackedObject(domain, prefix, System.currentTimeMillis());
         domain.setName(prefix + domain.getName());
         domain.setRegistryUrl(new URL("http://" + prefix + "registry.pl"));
         domain.setSpecialInstructions(prefix + " special instructions");
@@ -148,7 +145,6 @@ public class HibernateMappingTestUtil {
     }
 
     public static Transaction setupTransaction(Transaction trans, String prefix, List<Action> actions, Domain domain, State state) {
-        HibernateMappingTestUtil.setupTrackedObject(trans, prefix, System.currentTimeMillis());
         trans.setActions(actions);
         trans.setCurrentDomain(domain);
         trans.setName(prefix + " transaction");

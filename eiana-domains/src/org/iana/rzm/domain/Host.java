@@ -1,6 +1,7 @@
 package org.iana.rzm.domain;
 
 import org.iana.rzm.common.Name;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
@@ -11,17 +12,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Host extends TrackedObject {
+public class Host implements TrackedObject {
 
     private Name name;
     private Set<IPAddress> addresses;
     private int numDelegations;
+    private Long objId;
+    private TrackData trackData = new TrackData();
 
     protected Host() {}
 
@@ -29,6 +33,15 @@ public class Host extends TrackedObject {
         setName(name);
         this.addresses = new HashSet<IPAddress>();
         this.numDelegations = 0;
+    }
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     @Transient
@@ -42,7 +55,7 @@ public class Host extends TrackedObject {
 
     @Embedded
     @AttributeOverride(name = "nameStr",
-            column = @Column(name = "hostName"))
+            column = @Column(name = "name"))
     protected Name getHostName() {
         return name;
     }
@@ -114,13 +127,55 @@ public class Host extends TrackedObject {
 
         Host host = (Host) o;
 
+        if (numDelegations != host.numDelegations) return false;
+        if (addresses != null ? !addresses.equals(host.addresses) : host.addresses != null) return false;
         if (name != null ? !name.equals(host.name) : host.name != null) return false;
+        if (trackData != null ? !trackData.equals(host.trackData) : host.trackData != null) return false;
 
         return true;
     }
 
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
+        result = 31 * result + numDelegations;
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        return result;
+    }
+
+    @Transient
+    public Long getId() {
+        return trackData.getId();
+    }
+
+    @Transient
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    @Transient
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    @Transient
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    @Transient
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    @Embedded
+    public TrackData getTrackData() {
+        return trackData;
+    }
+
+    public void setTrackData(TrackData trackData) {
+        this.trackData = trackData;
     }
 }
  

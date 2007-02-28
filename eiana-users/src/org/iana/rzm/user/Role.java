@@ -1,18 +1,20 @@
 package org.iana.rzm.user;
 
-import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.Name;
+import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Role extends TrackedObject {
+public class Role implements TrackedObject {
 
     public static enum Type implements UserType {
         AC, TC, SO
@@ -23,6 +25,17 @@ public class Role extends TrackedObject {
     private boolean notify;
     private boolean acceptFrom;
     private boolean mustAccept;
+    private Long objId;
+    private TrackData trackData = new TrackData();
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
 
     @Transient
     final public String getName() {
@@ -35,7 +48,7 @@ public class Role extends TrackedObject {
 
     @Embedded
     @AttributeOverride(name = "nameStr",
-            column = @Column(name = "roleName"))
+            column = @Column(name = "name"))
     private Name getRoleName() {
         return name;
     }
@@ -123,6 +136,7 @@ public class Role extends TrackedObject {
         if (mustAccept != role.mustAccept) return false;
         if (notify != role.notify) return false;
         if (name != null ? !name.equals(role.name) : role.name != null) return false;
+        if (trackData != null ? !trackData.equals(role.trackData) : role.trackData != null) return false;
         if (type != role.type) return false;
 
         return true;
@@ -135,6 +149,41 @@ public class Role extends TrackedObject {
         result = 31 * result + (notify ? 1 : 0);
         result = 31 * result + (acceptFrom ? 1 : 0);
         result = 31 * result + (mustAccept ? 1 : 0);
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
+    }
+
+    @Transient
+    public Long getId() {
+        return trackData.getId();
+    }
+
+    @Transient
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    @Transient
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    @Transient
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    @Transient
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    @Embedded
+    public TrackData getTrackData() {
+        return trackData;
+    }
+
+    public void setTrackData(TrackData trackData) {
+        this.trackData = trackData;
     }
 }
