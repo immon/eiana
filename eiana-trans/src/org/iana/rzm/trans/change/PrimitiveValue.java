@@ -3,6 +3,7 @@ package org.iana.rzm.trans.change;
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.persistence.Basic;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -12,12 +13,13 @@ import javax.persistence.Table;
 @Table(name = "Value")
 public class PrimitiveValue<T extends AdditionOrRemoval> extends AbstractValue<T> implements Value<T> {
 
+    @Basic
+    @Column(name = "primitiveValue")
     private String value;
 
     public PrimitiveValue(String value) {
     }
 
-    @Column(name = "primitiveValue")
     public String getValue() {
         return value;
     }

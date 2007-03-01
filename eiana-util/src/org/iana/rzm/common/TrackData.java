@@ -10,10 +10,15 @@ import java.sql.Timestamp;
 @Embeddable
 public class TrackData {
 
+    @Basic
     private Long id;
+    @Basic
     private Timestamp created;
+    @Basic
     private String createdBy;
+    @Basic
     private Timestamp modified;
+    @Basic
     private String modifiedBy;
 
     public TrackData() {
@@ -25,7 +30,6 @@ public class TrackData {
         this.id = id;
     }
 
-    @Transient
     final public Long getId() {
         return id;
     }
@@ -34,16 +38,6 @@ public class TrackData {
         this.id = id;
     }
 
-    @Column(name = "id")
-    protected Long getTOId() {
-        return id;
-    }
-
-    protected void setTOId(Long id) {
-        this.id = id;
-    }
-
-    @Transient
     final public Timestamp getCreated() {
         return created;
     }
@@ -52,34 +46,15 @@ public class TrackData {
         this.created = created;
     }
 
-    @Column(name = "created")
-    protected Timestamp getTOCreated() {
-        return created;
-    }
-
-    protected void setTOCreated(Timestamp created) {
-        this.created = created;
-    }
-
     final public void createNow() {
         setCreated(currentTimestamp());
     }
 
-    @Transient
     final public Timestamp getModified() {
         return modified;
     }
 
     final public void setModified(Timestamp modified) {
-        this.modified = modified;
-    }
-
-    @Column(name = "modified")
-    protected Timestamp getTOModified() {
-        return modified;
-    }
-
-    protected void setTOModified(Timestamp modified) {
         this.modified = modified;
     }
 

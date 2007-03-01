@@ -12,8 +12,12 @@ abstract public class Change {
 
     protected enum Type { ADD, REMOVE, UPDATE }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Basic
     private String fieldName;
+    @Enumerated
     private Type type;
 
     protected Change() {}
@@ -23,8 +27,6 @@ abstract public class Change {
         this.type = type;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -37,16 +39,8 @@ abstract public class Change {
         return fieldName;
     }
 
-    private void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
     public Type getType() {
         return type;
-    }
-
-    private void setType(Type type) {
-        this.type = type;
     }
 
 }

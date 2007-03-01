@@ -12,6 +12,9 @@ import javax.persistence.CascadeType;
 @Entity
 public class Modification extends Change {
 
+    @ManyToOne(cascade = CascadeType.ALL,
+            targetEntity = AbstractValue.class)
+    @JoinColumn(name = "modificationValue_objId")
     private Value<? extends Change> value;
 
     private Modification() {}
@@ -21,9 +24,6 @@ public class Modification extends Change {
         this.value = value;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL,
-            targetEntity = AbstractValue.class)
-    @JoinColumn(name = "modificationValue_objId")
     public Value<? extends Change> getValue() {
         return value;
     }

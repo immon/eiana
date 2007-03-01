@@ -3,7 +3,7 @@ package org.iana.rzm.common;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import javax.persistence.Basic;
 import java.util.Locale;
 
 /**
@@ -13,6 +13,7 @@ import java.util.Locale;
 @Embeddable
 public class Name {
 
+    @Basic
     private String name;
 
     protected Name() {}
@@ -24,17 +25,8 @@ public class Name {
         this.name = name;
     }
 
-    @Transient
     final public String getName() {
         return name;
-    }
-
-    protected String getNameStr() {
-        return name;
-    }
-
-    protected void setNameStr(String name) {
-        this.name = name;
     }
 
     public boolean equals(Object o) {

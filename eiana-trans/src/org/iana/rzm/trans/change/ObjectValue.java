@@ -10,15 +10,21 @@ import java.util.List;
 @Entity
 public class ObjectValue<T extends Change> extends AbstractValue<T> implements Value<T> {
 
+    @Basic
+    @Column(name = "objectValueId")
     private long id;
+    @Basic
+    @Column(name = "objectValueName")
     private String name;
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = Change.class)
+    @JoinTable(name = "ObjectValue_Changes",
+            inverseJoinColumns = @JoinColumn(name = "Change_objId"))
     private List<? extends T> changes;
 
     public ObjectValue(List<? extends T> changes) {
         this.changes = changes;
     }
 
-    @Column(name = "objectValueId")
     public long getId() {
         return id;
     }
@@ -27,7 +33,6 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
         this.id = id;
     }
 
-    @Column(name = "objectValueName")
     public String getName() {
         return name;
     }
@@ -36,9 +41,6 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
         this.name = name;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, targetEntity = Change.class)
-    @JoinTable(name = "ObjectValue_Changes",
-            inverseJoinColumns = @JoinColumn(name = "Change_objId"))
     public List<? extends Change> getChanges() {
         return changes;
     }

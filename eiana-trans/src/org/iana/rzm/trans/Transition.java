@@ -1,9 +1,6 @@
 package org.iana.rzm.trans;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -12,7 +9,9 @@ import javax.persistence.GenerationType;
 @Entity
 public class Transition {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Basic
     private String name;
 
     public Transition() {
@@ -22,8 +21,6 @@ public class Transition {
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }

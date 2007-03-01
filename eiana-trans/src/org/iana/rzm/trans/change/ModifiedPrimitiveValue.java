@@ -2,6 +2,7 @@ package org.iana.rzm.trans.change;
 
 import javax.persistence.Entity;
 import javax.persistence.Column;
+import javax.persistence.Basic;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -10,7 +11,11 @@ import javax.persistence.Column;
 @Entity
 public class ModifiedPrimitiveValue extends AbstractValue<Modification> implements Value<Modification> {
 
+    @Basic
+    @Column(name = "modifiedPrimitiveNewValue")
     String newValue;
+    @Basic
+    @Column(name = "modifiedPrimitiveOldValue")
     String oldValue;
 
     public ModifiedPrimitiveValue() {
@@ -21,7 +26,6 @@ public class ModifiedPrimitiveValue extends AbstractValue<Modification> implemen
         this.oldValue = oldValue;
     }
 
-    @Column(name = "modifiedPrimitiveNewValue")
     public String getNewValue() {
         return newValue;
     }
@@ -30,7 +34,6 @@ public class ModifiedPrimitiveValue extends AbstractValue<Modification> implemen
         this.newValue = newValue;
     }
 
-    @Column(name = "modifiedPrimitiveOldValue")
     public String getOldValue() {
         return oldValue;
     }

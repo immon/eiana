@@ -40,18 +40,42 @@ public class Domain implements TrackedObject {
         THIRD_PARTY_PENDING
     }
 
+    @Embedded
     private Name name;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="supportingOrg_objId")
     private Contact supportingOrg;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Domain_AdminContacts",
+            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
     private List<Contact> adminContacts;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Domain_TechContacts",
+            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
     private List<Contact> techContacts;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Domain_NameServers",
+            inverseJoinColumns = @JoinColumn(name = "Host_objId"))
     private List<Host> nameServers;
+    @Basic
     private URL registryUrl;
+    @Embedded
+    @AttributeOverride(name = "name",
+            column = @Column(name = "whoisServer"))
     private Name whoisServer;
+    @CollectionOfElements
+    @JoinTable(name = "Domain_Breakpoints")
+    @Column(name = "breakpoint", nullable = false)
     private Set<Breakpoint> breakpoints;
+    @Basic
     private String specialInstructions;
+    @Enumerated
     private Status status;
+    @Enumerated
     private State state;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Embedded
     private TrackData trackData = new TrackData();
 
     protected Domain() {}
@@ -66,7 +90,6 @@ public class Domain implements TrackedObject {
         this.state = State.NO_ACTIVITY;
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -84,18 +107,6 @@ public class Domain implements TrackedObject {
         this.name = new Name(name);
     }
 
-    @Embedded
-    @AttributeOverride(name = "nameStr",
-            column = @Column(name = "name"))
-    protected Name getDomainName() {
-        return name;
-    }
-
-    protected void setDomainName(Name name) {
-        this.name = name;
-    }
-
-    @Transient
     final public Contact getSupportingOrg() {
         return supportingOrg;
     }
@@ -104,17 +115,6 @@ public class Domain implements TrackedObject {
         this.supportingOrg = supportingOrg;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="supportingOrg_objId")
-    protected Contact getDomainSupportingOrg() {
-        return supportingOrg;
-    }
-
-    protected void setDomainSupportingOrg(Contact supportingOrg) {
-        this.supportingOrg = supportingOrg;
-    }
-
-    @Transient
     final public List<Contact> getAdminContacts() {
         return Collections.unmodifiableList(adminContacts);
     }
@@ -134,18 +134,6 @@ public class Domain implements TrackedObject {
         return adminContacts.remove(contact);
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Domain_AdminContacts",
-            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
-    protected List<Contact> getAdminContactList() {
-        return adminContacts;
-    }
-
-    protected void setAdminContactList(List<Contact> contacts) {
-        adminContacts = contacts;
-    }
-
-    @Transient
     final public List<Contact> getTechContacts() {
         return Collections.unmodifiableList(techContacts);
     }
@@ -165,18 +153,6 @@ public class Domain implements TrackedObject {
         return techContacts.remove(contact);
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Domain_TechContacts",
-            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
-    protected List<Contact> getTechContactList() {
-        return techContacts;
-    }
-
-    protected void setTechContactList(List<Contact> contacts) {
-        techContacts = contacts;
-    }
-
-    @Transient
     final public List<Host> getNameServers() {
         return Collections.unmodifiableList(nameServers);
     }
@@ -217,18 +193,6 @@ public class Domain implements TrackedObject {
         return false;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Domain_NameServers",
-            inverseJoinColumns = @JoinColumn(name = "Host_objId"))
-    protected List<Host> getNameServersList() {
-        return nameServers;
-    }
-
-    protected void setNameServersList(List<Host> nameServers) {
-        this.nameServers = nameServers;
-    }
-
-    @Transient
     final public URL getRegistryUrl() {
         return registryUrl;
     }
@@ -237,7 +201,6 @@ public class Domain implements TrackedObject {
         this.registryUrl = registryUrl;
     }
 
-    @Column(name = "registryUrl")
     protected URL getDomainRegistryUrl() {
         return registryUrl;
     }
@@ -246,7 +209,6 @@ public class Domain implements TrackedObject {
         this.registryUrl = registryUrl;
     }
 
-    @Transient
     final public String getWhoisServer() {
         return whoisServer == null ? null : whoisServer.getName();
     }
@@ -255,18 +217,6 @@ public class Domain implements TrackedObject {
         this.whoisServer = new Name(whoisServer);
     }
 
-    @Embedded
-    @AttributeOverride(name = "nameStr",
-            column = @Column(name = "whoisServer"))
-    protected Name getDomainWhoisServer() {
-        return whoisServer;
-    }
-
-    protected void setDomainWhoisServer(Name name) {
-        whoisServer = name;
-    }
-
-    @Transient
     final public Set<Breakpoint> getBreakpoints() {
         return Collections.unmodifiableSet(breakpoints);
     }
@@ -289,18 +239,6 @@ public class Domain implements TrackedObject {
         return this.breakpoints.contains(breakpoint);
     }
 
-    @CollectionOfElements
-    @JoinTable(name = "Domain_Breakpoints")
-    @Column(name = "breakpoint", nullable = false)
-    protected Set<Breakpoint> getDomainBreakpoints() {
-        return breakpoints;
-    }
-
-    protected void setDomainBreakpoints(Set<Breakpoint> breakpoints) {
-        this.breakpoints = breakpoints;
-    }
-
-    @Transient
     final public String getSpecialInstructions() {
         return specialInstructions;
     }
@@ -309,16 +247,6 @@ public class Domain implements TrackedObject {
         this.specialInstructions = specialInstructions;
     }
 
-    @Column(name = "specialInstructions")
-    protected String getDomainSpecialInstructions() {
-        return specialInstructions;
-    }
-
-    protected void setDomainSpecialInstructions(String specialInstructions) {
-        this.specialInstructions = specialInstructions;
-    }
-
-    @Transient
     final public Status getStatus() {
         return status;
     }
@@ -328,31 +256,12 @@ public class Domain implements TrackedObject {
         this.status = status;
     }
 
-    @Column(name = "status")
-    protected Status getDomainStatus() {
-        return status;
-    }
-
-    protected void setDomainStatus(Status status) {
-        this.status = status;
-    }
-
-    @Transient
     final public State getState() {
         return state;
     }
 
     final public void setState(State state) {
         CheckTool.checkNull(status, "state");
-        this.state = state;
-    }
-
-    @Column(name = "state")
-    protected State getDomainState() {
-        return state;
-    }
-
-    protected void setDomainState(State state) {
         this.state = state;
     }
 
@@ -399,32 +308,26 @@ public class Domain implements TrackedObject {
         return result;
     }
 
-    @Transient
     public Long getId() {
         return trackData.getId();
     }
 
-    @Transient
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
 
-    @Transient
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
-    @Transient
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }
 
-    @Transient
     public String getModifiedBy() {
         return trackData.getModifiedBy();
     }
 
-    @Embedded
     public TrackData getTrackData() {
         return trackData;
     }

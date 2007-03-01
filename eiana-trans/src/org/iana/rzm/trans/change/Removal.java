@@ -1,11 +1,9 @@
 package org.iana.rzm.trans.change;
 
-import org.iana.rzm.trans.change.Change;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -14,6 +12,8 @@ import javax.persistence.CascadeType;
 @Entity
 public class Removal extends AdditionOrRemoval {
 
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = AbstractValue.class)
+    @JoinColumn(name = "removalValue_objId")
     private Value<Removal> value;
 
     public Removal() {
@@ -29,8 +29,6 @@ public class Removal extends AdditionOrRemoval {
         this.value = value;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = AbstractValue.class)
-    @JoinColumn(name = "removalValue_objId")
     public Value<Removal> getValue() {
         return value;
     }

@@ -3,7 +3,6 @@ package org.iana.rzm.trans;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.trans.Action;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -18,18 +17,31 @@ import java.util.List;
 @Entity
 public class Transaction implements TrackedObject {
 
+    @Basic
     private Long transactionID;
+    @Basic
     private Long rtID;
+    @Basic
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "currentDomain_objId")
     private Domain currentDomain;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Trasaction_Actions",
+            inverseJoinColumns = @JoinColumn(name = "Action_objId"))
     private List<Action> actions;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "state_objId")
     private State state;
+    @Basic
     private Timestamp start;
+    @Basic
     private Timestamp end;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Embedded
     private TrackData trackData = new TrackData();
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -62,8 +74,6 @@ public class Transaction implements TrackedObject {
         this.name = name;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "currentDomain_objId")
     public Domain getCurrentDomain() {
         return currentDomain;
     }
@@ -72,9 +82,6 @@ public class Transaction implements TrackedObject {
         this.currentDomain = currentDomain;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Trasaction_Actions",
-            inverseJoinColumns = @JoinColumn(name = "Action_objId"))
     public List<Action> getActions() {
         return actions;
     }
@@ -83,8 +90,6 @@ public class Transaction implements TrackedObject {
         this.actions = actions;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "state_objId")
     public State getState() {
         return state;
     }
@@ -109,32 +114,26 @@ public class Transaction implements TrackedObject {
         this.end = end;
     }
 
-    @Transient
     public Long getId() {
         return trackData.getId();
     }
 
-    @Transient
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
 
-    @Transient
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
-    @Transient
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }
 
-    @Transient
     public String getModifiedBy() {
         return trackData.getModifiedBy();
     }
 
-    @Embedded
     public TrackData getTrackData() {
         return trackData;
     }

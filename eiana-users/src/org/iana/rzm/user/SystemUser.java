@@ -17,13 +17,15 @@ import java.util.Collections;
 @Entity
 public class SystemUser extends User {
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "SytstemUser_Roles",
+            inverseJoinColumns = @JoinColumn(name = "Role_objId"))
     private List<Role> roles;
 
     public SystemUser() {
         this.roles = new ArrayList<Role>();
     }
 
-    @Transient
     final public List<Role> getRoles() {
         return Collections.unmodifiableList(roles);
     }
@@ -39,17 +41,6 @@ public class SystemUser extends User {
 
     final public boolean removeRole(Role role) {
         return this.roles.remove(role);
-    }
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "SytstemUser_Roles",
-            inverseJoinColumns = @JoinColumn(name = "Role_objId"))
-    private List<Role> getSystemUserRoles() {
-        return roles;
-    }
-
-    private void setSystemUserRoles(List<Role> roles) {
-        this.roles = roles;
     }
 
     public boolean equals(Object o) {
