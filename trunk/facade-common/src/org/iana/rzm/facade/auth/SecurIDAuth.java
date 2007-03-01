@@ -1,19 +1,16 @@
 package org.iana.rzm.facade.auth;
 
 /**
+ * <p>This class holds a user name and SecurID password.</p>
+ *
  * @author Patrycja Wegrzynowicz
  */
-public class SecurIDAuthentication implements AuthenticationData {
+public class SecurIDAuth implements AuthenticationData {
 
     private String userName;
-    private String data;
+    private String password;
 
-    public SecurIDAuthentication() {
-    }
-
-    public SecurIDAuthentication(String userName, String data) {
-        this.userName = userName;
-        this.data = data;
+    public SecurIDAuth() {
     }
 
     public String getUserName() {
@@ -24,12 +21,12 @@ public class SecurIDAuthentication implements AuthenticationData {
         this.userName = userName;
     }
 
-    public String getData() {
-        return data;
+    public String getPassword() {
+        return password;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void accept(AuthenticationVisitor visitor) throws AuthenticationException {

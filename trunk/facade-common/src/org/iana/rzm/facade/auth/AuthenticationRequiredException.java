@@ -3,5 +3,5 @@ package org.iana.rzm.facade.auth;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface Permission {
+public class AuthenticationRequiredException extends AuthenticationException {
 }
