@@ -10,7 +10,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
  */
 abstract public class HibernateTest {
     protected Session session;
-    protected Transaction tx;
+    protected Transaction tx = null;
     protected SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 
     protected void begin() {
@@ -19,7 +19,10 @@ abstract public class HibernateTest {
     }
 
     protected void close() {
-        tx.commit();
+        if (tx != null) {
+            tx.commit();
+            tx = null;
+        }
         session.close();
     }
 
@@ -29,5 +32,6 @@ abstract public class HibernateTest {
 
     protected void closeTx() {
         tx.commit();
+        tx = null;
     }
 }
