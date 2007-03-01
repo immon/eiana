@@ -24,15 +24,21 @@ public class Role implements TrackedObject {
         AC, TC, SO
     }
 
+    @Embedded
     private Name name;
+    @Enumerated
     private Type type;
+    @Basic
     private boolean notify;
+    @Basic
     private boolean acceptFrom;
+    @Basic
     private boolean mustAccept;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Embedded
     private TrackData trackData = new TrackData();
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -41,7 +47,6 @@ public class Role implements TrackedObject {
         this.objId = objId;
     }
 
-    @Transient
     final public String getName() {
         return name == null ? null : name.getName();
     }
@@ -50,18 +55,6 @@ public class Role implements TrackedObject {
         this.name = new Name(name);
     }
 
-    @Embedded
-    @AttributeOverride(name = "nameStr",
-            column = @Column(name = "name"))
-    private Name getRoleName() {
-        return name;
-    }
-
-    private void setRoleName(Name name) {
-        this.name = name;
-    }
-
-    @Transient
     final public Type getType() {
         return type;
     }
@@ -71,15 +64,6 @@ public class Role implements TrackedObject {
         this.type = type;
     }
 
-    private Type getRoleType() {
-        return type;
-    }
-
-    private void setRoleType(Type type) {
-        this.type = type;
-    }
-
-    @Transient
     final public boolean isNotify() {
         return notify;
     }
@@ -88,15 +72,6 @@ public class Role implements TrackedObject {
         this.notify = notify;
     }
 
-    private boolean isRoleNotify() {
-        return notify;
-    }
-
-    private void setRoleNotify(boolean notify) {
-        this.notify = notify;
-    }
-
-    @Transient
     final public boolean isAcceptFrom() {
         return acceptFrom;
     }
@@ -105,28 +80,11 @@ public class Role implements TrackedObject {
         this.acceptFrom = acceptFrom;
     }
 
-    private boolean isRoleAcceptFrom() {
-        return acceptFrom;
-    }
-
-    private void setRoleAcceptFrom(boolean acceptFrom) {
-        this.acceptFrom = acceptFrom;
-    }
-
-    @Transient
     final public boolean isMustAccept() {
         return mustAccept;
     }
 
     final public void setMustAccept(boolean mustAccept) {
-        this.mustAccept = mustAccept;
-    }
-
-    private boolean isRoleMustAccept() {
-        return mustAccept;
-    }
-
-    private void setRoleMustAccept(boolean mustAccept) {
         this.mustAccept = mustAccept;
     }
 
@@ -157,32 +115,26 @@ public class Role implements TrackedObject {
         return result;
     }
 
-    @Transient
     public Long getId() {
         return trackData.getId();
     }
 
-    @Transient
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
 
-    @Transient
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
-    @Transient
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }
 
-    @Transient
     public String getModifiedBy() {
         return trackData.getModifiedBy();
     }
 
-    @Embedded
     public TrackData getTrackData() {
         return trackData;
     }

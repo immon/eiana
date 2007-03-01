@@ -4,6 +4,7 @@ import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.Entity;
 import javax.persistence.Column;
+import javax.persistence.Enumerated;
 
 /**
  * <p>
@@ -23,9 +24,10 @@ public class AdminUser extends User {
         ZONE_PUBLISHER
     }
 
+    @Enumerated
+    @Column(name = "adminUserType")
     private Type type;
 
-    @Column(name = "adminUserType")
     public Type getType() {
         return type;
     }

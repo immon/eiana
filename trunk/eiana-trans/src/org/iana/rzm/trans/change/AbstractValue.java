@@ -11,9 +11,9 @@ import javax.persistence.Entity;
  */
 @Entity
 abstract public class AbstractValue<T extends Change> implements Value<T> {
-    private Long objId;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long objId;
 
     public Long getObjId() {
         return objId;

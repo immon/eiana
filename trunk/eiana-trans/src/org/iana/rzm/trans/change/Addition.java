@@ -12,6 +12,8 @@ import javax.persistence.CascadeType;
 @Entity
 public class Addition extends AdditionOrRemoval {
 
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = AbstractValue.class)
+    @JoinColumn(name = "additionValue_objId")
     private Value<Addition> value;
 
     private Addition() {}
@@ -25,13 +27,7 @@ public class Addition extends AdditionOrRemoval {
         this.value = value;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = AbstractValue.class)
-    @JoinColumn(name = "additionValue_objId")
     public Value getValue() {
         return value;
-    }
-
-    private void setValue(Value<Addition> value) {
-        this.value = value;
     }
 }

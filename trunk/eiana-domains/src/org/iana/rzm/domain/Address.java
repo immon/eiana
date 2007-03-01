@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 @Entity
 public class Address {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     private String street;
     private String city;
@@ -19,7 +20,6 @@ public class Address {
     private String countryCode;
     private String state;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }

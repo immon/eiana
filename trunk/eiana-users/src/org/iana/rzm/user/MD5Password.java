@@ -1,9 +1,6 @@
 package org.iana.rzm.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -18,10 +15,12 @@ import java.security.NoSuchAlgorithmException;
 @Entity
 public class MD5Password implements Password {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     /**
      * An MD5 encoded password.
      */
+    @Basic
     private String password;
 
     private MD5Password() {}
@@ -35,7 +34,6 @@ public class MD5Password implements Password {
         setPassword(password);
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -66,15 +64,6 @@ public class MD5Password implements Password {
             throw new UnsupportedOperationException(e);
         }
     }
-
-    private String getPasswordStr() {
-        return password;
-    }
-
-    private void setPasswordStr(String password) {
-        this.password = password;
-    }
-
 
     /**
      * Checks whether a given plain-text password matches this MD5 encoded password.

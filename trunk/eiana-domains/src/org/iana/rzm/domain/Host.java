@@ -24,16 +24,23 @@ public class Host implements TrackedObject {
     /**
      * The name of this host.
      */
+    @Embedded
     private Name name;
     /**
      * The set of IP addresses of this host, either IPv4 and IPv6.
      */
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Host_IPAddresses",
+            inverseJoinColumns = @JoinColumn(name = "IPAddress_objId"))
     private Set<IPAddress> addresses;
     /**
      * The number of domain names delegated to this host.
      */
+    @Basic
     private int numDelegations;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Embedded
     private TrackData trackData = new TrackData();
 
     protected Host() {}
@@ -44,7 +51,6 @@ public class Host implements TrackedObject {
         this.numDelegations = 0;
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -53,7 +59,6 @@ public class Host implements TrackedObject {
         this.objId = objId;
     }
 
-    @Transient
     final public String getName() {
         return name == null ? null : name.getName();
     }
@@ -62,18 +67,6 @@ public class Host implements TrackedObject {
         this.name = new Name(name);
     }
 
-    @Embedded
-    @AttributeOverride(name = "nameStr",
-            column = @Column(name = "name"))
-    protected Name getHostName() {
-        return name;
-    }
-
-    protected void setHostName(Name name) {
-        this.name = name;
-    }
-
-    @Transient
     final public Set<IPAddress> getAddresses() {
         return Collections.unmodifiableSet(this.addresses);
     }
@@ -82,17 +75,6 @@ public class Host implements TrackedObject {
         CheckTool.checkCollectionNull(addresses, "IP addresses");
         this.addresses.clear();
         this.addresses.addAll(addresses);
-    }
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Host_IPAddresses",
-            inverseJoinColumns = @JoinColumn(name = "IPAddress_objId"))
-    protected Set<IPAddress> getHostAddresses() {
-        return addresses;
-    }
-
-    protected void setHostAddresses(Set<IPAddress> addresses) {
-        this.addresses = addresses;
     }
 
     final public void addIPv4Address(IPv4Address addr) {
@@ -127,7 +109,6 @@ public class Host implements TrackedObject {
 
     final void decDelegations() { --numDelegations; }
 
-    @Transient
     final public boolean isShared() { return numDelegations > 1; }
 
     public boolean equals(Object o) {
@@ -153,32 +134,26 @@ public class Host implements TrackedObject {
         return result;
     }
 
-    @Transient
     public Long getId() {
         return trackData.getId();
     }
 
-    @Transient
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
 
-    @Transient
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
-    @Transient
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }
 
-    @Transient
     public String getModifiedBy() {
         return trackData.getModifiedBy();
     }
 
-    @Embedded
     public TrackData getTrackData() {
         return trackData;
     }

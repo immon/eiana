@@ -17,15 +17,25 @@ import java.sql.Timestamp;
 @Entity
 public abstract class User implements TrackedObject {
 
+    @Basic
     private String firstName;
+    @Basic
     private String lastName;
+    @Basic
     private String organization;
+    @Basic
     private String loginName;
+    @Basic
     private String email;
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = MD5Password.class)
+    @JoinColumn(name="Password_objId")
     private Password password;
+    @Basic
     private boolean securID;
     // todo: securid authenticator?, pgp certificate
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Embedded
     private TrackData trackData = new TrackData();
 
     protected User() {
@@ -42,7 +52,6 @@ public abstract class User implements TrackedObject {
         this.securID = securID;
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -99,8 +108,6 @@ public abstract class User implements TrackedObject {
         return this.password.isValid(password);
     }
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = MD5Password.class)
-    @JoinColumn(name="Password_objId")
     public Password getPassword() {
         return password;
     }
@@ -109,7 +116,6 @@ public abstract class User implements TrackedObject {
         this.password = password;
     }
 
-    @Column(name = "securID")
     public boolean isSecurID() {
         return securID;
     }
@@ -149,32 +155,26 @@ public abstract class User implements TrackedObject {
         return result;
     }
 
-    @Transient
     public Long getId() {
         return trackData.getId();
     }
 
-    @Transient
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
 
-    @Transient
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
-    @Transient
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }
 
-    @Transient
     public String getModifiedBy() {
         return trackData.getModifiedBy();
     }
 
-    @Embedded
     public TrackData getTrackData() {
         return trackData;
     }

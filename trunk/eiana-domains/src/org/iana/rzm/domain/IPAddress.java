@@ -13,8 +13,11 @@ public abstract class IPAddress {
 
     public static enum Type { IPv4, IPv6 }
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Basic
     private String address;
+    @Enumerated
     private Type type;
 
     protected IPAddress() {}
@@ -24,27 +27,13 @@ public abstract class IPAddress {
         this.type = type;
     }
 
-    @Transient
     final public boolean isIPv4() { return Type.IPv4 == type; }
 
-    @Transient
     final public boolean isIPv6() { return Type.IPv6 == type; }
 
-    @Transient
     final public Type getType() { return type; }
 
-    @Column(name = "type")
-    protected Type getIPAddressType() { return type; }
-
-    protected void setIPAddressType(Type type) { this.type = type; }
-
-    @Transient
     final public String getAddress() { return address; }
-
-    @Column(name = "address")
-    protected String getIPAddressAddress() { return address; }
-
-    protected void setIPAddressAddress(String address) { this.address = address; }
 
     public static IPAddress createIPAddress(String addr) throws InvalidIPAddressException {
         try {
@@ -62,7 +51,6 @@ public abstract class IPAddress {
         return new IPv6Address(addr);
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }

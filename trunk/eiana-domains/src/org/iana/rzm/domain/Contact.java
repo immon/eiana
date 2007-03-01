@@ -19,13 +19,29 @@ public class Contact implements TrackedObject {
     final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
     final private static List<String> STRING_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<String>());
 
+    @Basic
     private String name;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Contact_Addresses",
+            inverseJoinColumns = @JoinColumn(name = "Address_objId"))
     private List<Address> addresses;
+    @CollectionOfElements
+    @JoinTable(name = "Contact_PhoneNumbers")
+    @Column(name = "phoneNumber", nullable = false)
     private List<String> phoneNumbers;
+    @CollectionOfElements
+    @JoinTable(name = "Contact_FaxNumbers")
+    @Column(name = "faxNumber", nullable = false)
     private List<String> faxNumbers;
+    @CollectionOfElements
+    @JoinTable(name = "Contact_Emails")
+    @Column(name = "email", nullable = false)
     private List<String> emails;
+    @Basic
     private boolean role;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Embedded
     private TrackData trackData = new TrackData();
 
     public Contact() {
@@ -54,7 +70,6 @@ public class Contact implements TrackedObject {
         setRole(role);
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -63,7 +78,6 @@ public class Contact implements TrackedObject {
         this.objId = objId;
     }
 
-    @Transient
     final public String getName() {
         return name;
     }
@@ -72,16 +86,6 @@ public class Contact implements TrackedObject {
         this.name = name;
     }
 
-    @Column(name = "name")
-    protected String getContactName() {
-        return name;
-    }
-
-    protected void setContactName(String name) {
-        this.name = name;
-    }
-
-    @Transient
     final public List<Address> getAddresses() {
         return Collections.unmodifiableList(addresses);
     }
@@ -100,18 +104,6 @@ public class Contact implements TrackedObject {
         return this.addresses.remove(address);
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Contact_Addresses",
-            inverseJoinColumns = @JoinColumn(name = "Address_objId"))
-    protected List<Address> getAddressesList() {
-        return addresses;
-    }
-    
-    protected void setAddressesList(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-
-    @Transient
     final public List<String> getPhoneNumbers() {
         return Collections.unmodifiableList(phoneNumbers);
     }
@@ -130,18 +122,6 @@ public class Contact implements TrackedObject {
         return this.phoneNumbers.remove(phoneNumber);
     }
 
-    @CollectionOfElements
-    @JoinTable(name = "Contact_PhoneNumbers")
-    @Column(name = "phoneNumber", nullable = false)
-    protected List<String> getPhoneNumbersList() {
-        return phoneNumbers;
-    }
-
-    protected void setPhoneNumbersList(List<String> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
-    }
-
-    @Transient
     final public List<String> getFaxNumbers() {
         return Collections.unmodifiableList(faxNumbers);
     }
@@ -160,18 +140,6 @@ public class Contact implements TrackedObject {
         return this.faxNumbers.remove(faxNumber);
     }
 
-    @CollectionOfElements
-    @JoinTable(name = "Contact_FaxNumbers")
-    @Column(name = "faxNumber", nullable = false)
-    protected List<String> getFaxNumbersList() {
-        return faxNumbers;    
-    }
-
-    protected void setFaxNumbersList(List<String> faxNumbers) {
-        this.faxNumbers = faxNumbers; 
-    }
-
-    @Transient
     final public List<String> getEmails() {
         return Collections.unmodifiableList(emails);
     }
@@ -190,31 +158,11 @@ public class Contact implements TrackedObject {
         return this.emails.remove(email);
     }
 
-    @CollectionOfElements
-    @JoinTable(name = "Contact_Emails")
-    @Column(name = "email", nullable = false)
-    protected List<String> getEmailsList() {
-        return emails;
-    }
-
-    protected void setEmailsList(List<String> emails) {
-        this.emails = emails;
-    }
-
-    @Transient
     final public boolean isRole() {
         return role;
     }
 
     final public void setRole(boolean role) {
-        this.role = role;
-    }
-
-    protected boolean isContactRole() {
-        return role;
-    }
-
-    protected void setContactRole(boolean role) {
         this.role = role;
     }
 
@@ -248,32 +196,26 @@ public class Contact implements TrackedObject {
         return result;
     }
 
-    @Transient
     public Long getId() {
         return trackData.getId();
     }
 
-    @Transient
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
 
-    @Transient
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
-    @Transient
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }
 
-    @Transient
     public String getModifiedBy() {
         return trackData.getModifiedBy();
     }
 
-    @Embedded
     public TrackData getTrackData() {
         return trackData;
     }

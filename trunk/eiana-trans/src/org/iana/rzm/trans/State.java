@@ -31,13 +31,19 @@ public class State {
         EXCEPTION
     }
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Enumerated
     private Name name;
+    @Basic
     private Timestamp start;
+    @Basic
     private Timestamp end;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "State_AvailableTransitions",
+            inverseJoinColumns = @JoinColumn(name = "Transition_objId"))
     private Set<Transition> availableTransitions;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getObjId() {
         return objId;
     }
@@ -70,9 +76,6 @@ public class State {
         this.end = end;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "State_AvailableTransitions",
-            inverseJoinColumns = @JoinColumn(name = "Transition_objId"))
     public Set<Transition> getAvailableTransitions() {
         return availableTransitions;
     }
