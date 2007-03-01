@@ -98,7 +98,6 @@ public class Domain implements TrackedObject {
         this.objId = objId;
     }
 
-    @Transient
     final public String getName() {
         return name == null ? null : name.getName();
     }
