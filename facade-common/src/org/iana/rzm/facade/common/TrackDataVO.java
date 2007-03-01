@@ -2,23 +2,12 @@ package org.iana.rzm.facade.common;
 
 import java.sql.Timestamp;
 
-/**
- * @author Patrycja Wegrzynowicz
- */
-public abstract class TrackedObjectVO implements Trackable {
-    private Long id;
+public class TrackDataVO implements Trackable {
+
     private Timestamp created;
     private Timestamp modified;
     private String createdBy;
     private String modifiedBy;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Timestamp getCreated() {
         return created;
