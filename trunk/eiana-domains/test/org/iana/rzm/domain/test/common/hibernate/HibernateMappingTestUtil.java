@@ -1,9 +1,4 @@
-/**
- * org.iana.rzm.domain.test.common.HibernateMappingTestUtil
- * (C) NASK 2006
- * jakubl, 2007-02-28 16:29:20
- */
-package org.iana.rzm.domain.test.common;
+package org.iana.rzm.domain.test.common.hibernate;
 
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;

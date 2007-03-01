@@ -1,9 +1,4 @@
-/**
- * org.iana.rzm.trans.test.common.HibernateMappingTestUtil
- * (C) NASK 2006
- * jakubl, 2007-02-28 16:28:54
- */
-package org.iana.rzm.trans.test.common;
+package org.iana.rzm.trans.test.common.hibernate;
 
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.TrackData;

@@ -1,8 +1,8 @@
-package org.iana.rzm.domain.test.accuracy;
+package org.iana.rzm.domain.test.accuracy.hibernate;
 
 import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.test.common.HibernateMappingUnitTest;
-import org.iana.rzm.domain.test.common.HibernateMappingTestUtil;
+import org.iana.rzm.domain.test.common.hibernate.HibernateMappingUnitTest;
+import org.iana.rzm.domain.test.common.hibernate.HibernateMappingTestUtil;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
