@@ -1,10 +1,10 @@
-package org.iana.rzm.trans.test.accuracy;
+package org.iana.rzm.trans.test.accuracy.hibernate;
 
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.Action;
 import org.iana.rzm.trans.State;
-import org.iana.rzm.trans.test.common.HibernateMappingUnitTest;
-import org.iana.rzm.trans.test.common.HibernateMappingTestUtil;
+import org.iana.rzm.trans.test.common.hibernate.HibernateMappingUnitTest;
+import org.iana.rzm.trans.test.common.hibernate.HibernateMappingTestUtil;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.NameServerAlreadyExistsException;
 import org.iana.rzm.common.exceptions.InvalidNameException;

@@ -1,9 +1,4 @@
-/**
- * org.iana.rzm.user.test.common.HibernateTest
- * (C) NASK 2006
- * jakubl, 2007-02-28 16:22:34
- */
-package org.iana.rzm.user.test.common;
+package org.iana.rzm.user.test.common.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;

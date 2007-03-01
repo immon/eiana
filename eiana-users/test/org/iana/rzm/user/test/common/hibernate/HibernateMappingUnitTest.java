@@ -1,9 +1,4 @@
-/**
- * org.iana.rzm.trans.test.common.HibernateMappingUnitTest
- * (C) NASK 2006
- * jakubl, 2007-02-28 16:25:40
- */
-package org.iana.rzm.trans.test.common;
+package org.iana.rzm.user.test.common.hibernate;
 
 import java.io.Serializable;
 
