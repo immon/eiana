@@ -1,9 +1,15 @@
 package org.iana.rzm.facade.auth;
 
+import java.security.BasicPermission;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface ResourcePermission {
+public abstract class ResourcePermission extends BasicPermission {
 
-    void isGranted(AuthenticatedUser user) throws AccessDeniedException;
+    protected ResourcePermission(String name) {
+        super(name);
+    }
+
+    abstract protected void isGranted(AuthenticatedUser user) throws AccessDeniedException;
 }
