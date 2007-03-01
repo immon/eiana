@@ -31,7 +31,7 @@ public class TransactionHibernateMappingTest extends HibernateMappingUnitTest<Tr
         actions.add(HibernateMappingTestUtil.createAction(Action.Name.CREATE_NEW_TLD));
         actions.add(HibernateMappingTestUtil.createAction(Action.Name.MODIFY_NAMESERVER));
         return HibernateMappingTestUtil.setupTransaction(new Transaction(),
-                "created", actions, getDomain("created"),
+                "created", actions, getDomain("created1"),
                 HibernateMappingTestUtil.createState(State.Name.ADMIN_CLOSE));
     }
 
@@ -40,7 +40,7 @@ public class TransactionHibernateMappingTest extends HibernateMappingUnitTest<Tr
         actions.remove(actions.iterator().next());
         actions.add(HibernateMappingTestUtil.createAction(Action.Name.MODIFY_WHOIS_SERVER));
         return HibernateMappingTestUtil.setupTransaction(o,
-                "changed", actions, getDomain("changed"),
+                "changed", actions, getDomain("changed2"),
                 HibernateMappingTestUtil.createState(State.Name.COMPLETED));
     }
 
