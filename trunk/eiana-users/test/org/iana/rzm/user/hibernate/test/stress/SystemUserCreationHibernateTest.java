@@ -1,7 +1,7 @@
-package org.iana.rzm.user.hibernate.test.stress.hibernate;
+package org.iana.rzm.user.hibernate.test.stress;
 
-import org.iana.rzm.user.hibernate.test.common.hibernate.HibernateOperationStressTest;
-import org.iana.rzm.user.hibernate.test.common.hibernate.HibernateMappingTestUtil;
+import org.iana.rzm.user.hibernate.test.common.HibernateOperationStressTest;
+import org.iana.rzm.user.hibernate.test.common.HibernateMappingTestUtil;
 import org.iana.rzm.user.SystemUser;
 import org.iana.rzm.user.Role;
 import org.testng.annotations.Test;

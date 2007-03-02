@@ -1,4 +1,4 @@
-package org.iana.rzm.user.hibernate.test.common.hibernate;
+package org.iana.rzm.user.hibernate.test.common;
 
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidNameException;
