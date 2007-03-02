@@ -5,7 +5,7 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 /**
  * <p>This interface represents a stateful service intented to be used in a context of an authenticated user.</p>
  * <p>Services that extend this interface should mark other service methods as throwing <code>AccessDeniedException</code>,
- * <code>AuthenticationRequiredException</code>, and <code>CredentialsInvalidatedException</code>.
+ * <code>AuthenticationRequiredException</code>, and <code>UserInvalidatedException</code>.
  *
  * @author Patrycja Wegrzynowicz
  */
