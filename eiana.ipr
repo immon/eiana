@@ -302,7 +302,19 @@
       </value>
     </option>
   </component>
-  <component name="libraryTable" />
+  <component name="libraryTable">
+    <library name="jbpm">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jbpm/jbpm-3.1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jbpm/jbpm-identity-3.1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jbpm/antlr-2.7.5H3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://C:/java/jbpm-3.1.4/src/java.jbpm" />
+      </SOURCES>
+    </library>
+  </component>
   <component name="uidesigner-configuration">
     <option name="INSTRUMENT_CLASSES" value="true" />
     <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
