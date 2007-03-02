@@ -1,13 +1,13 @@
 package org.iana.rzm.facade.system;
 
-import org.iana.rzm.facade.common.TrackedObjectVO;
+import org.iana.rzm.facade.common.TrackDataVO;
 
 /**
  * A simplified version of TransactionVO used with lists of transactions.
  * 
  * @author Patrycja Wegrzynowicz
  */
-public class SimpleTransactionVO extends TrackedObjectVO {
+public class SimpleTransactionVO extends TrackDataVO {
 
     private String name;
     private SimpleDomainVO domain;
