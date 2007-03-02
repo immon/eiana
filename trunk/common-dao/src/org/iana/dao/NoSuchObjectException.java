@@ -17,6 +17,10 @@ public class NoSuchObjectException extends DataAccessException {
         this.id = id;
     }
 
+    public Class getClazz() {
+        return clazz;
+    }
+
     public long getId() {
         return id;
     }
