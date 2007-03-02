@@ -1,7 +1,7 @@
-package org.iana.rzm.trans.hibernate.test.accuracy.hibernate;
+package org.iana.rzm.trans.hibernate.test.accuracy;
 
 import org.iana.rzm.trans.StateTransition;
-import org.iana.rzm.trans.hibernate.test.common.hibernate.HibernateMappingUnitTest;
+import org.iana.rzm.trans.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.hibernate.test.common.hibernate;
+package org.iana.rzm.trans.hibernate.test.common;
 
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.TrackData;

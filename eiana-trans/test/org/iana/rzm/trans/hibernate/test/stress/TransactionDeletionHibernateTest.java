@@ -1,6 +1,6 @@
-package org.iana.rzm.trans.hibernate.test.stress.hibernate;
+package org.iana.rzm.trans.hibernate.test.stress;
 
-import org.iana.rzm.trans.hibernate.test.common.hibernate.HibernateOperationStressTest;
+import org.iana.rzm.trans.hibernate.test.common.HibernateOperationStressTest;
 import org.iana.rzm.trans.Transaction;
 import org.testng.annotations.Test;
 
