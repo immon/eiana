@@ -29,10 +29,10 @@ public class Transaction implements TrackedObject {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Trasaction_Actions",
             inverseJoinColumns = @JoinColumn(name = "Action_objId"))
-    private List<Action> actions;
+    private List<TransactionAction> actions;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "state_objId")
-    private State state;
+    private TransactionState state;
     @Basic
     private Timestamp start;
     @Basic
@@ -82,19 +82,19 @@ public class Transaction implements TrackedObject {
         this.currentDomain = currentDomain;
     }
 
-    public List<Action> getActions() {
+    public List<TransactionAction> getActions() {
         return actions;
     }
 
-    public void setActions(List<Action> actions) {
+    public void setActions(List<TransactionAction> actions) {
         this.actions = actions;
     }
 
-    public State getState() {
+    public TransactionState getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(TransactionState state) {
         this.state = state;
     }
 

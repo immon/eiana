@@ -22,11 +22,6 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
-      <url>jar://$APPLICATION_HOME_DIR$/lib/javaee.jar!/</url>
-    </containerElement>
-    <containerElement type="library" level="module">
-      <attribute name="method" value="0" />
       <attribute name="URI" value="/commons-collections-2.1.1.jar" />
       <url>jar://$MODULE_DIR$/../lib/apache-commons/commons-collections-2.1.1.jar!/</url>
     </containerElement>
@@ -74,6 +69,15 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="/testng-5.5-jdk15.jar" />
       <url>jar://$MODULE_DIR$/../lib/testng/testng-5.5-jdk15.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$APPLICATION_HOME_DIR$/lib/javaee.jar!/</url>
+    </containerElement>
+    <containerElement type="library" name="jbpm" level="project">
+      <attribute name="method" value="2" />
+      <attribute name="URI" value="/" />
     </containerElement>
   </component>
   <component name="ModuleRootManager" />
@@ -132,6 +136,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jbpm" level="project" />
     <orderEntryProperties />
   </component>
   <component name="WLEjbModuleProperties" />

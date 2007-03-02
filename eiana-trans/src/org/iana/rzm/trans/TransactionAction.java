@@ -11,7 +11,7 @@ import java.util.Collections;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Action {
+public class TransactionAction {
 
     public static enum Name {
         CREATE_NEW_TLD,

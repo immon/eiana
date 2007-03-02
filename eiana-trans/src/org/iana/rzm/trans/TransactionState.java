@@ -9,7 +9,7 @@ import java.util.Set;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class State {
+public class TransactionState {
 
     public static enum Name {
         PENDING_CONTACT_CONFIRMATION,
@@ -42,7 +42,7 @@ public class State {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "State_AvailableTransitions",
             inverseJoinColumns = @JoinColumn(name = "Transition_objId"))
-    private Set<Transition> availableTransitions;
+    private Set<StateTransition> availableTransitions;
 
     public Long getObjId() {
         return objId;
@@ -76,11 +76,11 @@ public class State {
         this.end = end;
     }
 
-    public Set<Transition> getAvailableTransitions() {
+    public Set<StateTransition> getAvailableTransitions() {
         return availableTransitions;
     }
 
-    public void setAvailableTransitions(Set<Transition> availableTransitions) {
+    public void setAvailableTransitions(Set<StateTransition> availableTransitions) {
         this.availableTransitions = availableTransitions;
     }
 }
