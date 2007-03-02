@@ -1,13 +1,11 @@
 package org.iana.rzm.trans.test.common.hibernate;
 
-import org.iana.rzm.domain.test.common.hibernate.*;
-
 import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
  */
-public abstract class HibernateOperationStressTest extends org.iana.rzm.domain.test.common.hibernate.HibernateTest {
+public abstract class HibernateOperationStressTest extends org.iana.rzm.domain.hibernate.test.common.HibernateTest {
     abstract protected void operation(Object o) throws Exception;
     abstract protected List getList() throws Exception;
 
