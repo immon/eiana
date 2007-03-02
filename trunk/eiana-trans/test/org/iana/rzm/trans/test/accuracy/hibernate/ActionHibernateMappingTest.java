@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.test.accuracy.hibernate;
 
-import org.iana.rzm.trans.Action;
+import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.test.common.hibernate.HibernateMappingUnitTest;
 import org.iana.rzm.trans.test.common.hibernate.HibernateMappingTestUtil;
 import org.iana.rzm.trans.change.Change;
@@ -15,21 +15,21 @@ import java.util.ArrayList;
 /**
  * @author Jakub Laszkiewicz
  */
-public class ActionHibernateMappingTest extends HibernateMappingUnitTest<Action> {
-    protected Action create() throws Exception {
+public class ActionHibernateMappingTest extends HibernateMappingUnitTest<TransactionAction> {
+    protected TransactionAction create() throws Exception {
         List<Change> change = new ArrayList<Change>();
         change.add(new Modification("1st modification",
                 HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
         change.add(new Modification("2nd modification",
                 HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
-        return HibernateMappingTestUtil.setupAction(new Action(), Action.Name.CREATE_NEW_TLD, change);
+        return HibernateMappingTestUtil.setupAction(new TransactionAction(), TransactionAction.Name.CREATE_NEW_TLD, change);
     }
 
-    protected Action change(Action o) throws Exception {
-        return HibernateMappingTestUtil.setupAction(o, Action.Name.MODIFY_CONTACT, o.getChange());
+    protected TransactionAction change(TransactionAction o) throws Exception {
+        return HibernateMappingTestUtil.setupAction(o, TransactionAction.Name.MODIFY_CONTACT, o.getChange());
     }
 
-    protected Serializable getId(Action o) {
+    protected Serializable getId(TransactionAction o) {
         return o.getObjId();
     }
 

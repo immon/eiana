@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.test.accuracy.hibernate;
 
-import org.iana.rzm.trans.Transition;
+import org.iana.rzm.trans.StateTransition;
 import org.iana.rzm.trans.test.common.hibernate.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 
@@ -9,17 +9,17 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
-public class TransitionHibernateMappingTest extends HibernateMappingUnitTest<Transition> {
-    protected Transition create() throws Exception {
-        return new Transition("created transition");
+public class TransitionHibernateMappingTest extends HibernateMappingUnitTest<StateTransition> {
+    protected StateTransition create() throws Exception {
+        return new StateTransition("created transition");
     }
 
-    protected Transition change(Transition o) throws Exception {
+    protected StateTransition change(StateTransition o) throws Exception {
         o.setName("changed transition");
         return o;
     }
 
-    protected Serializable getId(Transition o) {
+    protected Serializable getId(StateTransition o) {
         return o.getObjId();
     }
 

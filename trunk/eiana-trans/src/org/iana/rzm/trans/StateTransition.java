@@ -7,17 +7,17 @@ import javax.persistence.*;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Transition {
+public class StateTransition {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Basic
     private String name;
 
-    public Transition() {
+    public StateTransition() {
     }
 
-    public Transition(String name) {
+    public StateTransition(String name) {
         this.name = name;
     }
 

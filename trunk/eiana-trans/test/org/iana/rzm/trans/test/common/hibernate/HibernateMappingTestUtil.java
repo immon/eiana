@@ -8,9 +8,9 @@ import org.iana.rzm.trans.change.ModifiedPrimitiveValue;
 import org.iana.rzm.trans.change.ObjectValue;
 import org.iana.rzm.trans.change.Modification;
 import org.iana.rzm.trans.change.Change;
-import org.iana.rzm.trans.State;
-import org.iana.rzm.trans.Transition;
-import org.iana.rzm.trans.Action;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.StateTransition;
+import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.Transaction;
 
 import java.sql.Timestamp;
@@ -109,7 +109,7 @@ public class HibernateMappingTestUtil {
                 HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), prefix));
     }
 
-    public static State setupState(State state, State.Name name, Set<Transition> availTrans) {
+    public static TransactionState setupState(TransactionState state, TransactionState.Name name, Set<StateTransition> availTrans) {
         state.setName(name);
         state.setStart(new Timestamp(System.currentTimeMillis()));
         state.setEnd(new Timestamp(System.currentTimeMillis() + 1000L));
@@ -117,29 +117,29 @@ public class HibernateMappingTestUtil {
         return state;
     }
 
-    public static State createState(State.Name name) {
-        Set<Transition> transitions = new HashSet<Transition>();
-        transitions.add(new Transition("1st transition"));
-        transitions.add(new Transition("2nd transition"));
-        return HibernateMappingTestUtil.setupState(new State(), name, transitions);
+    public static TransactionState createState(TransactionState.Name name) {
+        Set<StateTransition> transitions = new HashSet<StateTransition>();
+        transitions.add(new StateTransition("1st transition"));
+        transitions.add(new StateTransition("2nd transition"));
+        return HibernateMappingTestUtil.setupState(new TransactionState(), name, transitions);
     }
 
-    public static Action setupAction(Action action, Action.Name name, List<Change> change) {
+    public static TransactionAction setupAction(TransactionAction action, TransactionAction.Name name, List<Change> change) {
         action.setName(name);
         action.setChange(change);
         return action;
     }
 
-    public static Action createAction(Action.Name name) {
+    public static TransactionAction createAction(TransactionAction.Name name) {
         List<Change> change = new ArrayList<Change>();
         change.add(new Modification("1st modification",
                 HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
         change.add(new Modification("2nd modification",
                 HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
-        return HibernateMappingTestUtil.setupAction(new Action(), name, change);
+        return HibernateMappingTestUtil.setupAction(new TransactionAction(), name, change);
     }
 
-    public static Transaction setupTransaction(Transaction trans, String prefix, List<Action> actions, Domain domain, State state) {
+    public static Transaction setupTransaction(Transaction trans, String prefix, List<TransactionAction> actions, Domain domain, TransactionState state) {
         trans.setActions(actions);
         trans.setCurrentDomain(domain);
         trans.setName(prefix + " transaction");

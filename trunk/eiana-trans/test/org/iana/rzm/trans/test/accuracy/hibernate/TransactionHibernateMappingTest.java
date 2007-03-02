@@ -1,8 +1,8 @@
 package org.iana.rzm.trans.test.accuracy.hibernate;
 
 import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.Action;
-import org.iana.rzm.trans.State;
+import org.iana.rzm.trans.TransactionAction;
+import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.test.common.hibernate.HibernateMappingUnitTest;
 import org.iana.rzm.trans.test.common.hibernate.HibernateMappingTestUtil;
 import org.iana.rzm.domain.Domain;
@@ -27,21 +27,21 @@ public class TransactionHibernateMappingTest extends HibernateMappingUnitTest<Tr
     }
 
     protected Transaction create() throws Exception {
-        List<Action> actions = new ArrayList<Action>();
-        actions.add(HibernateMappingTestUtil.createAction(Action.Name.CREATE_NEW_TLD));
-        actions.add(HibernateMappingTestUtil.createAction(Action.Name.MODIFY_NAMESERVER));
+        List<TransactionAction> actions = new ArrayList<TransactionAction>();
+        actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.CREATE_NEW_TLD));
+        actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.MODIFY_NAMESERVER));
         return HibernateMappingTestUtil.setupTransaction(new Transaction(),
                 "created", actions, getDomain("created1"),
-                HibernateMappingTestUtil.createState(State.Name.ADMIN_CLOSE));
+                HibernateMappingTestUtil.createState(TransactionState.Name.ADMIN_CLOSE));
     }
 
     protected Transaction change(Transaction o) throws Exception {
-        List<Action> actions = o.getActions();
+        List<TransactionAction> actions = o.getActions();
         actions.remove(actions.iterator().next());
-        actions.add(HibernateMappingTestUtil.createAction(Action.Name.MODIFY_WHOIS_SERVER));
+        actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.MODIFY_WHOIS_SERVER));
         return HibernateMappingTestUtil.setupTransaction(o,
                 "changed", actions, getDomain("changed2"),
-                HibernateMappingTestUtil.createState(State.Name.COMPLETED));
+                HibernateMappingTestUtil.createState(TransactionState.Name.COMPLETED));
     }
 
     protected Serializable getId(Transaction o) {
