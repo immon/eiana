@@ -1,6 +1,8 @@
 package org.iana.rzm.facade.auth;
 
 /**
+ * <p>A super exception of all thrown AuthenticationException.</p>
+ *
  * @author Patrycja Wegrzynowicz
  */
 public class AuthenticationException extends Exception {

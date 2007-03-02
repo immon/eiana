@@ -1,7 +1,7 @@
 package org.iana.rzm.facade.auth;
 
 /**
- * <p>This class holds a user name and provided password in a plain-text form.</p>
+ * <p>This class holds a user name and plain-text password.</p>
  *
  * @author Patrycja Wegrzynowicz
  */

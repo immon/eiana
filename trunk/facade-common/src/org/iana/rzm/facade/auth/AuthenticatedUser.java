@@ -19,6 +19,9 @@ import java.security.Permission;
  */
 public class AuthenticatedUser {
 
+    /**
+     * A user who got authenticated.
+     */
     private UserVO user;
 
     /**
@@ -43,16 +46,16 @@ public class AuthenticatedUser {
      * @throws AuthenticationRequiredException when this user requires to re-authenticate in the system. This exception
      * may be caused by the permission itself (a vulnerable operation that requires re-login) or by a timed-out user
      * session.
-     * @throws CredentialsInvalidatedException
+     * @throws UserInvalidatedException
      */
-    public void checkPermission(Permission permission) throws AccessDeniedException, AuthenticationRequiredException, CredentialsInvalidatedException {
+    public void checkPermission(Permission permission) throws AccessDeniedException, AuthenticationRequiredException {
         // todo
     }
 
     /**
      * Invalidates this user object. After the invalidation happens the object can not be used as a valid
      * authenticated object. Every call to <code>checkPermission</code> will raise a
-     * <code>CredentialsInvalidatedException</code>.
+     * <code>UserInvalidatedException</code>.
      */
     public void invalidate() {
         // todo
