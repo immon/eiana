@@ -1,7 +1,7 @@
-package org.iana.rzm.domain.hibernate.test.stress.hibernate;
+package org.iana.rzm.domain.hibernate.test.stress;
 
-import org.iana.rzm.domain.hibernate.test.common.hibernate.HibernateOperationStressTest;
-import org.iana.rzm.domain.hibernate.test.common.hibernate.HibernateMappingTestUtil;
+import org.iana.rzm.domain.hibernate.test.common.HibernateOperationStressTest;
+import org.iana.rzm.domain.hibernate.test.common.HibernateMappingTestUtil;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Host;
