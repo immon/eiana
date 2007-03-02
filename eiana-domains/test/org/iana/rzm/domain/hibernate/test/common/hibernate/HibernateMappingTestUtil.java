@@ -1,4 +1,4 @@
-package org.iana.rzm.domain.test.common.hibernate;
+package org.iana.rzm.domain.hibernate.test.common.hibernate;
 
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;

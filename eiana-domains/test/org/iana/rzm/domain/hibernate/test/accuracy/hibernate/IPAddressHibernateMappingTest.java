@@ -1,8 +1,8 @@
-package org.iana.rzm.domain.test.accuracy.hibernate;
+package org.iana.rzm.domain.hibernate.test.accuracy.hibernate;
 
 import org.iana.rzm.domain.IPAddress;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.domain.test.common.hibernate.HibernateMappingUnitTest;
+import org.iana.rzm.domain.hibernate.test.common.hibernate.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
