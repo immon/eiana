@@ -1,4 +1,4 @@
-package org.iana.rzm.user.hibernate.test.common.hibernate;
+package org.iana.rzm.user.hibernate.test.common;
 
 import java.io.Serializable;
 

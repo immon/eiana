@@ -1,8 +1,8 @@
-package org.iana.rzm.user.hibernate.test.accuracy.hibernate;
+package org.iana.rzm.user.hibernate.test.accuracy;
 
 import org.iana.rzm.user.Role;
-import org.iana.rzm.user.hibernate.test.common.hibernate.HibernateMappingUnitTest;
-import org.iana.rzm.user.hibernate.test.common.hibernate.HibernateMappingTestUtil;
+import org.iana.rzm.user.hibernate.test.common.HibernateMappingUnitTest;
+import org.iana.rzm.user.hibernate.test.common.HibernateMappingTestUtil;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
