@@ -1,11 +1,15 @@
 package org.iana.rzm.facade.user;
 
+import org.iana.rzm.facade.common.Trackable;
+import org.iana.rzm.facade.common.TrackDataVO;
+
 import java.util.Set;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class UserVO {
+public class UserVO implements Trackable {
 
     private String userName;
     private String firstName;
@@ -13,6 +17,9 @@ public class UserVO {
     private String organization;
     private Set<RoleVO> roles;
 
+    private Long objId;
+    private TrackDataVO trackData;
+    
     public String getUserName() {
         return userName;
     }
@@ -56,5 +63,45 @@ public class UserVO {
 
     public void setRoles(Set<RoleVO> roles) {
         this.roles = roles;
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
+
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    public void setCreated(Timestamp created) {
+        trackData.setCreated(created);
+    }
+
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    public void setModified(Timestamp modified) {
+        trackData.setModified(modified);
+    }
+
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    public void setCreatedBy(String createdBy) {
+        trackData.setCreatedBy(createdBy);
+    }
+
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        trackData.setModifiedBy(modifiedBy);
     }
 }
