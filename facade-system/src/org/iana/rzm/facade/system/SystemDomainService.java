@@ -7,7 +7,7 @@ import org.iana.rzm.facade.common.RZMStatefulService;
 import java.util.List;
 
 /**
- * This is a stateful domain facade service providing the basic operations on domains for the RZM end-users.
+ * <p>This is a stateful domain facade service providing the basic operations on domains for the RZM end-users.</p>
  *
  * @author Patrycja Wegrzynowicz
  */

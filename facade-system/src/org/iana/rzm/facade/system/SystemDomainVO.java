@@ -6,6 +6,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import java.util.List;
 import java.util.Set;
 import java.net.URL;
+import java.sql.Timestamp;
 
 /**
  * This class is used as a wrapper around DomainVO to limit access to domain attributes.
@@ -98,5 +99,21 @@ class SystemDomainVO implements IDomainVO {
 
     public void setState(State state) {
         domain.setState(state);
+    }
+
+    public Timestamp getCreated() {
+        return domain.getCreated();
+    }
+
+    public Timestamp getModified() {
+        return domain.getModified();
+    }
+
+    public String getCreatedBy() {
+        return domain.getCreatedBy();
+    }
+
+    public String getModifiedBy() {
+        return domain.getModifiedBy();
     }
 }

@@ -1,10 +1,12 @@
 package org.iana.rzm.facade.system;
 
 import org.iana.rzm.common.Name;
+import org.iana.rzm.facade.common.TrackDataVO;
 
 import java.util.Set;
 import java.util.List;
 import java.net.URL;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -101,4 +103,5 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO {
     public void setState(State state) {
         this.state = state;
     }
+
 }

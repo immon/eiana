@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.system;
 
-import org.iana.rzm.facade.common.TrackedObjectVO;
+import org.iana.rzm.facade.common.TrackDataVO;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class TransactionVO extends TrackedObjectVO {
+public class TransactionVO extends TrackDataVO {
 
     private Long transactionID;
     private Long rtID;
