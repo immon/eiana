@@ -1,9 +1,9 @@
-package org.iana.rzm.trans.hibernate.test.accuracy.hibernate;
+package org.iana.rzm.trans.hibernate.test.accuracy;
 
 import org.iana.rzm.trans.change.Modification;
 import org.iana.rzm.trans.change.ModifiedPrimitiveValue;
-import org.iana.rzm.trans.hibernate.test.common.hibernate.HibernateMappingTestUtil;
-import org.iana.rzm.trans.hibernate.test.common.hibernate.HibernateMappingUnitTest;
+import org.iana.rzm.trans.hibernate.test.common.HibernateMappingTestUtil;
+import org.iana.rzm.trans.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;

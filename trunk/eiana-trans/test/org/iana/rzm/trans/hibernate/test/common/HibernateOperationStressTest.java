@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.hibernate.test.common.hibernate;
+package org.iana.rzm.trans.hibernate.test.common;
 
 import java.util.List;
 
