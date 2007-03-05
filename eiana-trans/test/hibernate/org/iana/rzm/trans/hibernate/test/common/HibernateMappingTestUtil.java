@@ -1,25 +1,24 @@
 package org.iana.rzm.trans.hibernate.test.common;
 
-import org.iana.rzm.domain.*;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.trans.change.ModifiedPrimitiveValue;
-import org.iana.rzm.trans.change.ObjectValue;
-import org.iana.rzm.trans.change.Modification;
-import org.iana.rzm.trans.change.Change;
-import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.domain.*;
 import org.iana.rzm.trans.StateTransition;
 import org.iana.rzm.trans.TransactionAction;
-import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.change.Change;
+import org.iana.rzm.trans.change.Modification;
+import org.iana.rzm.trans.change.ModifiedPrimitiveValue;
+import org.iana.rzm.trans.change.ObjectValue;
 
-import java.sql.Timestamp;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz
@@ -137,17 +136,5 @@ public class HibernateMappingTestUtil {
         change.add(new Modification("2nd modification",
                 HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
         return HibernateMappingTestUtil.setupAction(new TransactionAction(), name, change);
-    }
-
-    public static Transaction setupTransaction(Transaction trans, String prefix, List<TransactionAction> actions, Domain domain, TransactionState state) {
-        trans.setActions(actions);
-        trans.setCurrentDomain(domain);
-        trans.setName(prefix + " transaction");
-        trans.setRtID(System.currentTimeMillis());
-        trans.setStart(new Timestamp(System.currentTimeMillis()));
-        trans.setEnd(new Timestamp(System.currentTimeMillis() + 1000L));
-        trans.setState(state);
-        trans.setTransactionID(System.currentTimeMillis());
-        return trans;
     }
 }

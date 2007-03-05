@@ -1,14 +1,14 @@
 package org.iana.rzm.trans;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-@Entity
 public class TransactionState {
 
     public static enum Name {
@@ -31,17 +31,10 @@ public class TransactionState {
         EXCEPTION
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
-    @Enumerated
     private Name name;
-    @Basic
     private Timestamp start;
-    @Basic
     private Timestamp end;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "State_AvailableTransitions",
-            inverseJoinColumns = @JoinColumn(name = "Transition_objId"))
     private Set<StateTransition> availableTransitions;
 
     public Long getObjId() {
@@ -60,12 +53,20 @@ public class TransactionState {
         this.name = name;
     }
 
+    public void setName(String name) {
+        this.name = Name.valueOf(name);
+    }
+
     public Timestamp getStart() {
         return start;
     }
 
     public void setStart(Timestamp start) {
         this.start = start;
+    }
+
+    public void setStart(Date start) {
+        this.start = new Timestamp(start.getTime());
     }
 
     public Timestamp getEnd() {
@@ -76,11 +77,21 @@ public class TransactionState {
         this.end = end;
     }
 
+    public void setEnd(Date end) {
+        this.end = new Timestamp(end.getTime());
+    }
+
     public Set<StateTransition> getAvailableTransitions() {
         return availableTransitions;
     }
 
     public void setAvailableTransitions(Set<StateTransition> availableTransitions) {
         this.availableTransitions = availableTransitions;
+    }
+
+    public void addAvailableTransition(StateTransition st) {
+        if (availableTransitions == null)
+            availableTransitions = new HashSet<StateTransition>();
+        availableTransitions.add(st);
     }
 }

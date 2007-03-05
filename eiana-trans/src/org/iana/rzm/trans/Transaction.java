@@ -1,10 +1,13 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.domain.Domain;
+import org.jbpm.graph.def.Node;
+import org.jbpm.graph.def.Transition;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.exe.Token;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,166 +17,106 @@ import java.util.List;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-@Entity
 public class Transaction implements TrackedObject {
+    private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
+    private static final String TRACK_DATA = "TRACK_DATA";
 
-    @Basic
-    private Long transactionID;
-    @Basic
-    private Long rtID;
-    @Basic
-    private String name;
-    @ManyToOne
-    @JoinColumn(name = "currentDomain_objId")
-    private Domain currentDomain;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Trasaction_Actions",
-            inverseJoinColumns = @JoinColumn(name = "Action_objId"))
-    private List<TransactionAction> actions;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "state_objId")
-    private TransactionState state;
-    @Basic
-    private Timestamp start;
-    @Basic
-    private Timestamp end;
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
-    @Embedded
-    private TrackData trackData = new TrackData();
+    private ProcessInstance pi;
 
-    public Long getObjId() {
-        return objId;
+    public Transaction(String name) {
+        pi = JbpmContextFactory.getJbpmContext().newProcessInstance(name);
+        pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
+        pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());
+        //JbpmContextFactory.getJbpmContext().save(pi);
     }
 
-    public void setObjId(Long objId) {
-        this.objId = objId;
+    private TransactionData getTransactionData() {
+        return (TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA);
+    }
+
+    private TrackData getTrackData() {
+        return (TrackData) pi.getContextInstance().getVariable(TRACK_DATA);
     }
 
     public Long getTransactionID() {
-        return transactionID;
+        return pi.getId();
     }
 
-    public void setTransactionID(Long transactionID) {
-        this.transactionID = transactionID;
+    public Long getTicketID() {
+        return getTransactionData().getTicketID();
     }
 
-    public Long getRtID() {
-        return rtID;
-    }
-
-    public void setRtID(Long rtID) {
-        this.rtID = rtID;
+    public void setTicketID(Long ticketID) {
+        getTransactionData().setTicketID(ticketID);
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return pi.getProcessDefinition().getName();
     }
 
     public Domain getCurrentDomain() {
-        return currentDomain;
+        return getTransactionData().getCurrentDomain();
     }
 
     public void setCurrentDomain(Domain currentDomain) {
-        this.currentDomain = currentDomain;
+        getTransactionData().setCurrentDomain(currentDomain);
     }
 
     public List<TransactionAction> getActions() {
-        return actions;
+        return getTransactionData().getActions();
     }
 
     public void setActions(List<TransactionAction> actions) {
-        this.actions = actions;
+        getTransactionData().setActions(actions);
     }
 
     public TransactionState getState() {
-        return state;
-    }
-
-    public void setState(TransactionState state) {
-        this.state = state;
+        Token token = pi.getRootToken();
+        Node node = token.getNode();
+        TransactionState ts = new TransactionState();
+        ts.setName(node.getName());
+        ts.setStart(token.getStart());
+        ts.setEnd(token.getEnd());
+        for(Object o : node.getLeavingTransitions()) {
+            Transition transition = (Transition) o;
+            ts.addAvailableTransition(new StateTransition(transition.getName()));
+        }
+        return ts;
     }
 
     public Timestamp getStart() {
-        return start;
+        return new Timestamp(pi.getStart().getTime());
     }
 
     public void setStart(Timestamp start) {
-        this.start = start;
+        pi.setStart(start);
     }
 
     public Timestamp getEnd() {
-        return end;
+        return new Timestamp(pi.getEnd().getTime());
     }
 
     public void setEnd(Timestamp end) {
-        this.end = end;
+        pi.setEnd(end);
     }
 
     public Long getId() {
-        return trackData.getId();
+        return getTrackData().getId();
     }
 
     public Timestamp getCreated() {
-        return trackData.getCreated();
+        return getTrackData().getCreated();
     }
 
     public Timestamp getModified() {
-        return trackData.getModified();
+        return getTrackData().getModified();
     }
 
     public String getCreatedBy() {
-        return trackData.getCreatedBy();
+        return getTrackData().getCreatedBy();
     }
 
     public String getModifiedBy() {
-        return trackData.getModifiedBy();
-    }
-
-    public TrackData getTrackData() {
-        return trackData;
-    }
-
-    public void setTrackData(TrackData trackData) {
-        this.trackData = trackData;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Transaction that = (Transaction) o;
-
-        if (actions != null ? !actions.equals(that.actions) : that.actions != null) return false;
-        if (currentDomain != null ? !currentDomain.equals(that.currentDomain) : that.currentDomain != null)
-            return false;
-        if (end != null ? !end.equals(that.end) : that.end != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (rtID != null ? !rtID.equals(that.rtID) : that.rtID != null) return false;
-        if (start != null ? !start.equals(that.start) : that.start != null) return false;
-        if (state != null ? !state.equals(that.state) : that.state != null) return false;
-        if (trackData != null ? !trackData.equals(that.trackData) : that.trackData != null) return false;
-        if (transactionID != null ? !transactionID.equals(that.transactionID) : that.transactionID != null)
-            return false;
-
-        return true;
-    }
-
-    public int hashCode() {
-        int result;
-        result = (transactionID != null ? transactionID.hashCode() : 0);
-        result = 31 * result + (rtID != null ? rtID.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (currentDomain != null ? currentDomain.hashCode() : 0);
-        result = 31 * result + (actions != null ? actions.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (start != null ? start.hashCode() : 0);
-        result = 31 * result + (end != null ? end.hashCode() : 0);
-        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
-        return result;
+        return getTrackData().getModifiedBy();
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface TransactionManager {
 
-    void get(long id) throws TransactionException;
+    Transaction get(long id) throws TransactionException;
 
     List<Transaction> create(Domain domain) throws TransactionException;
 
