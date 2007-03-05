@@ -7,9 +7,11 @@ import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
+import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Collection;
 
 /**
  * This class represents a domain modification transaction.
@@ -118,5 +120,26 @@ public class Transaction implements TrackedObject {
 
     public String getModifiedBy() {
         return getTrackData().getModifiedBy();
+    }
+
+    public synchronized void accept() {
+        TaskInstance ti = getTaskInstance();
+        Node n = ti.getToken().getNode();
+        if (n.getDefaultLeavingTransition() != null)
+            ti.end();
+        else
+            ti.end(StateTransition.ACCEPT);
+    }
+
+    public synchronized void reject() {
+        TaskInstance ti = getTaskInstance();
+        Node n = ti.getToken().getNode();
+        ti.end(StateTransition.REJECT);
+    }
+
+    private TaskInstance getTaskInstance() {
+        Collection<TaskInstance> tic = pi.getTaskMgmtInstance().getTaskInstances();
+        if (tic == null && tic.size() == 0) throw new IllegalStateException("no task instances found for " + getTransactionID());
+        return tic.iterator().next();
     }
 }
