@@ -29,9 +29,11 @@ public class TransactionCreationHibernateTest extends HibernateOperationStressTe
         List<TransactionAction> actions = new ArrayList<TransactionAction>();
         actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.CREATE_NEW_TLD));
         actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.MODIFY_NAMESERVER));
+        /*
         session.save(HibernateMappingTestUtil.setupTransaction(new Transaction(),
                 "" + o, actions, getDomain("created-" + o),
                 HibernateMappingTestUtil.createState(TransactionState.Name.ADMIN_CLOSE)));
+        */
     }
 
     protected List getList() throws Exception {

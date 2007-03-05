@@ -8,8 +8,11 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Embeddable
+@Entity
 public class TrackData {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long objId;
     @Basic
     private Long id;
     @Basic
@@ -28,6 +31,14 @@ public class TrackData {
     public TrackData(long id) {
         this();
         this.id = id;
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     final public Long getId() {
