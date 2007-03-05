@@ -8,6 +8,9 @@ import javax.persistence.*;
  */
 public class StateTransition {
 
+    public static final String ACCEPT = "ok";
+    public static final String REJECT = "reject";
+    
     private String name;
 
     public StateTransition(String name) {

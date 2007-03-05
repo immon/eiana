@@ -5,15 +5,29 @@ import org.iana.rzm.domain.Domain;
 import java.util.List;
 
 /**
+ * This interface represents a service for retrieval and creation of domain modification transactions.
+ *
  * @author Patrycja Wegrzynowicz
  */
 public interface TransactionManager {
 
-    Transaction get(long id) throws TransactionException;
+    /**
+     * Returns a transaction with a given id.
+     *
+     * @param id the identifier of the transaction to be found
+     * @return the found transaction
+     * @throws TransactionException
+     */
+    Transaction get(long id) throws NoSuchTransactionException;
 
-    List<Transaction> create(Domain domain) throws TransactionException;
+    /**
+     * Creates a new transaction based on a
+     * @param domain
+     * @return
+     */
+    Transaction create(Domain domain);
 
-    List<Transaction> findAll() throws TransactionException;
+    List<Transaction> findAll();
 
-    List<Transaction> find(TransactionCriteria criteria) throws TransactionException;
+    List<Transaction> find(TransactionCriteria criteria);
 }
