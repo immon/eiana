@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <!-- dao configuration -->
+
+    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.domain.dao.DomainDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="domainDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="domainDAOTarget" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <!-- database hibernate configuration -->
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property name="url">
+            <value>jdbc:mysql://localhost/eiana</value>
+        </property>
+        <property name="username">
+            <value>root</value>
+        </property>
+        <property name="password">
+            <value>1q2w3e</value>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+        <property name="configLocation">
+            <value>hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <!-- transactional properties -->
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="transactionAttribute"
+          class="org.springframework.transaction.interceptor.DefaultTransactionAttribute">
+        <property name="propagationBehaviorName">
+            <value>PROPAGATION_REQUIRED</value>
+        </property>
+        <property name="isolationLevelName">
+            <value>ISOLATION_READ_COMMITTED</value>
+        </property>
+    </bean>
+
+    <bean id="transactionAttributeSource"
+          class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+        <property name="transactionAttribute">
+            <ref bean="transactionAttribute"/>
+        </property>
+    </bean>
+</beans>
