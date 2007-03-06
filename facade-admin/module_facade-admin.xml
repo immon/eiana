@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_facade-admin" default="compile.module.facade-admin">
+  <dirname property="module.facade-admin.basedir" file="${ant.file.module_facade-admin}"/>
+  
+  
+  <property name="compiler.args.facade-admin" value="${compiler.args}"/>
+  
+  <property name="facade-admin.output.dir" value="${module.facade-admin.basedir}/../classes/production/facade-admin"/>
+  <property name="facade-admin.testoutput.dir" value="${module.facade-admin.basedir}/../classes/test/facade-admin"/>
+  
+  <path id="facade-admin.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="facade-admin.module.classpath">
+    <pathelement location="${module.facade-admin.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${facade-common.output.dir}"/>
+    <pathelement location="${facade-common.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.facade-admin">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.facade-admin">
+    <patternset refid="excluded.from.module.facade-admin"/>
+  </patternset>
+  
+  <path id="facade-admin.module.sourcepath">
+    <dirset dir="${module.facade-admin.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.facade-admin" depends="compile.module.facade-admin.production,compile.module.facade-admin.tests" description="Compile module facade-admin"/>
+  
+  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common" description="Compile module facade-admin; production classes">
+    <mkdir dir="${facade-admin.output.dir}"/>
+    <javac destdir="${facade-admin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-admin}"/>
+      <bootclasspath refid="facade-admin.module.bootclasspath"/>
+      <classpath refid="facade-admin.module.classpath"/>
+      <src refid="facade-admin.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-admin"/>
+    </javac>
+    
+    <copy todir="${facade-admin.output.dir}">
+      <fileset dir="${module.facade-admin.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.facade-admin.tests" depends="compile.module.facade-admin.production" description="compile module facade-admin; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.facade-admin" description="cleanup module">
+    <delete dir="${facade-admin.output.dir}"/>
+    <delete dir="${facade-admin.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-users" default="compile.module.eiana-users">
+  <dirname property="module.eiana-users.basedir" file="${ant.file.module_eiana-users}"/>
+  
+  
+  <property name="compiler.args.eiana-users" value="${compiler.args}"/>
+  
+  <property name="eiana-users.output.dir" value="${module.eiana-users.basedir}/../classes/production/eiana-users"/>
+  <property name="eiana-users.testoutput.dir" value="${module.eiana-users.basedir}/../classes/test/eiana-users"/>
+  
+  <path id="eiana-users.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-users.module.classpath">
+    <pathelement location="${module.eiana-users.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/hibernate-tools.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/hibernate3.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/testng/testng-5.5-jdk15.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/dom4j/dom4j-1.6.1.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/apache-commons/commons-collections-2.1.1.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/mysql/mysql-connector-java-5.0.4-bin.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/cglib-2.1.3.jar"/>
+    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/asm.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-users">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-users">
+    <patternset refid="excluded.from.module.eiana-users"/>
+  </patternset>
+  
+  <path id="eiana-users.module.sourcepath">
+    <dirset dir="${module.eiana-users.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="eiana-users.module.test.sourcepath">
+    <dirset dir="${module.eiana-users.basedir}">
+      <include name="test/hibernate"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-users" depends="compile.module.eiana-users.production,compile.module.eiana-users.tests" description="Compile module eiana-users"/>
+  
+  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util" description="Compile module eiana-users; production classes">
+    <mkdir dir="${eiana-users.output.dir}"/>
+    <javac destdir="${eiana-users.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-users}"/>
+      <bootclasspath refid="eiana-users.module.bootclasspath"/>
+      <classpath refid="eiana-users.module.classpath"/>
+      <src refid="eiana-users.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-users"/>
+    </javac>
+    
+    <copy todir="${eiana-users.output.dir}">
+      <fileset dir="${module.eiana-users.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-users.tests" depends="compile.module.eiana-users.production" description="compile module eiana-users; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-users.testoutput.dir}"/>
+    <javac destdir="${eiana-users.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-users}"/>
+      <classpath refid="eiana-users.module.classpath"/>
+      <classpath location="${eiana-users.output.dir}"/>
+      <src refid="eiana-users.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-users"/>
+    </javac>
+    
+    <copy todir="${eiana-users.testoutput.dir}">
+      <fileset dir="${module.eiana-users.basedir}/test/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.eiana-users" description="cleanup module">
+    <delete dir="${eiana-users.output.dir}"/>
+    <delete dir="${eiana-users.testoutput.dir}"/>
+  </target>
+</project>

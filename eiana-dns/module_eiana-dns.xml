@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-dns" default="compile.module.eiana-dns">
+  <dirname property="module.eiana-dns.basedir" file="${ant.file.module_eiana-dns}"/>
+  
+  
+  <property name="compiler.args.eiana-dns" value="${compiler.args}"/>
+  
+  <property name="eiana-dns.output.dir" value="${module.eiana-dns.basedir}/../classes/production/eiana-dns"/>
+  <property name="eiana-dns.testoutput.dir" value="${module.eiana-dns.basedir}/../classes/test/eiana-dns"/>
+  
+  <path id="eiana-dns.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-dns.module.classpath"/>
+  
+  
+  <patternset id="excluded.from.module.eiana-dns">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-dns">
+    <patternset refid="excluded.from.module.eiana-dns"/>
+  </patternset>
+  
+  <path id="eiana-dns.module.sourcepath">
+    <dirset dir="${module.eiana-dns.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-dns" depends="compile.module.eiana-dns.production,compile.module.eiana-dns.tests" description="Compile module eiana-dns"/>
+  
+  <target name="compile.module.eiana-dns.production" description="Compile module eiana-dns; production classes">
+    <mkdir dir="${eiana-dns.output.dir}"/>
+    <javac destdir="${eiana-dns.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-dns}"/>
+      <bootclasspath refid="eiana-dns.module.bootclasspath"/>
+      <classpath refid="eiana-dns.module.classpath"/>
+      <src refid="eiana-dns.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-dns"/>
+    </javac>
+    
+    <copy todir="${eiana-dns.output.dir}">
+      <fileset dir="${module.eiana-dns.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-dns.tests" depends="compile.module.eiana-dns.production" description="compile module eiana-dns; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.eiana-dns" description="cleanup module">
+    <delete dir="${eiana-dns.output.dir}"/>
+    <delete dir="${eiana-dns.testoutput.dir}"/>
+  </target>
+</project>

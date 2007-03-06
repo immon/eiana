@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-logs" default="compile.module.eiana-logs">
+  <dirname property="module.eiana-logs.basedir" file="${ant.file.module_eiana-logs}"/>
+  
+  
+  <property name="compiler.args.eiana-logs" value="${compiler.args}"/>
+  
+  <property name="eiana-logs.output.dir" value="${module.eiana-logs.basedir}/../classes/production/eiana-logs"/>
+  <property name="eiana-logs.testoutput.dir" value="${module.eiana-logs.basedir}/../classes/test/eiana-logs"/>
+  
+  <path id="eiana-logs.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-logs.module.classpath">
+    <pathelement location="${module.eiana-logs.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-logs">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-logs">
+    <patternset refid="excluded.from.module.eiana-logs"/>
+  </patternset>
+  
+  <path id="eiana-logs.module.sourcepath">
+    <dirset dir="${module.eiana-logs.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-logs" depends="compile.module.eiana-logs.production,compile.module.eiana-logs.tests" description="Compile module eiana-logs"/>
+  
+  <target name="compile.module.eiana-logs.production" description="Compile module eiana-logs; production classes">
+    <mkdir dir="${eiana-logs.output.dir}"/>
+    <javac destdir="${eiana-logs.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-logs}"/>
+      <bootclasspath refid="eiana-logs.module.bootclasspath"/>
+      <classpath refid="eiana-logs.module.classpath"/>
+      <src refid="eiana-logs.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-logs"/>
+    </javac>
+    
+    <copy todir="${eiana-logs.output.dir}">
+      <fileset dir="${module.eiana-logs.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-logs.tests" depends="compile.module.eiana-logs.production" description="compile module eiana-logs; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.eiana-logs" description="cleanup module">
+    <delete dir="${eiana-logs.output.dir}"/>
+    <delete dir="${eiana-logs.testoutput.dir}"/>
+  </target>
+</project>
