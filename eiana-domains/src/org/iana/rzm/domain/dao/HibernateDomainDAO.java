@@ -20,11 +20,8 @@ public class HibernateDomainDAO extends HibernateDaoSupport implements DomainDAO
     }
 
     public Domain get(String name) {
-        System.out.println("name = " + name);
         Iterator<Domain> it = getHibernateTemplate().iterate("from Domain d where d.name.name = ?", name);
-        Domain ret = it == null || !it.hasNext() ? null : it.next();
-        System.out.println("retrieved = " + ret.getName());
-        return ret;
+        return it == null || !it.hasNext() ? null : it.next();
     }
 
     public void create(final Domain domain) {
