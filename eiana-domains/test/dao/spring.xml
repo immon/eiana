@@ -6,7 +6,7 @@
 
     <!-- dao configuration -->
 
-    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean  id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.domain.dao.DomainDAO</value>
