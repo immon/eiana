@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_facade-system" default="compile.module.facade-system">
+  <dirname property="module.facade-system.basedir" file="${ant.file.module_facade-system}"/>
+  
+  
+  <property name="compiler.args.facade-system" value="${compiler.args}"/>
+  
+  <property name="facade-system.output.dir" value="${module.facade-system.basedir}/../classes/production/facade-system"/>
+  <property name="facade-system.testoutput.dir" value="${module.facade-system.basedir}/../classes/test/facade-system"/>
+  
+  <path id="facade-system.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="facade-system.module.classpath">
+    <pathelement location="${module.facade-system.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <pathelement location="${facade-common.output.dir}"/>
+    <pathelement location="${facade-common.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.facade-system">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.facade-system">
+    <patternset refid="excluded.from.module.facade-system"/>
+  </patternset>
+  
+  <path id="facade-system.module.sourcepath">
+    <dirset dir="${module.facade-system.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.facade-system" depends="compile.module.facade-system.production,compile.module.facade-system.tests" description="Compile module facade-system"/>
+  
+  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common" description="Compile module facade-system; production classes">
+    <mkdir dir="${facade-system.output.dir}"/>
+    <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-system}"/>
+      <bootclasspath refid="facade-system.module.bootclasspath"/>
+      <classpath refid="facade-system.module.classpath"/>
+      <src refid="facade-system.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-system"/>
+    </javac>
+    
+    <copy todir="${facade-system.output.dir}">
+      <fileset dir="${module.facade-system.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.facade-system.tests" depends="compile.module.facade-system.production" description="compile module facade-system; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.facade-system" description="cleanup module">
+    <delete dir="${facade-system.output.dir}"/>
+    <delete dir="${facade-system.testoutput.dir}"/>
+  </target>
+</project>
