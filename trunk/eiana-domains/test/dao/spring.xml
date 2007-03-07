@@ -31,7 +31,7 @@
 
     <!-- database hibernate configuration -->
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+   <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName">
             <value>com.mysql.jdbc.Driver</value>
         </property>
@@ -44,12 +44,12 @@
         <property name="password">
             <value>1q2w3e</value>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource">
+        <!--<property name="dataSource">
             <ref bean="dataSource"/>
-        </property>
+        </property>-->
         <property name="configLocation">
             <value>hibernate.cfg.xml</value>
         </property>
