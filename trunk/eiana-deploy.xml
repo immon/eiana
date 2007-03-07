@@ -2,11 +2,13 @@
 <project name="eiana-deploy" default="all">
 
     <import file="eiana.xml"/>
+    <import file="task-defs.xml"/>
 
     <property environment="env"/>
 
+    <property name="test.raport.output" location="raports"/>
     <property name="lib.dir" location="lib"/>
-    <property name="output.dir" value="assembly"/>
+    <property name="output.dir" value="dist"/>
     <property name="jar.output.dir" value="${output.dir}/jar"/>
     <property name="war.output.dir" value="${output.dir}/war"/>
     <property name="config.dir" value="conf"/>
@@ -16,25 +18,8 @@
             depends="init, compile.module.eiana-domains, compile.module.eiana-util"
             description="build all"/>
 
-    <target name="tasks.define">
-        <path id="hibernatetool.classpath">
-            <fileset dir="${lib.dir}/hibernate">
-                <include name="**/*.jar"/>
-            </fileset>
-            <fileset dir="${lib.dir}/apache-commons">
-                <include name="**/*.jar"/>
-            </fileset>
-            <path location="${lib.dir}/dom4j/dom4j-1.6.1.jar"/>
-            <path location="${lib.dir}/javaee.jar"/>
-            <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
-        </path>
-        <taskdef name="hibernatetool"
-                 classname="org.hibernate.tool.ant.HibernateToolTask"
-                 classpathref="hibernatetool.classpath"/>
-    </target>
-
     <target name="database.create"
-            depends="tasks.define, compile.module.eiana-domains, compile.module.eiana-util,
+            depends="compile.module.eiana-domains, compile.module.eiana-util,
             compile.module.eiana-users, compile.module.eiana-trans">
         <hibernatetool destdir="${hibernate.dir}">
             <classpath>
@@ -51,6 +36,114 @@
             </annotationconfiguration>
             <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
         </hibernatetool>
+    </target>
+
+    <target name="all.jar" depends="all.compile">
+        <mkdir dir="${jar.output.dir}"/>
+
+        <jar destfile="${jar.output.dir}/eiana-dns.jar">
+            <fileset dir="${eiana-dns.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-domains.jar">
+            <fileset dir="${eiana-domains.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-logs.jar">
+            <fileset dir="${eiana-logs.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-notifications.jar">
+            <fileset dir="${eiana-notifications.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-trans.jar">
+            <fileset dir="${eiana-trans.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-users.jar">
+            <fileset dir="${eiana-users.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-util.jar">
+            <fileset dir="${eiana-util.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/facade-admin.jar">
+            <fileset dir="${facade-admin.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/facade-common.jar">
+            <fileset dir="${facade-common.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/facade-system.jar">
+            <fileset dir="${facade-system.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/integration-rt.jar">
+            <fileset dir="${integration-rt.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/integration-securid.jar">
+            <fileset dir="${integration-securid.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/config.jar">
+            <fileset dir="${config.dir}/hibernate"/>
+            <fileset dir="${config.dir}/spring"/>
+        </jar>
+    </target>
+
+    <target name="test.eiana-domains" depends="compile.module.eiana-domains">
+        <mkdir dir="${test.raport.output}"/>
+        <path id="eiana-domains.test-ng.classpath">
+            <path location="${eiana-domains.testoutput.dir}"/>
+            <path location="${eiana-domains.output.dir}"/>
+            <path refid="eiana-domains.module.classpath"/>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+            </fileset>
+        </path>
+        <testng classpathref="eiana-domains.test-ng.classpath"
+                outputDir="${test.raport.output}"
+                haltOnFailure="false" verbose="9">
+            <classfileset dir="${eiana-domains.testoutput.dir}" includes="**/*.class" excludes="**/stress/*"/>
+        </testng>
+    </target>
+
+    <target name="test.eiana-trans" depends="compile.module.eiana-trans">
+        <mkdir dir="${test.raport.output}"/>
+        <path id="eiana-trans.test-ng.classpath">
+            <path location="${eiana-trans.testoutput.dir}"/>
+            <path location="${eiana-trans.output.dir}"/>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+            </fileset>
+            <path refid="eiana-trans.module.classpath"/>
+
+        </path>
+        <testng classpathref="eiana-trans.test-ng.classpath"
+                outputDir="${test.raport.output}"
+                haltOnFailure="false" verbose="9">
+            <classfileset dir="${eiana-trans.testoutput.dir}" includes="**/*.class" excludes="**/stress/*"/>
+        </testng>
+    </target>
+
+    <target name="test.eiana-users" depends="compile.module.eiana-users">
+        <mkdir dir="${test.raport.output}"/>
+        <path id="eiana-users.test-ng.classpath">
+            <path location="${eiana-users.testoutput.dir}"/>
+            <path location="${eiana-users.output.dir}"/>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+            </fileset>
+            <path refid="eiana-users.module.classpath"/>
+
+        </path>
+        <testng classpathref="eiana-users.test-ng.classpath"
+                outputDir="${test.raport.output}"
+                haltOnFailure="false" verbose="9">
+            <classfileset dir="${eiana-users.testoutput.dir}" includes="**/*.class" excludes="**/stress/*"/>
+        </testng>
+    </target>
+
+    <target name="test.all" depends="test.eiana-domains,test.eiana-trans,test.eiana-users"/>
+
+    <target name="all.war" depends="all.jar">
+        <mkdir dir="${war.output.dir}"/>
+        <war destfile="${war.output.dir}/eiana.war" webxml="${module.conf.basedir}/WEB-INF/web.xml">             
+            <lib dir="${jar.output.dir}" includes="*.jar"/>
+            <lib dir="${lib.dir}"/>
+        </war>
     </target>
 
 </project>
