@@ -5,16 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
-
-<!--
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost/eiana"/>
-        <property name="username" value="root"/>
-        <property name="password" value="1q2w3e"/>
-    </bean>
--->
-
+    <!-- database hibernate configuration -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
         <property name="configLocation">
@@ -38,20 +29,18 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
             <value>ISOLATION_READ_COMMITTED</value>
         </property>
     </bean>
-    
-    <bean id="transactionAttributeSource"
+
+    <bean id="daoTransactionAttributeSource"
           class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
         <property name="transactionAttribute">
             <ref bean="transactionAttribute"/>
         </property>
     </bean>
-
-    <bean id="someOneOfOurServices" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <!-- dao conf -->
+    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
-                <value>
-                    org.iana.someOneOfOurServices
-                </value>
+                <value>org.iana.rzm.domain.dao.DomainDAO</value>
             </list>
         </property>
         <property name="target">
@@ -61,9 +50,25 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
             <ref bean="transactionManager"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref name="transactionAttributeSource"/>
+            <ref name="daoTransactionAttributeSource"/>
         </property>
     </bean>
 
+    <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.user.dao.UserDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="userDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="daoTransactionAttributeSource"/>
+        </property>
+    </bean>    
 
 </beans>
