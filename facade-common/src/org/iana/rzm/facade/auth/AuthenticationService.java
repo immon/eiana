@@ -1,8 +1,5 @@
 package org.iana.rzm.facade.auth;
 
-import javax.mail.AuthenticationFailedException;
-
-
 /**
  * <p>This interface defines an authentication operation available to the UI-tier. It constitues a common
  * interface for all the authentication mechanisms and thus allows to define a system-wide authentication policy
