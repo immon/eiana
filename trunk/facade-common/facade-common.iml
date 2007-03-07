@@ -17,6 +17,10 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jbpm" level="project" />
+    <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="module" module-name="eiana-util" />
+    <orderEntry type="library" name="log4j" level="project" />
     <orderEntryProperties />
   </component>
 </module>
