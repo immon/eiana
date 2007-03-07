@@ -4,10 +4,12 @@ import org.iana.rzm.facade.common.Trackable;
 import org.iana.rzm.facade.common.TrackDataVO;
 
 import java.util.Set;
+import java.util.HashSet;
 import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Marcin Zajaczkowski
  */
 public class UserVO implements Trackable {
 
@@ -18,7 +20,7 @@ public class UserVO implements Trackable {
     private Set<RoleVO> roles;
 
     private Long objId;
-    private TrackDataVO trackData;
+    private TrackDataVO trackData = new TrackDataVO();
     
     public String getUserName() {
         return userName;
@@ -63,6 +65,13 @@ public class UserVO implements Trackable {
 
     public void setRoles(Set<RoleVO> roles) {
         this.roles = roles;
+    }
+
+    public void addRole(RoleVO role) {
+        if (this.roles == null) {
+            this.roles = new HashSet<RoleVO>();
+        }
+        this.roles.add(role);
     }
 
     public Long getObjId() {
