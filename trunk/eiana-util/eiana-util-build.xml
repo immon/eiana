@@ -4,31 +4,11 @@
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
   <property name="compiler.max.memory" value="128m"/>
-  <patternset id="ignored.files">
-    <exclude name="**/CVS/**"/>
-    <exclude name="**/SCCS/**"/>
-    <exclude name="**/RCS/**"/>
-    <exclude name="**/rcs/**"/>
-    <exclude name="**/.DS_Store/**"/>
-    <exclude name="**/.svn/**"/>
-    <exclude name="**/vssver.scc/**"/>
-    <exclude name="**/vssver2.scc/**"/>
-    <exclude name="**/.sbas/**"/>
-    <exclude name="**/.IJI.*/**"/>
-  </patternset>
-  <patternset id="compiler.resources">
-    <include name="**/?*.properties"/>
-    <include name="**/?*.xml"/>
-    <include name="**/?*.gif"/>
-    <include name="**/?*.png"/>
-    <include name="**/?*.jpeg"/>
-    <include name="**/?*.jpg"/>
-    <include name="**/?*.html"/>
-    <include name="**/?*.dtd"/>
-    <include name="**/?*.tld"/>
-  </patternset>
 
+  <import file="/../task-defs.xml"/>
   <import file="module_eiana-util.xml"/>
+
+  <property name="testng.report.dir" location="raports"/>
 
 
   <target name="init" description="Build initialization">
@@ -44,4 +24,18 @@
           <fileset dir="${eiana-util.output.dir}"/>
       </jar>
   </target>
+
+
+  <target name="prepare">
+      <mkdir dir="${testng.report.dir}"/>
+  </target>
+
+  <target name="test.run" depends="prepare,compile">
+      <testng classpathref="run.cp"
+		outputDir="${testng.report.dir}"
+		haltOnFailure="true"M verbose="2">
+	<classfileset dir="${test.build.dir}" includes="**/*.class" />
+    </testng>
+  </target>
+
 </project>
