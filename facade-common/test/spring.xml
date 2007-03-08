@@ -7,14 +7,13 @@
     <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
 
         <constructor-arg ref="userManager"/>
-        <property name="authenticatorMap">
+        <constructor-arg>
             <map>
                 <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
                 <entry key="org.iana.rzm.facade.auth.SecurIDAuth" value-ref="securIDAuthenticator"/>
             </map>
-        </property>
+        </constructor-arg>
 
-        <!--<property name="manager" ref="userManager"/>-->
     </bean>
 
     <bean id="passwordAuthenticator" class="org.iana.rzm.facade.auth.PasswordAuthenticator"/>
