@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author Jakub Laszkiewicz
  */
 public class ContactHibernateMappingTest extends HibernateMappingUnitTest<Contact> {
+
     protected Contact create() {
         return HibernateMappingTestUtil.setupContact(new Contact(), "created", true);
     }

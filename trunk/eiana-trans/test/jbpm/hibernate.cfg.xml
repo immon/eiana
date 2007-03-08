@@ -6,8 +6,8 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost/eiana</property>
-        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/eianatestng</property>
+        <property name="hibernate.connection.username">testng</property>
         <property name="hibernate.connection.password">1q2w3e</property>
         <property name="connection.pool_size">2</property>
         <property name="cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>

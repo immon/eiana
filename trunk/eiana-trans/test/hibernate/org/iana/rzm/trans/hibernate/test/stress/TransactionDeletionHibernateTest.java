@@ -18,7 +18,7 @@ public class TransactionDeletionHibernateTest extends HibernateOperationStressTe
         return session.createCriteria(Transaction.class).list();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-trans","stress"})
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }

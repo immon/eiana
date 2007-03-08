@@ -26,17 +26,17 @@ public class SystemUserCreationHibernateTest extends HibernateOperationStressTes
         return result;
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-users","stress"})
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-users","stress"})
     public void manyTransactions() throws Exception {
         super.manyTransactions();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-users","stress"})
     public void manySessions() throws Exception {
         super.manySessions();
     }
