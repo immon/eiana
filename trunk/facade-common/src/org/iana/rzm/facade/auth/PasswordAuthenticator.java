@@ -3,7 +3,6 @@ package org.iana.rzm.facade.auth;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserException;
-import org.iana.rzm.user.UserManagerFactory;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.user.converter.ConverterException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -24,19 +23,27 @@ public class PasswordAuthenticator implements Authenticator {
         CheckTool.checkNull(data, "AuthenticationData");
         CheckTool.checkNull(manager, "UserManager");
 
+        if (!(data instanceof PasswordAuth)) {
+            throw new IllegalArgumentException("Wrong type of AuthenticationData: " + data.getClass().getName());
+        }
+
+        PasswordAuth passData = (PasswordAuth)data;
+
         try {
-            RZMUser user = manager.get(data.getUserName());
+            RZMUser user = manager.get(passData.getUserName());
 
             if (user == null) {
                 throw new AuthenticationFailedException(
                         MessageFormat.format("User {0} has not been found.", data.getUserName()));
             }
 
-            AuthenticatedUser authenticatedUser = new AuthenticatedUser(UserConverter.convert(user));
+            if (!user.isValidPassword(passData.getPassword())) {
+                throw new AuthenticationFailedException("Password is not valid.");
+            }
 
-//        todo authenticatedUser.checkPermission(); or something
-
-            return authenticatedUser;
+            //todo Add securID
+            
+            return new AuthenticatedUser(UserConverter.convert(user));
 
         } catch (UserException e) {
             throw new AuthenticationException(e);
