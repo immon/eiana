@@ -47,11 +47,8 @@
     </bean>-->
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <!--<property name="dataSource">
-            <ref bean="dataSource"/>
-        </property>-->
         <property name="configLocation">
-            <value>hibernate.cfg.xml</value>
+            <value>eiana-domains-hibernate.cfg.xml</value>
         </property>
     </bean>
 
