@@ -50,7 +50,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
             <ref bean="transactionManager"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref name="daoTransactionAttributeSource"/>
+            <ref bean="daoTransactionAttributeSource"/>
         </property>
     </bean>
 
