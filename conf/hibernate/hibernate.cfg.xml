@@ -7,7 +7,7 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost/eiana</property>
-        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.username">eiana</property>
         <property name="hibernate.connection.password">1q2w3e</property>
         <property name="connection.pool_size">2</property>
         <property name="cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
@@ -33,7 +33,7 @@
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>
         <mapping class="org.iana.rzm.user.SystemUser"/>
-        <mapping class="org.iana.rzm.user.User"/>
+        <mapping class="org.iana.rzm.user.RZMUser"/>
 
         <mapping class="org.iana.rzm.trans.TransactionAction"/>
         <mapping class="org.iana.rzm.trans.TransactionState"/>

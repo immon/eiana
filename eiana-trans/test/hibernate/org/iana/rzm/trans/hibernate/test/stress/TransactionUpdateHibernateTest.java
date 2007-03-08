@@ -40,7 +40,7 @@ public class TransactionUpdateHibernateTest extends HibernateOperationStressTest
         return session.createCriteria(Transaction.class).list();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-trans","stress"})
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }

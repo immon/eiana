@@ -42,17 +42,17 @@ public class TransactionCreationHibernateTest extends HibernateOperationStressTe
         return result;
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-trans","stress"})
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-trans","stress"})
     public void manyTransactions() throws Exception {
         super.manyTransactions();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-trans","stress"})
     public void manySessions() throws Exception {
         super.manySessions();
     }

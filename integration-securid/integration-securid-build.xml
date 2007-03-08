@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="integration-securid" default="compile">
+
+  <import file="/../task-defs.xml"/>
+
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
@@ -44,4 +47,5 @@
           <fileset dir="${integration-securid.output.dir}"/>
       </jar>
   </target>
+
 </project>

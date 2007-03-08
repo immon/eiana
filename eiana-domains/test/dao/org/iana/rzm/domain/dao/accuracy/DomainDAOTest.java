@@ -25,7 +25,7 @@ public class DomainDAOTest {
     public void testCreate() throws Exception {
         Domain domainCreated = new Domain("iana.org");
         dao.create(domainCreated);
-        Domain domainRetrieved = dao.get(domainCreated.getId());
+        Domain domainRetrieved = dao.get(domainCreated.getObjId());
         System.out.println("domainRetrieved: " + domainRetrieved.getName());
         assert "iana.org".equals(domainRetrieved.getName());
     }
@@ -38,18 +38,18 @@ public class DomainDAOTest {
     public void testDelete() throws Exception {
     }
 
-    public static void main(String[] args) {
-        InputStream resource = new DomainDAOTest().getClass().getClassLoader().getResourceAsStream("spring.xml");
-        BufferedReader in = new BufferedReader(new InputStreamReader(resource));
-        String line;
-        try {
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);    
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("resource = " + resource);
-        ClassPathXmlApplicationContext context  = new ClassPathXmlApplicationContext("spring.xml");
-    }
+//    public static void main(String[] args) {
+//        InputStream resource = new DomainDAOTest().getClass().getClassLoader().getResourceAsStream("spring.xml");
+//        BufferedReader in = new BufferedReader(new InputStreamReader(resource));
+//        String line;
+//        try {
+//            while ((line = in.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println("resource = " + resource);
+//        ClassPathXmlApplicationContext context  = new ClassPathXmlApplicationContext("spring.xml");
+//    }
 }

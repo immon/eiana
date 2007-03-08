@@ -23,7 +23,7 @@ public class SystemUserUpdateHibernateTest extends HibernateOperationStressTest 
         return session.createCriteria(SystemUser.class).list();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-users","stress"})
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }

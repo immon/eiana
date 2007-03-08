@@ -38,7 +38,7 @@ public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
         return session.createCriteria(Domain.class).list();
     }
 
-    @Test
+    @Test(groups = {"hibernate", "eiana-domains","stress"})
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }
