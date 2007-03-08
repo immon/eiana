@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_tests" default="compile.module.tests">
+  <dirname property="module.tests.basedir" file="${ant.file.module_tests}"/>
+  
+  
+  <property name="compiler.args.tests" value="${compiler.args}"/>
+  
+  <property name="tests.output.dir" value="${module.tests.basedir}/../classes/production/tests"/>
+  <property name="tests.testoutput.dir" value="${module.tests.basedir}/../classes/test/tests"/>
+  
+  <path id="tests.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tests.module.classpath"/>
+  
+  
+  <patternset id="excluded.from.module.tests">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tests">
+    <patternset refid="excluded.from.module.tests"/>
+  </patternset>
+  
+  
+  <target name="compile.module.tests" depends="compile.module.tests.production,compile.module.tests.tests" description="Compile module tests"/>
+  
+  <target name="compile.module.tests.production" description="Compile module tests; production classes"/>
+  
+  <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tests" description="cleanup module">
+    <delete dir="${tests.output.dir}"/>
+    <delete dir="${tests.testoutput.dir}"/>
+  </target>
+</project>
