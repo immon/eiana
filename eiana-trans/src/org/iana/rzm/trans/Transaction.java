@@ -2,6 +2,7 @@ package org.iana.rzm.trans;
 
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
@@ -25,11 +26,16 @@ public class Transaction implements TrackedObject {
 
     private ProcessInstance pi;
 
-    public Transaction(String name) {
-        pi = JbpmContextFactory.getJbpmContext().newProcessInstance(name);
+    Transaction(String processName) {
+        pi = JbpmContextFactory.getJbpmContext().newProcessInstance(processName);
         pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
         pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());
         //JbpmContextFactory.getJbpmContext().save(pi);
+    }
+
+    Transaction(ProcessInstance pi) {
+        CheckTool.checkNull(pi, "process instance");
+        this.pi = pi;
     }
 
     private TransactionData getTransactionData() {
