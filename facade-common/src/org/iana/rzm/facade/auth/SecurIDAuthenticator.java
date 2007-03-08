@@ -2,9 +2,7 @@ package org.iana.rzm.facade.auth;
 
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.UserException;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.user.converter.ConverterException;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.securid.SecurIDService;
 import org.iana.securid.InvalidAuthenticationDataException;
