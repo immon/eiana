@@ -6,7 +6,7 @@
 
     <property environment="env"/>
 
-    <property name="test.raport.output" location="raports"/>
+    <property name="test.report.output" location="reports"/>
     <property name="lib.dir" location="lib"/>
     <property name="output.dir" value="dist"/>
     <property name="jar.output.dir" value="${output.dir}/jar"/>
@@ -14,10 +14,14 @@
     <property name="config.dir" value="conf"/>
     <property name="hibernate.dir" value="${config.dir}/hibernate"/>
 
-    <target name="all.compile"
-            depends="init, compile.module.eiana-domains, compile.module.eiana-util"
-            description="build all"/>
+    <!--creating database structure
+     Before preforming "database.create" target, you have to create "eiana" database instance.
+     To do create that instance you should execute these sql commands on your mysql database.
+     You can use the standard mysql account "root" with empty password ("mysql -u root -p").
 
+     CREATE DATABASE eiana;
+     GRANT ALL PRIVILEGES ON *.* TO 'eiana'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
+    -->
     <target name="database.create"
             depends="compile.module.eiana-domains, compile.module.eiana-util,
             compile.module.eiana-users, compile.module.eiana-trans">
@@ -38,7 +42,25 @@
         </hibernatetool>
     </target>
 
-    <target name="all.jar" depends="all.compile">
+    <!--creating test database
+     To create test database instance "eianatest", you have to execute these sql commands on your mysql database.
+     You can use the standard mysql account "root" with empty password ("mysql -u root -p").
+
+     CREATE DATABASE eianatest;
+     GRANT ALL PRIVILEGES ON *.* TO 'testng'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
+
+     -->
+    <!-- compiling, packeging & testing targets-->
+
+    <target name="all.compile"
+            depends="init, compile.module.eiana-dns,compile.module.eiana-domains,
+             compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,
+             compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,
+             compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
+             compile.module.integration-securid"
+            description="build all"/>
+
+    <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
         <mkdir dir="${jar.output.dir}"/>
 
         <jar destfile="${jar.output.dir}/eiana-dns.jar">
@@ -83,67 +105,59 @@
         </jar>
     </target>
 
-    <target name="test.eiana-domains" depends="compile.module.eiana-domains">
-        <mkdir dir="${test.raport.output}"/>
-        <path id="eiana-domains.test-ng.classpath">
-            <path location="${eiana-domains.testoutput.dir}"/>
-            <path location="${eiana-domains.output.dir}"/>
-            <path refid="eiana-domains.module.classpath"/>
-            <fileset dir="${lib.dir}">
-                <include name="**/*jar"/>
-            </fileset>
-        </path>
-        <testng classpathref="eiana-domains.test-ng.classpath"
-                outputDir="${test.raport.output}"
-                haltOnFailure="false" verbose="9">
-            <classfileset dir="${eiana-domains.testoutput.dir}" includes="**/*.class" excludes="**/stress/*"/>
-        </testng>
-    </target>
-
-    <target name="test.eiana-trans" depends="compile.module.eiana-trans">
-        <mkdir dir="${test.raport.output}"/>
-        <path id="eiana-trans.test-ng.classpath">
-            <path location="${eiana-trans.testoutput.dir}"/>
-            <path location="${eiana-trans.output.dir}"/>
-            <fileset dir="${lib.dir}">
-                <include name="**/*jar"/>
-            </fileset>
-            <path refid="eiana-trans.module.classpath"/>
-
-        </path>
-        <testng classpathref="eiana-trans.test-ng.classpath"
-                outputDir="${test.raport.output}"
-                haltOnFailure="false" verbose="9">
-            <classfileset dir="${eiana-trans.testoutput.dir}" includes="**/*.class" excludes="**/stress/*"/>
-        </testng>
-    </target>
-
-    <target name="test.eiana-users" depends="compile.module.eiana-users">
-        <mkdir dir="${test.raport.output}"/>
-        <path id="eiana-users.test-ng.classpath">
-            <path location="${eiana-users.testoutput.dir}"/>
-            <path location="${eiana-users.output.dir}"/>
-            <fileset dir="${lib.dir}">
-                <include name="**/*jar"/>
-            </fileset>
-            <path refid="eiana-users.module.classpath"/>
-
-        </path>
-        <testng classpathref="eiana-users.test-ng.classpath"
-                outputDir="${test.raport.output}"
-                haltOnFailure="false" verbose="9">
-            <classfileset dir="${eiana-users.testoutput.dir}" includes="**/*.class" excludes="**/stress/*"/>
-        </testng>
-    </target>
-
-    <target name="test.all" depends="test.eiana-domains,test.eiana-trans,test.eiana-users"/>
-
-    <target name="all.war" depends="all.jar">
+    <target name="all.war" depends="all.jar" description="makes war archive">
         <mkdir dir="${war.output.dir}"/>
-        <war destfile="${war.output.dir}/eiana.war" webxml="${module.conf.basedir}/WEB-INF/web.xml">             
+        <war destfile="${war.output.dir}/eiana.war" webxml="${module.conf.basedir}/WEB-INF/web.xml">
             <lib dir="${jar.output.dir}" includes="*.jar"/>
-            <lib dir="${lib.dir}"/>
+            <lib dir="${lib.dir}" includes="**/*.jar" excludes="**/*javaee*.jar,**/*j2ee*.jar,**/*testng*.jar"/>
         </war>
+    </target>
+
+<!-- runs all test from group that is equal to property value ${test.group}
+     and excludes all tests from group that is equal toproperty value ${test.group.excluded}.
+     You can put many groups into one property, separated by spaces or commas.
+     Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
+     -->
+     <target name="all.test" depends="clean,all.compile" description="runs all test from groups that is equal to property value (test.group)
+     and excludes all tests from groups that is equal to property value (test.group.excluded).">
+         <condition property="test.group.excluded" value="">
+             <not><isset property="test.group.excluded"/></not>
+         </condition>
+         <condition property="test.group" value="">
+             <not><isset property="test.group"/></not>
+         </condition>         
+         <mkdir dir="${test.report.output}"/>
+        <path id="eiana.test-ng.classpath">
+            <dirset dir="${basedir}/classes">
+                <include name="test/*"/>
+                <include name="production/*"/>
+            </dirset>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+            </fileset>
+        </path>
+         <echo>
+             test inluded = ${test.group}
+             test excluded = ${test.group.excluded}
+         </echo>
+
+        <testng classpathref="eiana.test-ng.classpath"
+                outputDir="${test.report.output}"
+                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}">
+            <classfileset dir="${basedir}/classes/test" />
+        </testng>
+    </target>
+
+    <target name="all.test.fast" description="runs fast tests (exclude e.g. stress tests)">
+        <property name="test.group.excluded" value="stress"/>
+        <antcall target="all.test"/>
+    </target>
+
+    <target name="all.test.slow" description="runs slow tests (include e.g. stress tests)
+    WARNING: Those tests can take a lot of time.
+    If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">
+        <property name="test.group.excluded" value="stress"/>
+        <antcall target="all.test"/>
     </target>
 
 </project>
