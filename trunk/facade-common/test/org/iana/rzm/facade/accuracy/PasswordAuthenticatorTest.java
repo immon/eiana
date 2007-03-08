@@ -25,13 +25,6 @@ public class PasswordAuthenticatorTest {
     @BeforeClass
     public void init() {
         authService = (AuthenticationService) new ClassPathXmlApplicationContext("spring.xml").getBean("authenticationServiceBean");
-
-/*
-        manager = (UserManager) new ClassPathXmlApplicationContext("spring.xml").getBean("userManager");
-        AuthenticatorMapObject authenticatorMapObject = (AuthenticatorMapObject) new ClassPathXmlApplicationContext("spring.xml").getBean("authenticatorMapObject");
-        authenticatorMap = authenticatorMapObject.getAuthenticatorsMap();
-        assert authenticatorMap != null;
-*/
     }
 
     @Test
@@ -43,6 +36,6 @@ public class PasswordAuthenticatorTest {
         assert authenticatedUser != null;
         assert "facade-common-test-adminuser-first-name".equals(authenticatedUser.getFirstName());
         assert "facade-common-test-adminuser-last-name".equals(authenticatedUser.getLastName());
-        //todo
+        //todo Add more tests
     }
 }
