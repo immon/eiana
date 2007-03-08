@@ -11,6 +11,10 @@ public class AuthenticationRequiredException extends AuthenticationException {
     private AuthenticationToken token;
     private Authentication required;
 
+    public AuthenticationRequiredException(Authentication required) {
+        this.required = required;
+    }
+
     public AuthenticationRequiredException(AuthenticationToken token, Authentication required) {
         this.token = token;
         this.required = required;

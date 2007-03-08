@@ -6,6 +6,8 @@ import org.iana.rzm.user.UserException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.user.converter.ConverterException;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.securid.SecurIDService;
+import org.iana.securid.InvalidAuthenticationDataException;
 
 import java.text.MessageFormat;
 
@@ -13,39 +15,41 @@ import java.text.MessageFormat;
  * org.iana.rzm.facade.auth.SecurIDAuthenticator
  *
  * @author Marcin Zajaczkowski
+ * @author Patrycja Wegrzynowicz
  */
-public class SecurIDAuthenticator implements Authenticator {
+public class SecurIDAuthenticator implements AuthenticationService {
 
-    //todo token should be also passed
-    public AuthenticatedUser authenticate(AuthenticationData data, UserManager manager) throws AuthenticationException {
+    private UserManager manager;
+    private SecurIDService securID;
 
-        CheckTool.checkNull(data, "AuthenticationData");
-        CheckTool.checkNull(manager, "UserManager");
+    public SecurIDAuthenticator(UserManager manager, SecurIDService securID) {
+        CheckTool.checkNull(manager, "user manager");
+        CheckTool.checkNull(securID, "securID service");
+        this.manager = manager;
+        this.securID = securID;
+    }
 
-        //get from our config, has to be valid,
+    public AuthenticatedUser authenticate(AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
+        CheckTool.checkNull(data, "authentication data");
+        throw new AuthenticationRequiredException(Authentication.PASSWORD);
+    }
+
+    public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
+        CheckTool.checkNull(data, "authentication token");
+        CheckTool.checkNull(data, "authentication data");
+        if (!token.hasCredential(Authentication.PASSWORD)) throw new AuthenticationRequiredException(Authentication.PASSWORD);
+
         SecurIDAuth securData = (SecurIDAuth)data;
-
+        RZMUser user = manager.get(securData.getUserName());
+        if (user == null) {
+            throw new AuthenticationFailedException(
+                    MessageFormat.format("User {0} has not been found.", data.getUserName()));
+        }
         try {
-            RZMUser user = manager.get(securData.getUserName());
-
-            if (user == null) {
-                throw new AuthenticationFailedException(
-                        MessageFormat.format("User {0} has not been found.", data.getUserName()));
-            }
-
-            if (!user.isValidPassword(securData.getPassword())) {
-                throw new AuthenticationFailedException("Password is not valid.");
-            }
-
-            //todo Add token verification and securID password
-
+            securID.authenticate(securData.getUserName(), securData.getPassword());
             return new AuthenticatedUser(UserConverter.convert(user));
-
-        } catch (UserException e) {
-            throw new AuthenticationException(e);
-
-        } catch (ConverterException e) {
-            throw new AuthenticationException(e);
+        } catch (InvalidAuthenticationDataException e) {
+            throw new AuthenticationFailedException(e);
         }
     }
 }

@@ -3,7 +3,7 @@ package org.iana.rzm.facade.auth;
 import java.security.BasicPermission;
 
 /**
- * <p>This class represents a permission that it's resolved based on a resource and user context. For example,
+ * <p>This class represents a permission resolved based on a resource and user context. For example,
  * a user can be granted to modify only his/her own profile.</p>
  *
  * @author Patrycja Wegrzynowicz

@@ -18,53 +18,26 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
     private final Logger loger = Logger.getLogger(getClass());
 
-    private Map<String, Authenticator> authenticatorMap;
-    private UserManager manager;
+    private Map<String, AuthenticationService> authenticators;
 
-    public AuthenticationServiceBean(Map<String, Authenticator> authenticatorMap, UserManager manager) {
-        CheckTool.checkNull(authenticatorMap, "authenticatorMap is null");
-        CheckTool.checkNull(manager, "manager is null");
-        this.authenticatorMap = authenticatorMap;
-        this.manager = manager;
-    }
-
-    public Map<String, Authenticator> getAuthenticatorMap() {
-        return Collections.unmodifiableMap(authenticatorMap);
-    }
-
-    public UserManager getManager() {
-        return manager;
+    public AuthenticationServiceBean(Map<String, AuthenticationService> authenticators) {
+        CheckTool.checkNull(authenticators, "authenticators");
+        this.authenticators = authenticators;
     }
 
     public AuthenticatedUser authenticate(AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
-
-        //maybe some runtime exception?
-        if (data == null) throw new AuthenticationFailedException("AuthenticationData is null.");
-
-        try {
-            return getAuthneticator(data).authenticate(data, manager);
-
-        } catch (AuthenticationException e) {
-            throw new AuthenticationFailedException(e);
-        }
+        CheckTool.checkNull(data, "authentication data");
+        return getAuthenticator(data).authenticate(data);
     }
 
     public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
-        throw new IllegalStateException("Not implemented yet.");
+        CheckTool.checkNull(data, "authentication data");
+        return getAuthenticator(data).authenticate(token, data);
     }
 
-    /**
-     *
-     * @param data
-     * @return
-     * @throws AuthenticationInternalException No Authenticator was found for given AuthenticationData
-     */
-    private Authenticator getAuthneticator(AuthenticationData data) throws AuthenticationInternalException {
-
-        Authenticator authenticator = authenticatorMap.get(data.getClass().getName());
-        if (authenticator == null) throw new AuthenticationInternalException(MessageFormat.format(
-                        "Unable to create Authenticator. No Authenticator configured for {0}", data.getClass().getName()));
-
+    private AuthenticationService getAuthenticator(AuthenticationData data) {
+        AuthenticationService authenticator = authenticators.get(data.getClass().getName());
+        CheckTool.checkNull(authenticator, "authenticator for authentication data " + data.getClass());
         return authenticator;
     }
 }
