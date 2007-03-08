@@ -30,7 +30,7 @@ public class PasswordAuthenticatorTest {
     @Test
     public void testAuthenticate() throws Exception {
 
-        PasswordAuth passwordAuth = new PasswordAuth("facade-common-test-adminuser", "engine");
+        PasswordAuth passwordAuth = new PasswordAuth("facade-common-test-adminuser", "facade-common-test-adminuser-password");
 
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
         assert authenticatedUser != null;
