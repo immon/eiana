@@ -5,6 +5,7 @@ import org.iana.rzm.user.AdminUser;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.AdminRoleVO;
+import org.iana.rzm.common.validators.CheckTool;
 
 /**
  * org.iana.rzm.facade.user.converter.RoleConverter
@@ -47,6 +48,8 @@ class RoleConverter {
     }
 
     static RoleVO convertAdminRole(AdminUser admin) {
+
+        CheckTool.checkNull(admin.getType(), "admin type");
 
         RoleVO adminRoleVO = new AdminRoleVO();
 

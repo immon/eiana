@@ -2,6 +2,7 @@ package org.iana.rzm.facade.user;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Marcin Zajaczkowski
  */
 public class AdminRoleVO extends RoleVO {
 
@@ -9,6 +10,14 @@ public class AdminRoleVO extends RoleVO {
         IANA,
         GOV_OVERSIGHT,
         ZONE_PUBLISHER
+    }
+
+
+    public AdminRoleVO() {
+    }
+
+    public AdminRoleVO(AdminType type) {
+        super(type);
     }
 
     public AdminType getType() {
