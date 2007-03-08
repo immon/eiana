@@ -26,6 +26,6 @@
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>
         <mapping class="org.iana.rzm.user.SystemUser"/>
-        <mapping class="org.iana.rzm.user.User"/>
+        <mapping class="org.iana.rzm.user.RZMUser"/>
     </session-factory>
 </hibernate-configuration>
