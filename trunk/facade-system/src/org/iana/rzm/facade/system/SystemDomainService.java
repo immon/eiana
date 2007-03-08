@@ -41,5 +41,5 @@ public interface SystemDomainService extends RZMStatefulService {
      * @throws AccessDeniedException when the user is not allowed to access this method
      * @throws InfrastructureException when a low-level exception happened
      */
-    List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException;
+    List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException;
 }
