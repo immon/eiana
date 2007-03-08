@@ -21,7 +21,7 @@ public class UserDAOTest {
 
     @BeforeClass
     public void init() {
-        dao = (UserDAO) new ClassPathXmlApplicationContext("spring.xml").getBean("userDAO");
+        dao = (UserDAO) new ClassPathXmlApplicationContext("eiana-users-spring.xml").getBean("userDAO");
     }
 
     @Test

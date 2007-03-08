@@ -6,7 +6,7 @@
 
     <!-- dao configuration -->
 
-    <bean  id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.user.dao.UserDAO</value>
@@ -32,28 +32,9 @@
 
     <!-- database hibernate configuration -->
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName">
-            <value>com.mysql.jdbc.Driver</value>
-        </property>
-        <property name="url">
-            <value>jdbc:mysql://localhost/eiana</value>
-        </property>
-        <property name="username">
-            <!-- todo change on all systems to eiana user -->
-            <value>root</value>
-        </property>
-        <property name="password">
-            <value>1q2w3e</value>
-        </property>
-    </bean>
-
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource">
-            <ref bean="dataSource"/>
-        </property>
         <property name="configLocation">
-            <value>hibernate.cfg.xml</value>
+            <value>eiana-users-hibernate.cfg.xml</value>
         </property>
     </bean>
 
