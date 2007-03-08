@@ -8,7 +8,7 @@ import java.util.Set;
 import java.security.Permission;
 
 /**
- * <p> This class represents an authenticated user of the system i.e. an individual who provided valid credentials
+ * <p>This class represents an authenticated user of the system i.e. an individual who provided valid credentials
  * and got identified by the system.</p>
  *
  * <p>Note that to obtain an <code>AuthenticatedUser</code> instance <code>AuthenticationService</code>

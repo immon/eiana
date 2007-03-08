@@ -13,43 +13,38 @@ import java.text.MessageFormat;
  * org.iana.rzm.facade.auth.PasswordAuthenticator
  *
  * @author Marcin Zajaczkowski
- *
- * todo Probably could have common superclass with SecurIDAuth
+ * @author Patrycja Wegrzynowicz
  */
-public class PasswordAuthenticator implements Authenticator {
+public class PasswordAuthenticator implements AuthenticationService {
 
-    public AuthenticatedUser authenticate(AuthenticationData data, UserManager manager) throws AuthenticationException {
+    private UserManager manager;
 
+    public PasswordAuthenticator(UserManager manager) {
+        CheckTool.checkNull(manager, "user manager");
+        this.manager = manager;
+    }
+
+    public AuthenticatedUser authenticate(AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
         CheckTool.checkNull(data, "AuthenticationData");
         CheckTool.checkNull(manager, "UserManager");
 
-        //get from our config, has to be valid,
         PasswordAuth passData = (PasswordAuth)data;
-
-        try {
-            RZMUser user = manager.get(passData.getUserName());
-
-            if (user == null) {
-                throw new AuthenticationFailedException(
-                        MessageFormat.format("User {0} has not been found.", data.getUserName()));
-            }
-
-            if (!user.isValidPassword(passData.getPassword())) {
-                throw new AuthenticationFailedException("Password is not valid.");
-            }
-
-            if (user.isSecurID()) {
-                AuthenticationToken token = new AuthenticationToken(data.getUserName(), Authentication.PASSWORD);
-                throw new AuthenticationRequiredException(token, Authentication.SECURID);
-            }
-
-            return new AuthenticatedUser(UserConverter.convert(user));
-
-        } catch (UserException e) {
-            throw new AuthenticationException(e);
-
-        } catch (ConverterException e) {
-            throw new AuthenticationException(e);
+        RZMUser user = manager.get(passData.getUserName());
+        if (user == null) {
+            throw new AuthenticationFailedException(
+                    MessageFormat.format("User {0} has not been found.", data.getUserName()));
         }
+        if (!user.isValidPassword(passData.getPassword())) {
+            throw new AuthenticationFailedException("Password is not valid.");
+        }
+        if (user.isSecurID()) {
+            AuthenticationToken token = new AuthenticationToken(data.getUserName(), Authentication.PASSWORD);
+            throw new AuthenticationRequiredException(token, Authentication.SECURID);
+        }
+        return new AuthenticatedUser(UserConverter.convert(user));
+    }
+
+    public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
+        throw new AuthenticationRequiredException(Authentication.SECURID);
     }
 }
