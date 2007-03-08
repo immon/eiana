@@ -15,7 +15,7 @@ import java.util.Collections;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class SystemUser extends User {
+public class SystemUser extends RZMUser {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "SytstemUser_Roles",

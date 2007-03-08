@@ -1,9 +1,7 @@
 package org.iana.rzm.user.dao;
 
-import org.iana.rzm.user.User;
+import org.iana.rzm.user.RZMUser;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
-import java.util.Iterator;
 
 /**
  * org.iana.rzm.user.dao.HibernateUserDAO
@@ -20,19 +18,19 @@ import java.util.Iterator;
  */
 public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
 
-    public User get(long id) {
-        return (User) getHibernateTemplate().get(User.class, id);
+    public RZMUser get(long id) {
+        return (RZMUser) getHibernateTemplate().get(RZMUser.class, id);
     }
 
-    public void create(User user) {
+    public void create(RZMUser user) {
         getHibernateTemplate().save(user);
     }
 
-    public void update(User user) {
+    public void update(RZMUser user) {
         getHibernateTemplate().update(user);
     }
 
-    public void delete(User user) {
+    public void delete(RZMUser user) {
         getHibernateTemplate().delete(user);
     }
 }
