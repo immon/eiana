@@ -15,6 +15,7 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Entity
+@Table (name="User")
 public abstract class RZMUser implements TrackedObject {
 
     @Basic
