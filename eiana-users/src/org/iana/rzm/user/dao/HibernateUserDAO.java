@@ -22,6 +22,11 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
         return (RZMUser) getHibernateTemplate().get(RZMUser.class, id);
     }
 
+    public RZMUser get(String loginName) {
+        //todo Write proper HQL
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
     public void create(RZMUser user) {
         getHibernateTemplate().save(user);
     }
