@@ -23,12 +23,41 @@ public class PasswordAuthenticatorTest {
     @Test
     public void testAuthenticate() throws Exception {
 
-        PasswordAuth passwordAuth = new PasswordAuth("facade-common-test-adminuser", "facade-common-test-adminuser-password");
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
 
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
         assert authenticatedUser != null;
-        assert "facade-common-test-adminuser-first-name".equals(authenticatedUser.getFirstName());
-        assert "facade-common-test-adminuser-last-name".equals(authenticatedUser.getLastName());
-        //todo Add more tests
+        assert TestUserManager.ADMIN_FIRST_NAME_VALID.equals(authenticatedUser.getFirstName());
+        assert TestUserManager.ADMIN_LAST_NAME_VALID.equals(authenticatedUser.getLastName());
+    }
+    
+    @Test
+    //could be moved to failure package
+    public void testAuthenticateNoUser() throws Exception {
+
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.NON_EXIST_LOGIN, "foo");
+
+        try {
+            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+
+        } catch(AuthenticationFailedException e) {
+            return;
+        }
+        assert false;
+    }
+
+    @Test
+    //could be moved to failure package
+    public void testAuthenticateWrongPassword() throws Exception {
+
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.WRONG_PASSWORD_LOGIN, TestUserManager.WRONG_PASSWORD_PASSWORD);
+
+        try {
+            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+
+        } catch(AuthenticationFailedException e) {
+            return;
+        }
+        assert false;
     }
 }
