@@ -6,8 +6,8 @@ import org.jbpm.JbpmConfiguration;
 /**
  * @author Jakub Laszkiewicz
  */
-class JbpmContextFactory {
+ class JbpmContextFactory {
     public static JbpmContext getJbpmContext() {
-        return JbpmConfiguration.getInstance().createJbpmContext();
+        return JbpmConfiguration.getInstance("jbpm-config.xml").createJbpmContext();
     }
 }

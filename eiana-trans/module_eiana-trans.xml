@@ -23,6 +23,9 @@
     <pathelement location="${module.eiana-trans.basedir}/../lib/hibernate/hibernate-tools.jar"/>
     <pathelement location="${module.eiana-trans.basedir}/../lib/testng/testng-5.5-jdk15.jar"/>
     <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-3.1.4.jar"/>
+    <pathelement location="${conf.output.dir}"/>
+    <pathelement location="${conf.testoutput.dir}"/>
+    <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar"/>
   </path>
   
   
@@ -50,7 +53,7 @@
   
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
   
-  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util" description="Compile module eiana-trans; production classes">
+  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.conf" description="Compile module eiana-trans; production classes">
     <mkdir dir="${eiana-trans.output.dir}"/>
     <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-trans}"/>
