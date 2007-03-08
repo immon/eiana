@@ -17,15 +17,15 @@ public class DomainManagerBean implements DomainManager {
     }
 
     public Domain get(String name) throws DomainException {
-        return null;
+        return dao.get(name);
     }
 
     public Domain get(long id) throws DomainException {
-        return null;
+        return dao.get(id);
     }
 
     public void create(Domain domain) throws DomainException {
-
+        dao.create(domain);
     }
 
     public List<Domain> findAll() throws DomainException {
