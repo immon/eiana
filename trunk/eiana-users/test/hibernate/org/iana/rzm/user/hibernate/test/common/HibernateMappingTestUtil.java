@@ -4,7 +4,7 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.MD5Password;
 import org.iana.rzm.user.Role;
-import org.iana.rzm.user.User;
+import org.iana.rzm.user.RZMUser;
 
 import java.sql.Timestamp;
 
@@ -30,7 +30,7 @@ public class HibernateMappingTestUtil {
         return role;
     }
 
-    public static User setupUser(User user, String prefix, boolean flag) {
+    public static RZMUser setupUser(RZMUser user, String prefix, boolean flag) {
         user.setEmail(prefix + "-user@nask.pl");
         user.setFirstName(prefix + " first name");
         user.setLastName(prefix + "last name");

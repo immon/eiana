@@ -15,7 +15,7 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public abstract class User implements TrackedObject {
+public abstract class RZMUser implements TrackedObject {
 
     @Basic
     private String firstName;
@@ -38,11 +38,11 @@ public abstract class User implements TrackedObject {
     @Embedded
     private TrackData trackData = new TrackData();
 
-    protected User() {
+    protected RZMUser() {
         this(null, null, null, null, null, null, false);
     }
 
-    protected User(String firstName, String lastName, String organization, String loginName, String email, String password, boolean securID) {
+    protected RZMUser(String firstName, String lastName, String organization, String loginName, String email, String password, boolean securID) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.organization = organization;
@@ -128,7 +128,7 @@ public abstract class User implements TrackedObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        RZMUser user = (RZMUser) o;
 
         if (securID != user.securID) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;

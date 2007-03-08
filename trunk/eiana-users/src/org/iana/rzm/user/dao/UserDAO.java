@@ -1,6 +1,6 @@
 package org.iana.rzm.user.dao;
 
-import org.iana.rzm.user.User;
+import org.iana.rzm.user.RZMUser;
 
 /**
  * org.iana.rzm.user.dao.UserDAO
@@ -9,11 +9,11 @@ import org.iana.rzm.user.User;
  */
 public interface UserDAO {
 
-    public User get(long id);
+    public RZMUser get(long id);
 
-    public void create(User user);
+    public void create(RZMUser user);
 
-    public void update(User user);
+    public void update(RZMUser user);
 
-    public void delete(User user);
+    public void delete(RZMUser user);
 }

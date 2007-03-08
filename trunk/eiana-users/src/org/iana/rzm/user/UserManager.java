@@ -9,13 +9,13 @@ import java.util.List;
  */
 public interface UserManager {
 
-    public User get(long id) throws UserException;
+    public RZMUser get(long id) throws UserException;
 
-    public User get(String loginName) throws UserException;
+    public RZMUser get(String loginName) throws UserException;
 
-    public User create(User user) throws UserException;
+    public RZMUser create(RZMUser user) throws UserException;
 
-    public List<User> findAll() throws UserException;
+    public List<RZMUser> findAll() throws UserException;
 
-    public List<User> find(UserCriteria criteria) throws UserException;
+    public List<RZMUser> find(UserCriteria criteria) throws UserException;
 }

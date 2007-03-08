@@ -16,7 +16,7 @@ import javax.persistence.Enumerated;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class AdminUser extends User {
+public class AdminUser extends RZMUser {
 
     public static enum Type implements UserType {
         IANA_STAFF,
