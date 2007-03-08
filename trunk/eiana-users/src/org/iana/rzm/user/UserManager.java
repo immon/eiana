@@ -13,7 +13,7 @@ public interface UserManager {
 
     public RZMUser get(String loginName) throws UserException;
 
-    public RZMUser create(RZMUser user) throws UserException;
+    public void create(RZMUser user) throws UserException;
 
     public List<RZMUser> findAll() throws UserException;
 
