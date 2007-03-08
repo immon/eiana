@@ -24,6 +24,7 @@
     <orderEntry type="library" name="log4j" level="project" />
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="module" module-name="integration-securid" />
     <orderEntryProperties />
   </component>
 </module>

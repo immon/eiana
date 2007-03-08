@@ -13,13 +13,15 @@
   </path>
   
   <path id="facade-common.module.classpath">
-    <pathelement location="${module.facade-common.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${module.facade-common.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
     <path refid="library.jbpm.classpath"/>
     <pathelement location="${eiana-users.output.dir}"/>
     <pathelement location="${eiana-users.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <path refid="library.log4j.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.spring.classpath"/>
   </path>
   
   
@@ -34,6 +36,12 @@
   <path id="facade-common.module.sourcepath">
     <dirset dir="${module.facade-common.basedir}">
       <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="facade-common.module.test.sourcepath">
+    <dirset dir="${module.facade-common.basedir}">
+      <include name="test"/>
     </dirset>
   </path>
   
@@ -58,7 +66,23 @@
     </copy>
   </target>
   
-  <target name="compile.module.facade-common.tests" depends="compile.module.facade-common.production" description="compile module facade-common; test classes" unless="skip.tests"/>
+  <target name="compile.module.facade-common.tests" depends="compile.module.facade-common.production" description="compile module facade-common; test classes" unless="skip.tests">
+    <mkdir dir="${facade-common.testoutput.dir}"/>
+    <javac destdir="${facade-common.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-common}"/>
+      <classpath refid="facade-common.module.classpath"/>
+      <classpath location="${facade-common.output.dir}"/>
+      <src refid="facade-common.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-common"/>
+    </javac>
+    
+    <copy todir="${facade-common.testoutput.dir}">
+      <fileset dir="${module.facade-common.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.facade-common" description="cleanup module">
     <delete dir="${facade-common.output.dir}"/>
