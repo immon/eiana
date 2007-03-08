@@ -2,6 +2,7 @@ package org.iana.rzm.facade.user;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Marcin Zajaczkowski
  */
 public class SystemRoleVO extends RoleVO {
 
@@ -13,6 +14,14 @@ public class SystemRoleVO extends RoleVO {
     private boolean notify;
     private boolean acceptFrom;
     private boolean mustAccept;
+
+
+    public SystemRoleVO() {
+    }
+
+    public SystemRoleVO(SystemType type) {
+        super(type);
+    }
 
     public SystemType getType() {
         return (SystemType) super.getType();
