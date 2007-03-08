@@ -54,7 +54,14 @@ public class TransactionState {
     }
 
     public void setName(String name) {
+        try{
         this.name = Name.valueOf(name);
+        }catch(IllegalArgumentException e){
+            //TODO replace with log4j
+            System.out.println("Wrong state name!:"+name);
+            throw e;
+        }
+
     }
 
     public Timestamp getStart() {

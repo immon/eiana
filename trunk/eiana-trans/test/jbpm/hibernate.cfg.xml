@@ -6,7 +6,7 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost/eianatestng</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/eianatest</property>
         <property name="hibernate.connection.username">testng</property>
         <property name="hibernate.connection.password">1q2w3e</property>
         <property name="connection.pool_size">2</property>
@@ -18,6 +18,8 @@
 
         <property name="hibernate.hibernate.default_batch_fetch_size">32</property>
         <property name="hibernate.jdbc.batch_size">20</property>
+
+        <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
 
         <mapping class="org.iana.rzm.common.Name"/>
         <mapping class="org.iana.rzm.common.TrackData"/>

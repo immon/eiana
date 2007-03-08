@@ -9,6 +9,7 @@ import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.taskmgmt.exe.TaskInstance;
+import org.jbpm.JbpmContext;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,14 +27,14 @@ public class Transaction implements TrackedObject {
 
     private ProcessInstance pi;
 
-    Transaction(String processName) {
-        pi = JbpmContextFactory.getJbpmContext().newProcessInstance(processName);
+     Transaction(String processName) {
+        JbpmContext ctx = JbpmContextFactory.getJbpmContext();
+        pi = new ProcessInstance(ctx.getGraphSession().findLatestProcessDefinition(processName));
         pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
-        pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());
-        //JbpmContextFactory.getJbpmContext().save(pi);
+        pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());        
     }
 
-    Transaction(ProcessInstance pi) {
+     Transaction(ProcessInstance pi) {
         CheckTool.checkNull(pi, "process instance");
         this.pi = pi;
     }
@@ -84,7 +85,8 @@ public class Transaction implements TrackedObject {
         TransactionState ts = new TransactionState();
         ts.setName(node.getName());
         ts.setStart(token.getStart());
-        ts.setEnd(token.getEnd());
+        if(token.getEnd()!=null)
+            ts.setEnd(token.getEnd());
         for(Object o : node.getLeavingTransitions()) {
             Transition transition = (Transition) o;
             ts.addAvailableTransition(new StateTransition(transition.getName()));
@@ -145,7 +147,7 @@ public class Transaction implements TrackedObject {
 
     private TaskInstance getTaskInstance() {
         Collection<TaskInstance> tic = pi.getTaskMgmtInstance().getTaskInstances();
-        if (tic == null && tic.size() == 0) throw new IllegalStateException("no task instances found for " + getTransactionID());
+        if (tic == null || tic.size() == 0) throw new IllegalStateException("no task instances found for " + getTransactionID());
         return tic.iterator().next();
     }
 }

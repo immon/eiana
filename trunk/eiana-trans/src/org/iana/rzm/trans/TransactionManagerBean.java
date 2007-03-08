@@ -20,11 +20,9 @@ public class TransactionManagerBean implements TransactionManager {
 
     public Transaction get(long id) throws NoSuchTransactionException {
         GraphSession graphSession = context.getGraphSession();
-        List processInstances =
-                graphSession.findProcessInstances(id);
-        if (processInstances == null || processInstances.isEmpty()) throw new NoSuchTransactionException(id);
-        ProcessInstance pi = (ProcessInstance) processInstances.get(0);
-        Transaction transaction = new Transaction(pi.getProcessDefinition().getName());
+        ProcessInstance processInstances = graphSession.loadProcessInstance(id);
+        if (processInstances == null) throw new NoSuchTransactionException(id);        
+        Transaction transaction = new Transaction(processInstances);
         return transaction;
     }
 
