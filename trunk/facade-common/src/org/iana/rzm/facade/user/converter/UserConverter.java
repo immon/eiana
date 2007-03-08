@@ -24,9 +24,8 @@ public class UserConverter {
      *
      * @param user DAO level user to be converter
      * @return facade level user
-     * @throws ConverterException Currently not used
      */
-    public static UserVO convert(RZMUser user) throws ConverterException {
+    public static UserVO convert(RZMUser user) {
 
         if (user == null) return null;
 
