@@ -24,7 +24,7 @@ public class PasswordAuthenticatorTest {
 
     @BeforeClass
     public void init() {
-        authService = (AuthenticationService) new ClassPathXmlApplicationContext("spring.xml").getBean("authenticationServiceBean");
+        authService = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("authenticationServiceBean");
     }
 
     @Test
