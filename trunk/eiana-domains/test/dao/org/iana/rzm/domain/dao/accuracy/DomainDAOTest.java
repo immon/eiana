@@ -6,8 +6,6 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.*;
-
 /**
  * @author Patrycja Wegrzynowicz
  */
@@ -18,7 +16,7 @@ public class DomainDAOTest {
 
     @BeforeClass
     public void init() {
-        dao = (DomainDAO) new ClassPathXmlApplicationContext("spring.xml").getBean("domainDAO");
+        dao = (DomainDAO) new ClassPathXmlApplicationContext("eiana-domains-spring.xml").getBean("domainDAO");
     }
 
     @Test
