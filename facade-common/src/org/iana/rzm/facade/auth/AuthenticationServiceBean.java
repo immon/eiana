@@ -11,6 +11,7 @@ import java.text.MessageFormat;
 
 /**
  * @author Marcin Zajaczkowski
+ * @author Patrycja Wegrzynowicz
  */
 
 @Stateless
