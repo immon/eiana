@@ -6,6 +6,7 @@ import org.iana.rzm.user.UserManager;
 
 import javax.ejb.Stateless;
 import java.util.Map;
+import java.util.Collections;
 import java.text.MessageFormat;
 
 /**
@@ -20,11 +21,6 @@ public class AuthenticationServiceBean implements AuthenticationService {
     private Map<String, Authenticator> authenticatorMap;
     private UserManager manager;
 
-    //due to spring problem with map in a constructor. should be changed
-    public AuthenticationServiceBean(UserManager manager) {
-        this.manager = manager;
-    }
-
     public AuthenticationServiceBean(Map<String, Authenticator> authenticatorMap, UserManager manager) {
         CheckTool.checkNull(authenticatorMap, "authenticatorMap is null");
         CheckTool.checkNull(manager, "manager is null");
@@ -32,13 +28,8 @@ public class AuthenticationServiceBean implements AuthenticationService {
         this.manager = manager;
     }
 
-    //todo temporary set to public due to spring problem with Map in a constructor. should be changed
-    public void setAuthenticatorMap(Map<String, Authenticator> authenticatorMap) {
-        this.authenticatorMap = authenticatorMap;
-    }
-
     public Map<String, Authenticator> getAuthenticatorMap() {
-        return authenticatorMap;
+        return Collections.unmodifiableMap(authenticatorMap);
     }
 
     public UserManager getManager() {
