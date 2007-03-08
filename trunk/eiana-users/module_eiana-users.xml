@@ -13,19 +13,16 @@
   </path>
   
   <path id="eiana-users.module.classpath">
-    <pathelement location="${module.eiana-users.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/hibernate-tools.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/hibernate3.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/testng/testng-5.5-jdk15.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/dom4j/dom4j-1.6.1.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/apache-commons/commons-collections-2.1.1.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/mysql/mysql-connector-java-5.0.4-bin.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/cglib-2.1.3.jar"/>
-    <pathelement location="${module.eiana-users.basedir}/../lib/hibernate/asm.jar"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.mysql.classpath"/>
   </path>
   
   
@@ -45,6 +42,7 @@
   
   <path id="eiana-users.module.test.sourcepath">
     <dirset dir="${module.eiana-users.basedir}">
+      <include name="test/dao"/>
       <include name="test/hibernate"/>
     </dirset>
   </path>
@@ -81,6 +79,10 @@
     </javac>
     
     <copy todir="${eiana-users.testoutput.dir}">
+      <fileset dir="${module.eiana-users.basedir}/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.eiana-users.basedir}/test/hibernate">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
