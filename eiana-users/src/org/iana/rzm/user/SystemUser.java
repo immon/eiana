@@ -18,7 +18,7 @@ import java.util.Collections;
 public class SystemUser extends RZMUser {
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "SytstemUser_Roles",
+    @JoinTable(name = "SystemUser_Roles",
             inverseJoinColumns = @JoinColumn(name = "Role_objId"))
     private List<Role> roles;
 
