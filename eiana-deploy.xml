@@ -117,6 +117,7 @@
      and excludes all tests from group that is equal toproperty value ${test.group.excluded}.
      You can put many groups into one property, separated by spaces or commas.
      Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
+     Reports from tests are aviable in "Report" directory.
      -->
      <target name="all.test" depends="clean,all.compile" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
@@ -137,7 +138,7 @@
             </fileset>
         </path>
          <echo>
-             test inluded = ${test.group}
+             test  inluded = ${test.group}
              test excluded = ${test.group.excluded}
          </echo>
 
@@ -148,15 +149,14 @@
         </testng>
     </target>
 
-    <target name="all.test.fast" description="runs fast tests (exclude e.g. stress tests)">
+    <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
         <property name="test.group.excluded" value="stress"/>
         <antcall target="all.test"/>
     </target>
 
-    <target name="all.test.slow" description="runs slow tests (include e.g. stress tests)
+    <target name="all.test.slow" description="runs slow tests (includes slow tests e.g. stress tests)
     WARNING: Those tests can take a lot of time.
-    If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">
-        <property name="test.group.excluded" value="stress"/>
+    If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">        
         <antcall target="all.test"/>
     </target>
 
