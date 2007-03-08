@@ -18,11 +18,11 @@ public class TestUserManager implements UserManager {
         this.facadeCommonTestAdminUser = createFacadeCommonTestAdminUser();
     }
 
-    public RZMUser get(long id) throws UserException {
+    public RZMUser get(long id) {
         return facadeCommonTestAdminUser;
     }
 
-    public RZMUser get(String loginName) throws UserException {
+    public RZMUser get(String loginName) {
         //"facade-common-test" could be a constant
         if ("facade-common-test-adminuser".equals(loginName)) {
             return facadeCommonTestAdminUser;
@@ -31,15 +31,15 @@ public class TestUserManager implements UserManager {
         }
     }
 
-    public void create(RZMUser user) throws UserException {
+    public void create(RZMUser user) {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    public List<RZMUser> findAll() throws UserException {
+    public List<RZMUser> findAll() {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    public List<RZMUser> find(UserCriteria criteria) throws UserException {
+    public List<RZMUser> find(UserCriteria criteria) {
         throw new IllegalStateException("Not implemented yet.");
     }
 

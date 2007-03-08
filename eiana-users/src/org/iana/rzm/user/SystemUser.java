@@ -7,7 +7,7 @@ import java.util.Collections;
 
 /**
  * <p>
- * This class represents a 'normal' (not administrator) user of the system. Those users embrace individuals acting
+ * This class represents a 'regular' (not administrator) user of the system. Those users embrace individuals acting
  * on behalf of supporing organizations, administrator or technical contacts of the top level domains.
  * </p>
  *
