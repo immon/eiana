@@ -23,6 +23,7 @@ public class PasswordAuthenticator implements Authenticator {
         CheckTool.checkNull(data, "AuthenticationData");
         CheckTool.checkNull(manager, "UserManager");
 
+        //maybe could be done better?
         if (!(data instanceof PasswordAuth)) {
             throw new IllegalArgumentException("Wrong type of AuthenticationData: " + data.getClass().getName());
         }
@@ -41,8 +42,11 @@ public class PasswordAuthenticator implements Authenticator {
                 throw new AuthenticationFailedException("Password is not valid.");
             }
 
-            //todo Add securID
-            
+            if (user.isSecurID()) {
+                AuthenticationToken token = new AuthenticationToken(data.getUserName(), Authentication.PASSWORD);
+                throw new AuthenticationRequiredException(token, Authentication.SECURID);
+            }
+
             return new AuthenticatedUser(UserConverter.convert(user));
 
         } catch (UserException e) {

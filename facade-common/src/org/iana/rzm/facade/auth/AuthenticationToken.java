@@ -17,6 +17,11 @@ public class AuthenticationToken {
         this.userName = userName;
     }
 
+    AuthenticationToken(String userName, Authentication credential) {
+        this.userName = userName;
+        this.credentials.add(credential);
+    }
+
     public String getUserName() {
         return userName;
     }
