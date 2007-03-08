@@ -20,8 +20,15 @@ public class HibernateDomainDAO extends HibernateDaoSupport implements DomainDAO
     }
 
     public Domain get(String name) {
-        Iterator<Domain> it = getHibernateTemplate().iterate("from Domain d where d.name.name = ?", name);
-        return it == null || !it.hasNext() ? null : it.next();
+        System.out.println("name = " + name);
+        List<Domain> list = getHibernateTemplate().find("from Domain d where d.name.name = ?", name);
+        // todo bug in spring or hibernate
+        // todo iterate returns object but all values are set to null
+        //Iterator<Domain> it = getHibernateTemplate().iterate("from Domain d where d.name.name = ?", name);
+        //Domain ret = (it == null || !it.hasNext()) ? null : it.next();
+        Domain ret = (list.size() < 1) ? null : list.get(0);
+        System.out.println("retrieved = " + ((ret == null) ? null : ret.getName()));
+        return ret;
     }
 
     public void create(final Domain domain) {
