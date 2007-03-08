@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * This interface provides user management functionality.
  *
- * @author Patrycja Wegrzynowicz
+ * @author Patrycja Wegrzynooiwicz
  */
 public interface UserManager {
 
