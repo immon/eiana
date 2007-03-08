@@ -6,13 +6,15 @@
 
     <property environment="env"/>
 
-    <property name="test.report.output" location="reports"/>
     <property name="lib.dir" location="lib"/>
     <property name="output.dir" value="dist"/>
     <property name="jar.output.dir" value="${output.dir}/jar"/>
     <property name="war.output.dir" value="${output.dir}/war"/>
-    <property name="config.dir" value="conf"/>
+    <property name="config.dir" value="${module.conf.basedir}"/>
     <property name="hibernate.dir" value="${config.dir}/hibernate"/>
+    <property name="tests" value="${module.tests.basedir}"/>
+    <property name="test.report.output" location="${tests}/reports"/>
+    <property name="hibernate.test.dir" value="${tests}/hibernate"/>
 
     <!--creating database structure
      Before preforming "database.create" target, you have to create "eiana" database instance.
@@ -23,8 +25,7 @@
      GRANT ALL PRIVILEGES ON *.* TO 'eiana'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
     -->
     <target name="database.create"
-            depends="compile.module.eiana-domains, compile.module.eiana-util,
-            compile.module.eiana-users, compile.module.eiana-trans">
+            depends="all.compile">
         <hibernatetool destdir="${hibernate.dir}">
             <classpath>
                 <path location="${eiana-domains.output.dir}"/>
@@ -50,6 +51,25 @@
      GRANT ALL PRIVILEGES ON *.* TO 'testng'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
 
      -->
+    <target name="database.create.test"
+            depends="all.compile">
+        <hibernatetool destdir="${hibernate.test.dir}">
+            <classpath>
+                <path location="${eiana-domains.output.dir}"/>
+                <path location="${eiana-util.output.dir}"/>
+                <path location="${eiana-users.output.dir}"/>
+                <path location="${eiana-trans.output.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <annotationconfiguration
+                    configurationfile="${hibernate.test.dir}/hibernate.cfg.xml">
+            </annotationconfiguration>
+            <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
+        </hibernatetool>
+    </target>
+    
     <!-- compiling, packeging & testing targets-->
 
     <target name="all.compile"
@@ -119,7 +139,7 @@
      Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
      Reports from tests are aviable in "Report" directory.
      -->
-     <target name="all.test" depends="clean,all.compile" description="runs all test from groups that is equal to property value (test.group)
+     <target name="all.test" depends="clean,all.compile,database.create.test" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
          <condition property="test.group.excluded" value="">
              <not><isset property="test.group.excluded"/></not>
