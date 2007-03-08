@@ -23,11 +23,7 @@ public class PasswordAuthenticator implements Authenticator {
         CheckTool.checkNull(data, "AuthenticationData");
         CheckTool.checkNull(manager, "UserManager");
 
-        //maybe could be done better?
-        if (!(data instanceof PasswordAuth)) {
-            throw new IllegalArgumentException("Wrong type of AuthenticationData: " + data.getClass().getName());
-        }
-
+        //get from our config, has to be valid,
         PasswordAuth passData = (PasswordAuth)data;
 
         try {
