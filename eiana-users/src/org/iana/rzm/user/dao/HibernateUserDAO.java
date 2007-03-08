@@ -3,6 +3,8 @@ package org.iana.rzm.user.dao;
 import org.iana.rzm.user.RZMUser;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import java.util.List;
+
 /**
  * org.iana.rzm.user.dao.HibernateUserDAO
  *
@@ -23,9 +25,17 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
     }
 
     public RZMUser get(String loginName) {
-        //todo Write proper HQL
-        throw new IllegalStateException("Not implemented yet.");
-    }
+           System.out.println("name = " + loginName);
+           List<RZMUser> list = getHibernateTemplate().find("from RZMUser u where u.loginName = ?", loginName);
+           // todo bug in spring or hibernate
+           // todo iterate returns object but all values are set to null
+           //Iterator<Domain> it = getHibernateTemplate().iterate("from Domain d where d.name.name = ?", name);
+           //Domain ret = (it == null || !it.hasNext()) ? null : it.next();
+           RZMUser ret = (list.size() < 1) ? null : list.get(0);
+           System.out.println("retrieved = " + ((ret == null) ? null : ret.getLoginName()));
+           return ret;
+       }
+
 
     public void create(RZMUser user) {
         getHibernateTemplate().save(user);
