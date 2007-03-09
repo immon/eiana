@@ -37,9 +37,13 @@ public class SystemDomainServiceBean implements SystemDomainService {
             Domain domain = domainManager.get(id);
             if (domain == null) throw new NoObjectFoundException(id);
             DomainVO domainVO = new DomainVO();
-            ToVOConverter.convertToDomainVO(domain, domainVO);
+            ToVOConverter.toDomainVO(domain, domainVO);
             return domainVO;
         } catch (DomainException e) {
+            // todo temporary exception must be changed
+            throw new InfrastructureException();
+        } catch (InvalidNameException e) {
+            // todo temporary exception must be changed
             throw new InfrastructureException();
         }
     }
@@ -49,9 +53,13 @@ public class SystemDomainServiceBean implements SystemDomainService {
             Domain domain = domainManager.get(name);
             if (domain == null) throw new NoObjectFoundException(name);
             DomainVO domainVO = new DomainVO();
-            ToVOConverter.convertToDomainVO(domain, domainVO);
+            ToVOConverter.toDomainVO(domain, domainVO);
             return domainVO;
         } catch (DomainException e) {
+            // todo temporary exception must be changed
+            throw new InfrastructureException();
+        } catch (InvalidNameException e) {
+            // todo temporary exception must be changed
             throw new InfrastructureException();
         }
     }
@@ -71,7 +79,7 @@ public class SystemDomainServiceBean implements SystemDomainService {
                     Domain domain = domainManager.get(roleName);
                     if (domain != null) {
                         SimpleDomainVO simpleDomainVO = new SimpleDomainVO();
-                        ToVOConverter.convertToSimpleDomainVO(domain,  simpleDomainVO);
+                        ToVOConverter.toSimpleDomainVO(domain, simpleDomainVO);
                         list.add(simpleDomainVO);
                     }
                 }
