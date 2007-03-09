@@ -13,11 +13,17 @@
   </path>
   
   <path id="facade-system.module.classpath">
-    <pathelement location="${module.facade-system.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${module.facade-system.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${eiana-domains.output.dir}"/>
+    <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
   </path>
   
   
@@ -35,10 +41,17 @@
     </dirset>
   </path>
   
+  <path id="facade-system.module.test.sourcepath">
+    <dirset dir="${module.facade-system.basedir}">
+      <include name="test/bean"/>
+      <include name="test/hibernate"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.facade-system" depends="compile.module.facade-system.production,compile.module.facade-system.tests" description="Compile module facade-system"/>
   
-  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common" description="Compile module facade-system; production classes">
+  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users" description="Compile module facade-system; production classes">
     <mkdir dir="${facade-system.output.dir}"/>
     <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-system}"/>
@@ -56,7 +69,27 @@
     </copy>
   </target>
   
-  <target name="compile.module.facade-system.tests" depends="compile.module.facade-system.production" description="compile module facade-system; test classes" unless="skip.tests"/>
+  <target name="compile.module.facade-system.tests" depends="compile.module.facade-system.production" description="compile module facade-system; test classes" unless="skip.tests">
+    <mkdir dir="${facade-system.testoutput.dir}"/>
+    <javac destdir="${facade-system.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-system}"/>
+      <classpath refid="facade-system.module.classpath"/>
+      <classpath location="${facade-system.output.dir}"/>
+      <src refid="facade-system.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-system"/>
+    </javac>
+    
+    <copy todir="${facade-system.testoutput.dir}">
+      <fileset dir="${module.facade-system.basedir}/test/bean">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.facade-system.basedir}/test/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.facade-system" description="cleanup module">
     <delete dir="${facade-system.output.dir}"/>

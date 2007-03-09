@@ -21,7 +21,7 @@ public class TransactionManagerBean implements TransactionManager {
     public Transaction get(long id) throws NoSuchTransactionException {
         GraphSession graphSession = context.getGraphSession();
         ProcessInstance processInstances = graphSession.loadProcessInstance(id);
-        if (processInstances == null) throw new NoSuchTransactionException(id);        
+        if (processInstances == null) throw new NoSuchTransactionException(id);
         Transaction transaction = new Transaction(processInstances);
         return transaction;
     }
