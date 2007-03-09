@@ -42,6 +42,7 @@
   
   <path id="eiana-users.module.test.sourcepath">
     <dirset dir="${module.eiana-users.basedir}">
+      <include name="test/conf"/>
       <include name="test/dao"/>
       <include name="test/hibernate"/>
     </dirset>
@@ -79,6 +80,10 @@
     </javac>
     
     <copy todir="${eiana-users.testoutput.dir}">
+      <fileset dir="${module.eiana-users.basedir}/test/conf">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.eiana-users.basedir}/test/dao">
         <patternset refid="compiler.resources"/>
         <type type="file"/>

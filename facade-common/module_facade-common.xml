@@ -22,6 +22,8 @@
     <path refid="library.log4j.classpath"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.spring.classpath"/>
+    <pathelement location="${integration-securid.output.dir}"/>
+    <pathelement location="${integration-securid.testoutput.dir}"/>
   </path>
   
   
@@ -48,7 +50,7 @@
   
   <target name="compile.module.facade-common" depends="compile.module.facade-common.production,compile.module.facade-common.tests" description="Compile module facade-common"/>
   
-  <target name="compile.module.facade-common.production" depends="compile.module.eiana-users,compile.module.eiana-util" description="Compile module facade-common; production classes">
+  <target name="compile.module.facade-common.production" depends="compile.module.eiana-users,compile.module.eiana-util,compile.module.integration-securid" description="Compile module facade-common; production classes">
     <mkdir dir="${facade-common.output.dir}"/>
     <javac destdir="${facade-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-common}"/>

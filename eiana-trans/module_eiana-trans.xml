@@ -13,16 +13,15 @@
   </path>
   
   <path id="eiana-trans.module.classpath">
-    <pathelement location="${module.eiana-trans.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
-    <pathelement location="${module.eiana-trans.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
-    <pathelement location="${module.eiana-trans.basedir}/../lib/hibernate/hibernate3.jar"/>
-    <pathelement location="${module.eiana-trans.basedir}/../lib/hibernate/hibernate-tools.jar"/>
-    <pathelement location="${module.eiana-trans.basedir}/../lib/testng/testng-5.5-jdk15.jar"/>
-    <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-3.1.4.jar"/>
+    <path refid="library.jbpm.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
     <pathelement location="${conf.output.dir}"/>
     <pathelement location="${conf.testoutput.dir}"/>
     <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar"/>
@@ -47,6 +46,7 @@
     <dirset dir="${module.eiana-trans.basedir}">
       <include name="test/hibernate"/>
       <include name="test/jbpm"/>
+      <include name="test/trans"/>
     </dirset>
   </path>
   
@@ -87,6 +87,10 @@
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-trans.basedir}/test/jbpm">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/trans">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
