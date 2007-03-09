@@ -47,7 +47,6 @@
       <include name="test"/>
       <include name="test/hibernate"/>
       <include name="test/jbpm"/>
-      <include name="test/trans"/>
     </dirset>
   </path>
   
@@ -92,10 +91,6 @@
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-trans.basedir}/test/jbpm">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/trans">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
