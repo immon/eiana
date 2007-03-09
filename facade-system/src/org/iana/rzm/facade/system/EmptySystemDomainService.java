@@ -19,6 +19,10 @@ public class EmptySystemDomainService implements SystemDomainService {
         return null;
     }
 
+    public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        return null;
+    }
+
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         return null;
     }

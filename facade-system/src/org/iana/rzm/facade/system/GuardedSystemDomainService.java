@@ -33,6 +33,13 @@ public class GuardedSystemDomainService implements SystemDomainService {
         return domainVO;
     }
 
+    public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        DomainVO domainVO = (DomainVO) delegate.getDomain(name);
+        if (!isInRole(domainVO.getName()))
+            throw new AccessDeniedException("user is not in any role for this domain");
+        return domainVO;
+    }
+
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         CheckTool.checkEmpty(userName, "user name");
         if(user.isAdmin() || user.getUserName().equals(userName))
