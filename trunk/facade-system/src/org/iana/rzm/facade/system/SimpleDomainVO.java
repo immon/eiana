@@ -18,7 +18,7 @@ public class SimpleDomainVO implements Trackable {
     private Set<RoleVO.Type> roles;
 
     private Long objId;
-    private TrackDataVO trackData;
+    private TrackDataVO trackData = new TrackDataVO();
 
     public String getName() {
         return name;

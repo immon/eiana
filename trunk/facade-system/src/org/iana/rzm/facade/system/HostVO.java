@@ -17,7 +17,7 @@ public class HostVO implements Trackable {
     private boolean shared;
 
     private long objId;
-    private TrackDataVO trackData;
+    private TrackDataVO trackData = new TrackDataVO();
     
     public String getName() {
         return name;
