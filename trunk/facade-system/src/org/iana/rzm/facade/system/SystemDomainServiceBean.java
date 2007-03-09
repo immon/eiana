@@ -48,7 +48,6 @@ public class SystemDomainServiceBean implements SystemDomainService {
         List<SimpleDomainVO> list = new ArrayList<SimpleDomainVO>();
         try {
             RZMUser user = userManager.get(userName);
-
             if(user instanceof SystemUser) {
                 List<Role> roles = ((SystemUser) user).getRoles();
                 Set<String> roleNames = new HashSet<String>();
@@ -58,9 +57,11 @@ public class SystemDomainServiceBean implements SystemDomainService {
                 for(Iterator iterator = roleNames.iterator(); iterator.hasNext();) {
                     String roleName = (String) iterator.next();
                     Domain domain = domainManager.get(roleName);
-                    SimpleDomainVO simpleDomainVO = new SimpleDomainVO();
-                    ToVOConverter.convertToSimpleDomainVO(domain,  simpleDomainVO);
-                    list.add(simpleDomainVO);
+                    if (domain != null) {
+                        SimpleDomainVO simpleDomainVO = new SimpleDomainVO();
+                        ToVOConverter.convertToSimpleDomainVO(domain,  simpleDomainVO);
+                        list.add(simpleDomainVO);
+                    }
                 }
             } else
                 throw new AccessDeniedException("not system user");
