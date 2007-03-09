@@ -33,7 +33,7 @@ public class GuardedSystemDomainServiceFailureTest {
     private long domainId1;
     private long domainId2;
 
-    @BeforeClass
+    @BeforeClass (groups = {"failure", "facade-system", "GuardedSystemDomainService"})
     public void init() throws Exception {
         gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
             DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
@@ -47,21 +47,21 @@ public class GuardedSystemDomainServiceFailureTest {
             domainId2 = domainCreated.getObjId();
     }
 
-    @Test (expectedExceptions = AccessDeniedException.class)
+    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByWrongId() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId2);
     }
 
-    @Test (expectedExceptions = NoObjectFoundException.class)
+    @Test (expectedExceptions = {NoObjectFoundException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByWrongName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain("wrongdomainname.org");
     }
 
-    @Test (expectedExceptions = AccessDeniedException.class)
+    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByWrongUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());

@@ -32,7 +32,7 @@ public class GuardedSystemDomainServiceStressTest {
     private SystemDomainService gsds;
     private List<Long> idList = new ArrayList<Long>();
 
-    @BeforeClass
+    @BeforeClass (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
     public void init() throws Exception {
         gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainServiceStress");
         DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
@@ -44,7 +44,7 @@ public class GuardedSystemDomainServiceStressTest {
         }
     }
 
-    @Test
+    @Test (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -52,7 +52,7 @@ public class GuardedSystemDomainServiceStressTest {
         assert list.size() == NUMBER_OF_DOMAINS;
     }
 
-    @Test
+    @Test (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -61,7 +61,7 @@ public class GuardedSystemDomainServiceStressTest {
         }
     }
 
-    @Test
+    @Test (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainById() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
