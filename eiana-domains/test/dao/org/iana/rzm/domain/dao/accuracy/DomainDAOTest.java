@@ -22,18 +22,18 @@ public class DomainDAOTest {
     }
 
     @Test
-    public void testCreate() throws Exception {
+    public void testDomainCreate() throws Exception {
         Domain domainCreated = new Domain("dao.org");
         dao.create(domainCreated);
         Domain domainRetrieved = dao.get(domainCreated.getObjId());
         assert "dao.org".equals(domainRetrieved.getName());
     }
 
-    @Test(dependsOnMethods = {"testCreate"})
-    public void testUpdate() throws Exception {
+    @Test(dependsOnMethods = {"testDomainCreate"})
+    public void testDomainUpdate() throws Exception {
     }
 
-    @Test(dependsOnMethods = {"testCreate"})
+    @Test(dependsOnMethods = {"testDomainUpdate"})
     public void testDelete() throws Exception {
     }
 
