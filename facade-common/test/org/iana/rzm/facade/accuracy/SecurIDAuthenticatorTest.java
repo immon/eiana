@@ -21,9 +21,26 @@ public class SecurIDAuthenticatorTest {
     }
 
     @Test
+    public void testAuthenticateWrongSecurdIDNeeded() throws Exception {
+
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
+
+        try {
+            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+
+        } catch (AuthenticationRequiredException e) {
+            if (e.getRequired() == Authentication.SECURID) {
+                return;
+            }
+            assert false;
+        }
+        assert false;
+    }
+
+    @Test
     public void testAuthenticate() throws Exception {
 
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_LOGIN_VALID, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
             AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
@@ -32,8 +49,8 @@ public class SecurIDAuthenticatorTest {
             if (e.getRequired() == Authentication.SECURID) {
                 
                 SecurIDAuth securIDAuth = new SecurIDAuth(
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_LOGIN_VALID,
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_PASSWORD_VALID);
+                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
+                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
                 AuthenticatedUser authenticatedUser = authService.authenticate(e.getToken(), securIDAuth);
                 assert TestUserManager.ADMIN_WITH_SECURID_FIRST_NAME_VALID.equals(authenticatedUser.getFirstName());
@@ -46,11 +63,40 @@ public class SecurIDAuthenticatorTest {
     }
 
     @Test
+    public void testAuthenticateWrongSecurdID() throws Exception {
+
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
+
+        try {
+            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+
+        } catch (AuthenticationRequiredException e) {
+            if (e.getRequired() == Authentication.SECURID) {
+
+                SecurIDAuth securIDAuth = new SecurIDAuth(
+                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
+                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
+
+                AuthenticatedUser authenticatedUser;
+                try {
+                    authenticatedUser = authService.authenticate(e.getToken(), securIDAuth);
+
+                } catch (AuthenticationFailedException ee) {
+                    return;
+                }
+                assert false;
+            }
+            assert false;
+        }
+        assert false;
+    }
+
+    @Test
     public void testAuthenticateOnlySecurID() throws Exception {
 
         SecurIDAuth securIDAuth = new SecurIDAuth(
-                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_LOGIN_VALID,
-                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_PASSWORD_VALID);
+                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
+                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
         try {
             AuthenticatedUser authenticatedUser = authService.authenticate(securIDAuth);
