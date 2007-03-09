@@ -29,7 +29,7 @@ public class GuardedSystemDomainServiceTest {
     private SystemDomainService gsds;
     private long domainId;
 
-    @BeforeClass
+    @BeforeClass (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
     public void init() throws Exception{
         gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
         DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
@@ -39,7 +39,7 @@ public class GuardedSystemDomainServiceTest {
         domainId = domainCreated.getObjId();
     }
 
-    @Test
+    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainById() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -47,7 +47,7 @@ public class GuardedSystemDomainServiceTest {
         assert domainVO.getName().equals("facadesystemiana.org");
     }
 
-    @Test
+    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -55,7 +55,7 @@ public class GuardedSystemDomainServiceTest {
         assert domainVO.getName().equals("facadesystemiana.org");
     }
 
-    @Test
+    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
     public void testGetDomainByUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
