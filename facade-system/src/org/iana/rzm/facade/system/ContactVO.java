@@ -19,7 +19,7 @@ public class ContactVO implements Trackable {
     private boolean role;
 
     private long objId;
-    private TrackDataVO trackData;
+    private TrackDataVO trackData = new TrackDataVO();
 
     public String getName() {
         return name;
