@@ -11,11 +11,13 @@ import org.iana.rzm.facade.user.AdminRoleVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.common.TrackData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.sql.Timestamp;
 
 /**
  * org.iana.rzm.facade.accuracy.UserConversionTest
@@ -30,12 +32,32 @@ public class UserConversionTest {
     }
 
     @Test
+    //role and trackData are ignored
     public void testAdminUserConversion() throws Exception {
 
         AdminUser user = new AdminUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
         user.setType(AdminUser.Type.GOV_OVERSIGHT);
         
+        UserVO userVO = UserConverter.convert(user);
+        compareRZMUser(userVO, user);
+    }
+
+    @Test
+    public void testAdminUserTrackDataConversion() throws Exception {
+
+        AdminUser user = new AdminUser();
+        HibernateMappingTestUtil.setupUser(user, "t", false);
+        user.setType(AdminUser.Type.GOV_OVERSIGHT);
+
+        TrackData trackData = new TrackData();
+        //created is set in a constructor
+        trackData.setCreatedBy("Creator");
+        trackData.setModified(new Timestamp(System.currentTimeMillis()));
+        trackData.setModifiedBy("Modifier");
+
+        user.setTrackData(trackData);
+
         UserVO userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
     }
@@ -111,7 +133,7 @@ public class UserConversionTest {
         compareRoles(userVO, user);
     }
 
-    //todo
+    //todo test with multiple roles could be added
 
     private void compareRZMUser(UserVO userVO, RZMUser user) {
 
@@ -124,6 +146,11 @@ public class UserConversionTest {
         assert userVO.getObjId() == user.getObjId();
         assert (userVO.getOrganization() == null && user.getOrganization() == null) || userVO.getOrganization().equals(user.getOrganization());
         assert (userVO.getUserName() == null && user.getLoginName() == null) || userVO.getUserName().equals(user.getLoginName());
+
+        assert userVO.getCreated() == user.getCreated();
+        assert (userVO.getCreatedBy() == null && user.getCreatedBy() == null) || userVO.getCreatedBy().equals(user.getCreatedBy());
+        assert userVO.getModified() == user.getModified();
+        assert (userVO.getModifiedBy() == null && user.getModifiedBy() == null) || userVO.getModifiedBy().equals(user.getModifiedBy());
     }
 
     private void compareRoles(UserVO userVO, SystemUser user) {
