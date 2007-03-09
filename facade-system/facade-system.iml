@@ -10,21 +10,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/javaee.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="eiana-util" />
     <orderEntry type="module" module-name="facade-common" />
     <orderEntry type="module" module-name="eiana-domains" />
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="library" name="javaee" level="project" />
     <orderEntryProperties />
   </component>
 </module>

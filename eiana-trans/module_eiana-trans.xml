@@ -44,7 +44,7 @@
   
   <path id="eiana-trans.module.test.sourcepath">
     <dirset dir="${module.eiana-trans.basedir}">
-      <include name="test"/>
+      <include name="test/conf"/>
       <include name="test/hibernate"/>
       <include name="test/jbpm"/>
     </dirset>
@@ -82,7 +82,7 @@
     </javac>
     
     <copy todir="${eiana-trans.testoutput.dir}">
-      <fileset dir="${module.eiana-trans.basedir}/test">
+      <fileset dir="${module.eiana-trans.basedir}/test/conf">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

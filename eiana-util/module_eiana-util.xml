@@ -13,8 +13,8 @@
   </path>
   
   <path id="eiana-util.module.classpath">
-    <pathelement location="${module.eiana-util.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
-    <pathelement location="${module.eiana-util.basedir}/../lib/javaee/javaee.jar"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.javaee.classpath"/>
   </path>
   
   
