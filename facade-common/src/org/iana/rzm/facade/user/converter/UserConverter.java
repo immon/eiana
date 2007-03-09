@@ -48,6 +48,7 @@ public class UserConverter {
     private static UserVO convertSystemUser(SystemUser user) {
 
         UserVO userVO = convertUser(user);
+        convertTrackData(user, userVO);
 
         //Note: in SystemUser there is a list, here a set. Possible loss of duplicated rolesVO.
         Set<RoleVO> rolesVO = new HashSet<RoleVO>();
@@ -64,6 +65,7 @@ public class UserConverter {
     private static UserVO convertAdminUser(AdminUser user) {
 
         UserVO userVO = convertUser(user);
+        convertTrackData(user, userVO);
 
         userVO.addRole(RoleConverter.convertAdminRole(user));
 
@@ -87,4 +89,22 @@ public class UserConverter {
         return userVO;
     }
 
+    /**
+     * Converts TrackData between layers
+     *
+     * Note: TrackData cannot be directly set in UserVO, bo passing UserVO to that method is required.
+     *
+     * @param user database user
+     * @param userVO facade user
+     * @return updated facade user
+     */
+    private static UserVO convertTrackData(RZMUser user, UserVO userVO) {
+
+        userVO.setCreated(user.getCreated());
+        userVO.setCreatedBy(user.getCreatedBy());
+        userVO.setModified(user.getModified());
+        userVO.setModifiedBy(user.getModifiedBy());
+
+        return userVO;
+    }
 }
