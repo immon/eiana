@@ -13,6 +13,7 @@ import java.util.Collections;
  *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
+ * @author Marcin Zajaczkowski
  */
 @Entity
 public class SystemUser extends RZMUser {
@@ -41,6 +42,10 @@ public class SystemUser extends RZMUser {
 
     final public boolean removeRole(Role role) {
         return this.roles.remove(role);
+    }
+
+    final public void clearRoles() {
+        this.roles.clear();
     }
 
     public boolean equals(Object o) {
