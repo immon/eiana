@@ -19,5 +19,5 @@
     <string name='resource.node.types'
             value='org/jbpm/graph/node/node.types.xml'/>
     <string name='resource.varmapping'
-            value='org/jbpm/context/exe/jbpm.varmapping.xml'/>
+            value='eiana.jbpm.varmapping.xml'/>
 </jbpm-configuration>
