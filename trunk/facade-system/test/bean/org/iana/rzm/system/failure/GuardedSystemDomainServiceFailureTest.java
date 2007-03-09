@@ -1,16 +1,19 @@
-package org.iana.rzm.system.accuracy;
+/**
+ * org.iana.rzm.system.failure
+ * (C) Research and Academic Computer Network - NASK
+ * piotrt, 2007-03-09, 09:29:25
+ */
+package org.iana.rzm.system.failure;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
-import org.iana.rzm.facade.system.*;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.AuthenticationService;
+import org.iana.rzm.facade.system.SystemDomainService;
+import org.iana.rzm.facade.system.DomainVO;
+import org.iana.rzm.facade.system.SimpleDomainVO;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.user.SystemUser;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.exceptions.InvalidNameException;
@@ -24,38 +27,37 @@ import java.util.Iterator;
  */
 
 @Test(groups = {"service", "facade-system"})
-public class GuardedSystemDomainServiceTest {
+public class GuardedSystemDomainServiceFailureTest {
     private SystemDomainService gsds;
-    private long domainId;
+    private long domainId1;
+    private long domainId2;
 
     @BeforeClass
-    public void init() throws Exception{
+    public void init() throws Exception {
         gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
-        DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
-        Domain domainCreated = new Domain("facadesystemiana.org");
-        domainCreated.setWhoisServer("whoIsServer");
-        domainDAO.create(domainCreated);
-        domainId = domainCreated.getObjId();
+            DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
+            Domain domainCreated = new Domain("facadesystemiana.org");
+            domainCreated.setWhoisServer("whoIsServer");
+            domainDAO.create(domainCreated);
+            domainId1 = domainCreated.getObjId();
+            domainCreated = new Domain("facadesystemiana2.org");
+            domainCreated.setWhoisServer("whoIsServer2");
+            domainDAO.create(domainCreated);
+            domainId2 = domainCreated.getObjId();
     }
 
-    @Test
-    public void testGetDomainById() throws Exception {
+    @Test (expectedExceptions = AccessDeniedException.class)
+    public void testGetDomainByWrongId() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
-        DomainVO domainVO = (DomainVO) gsds.getDomain(domainId);
-        assert domainVO.getName().equals("facadesystemiana.org");
+        DomainVO domainVO = (DomainVO) gsds.getDomain(domainId2);
     }
 
-    @Test
-    public void testGetDomainByUserName() throws Exception {
+    @Test (expectedExceptions = AccessDeniedException.class)
+    public void testGetDomainByWrongUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
-        List<SimpleDomainVO> list = gsds.findUserDomains("test");
-        assert !list.isEmpty();
-        for(Iterator iterator = list.iterator(); iterator.hasNext();) {
-            SimpleDomainVO simpleDomainVO = (SimpleDomainVO) iterator.next();
-            System.out.print("User Domain retrived by findUserDomains: " + simpleDomainVO.getName() + "\n");
-        }
+        List<SimpleDomainVO> list = gsds.findUserDomains("anotherUser");
     }
 
     private UserVO generateUser() {

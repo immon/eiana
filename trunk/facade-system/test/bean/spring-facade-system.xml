@@ -39,6 +39,41 @@
     <bean id="userManager" class="org.iana.rzm.system.accuracy.TestSystemUserManager"/>
 
 
+    <!--Sterss-->
+    <bean id="GuardedSystemDomainServiceStress" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.SystemDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedSystemDomainServiceTargetStress"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedSystemDomainServiceTargetStress" class="org.iana.rzm.facade.system.GuardedSystemDomainService">
+        <constructor-arg ref="SystemDomainServiceBeanStress"/>
+    </bean>
+
+    <bean id="SystemDomainServiceBeanStress" class="org.iana.rzm.facade.system.SystemDomainServiceBean">
+        <constructor-arg ref="domainManagerStress" />
+        <constructor-arg ref="userManagerStress" />
+    </bean>
+
+    <bean id="domainManagerStress" class="org.iana.rzm.domain.DomainManagerBean">
+        <constructor-arg ref="domainDAO" />
+    </bean>
+
+    <bean id="userManagerStress" class="org.iana.rzm.system.stress.TestSystemUserManagerStress"/>
+    <!---->
+
+
     <bean  id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
