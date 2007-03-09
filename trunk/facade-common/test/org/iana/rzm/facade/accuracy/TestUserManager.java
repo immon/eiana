@@ -9,7 +9,6 @@ import java.util.List;
  *
  * @author Marcin Zajaczkowski
  *
- * Q: should be here or in directory with tests?
  */
 public class TestUserManager implements UserManager {
 
@@ -36,7 +35,7 @@ public class TestUserManager implements UserManager {
 
         if (ADMIN_LOGIN_VALID.equals(loginName)) {
             return testAdminUser;
-        } else if (ADMIN_WITH_SECURID_LOGIN_VALID.equals(loginName)) {
+        } else if (ADMIN_WITH_SECURID_VALID_LOGIN.equals(loginName)) {
             return testAdminUserWithSecurID;
         } else if (WRONG_PASSWORD_LOGIN.equals(loginName)) {
             return testWrongPasswordUser;
@@ -46,15 +45,15 @@ public class TestUserManager implements UserManager {
     }
 
     public void create(RZMUser user) {
-        throw new IllegalStateException("Not implemented yet.");
+        throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
     public List<RZMUser> findAll() {
-        throw new IllegalStateException("Not implemented yet.");
+        throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
     public List<RZMUser> find(UserCriteria criteria){
-        throw new IllegalStateException("Not implemented yet.");
+        throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
     public static String ADMIN_LOGIN_VALID = "adminLogin";
@@ -75,7 +74,7 @@ public class TestUserManager implements UserManager {
         return adminUser;
     }
 
-    public static String ADMIN_WITH_SECURID_LOGIN_VALID = "adminWithSecurIDLogin";
+    public static String ADMIN_WITH_SECURID_VALID_LOGIN = "adminWithSecurIDLogin";
     public static String ADMIN_WITH_SECURID_PASSWORD_VALID = "adminWithSecurIDPassword";
     public static String ADMIN_WITH_SECURID_FIRST_NAME_VALID = "adminWithSecurIDFirstName";
     public static String ADMIN_WITH_SECURID_LAST_NAME_VALID = "adminWithSecurIDLastName";
@@ -85,7 +84,7 @@ public class TestUserManager implements UserManager {
         AdminUser adminUser = new AdminUser();
         adminUser.setFirstName(ADMIN_WITH_SECURID_FIRST_NAME_VALID);
         adminUser.setLastName(ADMIN_WITH_SECURID_LAST_NAME_VALID);
-        adminUser.setLoginName(ADMIN_WITH_SECURID_LOGIN_VALID);
+        adminUser.setLoginName(ADMIN_WITH_SECURID_VALID_LOGIN);
         adminUser.setPassword(ADMIN_WITH_SECURID_PASSWORD_VALID);
         adminUser.setType(AdminUser.Type.IANA_STAFF);
         adminUser.setSecurID(true);

@@ -9,13 +9,14 @@ import org.iana.securid.InvalidAuthenticationDataException;
  */
 public class TestSecurIDService implements SecurIDService {
 
-    public static String ADMIN_WITH_SECURID_SECURID_LOGIN_VALID = TestUserManager.ADMIN_WITH_SECURID_LOGIN_VALID;
-    public static String ADMIN_WITH_SECURID_SECURID_PASSWORD_VALID = "adminWithSecurIDSecurdIDPassword";
+    public static String ADMIN_WITH_SECURID_SECURID_VALID_LOGIN = TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN;
+    public static String ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD = "adminWithSecurIDSecurdIDPassword";
+    public static String ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD = "bad" + ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD;
 
     public void authenticate(String userName, String securID) throws InvalidAuthenticationDataException {
 
-        if (ADMIN_WITH_SECURID_SECURID_LOGIN_VALID.equals(userName) &&
-            ADMIN_WITH_SECURID_SECURID_PASSWORD_VALID.equals(securID)) {
+        if (ADMIN_WITH_SECURID_SECURID_VALID_LOGIN.equals(userName) &&
+            ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD.equals(securID)) {
             return;
         }
 
