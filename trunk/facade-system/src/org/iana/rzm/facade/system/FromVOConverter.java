@@ -8,12 +8,8 @@ import org.iana.rzm.common.exceptions.InvalidNameException;
  */
 
 public class FromVOConverter {
-    public static void convertToSimpleDomain(SimpleDomainVO fromSimpleDomainVO, Domain toDomain) {
-        try {
-            toDomain.setObjId(fromSimpleDomainVO.getObjId());
-            toDomain.setName(fromSimpleDomainVO.getName());
-        } catch (InvalidNameException e) {
-            //todo exception unreachable in conversion
-        }
+    public static void convertToSimpleDomain(SimpleDomainVO fromSimpleDomainVO, Domain toDomain) throws InvalidNameException {
+        toDomain.setObjId(fromSimpleDomainVO.getObjId());
+        toDomain.setName(fromSimpleDomainVO.getName());
     }
 }
