@@ -32,6 +32,19 @@ public interface SystemDomainService extends RZMStatefulService {
     IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException;
 
     /**
+     * <p>Returns a domain object with a given name. It checks whether the user has been granted access
+     * to the specified domain. For example, IANA stuff is allowed to access all domains while system users
+     * are permitted to access only those domain objects for which they are in one of the roles: AC, TC, SO.</p>
+     *
+     * @param name the name of the domain to be found
+     * @return the domain object if found and the user is allowed to access it
+     * @throws AccessDeniedException when the user is not allowed to access this method or the given domain object
+     * @throws NoObjectFoundException when the domain is not found
+     * @throws InfrastructureException when a low-level exception happened
+     */
+    IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException;
+
+    /**
      * <p>Returns a list of the domains objects that the provided user is granted to access. For example,
      * IANA stuff is allowed to access all domains thus this method returns all existing domain objects. While
      * system users are allowed to access only the domains for which they are in one of the roles: AC, TC, SO, thus

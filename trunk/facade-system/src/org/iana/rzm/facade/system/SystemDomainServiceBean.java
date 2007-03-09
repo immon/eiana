@@ -44,6 +44,18 @@ public class SystemDomainServiceBean implements SystemDomainService {
         }
     }
 
+    public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        try {
+            Domain domain = domainManager.get(name);
+            if (domain == null) throw new NoObjectFoundException(name);
+            DomainVO domainVO = new DomainVO();
+            ToVOConverter.convertToDomainVO(domain, domainVO);
+            return domainVO;
+        } catch (DomainException e) {
+            throw new InfrastructureException();
+        }
+    }
+
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         List<SimpleDomainVO> list = new ArrayList<SimpleDomainVO>();
         try {
