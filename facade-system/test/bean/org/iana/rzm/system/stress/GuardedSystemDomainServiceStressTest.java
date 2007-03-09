@@ -20,6 +20,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  * @author Piotr Tkaczyk
@@ -29,6 +30,7 @@ import java.util.Iterator;
 public class GuardedSystemDomainServiceStressTest {
     private static int NUMBER_OF_DOMAINS = 100; //must by changed also in TestSystemUserManagerStress class
     private SystemDomainService gsds;
+    private List<Long> idList = new ArrayList<Long>();
 
     @BeforeClass
     public void init() throws Exception {
@@ -38,6 +40,7 @@ public class GuardedSystemDomainServiceStressTest {
             Domain domainCreated = new Domain("facadesystemiana"+i+".org");
             domainCreated.setWhoisServer("whoIsServer"+i);
             domainDAO.create(domainCreated);
+            idList.add(domainCreated.getObjId());
         }
     }
 
@@ -47,6 +50,25 @@ public class GuardedSystemDomainServiceStressTest {
         gsds.setUser(testAuthUser.getAuthUser());
         List<SimpleDomainVO> list = gsds.findUserDomains("test");
         assert list.size() == NUMBER_OF_DOMAINS;
+    }
+
+    @Test
+    public void testGetDomainByName() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        for(int i=0; i<NUMBER_OF_DOMAINS; i++) {
+            DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana"+i+".org");
+        }
+    }
+
+    @Test
+    public void testGetDomainById() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        for(Iterator i = idList.iterator(); i.hasNext();) {
+            Long id = (Long) i.next();
+            DomainVO domainVO = (DomainVO) gsds.getDomain(id.longValue());
+        }
     }
 
     private UserVO generateUser() {

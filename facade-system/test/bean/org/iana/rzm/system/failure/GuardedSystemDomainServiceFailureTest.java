@@ -14,6 +14,7 @@ import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.exceptions.InvalidNameException;
@@ -51,6 +52,13 @@ public class GuardedSystemDomainServiceFailureTest {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId2);
+    }
+
+    @Test (expectedExceptions = NoObjectFoundException.class)
+    public void testGetDomainByWrongName() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        DomainVO domainVO = (DomainVO) gsds.getDomain("wrongdomainname.org");
     }
 
     @Test (expectedExceptions = AccessDeniedException.class)
