@@ -28,7 +28,7 @@ public class JbpmTestContextFactory {
                     "  <string name='resource.node.types' " +
                     "          value='org/jbpm/graph/node/node.types.xml' />" +
                     "  <string name='resource.varmapping' " +
-                    "          value='jbpm.varmapping.xml' />" +
+                    "          value='eiana-trans.jbpm.varmapping.xml'/>" +                                                         
                     "</jbpm-configuration>";
 
     private static JbpmConfiguration jbpmConfiguration =

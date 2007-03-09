@@ -3,16 +3,19 @@ package org.iana.rzm.trans;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
+import org.jbpm.JbpmContext;
 import org.testng.annotations.Test;
 
 /**
  * @author Jakub Laszkiewicz
  */
 public class JbpmTest {
-    @Test
+
+    @Test(groups = {"accuracy", "eiana-trans", "jbpm","simple"})
     public void testSimpleProcess() {
+        
         ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
-                "<process-definition>" +
+                        "<process-definition name='simple'>" +
                         "  <start-state>" +
                         "    <transition to='s' />" +
                         "  </start-state>" +
@@ -22,10 +25,12 @@ public class JbpmTest {
                         "  <end-state name='end' />" +
                         "</process-definition>"
         );
+        
 
         ProcessInstance processInstance = new ProcessInstance(processDefinition);
 
         Token token = processInstance.getRootToken();
+        
         assert processDefinition.getStartState() == token.getNode();
 
         token.signal();
@@ -35,7 +40,7 @@ public class JbpmTest {
         assert processDefinition.getNode("end") == token.getNode();
     }
 
-    @Test
+    @Test(groups = {"accuracy", "eiana-trans", "jbpm","simple"})
     public void testThreeStateProcess() {
         ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
                 "<process-definition>" +
