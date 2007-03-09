@@ -139,7 +139,7 @@
      Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
      Reports from tests are aviable in "Report" directory.
      -->
-     <target name="all.test" depends="clean,all.compile,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+     <target name="all.test" depends="clean,all.compile" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
          <condition property="test.group.excluded" value="">
              <not><isset property="test.group.excluded"/></not>
