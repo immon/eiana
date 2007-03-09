@@ -29,17 +29,14 @@ public class GuardedSystemDomainServiceTest {
     private long domainId;
 
     @BeforeClass
-    public void init() {
-        gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
-        try {
+    public void init() throws InvalidNameException {
+            gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
             DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
             Domain domainCreated = new Domain("iana.org");
             domainCreated.setWhoisServer("whoIsServer");
             domainDAO.create(domainCreated);
             domainId = domainCreated.getObjId();
-        } catch (InvalidNameException e) {
-           //
-        }
+
     }
 
     @Test

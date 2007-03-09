@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.jbpm.test;
+package org.iana.rzm.trans;
 
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;

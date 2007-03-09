@@ -11,7 +11,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 abstract public class HibernateTest {
     protected Session session;
     protected Transaction tx = null;
-    protected SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+    protected SessionFactory sessionFactory = new AnnotationConfiguration().configure("eiana-trans.hibernate.cfg.xml").buildSessionFactory();
 
     protected void begin() {
         session = sessionFactory.openSession();

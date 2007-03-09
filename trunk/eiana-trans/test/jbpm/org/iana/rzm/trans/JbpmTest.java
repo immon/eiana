@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.jbpm.test;
+package org.iana.rzm.trans;
 
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
