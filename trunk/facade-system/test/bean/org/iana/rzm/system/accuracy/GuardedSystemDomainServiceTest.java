@@ -9,6 +9,7 @@ import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.SystemUser;
 import org.iana.rzm.domain.dao.DomainDAO;
@@ -43,6 +44,14 @@ public class GuardedSystemDomainServiceTest {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId);
+        assert domainVO.getName().equals("facadesystemiana.org");
+    }
+
+    @Test
+    public void testGetDomainByName() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana.org");
         assert domainVO.getName().equals("facadesystemiana.org");
     }
 
