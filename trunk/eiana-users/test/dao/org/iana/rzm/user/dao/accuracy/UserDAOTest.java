@@ -25,7 +25,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void testCreate() throws Exception {
+    public void testUserCreate() throws Exception {
         RZMUser userCreated = new AdminUser();
         userCreated.setFirstName("Geordi");
         userCreated.setLastName("LaForge");
@@ -37,8 +37,8 @@ public class UserDAOTest {
         assert "LaForge".equals(userRetrieved.getLastName());
     }
 
-    @Test(dependsOnMethods = {"testCreate"})
-    public void testUpdate() throws Exception {
+    @Test(dependsOnMethods = {"testUserCreate"})
+    public void testUserUpdate() throws Exception {
         RZMUser userRetrieved = dao.get(crObjId);
         assert userRetrieved != null;
         userRetrieved.setFirstName("John");
@@ -50,8 +50,8 @@ public class UserDAOTest {
         assert "John".equals(userRetrieved2.getFirstName());
     }
 
-    @Test(dependsOnMethods = {"testCreate"})
-    public void testDelete() throws Exception {
+    @Test(dependsOnMethods = {"testUserUpdate"})
+    public void testUserDelete() throws Exception {
         RZMUser userRetrieved = dao.get(crObjId);
         assert userRetrieved != null;
         dao.delete(userRetrieved);
