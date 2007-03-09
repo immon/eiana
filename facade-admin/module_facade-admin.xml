@@ -13,7 +13,7 @@
   </path>
   
   <path id="facade-admin.module.classpath">
-    <pathelement location="${module.facade-admin.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${module.facade-admin.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
   </path>

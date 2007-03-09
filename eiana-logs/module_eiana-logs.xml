@@ -13,7 +13,7 @@
   </path>
   
   <path id="eiana-logs.module.classpath">
-    <pathelement location="${module.eiana-logs.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
+    <pathelement location="${module.eiana-logs.basedir}/../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
   </path>
   
   
