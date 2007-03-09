@@ -1,8 +1,3 @@
-/**
- * org.iana.rzm.system.failure
- * (C) Research and Academic Computer Network - NASK
- * piotrt, 2007-03-09, 09:29:25
- */
 package org.iana.rzm.system.failure;
 
 import org.testng.annotations.Test;

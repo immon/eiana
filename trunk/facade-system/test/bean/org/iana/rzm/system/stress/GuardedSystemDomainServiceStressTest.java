@@ -1,9 +1,5 @@
-/**
- * org.iana.rzm.system.stress
- * (C) Research and Academic Computer Network - NASK
- * piotrt, 2007-03-09, 09:46:38
- */
 package org.iana.rzm.system.stress;
+
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;

@@ -1,14 +1,13 @@
-/**
- * org.iana.rzm.system.stress
- * (C) Research and Academic Computer Network - NASK
- * piotrt, 2007-03-09, 10:37:53
- */
 package org.iana.rzm.system.stress;
 
 import org.iana.rzm.user.*;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import java.util.List;
+
+/**
+ * @author Piotr Tkaczyk
+ */
 
 public class TestSystemUserManagerStress implements UserManager {
 
