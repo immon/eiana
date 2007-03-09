@@ -23,7 +23,7 @@ class RoleConverter {
         systemRoleVO.setName(role.getName());
         systemRoleVO.setType(convertType(role.getType()));
         systemRoleVO.setNotify(role.isNotify());
-        systemRoleVO.setAcceptFrom(role.isNotify());
+        systemRoleVO.setAcceptFrom(role.isAcceptFrom());
         systemRoleVO.setMustAccept(role.isMustAccept());
 
         return systemRoleVO;
@@ -34,6 +34,7 @@ class RoleConverter {
         SystemRoleVO.SystemType typeVO;
 
         //maybe it's possible to do that better/faster/prettier...
+        //todo could be done using map
         if (type == Role.Type.AC) {
             typeVO = SystemRoleVO.SystemType.AC;
         } else if (type == Role.Type.TC) {
