@@ -13,7 +13,6 @@
   </path>
   
   <path id="facade-common.module.classpath">
-    <pathelement location="${module.facade-common.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/javaee.jar"/>
     <path refid="library.jbpm.classpath"/>
     <pathelement location="${eiana-users.output.dir}"/>
     <pathelement location="${eiana-users.testoutput.dir}"/>
@@ -24,6 +23,7 @@
     <path refid="library.spring.classpath"/>
     <pathelement location="${integration-securid.output.dir}"/>
     <pathelement location="${integration-securid.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
   </path>
   
   

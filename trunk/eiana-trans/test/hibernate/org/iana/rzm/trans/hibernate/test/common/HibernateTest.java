@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.testng.annotations.BeforeClass;
 
 /**
  * @author Jakub Laszkiewicz
@@ -11,7 +12,12 @@ import org.hibernate.cfg.AnnotationConfiguration;
 abstract public class HibernateTest {
     protected Session session;
     protected Transaction tx = null;
-    protected SessionFactory sessionFactory = new AnnotationConfiguration().configure("eiana-trans.hibernate.cfg.xml").buildSessionFactory();
+    protected SessionFactory sessionFactory;
+
+    @BeforeClass
+    public void init() {
+        sessionFactory = new AnnotationConfiguration().configure("eiana-trans-hibernate.cfg.xml").buildSessionFactory();
+    }
 
     protected void begin() {
         session = sessionFactory.openSession();

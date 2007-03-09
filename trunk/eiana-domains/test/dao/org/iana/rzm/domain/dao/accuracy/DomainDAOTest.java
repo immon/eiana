@@ -23,11 +23,10 @@ public class DomainDAOTest {
 
     @Test
     public void testCreate() throws Exception {
-        Domain domainCreated = new Domain("iana.org");
+        Domain domainCreated = new Domain("dao.org");
         dao.create(domainCreated);
         Domain domainRetrieved = dao.get(domainCreated.getObjId());
-        System.out.println("domainRetrieved: " + domainRetrieved.getName());
-        assert "iana.org".equals(domainRetrieved.getName());
+        assert "dao.org".equals(domainRetrieved.getName());
     }
 
     @Test(dependsOnMethods = {"testCreate"})
