@@ -7,6 +7,9 @@ import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.AdminRoleVO;
 import org.iana.rzm.common.validators.CheckTool;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * org.iana.rzm.facade.user.converter.RoleConverter
  *
@@ -15,6 +18,19 @@ import org.iana.rzm.common.validators.CheckTool;
  * @author Marcin Zajaczkowski
  */
 class RoleConverter {
+
+    static Map<Role.Type, SystemRoleVO.SystemType> systemRolesMap = new HashMap<Role.Type, SystemRoleVO.SystemType>();
+    static Map<AdminUser.Type, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminUser.Type, AdminRoleVO.AdminType>();
+
+    static {
+        systemRolesMap.put(Role.Type.AC, SystemRoleVO.SystemType.AC);
+        systemRolesMap.put(Role.Type.TC, SystemRoleVO.SystemType.TC);
+        systemRolesMap.put(Role.Type.SO, SystemRoleVO.SystemType.SO);
+
+        adminRolesMap.put(AdminUser.Type.IANA_STAFF, AdminRoleVO.AdminType.IANA);
+        adminRolesMap.put(AdminUser.Type.GOV_OVERSIGHT, AdminRoleVO.AdminType.GOV_OVERSIGHT);
+        adminRolesMap.put(AdminUser.Type.ZONE_PUBLISHER, AdminRoleVO.AdminType.ZONE_PUBLISHER);
+    }
 
     static RoleVO convertRole(Role role) {
         
@@ -31,19 +47,8 @@ class RoleConverter {
 
     private static SystemRoleVO.SystemType convertType(Role.Type type) {
 
-        SystemRoleVO.SystemType typeVO;
-
-        //maybe it's possible to do that better/faster/prettier...
-        //todo could be done using map
-        if (type == Role.Type.AC) {
-            typeVO = SystemRoleVO.SystemType.AC;
-        } else if (type == Role.Type.TC) {
-            typeVO = SystemRoleVO.SystemType.TC;
-        } else if (type == Role.Type.SO) {
-            typeVO = SystemRoleVO.SystemType.SO;
-        } else {
-            throw new IllegalArgumentException("Unknown role type: " + type.toString());
-        }
+        SystemRoleVO.SystemType typeVO = systemRolesMap.get(type);
+        CheckTool.checkNull(typeVO, "Unknown role type: " + type.toString());
 
         return typeVO;
     }
@@ -54,18 +59,9 @@ class RoleConverter {
 
         RoleVO adminRoleVO = new AdminRoleVO();
 
-        if (admin.getType() == AdminUser.Type.IANA_STAFF) {
-            adminRoleVO.setType(AdminRoleVO.AdminType.IANA);
-
-        } else if (admin.getType() == AdminUser.Type.GOV_OVERSIGHT) {
-            adminRoleVO.setType(AdminRoleVO.AdminType.GOV_OVERSIGHT);
-
-        } else if (admin.getType() == AdminUser.Type.ZONE_PUBLISHER) {
-            adminRoleVO.setType(AdminRoleVO.AdminType.ZONE_PUBLISHER);
-
-        } else {
-            throw new IllegalArgumentException("Unknown admin type: " + admin.getType().toString());
-        }
+        AdminRoleVO.Type adminRole = adminRolesMap.get(admin.getType());
+        CheckTool.checkNull(adminRole, "Unknown admin type: " + admin.getType().toString());
+        adminRoleVO.setType(adminRole);
 
         return adminRoleVO;
     }
