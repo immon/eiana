@@ -27,4 +27,8 @@ public class AdminRoleVO extends RoleVO {
     public void setType(AdminType type) {
         super.setType(type);
     }
+
+    public boolean isAdmin() {
+        return true;
+    }
 }
