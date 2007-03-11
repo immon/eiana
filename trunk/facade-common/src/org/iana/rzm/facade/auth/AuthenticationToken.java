@@ -7,6 +7,7 @@ import java.util.HashSet;
  * <p>This class represents an authentication process and holds a set of valid credentials obtained so far.</p>
  *
  * @author Patrycja Wegrzynowicz
+ * @author Marcin Zajaczkowski
  */
 public class AuthenticationToken {
 

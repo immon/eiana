@@ -4,6 +4,8 @@ package org.iana.rzm.facade.auth;
  * org.iana.rzm.facade.auth.AuthenticationInternalException
  *
  * @author Marcin Zajaczkowski
+ *
+ * @deprecated Not needed after refactoring
  */
 public class AuthenticationInternalException extends AuthenticationException {
 

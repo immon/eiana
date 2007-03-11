@@ -21,6 +21,8 @@ public interface AuthenticationData {
      *
      * @param visitor the visitor implementation to be accepted by this instance.
      * @throws AuthenticationException when error occured during processing inside the visitor.
+     *
+     * @deprecated 
      */
     public void accept(AuthenticationVisitor visitor) throws AuthenticationException;
 }
