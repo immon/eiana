@@ -87,6 +87,39 @@ public class UserConversionTest {
         compareAdminUserType(userVO, AdminRoleVO.AdminType.ZONE_PUBLISHER);
     }
 
+    @Test
+    public void testAdminRole() throws Exception {
+
+        AdminUser admin = new AdminUser();
+        HibernateMappingTestUtil.setupUser(admin, "t", false);
+        admin.setType(AdminUser.Type.IANA_STAFF);
+
+        UserVO adminVO = UserConverter.convert(admin);
+        compareRZMUser(adminVO, admin);
+        compareAdminUserType(adminVO, AdminRoleVO.AdminType.IANA);
+        assert adminVO.isAdmin();
+
+        admin.setType(AdminUser.Type.GOV_OVERSIGHT);
+
+        adminVO = UserConverter.convert(admin);
+        compareRZMUser(adminVO, admin);
+        compareAdminUserType(adminVO, AdminRoleVO.AdminType.GOV_OVERSIGHT);
+        assert adminVO.isAdmin();
+
+        admin.setType(AdminUser.Type.ZONE_PUBLISHER);
+
+        adminVO = UserConverter.convert(admin);
+        compareRZMUser(adminVO, admin);
+        compareAdminUserType(adminVO, AdminRoleVO.AdminType.ZONE_PUBLISHER);
+        assert adminVO.isAdmin();
+
+        SystemUser user = new SystemUser();
+        HibernateMappingTestUtil.setupUser(user, "t", false);
+        UserVO userVO = UserConverter.convert(user);
+        compareRZMUser(userVO, user);
+        assert !userVO.isAdmin();
+    }
+
     private void compareAdminUserType(UserVO userVO, AdminRoleVO.Type type) {
 
         Set<RoleVO> roles = userVO.getRoles();

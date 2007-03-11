@@ -55,7 +55,12 @@ public class UserVO implements Trackable {
     }
 
     public boolean isAdmin() {
-        // todo: check if contains one of Admin roles...
+        if (roles == null) return false;
+
+        for (RoleVO role : roles) {
+            if (role.isAdmin()) return true;
+        }
+
         return false;
     }
 

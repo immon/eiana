@@ -62,4 +62,8 @@ public class SystemRoleVO extends RoleVO {
     public void setMustAccept(boolean mustAccept) {
         this.mustAccept = mustAccept;
     }
+
+    public boolean isAdmin() {
+        return false;
+    }
 }
