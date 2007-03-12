@@ -21,7 +21,9 @@ import java.sql.Timestamp;
 public class Role implements TrackedObject {
 
     public static enum Type implements UserType {
-        AC, TC, SO
+        AC, //Administrative Contact
+        TC, //Technical Contact
+        SO  //Supporting Organization
     }
 
     @Embedded

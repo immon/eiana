@@ -179,6 +179,7 @@ public abstract class RZMUser implements TrackedObject {
         return trackData;
     }
 
+    //marcinz: has to be public?
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
     }
