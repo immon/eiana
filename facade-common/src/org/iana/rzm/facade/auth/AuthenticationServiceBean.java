@@ -10,11 +10,7 @@ import java.util.Map;
  * @author Marcin Zajaczkowski
  * @author Patrycja Wegrzynowicz
  */
-
-@Stateless
 public class AuthenticationServiceBean implements AuthenticationService {
-
-    private final Logger loger = Logger.getLogger(getClass());
 
     private Map<String, AuthenticationService> authenticators;
 
