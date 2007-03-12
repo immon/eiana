@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 public class GuardedSystemDomainServiceTest {
     private SystemDomainService gsds;
     private long domainId;
+    private long domainId1;
     Set<String> domainNames = new HashSet<String>();
 
     @BeforeClass (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
@@ -40,42 +41,67 @@ public class GuardedSystemDomainServiceTest {
         DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
 
         Domain domainCreated = new Domain("facadesystemiana.org");
-            domainCreated.setWhoisServer("WhoIsServer");
             domainDAO.create(domainCreated);
             domainId = domainCreated.getObjId();
             domainNames.add(domainCreated.getName());
 
         domainCreated = new Domain("facadesystemiana1.org");
-            domainCreated.setWhoisServer("WhoIsServer1");
             domainDAO.create(domainCreated);
+            domainId1 = domainCreated.getObjId();
             domainNames.add(domainCreated.getName());
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
-    public void testGetDomainById() throws Exception {
+    public void testGetFirstDomainById() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId);
         assert domainVO.getName().equals("facadesystemiana.org");
+        assert domainVO.getObjId() == domainId;
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
-    public void testGetDomainByName() throws Exception {
+    public void testGetSecondDomainById() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        DomainVO domainVO = (DomainVO) gsds.getDomain(domainId1);
+        assert domainVO.getName().equals("facadesystemiana1.org");
+        assert domainVO.getObjId() == domainId1;
+    }
+
+    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    public void testGetFirstDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana.org");
         assert domainVO.getName().equals("facadesystemiana.org");
+        assert domainVO.getObjId() == domainId;
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
-    public void testfindUserDomainsByUserName() throws Exception {
+    public void testGetSecondDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
-        List<SimpleDomainVO> list = gsds.findUserDomains("test");
-        assert !list.isEmpty();
-        assert list.size() == 2;
-        for (SimpleDomainVO simpleDomainVO : list)
-            assert domainNames.contains(simpleDomainVO.getName());
+        DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana1.org");
+        assert domainVO.getName().equals("facadesystemiana1.org");
+        assert domainVO.getObjId() == domainId1;
+    }
+
+    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    public void testFindUserDomainsByUserName() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+
+        List<SimpleDomainVO> simpleDomainVOList = gsds.findUserDomains("test");
+
+        assert !simpleDomainVOList.isEmpty();
+        assert simpleDomainVOList.size() == 2;
+
+        Set<String> retrivedNames = new HashSet<String>();
+        for (SimpleDomainVO simpleDomainVO : simpleDomainVOList)
+            assert retrivedNames.add(simpleDomainVO.getName());
+
+        assert domainNames.equals(retrivedNames);
     }
 
     private UserVO generateUser() {
