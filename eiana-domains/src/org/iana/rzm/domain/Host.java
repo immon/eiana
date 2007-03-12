@@ -134,10 +134,6 @@ public class Host implements TrackedObject {
         return result;
     }
 
-    public Long getId() {
-        return trackData.getId();
-    }
-
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
