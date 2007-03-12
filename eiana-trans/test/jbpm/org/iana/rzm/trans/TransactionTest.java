@@ -1,16 +1,13 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionManagerBean;
-import org.iana.rzm.trans.TransactionException;
-import org.iana.rzm.trans.JbpmTestContextFactory;
 import org.iana.rzm.common.TrackData;
+import org.iana.rzm.trans.dao.TransactionDAO;
 import org.jbpm.JbpmContext;
-import org.jbpm.JbpmConfiguration;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.testng.annotations.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Jakub Laszkiewicz
@@ -23,9 +20,12 @@ public class TransactionTest {
 
     private long ticketId;
 
+    private TransactionDAO dao;
+
     @BeforeClass(groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
     public void init() {        
         deployProcessDefinition();
+        dao = (TransactionDAO) new ClassPathXmlApplicationContext("eiana-trans-spring.xml").getBean("transactionDAO");
     }
 
     @Test(dependsOnGroups = "simple",groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
@@ -42,7 +42,7 @@ public class TransactionTest {
         context.close();
         transactionId = transaction.getTransactionID();
         context = JbpmTestContextFactory.getJbpmContext();
-        TransactionManagerBean manager = new TransactionManagerBean(context);
+        TransactionManagerBean manager = new TransactionManagerBean(context, dao);
         Transaction transFromDB = manager.get(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
     }
@@ -50,14 +50,14 @@ public class TransactionTest {
     @Test(dependsOnMethods = ("testTransactionCreation"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
     public void testTranactionUpdate() throws NoSuchTransactionException {
         JbpmContext context = JbpmTestContextFactory.getJbpmContext();
-        TransactionManagerBean manager = new TransactionManagerBean(context);
+        TransactionManagerBean manager = new TransactionManagerBean(context, dao);
         Transaction transToUpdate = manager.get(transactionId);
         assert transToUpdate.getTicketID().equals(new Long(ticketId));
         ticketId = 456L;
         transToUpdate.setTicketID(ticketId);
         context.close();
         context = JbpmTestContextFactory.getJbpmContext();
-        manager = new TransactionManagerBean(context);
+        manager = new TransactionManagerBean(context, dao);
         Transaction transFromDB = manager.get(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
         context.close();
@@ -66,7 +66,7 @@ public class TransactionTest {
     @Test(dependsOnMethods = ("testTranactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
        public void testTranactionAccept() throws NoSuchTransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
-           TransactionManagerBean manager = new TransactionManagerBean(context);
+           TransactionManagerBean manager = new TransactionManagerBean(context, dao);
            Transaction trans = manager.get(transactionId);
            assert trans != null;
            trans.accept();
@@ -77,7 +77,7 @@ public class TransactionTest {
      @Test(dependsOnMethods = ("testTranactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
        public void testTranactionReject() throws NoSuchTransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
-           TransactionManagerBean manager = new TransactionManagerBean(context);
+           TransactionManagerBean manager = new TransactionManagerBean(context, dao);
            Transaction trans = manager.get(transactionId);
            assert trans != null;
            trans.reject();

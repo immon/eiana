@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <!-- dao configuration -->
+
+    <bean id="transactionDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.dao.TransactionDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="transactionDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="transactionDAOTarget" class="org.iana.rzm.trans.dao.HibernateTransactionDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="configLocation">
+            <value>eiana-trans-hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <!-- transactional properties -->
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="transactionAttribute"
+          class="org.springframework.transaction.interceptor.DefaultTransactionAttribute">
+        <property name="propagationBehaviorName">
+            <value>PROPAGATION_REQUIRED</value>
+        </property>
+        <property name="isolationLevelName">
+            <value>ISOLATION_READ_COMMITTED</value>
+        </property>
+    </bean>
+
+    <bean id="transactionAttributeSource"
+          class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+        <property name="transactionAttribute">
+            <ref bean="transactionAttribute"/>
+        </property>
+    </bean>
+</beans>

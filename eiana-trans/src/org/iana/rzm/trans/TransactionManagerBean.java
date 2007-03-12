@@ -1,8 +1,10 @@
 package org.iana.rzm.trans;
 
+import org.hibernate.Query;
 import org.iana.rzm.domain.Domain;
-import org.jbpm.db.GraphSession;
+import org.iana.rzm.trans.dao.TransactionDAO;
 import org.jbpm.JbpmContext;
+import org.jbpm.db.GraphSession;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
@@ -12,10 +14,11 @@ import java.util.List;
  */
 public class TransactionManagerBean implements TransactionManager {
     private JbpmContext context;
+    private TransactionDAO dao;
 
-
-    public TransactionManagerBean(JbpmContext context) {
+    public TransactionManagerBean(JbpmContext context, TransactionDAO dao) {
         this.context = context;
+        this.dao = dao;
     }
 
     public Transaction get(long id) throws NoSuchTransactionException {
@@ -36,5 +39,9 @@ public class TransactionManagerBean implements TransactionManager {
 
     public List<Transaction> find(TransactionCriteria criteria) {
         return null;
+    }
+
+    public List<ProcessInstance> findAllProcessInstances(String domainName) {
+        return dao.findAllProcessInstances(domainName);
     }
 }
