@@ -10,7 +10,7 @@ import org.iana.rzm.facade.auth.*;
  *
  * @author Marcin Zajaczkowski
  */
-@Test(groups = {"facade", "facade-common"})
+@Test(groups = {"facade", "facade-common", "facade-auth"})
 public class SecurIDAuthenticatorTest {
 
     private AuthenticationService authService;
@@ -22,69 +22,42 @@ public class SecurIDAuthenticatorTest {
         securIDAuthenticator = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("securIDAuthenticator");
     }
 
-    @Test
+    @Test (expectedExceptions = {ClassCastException.class})
     public void testAuthenticateWithWrongAuthType() throws Exception {
 
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+            authService.authenticate(passwordAuth);
 
         } catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.SECURID) {
 
-                SecurIDAuth securIDAuth = new SecurIDAuth(
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
-
-                try {
                     //as a parametr to SecurIDAuthenticator with Token can be passed only SecurdIDAuth (not PasswordAuth)
                     securIDAuthenticator.authenticate(e.getToken(), passwordAuth);
-
-                } catch (ClassCastException ee) {
-                    return;
-                }
-                assert false;
             }
-            assert false;
         }
-        assert false;
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullData() throws Exception {
 
-        try {
-            securIDAuthenticator.authenticate(null);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-        assert false;
+        securIDAuthenticator.authenticate(null);
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullToken() throws Exception {
 
         SecurIDAuth securIDAuth = new SecurIDAuth(
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
-        try {
-            securIDAuthenticator.authenticate(null, securIDAuth);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-        assert false;
+        securIDAuthenticator.authenticate(null, securIDAuth);
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullBoth() throws Exception {
 
-        try {
-            securIDAuthenticator.authenticate(null, null);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-        assert false;
+        securIDAuthenticator.authenticate(null, null);
     }
 }

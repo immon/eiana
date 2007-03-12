@@ -10,7 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  * @author Marcin Zajaczkowski
  */
-@Test(groups = {"facade", "facade-common"})
+@Test(groups = {"facade", "facade-common", "facade-auth"})
 public class PasswordAuthenticatorTest {
 
     private AuthenticationService authService;
@@ -22,6 +22,7 @@ public class PasswordAuthenticatorTest {
         passwordAuthenticator = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("passwordAuthenticator");
     }
 
+    //Note: expectedExceptions cannot be used because that exception can be throw in multiple places (and in some of them it's ok)
     @Test
     public void testAuthenticateWithToken() throws Exception {
 
@@ -29,7 +30,7 @@ public class PasswordAuthenticatorTest {
 
         try {
             //to get token for the next test
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+            authService.authenticate(passwordAuth);
 
         } catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.SECURID) {
@@ -54,60 +55,36 @@ public class PasswordAuthenticatorTest {
         assert false;
     }
 
-    @Test
+    @Test (expectedExceptions = {ClassCastException.class})
     public void testAuthenticateWithSecurID() throws Exception {
 
         SecurIDAuth securIDAuth = new SecurIDAuth(
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
 
-        try {
-            //as a parametr to PasswordAuthenticator can be passed only PasswordAuth (not SecurIDAuth)
-            passwordAuthenticator.authenticate(securIDAuth);
-
-        } catch(ClassCastException e) {
-            return;
-        }
-        assert false;
+        //as a parametr to PasswordAuthenticator can be passed only PasswordAuth (not SecurIDAuth)
+        passwordAuthenticator.authenticate(securIDAuth);
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullData() throws Exception {
 
-        try {
-            passwordAuthenticator.authenticate(null);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-
-        assert false;
+        passwordAuthenticator.authenticate(null);
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullToken() throws Exception {
 
         SecurIDAuth securIDAuth = new SecurIDAuth(
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
-        try {
-            passwordAuthenticator.authenticate(null, securIDAuth);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-
-        assert false;
+        passwordAuthenticator.authenticate(null, securIDAuth);
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullBoth() throws Exception {
 
-        try {
-            passwordAuthenticator.authenticate(null, null);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-
-        assert false;
+        passwordAuthenticator.authenticate(null, null);
     }
 }
