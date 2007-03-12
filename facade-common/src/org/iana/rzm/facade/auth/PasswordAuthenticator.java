@@ -43,6 +43,8 @@ public class PasswordAuthenticator implements AuthenticationService {
     }
 
     public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
+        CheckTool.checkNull(token, "authentication token");
+        CheckTool.checkNull(data, "authentication data");
         throw new AuthenticationRequiredException(Authentication.SECURID);
     }
 }

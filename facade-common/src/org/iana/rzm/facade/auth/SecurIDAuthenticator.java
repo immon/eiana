@@ -33,7 +33,7 @@ public class SecurIDAuthenticator implements AuthenticationService {
     }
 
     public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
-        CheckTool.checkNull(data, "authentication token");
+        CheckTool.checkNull(token, "authentication token");
         CheckTool.checkNull(data, "authentication data");
         if (!token.hasCredential(Authentication.PASSWORD)) throw new AuthenticationRequiredException(Authentication.PASSWORD);
 
