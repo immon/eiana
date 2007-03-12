@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.change;
 
+import org.iana.rzm.common.validators.CheckTool;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -22,6 +24,10 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
     private List<? extends T> changes;
 
     private ObjectValue() {
+    }
+
+    public ObjectValue(List<? extends T> changes) {
+        this.changes = changes;
     }
 
     public ObjectValue(long id, String name, List<? extends T> changes) {
@@ -52,5 +58,10 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
 
     public void setChanges(List<? extends T> changes) {
         this.changes = changes;
+    }
+
+    public void accept(ValueVisitor visitor) {
+        CheckTool.checkNull(visitor, "value visitor");
+        visitor.visitObjectValue(this);
     }
 }
