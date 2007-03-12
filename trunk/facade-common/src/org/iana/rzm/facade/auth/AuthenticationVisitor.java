@@ -11,8 +11,6 @@ package org.iana.rzm.facade.auth;
  * may look more appropriate in this case Visitor has been chosen as a simple alternative with a static type checking.</p> 
  *
  * @author Patrycja Wegrzynowicz
- *
- * @deprecated Authernticator should be used instead
  */
 public interface AuthenticationVisitor {
 
