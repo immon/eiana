@@ -27,6 +27,8 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        if (id < 1) throw new IllegalArgumentException ("Domain Id value out of range");
         DomainVO domainVO = (DomainVO) delegate.getDomain(id);
         if (!isInRole(domainVO.getName()))
             throw new AccessDeniedException("user is not in any role for this domain");
@@ -34,6 +36,8 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        CheckTool.checkEmpty(name, "Domain name");
         DomainVO domainVO = (DomainVO) delegate.getDomain(name);
         if (!isInRole(domainVO.getName()))
             throw new AccessDeniedException("user is not in any role for this domain");
@@ -41,6 +45,7 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
+        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
         CheckTool.checkEmpty(userName, "user name");
         if(user.isAdmin() || user.getUserName().equals(userName))
             return delegate.findUserDomains(userName);
