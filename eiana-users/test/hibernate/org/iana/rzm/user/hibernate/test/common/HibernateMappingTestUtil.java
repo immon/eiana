@@ -15,7 +15,6 @@ public class HibernateMappingTestUtil {
     public static TrackData setupTrackedObject(TrackData to, String prefix, Long id) {
         to.setCreated(new Timestamp(System.currentTimeMillis()));
         to.setCreatedBy(prefix + "-creator");
-        to.setId(id);
         to.setModified(new Timestamp(System.currentTimeMillis()));
         to.setModifiedBy(prefix + "-modifier");
         return to;
