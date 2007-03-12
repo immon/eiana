@@ -23,65 +23,12 @@ public class PasswordAuthenticatorTest {
     }
 
     @Test
-    public void testAuthenticate() throws Exception {
-
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
-
-        AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
-        assert authenticatedUser != null;
-        assert TestUserManager.ADMIN_FIRST_NAME_VALID.equals(authenticatedUser.getFirstName());
-        assert TestUserManager.ADMIN_LAST_NAME_VALID.equals(authenticatedUser.getLastName());
-    }
-    
-    @Test
-    //could be moved to failure package
-    public void testAuthenticateNoUser() throws Exception {
-
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.NON_EXIST_LOGIN, "foo");
-
-        try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
-
-        } catch(AuthenticationFailedException e) {
-            return;
-        }
-        assert false;
-    }
-
-    @Test
-    //could be moved to failure package
-    public void testAuthenticateWrongPassword() throws Exception {
-
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.WRONG_PASSWORD_LOGIN, TestUserManager.WRONG_PASSWORD_PASSWORD);
-
-        try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
-
-        } catch(AuthenticationFailedException e) {
-            return;
-        }
-        assert false;
-    }
-
-    @Test
-    public void testAuthenticateWithNullData() throws Exception {
-
-        try {
-            authService.authenticate(null);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-
-        assert false;
-    }
-
-    @Test
     public void testAuthenticateWithToken() throws Exception {
 
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
-            //to get token for further test
+            //to get token for the next test
             AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
 
         } catch (AuthenticationRequiredException e) {
@@ -89,7 +36,7 @@ public class PasswordAuthenticatorTest {
 
                 SecurIDAuth securIDAuth = new SecurIDAuth(
                         TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
+                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
                 AuthenticatedUser authenticatedUser;
                 try {
@@ -121,6 +68,46 @@ public class PasswordAuthenticatorTest {
         } catch(ClassCastException e) {
             return;
         }
+        assert false;
+    }
+
+    @Test
+    public void testAuthenticateWithNullData() throws Exception {
+
+        try {
+            passwordAuthenticator.authenticate(null);
+        } catch(IllegalArgumentException e) {
+            return;
+        }
+
+        assert false;
+    }
+
+    @Test
+    public void testAuthenticateWithNullToken() throws Exception {
+
+        SecurIDAuth securIDAuth = new SecurIDAuth(
+                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
+                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
+
+        try {
+            passwordAuthenticator.authenticate(null, securIDAuth);
+        } catch(IllegalArgumentException e) {
+            return;
+        }
+
+        assert false;
+    }
+
+    @Test
+    public void testAuthenticateWithNullBoth() throws Exception {
+
+        try {
+            passwordAuthenticator.authenticate(null, null);
+        } catch(IllegalArgumentException e) {
+            return;
+        }
+
         assert false;
     }
 }
