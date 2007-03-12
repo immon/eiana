@@ -43,26 +43,70 @@ public class GuardedSystemDomainServiceFailureTest {
     }
 
     @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"})
+    public void testGetDomainByUserNameWhenUserNotSetInService() throws Exception {
+        DomainVO domainVO = (DomainVO) gsds.findUserDomains("someUser");
+    }
+
+    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testGetDomainByUserNameWhenUserNotSetInService"})
+    public void testGetDomainByNameWhenUserNotSetInService() throws Exception {
+        DomainVO domainVO = (DomainVO) gsds.getDomain(domainId1);
+    }
+
+    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+        dependsOnMethods = {"testGetDomainByNameWhenUserNotSetInService"})
+    public void testGetDomainByIdWhenUserNotSetInService() throws Exception {
+        DomainVO domainVO = (DomainVO) gsds.getDomain(domainId1);
+    }
+
+    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testGetDomainByIdWhenUserNotSetInService"})
     public void testGetDomainByWrongId() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId2);
     }
 
-    @Test (expectedExceptions = {NoObjectFoundException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"})
+    @Test (expectedExceptions = {NoObjectFoundException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testGetDomainByWrongId"})
     public void testGetDomainByWrongName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         DomainVO domainVO = (DomainVO) gsds.getDomain("wrongdomainname.org");
     }
 
-    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"})
-    public void testGetDomainByWrongUserName() throws Exception {
+    @Test (expectedExceptions = {AccessDeniedException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testGetDomainByWrongName"})
+    public void testFindUserDomainsByWrongUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         List<SimpleDomainVO> list = gsds.findUserDomains("anotherUser");
     }
 
+    @Test (expectedExceptions = {IllegalArgumentException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testFindUserDomainsByWrongUserName"})
+    public void testGetDomainByNullId() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        DomainVO domainVO = (DomainVO) gsds.getDomain(null);
+    }
+
+    @Test (expectedExceptions = {IllegalArgumentException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testGetDomainByNullId"})
+    public void testGetDomainByNullName() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        DomainVO domainVO = (DomainVO) gsds.getDomain(null);
+    }
+
+    @Test (expectedExceptions = {IllegalArgumentException.class}, groups = {"failure", "facade-system", "GuardedSystemDomainService"},
+            dependsOnMethods = {"testGetDomainByNullName"})
+    public void testGetDomainByOutOfRangeId() throws Exception {
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
+        gsds.setUser(testAuthUser.getAuthUser());
+        DomainVO domainVO = (DomainVO) gsds.getDomain(-1);
+    }
+    
     private UserVO generateUser() {
         UserVO user = new UserVO();
         user.setFirstName("Geordi");
