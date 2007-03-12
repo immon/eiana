@@ -46,7 +46,7 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
         this.name = name;
     }
 
-    public List<? extends Change> getChanges() {
+    public List<? extends T> getChanges() {
         return changes;
     }
 
