@@ -14,8 +14,6 @@ public class TrackData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Basic
-    private Long id;
-    @Basic
     private Timestamp created;
     @Basic
     private String createdBy;
@@ -28,25 +26,12 @@ public class TrackData {
         createNow();
     }
 
-    public TrackData(long id) {
-        this();
-        this.id = id;
-    }
-
     public Long getObjId() {
         return objId;
     }
 
     public void setObjId(Long objId) {
         this.objId = objId;
-    }
-
-    final public Long getId() {
-        return id;
-    }
-
-    final public void setId(Long id) {
-        this.id = id;
     }
 
     final public Timestamp getCreated() {
@@ -97,7 +82,6 @@ public class TrackData {
 
         if (created != null ? !created.equals(trackData.created) : trackData.created != null) return false;
         if (createdBy != null ? !createdBy.equals(trackData.createdBy) : trackData.createdBy != null) return false;
-        if (id != null ? !id.equals(trackData.id) : trackData.id != null) return false;
         if (modified != null ? !modified.equals(trackData.modified) : trackData.modified != null) return false;
         if (modifiedBy != null ? !modifiedBy.equals(trackData.modifiedBy) : trackData.modifiedBy != null) return false;
 
@@ -106,8 +90,7 @@ public class TrackData {
 
     public int hashCode() {
         int result;
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = (created != null ? created.hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         result = 31 * result + (modified != null ? modified.hashCode() : 0);
         result = 31 * result + (modifiedBy != null ? modifiedBy.hashCode() : 0);
