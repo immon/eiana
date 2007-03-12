@@ -10,6 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  * @author Marcin Zajaczkowski
  */
+@Test(groups = {"facade", "facade-common", "facade-auth"})
 public class AuthenticationServiceBeanTest {
 
     private AuthenticationService authService;
@@ -30,66 +31,32 @@ public class AuthenticationServiceBeanTest {
         assert TestUserManager.ADMIN_LAST_NAME_VALID.equals(authenticatedUser.getLastName());
     }
 
-    @Test
     //could be moved to failure package
+    @Test (expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoUser() throws Exception {
 
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.NON_EXIST_LOGIN, "foo");
 
-        try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
-
-        } catch(AuthenticationFailedException e) {
-            return;
-        }
-        assert false;
+        authService.authenticate(passwordAuth);
     }
 
-    @Test
     //could be moved to failure package
+    @Test (expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateWrongPassword() throws Exception {
 
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.WRONG_PASSWORD_LOGIN, TestUserManager.WRONG_PASSWORD_PASSWORD);
 
-        try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
-
-        } catch(AuthenticationFailedException e) {
-            return;
-        }
-        assert false;
+        authService.authenticate(passwordAuth);
     }
-
-    @Test
-    public void testAuthenticateWithNullData() throws Exception {
-
-        try {
-            authService.authenticate(null);
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-
-        assert false;
-    }
-
 
     //from securID
 
-    @Test
+    @Test (expectedExceptions = {AuthenticationRequiredException.class})
     public void testAuthenticateWrongSecurdIDNeeded() throws Exception {
 
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
-        try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
-
-        } catch (AuthenticationRequiredException e) {
-            if (e.getRequired() == Authentication.SECURID) {
-                return;
-            }
-            assert false;
-        }
-        assert false;
+        authService.authenticate(passwordAuth);
     }
 
     @Test
@@ -98,7 +65,7 @@ public class AuthenticationServiceBeanTest {
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
-            AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+            authService.authenticate(passwordAuth);
 
         } catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.SECURID) {
@@ -112,11 +79,12 @@ public class AuthenticationServiceBeanTest {
                 assert TestUserManager.ADMIN_WITH_SECURID_LAST_NAME_VALID.equals(authenticatedUser.getLastName());
                 return;
             }
-            assert false;
         }
         assert false;
     }
 
+    //It's more complicated scenerio (exception can be thrown in 2 places) and
+    //it's more reliable to catch exception in try..catch construction
     @Test
     public void testAuthenticateWrongSecurdID() throws Exception {
 
@@ -138,9 +106,7 @@ public class AuthenticationServiceBeanTest {
                 } catch (AuthenticationFailedException ee) {
                     return;
                 }
-                assert false;
             }
-            assert false;
         }
         assert false;
     }
@@ -156,36 +122,34 @@ public class AuthenticationServiceBeanTest {
             authService.authenticate(securIDAuth);
 
         } catch (AuthenticationRequiredException e) {
-            return;
+            if (e.getRequired() == Authentication.PASSWORD) {
+                return;
+            }
         }
         assert false;
     }
 
-    @Test
+    //common
+
+    @Test (expectedExceptions = {IllegalArgumentException.class})
+    public void testAuthenticateWithNullData() throws Exception {
+
+        authService.authenticate(null);
+    }
+
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullToken() throws Exception {
 
         SecurIDAuth securIDAuth = new SecurIDAuth(
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
-        try {
-            authService.authenticate(null, securIDAuth);
-
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-        assert false;
+        authService.authenticate(null, securIDAuth);
     }
 
-    @Test
+    @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullBoth() throws Exception {
 
-        try {
-            authService.authenticate(null, null);
-
-        } catch(IllegalArgumentException e) {
-            return;
-        }
-        assert false;
+        authService.authenticate(null, null);
     }
 }
