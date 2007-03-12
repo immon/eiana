@@ -2,12 +2,9 @@ package org.iana.rzm.facade.auth;
 
 import org.apache.log4j.Logger;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.user.UserManager;
 
 import javax.ejb.Stateless;
 import java.util.Map;
-import java.util.Collections;
-import java.text.MessageFormat;
 
 /**
  * @author Marcin Zajaczkowski
