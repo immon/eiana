@@ -110,10 +110,6 @@ public class Transaction implements TrackedObject {
         pi.setEnd(end);
     }
 
-    public Long getId() {
-        return getTrackData().getId();
-    }
-
     public Timestamp getCreated() {
         return getTrackData().getCreated();
     }
