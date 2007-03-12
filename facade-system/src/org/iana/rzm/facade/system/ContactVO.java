@@ -18,7 +18,7 @@ public class ContactVO implements Trackable {
     private List<String> emails;
     private boolean role;
 
-    private long objId;
+    private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
 
     public String getName() {
@@ -69,11 +69,11 @@ public class ContactVO implements Trackable {
         this.role = role;
     }
 
-    public long getObjId() {
+    public Long getObjId() {
         return objId;
     }
 
-    public void setObjId(long objId) {
+    public void setObjId(Long objId) {
         this.objId = objId;
     }
 
