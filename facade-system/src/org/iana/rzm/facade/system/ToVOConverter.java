@@ -15,46 +15,156 @@ import java.util.*;
 public class ToVOConverter {
 
 // ---------------------- Domain convert methods ----------------------
-    public static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) throws InvalidNameException {
-        toSimpleDomainVO(fromDomain, toDomainVO);
-        toDomainVO.setWhoisServer(new Name(fromDomain.getWhoisServer()));
-        //todo
+    public static DomainVO toDomainVO(Domain fromDomain) throws InvalidNameException {
+        if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
+
+        DomainVO toDomainVO = new DomainVO();
+        toDomainVO(fromDomain, toDomainVO);
+        return toDomainVO;
     }
 
-    public static void toSimpleDomainVO(Domain fromDomain, SimpleDomainVO toSimpleDomainVO ) {
-        toSimpleDomainVO.setName       (fromDomain.getName());
-        toSimpleDomainVO.setObjId      (fromDomain.getObjId());
+    public static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) throws InvalidNameException {
+        if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
+        if (toDomainVO == null) throw new IllegalArgumentException("null toDomainVO");
 
-        toSimpleDomainVO.setCreated    (fromDomain.getCreated());
-        toSimpleDomainVO.setCreatedBy  (fromDomain.getCreatedBy());
-        toSimpleDomainVO.setModified   (fromDomain.getModified());
-        toSimpleDomainVO.setModifiedBy (fromDomain.getModifiedBy());
+
+        toSimpleDomainVO(fromDomain, toDomainVO);
+        toDomainVO.setSupportingOrg(toContactVO(fromDomain.getSupportingOrg()));
+
+        toDomainVO.setAdminContacts(toContactVOList(fromDomain.getAdminContacts()));
+
+        toDomainVO.setTechContacts(toContactVOList(fromDomain.getTechContacts()));
+
+        toDomainVO.setNameServers(toHostVOList(fromDomain.getNameServers()));
+
+        toDomainVO.setRegistryUrl(fromDomain.getRegistryUrl());
+
+        if (fromDomain.getWhoisServer() != null) toDomainVO.setWhoisServer(new Name(fromDomain.getWhoisServer()));
+
+        toDomainVO.setBreakpoints(toBreakpointVOSet(fromDomain.getBreakpoints()));
+
+        toDomainVO.setSpecialInstructions(fromDomain.getSpecialInstructions());
+
+        toDomainVO.setStatus(toStatusVO(fromDomain.getStatus()));
+        toDomainVO.setState(toStateVO(fromDomain.getState()));
+    }
+
+    public static SimpleDomainVO toSimpleDomainVO(Domain fromDomain) {
+        if (fromDomain == null) return null;
+
+        SimpleDomainVO simpleDomainVO = new SimpleDomainVO();
+        toSimpleDomainVO(fromDomain, simpleDomainVO);
+        return simpleDomainVO;
+    }
+    
+    public static void toSimpleDomainVO(Domain fromDomain, SimpleDomainVO toSimpleDomainVO ) {
+        if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
+        if (toSimpleDomainVO == null) throw new IllegalArgumentException("null toSimpleDomainVO");
+
+        toSimpleDomainVO.setObjId (fromDomain.getObjId());
+        toSimpleDomainVO.setName  (fromDomain.getName());
+
+        if (fromDomain.getTrackData() != null) {
+            toSimpleDomainVO.setCreated    (fromDomain.getCreated());
+            toSimpleDomainVO.setCreatedBy  (fromDomain.getCreatedBy());
+            toSimpleDomainVO.setModified   (fromDomain.getModified());
+            toSimpleDomainVO.setModifiedBy (fromDomain.getModifiedBy());
+        }
+    }
+
+// ---------------------- State convert methods ----------------------
+
+    public static IDomainVO.State toStateVO (Domain.State fromState) {
+        if (fromState == null) return null;
+
+        if (fromState == Domain.State.NO_ACTIVITY)
+            return IDomainVO.State.NO_ACTIVITY;
+        else if(fromState == Domain.State.OPERATIONS_PENDING)
+                return IDomainVO.State.OPERATIONS_PENDING;
+            else
+                return IDomainVO.State.THIRD_PARTY_PENDING;
+    }
+
+// ---------------------- Status convert methods ----------------------
+
+    public static IDomainVO.Status toStatusVO (Domain.Status fromStatus) {
+        if (fromStatus == null) return null;
+
+        if (fromStatus == Domain.Status.ACTIVE)
+            return IDomainVO.Status.ACTIVE;
+        else if (fromStatus == Domain.Status.CLOSED)
+                return IDomainVO.Status.CLOSED;
+            else
+                return IDomainVO.Status.NEW;
+    }
+
+// ---------------------- Breakpoint convert methods ----------------------
+
+    public static Set<IDomainVO.Breakpoint> toBreakpointVOSet(Set<Domain.Breakpoint> fromBreakpointSet) {
+        if (fromBreakpointSet == null) return null;
+
+        Set<IDomainVO.Breakpoint> toBreakpointVOSet = new HashSet<IDomainVO.Breakpoint>();
+        for(Domain.Breakpoint breakpoint : fromBreakpointSet)
+            toBreakpointVOSet.add(toBreakpointVO(breakpoint));
+        return toBreakpointVOSet;
+    }
+
+    public static IDomainVO.Breakpoint toBreakpointVO (Domain.Breakpoint fromBreakpoint) {
+        if (fromBreakpoint == null) return null;
+
+        if(fromBreakpoint == Domain.Breakpoint.AC_CHANGE_EXT_REVIEW)
+            return IDomainVO.Breakpoint.AC_CHANGE_EXT_REVIEW;
+        else if(fromBreakpoint == Domain.Breakpoint.ANY_CHANGE_EXT_REVIEW)
+                return IDomainVO.Breakpoint.ANY_CHANGE_EXT_REVIEW;
+        else if(fromBreakpoint == Domain.Breakpoint.NS_CHANGE_EXT_REVIEW)
+                return IDomainVO.Breakpoint.NS_CHANGE_EXT_REVIEW;
+        else if(fromBreakpoint == Domain.Breakpoint.SO_CHANGE_EXT_REVIEW)
+                return IDomainVO.Breakpoint.SO_CHANGE_EXT_REVIEW;
+        else
+            return IDomainVO.Breakpoint.TC_CHANGE_EXT_REVIEW;
     }
 
 // ---------------------- Host convert methods ----------------------
 
+    public static List<HostVO> toHostVOList(List<Host> fromHostsList) {
+        if (fromHostsList == null) return null;
+
+        List<HostVO> toHostVOList = new ArrayList<HostVO>();
+        for(Host fromHost : fromHostsList)
+            toHostVOList.add(toHostVO(fromHost));
+        return toHostVOList;
+    }
+
     public static HostVO toHostVO(Host fromHost) {
+        if (fromHost == null) return null;
+
         HostVO toHostVO = new HostVO();
         toHostVO(fromHost, toHostVO);
         return toHostVO;
     }
 
     public static void toHostVO(Host fromHost, HostVO toHostVO) {
-        toHostVO.setAddresses(toIPAddressVOSet(fromHost.getAddresses()));
-        toHostVO.setName(fromHost.getName());
-        toHostVO.setObjId(fromHost.getObjId());
-        //todo
-        // toHostVO.setShared(); ???
+        if (fromHost == null) throw new IllegalArgumentException("null fromHost");
+        if (toHostVO == null) throw new IllegalArgumentException("null toHostVO");
 
-        toHostVO.setCreated(fromHost.getCreated());
-        toHostVO.setCreatedBy(fromHost.getCreatedBy());
-        toHostVO.setModified(fromHost.getModified());
-        toHostVO.setModifiedBy(fromHost.getModifiedBy());
+        toHostVO.setObjId     (fromHost.getObjId());
+        toHostVO.setAddresses (toIPAddressVOSet(fromHost.getAddresses()));
+        toHostVO.setName      (fromHost.getName());
+        toHostVO.setShared    (fromHost.isShared());
+
+        if (fromHost.getTrackData() != null) {
+            toHostVO.setCreated     (fromHost.getCreated());
+            toHostVO.setCreatedBy   (fromHost.getCreatedBy());
+            toHostVO.setModified    (fromHost.getModified());
+            toHostVO.setModifiedBy  (fromHost.getModifiedBy());
+        }
     }
 
 // ---------------------- IPAddress convert methods ----------------------
 
     public static Set<IPAddressVO> toIPAddressVOSet(Set<IPAddress> fromIPAddressSet) {
+        if (fromIPAddressSet == null) return null;
+
         Set<IPAddressVO>toIPAddressVOSet = new HashSet<IPAddressVO>();
         for(Iterator i = fromIPAddressSet.iterator(); i.hasNext();) {
             IPAddress fromIPAddress = (IPAddress) i.next();
@@ -64,12 +174,17 @@ public class ToVOConverter {
     }
 
     public static IPAddressVO toIPAddressVO(IPAddress fromIPAddress) {
+        if (fromIPAddress == null) return null;
+
         IPAddressVO toIPAddressVO = new IPAddressVO();
         toIPAddressVO(fromIPAddress, toIPAddressVO);
         return toIPAddressVO;
     }
 
     public static void toIPAddressVO(IPAddress fromIPAddress, IPAddressVO toIPAddressVO) {
+        if (fromIPAddress == null) throw new IllegalArgumentException("null fromIPAddress");
+        if (toIPAddressVO == null) throw new IllegalArgumentException("null toIPAddressVO");
+
         toIPAddressVO.setAddress(fromIPAddress.getAddress());
         if (fromIPAddress.isIPv4())
                 toIPAddressVO.setType(IPAddressVO.Type.IPv4);
@@ -78,40 +193,50 @@ public class ToVOConverter {
     }
 
 // ---------------------- Contact convert methods ----------------------
+    public static List<ContactVO> toContactVOList(List<Contact> fromContactsList) {
+        if (fromContactsList == null) return null;
+
+        List<ContactVO> toContactVOList = new ArrayList<ContactVO>();
+        for (Contact fromContact : fromContactsList)
+            toContactVOList.add(toContactVO(fromContact));
+        return toContactVOList;
+    }
+
+    public static ContactVO toContactVO(Contact fromContact) {
+        if(fromContact == null) return null;
+
+        ContactVO toContactVO = new ContactVO();
+        toContactVO(fromContact, toContactVO);
+        return toContactVO;
+    }
 
     public static void toContactVO(Contact fromContact, ContactVO toContactVO) {
+        if (fromContact == null) throw new IllegalArgumentException("null fromContact");
+        if (toContactVO == null) throw new IllegalArgumentException("null toContactVO");
+
+
         toContactVO.setAddresses(toAddressVOList(fromContact.getAddresses()));
-        toContactVO.setCreated(fromContact.getCreated());
-        toContactVO.setCreatedBy(fromContact.getCreatedBy());
-        toContactVO.setEmails(fromContact.getEmails());
-        toContactVO.setFaxNumbers(fromContact.getFaxNumbers());
-        toContactVO.setModified(fromContact.getModified());
-        toContactVO.setModifiedBy(fromContact.getModifiedBy());
-        toContactVO.setName(fromContact.getName());
-        toContactVO.setObjId(fromContact.getObjId());
-        toContactVO.setPhoneNumbers(fromContact.getPhoneNumbers());
-        // todo
-        // toContactVO.setRole(); ??
+
+        toContactVO.setObjId        (fromContact.getObjId());
+        toContactVO.setEmails       (fromContact.getEmails());
+        toContactVO.setFaxNumbers   (fromContact.getFaxNumbers());
+        toContactVO.setName         (fromContact.getName());
+        toContactVO.setPhoneNumbers (fromContact.getPhoneNumbers());
+        toContactVO.setRole         (fromContact.isRole());
+
+        if (fromContact.getTrackData() != null) {
+            toContactVO.setCreated    (fromContact.getCreated());
+            toContactVO.setCreatedBy  (fromContact.getCreatedBy());
+            toContactVO.setModified   (fromContact.getModified());
+            toContactVO.setModifiedBy (fromContact.getModifiedBy());
+        }
     }
-
-// ---------------------- TrackData convert methods ----------------------
-
-    /*public static TrackDataVO toTrackData(TrackData fromTrackData) {
-        TrackDataVO toTrackDataVO = new TrackDataVO();
-        toTrackDataVO(fromTrackData, toTrackDataVO);
-        return toTrackDataVO;
-    }
-
-    public static void toTrackDataVO(TrackData fromTrackData, TrackDataVO toTrackDataVO) {
-        toTrackDataVO.setCreated    (fromTrackData.getCreated());
-        toTrackDataVO.setCreatedBy  (fromTrackData.getCreatedBy());
-        toTrackDataVO.setModified   (fromTrackData.getModified());
-        toTrackDataVO.setModifiedBy (fromTrackData.getModifiedBy());
-    }*/
 
 // ---------------------- Address convert methods ----------------------
 
     public static List<AddressVO> toAddressVOList(List<Address> fromAddressList) {
+        if (fromAddressList == null) return null;
+
         List<AddressVO> toAddressListV0 = new ArrayList<AddressVO>();
         for (Address fromAddress : fromAddressList)
             toAddressListV0.add(toAddressVO(fromAddress));
@@ -119,16 +244,21 @@ public class ToVOConverter {
     }
 
     public static AddressVO toAddressVO(Address fromAddress) {
+        if (fromAddress == null) return null;
+
         AddressVO addressVO = new AddressVO();
         toAddressVO(fromAddress, addressVO);
         return addressVO;
     }
 
     public static void toAddressVO(Address fromAddress, AddressVO toAddressVO) {
-        toAddressVO.setCity       (fromAddress.getCity());
-        toAddressVO.setCountryCode(fromAddress.getCountryCode());
-        toAddressVO.setPostalCode (fromAddress.getPostalCode());
-        toAddressVO.setState      (fromAddress.getState());
-        toAddressVO.setStreet     (fromAddress.getStreet());
+        if (fromAddress == null) throw new IllegalArgumentException("null fromAddress");
+        if (toAddressVO == null) throw new IllegalArgumentException("null toAddressVO");
+
+        toAddressVO.setCity        (fromAddress.getCity());
+        toAddressVO.setCountryCode (fromAddress.getCountryCode());
+        toAddressVO.setPostalCode  (fromAddress.getPostalCode());
+        toAddressVO.setState       (fromAddress.getState());
+        toAddressVO.setStreet      (fromAddress.getStreet());
     }
 }
