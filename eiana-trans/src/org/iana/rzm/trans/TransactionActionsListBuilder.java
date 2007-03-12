@@ -31,7 +31,7 @@ class TransactionActionsListBuilder {
     }
 
 
-   private static List<Change> modificationNameServersChangeList(List<Host> newHosts, List<Host> originHosts) {
+    private static List<Change> modificationNameServersChangeList(List<Host> newHosts, List<Host> originHosts) {
         List<Change> contactsChangesList = new ArrayList<Change>();
         for (Host originHost : originHosts) {
             boolean contians = false;

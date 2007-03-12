@@ -14,7 +14,7 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
 
     @Basic
     @Column(name = "objectValueId")
-    private long id;
+    private Long id;
     @Basic
     @Column(name = "objectValueName")
     private String name;
