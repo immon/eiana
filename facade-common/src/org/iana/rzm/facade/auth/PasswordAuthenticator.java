@@ -23,8 +23,7 @@ public class PasswordAuthenticator implements AuthenticationService {
     }
 
     public AuthenticatedUser authenticate(AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
-        CheckTool.checkNull(data, "AuthenticationData");
-        CheckTool.checkNull(manager, "UserManager");
+        CheckTool.checkNull(data, "authentication data");
 
         PasswordAuth passData = (PasswordAuth)data;
         RZMUser user = manager.get(passData.getUserName());
