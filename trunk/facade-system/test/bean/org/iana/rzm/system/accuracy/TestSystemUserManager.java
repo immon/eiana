@@ -58,6 +58,14 @@ public class TestSystemUserManager implements UserManager {
             role.setName("facadesystemiana.org");
             role.setType(Role.Type.AC);
             userCreated.addRole(role);
+            role = new Role();
+            role.setName("facadesystemiana1.org");
+            role.setType(Role.Type.TC);
+            userCreated.addRole(role);
+            role = new Role();
+            role.setName("facadesystemiana1.org");
+            role.setType(Role.Type.AC);
+            userCreated.addRole(role);
         } catch (InvalidNameException e) {
             //
         }
