@@ -1,6 +1,6 @@
 package org.iana.rzm.common.exceptions;
 
-public class InvalidNameException extends Exception {
+public class InvalidNameException extends RuntimeException {
 
     String name;
 
