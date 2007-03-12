@@ -43,4 +43,6 @@ abstract public class Change {
         return type;
     }
 
+    abstract public void accept(ChangeVisitor visitor);
+
 }
