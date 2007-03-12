@@ -9,6 +9,7 @@ import org.iana.rzm.facade.system.*;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.sql.Timestamp;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -106,9 +107,9 @@ public class ToVOConverterTest {
 
         toContactVO = ToVOConverter.toContactVO(fromContact);
         assert toContactVO.getName().equals(fromContact.getName());
-        assert toContactVO.getPhoneNumbers().contains("112-123-124");
-        assert toContactVO.getFaxNumbers().contains("212-223-542");
-        assert toContactVO.getEmails().contains("email@free.com");
+        assert toContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
+        assert toContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
+        assert toContactVO.getEmails().equals(fromContact.getEmails());
         assert toContactVO.isRole();
     }
 
@@ -137,29 +138,30 @@ public class ToVOConverterTest {
 
         for(ContactVO adminContactVO : toDomainVO.getAdminContacts()) {
             assert adminContactVO.getName().equals(fromContact.getName());
-            assert adminContactVO.getPhoneNumbers().containsAll(fromContact.getPhoneNumbers());
-            assert adminContactVO.getFaxNumbers().containsAll(fromContact.getFaxNumbers());
-            assert adminContactVO.getEmails().containsAll(fromContact.getEmails());
+            assert adminContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
+            assert adminContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
+            assert adminContactVO.getEmails().equals(fromContact.getEmails());
             assert adminContactVO.isRole() == fromContact.isRole();
         }
 
-        assert toDomainVO.getBreakpoints().containsAll(ToVOConverter.toBreakpointVOSet(fromDomain.getBreakpoints()));
+        assert toDomainVO.getBreakpoints().equals(ToVOConverter.toBreakpointVOSet(fromDomain.getBreakpoints()));
 
-        toDomainVO.getNameServers().containsAll(ToVOConverter.toHostVOList(fromDomain.getNameServers()));
-        toDomainVO.getTechContacts().containsAll(ToVOConverter.toContactVOList(fromDomain.getTechContacts()));
+        toDomainVO.getNameServers().equals(ToVOConverter.toHostVOList(fromDomain.getNameServers()));
+        toDomainVO.getTechContacts().equals(ToVOConverter.toContactVOList(fromDomain.getTechContacts()));
         
         assert toDomainVO.getRegistryUrl().equals(fromDomain.getRegistryUrl());
         assert toDomainVO.getSpecialInstructions().equals(fromDomain.getSpecialInstructions());
         assert toDomainVO.getState() == IDomainVO.State.NO_ACTIVITY;
         assert toDomainVO.getStatus() == IDomainVO.Status.ACTIVE;
 
-        //assert toDomainVO.getSupportingOrg().equals(fromContact);
-        // unable to assert because TrackData class fields not equals TrackDataVO 
+        //assert toDomainVO.getSupportingOrg().equals(ToVOConverter.toContactVO(fromDomain.getSupportingOrg()));
+        // unable to assert because TrackData class fields not equals TrackDataVO
+
         ContactVO tmpContactVO = toDomainVO.getSupportingOrg();
             assert tmpContactVO.getName().equals(fromContact.getName());
-            assert tmpContactVO.getPhoneNumbers().containsAll(fromContact.getPhoneNumbers());
-            assert tmpContactVO.getFaxNumbers().containsAll(fromContact.getFaxNumbers());
-            assert tmpContactVO.getEmails().containsAll(fromContact.getEmails());
+            assert tmpContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
+            assert tmpContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
+            assert tmpContactVO.getEmails().equals(fromContact.getEmails());
             assert tmpContactVO.isRole() == fromContact.isRole();
 
         assert toDomainVO.getWhoisServer().getName().equals(fromDomain.getWhoisServer());
