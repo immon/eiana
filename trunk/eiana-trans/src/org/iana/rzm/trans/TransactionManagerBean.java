@@ -23,9 +23,10 @@ public class TransactionManagerBean implements TransactionManager {
     private TransactionDAO dao;
     private TicketingService ticketingService;
 
-    public TransactionManagerBean(JbpmContext context,TicketingService ticketingService) {
+    public TransactionManagerBean(JbpmContext context,TransactionDAO dao,TicketingService ticketingService) {
         this.context = context;
         this.dao = dao;
+        this.ticketingService = ticketingService;
     }
 
     public Transaction get(long id) throws NoSuchTransactionException {
