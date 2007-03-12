@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.change;
 
+import org.iana.rzm.common.validators.CheckTool;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,7 +23,7 @@ public class Removal extends AdditionOrRemoval {
     }
 
     public Removal(String fieldName, String value) {
-        this(fieldName, new PrimitiveValue(value));
+        this(fieldName, new PrimitiveValue<Removal>(value));
     }
 
     public Removal(String fieldName, Value<Removal> value) {
@@ -35,5 +37,10 @@ public class Removal extends AdditionOrRemoval {
 
     public void setValue(Value<Removal> value) {
         this.value = value;
+    }
+
+    public void accept(ChangeVisitor visitor) {
+        CheckTool.checkNull(visitor, "visitor");
+        visitor.visitRemoval(this);
     }
 }

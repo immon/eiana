@@ -21,7 +21,12 @@ public class ObjectValue<T extends Change> extends AbstractValue<T> implements V
             inverseJoinColumns = @JoinColumn(name = "Change_objId"))
     private List<? extends T> changes;
 
-    public ObjectValue(List<? extends T> changes) {
+    private ObjectValue() {
+    }
+
+    public ObjectValue(long id, String name, List<? extends T> changes) {
+        this.id = id;
+        this.name = name;
         this.changes = changes;
     }
 

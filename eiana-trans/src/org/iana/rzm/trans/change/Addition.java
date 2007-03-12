@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.change;
 
+import org.iana.rzm.common.validators.CheckTool;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
@@ -29,5 +31,10 @@ public class Addition extends AdditionOrRemoval {
 
     public Value getValue() {
         return value;
+    }
+
+    public void accept(ChangeVisitor visitor) {
+        CheckTool.checkNull(visitor, "visitor");
+        visitor.visitAddition(this);
     }
 }
