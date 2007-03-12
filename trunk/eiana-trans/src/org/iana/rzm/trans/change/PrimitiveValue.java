@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.change;
 
+import org.iana.rzm.common.validators.CheckTool;
+
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -26,5 +28,10 @@ public class PrimitiveValue<T extends AdditionOrRemoval> extends AbstractValue<T
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public void accept(ValueVisitor visitor) {
+        CheckTool.checkNull(visitor, "value visitor");
+        visitor.visitPrimitiveValue(this);
     }
 }

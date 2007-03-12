@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.change;
 
+import org.iana.rzm.common.validators.CheckTool;
+
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Basic;
@@ -40,5 +42,10 @@ public class ModifiedPrimitiveValue extends AbstractValue<Modification> implemen
 
     public void setOldValue(String oldValue) {
         this.oldValue = oldValue;
+    }
+
+    public void accept(ValueVisitor visitor) {
+        CheckTool.checkNull(visitor, "value visitor");
+        visitor.visitModifiedPrimitiveValue(this);
     }
 }
