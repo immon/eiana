@@ -28,6 +28,8 @@ public interface TransactionManager {
      */
     Transaction create(Domain domain);
 
+    Transaction modify(Domain domain);
+
     List<Transaction> findAll();
 
     List<Transaction> find(TransactionCriteria criteria);
