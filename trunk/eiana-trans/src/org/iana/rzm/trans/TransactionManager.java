@@ -1,6 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
 
@@ -30,4 +31,6 @@ public interface TransactionManager {
     List<Transaction> findAll();
 
     List<Transaction> find(TransactionCriteria criteria);
+
+    public List<ProcessInstance> findAllProcessInstances(String domainName); 
 }

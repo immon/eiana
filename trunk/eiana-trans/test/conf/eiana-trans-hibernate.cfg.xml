@@ -33,6 +33,7 @@
         <mapping class="org.iana.rzm.trans.TransactionState"/>
         <mapping class="org.iana.rzm.trans.Transaction"/>
         <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
+        <mapping class="org.iana.rzm.trans.TransactionData"/>
         <mapping class="org.iana.rzm.trans.StateTransition"/>
         <mapping class="org.iana.rzm.trans.change.Addition"/>
         <mapping class="org.iana.rzm.trans.change.AdditionOrRemoval"/>
