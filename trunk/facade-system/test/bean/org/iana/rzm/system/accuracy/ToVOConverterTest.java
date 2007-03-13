@@ -6,6 +6,9 @@ import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.facade.system.*;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.user.Role;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -54,6 +57,13 @@ public class ToVOConverterTest {
         toIPAddressVOV6 = ToVOConverter.toIPAddressVO(fromIPAddressV6);
         assert toIPAddressVOV6.getType() == IPAddressVO.Type.IPv6;
         assert fromIPAddressV6.getAddress().equals(toIPAddressVOV6.getAddress());
+    }
+
+    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
+    public void testRoleTypeConversion() throws InvalidIPAddressException, InvalidNameException {
+        assert ToVOConverter.toRoleTypeVO(Role.Type.AC) == SystemRoleVO.SystemType.AC;
+        assert ToVOConverter.toRoleTypeVO(Role.Type.SO) == SystemRoleVO.SystemType.SO;
+        assert ToVOConverter.toRoleTypeVO(Role.Type.TC) == SystemRoleVO.SystemType.TC;
     }
 
     @Test (groups = {"accuracy", "facade-system", "ToVOConverter"},
