@@ -55,6 +55,7 @@ public class GuardedSystemDomainService implements SystemDomainService {
 
     public void setUser(AuthenticatedUser user) {
         CheckTool.checkNull(user, "Authenticated User");
+        delegate.setUser(user);
         this.user = user;
     }
 
