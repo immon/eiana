@@ -5,6 +5,9 @@ import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.user.Role;
 
 import java.util.*;
 
@@ -16,7 +19,7 @@ public class ToVOConverter {
 
 // ---------------------- Domain convert methods ----------------------
     public static DomainVO toDomainVO(Domain fromDomain) throws InvalidNameException {
-        if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
+        if (fromDomain == null) return null;
 
         DomainVO toDomainVO = new DomainVO();
         toDomainVO(fromDomain, toDomainVO);
@@ -40,7 +43,7 @@ public class ToVOConverter {
         toDomainVO.setRegistryUrl(fromDomain.getRegistryUrl());
 
         if (fromDomain.getWhoisServer() != null) toDomainVO.setWhoisServer(new Name(fromDomain.getWhoisServer()));
-
+        
         toDomainVO.setBreakpoints(toBreakpointVOSet(fromDomain.getBreakpoints()));
 
         toDomainVO.setSpecialInstructions(fromDomain.getSpecialInstructions());
@@ -96,6 +99,19 @@ public class ToVOConverter {
                 return IDomainVO.Status.CLOSED;
             else
                 return IDomainVO.Status.NEW;
+    }
+
+// ---------------------- Role convert methods ----------------------
+    
+    public static RoleVO.Type toRoleTypeVO(Role.Type fromRoleType) {
+        if (fromRoleType == null) return null;
+
+        if (fromRoleType == Role.Type.AC)
+            return SystemRoleVO.SystemType.AC;
+        else if (fromRoleType == Role.Type.SO)
+                return SystemRoleVO.SystemType.SO;
+            else
+                return SystemRoleVO.SystemType.TC;
     }
 
 // ---------------------- Breakpoint convert methods ----------------------
