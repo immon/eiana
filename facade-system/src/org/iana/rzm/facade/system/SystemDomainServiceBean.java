@@ -8,17 +8,12 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.DomainException;
-import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.*;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.*;
 
@@ -26,6 +21,7 @@ public class SystemDomainServiceBean implements SystemDomainService {
 
     private DomainManager domainManager;
     private UserManager userManager;
+    private AuthenticatedUser user;
 
     public SystemDomainServiceBean(DomainManager domainManager, UserManager userManager) {
         this.domainManager = domainManager;
@@ -36,8 +32,10 @@ public class SystemDomainServiceBean implements SystemDomainService {
         try {
             Domain domain = domainManager.get(id);
             if (domain == null) throw new NoObjectFoundException(id);
-            DomainVO domainVO = new DomainVO();
-            ToVOConverter.toDomainVO(domain, domainVO);
+            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+            RZMUser user = userManager.get(this.user.getUserName());
+            if (user instanceof SystemUser)
+                domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
             return domainVO;
         } catch (DomainException e) {
             // todo temporary exception must be changed
@@ -52,8 +50,10 @@ public class SystemDomainServiceBean implements SystemDomainService {
         try {
             Domain domain = domainManager.get(name);
             if (domain == null) throw new NoObjectFoundException(name);
-            DomainVO domainVO = new DomainVO();
-            ToVOConverter.toDomainVO(domain, domainVO);
+            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+            RZMUser user = userManager.get(this.user.getUserName());
+            if (user instanceof SystemUser)
+                domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
             return domainVO;
         } catch (DomainException e) {
             // todo temporary exception must be changed
@@ -78,8 +78,8 @@ public class SystemDomainServiceBean implements SystemDomainService {
                     String roleName = (String) iterator.next();
                     Domain domain = domainManager.get(roleName);
                     if (domain != null) {
-                        SimpleDomainVO simpleDomainVO = new SimpleDomainVO();
-                        ToVOConverter.toSimpleDomainVO(domain, simpleDomainVO);
+                        SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
+                        simpleDomainVO.setRoles(getRoleTypeByDomainName(roles, simpleDomainVO.getName()));
                         list.add(simpleDomainVO);
                     }
                 }
@@ -92,10 +92,19 @@ public class SystemDomainServiceBean implements SystemDomainService {
     }
 
     public void setUser(AuthenticatedUser user) {
-        //empty
+        this.user = user;
     }
 
     public void close() {
         //todo
+    }
+
+    private Set<RoleVO.Type> getRoleTypeByDomainName(List<Role> fromRoles, String domainName) {
+        if ((fromRoles == null) || (domainName == null)) return null;
+        Set<RoleVO.Type> roleTypeVOSet = new HashSet<RoleVO.Type>();
+        for(Role role : fromRoles)
+        if (role.getName().equals(domainName))
+            roleTypeVOSet.add(ToVOConverter.toRoleTypeVO(role.getType()));
+        return roleTypeVOSet;
     }
 }
