@@ -36,6 +36,42 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
             <ref bean="transactionAttribute"/>
         </property>
     </bean>
+
+    <!--Guarder System Domain Service configuration-->
+    <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedSystemDomainServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+        <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
+            <constructor-arg ref="SystemDomainServiceBean"/>
+        </bean>
+
+            <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
+                <constructor-arg ref="domainManager" />
+                <constructor-arg ref="userManager" />
+            </bean>
+
+                <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
+                    <constructor-arg ref="domainDAO" />
+                </bean>
+
+                <bean id="userManager" class="org.iana.rzm.user.UserManagerBean" >
+                    <constructor-arg fer="userDAO" />
+                </bean>
+
     <!-- dao conf -->
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
