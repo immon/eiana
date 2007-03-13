@@ -9,7 +9,7 @@
     <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
-                <value>org.iana.rzm.facade.system.SystemDomainService</value>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
             </list>
         </property>
         <property name="target">
@@ -23,11 +23,11 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.GuardedSystemDomainService">
+    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
         <constructor-arg ref="SystemDomainServiceBean"/>
     </bean>
 
-    <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.SystemDomainServiceBean">
+    <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
         <constructor-arg ref="domainManager" />
         <constructor-arg ref="userManager" />
     </bean>
@@ -43,7 +43,7 @@
     <bean id="GuardedSystemDomainServiceStress" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
-                <value>org.iana.rzm.facade.system.SystemDomainService</value>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
             </list>
         </property>
         <property name="target">
@@ -57,11 +57,11 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemDomainServiceTargetStress" class="org.iana.rzm.facade.system.GuardedSystemDomainService">
+    <bean id="GuardedSystemDomainServiceTargetStress" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
         <constructor-arg ref="SystemDomainServiceBeanStress"/>
     </bean>
 
-    <bean id="SystemDomainServiceBeanStress" class="org.iana.rzm.facade.system.SystemDomainServiceBean">
+    <bean id="SystemDomainServiceBeanStress" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
         <constructor-arg ref="domainManagerStress" />
         <constructor-arg ref="userManagerStress" />
     </bean>
