@@ -1,6 +1,5 @@
 package org.iana.rzm.trans;
 
-import org.hibernate.Query;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.TransactionDAO;
@@ -60,8 +59,11 @@ public class TransactionManagerBean implements TransactionManager {
         return null;
     }
 
-    public List<ProcessInstance> findAllProcessInstances(String domainName) {
-        return dao.findAllProcessInstances(domainName);
+    public List<Transaction> findAllProcessInstances(String domainName) {
+        List<ProcessInstance> processInstances = dao.findAllProcessInstances(domainName);
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
+        return result;
     }
 
     private List<TransactionAction> createActions(Domain domain) {
