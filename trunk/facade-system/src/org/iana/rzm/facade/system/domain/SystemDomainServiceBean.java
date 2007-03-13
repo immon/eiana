@@ -34,65 +34,45 @@ public class SystemDomainServiceBean implements SystemDomainService {
     }
 
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        try {
-            Domain domain = domainManager.get(id);
-            if (domain == null) throw new NoObjectFoundException(id);
-            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
-            RZMUser user = userManager.get(this.user.getUserName());
-            if (user instanceof SystemUser)
-                domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
-            return domainVO;
-        } catch (DomainException e) {
-            // todo temporary exception must be changed
-            throw new InfrastructureException();
-        } catch (InvalidNameException e) {
-            // todo temporary exception must be changed
-            throw new InfrastructureException();
-        }
+        Domain domain = domainManager.get(id);
+        if (domain == null) throw new NoObjectFoundException(id);
+        DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+        RZMUser user = userManager.get(this.user.getUserName());
+        if (user instanceof SystemUser)
+            domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
+        return domainVO;
     }
 
     public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        try {
-            Domain domain = domainManager.get(name);
-            if (domain == null) throw new NoObjectFoundException(name);
-            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
-            RZMUser user = userManager.get(this.user.getUserName());
-            if (user instanceof SystemUser)
-                domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
-            return domainVO;
-        } catch (DomainException e) {
-            // todo temporary exception must be changed
-            throw new InfrastructureException();
-        } catch (InvalidNameException e) {
-            // todo temporary exception must be changed
-            throw new InfrastructureException();
-        }
+        Domain domain = domainManager.get(name);
+        if (domain == null) throw new NoObjectFoundException(name);
+        DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+        RZMUser user = userManager.get(this.user.getUserName());
+        if (user instanceof SystemUser)
+            domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
+        return domainVO;
     }
 
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         List<SimpleDomainVO> list = new ArrayList<SimpleDomainVO>();
-        try {
-            RZMUser user = userManager.get(userName);
-            if(user instanceof SystemUser) {
-                List<Role> roles = ((SystemUser) user).getRoles();
-                Set<String> roleNames = new HashSet<String>();
-                for(Iterator iterator = roles.iterator(); iterator.hasNext();)
-                    roleNames.add(((Role) iterator.next()).getName());
+        RZMUser user = userManager.get(userName);
+        if(user instanceof SystemUser) {
+            List<Role> roles = ((SystemUser) user).getRoles();
+            Set<String> roleNames = new HashSet<String>();
+            for(Iterator iterator = roles.iterator(); iterator.hasNext();)
+                roleNames.add(((Role) iterator.next()).getName());
 
-                for(Iterator iterator = roleNames.iterator(); iterator.hasNext();) {
-                    String roleName = (String) iterator.next();
-                    Domain domain = domainManager.get(roleName);
-                    if (domain != null) {
-                        SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
-                        simpleDomainVO.setRoles(getRoleTypeByDomainName(roles, simpleDomainVO.getName()));
-                        list.add(simpleDomainVO);
-                    }
+            for(Iterator iterator = roleNames.iterator(); iterator.hasNext();) {
+                String roleName = (String) iterator.next();
+                Domain domain = domainManager.get(roleName);
+                if (domain != null) {
+                    SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
+                    simpleDomainVO.setRoles(getRoleTypeByDomainName(roles, simpleDomainVO.getName()));
+                    list.add(simpleDomainVO);
                 }
-            } else
-                throw new AccessDeniedException("not system user");
-        } catch (DomainException e) {
-            //todo
-        }
+            }
+        } else
+            throw new AccessDeniedException("not system user");
         return list;
     }
 
