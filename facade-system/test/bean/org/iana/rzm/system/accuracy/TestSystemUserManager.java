@@ -60,7 +60,7 @@ public class TestSystemUserManager implements UserManager {
             userCreated.addRole(role);
             role = new Role();
             role.setName("facadesystemiana1.org");
-            role.setType(Role.Type.TC);
+            role.setType(Role.Type.SO);
             userCreated.addRole(role);
             role = new Role();
             role.setName("facadesystemiana1.org");
