@@ -42,7 +42,7 @@ public class ToVOConverterTest {
 
     @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
     public void testIPv4AddressConversion() throws InvalidIPAddressException {
-        fromIPAddress = IPAddressFactory.getIPv4Address("10.0.0.1");
+        fromIPAddress = IPv4Address.createIPv4Address("10.0.0.1");
         toIPAddressVO = ToVOConverter.toIPAddressVO(fromIPAddress);
         assert toIPAddressVO.getType() == IPAddressVO.Type.IPv4;
         assert fromIPAddress.getAddress().equals(toIPAddressVO.getAddress());
@@ -50,7 +50,7 @@ public class ToVOConverterTest {
 
     @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
     public void testIPv6AddressConversion() throws InvalidIPAddressException {
-        fromIPAddressV6 = IPAddressFactory.getIPv6Address("200c:0db8:0000:0000:0000:0000:1428:57ab");
+        fromIPAddressV6 = IPv6Address.createIPv6Address("200c:0db8:0000:0000:0000:0000:1428:57ab");
         toIPAddressVOV6 = ToVOConverter.toIPAddressVO(fromIPAddressV6);
         assert toIPAddressVOV6.getType() == IPAddressVO.Type.IPv6;
         assert fromIPAddressV6.getAddress().equals(toIPAddressVOV6.getAddress());
