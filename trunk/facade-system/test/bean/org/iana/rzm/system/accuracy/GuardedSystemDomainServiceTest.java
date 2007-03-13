@@ -3,26 +3,16 @@ package org.iana.rzm.system.accuracy;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 import org.iana.rzm.facade.system.*;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.AuthenticationService;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.user.SystemUser;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.common.TrackData;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.*;
-import java.sql.Time;
-import java.sql.Timestamp;
 
 /**
  * @author Piotr Tkaczyk

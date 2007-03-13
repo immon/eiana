@@ -2,7 +2,7 @@ package org.iana.rzm.system.failure;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
-import org.iana.rzm.facade.system.SystemDomainService;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.DomainVO;
 import org.iana.rzm.facade.system.SimpleDomainVO;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
@@ -12,11 +12,9 @@ import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
-import java.util.Iterator;
 
 /**
  * @author Piotr Tkaczyk

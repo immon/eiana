@@ -1,9 +1,11 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.IDomainVO;
+import org.iana.rzm.facade.system.SimpleDomainVO;
 
 import java.util.List;
 

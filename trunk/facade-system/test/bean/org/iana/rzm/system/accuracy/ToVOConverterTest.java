@@ -45,6 +45,9 @@ public class ToVOConverterTest {
 
     @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
     public void testIPv4AddressConversion() throws InvalidIPAddressException {
+        String a="dupa";
+        String b ="dupa";
+        assert a==b;
         fromIPAddress = IPv4Address.createIPv4Address("10.0.0.1");
         toIPAddressVO = ToVOConverter.toIPAddressVO(fromIPAddress);
         assert toIPAddressVO.getType() == IPAddressVO.Type.IPv4;
