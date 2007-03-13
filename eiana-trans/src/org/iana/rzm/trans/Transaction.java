@@ -27,16 +27,13 @@ public class Transaction implements TrackedObject {
 
     private ProcessInstance pi;
 
-     Transaction(String processName) {
-        JbpmContext ctx = JbpmContextFactory.getJbpmContext();
-        pi = new ProcessInstance(ctx.getGraphSession().findLatestProcessDefinition(processName));
-        pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
-        pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());        
-    }
-
-     Transaction(ProcessInstance pi) {
+    public Transaction(ProcessInstance pi) {
         CheckTool.checkNull(pi, "process instance");
         this.pi = pi;
+        if (!this.pi.getContextInstance().hasVariable(TRANSACTION_DATA))
+            this.pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
+        if (!this.pi.getContextInstance().hasVariable(TRACK_DATA))
+            this.pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());
     }
 
     private TransactionData getTransactionData() {
@@ -85,9 +82,9 @@ public class Transaction implements TrackedObject {
         TransactionState ts = new TransactionState();
         ts.setName(node.getName());
         ts.setStart(token.getStart());
-        if(token.getEnd()!=null)
+        if (token.getEnd() != null)
             ts.setEnd(token.getEnd());
-        for(Object o : node.getLeavingTransitions()) {
+        for (Object o : node.getLeavingTransitions()) {
             Transition transition = (Transition) o;
             ts.addAvailableTransition(new StateTransition(transition.getName()));
         }
@@ -143,7 +140,8 @@ public class Transaction implements TrackedObject {
 
     private TaskInstance getTaskInstance() {
         Collection<TaskInstance> tic = pi.getTaskMgmtInstance().getTaskInstances();
-        if (tic == null || tic.size() == 0) throw new IllegalStateException("no task instances found for " + getTransactionID());
+        if (tic == null || tic.size() == 0)
+            throw new IllegalStateException("no task instances found for " + getTransactionID());
         return tic.iterator().next();
     }
 }
