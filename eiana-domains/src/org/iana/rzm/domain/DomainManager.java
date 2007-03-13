@@ -12,13 +12,13 @@ import java.util.List;
  */
 public interface DomainManager {
 
-    public Domain get(String name) throws DomainException;
+    public Domain get(String name);
 
-    public Domain get(long id) throws DomainException;
+    public Domain get(long id);
 
-    public void create(Domain domain) throws DomainException;
+    public void create(Domain domain);
 
-    public List<Domain> findAll() throws DomainException;
+    public List<Domain> findAll();
 
-    public List<Domain> find(DomainCriteria criteria) throws DomainException;
+    public List<Domain> find(DomainCriteria criteria);
 }

@@ -16,23 +16,23 @@ public class DomainManagerBean implements DomainManager {
         this.dao = dao;
     }
 
-    public Domain get(String name) throws DomainException {
+    public Domain get(String name) {
         return dao.get(name);
     }
 
-    public Domain get(long id) throws DomainException {
+    public Domain get(long id) {
         return dao.get(id);
     }
 
-    public void create(Domain domain) throws DomainException {
+    public void create(Domain domain) {
         dao.create(domain);
     }
 
-    public List<Domain> findAll() throws DomainException {
+    public List<Domain> findAll() {
         return null;
     }
 
-    public List<Domain> find(DomainCriteria criteria) throws DomainException {
+    public List<Domain> find(DomainCriteria criteria) {
         return null;
     }
 }
