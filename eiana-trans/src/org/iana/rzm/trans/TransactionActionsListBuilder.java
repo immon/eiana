@@ -11,117 +11,40 @@ import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.change.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 class TransactionActionsListBuilder {
 
-    static void addNSAction(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
+    static void addSupportingOrganizationAction(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
         TransactionAction ta = null;
-        List<Host> originHosts = (originDomain.getNameServers() != null ? originDomain.getNameServers() : new ArrayList<Host>());
-        List<Host> newHosts = (domain.getNameServers() != null ? domain.getNameServers() : new ArrayList<Host>());
+        if ((originDomain.getSupportingOrg() == null && domain.getSupportingOrg() != null)) {
+            ta = new TransactionAction();
+            ta.setChange(additionSupportOrganizationList(domain));
+        } else if ((originDomain.getSupportingOrg() != null && domain.getSupportingOrg() == null)) {
+            ta = new TransactionAction();
+            ta.setChange(removalSupportOrganizationList(originDomain));
+        } else
+        if (originDomain.getSupportingOrg() != null && !originDomain.getSupportingOrg().equals(domain.getSupportingOrg())) {
+            ta = new TransactionAction();
+            ta.setChange(modificationContactChangeList(domain.getSupportingOrg(), originDomain.getSupportingOrg()));
+        }
+        if (ta != null) {
+            ta.setName(TransactionAction.Name.MODIFY_SUPPORTING_ORGANIZATION);
+            resultList.add(ta);
+        }
+    }
+
+    static void addAdministrationContactsActions(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
+        TransactionAction ta = null;
+        List<Contact> originContats = (originDomain.getAdminContacts() != null ? originDomain.getAdminContacts() : new ArrayList<Contact>());
+        List<Contact> newContacts = (domain.getAdminContacts() != null ? domain.getAdminContacts() : new ArrayList<Contact>());
         ta = new TransactionAction();
         List<Change> changes = new ArrayList<Change>();
-        changes.add(new Modification("nameServers", new ObjectValue<Change>(modificationNameServersChangeList(newHosts, originHosts))));
+        if (!originContats.equals(newContacts))
+            changes.add(new Modification("adminContacts", new ObjectValue<Change>(modificationAdministrationContactsChangeList(newContacts, originContats))));
         ta.setChange(changes);
         ta.setName(TransactionAction.Name.MODIFY_CONTACT);
         resultList.add(ta);
-    }
-
-
-    private static List<Change> modificationNameServersChangeList(List<Host> newHosts, List<Host> originHosts) {
-        List<Change> contactsChangesList = new ArrayList<Change>();
-        for (Host originHost : originHosts) {
-            boolean contians = false;
-            for (Host newHost : newHosts) {
-                if (originHost.getObjId().equals(newHost.getObjId())) {
-                    if (originHost.equals(newHost)) contians = true;
-                    else {
-                        contactsChangesList.addAll(modificationHostChangeList(newHost, originHost));
-                    }
-                }
-            }
-            if (contians == false) {
-                contactsChangesList.addAll(modificationHostChangeList(null, originHost));
-            }
-        }
-        for (Host newHost : newHosts) {
-            boolean contians = false;
-            for (Host originHost : originHosts) {
-                if (newHost.getObjId().equals(originHost.getObjId())) {
-                    contians = true;
-                }
-            }
-            if (contians == false) {
-                contactsChangesList.addAll(modificationHostChangeList(newHost, null));
-            }
-        }
-        return contactsChangesList;
-    }
-
-
-    private static List<Change> modificationHostChangeList(Host newHost, Host originHost) {
-        List<Change> hostChangeList = new ArrayList<Change>();
-        Set<IPAddress> originIPs = (originHost.getAddresses() != null ? originHost.getAddresses() : new HashSet<IPAddress>());
-        Set<IPAddress> newIPs = (newHost.getAddresses() != null ? newHost.getAddresses() : new HashSet<IPAddress>());
-
-        if (!originIPs.equals(newIPs)) {
-            hostChangeList.add(new Modification("addresses", new ObjectValue<Change>(modificationIPAddressesChangeList(newIPs, originIPs))));
-        }
-        return hostChangeList;
-    }
-
-    private static List<Change> modificationIPAddressesChangeList(Set<IPAddress> newIPs, Set<IPAddress> originIPs) {
-        List<Change> contactsChangesList = new ArrayList<Change>();
-        for (IPAddress originIp : originIPs) {
-            boolean contians = false;
-            for (IPAddress newIP : newIPs) {
-                if (originIp.getObjId().equals(newIP.getObjId())) {
-                    if (originIp.equals(newIP)) contians = true;
-                    else {
-                        contactsChangesList.addAll(modificationIPChangeList(newIP, originIp));
-                    }
-                }
-            }
-            if (contians == false) {
-                contactsChangesList.addAll(removalIPChangeList(originIp));
-            }
-        }
-        for (IPAddress newIP : newIPs) {
-            boolean contians = false;
-            for (IPAddress originIP : originIPs) {
-                if (newIP.getObjId().equals(originIP.getObjId())) {
-                    contians = true;
-                }
-            }
-            if (contians == false) {
-                contactsChangesList.addAll(additionIPChangeList(newIP));
-            }
-        }
-        return contactsChangesList;
-    }
-
-    private static List<Change> removalIPChangeList(IPAddress ip) {
-        List<Change> ipChangesList = new ArrayList<Change>();
-        ipChangesList.add(new Removal("type", ip.getType().toString()));
-        ipChangesList.add(new Removal("address", ip.getAddress()));
-        return ipChangesList;
-    }
-
-    private static List<Change> additionIPChangeList(IPAddress ip) {
-        List<Change> ipChangesList = new ArrayList<Change>();
-        ipChangesList.add(new Addition("type", ip.getType().toString()));
-        ipChangesList.add(new Addition("address", ip.getAddress()));
-        return ipChangesList;
-    }
-
-    private static List<Change> modificationIPChangeList(IPAddress newIP, IPAddress originIP) {
-        List<Change> ipChangesList = new ArrayList<Change>();
-        ipChangesList.add(new Modification("type", new ModifiedPrimitiveValue(newIP.getType().toString(), originIP.getType().toString())));
-        ipChangesList.add(new Modification("address", new ModifiedPrimitiveValue(newIP.getAddress(), originIP.getAddress())));
-        return ipChangesList;
     }
 
     static void addTechnicalContactsActions(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
@@ -137,11 +60,23 @@ class TransactionActionsListBuilder {
         resultList.add(ta);
     }
 
+    static void addNSAction(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
+        TransactionAction ta = null;
+        List<Host> originHosts = (originDomain.getNameServers() != null ? originDomain.getNameServers() : new ArrayList<Host>());
+        List<Host> newHosts = (domain.getNameServers() != null ? domain.getNameServers() : new ArrayList<Host>());
+        ta = new TransactionAction();
+        List<Change> changes = new ArrayList<Change>();
+        if (!originHosts.equals(newHosts))
+            changes.add(new Modification("nameServers", new ObjectValue<Change>(modificationNameServersChangeList(newHosts, originHosts))));
+        ta.setChange(changes);
+        ta.setName(TransactionAction.Name.MODIFY_NAMESERVER);
+        resultList.add(ta);
+    }
+
     static void addWhoisServerAction(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
         TransactionAction ta = null;
         if ((originDomain.getWhoisServer() == null && domain.getWhoisServer() != null)) {
             ta = new TransactionAction();
-            ta.setName(TransactionAction.Name.MODIFY_CONTACT);
             List<Change> changes = new ArrayList<Change>();
             changes.add(new Addition("whoisServer", domain.getWhoisServer()));
             ta.setChange(changes);
@@ -189,34 +124,121 @@ class TransactionActionsListBuilder {
         }
     }
 
-    static void addSupportingOrganizationAction(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
-        TransactionAction ta = null;
-        if ((originDomain.getSupportingOrg() == null && domain.getSupportingOrg() != null)) {
-            ta = new TransactionAction();
-            ta.setChange(additionSupportOrganizationList(domain));
-        } else if ((originDomain.getSupportingOrg() != null && domain.getSupportingOrg() == null)) {
-            ta = new TransactionAction();
-            ta.setChange(removalSupportOrganizationList(originDomain));
-        } else
-        if (originDomain.getSupportingOrg() != null && !originDomain.getSupportingOrg().equals(domain.getSupportingOrg())) {
-            ta = new TransactionAction();
-            ta.setChange(modificationSupportOrganizationChangesList(domain.getSupportingOrg(), originDomain.getSupportingOrg()));
+    private static List<Change> modificationNameServersChangeList(List<Host> newHosts, List<Host> originHosts) {
+        List<Change> contactsChangesList = new ArrayList<Change>();
+        for (Host originHost : originHosts) {
+            boolean contians = false;
+            for (Host newHost : newHosts) {
+                if (originHost.getObjId().equals(newHost.getObjId())) {
+                    contians = true;
+                    if (!originHost.equals(newHost)) {
+                        contactsChangesList.addAll(modificationHostChangeList(newHost, originHost));
+                    }
+                }
+            }
+            if (contians == false) {
+                contactsChangesList.addAll(modificationHostChangeList(null, originHost));
+            }
         }
-        if (ta != null) {
-            ta.setName(TransactionAction.Name.MODIFY_SUPPORTING_ORGANIZATION);
-            resultList.add(ta);
+        for (Host newHost : newHosts) {
+            boolean contians = false;
+            for (Host originHost : originHosts) {
+                if (newHost.getObjId().equals(originHost.getObjId())) {
+                    contians = true;
+                }
+            }
+            if (contians == false) {
+                contactsChangesList.addAll(modificationHostChangeList(newHost, null));
+            }
         }
+        return contactsChangesList;
     }
 
+
+    private static List<Change> modificationHostChangeList(Host newHost, Host originHost) {
+        List<Change> hostChangeList = new ArrayList<Change>();
+        Set<IPAddress> originIPs = (originHost.getAddresses() != null ? originHost.getAddresses() : new HashSet<IPAddress>());
+        Set<IPAddress> newIPs = (newHost.getAddresses() != null ? newHost.getAddresses() : new HashSet<IPAddress>());
+
+        if (!originIPs.equals(newIPs)) {
+            hostChangeList.add(new Modification("addresses", new ObjectValue<Change>(modificationIPAddressesChangeList(newIPs, originIPs))));
+        }
+        if (originHost.getName() == null && newHost.getName() != null) {
+            hostChangeList.add(new Addition("name", newHost.getName()));
+        } else if (originHost.getName() != null && newHost.getName() == null) {
+            hostChangeList.add(new Removal("name", originHost.getName()));
+        } else if (originHost.getName() != null && originHost.getName().equals(newHost.getName())) {
+            hostChangeList.add(new Modification("name", new ModifiedPrimitiveValue(newHost.getName(), originHost.getName())));
+        }
+        return hostChangeList;
+    }
+
+    private static List<Change> modificationIPAddressesChangeList(Set<IPAddress> newIPs, Set<IPAddress> originIPs) {
+        List<Change> contactsChangesList = new ArrayList<Change>();
+        for (IPAddress originIp : originIPs) {
+            boolean contians = false;
+            for (IPAddress newIP : newIPs) {
+                if (originIp.getObjId().equals(newIP.getObjId())) {
+                    contians = true;
+                    if (!originIp.equals(newIP))
+                        contactsChangesList.addAll(modificationIPChangeList(newIP, originIp));
+
+                }
+            }
+            if (contians == false) {
+                contactsChangesList.addAll(removalIPChangeList(originIp));
+            }
+        }
+        for (IPAddress newIP : newIPs) {
+            boolean contians = false;
+            for (IPAddress originIP : originIPs) {
+                if (newIP.getObjId().equals(originIP.getObjId())) {
+                    contians = true;
+                }
+            }
+            if (contians == false) {
+                contactsChangesList.addAll(additionIPChangeList(newIP));
+            }
+        }
+        return contactsChangesList;
+    }
+
+    private static List<Change> removalIPChangeList(IPAddress ip) {
+        List<Change> ipChangesList = new ArrayList<Change>();
+        ipChangesList.add(new Removal("type", ip.getType().toString()));
+        ipChangesList.add(new Removal("address", ip.getAddress()));
+        return ipChangesList;
+    }
+
+    private static List<Change> additionIPChangeList(IPAddress ip) {
+        List<Change> ipChangesList = new ArrayList<Change>();
+        ipChangesList.add(new Addition("type", ip.getType().toString()));
+        ipChangesList.add(new Addition("address", ip.getAddress()));
+        return ipChangesList;
+    }
+
+    private static List<Change> modificationIPChangeList(IPAddress newIP, IPAddress originIP) {
+        List<Change> ipChangesList = new ArrayList<Change>();
+        ipChangesList.add(new Modification("type", new ModifiedPrimitiveValue(newIP.getType().toString(), originIP.getType().toString())));
+        ipChangesList.add(new Modification("address", new ModifiedPrimitiveValue(newIP.getAddress(), originIP.getAddress())));
+        return ipChangesList;
+    }
+
+
     private static List<Change> additionSupportOrganizationList(Domain domain) {
-        List<Addition> changes = new ArrayList<Addition>();
-        changes.addAll(additionAdressesChangeList(domain.getSupportingOrg().getAddresses()));
-        changes.addAll(additionStringList("emails", domain.getSupportingOrg().getEmails()));
-        changes.addAll(additionStringList("faxNumbers", domain.getSupportingOrg().getFaxNumbers()));
-        changes.addAll(additionStringList("phoneNumbers", domain.getSupportingOrg().getPhoneNumbers()));
         List<Change> contactChanges = new ArrayList<Change>();
-        contactChanges.add(new Addition("supportingOrg", new ObjectValue<Addition>(changes)));
+        contactChanges.add(new Addition("supportingOrg", new ObjectValue<Addition>(additionContactChangeList(domain.getSupportingOrg()))));
         return contactChanges;
+    }
+
+    private static List<Addition> additionContactChangeList(Contact contact) {
+        List<Addition> changes = new ArrayList<Addition>();
+        changes.addAll(additionAdressesChangeList(contact.getAddresses()));
+        changes.addAll(additionStringList("emails", contact.getEmails()));
+        changes.addAll(additionStringList("faxNumbers", contact.getFaxNumbers()));
+        changes.addAll(additionStringList("phoneNumbers", contact.getPhoneNumbers()));
+        changes.add(new Addition("name", contact.getName()));
+        return changes;
     }
 
     private static List<Addition> additionAdressesChangeList(List<Address> addressList) {
@@ -225,7 +247,6 @@ class TransactionActionsListBuilder {
             resultAdditions.add(new Addition("addresses", new ObjectValue<Addition>(additionAdressChangeList(adr))));
         }
         return resultAdditions;
-
     }
 
     private static List<Addition> additionAdressChangeList(Address adr) {
@@ -236,9 +257,7 @@ class TransactionActionsListBuilder {
         addressAddition.add(new Addition("state", adr.getState()));
         addressAddition.add(new Addition("street", adr.getStreet()));
         return addressAddition;
-
     }
-
 
     private static List<Addition> additionStringList(String fieldName, List<String> stringList) {
         List<Addition> resultAdditions = new ArrayList<Addition>();
@@ -249,14 +268,19 @@ class TransactionActionsListBuilder {
     }
 
     private static List<Change> removalSupportOrganizationList(Domain domain) {
-        List<Removal> changes = new ArrayList<Removal>();
-        changes.addAll(removalAdressesChangeList(domain.getSupportingOrg().getAddresses()));
-        changes.addAll(removalStringList("emails", domain.getSupportingOrg().getEmails()));
-        changes.addAll(removalStringList("faxNumbers", domain.getSupportingOrg().getFaxNumbers()));
-        changes.addAll(removalStringList("phoneNumbers", domain.getSupportingOrg().getPhoneNumbers()));
         List<Change> contactChanges = new ArrayList<Change>();
-        contactChanges.add(new Removal("supportingOrg", new ObjectValue<Removal>(changes)));
+        contactChanges.add(new Removal("supportingOrg", new ObjectValue<Removal>(removalContactChangeList(domain.getSupportingOrg()))));
         return contactChanges;
+    }
+
+    private static List<Removal> removalContactChangeList(Contact contact) {
+        List<Removal> changes = new ArrayList<Removal>();
+        changes.addAll(removalAdressesChangeList(contact.getAddresses()));
+        changes.addAll(removalStringList("emails", contact.getEmails()));
+        changes.addAll(removalStringList("faxNumbers", contact.getFaxNumbers()));
+        changes.addAll(removalStringList("phoneNumbers", contact.getPhoneNumbers()));
+        changes.add(new Removal("name", contact.getName()));
+        return changes;
     }
 
     private static List<Removal> removalAdressesChangeList(List<Address> addressList) {
@@ -285,8 +309,7 @@ class TransactionActionsListBuilder {
         return resultRemoval;
     }
 
-
-    private static List<Change> modificationSupportOrganizationChangesList(Contact newContact, Contact originContact) {
+    private static List<Change> modificationContactChangeList(Contact newContact, Contact originContact) {
         List<Change> supportingOrgChangeList = new ArrayList<Change>();
         if (!originContact.getAddresses().equals(newContact.getAddresses())) {
             supportingOrgChangeList.add(new Modification("addesses", new ObjectValue<Change>(modificationAddressesChangeList(newContact.getAddresses(), originContact.getAddresses()))));
@@ -300,8 +323,9 @@ class TransactionActionsListBuilder {
         if (!originContact.getFaxNumbers().equals(newContact.getFaxNumbers())) {
             supportingOrgChangeList.addAll(modificationStringsChangeList("faxNumbers", newContact.getFaxNumbers(), originContact.getFaxNumbers()));
         }
-
-
+        if (!originContact.getName().equals(newContact.getName())) {
+            supportingOrgChangeList.add(new Modification("name", new ModifiedPrimitiveValue(newContact.getName(), originContact.getName())));
+        }
         return supportingOrgChangeList;
     }
 
@@ -311,8 +335,8 @@ class TransactionActionsListBuilder {
             boolean contians = false;
             for (Address newAdr : newAddresses) {
                 if (originAdr.getObjId().equals(newAdr.getObjId())) {
-                    if (originAdr.equals(newAdr)) contians = true;
-                    else {
+                     contians = true;
+                    if (!originAdr.equals(newAdr)) {
                         addressesChangesList.addAll(modificationAddressChangeList(newAdr, originAdr));
                     }
                 }
@@ -352,7 +376,7 @@ class TransactionActionsListBuilder {
             }
         }
         if (originSize > newSize) {
-            for (int i = originSize - 1; i < newSize; i++) {
+            for (int i = newSize - 1; i < originSize; i++) {
                 String orgString = originStringList.get(i);
                 stringChangesList.add(new Removal(fieldName, orgString));
             }
@@ -376,28 +400,14 @@ class TransactionActionsListBuilder {
         return modsList;
     }
 
-
-    static void addAdministrationContactsActions(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
-        TransactionAction ta = null;
-        List<Contact> originContats = (originDomain.getAdminContacts() != null ? originDomain.getAdminContacts() : new ArrayList<Contact>());
-        List<Contact> newContacts = (domain.getAdminContacts() != null ? domain.getAdminContacts() : new ArrayList<Contact>());
-        ta = new TransactionAction();
-        List<Change> changes = new ArrayList<Change>();
-        changes.add(new Modification("administrationContact", new ObjectValue<Change>(modificationAdministrationContactsChangeList(newContacts, originContats))));
-        ta.setChange(changes);
-        ta.setName(TransactionAction.Name.MODIFY_CONTACT);
-        resultList.add(ta);
-    }
-
-
     private static List<Change> modificationAdministrationContactsChangeList(List<Contact> newContacts, List<Contact> originContacts) {
         List<Change> contactsChangesList = new ArrayList<Change>();
         for (Contact originContact : originContacts) {
             boolean contians = false;
             for (Contact newContact : newContacts) {
                 if (originContact.getObjId().equals(newContact.getObjId())) {
-                    if (originContact.equals(newContact)) contians = true;
-                    else {
+                    contians = true;
+                    if (!originContact.equals(newContact)) {
                         contactsChangesList.addAll(modificationContactChangeList(newContact, originContact));
                     }
                 }
@@ -420,39 +430,34 @@ class TransactionActionsListBuilder {
         return contactsChangesList;
     }
 
-    private static List<Change> modificationContactChangeList(Contact newContact, Contact originContact) {
-        List<Change> supportingOrgChangeList = new ArrayList<Change>();
-        if (!originContact.getAddresses().equals(newContact.getAddresses())) {
-            supportingOrgChangeList.add(new Modification("addesses", new ObjectValue<Change>(modificationAddressesChangeList(newContact.getAddresses(), originContact.getAddresses()))));
+    /*
+     private static<T> List<Change> veryTestMethod(List<T> newHosts, List<T> originHosts) {
+        List<Change> contactsChangesList = new ArrayList<Change>();
+        for (T originHost : originHosts) {
+            boolean contians = false;
+            for (T newHost : newHosts) {
+                if (originHost.getObjId().equals(newHost.getObjId())) {
+                    if (originHost.equals(newHost)) contians = true;
+                    else {
+                        contactsChangesList.addAll(modificationHostChangeList(newHost, originHost));
+                    }
+                }
+            }
+            if (contians == false) {
+                contactsChangesList.addAll(modificationHostChangeList(null, originHost));
+            }
         }
-        if (!originContact.getEmails().equals(newContact.getEmails())) {
-            supportingOrgChangeList.addAll(modificationStringsChangeList("emails", newContact.getEmails(), originContact.getEmails()));
+        for (T newHost : newHosts) {
+            boolean contians = false;
+            for (T originHost : originHosts) {
+                if (newHost.getObjId().equals(originHost.getObjId())) {
+                    contians = true;
+                }
+            }
+            if (contians == false) {
+                contactsChangesList.addAll(modificationHostChangeList(newHost, null));
+            }
         }
-        if (!originContact.getPhoneNumbers().equals(newContact.getPhoneNumbers())) {
-            supportingOrgChangeList.addAll(modificationStringsChangeList("phoneNumbers", newContact.getPhoneNumbers(), originContact.getPhoneNumbers()));
-        }
-        if (!originContact.getFaxNumbers().equals(newContact.getFaxNumbers())) {
-            supportingOrgChangeList.addAll(modificationStringsChangeList("faxNumbers", newContact.getFaxNumbers(), originContact.getFaxNumbers()));
-        }
-        return supportingOrgChangeList;
-    }
-
-    private static List<Change> removalContactChangeList(Contact contact) {
-        List<Change> changes = new ArrayList<Change>();
-        changes.addAll(removalAdressesChangeList(contact.getAddresses()));
-        changes.addAll(removalStringList("emails", contact.getEmails()));
-        changes.addAll(removalStringList("faxNumbers", contact.getFaxNumbers()));
-        changes.addAll(removalStringList("phoneNumbers", contact.getPhoneNumbers()));
-        return changes;
-    }
-
-    private static List<Change> additionContactChangeList(Contact contact) {
-        List<Change> changes = new ArrayList<Change>();
-        changes.addAll(additionAdressesChangeList(contact.getAddresses()));
-        changes.addAll(additionStringList("emails", contact.getEmails()));
-        changes.addAll(additionStringList("faxNumbers", contact.getFaxNumbers()));
-        changes.addAll(additionStringList("phoneNumbers", contact.getPhoneNumbers()));
-        return changes;
-    }
-
+        return contactsChangesList;
+    } */
 }

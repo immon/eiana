@@ -22,7 +22,7 @@ public class TransactionManagerBean implements TransactionManager {
     private TransactionDAO dao;
     private TicketingService ticketingService;
 
-    public TransactionManagerBean(JbpmContext context,TransactionDAO dao,TicketingService ticketingService) {
+    public TransactionManagerBean(JbpmContext context, TransactionDAO dao, TicketingService ticketingService) {
         this.context = context;
         this.dao = dao;
         this.ticketingService = ticketingService;
@@ -42,8 +42,8 @@ public class TransactionManagerBean implements TransactionManager {
         ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition("process trans test"));
         td.setTicketID(ticketingService.generateID());
         td.setActions(createActions(domain));
-        pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
-        pi.getContextInstance().setVariable("TRACK_DATA",new TrackData());
+        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
+        pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
         return new Transaction(pi);
     }
 
@@ -67,19 +67,20 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     private List<TransactionAction> createActions(Domain domain) {
-           List<TransactionAction> resultList = new ArrayList<TransactionAction>();
-           CheckTool.checkNull(domain, "new domain");
-           DomainDAO dao = (DomainDAO) new ClassPathXmlApplicationContext("eiana-domains-spring.xml").getBean("domainDAO");
-           Domain originDomain = dao.get(domain.getName());
-           CheckTool.checkNull(originDomain, "origin domain");
+        List<TransactionAction> resultList = new ArrayList<TransactionAction>();
+        CheckTool.checkNull(domain, "new domain");
+        DomainDAO dao = (DomainDAO) new ClassPathXmlApplicationContext("eiana-domains-spring.xml").getBean("domainDAO");
+        Domain originDomain = dao.get(domain.getName());
+        CheckTool.checkNull(originDomain, "origin domain");
 
-           TransactionActionsListBuilder.addWhoisServerAction(domain, originDomain, resultList);
-           TransactionActionsListBuilder.addRegisterURLAction(domain, originDomain, resultList);
-           TransactionActionsListBuilder.addSupportingOrganizationAction(domain, originDomain, resultList);
-           TransactionActionsListBuilder.addAdministrationContactsActions(domain,originDomain,resultList);
-           TransactionActionsListBuilder.addTechnicalContactsActions(domain,originDomain,resultList);
+        TransactionActionsListBuilder.addSupportingOrganizationAction(domain, originDomain, resultList);
+        TransactionActionsListBuilder.addAdministrationContactsActions(domain, originDomain, resultList);
+        TransactionActionsListBuilder.addTechnicalContactsActions(domain, originDomain, resultList);
 
-           return resultList;
-       }
-    
+        TransactionActionsListBuilder.addWhoisServerAction(domain, originDomain, resultList);
+        TransactionActionsListBuilder.addRegisterURLAction(domain, originDomain, resultList);
+
+        return resultList;
+    }
+
 }
