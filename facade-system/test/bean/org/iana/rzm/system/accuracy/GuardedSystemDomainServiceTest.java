@@ -58,6 +58,10 @@ public class GuardedSystemDomainServiceTest {
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId);
         assert domainVO.getName().equals("facadesystemiana.org");
         assert domainVO.getObjId() == domainId;
+        Set<RoleVO.Type> roleType = new HashSet<RoleVO.Type>();
+        roleType.add(SystemRoleVO.SystemType.AC);
+        roleType.add(SystemRoleVO.SystemType.TC);
+        assert domainVO.getRoles().equals(roleType);
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
@@ -67,6 +71,11 @@ public class GuardedSystemDomainServiceTest {
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId1);
         assert domainVO.getName().equals("facadesystemiana1.org");
         assert domainVO.getObjId() == domainId1;
+        Set<RoleVO.Type> roleType = new HashSet<RoleVO.Type>();
+        roleType.add(SystemRoleVO.SystemType.SO);
+        roleType.add(SystemRoleVO.SystemType.AC);
+        assert domainVO.getRoles().equals(roleType);
+
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
@@ -76,6 +85,11 @@ public class GuardedSystemDomainServiceTest {
         DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana.org");
         assert domainVO.getName().equals("facadesystemiana.org");
         assert domainVO.getObjId() == domainId;
+
+        Set<RoleVO.Type> roleType = new HashSet<RoleVO.Type>();
+        roleType.add(SystemRoleVO.SystemType.AC);
+        roleType.add(SystemRoleVO.SystemType.TC);
+        assert domainVO.getRoles().equals(roleType);
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
@@ -85,6 +99,11 @@ public class GuardedSystemDomainServiceTest {
         DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana1.org");
         assert domainVO.getName().equals("facadesystemiana1.org");
         assert domainVO.getObjId() == domainId1;
+
+        Set<RoleVO.Type> roleType = new HashSet<RoleVO.Type>();
+        roleType.add(SystemRoleVO.SystemType.SO);
+        roleType.add(SystemRoleVO.SystemType.AC);
+        assert domainVO.getRoles().equals(roleType);
     }
 
     @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
@@ -118,11 +137,11 @@ public class GuardedSystemDomainServiceTest {
         role.setType(SystemRoleVO.SystemType.TC);
         user.addRole(role);
         role.setName("facadesystemiana1.org");
-        role.setType(SystemRoleVO.SystemType.AC);
+        role.setType(SystemRoleVO.SystemType.SO);
         user.addRole(role);
         role = new SystemRoleVO();
         role.setName("facadesystemiana1.org");
-        role.setType(SystemRoleVO.SystemType.TC);
+        role.setType(SystemRoleVO.SystemType.AC);
         user.addRole(role);
         return user;
     }
