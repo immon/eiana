@@ -24,9 +24,11 @@ public class TransactionTest {
 
     private TransactionManager manager;
     @BeforeClass(groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
-    public void init() {        
+    public void init() {
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
+        dao = (TransactionDAO) ctx.getBean("transactionDAO");
+        manager = (TransactionManager) ctx.getBean("transactionManagerBean");
         deployProcessDefinition();
-        dao = (TransactionDAO) new ClassPathXmlApplicationContext("eiana-trans-spring.xml").getBean("transactionDAO");
     }
 
     @Test(dependsOnGroups = "simple",groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
