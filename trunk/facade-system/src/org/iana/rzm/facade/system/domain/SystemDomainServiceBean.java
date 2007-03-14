@@ -8,16 +8,13 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.IDomainVO;
 import org.iana.rzm.facade.system.DomainVO;
-import org.iana.rzm.facade.system.ToVOConverter;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.SimpleDomainVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.DomainException;
 import org.iana.rzm.user.*;
 
 import java.util.*;
