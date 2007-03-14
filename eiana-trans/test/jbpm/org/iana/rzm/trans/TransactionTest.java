@@ -22,6 +22,7 @@ public class TransactionTest {
 
     private TransactionDAO dao;
 
+    private TransactionManager manager;
     @BeforeClass(groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
     public void init() {        
         deployProcessDefinition();
@@ -42,7 +43,7 @@ public class TransactionTest {
         context.close();
         transactionId = transaction.getTransactionID();
         context = JbpmTestContextFactory.getJbpmContext();
-        TransactionManagerBean manager = new TransactionManagerBean(context, dao,null);
+        manager.setJBPMContext(context);
         Transaction transFromDB = manager.get(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
     }
@@ -50,14 +51,14 @@ public class TransactionTest {
     @Test(dependsOnMethods = ("testTransactionCreation"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
     public void testTranactionUpdate() throws NoSuchTransactionException {
         JbpmContext context = JbpmTestContextFactory.getJbpmContext();
-        TransactionManagerBean manager = new TransactionManagerBean(context, dao,null);
+        manager.setJBPMContext(context);
         Transaction transToUpdate = manager.get(transactionId);
         assert transToUpdate.getTicketID().equals(new Long(ticketId));
         ticketId = 456L;
         transToUpdate.setTicketID(ticketId);
         context.close();
         context = JbpmTestContextFactory.getJbpmContext();
-        manager = new TransactionManagerBean(context, dao,null);
+        manager.setJBPMContext(context);
         Transaction transFromDB = manager.get(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
         context.close();
@@ -66,7 +67,7 @@ public class TransactionTest {
     @Test(dependsOnMethods = ("testTranactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
        public void testTranactionAccept() throws NoSuchTransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
-           TransactionManagerBean manager = new TransactionManagerBean(context, dao,null);
+           manager.setJBPMContext(context);
            Transaction trans = manager.get(transactionId);
            assert trans != null;
            trans.accept();
@@ -77,7 +78,7 @@ public class TransactionTest {
      @Test(dependsOnMethods = ("testTranactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
        public void testTranactionReject() throws NoSuchTransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
-           TransactionManagerBean manager = new TransactionManagerBean(context, dao,null);
+           manager.setJBPMContext(context);
            Transaction trans = manager.get(transactionId);
            assert trans != null;
            trans.reject();

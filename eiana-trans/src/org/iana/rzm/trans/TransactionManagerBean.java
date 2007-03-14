@@ -23,10 +23,10 @@ public class TransactionManagerBean implements TransactionManager {
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
 
-    public TransactionManagerBean(JbpmContext context, TransactionDAO dao, TicketingService ticketingService) {
-        this.context = context;
+    public TransactionManagerBean(TransactionDAO dao,DomainDAO domainDAO,TicketingService ticketingService) {        
         this.transactionDAO = dao;
         this.ticketingService = ticketingService;
+        this.domainDAO = domainDAO;
     }
 
     public Transaction get(long id) throws NoSuchTransactionException {
@@ -43,10 +43,10 @@ public class TransactionManagerBean implements TransactionManager {
 
     public Transaction modify(Domain domain) {
         TransactionData td = new TransactionData();
-        td.setActions(createActions(domain));
-        ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition("process trans test"));
+        td.setActions(createActions(domain));                                                                                         
         td.setTicketID(ticketingService.generateID());
         td.setActions(createActions(domain));
+        ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition("process trans test"));
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
         return new Transaction(pi);
@@ -78,9 +78,17 @@ public class TransactionManagerBean implements TransactionManager {
         TransactionActionsListBuilder.addTechnicalContactsActions(domain, originDomain, resultList);
 
         TransactionActionsListBuilder.addWhoisServerAction(domain, originDomain, resultList);
+
         TransactionActionsListBuilder.addRegisterURLAction(domain, originDomain, resultList);
 
+        TransactionActionsListBuilder.addNSAction(domain, originDomain, resultList);
+
         return resultList;
+    }
+
+    //TEMPORARY METHOD, should be deleted later, when JbpmContext & spring problem will be reslowed.
+    public void setJBPMContext(JbpmContext ctx){
+        this.context = ctx; 
     }
 
 }

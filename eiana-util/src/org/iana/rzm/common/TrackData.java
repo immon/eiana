@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  */
 @Embeddable
 @Entity
-public class TrackData {
+public class TrackData implements Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
@@ -95,5 +95,19 @@ public class TrackData {
         result = 31 * result + (modified != null ? modified.hashCode() : 0);
         result = 31 * result + (modifiedBy != null ? modifiedBy.hashCode() : 0);
         return result;
+    }
+
+
+    public Object clone() throws CloneNotSupportedException {
+         TrackData td = (TrackData) super.clone();
+         if(td.getCreated()!=null)
+         td.setCreated(new Timestamp(td.getCreated().getTime()));
+         if(td.getCreatedBy()!=null)
+         td.setCreatedBy(new String(td.getCreatedBy()));
+            if(td.getModified()!=null)
+         td.setModified(new Timestamp(td.getModified().getTime()));
+        if(td.getModifiedBy()!=null)
+         td.setModifiedBy(new String(td.getModifiedBy()));
+         return td; 
     }
 }

@@ -6,8 +6,6 @@
         <service name='scheduler'
                  factory='org.jbpm.scheduler.db.DbSchedulerServiceFactory'/>
     </jbpm-context>
-    <string name='resource.hibernate.cfg.xml'
-            value='hibernate.cfg.xml'/>
     <string name='resource.business.calendar'
             value='org/jbpm/calendar/jbpm.business.calendar.properties'/>
     <string name='resource.default.modules'

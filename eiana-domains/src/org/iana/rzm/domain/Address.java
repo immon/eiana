@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Address {
+public class Address implements Cloneable{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
@@ -91,5 +91,10 @@ public class Address {
         result = 31 * result + (countryCode != null ? countryCode.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
         return result;
+    }
+
+
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

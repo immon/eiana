@@ -8,18 +8,14 @@ import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.sql.Timestamp;
 
 /**
  * This class represents a computer machine available in the net which serves as a DNS name server to one or many domain names.
- *
  */
 @Entity
-public class Host implements TrackedObject {
+public class Host implements TrackedObject,Cloneable {
 
     /**
      * The name of this host.
@@ -38,12 +34,14 @@ public class Host implements TrackedObject {
      */
     @Basic
     private int numDelegations;
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Embedded
     private TrackData trackData = new TrackData();
 
-    protected Host() {}
+    protected Host() {
+    }
 
     public Host(String name) throws InvalidNameException {
         setName(name);
@@ -105,13 +103,31 @@ public class Host implements TrackedObject {
         addIPAddress(IPAddress.createIPAddress(addr));
     }
 
-    final void incDelegations() { ++numDelegations; }
+    final void incDelegations() {
+        ++numDelegations;
+    }
 
-    final void decDelegations() { --numDelegations; }
+    final void decDelegations() {
+        --numDelegations;
+    }
 
-    final public boolean isShared() { return numDelegations > 1; }
+    final public boolean isShared() {
+        return numDelegations > 1;
+    }
 
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Host host = (Host) o;
+
+        if (addresses != null ? !addresses.equals(host.addresses) : host.addresses != null) return false;
+        if (name != null ? !name.equals(host.name) : host.name != null) return false;
+
+        return true;
+    }
+
+    public boolean hibernateEquals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -125,12 +141,13 @@ public class Host implements TrackedObject {
         return true;
     }
 
+
     public int hashCode() {
         int result;
         result = (name != null ? name.hashCode() : 0);
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
-        result = 31 * result + numDelegations;
-        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        //result = 31 * result + numDelegations;
+        //result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
     }
 
@@ -156,5 +173,20 @@ public class Host implements TrackedObject {
 
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
+    }
+
+    protected Object clone() throws CloneNotSupportedException {
+        Host host = (Host) super.clone();    //To change body of overridden methods use File | Settings | File Templates.
+        Host newHost = new Host(host.getName());
+        host.setTrackData((TrackData) host.getTrackData().clone());
+        Set<IPAddress> oldSet = host.getAddresses();
+        Set<IPAddress> newSet = new HashSet<IPAddress>();
+        for (IPAddress ip : oldSet) {
+            try {
+                newSet.add(IPAddress.createIPAddress(ip.getAddress()));
+            } catch (InvalidIPAddressException ignored) {}
+        }
+        newHost.setAddresses(newSet);
+        return newHost;
     }
 }

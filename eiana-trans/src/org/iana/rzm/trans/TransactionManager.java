@@ -1,6 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
+import org.jbpm.JbpmContext;
 
 import java.util.List;
 
@@ -34,4 +35,7 @@ public interface TransactionManager {
     List<Transaction> find(TransactionCriteria criteria);
 
     public List<Transaction> findAllProcessInstances(String domainName);
+
+    //TEMPORARY METHOD, should be deleted later, when JbpmContext & spring problem will be reslowed.
+    public void setJBPMContext(JbpmContext ctx);
 }
