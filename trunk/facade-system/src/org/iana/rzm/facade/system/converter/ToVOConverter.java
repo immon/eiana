@@ -1,12 +1,14 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.converter;
 
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.system.*;
 import org.iana.rzm.user.Role;
 
 import java.util.*;
@@ -17,6 +19,19 @@ import java.util.*;
 
 public class ToVOConverter {
 
+    private static Map<Domain.State, DomainVO.State> domainStates = new HashMap<Domain.State, DomainVO.State>();
+    private static Map<Domain.Status, DomainVO.Status> domainStatus = new HashMap<Domain.Status, IDomainVO.Status>();
+
+    static {
+        domainStates.put(Domain.State.NO_ACTIVITY, DomainVO.State.NO_ACTIVITY);
+        domainStates.put(Domain.State.OPERATIONS_PENDING, DomainVO.State.OPERATIONS_PENDING);
+        domainStates.put(Domain.State.THIRD_PARTY_PENDING, DomainVO.State.THIRD_PARTY_PENDING);
+
+        domainStatus.put(Domain.Status.ACTIVE, DomainVO.Status.ACTIVE);
+        domainStatus.put(Domain.Status.CLOSED, DomainVO.Status.CLOSED);
+        domainStatus.put(Domain.Status.NEW, DomainVO.Status.NEW);
+    }
+
 // ---------------------- Domain convert methods ----------------------
     public static DomainVO toDomainVO(Domain fromDomain) throws InvalidNameException {
         if (fromDomain == null) return null;
@@ -26,7 +41,7 @@ public class ToVOConverter {
         return toDomainVO;
     }
 
-    public static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) throws InvalidNameException {
+    private static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) throws InvalidNameException {
         if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
         if (toDomainVO == null) throw new IllegalArgumentException("null toDomainVO");
 
@@ -60,7 +75,7 @@ public class ToVOConverter {
         return simpleDomainVO;
     }
     
-    public static void toSimpleDomainVO(Domain fromDomain, SimpleDomainVO toSimpleDomainVO ) {
+    private static void toSimpleDomainVO(Domain fromDomain, SimpleDomainVO toSimpleDomainVO ) {
         if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
         if (toSimpleDomainVO == null) throw new IllegalArgumentException("null toSimpleDomainVO");
 
@@ -80,12 +95,9 @@ public class ToVOConverter {
     public static IDomainVO.State toStateVO (Domain.State fromState) {
         if (fromState == null) return null;
 
-        if (fromState == Domain.State.NO_ACTIVITY)
-            return IDomainVO.State.NO_ACTIVITY;
-        else if(fromState == Domain.State.OPERATIONS_PENDING)
-                return IDomainVO.State.OPERATIONS_PENDING;
-            else
-                return IDomainVO.State.THIRD_PARTY_PENDING;
+        IDomainVO.State stateVO = domainStates.get(fromState);
+        CheckTool.checkNull(stateVO, "Unknown domain state " + fromState);
+        return stateVO;
     }
 
 // ---------------------- Status convert methods ----------------------
@@ -159,7 +171,7 @@ public class ToVOConverter {
         return toHostVO;
     }
 
-    public static void toHostVO(Host fromHost, HostVO toHostVO) {
+    private static void toHostVO(Host fromHost, HostVO toHostVO) {
         if (fromHost == null) throw new IllegalArgumentException("null fromHost");
         if (toHostVO == null) throw new IllegalArgumentException("null toHostVO");
 
@@ -197,7 +209,7 @@ public class ToVOConverter {
         return toIPAddressVO;
     }
 
-    public static void toIPAddressVO(IPAddress fromIPAddress, IPAddressVO toIPAddressVO) {
+    private static void toIPAddressVO(IPAddress fromIPAddress, IPAddressVO toIPAddressVO) {
         if (fromIPAddress == null) throw new IllegalArgumentException("null fromIPAddress");
         if (toIPAddressVO == null) throw new IllegalArgumentException("null toIPAddressVO");
 
@@ -226,7 +238,7 @@ public class ToVOConverter {
         return toContactVO;
     }
 
-    public static void toContactVO(Contact fromContact, ContactVO toContactVO) {
+    private static void toContactVO(Contact fromContact, ContactVO toContactVO) {
         if (fromContact == null) throw new IllegalArgumentException("null fromContact");
         if (toContactVO == null) throw new IllegalArgumentException("null toContactVO");
 
@@ -267,7 +279,7 @@ public class ToVOConverter {
         return addressVO;
     }
 
-    public static void toAddressVO(Address fromAddress, AddressVO toAddressVO) {
+    private static void toAddressVO(Address fromAddress, AddressVO toAddressVO) {
         if (fromAddress == null) throw new IllegalArgumentException("null fromAddress");
         if (toAddressVO == null) throw new IllegalArgumentException("null toAddressVO");
 
