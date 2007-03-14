@@ -6,6 +6,10 @@
 
     <!-- dao configuration -->
 
+    <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
+        <constructor-arg ref="userDAO" />
+    </bean>
+
     <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
