@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.facade.common.TrackDataVO;
 
@@ -11,10 +11,10 @@ import java.util.List;
 public class TransactionVO extends TrackDataVO {
 
     private Long transactionID;
-    private Long rtID;
+    private Long ticketID;
     private String name;
-    private IDomainVO currentDomain;
-    private List<TransactionActionVO> actions;
+    private String domainName;
+    private List<TransactionActionVO> domainActions;
     private TransactionStateVO state;
     private Timestamp start;
     private Timestamp end;
@@ -23,40 +23,40 @@ public class TransactionVO extends TrackDataVO {
         return transactionID;
     }
 
-    public void setTransactionID(Long transactionID) {
+    void setTransactionID(Long transactionID) {
         this.transactionID = transactionID;
     }
 
-    public Long getRtID() {
-        return rtID;
+    public Long getTicketID() {
+        return ticketID;
     }
 
-    public void setRtID(Long rtID) {
-        this.rtID = rtID;
+    void setTicketID(Long ticketID) {
+        this.ticketID = ticketID;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
-    public IDomainVO getCurrentDomain() {
-        return currentDomain;
+    public String getDomainName() {
+        return domainName;
     }
 
-    public void setCurrentDomain(IDomainVO currentDomain) {
-        this.currentDomain = currentDomain;
+    void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 
-    public List<TransactionActionVO> getActions() {
-        return actions;
+    public List<TransactionActionVO> getDomainActions() {
+        return domainActions;
     }
 
-    public void setActions(List<TransactionActionVO> actions) {
-        this.actions = actions;
+    void setDomainActions(List<TransactionActionVO> domainActions) {
+        this.domainActions = domainActions;
     }
 
     public TransactionStateVO getState() {

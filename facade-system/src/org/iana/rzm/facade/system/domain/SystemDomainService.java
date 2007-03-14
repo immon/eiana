@@ -4,8 +4,8 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.IDomainVO;
-import org.iana.rzm.facade.system.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 
 import java.util.List;
 
@@ -47,7 +47,17 @@ public interface SystemDomainService extends RZMStatefulService {
     IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException;
 
     /**
-     * <p>Returns a list of the domains objects that the provided user is granted to access. For example,
+     * <p>Returns a list of the domains objects that an authenticated user is granted access to.
+     * A shortcut to <code>findUserDomains(authenticatedUser.getUserName())</code>.</p>
+     *
+     * @return the list of the domains managed/administered by a given user, an empty list if no domains found.
+     * @throws AccessDeniedException when the user is not allowed to access this method
+     * @throws InfrastructureException when a low-level exception happened
+     */
+    List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException;
+
+    /**
+     * <p>Returns a list of the domains objects that the provided user is granted access to. For example,
      * IANA stuff is allowed to access all domains thus this method returns all existing domain objects. While
      * system users are allowed to access only the domains for which they are in one of the roles: AC, TC, SO, thus
      * for them the returned list is limited only to those domains that they manage/administer at the moment of time.</p>

@@ -1,8 +1,10 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.common.RZMStatefulService;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 
 import java.util.List;
 

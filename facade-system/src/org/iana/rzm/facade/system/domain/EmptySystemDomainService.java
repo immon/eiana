@@ -8,11 +8,13 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.IDomainVO;
-import org.iana.rzm.facade.system.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 
 import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 
 
 public class EmptySystemDomainService implements SystemDomainService {
@@ -25,8 +27,12 @@ public class EmptySystemDomainService implements SystemDomainService {
         return null;
     }
 
+    public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {
+        return new ArrayList<SimpleDomainVO>();
+    }
+
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
-        return null;
+        return new ArrayList<SimpleDomainVO>();
     }
 
     public void setUser(AuthenticatedUser user) {

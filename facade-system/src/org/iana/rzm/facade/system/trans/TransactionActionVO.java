@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.trans;
 
 import java.util.List;
 
@@ -27,6 +27,10 @@ public class TransactionActionVO {
         this.name = name;
     }
 
+    public void setName(String name) {
+        this.name = Name.valueOf(name);
+    }
+    
     public List<ChangeVO> getChange() {
         return change;
     }

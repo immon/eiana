@@ -10,9 +10,9 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.IDomainVO;
-import org.iana.rzm.facade.system.DomainVO;
-import org.iana.rzm.facade.system.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 
@@ -47,6 +47,11 @@ public class GuardedSystemDomainService implements SystemDomainService {
         return domainVO;
     }
 
+    public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {
+        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        return findUserDomains(user.getUserName());
+    }
+
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
         CheckTool.checkEmpty(userName, "user name");
@@ -57,7 +62,7 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     public void setUser(AuthenticatedUser user) {
-        CheckTool.checkNull(user, "Authenticated User");
+        CheckTool.checkNull(user, "authenticated user");
         delegate.setUser(user);
         this.user = user;
     }

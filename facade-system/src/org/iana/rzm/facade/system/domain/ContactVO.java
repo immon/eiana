@@ -1,21 +1,22 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.common.Trackable;
-import org.iana.rzm.facade.user.RoleVO;
 
-import java.util.Set;
+import java.util.List;
 import java.sql.Timestamp;
 
 /**
- * A simplified version of DomainVO used with lists of domains. 
- *
  * @author Patrycja Wegrzynowicz
  */
-public class SimpleDomainVO implements Trackable {
+public class ContactVO implements Trackable {
 
     private String name;
-    private Set<RoleVO.Type> roles;
+    private List<AddressVO> addresses;
+    private List<String> phoneNumbers;
+    private List<String> faxNumbers;
+    private List<String> emails;
+    private boolean role;
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
@@ -28,12 +29,44 @@ public class SimpleDomainVO implements Trackable {
         this.name = name;
     }
 
-    public Set<RoleVO.Type> getRoles() {
-        return roles;
+    public List<AddressVO> getAddresses() {
+        return addresses;
     }
 
-    public void setRoles(Set<RoleVO.Type> roles) {
-        this.roles = roles;
+    public void setAddresses(List<AddressVO> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    public List<String> getFaxNumbers() {
+        return faxNumbers;
+    }
+
+    public void setFaxNumbers(List<String> faxNumbers) {
+        this.faxNumbers = faxNumbers;
+    }
+
+    public List<String> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
+    }
+
+    public boolean isRole() {
+        return role;
+    }
+
+    public void setRole(boolean role) {
+        this.role = role;
     }
 
     public Long getObjId() {
