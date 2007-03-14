@@ -6,6 +6,29 @@
 
     <!-- dao configuration -->
 
+    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.domain.dao.DomainDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="domainDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="domainDAOTarget" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="transactionDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
@@ -23,6 +46,36 @@
         </property>
     </bean>
 
+    <bean id="transactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+            <property name="proxyInterfaces">
+                <list>
+                    <value>org.iana.rzm.trans.TransactionManager</value>
+                </list>
+            </property>
+            <property name="target">
+                <ref bean="transactionManagerTarget"/>
+            </property>
+            <property name="transactionManager">
+                <ref bean="transactionManager"/>
+            </property>
+            <property name="transactionAttributeSource">
+                <ref bean="transactionAttributeSource"/>
+            </property>
+        </bean>
+
+    <bean id="faketicket" class="org.iana.rzm.trans.FakeTicketingService"/>
+
+    <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
+        <constructor-arg>
+            <ref bean="transactionDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="domainDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="faketicket"/>
+        </constructor-arg>        
+    </bean>
     <bean id="transactionDAOTarget" class="org.iana.rzm.trans.dao.HibernateTransactionDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
@@ -35,6 +88,18 @@
         </property>
     </bean>
 
+    <!-- jBPM configuration -->
+    <!--    <bean id="jbpmConfiguration"
+              class="org.springmodules.workflow.jbpm31.LocalJbpmConfigurationFactoryBean">
+            <property name="sessionFactory">
+                <ref bean="sessionFactory"/>
+            </property>
+            <property name="configuration">
+                <value>eiana-trans.jbpm.cfg.xml</value>
+            </property>
+        </bean>0
+    
+    -->
     <!-- transactional properties -->
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">

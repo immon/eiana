@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class Contact implements TrackedObject {
+public class Contact implements TrackedObject,Cloneable {
 
     final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
     final private static List<String> STRING_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<String>());
@@ -172,6 +172,22 @@ public class Contact implements TrackedObject {
 
         Contact contact = (Contact) o;
 
+        if (addresses != null ? !addresses.equals(contact.addresses) : contact.addresses != null) return false;
+        if (emails != null ? !emails.equals(contact.emails) : contact.emails != null) return false;
+        if (faxNumbers != null ? !faxNumbers.equals(contact.faxNumbers) : contact.faxNumbers != null) return false;
+        if (name != null ? !name.equals(contact.name) : contact.name != null) return false;
+        if (phoneNumbers != null ? !phoneNumbers.equals(contact.phoneNumbers) : contact.phoneNumbers != null)
+            return false;
+
+        return true;
+    }
+
+    public boolean hibernateEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contact contact = (Contact) o;
+
         if (role != contact.role) return false;
         if (addresses != null ? !addresses.equals(contact.addresses) : contact.addresses != null) return false;
         if (emails != null ? !emails.equals(contact.emails) : contact.emails != null) return false;
@@ -191,8 +207,7 @@ public class Contact implements TrackedObject {
         result = 31 * result + (phoneNumbers != null ? phoneNumbers.hashCode() : 0);
         result = 31 * result + (faxNumbers != null ? faxNumbers.hashCode() : 0);
         result = 31 * result + (emails != null ? emails.hashCode() : 0);
-        result = 31 * result + (role ? 1 : 0);
-        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        //result = 31 * result + (role ? 1 : 0);        
         return result;
     }
 
@@ -218,5 +233,27 @@ public class Contact implements TrackedObject {
 
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
+    }
+
+
+    public Object clone() throws CloneNotSupportedException {
+        Contact contact = (Contact) super.clone();
+        contact.setTrackData((TrackData) contact.getTrackData().clone());
+        List<Address> oldAddresses = contact.getAddresses();
+        List<Address> newAddresses = new ArrayList<Address>();
+        for(Address adr : oldAddresses)
+            newAddresses.add((Address) adr.clone());
+        contact.setAddresses(newAddresses);
+        contact.setPhoneNumbers(listOfStringCopy(contact.getPhoneNumbers()));
+        contact.setFaxNumbers(listOfStringCopy(contact.getFaxNumbers()));
+        contact.setEmails(listOfStringCopy(contact.getEmails()));
+        return contact;
+    }
+
+    private List<String> listOfStringCopy(List<String> oldStringCollection){
+        List<String> newList = new ArrayList<String>();
+        for(String s : oldStringCollection)
+            newList.add(new String(s));
+        return newList;
     }
 }

@@ -45,4 +45,9 @@ abstract public class Change {
 
     abstract public void accept(ChangeVisitor visitor);
 
+
+    public String toString() {
+        return "--Chanege--\n fieldName="+fieldName+"\n type="+type.toString()+"\n----------";
+    }
 }
+

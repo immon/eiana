@@ -19,8 +19,6 @@
         <property name="hibernate.hibernate.default_batch_fetch_size">32</property>
         <property name="hibernate.jdbc.batch_size">20</property>
 
-        <property name="hibernate.hbm2ddl.auto">create</property>
-
         <mapping class="org.iana.rzm.common.Name"/>
         <mapping class="org.iana.rzm.common.TrackData"/>
 

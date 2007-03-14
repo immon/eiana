@@ -11,7 +11,7 @@ import java.util.Locale;
  * @author Jakub Laszkiewicz
  */
 @Embeddable
-public class Name {
+public class Name implements Cloneable{
 
     @Basic
     private String name;
@@ -48,5 +48,10 @@ public class Name {
 
     private void isValidName(String name) throws InvalidNameException {
         if (name != null && !name.matches(DOMAIN_PATTERN)) throw new InvalidNameException(name);
+    }
+
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

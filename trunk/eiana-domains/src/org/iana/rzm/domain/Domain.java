@@ -9,8 +9,13 @@ import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.sql.Timestamp;
+import java.io.ObjectOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -18,7 +23,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "state"}))
-public class Domain implements TrackedObject {
+public class Domain implements TrackedObject, Cloneable {
 
     public static enum Breakpoint {
         SO_CHANGE_EXT_REVIEW,
@@ -43,7 +48,7 @@ public class Domain implements TrackedObject {
     @Embedded
     private Name name;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="supportingOrg_objId")
+    @JoinColumn(name = "supportingOrg_objId")
     private Contact supportingOrg;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Domain_AdminContacts",
@@ -73,12 +78,14 @@ public class Domain implements TrackedObject {
     private Status status;
     @Enumerated
     private State state;
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Embedded
     private TrackData trackData = new TrackData();
 
-    protected Domain() {}
+    protected Domain() {
+    }
 
     public Domain(String name) throws InvalidNameException {
         setName(name);
@@ -180,7 +187,7 @@ public class Domain implements TrackedObject {
 
     final public boolean removeNameServer(String hostName) {
         if (hostName != null) {
-            for (Iterator<Host> i = nameServers.iterator(); i.hasNext(); ) {
+            for (Iterator<Host> i = nameServers.iterator(); i.hasNext();) {
                 Host host = i.next();
                 if (hostName.equals(host.getName())) {
                     host.decDelegations();
@@ -330,4 +337,42 @@ public class Domain implements TrackedObject {
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
     }
+
+    public Object clone() throws CloneNotSupportedException {
+        Domain domain = (Domain) super.clone();
+        Domain newDomain = new Domain(domain.getName());
+        try {
+            //domain.setDomainRegistryUrl(new URL(domain.getRegistryUrl().toString()));            
+            if (domain.getNameServers() != null) {
+                List<Host> newHosts = new ArrayList<Host>();
+                List<Host> oldHosts = domain.getNameServers();
+                for (Host host : oldHosts)
+                    newHosts.add((Host) host.clone());
+                domain.setNameServers(newHosts);
+            }
+            if (domain.getTrackData() != null)
+                newDomain.setTrackData((TrackData) domain.getTrackData().clone());
+            if (domain.getAdminContacts() != null)
+                newDomain.setAdminContacts(copyListOfContacts(domain.getAdminContacts()));
+            if (domain.getTechContacts() != null)
+                newDomain.setTechContacts(copyListOfContacts(domain.getTechContacts()));
+            if (domain.getSupportingOrg() != null)
+                newDomain.setSupportingOrg((Contact) domain.getSupportingOrg().clone());
+            if (domain.getWhoisServer() != null)
+                newDomain.setWhoisServer(domain.getWhoisServer());
+        } catch (NameServerAlreadyExistsException e) {
+            e.printStackTrace();
+        }
+        return newDomain;
+    }
+
+    private List<Contact> copyListOfContacts(List<Contact> oldContacts) throws CloneNotSupportedException {
+        List<Contact> contactsList = new ArrayList<Contact>();
+        for (Contact cont : oldContacts)
+            contactsList.add((Contact) cont.clone());
+        return contactsList;
+
+    }
+
+
 }

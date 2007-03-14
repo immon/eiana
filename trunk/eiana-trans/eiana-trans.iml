@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/test/dao" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/hibernate" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/jbpm" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test/manager" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -30,6 +31,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="integration-rt" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/spring-modules/spring-modules-jbpm31.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>
