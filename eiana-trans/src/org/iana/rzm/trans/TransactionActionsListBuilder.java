@@ -50,7 +50,7 @@ class TransactionActionsListBuilder {
     }
 
     static void addTechnicalContactsActions(Domain domain, Domain originDomain, List<TransactionAction> resultList) {
-        if ((originDomain.getAdminContacts() == null || originDomain.getAdminContacts().size() == 0) && (domain.getAdminContacts() == null || domain.getAdminContacts().size() == 0))
+        if ((originDomain.getTechContacts() == null || originDomain.getTechContacts().size() == 0) && (domain.getTechContacts() == null || domain.getTechContacts().size() == 0))
             return;
         List<Contact> originContats = (originDomain.getTechContacts() != null ? originDomain.getTechContacts() : new ArrayList<Contact>());
         List<Contact> newContacts = (domain.getTechContacts() != null ? domain.getTechContacts() : new ArrayList<Contact>());
@@ -161,20 +161,22 @@ class TransactionActionsListBuilder {
         List<Change> changesList = new ArrayList<Change>();
         int newSize = newAddresses.size();
         int originSize = originAddresses.size();
-        for (int i = 0; i < (newSize > originSize ? newSize : originSize); i++) {
+        for (int i = 0; i < (newSize < originSize ? newSize : originSize); i++) {
             Address newAdr = newAddresses.get(i);
             Address originAdr = originAddresses.get(i);
             if (!newAdr.equals(originAdr))
                 changesList.addAll(modificationAddressChangeList(newAdr, originAdr));
         }
         if (newSize > originSize) {
-            for (int i = originSize - 1; i < newSize; i++) {
+            int start = originSize > 0 ? originSize - 1: 0;
+            for (int i = start; i < newSize; i++) {
                 Address newArd = newAddresses.get(i);
                 changesList.addAll(additionAdressChangeList(newArd));
             }
         }
         if (originSize > newSize) {
-            for (int i = newSize - 1; i < originSize; i++) {
+            int start = newSize > 0 ? newSize - 1: 0;
+            for (int i = start; i < originSize; i++) {
                 Address orgAddress = originAddresses.get(i);
                 changesList.addAll(removalAddressChangeList(orgAddress));
             }
@@ -186,20 +188,22 @@ class TransactionActionsListBuilder {
         List<Change> changesList = new ArrayList<Change>();
         int newSize = newContacts.size();
         int originSize = originContacts.size();
-        for (int i = 0; i < (newSize > originSize ? newSize : originSize); i++) {
+        for (int i = 0; i < (newSize < originSize ? newSize : originSize); i++) {
             Contact newContact = newContacts.get(i);
             Contact originContact = originContacts.get(i);
             if (!newContact.equals(originContact))
                 changesList.addAll(modificationContactChangeList(newContact, originContact));
         }
         if (newSize > originSize) {
-            for (int i = originSize - 1; i < newSize; i++) {
+            int start = originSize > 0 ? originSize - 1: 0;
+            for (int i = start; i < newSize; i++) {
                 Contact newContact = newContacts.get(i);
                 changesList.addAll(additionContactChangeList(newContact));
             }
         }
         if (originSize > newSize) {
-            for (int i = newSize - 1; i < originSize; i++) {
+            int start = newSize > 0 ? newSize - 1: 0;
+            for (int i = start; i < originSize; i++) {
                 Contact orgContact = originContacts.get(i);
                 changesList.addAll(removalContactChangeList(orgContact));
             }
@@ -211,20 +215,22 @@ class TransactionActionsListBuilder {
         List<Change> stringChangesList = new ArrayList<Change>();
         int newSize = newStringList.size();
         int originSize = originStringList.size();
-        for (int i = 0; i < (newSize > originSize ? newSize : originSize); i++) {
+        for (int i = 0; i < (newSize < originSize ? newSize : originSize); i++) {
             String newString = newStringList.get(i);
             String orgString = originStringList.get(i);
             if (!newString.equals(orgString))
                 stringChangesList.add(new Modification(fieldName, new ModifiedPrimitiveValue(newString, orgString)));
         }
         if (newSize > originSize) {
-            for (int i = originSize - 1; i < newSize; i++) {
+            int start = originSize > 0 ? originSize - 1: 0;
+            for (int i = start; i < newSize; i++) {
                 String newString = newStringList.get(i);
                 stringChangesList.add(new Addition(fieldName, newString));
             }
         }
         if (originSize > newSize) {
-            for (int i = newSize - 1; i < originSize; i++) {
+            int start = newSize > 0 ? newSize - 1: 0;
+            for (int i = start; i < originSize; i++) {
                 String orgString = originStringList.get(i);
                 stringChangesList.add(new Removal(fieldName, orgString));
             }

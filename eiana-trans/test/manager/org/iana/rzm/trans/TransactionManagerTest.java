@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import org.iana.rzm.trans.dao.TransactionDAO;
 import org.iana.rzm.trans.change.Change;
+import org.iana.rzm.trans.change.PrimitiveValue;
+import org.iana.rzm.trans.change.Removal;
 import org.iana.rzm.domain.*;
 
 import org.iana.rzm.domain.dao.DomainDAO;
@@ -32,8 +34,6 @@ public class TransactionManagerTest {
 
     TransactionManager transManager;
     DomainDAO domainDAO;
-    TransactionDAO transDAO;
-    SessionFactory sessionFactory;
     JbpmConfiguration jbpmConfig;
     HibernateTransactionManager hibernateTransactionManager;    
 
@@ -41,7 +41,6 @@ public class TransactionManagerTest {
     public void init() throws InvalidIPAddressException, NameServerAlreadyExistsException {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
         domainDAO = (DomainDAO) ctx.getBean("domainDAOTarget");
-        transDAO = (TransactionDAO) ctx.getBean("transactionDAO");
         transManager = (TransactionManager) ctx.getBean("transactionManagerBean");//new TransactionManagerBean(JbpmTestContextFactory.getJbpmContext(),transDAO,new FakeTicketingService(),domainDAO);
         hibernateTransactionManager = (HibernateTransactionManager) ctx.getBean("transactionManager");
         transManager.setJBPMContext(JbpmTestContextFactory.getJbpmContext());
@@ -71,17 +70,30 @@ public class TransactionManagerTest {
         List<IPAddress> modIPsList = new ArrayList<IPAddress>();
         modIPsList.add(IPAddress.createIPAddress("122.122.122.123"));
         modIPsList.add(IPAddress.createIPAddress("122.122.122.124"));
-        modHost.setAddresses(modIPsList);        
+        modHost.setAddresses(modIPsList);
         nameServersList.add(modHost);
         modifiedDomain.setNameServers(nameServersList);
+        Contact someContact = new Contact("test Contact");
+        modifiedDomain.addAdminContact(someContact);
         Transaction t = transManager.modify(modifiedDomain);
+        TestChangeVisitor tcv = new TestChangeVisitor();
         List<TransactionAction> taList =  t.getActions();
+        List<TransactionAction.Name> names = new ArrayList<TransactionAction.Name>();
         for(TransactionAction ta : taList){
+            System.out.println("====================");
             System.out.println(ta.getName().toString());
+            names.add(ta.getName());
             for(Change ch :ta.getChange()){
-                System.out.println(ch.toString());                
+                ch.accept(tcv);                    
             }
+            System.out.println("====================");
         }
+        assert names.contains(TransactionAction.Name.MODIFY_CONTACT);
+        assert names.contains(TransactionAction.Name.MODIFY_NAMESERVER);
+        List<PrimitiveValue> pv = tcv.valueVisitor.getPrimit();
+        assert tcv.chaneges.contains(new Removal("address",new PrimitiveValue("123.123.123.124"))); 
+        assert pv.contains(new PrimitiveValue("122.122.122.123"));
+        //tcv.printVisitedchanges();
 
     }
 
