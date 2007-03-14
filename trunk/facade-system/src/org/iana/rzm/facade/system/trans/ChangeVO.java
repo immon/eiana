@@ -1,21 +1,21 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.trans;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class ChangeVO<T extends ValueVO> {
+public class ChangeVO {
 
     public enum Type { ADD, REMOVE, UPDATE }
 
     private String fieldName;
     private Type type;
-    private T value;
+    private ValueVO value;
 
     public String getFieldName() {
         return fieldName;
     }
 
-    public void setFieldName(String fieldName) {
+    void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -23,15 +23,15 @@ public class ChangeVO<T extends ValueVO> {
         return type;
     }
 
-    public void setType(Type type) {
+    void setType(Type type) {
         this.type = type;
     }
 
-    public T getValue() {
+    public ValueVO getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    void setValue(ValueVO value) {
         this.value = value;
     }
 }

@@ -5,7 +5,7 @@ import org.iana.rzm.common.Name;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.system.*;
+import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.user.Role;
 
 import java.util.*;

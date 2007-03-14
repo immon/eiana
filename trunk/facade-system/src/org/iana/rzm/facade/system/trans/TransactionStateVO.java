@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.trans;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -38,6 +38,10 @@ public class TransactionStateVO {
 
     public void setName(Name name) {
         this.name = name;
+    }
+
+    public void setName(String name) {
+        this.name = Name.valueOf(name);
     }
 
     public Timestamp getStart() {

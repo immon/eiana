@@ -1,6 +1,5 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.domain;
 
-import org.iana.rzm.common.Name;
 import org.iana.rzm.facade.common.Trackable;
 import org.iana.rzm.facade.common.TrackDataVO;
 

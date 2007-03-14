@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.domain;
 
 /**
  * @author Patrycja Wegrzynowicz

@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.trans;
 
 import java.util.List;
 
@@ -11,11 +11,16 @@ public class ObjectValueVO extends ValueVO {
     private String name;
     private List<ChangeVO> changes;
 
+    public ObjectValueVO(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    void setId(long id) {
         this.id = id;
     }
 
@@ -23,7 +28,7 @@ public class ObjectValueVO extends ValueVO {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -31,7 +36,7 @@ public class ObjectValueVO extends ValueVO {
         return changes;
     }
 
-    public void setChanges(List<ChangeVO> changes) {
+    void setChanges(List<ChangeVO> changes) {
         this.changes = changes;
     }
 }

@@ -8,10 +8,10 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.system.IDomainVO;
-import org.iana.rzm.facade.system.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
@@ -48,6 +48,11 @@ public class SystemDomainServiceBean implements SystemDomainService {
         if (user instanceof SystemUser)
             domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
         return domainVO;
+    }
+
+    public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {
+        if (user != null) throw new AccessDeniedException("null authenticated user");
+        return findUserDomains(user.getUserName());
     }
 
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
