@@ -25,6 +25,9 @@
     <pathelement location="${conf.output.dir}"/>
     <pathelement location="${conf.testoutput.dir}"/>
     <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar"/>
+    <pathelement location="${integration-rt.output.dir}"/>
+    <pathelement location="${integration-rt.testoutput.dir}"/>
+    <pathelement location="${module.eiana-trans.basedir}/../lib/spring-modules/spring-modules-jbpm31.jar"/>
   </path>
   
   
@@ -45,15 +48,17 @@
   <path id="eiana-trans.module.test.sourcepath">
     <dirset dir="${module.eiana-trans.basedir}">
       <include name="test/conf"/>
+      <include name="test/dao"/>
       <include name="test/hibernate"/>
       <include name="test/jbpm"/>
+      <include name="test/manager"/>
     </dirset>
   </path>
   
   
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
   
-  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.conf" description="Compile module eiana-trans; production classes">
+  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.conf,compile.module.integration-rt" description="Compile module eiana-trans; production classes">
     <mkdir dir="${eiana-trans.output.dir}"/>
     <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-trans}"/>
@@ -86,11 +91,19 @@
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.eiana-trans.basedir}/test/hibernate">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-trans.basedir}/test/jbpm">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/manager">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

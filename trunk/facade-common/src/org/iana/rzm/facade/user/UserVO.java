@@ -5,6 +5,8 @@ import org.iana.rzm.facade.common.TrackDataVO;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Collections;
+import java.util.TreeSet;
 import java.sql.Timestamp;
 
 /**
@@ -17,7 +19,7 @@ public class UserVO implements Trackable {
     private String firstName;
     private String lastName;
     private String organization;
-    private Set<RoleVO> roles;
+    private Set<RoleVO> roles = new HashSet<RoleVO>();
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
@@ -64,19 +66,32 @@ public class UserVO implements Trackable {
         return false;
     }
 
+    public Set<String> getRoleDomainNames() {
+        Set<String> ret = new TreeSet<String>();
+        for (RoleVO role : roles) {
+            if (role instanceof SystemRoleVO) {
+                SystemRoleVO sys = (SystemRoleVO) role;
+                ret.add(sys.getName());
+            }
+        }
+        return ret;
+    }
+
     public Set<RoleVO> getRoles() {
-        return roles;
+        return Collections.unmodifiableSet(roles);
     }
 
     public void setRoles(Set<RoleVO> roles) {
-        this.roles = roles;
+        this.roles.clear();
+        if (roles != null) this.roles.addAll(roles);
     }
 
     public void addRole(RoleVO role) {
-        if (this.roles == null) {
-            this.roles = new HashSet<RoleVO>();
-        }
         this.roles.add(role);
+    }
+
+    public void removeRole(RoleVO role) {
+        this.roles.remove(role);
     }
 
     public Long getObjId() {

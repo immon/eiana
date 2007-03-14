@@ -4,6 +4,8 @@ import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 import org.iana.rzm.facade.system.*;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
+import org.iana.rzm.facade.system.domain.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.RoleVO;

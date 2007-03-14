@@ -2,7 +2,7 @@ package org.iana.rzm.system.accuracy;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
-import org.iana.rzm.facade.system.*;
+import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
