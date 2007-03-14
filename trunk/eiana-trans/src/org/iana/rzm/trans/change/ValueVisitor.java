@@ -9,5 +9,5 @@ public interface ValueVisitor {
 
     public void visitModifiedPrimitiveValue(ModifiedPrimitiveValue value);
 
-    public void visitObjectValue(ObjectValue value); 
+    public<T extends Change> void visitObjectValue(ObjectValue<T> value); 
 }

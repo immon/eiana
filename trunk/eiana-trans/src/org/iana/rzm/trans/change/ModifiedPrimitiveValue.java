@@ -48,4 +48,24 @@ public class ModifiedPrimitiveValue extends AbstractValue<Modification> implemen
         CheckTool.checkNull(visitor, "value visitor");
         visitor.visitModifiedPrimitiveValue(this);
     }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ModifiedPrimitiveValue that = (ModifiedPrimitiveValue) o;
+
+        if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
+        if (oldValue != null ? !oldValue.equals(that.oldValue) : that.oldValue != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (newValue != null ? newValue.hashCode() : 0);
+        result = 31 * result + (oldValue != null ? oldValue.hashCode() : 0);
+        return result;
+    }
 }

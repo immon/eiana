@@ -43,4 +43,20 @@ public class Removal extends AdditionOrRemoval {
         CheckTool.checkNull(visitor, "visitor");
         visitor.visitRemoval(this);
     }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Removal removal = (Removal) o;
+
+        if (value != null ? !value.equals(removal.value) : removal.value != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        return (value != null ? value.hashCode() : 0);
+    }
 }
