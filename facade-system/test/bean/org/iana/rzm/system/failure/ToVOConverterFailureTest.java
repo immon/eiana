@@ -6,20 +6,12 @@ package org.iana.rzm.system.failure;
 import org.testng.annotations.Test;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.system.*;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.user.Role;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
 
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.sql.Timestamp;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author Piotr Tkaczyk
@@ -28,14 +20,8 @@ import java.net.URL;
 @Test(groups = {"ToVOConverter", "facade-system"})
 public class ToVOConverterFailureTest {
 
-    @Test (expectedExceptions = {IllegalArgumentException.class},
-            groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testIPConverter1() {
-        ToVOConverter.toIPAddressVO(null, null);
-        }
-
     @Test (groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testIPConverter2() throws IllegalArgumentException {
+    public void testIPConverter() throws IllegalArgumentException {
         IPAddress fromIPAddress = null;
 
         assert ToVOConverter.toIPAddressVO(fromIPAddress) == null;
@@ -47,14 +33,8 @@ public class ToVOConverterFailureTest {
         assert ToVOConverter.toIPAddressVOSet(IPAddressesSet).isEmpty();
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class},
-            groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testHostConverter1() {
-        ToVOConverter.toHostVO(null, null);
-    }
-
     @Test (groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testHostConverter2() {
+    public void testHostConverter() {
         List<Host> hostsList = null;
         assert ToVOConverter.toHostVOList(hostsList) == null;
         hostsList = new ArrayList<Host>();
@@ -75,14 +55,8 @@ public class ToVOConverterFailureTest {
         assert hostVO.getModifiedBy() == null;
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class},
-            groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testAddressConverter1() {
-        ToVOConverter.toAddressVO(null, null);
-    }
-
     @Test (groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testAddressConverter2() {
+    public void testAddressConverter() {
         List<Address> addressList = null;
         assert ToVOConverter.toAddressVOList(addressList) == null;
         addressList = new ArrayList<Address>();
@@ -100,14 +74,8 @@ public class ToVOConverterFailureTest {
         assert addressVO.getStreet() == null;
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class},
-            groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testContactConverter1() {
-        ToVOConverter.toContactVO(null, null);
-    }
-
     @Test (groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testContactConverter2() {
+    public void testContactConverter() {
         List<Contact> contactList = null;
         assert ToVOConverter.toContactVOList(contactList) == null;
         contactList = new ArrayList<Contact>();
@@ -131,14 +99,8 @@ public class ToVOConverterFailureTest {
         assert contactVO.getModifiedBy() == null;
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class},
-            groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testDomainConverter1() {
-        ToVOConverter.toDomainVO(null, null);
-    }
-
     @Test (groups = {"failure", "facade-system", "ToVOConverter"})
-    public void testDomainConverter2() {
+    public void testDomainConverter() {
         assert ToVOConverter.toDomainVO(null) == null;
 
         Domain domain = new Domain("domain.org");
