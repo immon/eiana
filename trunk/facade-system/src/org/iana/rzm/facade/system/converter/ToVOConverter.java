@@ -19,21 +19,33 @@ import java.util.*;
 
 public class ToVOConverter {
 
-    private static Map<Domain.State, DomainVO.State> domainStates = new HashMap<Domain.State, DomainVO.State>();
+    private static Map<Domain.State, DomainVO.State> domainState = new HashMap<Domain.State, DomainVO.State>();
     private static Map<Domain.Status, DomainVO.Status> domainStatus = new HashMap<Domain.Status, IDomainVO.Status>();
+    private static Map<Domain.Breakpoint, IDomainVO.Breakpoint> domainBreakpoint = new HashMap<Domain.Breakpoint, IDomainVO.Breakpoint>();
+    private static Map<Role.Type, RoleVO.Type> roleType = new HashMap<Role.Type, RoleVO.Type>();
 
     static {
-        domainStates.put(Domain.State.NO_ACTIVITY, DomainVO.State.NO_ACTIVITY);
-        domainStates.put(Domain.State.OPERATIONS_PENDING, DomainVO.State.OPERATIONS_PENDING);
-        domainStates.put(Domain.State.THIRD_PARTY_PENDING, DomainVO.State.THIRD_PARTY_PENDING);
+        domainState.put(Domain.State.NO_ACTIVITY, DomainVO.State.NO_ACTIVITY);
+        domainState.put(Domain.State.OPERATIONS_PENDING, DomainVO.State.OPERATIONS_PENDING);
+        domainState.put(Domain.State.THIRD_PARTY_PENDING, DomainVO.State.THIRD_PARTY_PENDING);
 
         domainStatus.put(Domain.Status.ACTIVE, DomainVO.Status.ACTIVE);
         domainStatus.put(Domain.Status.CLOSED, DomainVO.Status.CLOSED);
         domainStatus.put(Domain.Status.NEW, DomainVO.Status.NEW);
+
+        domainBreakpoint.put(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.AC_CHANGE_EXT_REVIEW);
+        domainBreakpoint.put(Domain.Breakpoint.ANY_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.ANY_CHANGE_EXT_REVIEW);
+        domainBreakpoint.put(Domain.Breakpoint.NS_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.NS_CHANGE_EXT_REVIEW);
+        domainBreakpoint.put(Domain.Breakpoint.SO_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.SO_CHANGE_EXT_REVIEW);
+        domainBreakpoint.put(Domain.Breakpoint.TC_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.TC_CHANGE_EXT_REVIEW);
+
+        roleType.put(Role.Type.AC, SystemRoleVO.SystemType.AC);
+        roleType.put(Role.Type.SO, SystemRoleVO.SystemType.SO);
+        roleType.put(Role.Type.TC, SystemRoleVO.SystemType.TC);
     }
 
 // ---------------------- Domain convert methods ----------------------
-    public static DomainVO toDomainVO(Domain fromDomain) throws InvalidNameException {
+    public static DomainVO toDomainVO(Domain fromDomain) {
         if (fromDomain == null) return null;
 
         DomainVO toDomainVO = new DomainVO();
@@ -41,7 +53,7 @@ public class ToVOConverter {
         return toDomainVO;
     }
 
-    private static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) throws InvalidNameException {
+    private static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) {
         if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
         if (toDomainVO == null) throw new IllegalArgumentException("null toDomainVO");
 
@@ -95,8 +107,8 @@ public class ToVOConverter {
     public static IDomainVO.State toStateVO (Domain.State fromState) {
         if (fromState == null) return null;
 
-        IDomainVO.State stateVO = domainStates.get(fromState);
-        CheckTool.checkNull(stateVO, "Unknown domain state " + fromState);
+        IDomainVO.State stateVO = domainState.get(fromState);
+        CheckTool.checkNull(stateVO, "Unknown domain state: " + fromState);
         return stateVO;
     }
 
@@ -105,12 +117,9 @@ public class ToVOConverter {
     public static IDomainVO.Status toStatusVO (Domain.Status fromStatus) {
         if (fromStatus == null) return null;
 
-        if (fromStatus == Domain.Status.ACTIVE)
-            return IDomainVO.Status.ACTIVE;
-        else if (fromStatus == Domain.Status.CLOSED)
-                return IDomainVO.Status.CLOSED;
-            else
-                return IDomainVO.Status.NEW;
+        IDomainVO.Status statusVO = domainStatus.get(fromStatus);
+        CheckTool.checkNull(statusVO, "Unknown domain status: " + fromStatus);
+        return statusVO;
     }
 
 // ---------------------- Role convert methods ----------------------
@@ -118,12 +127,9 @@ public class ToVOConverter {
     public static RoleVO.Type toRoleTypeVO(Role.Type fromRoleType) {
         if (fromRoleType == null) return null;
 
-        if (fromRoleType == Role.Type.AC)
-            return SystemRoleVO.SystemType.AC;
-        else if (fromRoleType == Role.Type.SO)
-                return SystemRoleVO.SystemType.SO;
-            else
-                return SystemRoleVO.SystemType.TC;
+        RoleVO.Type roleTypeVO = roleType.get(fromRoleType);
+        CheckTool.checkNull(roleTypeVO, "Unknown role type: " + fromRoleType);
+        return roleTypeVO;
     }
 
 // ---------------------- Breakpoint convert methods ----------------------
@@ -140,16 +146,9 @@ public class ToVOConverter {
     public static IDomainVO.Breakpoint toBreakpointVO (Domain.Breakpoint fromBreakpoint) {
         if (fromBreakpoint == null) return null;
 
-        if(fromBreakpoint == Domain.Breakpoint.AC_CHANGE_EXT_REVIEW)
-            return IDomainVO.Breakpoint.AC_CHANGE_EXT_REVIEW;
-        else if(fromBreakpoint == Domain.Breakpoint.ANY_CHANGE_EXT_REVIEW)
-                return IDomainVO.Breakpoint.ANY_CHANGE_EXT_REVIEW;
-        else if(fromBreakpoint == Domain.Breakpoint.NS_CHANGE_EXT_REVIEW)
-                return IDomainVO.Breakpoint.NS_CHANGE_EXT_REVIEW;
-        else if(fromBreakpoint == Domain.Breakpoint.SO_CHANGE_EXT_REVIEW)
-                return IDomainVO.Breakpoint.SO_CHANGE_EXT_REVIEW;
-        else
-            return IDomainVO.Breakpoint.TC_CHANGE_EXT_REVIEW;
+        IDomainVO.Breakpoint breakpointVO = domainBreakpoint.get(fromBreakpoint);
+        CheckTool.checkNull(breakpointVO, "Unknown domain breakpoint: " + fromBreakpoint);
+        return breakpointVO;
     }
 
 // ---------------------- Host convert methods ----------------------
