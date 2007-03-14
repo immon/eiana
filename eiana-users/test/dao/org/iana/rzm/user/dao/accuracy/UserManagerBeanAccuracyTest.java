@@ -35,7 +35,7 @@ public class UserManagerBeanAccuracyTest {
         assert userRetrieved.getLastName().equals("Delphin");
     }
 
-    @Test(dependsOnMethods = {"testCreateUser"})
+    @Test(dependsOnMethods = {"testCreateUser"}, groups = {"dao", "eiana-users"})
     public void testGetUserById() throws Exception {
         RZMUser userRetrived = manager.get(userId);
         assert userRetrived != null;
@@ -45,7 +45,7 @@ public class UserManagerBeanAccuracyTest {
         assert userRetrived.getLoginName().equals("ivan123");
     }
 
-    @Test(dependsOnMethods = {"testCreateUser"})
+    @Test(dependsOnMethods = {"testCreateUser"}, groups = {"dao", "eiana-users"})
     public void testGetUserByName() throws Exception {
         RZMUser userRetrived = manager.get("ivan123");
         assert userRetrived != null;
