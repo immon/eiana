@@ -36,4 +36,19 @@ public class RoleVO {
     public boolean isAdmin() {
         return false;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RoleVO roleVO = (RoleVO) o;
+
+        if (type != null ? !type.equals(roleVO.type) : roleVO.type != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        return (type != null ? type.hashCode() : 0);
+    }
 }

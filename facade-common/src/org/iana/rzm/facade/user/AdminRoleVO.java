@@ -12,7 +12,6 @@ public class AdminRoleVO extends RoleVO {
         ZONE_PUBLISHER
     }
 
-
     public AdminRoleVO() {
     }
 
@@ -30,5 +29,9 @@ public class AdminRoleVO extends RoleVO {
 
     public boolean isAdmin() {
         return true;
+    }
+
+    public boolean equals(Object object) {
+        return object instanceof AdminRoleVO && super.equals(object);
     }
 }

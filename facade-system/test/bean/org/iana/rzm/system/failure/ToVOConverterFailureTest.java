@@ -3,10 +3,13 @@
  */
 package org.iana.rzm.system.failure;
 
-import org.testng.annotations.Test;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.*;
+import org.iana.rzm.facade.system.domain.HostVO;
+import org.iana.rzm.facade.system.domain.AddressVO;
+import org.iana.rzm.facade.system.domain.ContactVO;
+import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.testng.annotations.Test;
 
 import java.util.Set;
 import java.util.HashSet;

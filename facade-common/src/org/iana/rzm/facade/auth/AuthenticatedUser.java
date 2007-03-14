@@ -104,4 +104,8 @@ public class AuthenticatedUser {
     public String getModifiedBy() {
         return user.getModifiedBy();
     }
+
+    public Set<String> getRoleDomainNames() {
+        return user.getRoleDomainNames();
+    }
 }

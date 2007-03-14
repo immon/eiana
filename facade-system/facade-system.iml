@@ -17,6 +17,7 @@
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="module" module-name="eiana-users" />
     <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="module" module-name="eiana-trans" />
     <orderEntryProperties />
   </component>
 </module>

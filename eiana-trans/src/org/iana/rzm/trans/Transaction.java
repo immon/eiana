@@ -82,9 +82,9 @@ public class Transaction implements TrackedObject {
         TransactionState ts = new TransactionState();
         ts.setName(node.getName());
         ts.setStart(token.getStart());
-        if (token.getEnd() != null)
+        if(token.getEnd()!=null)
             ts.setEnd(token.getEnd());
-        for (Object o : node.getLeavingTransitions()) {
+        for(Object o : node.getLeavingTransitions()) {
             Transition transition = (Transition) o;
             ts.addAvailableTransition(new StateTransition(transition.getName()));
         }
