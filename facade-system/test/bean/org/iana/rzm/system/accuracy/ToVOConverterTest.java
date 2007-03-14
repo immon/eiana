@@ -6,13 +6,12 @@ import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.facade.system.*;
-import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.user.Role;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.sql.Timestamp;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -45,9 +44,6 @@ public class ToVOConverterTest {
 
     @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
     public void testIPv4AddressConversion() throws InvalidIPAddressException {
-        String a="dupa";
-        String b ="dupa";
-        assert a==b;
         fromIPAddress = IPv4Address.createIPv4Address("10.0.0.1");
         toIPAddressVO = ToVOConverter.toIPAddressVO(fromIPAddress);
         assert toIPAddressVO.getType() == IPAddressVO.Type.IPv4;
