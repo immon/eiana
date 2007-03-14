@@ -1,7 +1,8 @@
-package org.iana.rzm.facade.system;
+package org.iana.rzm.facade.system.converter;
 
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.facade.system.SimpleDomainVO;
 
 /**
  * @author Piotr Tkaczyk
