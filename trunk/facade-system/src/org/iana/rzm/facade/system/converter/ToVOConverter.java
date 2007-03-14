@@ -2,10 +2,7 @@ package org.iana.rzm.facade.system.converter;
 
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.Name;
-import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.system.*;
@@ -193,10 +190,8 @@ public class ToVOConverter {
         if (fromIPAddressSet == null) return null;
 
         Set<IPAddressVO>toIPAddressVOSet = new HashSet<IPAddressVO>();
-        for(Iterator i = fromIPAddressSet.iterator(); i.hasNext();) {
-            IPAddress fromIPAddress = (IPAddress) i.next();
+        for(IPAddress fromIPAddress : fromIPAddressSet)
             toIPAddressVOSet.add(toIPAddressVO(fromIPAddress));
-        }
         return toIPAddressVOSet;
     }
 
