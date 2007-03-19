@@ -65,11 +65,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
             </bean>
 
                 <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
-                    <constructor-arg ref="domainDAO" />
+                    <constructor-arg ref="domainDAOTarget" />
                 </bean>
 
                 <bean id="userManager" class="org.iana.rzm.user.UserManagerBean" >
-                    <constructor-arg fer="userDAO" />
+                    <constructor-arg fer="userDAOTarget" />
                 </bean>
 
     <!-- dao conf -->
@@ -105,6 +105,18 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <property name="transactionAttributeSource">
             <ref bean="daoTransactionAttributeSource"/>
         </property>
-    </bean>    
+    </bean>
+
+     <bean id="domainDAOTarget" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+     <bean id="userDAOTarget" class="org.iana.rzm.user.dao.HibernateUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
 
 </beans>
