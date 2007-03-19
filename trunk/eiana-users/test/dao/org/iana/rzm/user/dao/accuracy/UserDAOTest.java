@@ -13,7 +13,7 @@ import org.testng.annotations.BeforeClass;
  *
  * @author Marcin Zajaczkowski
  */
-@Test(groups = {"dao", "eiana-users"})
+@Test(groups = {"dao", "eiana-users", "UserDAOTest"})
 public class UserDAOTest {
 
     private UserDAO dao;

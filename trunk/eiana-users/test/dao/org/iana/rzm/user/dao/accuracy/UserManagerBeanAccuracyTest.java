@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author Piotr Tkaczyk
  */
-
+@Test (sequential=true, groups = {"UserManagerBean", "dao", "eiana-users"})
 public class UserManagerBeanAccuracyTest {
     UserManager manager;
     Long        userId;
@@ -21,12 +21,13 @@ public class UserManagerBeanAccuracyTest {
         manager = (UserManager) new ClassPathXmlApplicationContext("eiana-users-spring.xml").getBean("userManager");
     }
 
-    @Test (groups = {"dao", "eiana-users"})
+    @Test
     public void testCreateUser() {
-        RZMUser userCreated = new AdminUser();
+        AdminUser userCreated = new AdminUser();
         userCreated.setFirstName("Ivan");
         userCreated.setLastName("Delphin");
         userCreated.setLoginName("ivan123");
+        userCreated.setType(AdminUser.Type.GOV_OVERSIGHT);
         manager.create(userCreated);
         userId = userCreated.getObjId();
         RZMUser userRetrieved = manager.get(userId);
@@ -35,23 +36,27 @@ public class UserManagerBeanAccuracyTest {
         assert userRetrieved.getLastName().equals("Delphin");
     }
 
-    @Test(dependsOnMethods = {"testCreateUser"}, groups = {"dao", "eiana-users"})
+    @Test(dependsOnMethods = {"testCreateUser"})
     public void testGetUserById() throws Exception {
         RZMUser userRetrived = manager.get(userId);
         assert userRetrived != null;
         assert userRetrived instanceof AdminUser;
-        assert userRetrived.getFirstName().equals("Ivan");
-        assert userRetrived.getLastName().equals("Delphin");
-        assert userRetrived.getLoginName().equals("ivan123");
+        AdminUser adminUser = (AdminUser) userRetrived;
+        assert adminUser.getType().equals(AdminUser.Type.GOV_OVERSIGHT);
+        assert adminUser.getFirstName().equals("Ivan");
+        assert adminUser.getLastName().equals("Delphin");
+        assert adminUser.getLoginName().equals("ivan123");
     }
 
-    @Test(dependsOnMethods = {"testCreateUser"}, groups = {"dao", "eiana-users"})
+    @Test(dependsOnMethods = {"testGetUserById"})
     public void testGetUserByName() throws Exception {
         RZMUser userRetrived = manager.get("ivan123");
         assert userRetrived != null;
         assert userRetrived instanceof AdminUser;
-        assert userRetrived.getFirstName().equals("Ivan");
-        assert userRetrived.getLastName().equals("Delphin");
-        assert userRetrived.getLoginName().equals("ivan123");
+        AdminUser adminUser = (AdminUser) userRetrived;
+        assert adminUser.getType().equals(AdminUser.Type.GOV_OVERSIGHT);
+        assert adminUser.getFirstName().equals("Ivan");
+        assert adminUser.getLastName().equals("Delphin");
+        assert adminUser.getLoginName().equals("ivan123");
     }
 }

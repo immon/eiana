@@ -11,7 +11,7 @@ import java.io.*;
 /**
  * @author Patrycja Wegrzynowicz
  */
-@Test(groups = {"dao", "eiana-domains"})
+@Test(sequential=true, groups = {"dao", "eiana-domains", "DomainDAOTest"})
 public class DomainDAOTest {
 
     private DomainDAO dao;
