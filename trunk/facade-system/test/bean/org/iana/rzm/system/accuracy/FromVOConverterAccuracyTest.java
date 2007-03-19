@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
  * @author Piotr Tkaczyk
  */
 
+@Test (sequential=true, groups = {"accuracy", "facade-system", "FromVOConverter"})
 public class FromVOConverterAccuracyTest {
     List<ContactVO> contactVOList;
     List<AddressVO> addressVOList;
@@ -59,7 +60,7 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"})
+    @Test
     public void testAddressConversion() {
         AddressVO addressVO = new AddressVO();
         addressVO.setCity("Warsaw");
@@ -97,8 +98,7 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"},
-            dependsOnMethods = {"testAddressConversion"})
+    @Test (dependsOnMethods = {"testAddressConversion"})
     public void testContactConversion() {
         contactVO = new ContactVO();
         contactVO.setName("newContact");
@@ -130,7 +130,7 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"})
+    @Test
     public void testBreakpointConversion() {
         breakpointVOSet.add(IDomainVO.Breakpoint.AC_CHANGE_EXT_REVIEW);
 
@@ -144,7 +144,7 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"})
+    @Test
     public void testIPAddressConversion() throws InvalidIPAddressException {
         IPAddressVO ipAddressVO = new IPAddressVO();
         ipAddressVO.setAddress("10.0.0.1");
@@ -172,8 +172,7 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"},
-            dependsOnMethods = {"testIPAddressConversion"})
+    @Test (dependsOnMethods = {"testIPAddressConversion"})
     public void testHostConversion() {
         HostVO hostVO = new HostVO();
         hostVO.setName("samplehost");
@@ -192,7 +191,7 @@ public class FromVOConverterAccuracyTest {
         hostVOList.add(hostVO);
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"})
+    @Test
     public void testStateConversion() throws MalformedURLException {
         Domain.State state;
         state = FromVOConverter.toState(IDomainVO.State.NO_ACTIVITY);
@@ -203,7 +202,7 @@ public class FromVOConverterAccuracyTest {
         assert state.equals(Domain.State.THIRD_PARTY_PENDING);
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"})
+    @Test
     public void testStatusConversion() throws MalformedURLException {
         Domain.Status status;
         status = FromVOConverter.toStatus(IDomainVO.Status.ACTIVE);
@@ -214,8 +213,7 @@ public class FromVOConverterAccuracyTest {
         assert status.equals(Domain.Status.NEW);
     }
 
-    @Test (groups = {"accuracy", "facade-system", "FromVOConverter"},
-            dependsOnMethods = {"testContactConversion", "testBreakpointConversion", "testHostConversion",
+    @Test (dependsOnMethods = {"testContactConversion", "testBreakpointConversion", "testHostConversion",
                                 "testStateConversion",   "testStatusConversion"})
     public void testDomainConversion() throws MalformedURLException {
         DomainVO domainVO = new DomainVO();
