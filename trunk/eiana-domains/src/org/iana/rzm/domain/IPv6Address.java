@@ -1,6 +1,7 @@
 package org.iana.rzm.domain;
 
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.common.validators.IPAddressValidator;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -21,6 +22,6 @@ public class IPv6Address extends IPAddress {
 
     @Transient
     private void isValidAddress(String address) throws InvalidIPAddressException {
-        // todo: delegate to IP validator
+        IPAddressValidator.getInstance().validateIPv6(address);
     }
 }
