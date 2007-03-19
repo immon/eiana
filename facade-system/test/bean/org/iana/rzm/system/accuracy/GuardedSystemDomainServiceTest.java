@@ -2,7 +2,6 @@ package org.iana.rzm.system.accuracy;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
-import org.iana.rzm.facade.system.*;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.facade.system.domain.DomainVO;
@@ -20,18 +19,19 @@ import java.util.*;
  * @author Piotr Tkaczyk
  */
 
-@Test(groups = {"service", "facade-system"})
+@Test(sequential=true, groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
 public class GuardedSystemDomainServiceTest {
     private SystemDomainService gsds;
+    DomainDAO domainDAO;
     private long domainId;
     private long domainId1;
     Set<String> domainNames = new HashSet<String>();
 
-    @BeforeClass (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    @BeforeClass
     public void init() throws Exception{
         gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
-        DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
-
+        domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
+              
         Domain domainCreated = new Domain("facadesystemiana.org");
             domainDAO.create(domainCreated);
             domainId = domainCreated.getObjId();
@@ -43,7 +43,7 @@ public class GuardedSystemDomainServiceTest {
             domainNames.add(domainCreated.getName());
     }
 
-    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetFirstDomainById() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -56,7 +56,7 @@ public class GuardedSystemDomainServiceTest {
         assert domainVO.getRoles().equals(roleType);
     }
 
-    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetSecondDomainById() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -70,7 +70,7 @@ public class GuardedSystemDomainServiceTest {
 
     }
 
-    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetFirstDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -84,7 +84,7 @@ public class GuardedSystemDomainServiceTest {
         assert domainVO.getRoles().equals(roleType);
     }
 
-    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetSecondDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -98,7 +98,7 @@ public class GuardedSystemDomainServiceTest {
         assert domainVO.getRoles().equals(roleType);
     }
 
-    @Test (groups = {"accuracy", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testFindUserDomainsByUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());

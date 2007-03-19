@@ -21,13 +21,13 @@ import java.util.ArrayList;
  * @author Piotr Tkaczyk
  */
 
-@Test(groups = {"service", "facade-system"})
+@Test(sequential=true, groups = {"stress", "facade-system", "GuardedSystemDomainService"})
 public class GuardedSystemDomainServiceStressTest {
     private static int NUMBER_OF_DOMAINS = 100; //must by changed also in TestSystemUserManagerStress class
     private SystemDomainService gsds;
     private List<Long> idList = new ArrayList<Long>();
 
-    @BeforeClass (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
+    @BeforeClass
     public void init() throws Exception {
         gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainServiceStress");
         DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
@@ -39,7 +39,7 @@ public class GuardedSystemDomainServiceStressTest {
         }
     }
 
-    @Test (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetDomainByUserName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -47,7 +47,7 @@ public class GuardedSystemDomainServiceStressTest {
         assert list.size() == NUMBER_OF_DOMAINS;
     }
 
-    @Test (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetDomainByName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
@@ -56,7 +56,7 @@ public class GuardedSystemDomainServiceStressTest {
         }
     }
 
-    @Test (groups = {"stress", "facade-system", "GuardedSystemDomainService"})
+    @Test
     public void testGetDomainById() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());

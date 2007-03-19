@@ -21,7 +21,7 @@ import java.net.MalformedURLException;
  * @author Piotr Tkaczyk
  */
 
-@Test(groups = {"ToVOConverter", "facade-system"})
+@Test(sequential=true, groups = {"accuracy", "facade-system", "ToVOConverter"})
 public class ToVOConverterTest {
     IPAddress fromIPAddress;
     IPAddressVO toIPAddressVO;
@@ -42,7 +42,7 @@ public class ToVOConverterTest {
 
     TrackData trackData;
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
+    @Test
     public void testIPv4AddressConversion() throws InvalidIPAddressException {
         fromIPAddress = IPv4Address.createIPv4Address("10.0.0.1");
         toIPAddressVO = ToVOConverter.toIPAddressVO(fromIPAddress);
@@ -50,7 +50,7 @@ public class ToVOConverterTest {
         assert fromIPAddress.getAddress().equals(toIPAddressVO.getAddress());
     }
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
+    @Test
     public void testIPv6AddressConversion() throws InvalidIPAddressException {
         fromIPAddressV6 = IPv6Address.createIPv6Address("200c:0db8:0000:0000:0000:0000:1428:57ab");
         toIPAddressVOV6 = ToVOConverter.toIPAddressVO(fromIPAddressV6);
@@ -58,15 +58,14 @@ public class ToVOConverterTest {
         assert fromIPAddressV6.getAddress().equals(toIPAddressVOV6.getAddress());
     }
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
+    @Test
     public void testRoleTypeConversion() throws InvalidIPAddressException, InvalidNameException {
         assert ToVOConverter.toRoleTypeVO(Role.Type.AC) == SystemRoleVO.SystemType.AC;
         assert ToVOConverter.toRoleTypeVO(Role.Type.SO) == SystemRoleVO.SystemType.SO;
         assert ToVOConverter.toRoleTypeVO(Role.Type.TC) == SystemRoleVO.SystemType.TC;
     }
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"},
-           dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})
+    @Test (dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})
     public void testHostConversion() throws InvalidIPAddressException, InvalidNameException {
         fromHost = new Host("testHost");
 
@@ -92,7 +91,7 @@ public class ToVOConverterTest {
         assert fromHost.getCreatedBy().equals(toHostVO.getCreatedBy());
     }
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"})
+    @Test
     public void testAddressConversion() {
         fromAddress = new Address();
         fromAddress.setCity("LosAngeles");
@@ -109,8 +108,7 @@ public class ToVOConverterTest {
         assert fromAddress.getStreet().equals(toAddressVO.getStreet());
     }
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"},
-           dependsOnMethods = {"testAddressConversion"})
+    @Test (dependsOnMethods = {"testAddressConversion"})
     public void testContactConversion() {
         fromContact = new Contact("contact1", fromAddress, "112-123-124", "212-223-542", "email@free.com", true);
 
@@ -122,8 +120,7 @@ public class ToVOConverterTest {
         assert toContactVO.isRole();
     }
 
-    @Test (groups = {"accuracy", "facade-system", "ToVOConverter"},
-           dependsOnMethods = {"testContactConversion", "testHostConversion"})
+    @Test (dependsOnMethods = {"testContactConversion", "testHostConversion"})
     public void testDomainConversion() throws InvalidNameException, NameServerAlreadyExistsException, MalformedURLException {
         fromDomain = new Domain("domain1.org");
         fromDomain.addAdminContact(fromContact);

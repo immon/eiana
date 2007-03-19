@@ -20,10 +20,10 @@ import java.util.ArrayList;
  * @author Piotr Tkaczyk
  */
 
-@Test(groups = {"ToVOConverter", "facade-system"})
+@Test(sequential=true, groups = {"failure", "facade-system", "ToVOConverter"})
 public class ToVOConverterFailureTest {
 
-    @Test (groups = {"failure", "facade-system", "ToVOConverter"})
+    @Test
     public void testIPConverter() throws IllegalArgumentException {
         IPAddress fromIPAddress = null;
 
@@ -36,7 +36,7 @@ public class ToVOConverterFailureTest {
         assert ToVOConverter.toIPAddressVOSet(IPAddressesSet).isEmpty();
     }
 
-    @Test (groups = {"failure", "facade-system", "ToVOConverter"})
+    @Test
     public void testHostConverter() {
         List<Host> hostsList = null;
         assert ToVOConverter.toHostVOList(hostsList) == null;
@@ -58,7 +58,7 @@ public class ToVOConverterFailureTest {
         assert hostVO.getModifiedBy() == null;
     }
 
-    @Test (groups = {"failure", "facade-system", "ToVOConverter"})
+    @Test
     public void testAddressConverter() {
         List<Address> addressList = null;
         assert ToVOConverter.toAddressVOList(addressList) == null;
@@ -77,7 +77,7 @@ public class ToVOConverterFailureTest {
         assert addressVO.getStreet() == null;
     }
 
-    @Test (groups = {"failure", "facade-system", "ToVOConverter"})
+    @Test
     public void testContactConverter() {
         List<Contact> contactList = null;
         assert ToVOConverter.toContactVOList(contactList) == null;
@@ -102,7 +102,7 @@ public class ToVOConverterFailureTest {
         assert contactVO.getModifiedBy() == null;
     }
 
-    @Test (groups = {"failure", "facade-system", "ToVOConverter"})
+    @Test
     public void testDomainConverter() {
         assert ToVOConverter.toDomainVO(null) == null;
 
