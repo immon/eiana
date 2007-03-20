@@ -5,10 +5,12 @@ import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 abstract public class HibernateTest {
     protected Session session;
     protected Transaction tx = null;

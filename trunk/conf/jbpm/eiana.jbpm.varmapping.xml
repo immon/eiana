@@ -165,12 +165,12 @@
         <variable-instance class="org.jbpm.context.exe.variableinstance.HibernateLongInstance"/>
     </jbpm-type>
 
-    <!-- iana TrackData -->         
+    <!-- iana TrackData -->
     <jbpm-type>
         <matcher>
             <bean class="org.jbpm.context.exe.matcher.ClassNameMatcher">
                 <field name="className">
-                    <string value="org.iana.rzm.trans.TrackData"/>
+                    <string value="org.iana.rzm.common.TrackData"/>
                 </field>
             </bean>
         </matcher>

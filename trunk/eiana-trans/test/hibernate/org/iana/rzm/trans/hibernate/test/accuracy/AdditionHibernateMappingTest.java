@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 public class AdditionHibernateMappingTest extends HibernateMappingUnitTest<Addition> {
     protected Addition create() throws Exception {
         return new Addition("created field name", "primitive value");

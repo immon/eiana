@@ -1,7 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.common.TrackData;
-import org.iana.rzm.trans.dao.TransactionDAO;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.JbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -20,13 +20,13 @@ public class TransactionTest {
 
     private long ticketId;
 
-    private TransactionDAO dao;
+    private ProcessDAO dao;
 
     private TransactionManager manager;
     @BeforeClass(groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
     public void init() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
-        dao = (TransactionDAO) ctx.getBean("transactionDAO");
+        dao = (ProcessDAO) ctx.getBean("processDAO");
         manager = (TransactionManager) ctx.getBean("transactionManagerBean");
         deployProcessDefinition();
     }
@@ -67,12 +67,12 @@ public class TransactionTest {
     }
 
     @Test(dependsOnMethods = ("testTranactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
-       public void testTranactionAccept() throws NoSuchTransactionException {
+       public void testTranactionAccept() throws TransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
            manager.setJBPMContext(context);
            Transaction trans = manager.get(transactionId);
            assert trans != null;
-           trans.accept();
+           trans.accept(null);
            System.out.println("State:"+trans.getState().getName());
            assert trans.getState().getName().equals(TransactionState.Name.COMPLETED);           
        }

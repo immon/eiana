@@ -11,6 +11,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 public class ModificationHibernateMappingTest extends HibernateMappingUnitTest<Modification> {
     protected Modification create() throws Exception {
         return new Modification("created field name",
