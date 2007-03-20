@@ -5,29 +5,24 @@
  */
 package org.iana.rzm.trans;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import org.iana.rzm.trans.dao.TransactionDAO;
+import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.change.Change;
 import org.iana.rzm.trans.change.PrimitiveValue;
 import org.iana.rzm.trans.change.Removal;
-import org.iana.rzm.domain.*;
-
-import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.jbpm.JbpmConfiguration;
+import org.jbpm.JbpmContext;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.hibernate.SessionFactory;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.JbpmContext;
-import org.jbpm.JbpmConfiguration;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class TransactionManagerTest {

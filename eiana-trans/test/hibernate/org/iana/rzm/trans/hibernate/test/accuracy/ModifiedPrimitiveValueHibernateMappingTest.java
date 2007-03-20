@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 public class ModifiedPrimitiveValueHibernateMappingTest extends HibernateMappingUnitTest<ModifiedPrimitiveValue> {
     protected ModifiedPrimitiveValue create() throws Exception {
         return HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created");

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 public class ActionHibernateMappingTest extends HibernateMappingUnitTest<TransactionAction> {
     protected TransactionAction create() throws Exception {
         List<Change> change = new ArrayList<Change>();

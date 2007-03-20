@@ -13,6 +13,7 @@ import java.util.ArrayList;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 public class RemovalHibernateMappingTest extends HibernateMappingUnitTest<Removal> {
     protected Removal create() throws Exception {
         return new Removal("created field name", "primitive value");

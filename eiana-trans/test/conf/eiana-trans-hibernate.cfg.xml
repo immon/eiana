@@ -37,6 +37,7 @@
         <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
         <mapping class="org.iana.rzm.trans.TransactionData"/>
         <mapping class="org.iana.rzm.trans.StateTransition"/>
+        <mapping class="org.iana.rzm.trans.UserConfirmations"/>
         <mapping class="org.iana.rzm.trans.change.Addition"/>
         <mapping class="org.iana.rzm.trans.change.AdditionOrRemoval"/>
         <mapping class="org.iana.rzm.trans.change.Change"/>
@@ -45,6 +46,12 @@
         <mapping class="org.iana.rzm.trans.change.ObjectValue"/>
         <mapping class="org.iana.rzm.trans.change.PrimitiveValue"/>
         <mapping class="org.iana.rzm.trans.change.Removal"/>
+
+        <mapping class="org.iana.rzm.user.AdminUser"/>
+        <mapping class="org.iana.rzm.user.MD5Password"/>
+        <mapping class="org.iana.rzm.user.Role"/>
+        <mapping class="org.iana.rzm.user.SystemUser"/>
+        <mapping class="org.iana.rzm.user.RZMUser"/>
 
         <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->

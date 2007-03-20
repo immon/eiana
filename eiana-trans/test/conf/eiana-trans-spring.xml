@@ -29,23 +29,6 @@
         </property>
     </bean>
 
-    <bean id="transactionDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.rzm.trans.dao.TransactionDAO</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="transactionDAOTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
-    </bean>
-
     <bean id="transactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
             <property name="proxyInterfaces">
                 <list>
@@ -124,4 +107,93 @@
             <ref bean="transactionAttribute"/>
         </property>
     </bean>
+
+    <!-- jBPM configuration -->
+
+    <bean id="jbpmObjectFactory"
+          class="org.iana.rzm.trans.jbpm.JbpmSpringObjectFactory">
+    </bean>
+
+    <bean id="dbService" class="org.iana.rzm.trans.jbpm.SpringDbPersistenceServiceFactory">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="jbpmConfiguration"
+          class="org.jbpm.JbpmConfiguration">
+        <constructor-arg index="0" ref="jbpmObjectFactory"/>
+    </bean>
+
+    <bean id="services" class="org.jbpm.svc.Services" scope="prototype">
+        <constructor-arg index="0">
+            <map>
+                <entry key="persistence">
+                    <ref local="dbService"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="default.jbpm.context" class="org.jbpm.JbpmContext" scope="prototype">
+        <constructor-arg index="0" ref="services"/>
+        <constructor-arg index="1" ref="jbpmObjectFactory"/>
+    </bean>
+
+    <bean id="resource.business.calendar" class="java.lang.String">
+        <constructor-arg value="org/jbpm/calendar/jbpm.business.calendar.properties"/>
+    </bean>
+
+    <bean id="resource.default.modules" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/def/jbpm.default.modules.properties"/>
+    </bean>
+
+    <bean id="resource.action.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/action/action.types.xml"/>
+    </bean>
+
+    <bean id="resource.node.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/node/node.types.xml"/>
+    </bean>
+
+    <bean id="resource.converter" class="java.lang.String">
+        <constructor-arg value="org/jbpm/db/hibernate/jbpm.converter.properties"/>
+    </bean>
+
+    <bean id="resource.varmapping" class="java.lang.String">
+        <!--<constructor-arg value="eiana-trans.jbpm.varmapping.xml"/>-->
+        <constructor-arg value="org/jbpm/context/exe/jbpm.varmapping.xml"/>
+    </bean>
+
+    <bean id="jbpmContextFactory"
+          class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+    </bean>
+
+    <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+    </bean>
+
+    <!--
+    <bean id="processDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.dao.ProcessDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="processDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="processDAOTarget" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+    </bean>
+    -->
 </beans>

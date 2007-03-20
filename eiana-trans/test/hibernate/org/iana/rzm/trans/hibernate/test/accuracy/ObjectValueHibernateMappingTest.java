@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans"})
 public class ObjectValueHibernateMappingTest extends HibernateMappingUnitTest<ObjectValue> {
     protected ObjectValue create() throws Exception {
         List<Change> changes = new ArrayList<Change>();

@@ -4,16 +4,16 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.taskmgmt.exe.TaskInstance;
-import org.jbpm.JbpmContext;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class represents a domain modification transaction.
@@ -82,9 +82,9 @@ public class Transaction implements TrackedObject {
         TransactionState ts = new TransactionState();
         ts.setName(node.getName());
         ts.setStart(token.getStart());
-        if(token.getEnd()!=null)
+        if (token.getEnd() != null)
             ts.setEnd(token.getEnd());
-        for(Object o : node.getLeavingTransitions()) {
+        for (Object o : node.getLeavingTransitions()) {
             Transition transition = (Transition) o;
             ts.addAvailableTransition(new StateTransition(transition.getName()));
         }
@@ -123,9 +123,21 @@ public class Transaction implements TrackedObject {
         return getTrackData().getModifiedBy();
     }
 
-    public synchronized void accept() {
+    public synchronized void accept(RZMUser user) throws TransactionException {
         TaskInstance ti = getTaskInstance();
         Node n = ti.getToken().getNode();
+
+        UserConfirmations uc = getTransactionData().getUserConfirmations(n.getName());
+        if (uc != null) {
+            if (uc.getConfirmations().containsKey(user))
+                throw new UserConfirmationNotExpected();
+            if (uc.getConfirmations().get(user))
+                throw new UserAlreadyAccepted();
+            uc.getConfirmations().put(user, true);
+            if (uc.getConfirmations().containsValue(false))
+                return;
+        }
+
         if (n.getDefaultLeavingTransition() != null)
             ti.end();
         else

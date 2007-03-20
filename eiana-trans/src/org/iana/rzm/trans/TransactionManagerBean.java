@@ -1,30 +1,29 @@
 package org.iana.rzm.trans;
 
+import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.trans.dao.TransactionDAO;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.TrackData;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.ticketing.TicketingService;
 import org.jbpm.JbpmContext;
 import org.jbpm.db.GraphSession;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
  */
 public class TransactionManagerBean implements TransactionManager {
     private JbpmContext context;
-    private TransactionDAO transactionDAO;
+    private ProcessDAO processDAO;
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
 
-    public TransactionManagerBean(TransactionDAO dao,DomainDAO domainDAO,TicketingService ticketingService) {        
-        this.transactionDAO = dao;
+    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService) {
+        this.processDAO = processDAO;
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
     }
@@ -43,7 +42,7 @@ public class TransactionManagerBean implements TransactionManager {
 
     public Transaction modify(Domain domain) {
         TransactionData td = new TransactionData();
-        td.setActions(createActions(domain));                                                                                         
+        td.setActions(createActions(domain));
         td.setTicketID(ticketingService.generateID());
         td.setActions(createActions(domain));
         ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition("process trans test"));
@@ -61,7 +60,7 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public List<Transaction> findAllProcessInstances(String domainName) {
-        List<ProcessInstance> processInstances = transactionDAO.findAllProcessInstances(domainName);
+        List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(domainName);
         List<Transaction> result = new ArrayList<Transaction>();
         for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
         return result;
@@ -87,8 +86,8 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     //TEMPORARY METHOD, should be deleted later, when JbpmContext & spring problem will be reslowed.
-    public void setJBPMContext(JbpmContext ctx){
-        this.context = ctx; 
+    public void setJBPMContext(JbpmContext ctx) {
+        this.context = ctx;
     }
 
 }
