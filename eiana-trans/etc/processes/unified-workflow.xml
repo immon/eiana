@@ -6,10 +6,10 @@
 
     <state name="PENDING_CONTACT_CONFIRMATION">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.ContactNotifier">
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">
                 <notification>contact-confirmation</notification>
             </action>
-            <action class="org.iana.rzm.trans.jbpm.ContactConfirmationCalculator"/>
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
         </event>
         <transition name="accept" to="PENDING_TECH_CHECK"/>
         <transition name="reject" to="REJECTED"/>
@@ -18,7 +18,7 @@
     </state>
 
     <decision name="PENDING_TECH_CHECK">
-        <handler class="org.iana.rzm.trans.jbpm.TechnicalCheckDecision"/>
+        <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckDecision"/>
         <transition name="no-test" to="PENDING_IMPACTED_PARTIES"/>
         <transition name="test-ok" to="PENDING_IMPACTED_PARTIES"/>
         <!--
@@ -29,7 +29,7 @@
 
     <state name="PENDING_IMPACTED_PARTIES">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.ImpactedPartiesNotifier"/>
+            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesNotifier"/>
             <action class="org.iana.rzm.trans.jbpm.ImpactedPartiesConfirmationCalculator"/>
         </event>
         <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
@@ -40,7 +40,7 @@
 
     <state name="PENDING_IANA_CONFIRMATION">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.RoleCalculator">
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                 <role>IANA</role>
             </action>
         </event>
@@ -54,7 +54,7 @@
 
     <state name="PENDING_EXT_APPROVAL">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.RoleCalculator">
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                 <role>IANA</role>
             </action>
         </event>
@@ -66,7 +66,7 @@
 
     <state name="PENDING_USDOC_APPROVAL">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.RoleCalculator">
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                 <role>USDoC</role>
             </action>
         </event>
@@ -77,7 +77,7 @@
     </state>
 
     <decision name="USDOC_APPROVED">
-        <handler class="org.iana.rzm.trans.jbpm.NameServerChange"/>
+        <handler class="org.iana.rzm.trans.jbpm.handlers.NameServerChange"/>
         <transition name="no-ns-change" to="PENDING_DATABASE_INSERTION"/>
         <!--
                 todo: future feature
