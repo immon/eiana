@@ -1,0 +1,136 @@
+<process-definition name="Unified Workflow">
+
+    <start-state>
+        <transition to="PENDING_CONTACT_CONFIRMATION"></transition>
+    </start-state>
+
+    <state name="PENDING_CONTACT_CONFIRMATION">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.ContactNotifier">
+                <notification>contact-confirmation</notification>
+            </action>
+            <action class="org.iana.rzm.trans.jbpm.ContactConfirmationCalculator"/>
+        </event>
+        <transition name="accept" to="PENDING_TECH_CHECK"/>
+        <transition name="reject" to="REJECTED"/>
+        <!-- todo: remainders: 7/14/21 days -->
+        <!-- todo: admin closed: 30 days -->
+    </state>
+
+    <decision name="PENDING_TECH_CHECK">
+        <handler class="org.iana.rzm.trans.jbpm.TechnicalCheckDecision"/>
+        <transition name="no-test" to="PENDING_IMPACTED_PARTIES"/>
+        <transition name="test-ok" to="PENDING_IMPACTED_PARTIES"/>
+        <!--
+                todo: future feature
+                <transition name="test-failed" to="PENDING_TECH_CHECK_REMEDY"/>
+        -->
+    </decision>
+
+    <state name="PENDING_IMPACTED_PARTIES">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.ImpactedPartiesNotifier"/>
+            <action class="org.iana.rzm.trans.jbpm.ImpactedPartiesConfirmationCalculator"/>
+        </event>
+        <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
+        <transition name="reject" to="REJECTED"/>
+        <!-- todo: remainders: 7/14/21 days -->
+        <!-- todo: admin closed: 30 days -->
+    </state>
+
+    <state name="PENDING_IANA_CONFIRMATION">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.RoleCalculator">
+                <role>IANA</role>
+            </action>
+        </event>
+        <transition name="normal" to="PENDING_EXT_APPROVAL"/>
+        <!--
+                todo: future feature
+                <transition name="redelegation" to="PENDING_EVALUATION"/>
+        -->
+        <!-- todo: alert 3d -->
+    </state>
+
+    <state name="PENDING_EXT_APPROVAL">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.RoleCalculator">
+                <role>IANA</role>
+            </action>
+        </event>
+        <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
+        <transition name="reject" to="REJECTED"/>
+        <transition name="close" to="ADMIN_CLOSED"/>
+        <!-- todo: exception 30d, alert -->
+    </state>
+
+    <state name="PENDING_USDOC_APPROVAL">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.RoleCalculator">
+                <role>USDoC</role>
+            </action>
+        </event>
+        <transition name="accept" to="USDOC_APPROVED"/>
+        <transition name="reject" to="REJECTED"/>
+        <!-- todo: reminder 5d  -->
+        <!-- todo: exception 14d, alert -->
+    </state>
+
+    <decision name="USDOC_APPROVED">
+        <handler class="org.iana.rzm.trans.jbpm.NameServerChange"/>
+        <transition name="no-ns-change" to="PENDING_DATABASE_INSERTION"/>
+        <!--
+                todo: future feature
+                <transition name="ns-change" to="PENDING_IMPACTED_PARTIES"/>
+        -->
+    </decision>
+
+    <node name='PENDING_DATABASE_INSERTION'>
+        <event type='node-enter'>
+            <action class='pl.nask.eiana.processes.UpdateDomainHandler'/>
+        </event>
+        <transition name='complete' to='COMPLETED'>
+        </transition>
+    </node>
+
+    <end-state name='COMPLETED'>
+        <event type='node-enter'>
+            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+                <notification>completed</notification>
+            </action>
+        </event>
+    </end-state>
+
+    <end-state name='REJECTED'>
+        <event type='node-enter'>
+            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+                <notification>rejected</notification>
+            </action>
+        </event>
+    </end-state>
+
+    <end-state name='WITHDRAWN'>
+        <event type='node-enter'>
+            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+                <notification>withdrawn</notification>
+            </action>
+        </event>
+    </end-state>
+
+    <end-state name='ADMIN_CLOSED'>
+        <event type='node-enter'>
+            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+                <notification>admin-closed</notification>
+            </action>
+        </event>
+    </end-state>
+
+    <state name='EXCEPTION'>
+        <event type='node-enter'>
+            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+                <notification>exception</notification>
+            </action>
+        </event>
+        <!-- manual transition allowed -->
+    </state>
+</process-definition>
