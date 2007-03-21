@@ -18,6 +18,8 @@ public interface DomainManager {
 
     public void create(Domain domain);
 
+    public void update(Domain domain);
+
     public List<Domain> findAll();
 
     public List<Domain> find(DomainCriteria criteria);

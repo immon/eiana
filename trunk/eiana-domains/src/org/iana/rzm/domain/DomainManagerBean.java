@@ -28,6 +28,10 @@ public class DomainManagerBean implements DomainManager {
         dao.create(domain);
     }
 
+    public void update(Domain domain) {
+        dao.update(domain);
+    }
+
     public List<Domain> findAll() {
         return null;
     }
