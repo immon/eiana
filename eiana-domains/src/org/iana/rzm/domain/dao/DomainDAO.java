@@ -13,4 +13,6 @@ public interface DomainDAO {
     public Domain get(String name);
 
     public void create(Domain domain);
+
+    public void update(Domain domain);
 }
