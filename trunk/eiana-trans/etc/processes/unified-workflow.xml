@@ -87,7 +87,7 @@
 
     <node name='PENDING_DATABASE_INSERTION'>
         <event type='node-enter'>
-            <action class='pl.nask.eiana.processes.UpdateDomainHandler'/>
+            <action class='org.iana.rzm.trans.jbpm.handlers.UpdateDomainAction'/>
         </event>
         <transition name='complete' to='COMPLETED'>
         </transition>
