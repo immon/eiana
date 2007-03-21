@@ -6,6 +6,30 @@
 
     <!-- dao configuration -->
 
+    <bean id="UpdateDomainTest" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.JbpmUpdateDomain</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="JbpmUpdateDomainImpl"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="JbpmUpdateDomainImpl" class="org.iana.rzm.trans.JbpmUpdateDomainImpl">
+    </bean>
+
+    <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
+        <constructor-arg ref="domainDAOTarget" />
+    </bean>
+
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
@@ -50,7 +74,7 @@
 
     <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
-            <ref bean="transactionDAO"/>
+            <ref bean="processDAO"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="domainDAO"/>
@@ -59,12 +83,7 @@
             <ref bean="faketicket"/>
         </constructor-arg>        
     </bean>
-    <bean id="transactionDAOTarget" class="org.iana.rzm.trans.dao.HibernateTransactionDAO">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
-    </bean>
-
+    
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="configLocation">
             <value>eiana-trans-hibernate.cfg.xml</value>
