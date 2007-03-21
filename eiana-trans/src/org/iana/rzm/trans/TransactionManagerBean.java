@@ -42,7 +42,7 @@ public class TransactionManagerBean implements TransactionManager {
 
     public Transaction modify(Domain domain) {
         TransactionData td = new TransactionData();
-        td.setActions(createActions(domain));
+        td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
         td.setActions(createActions(domain));
         ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition("process trans test"));
