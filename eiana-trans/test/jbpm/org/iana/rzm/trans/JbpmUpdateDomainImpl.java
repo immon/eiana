@@ -10,6 +10,7 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.jbpm.JbpmContextFactory;
 
 import java.net.URL;
+import java.io.FileReader;
 
 /**
  * @author Piotr Tkaczyk
@@ -45,11 +46,15 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
         transMgr.setJBPMContext(fact.getJbpmContext());
         transMgr.createDomainModificationTransaction(clonedDomain);
 
-        ProcessInstance procesInst = processDAO.getProcessInstance(1L);
+        ProcessInstance procesInstance = processDAO.getProcessInstance(1L);
 
-        Token token = procesInst.getRootToken();
+        Token token = procesInstance.getRootToken();
         token.signal();
-        token.signal();
+        token.signal("accept");
+        token.signal("accept");
+        token.signal("normal");
+        token.signal("accept");
+        token.signal("accept");
 
         Domain retrivedDomain = domainDAO.get(clonedDomain.getName());
 
@@ -57,20 +62,8 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
                 retrivedDomain.getRegistryUrl().equals(new URL("http://supernewaddress.org/")));
     }
 
-    private ProcessDefinition getDefinedProcess() {
-        return ProcessDefinition.parseXmlString(
-                "<process-definition name='process trans test'>" +
-                "  <start-state>" +
-                "    <transition to='start' >" +
-                "    </transition>" +
-                "  </start-state>" +
-                "  <state name='start'>" +
-                "    <transition name='updateDomain' to='end' >" +
-                "       <action class='org.iana.rzm.trans.jbpm.handlers.UpdateDomainAction' />" +
-                "    </transition>" +
-                "  </state>" +
-                "  <end-state name='end' />" +
-                "</process-definition>"
-        );
+    private ProcessDefinition getDefinedProcess() throws Exception {
+        FileReader fileReader = new FileReader("eiana-trans\\etc\\processes\\domain-modification.xml");
+        return ProcessDefinition.parseXmlReader(fileReader);
     }
 }
