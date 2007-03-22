@@ -2,7 +2,6 @@ package org.iana.rzm.user.dao.accuracy;
 
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminUser;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
@@ -26,7 +25,7 @@ public class UserDAOTest {
 
     @Test
     public void testUserCreate() throws Exception {
-        RZMUser userCreated = new AdminUser();
+        RZMUser userCreated = new RZMUser();
         userCreated.setFirstName("Geordi");
         userCreated.setLastName("LaForge");
         dao.create(userCreated);

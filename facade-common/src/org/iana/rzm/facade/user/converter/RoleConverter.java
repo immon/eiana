@@ -1,14 +1,15 @@
 package org.iana.rzm.facade.user.converter;
 
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.AdminUser;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.user.AdminRoleVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.user.AdminRoleVO;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * org.iana.rzm.facade.user.converter.RoleConverter
@@ -19,49 +20,51 @@ import java.util.HashMap;
  */
 class RoleConverter {
 
-    static Map<Role.Type, SystemRoleVO.SystemType> systemRolesMap = new HashMap<Role.Type, SystemRoleVO.SystemType>();
-    static Map<AdminUser.Type, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminUser.Type, AdminRoleVO.AdminType>();
+    static Map<SystemRole.SystemType, SystemRoleVO.SystemType> systemRolesMap = new HashMap<SystemRole.SystemType, SystemRoleVO.SystemType>();
+    static Map<AdminRole.AdminType, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminRole.AdminType, AdminRoleVO.AdminType>();
 
     static {
-        systemRolesMap.put(Role.Type.AC, SystemRoleVO.SystemType.AC);
-        systemRolesMap.put(Role.Type.TC, SystemRoleVO.SystemType.TC);
-        systemRolesMap.put(Role.Type.SO, SystemRoleVO.SystemType.SO);
+        systemRolesMap.put(SystemRole.SystemType.AC, SystemRoleVO.SystemType.AC);
+        systemRolesMap.put(SystemRole.SystemType.TC, SystemRoleVO.SystemType.TC);
+        systemRolesMap.put(SystemRole.SystemType.SO, SystemRoleVO.SystemType.SO);
 
-        adminRolesMap.put(AdminUser.Type.IANA_STAFF, AdminRoleVO.AdminType.IANA);
-        adminRolesMap.put(AdminUser.Type.GOV_OVERSIGHT, AdminRoleVO.AdminType.GOV_OVERSIGHT);
-        adminRolesMap.put(AdminUser.Type.ZONE_PUBLISHER, AdminRoleVO.AdminType.ZONE_PUBLISHER);
+        adminRolesMap.put(AdminRole.AdminType.IANA, AdminRoleVO.AdminType.IANA);
+        adminRolesMap.put(AdminRole.AdminType.GOV_OVERSIGHT, AdminRoleVO.AdminType.GOV_OVERSIGHT);
+        adminRolesMap.put(AdminRole.AdminType.ZONE_PUBLISHER, AdminRoleVO.AdminType.ZONE_PUBLISHER);
     }
 
     static RoleVO convertRole(Role role) {
-        
+
+        return role.isAdmin() ? convertAdminRole((AdminRole) role)
+                : convertSystemRole((SystemRole) role);
+    }
+
+    static RoleVO convertSystemRole(SystemRole systemRole) {
+
+        CheckTool.checkNull(systemRole.getType(), "system role");
+
         SystemRoleVO systemRoleVO = new SystemRoleVO();
 
-        systemRoleVO.setName(role.getName());
-        systemRoleVO.setType(convertType(role.getType()));
-        systemRoleVO.setNotify(role.isNotify());
-        systemRoleVO.setAcceptFrom(role.isAcceptFrom());
-        systemRoleVO.setMustAccept(role.isMustAccept());
+        SystemRoleVO.Type systemRoleVOtype = systemRolesMap.get(systemRole.getType());
+        CheckTool.checkNull(systemRoleVOtype, "Unknown system role type: " + systemRole.getType().toString());
+        systemRoleVO.setType(systemRoleVOtype);
+        systemRoleVO.setName(systemRole.getName());
+        systemRoleVO.setNotify(systemRole.isNotify());
+        systemRoleVO.setAcceptFrom(systemRole.isAcceptFrom());
+        systemRoleVO.setMustAccept(systemRole.isMustAccept());
 
         return systemRoleVO;
     }
 
-    private static SystemRoleVO.SystemType convertType(Role.Type type) {
+    static RoleVO convertAdminRole(AdminRole adminRole) {
 
-        SystemRoleVO.SystemType typeVO = systemRolesMap.get(type);
-        CheckTool.checkNull(typeVO, "Unknown role type: " + type.toString());
-
-        return typeVO;
-    }
-
-    static RoleVO convertAdminRole(AdminUser admin) {
-
-        CheckTool.checkNull(admin.getType(), "admin type");
+        CheckTool.checkNull(adminRole.getType(), "admin role");
 
         RoleVO adminRoleVO = new AdminRoleVO();
 
-        AdminRoleVO.Type adminRole = adminRolesMap.get(admin.getType());
-        CheckTool.checkNull(adminRole, "Unknown admin type: " + admin.getType().toString());
-        adminRoleVO.setType(adminRole);
+        AdminRoleVO.Type adminRoleVOType = adminRolesMap.get(adminRole.getType());
+        CheckTool.checkNull(adminRoleVOType, "Unknown admin role type: " + adminRole.getType().toString());
+        adminRoleVO.setType(adminRoleVOType);
 
         return adminRoleVO;
     }

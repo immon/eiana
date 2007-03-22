@@ -35,8 +35,7 @@ public class SystemDomainServiceBean implements SystemDomainService {
         if (domain == null) throw new NoObjectFoundException(id);
         DomainVO domainVO = ToVOConverter.toDomainVO(domain);
         RZMUser user = userManager.get(this.user.getUserName());
-        if (user instanceof SystemUser)
-            domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
+        domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
         return domainVO;
     }
 
@@ -45,8 +44,7 @@ public class SystemDomainServiceBean implements SystemDomainService {
         if (domain == null) throw new NoObjectFoundException(name);
         DomainVO domainVO = ToVOConverter.toDomainVO(domain);
         RZMUser user = userManager.get(this.user.getUserName());
-        if (user instanceof SystemUser)
-            domainVO.setRoles(getRoleTypeByDomainName(((SystemUser) user).getRoles(), domainVO.getName()));
+        domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
         return domainVO;
     }
 
@@ -58,23 +56,26 @@ public class SystemDomainServiceBean implements SystemDomainService {
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         List<SimpleDomainVO> list = new ArrayList<SimpleDomainVO>();
         RZMUser user = userManager.get(userName);
-        if(user instanceof SystemUser) {
-            List<Role> roles = ((SystemUser) user).getRoles();
-            Set<String> roleNames = new HashSet<String>();
-            for(Iterator iterator = roles.iterator(); iterator.hasNext();)
-                roleNames.add(((Role) iterator.next()).getName());
 
-            for(Iterator iterator = roleNames.iterator(); iterator.hasNext();) {
-                String roleName = (String) iterator.next();
-                Domain domain = domainManager.get(roleName);
-                if (domain != null) {
-                    SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
-                    simpleDomainVO.setRoles(getRoleTypeByDomainName(roles, simpleDomainVO.getName()));
-                    list.add(simpleDomainVO);
-                }
+        Set<String> roleNames = new HashSet<String>();
+        for (Role role : user.getRoles())
+            if (!role.isAdmin()) {
+                SystemRole sr = (SystemRole) role;
+                roleNames.add(sr.getName());
             }
-        } else
+
+        if (roleNames.isEmpty())
             throw new AccessDeniedException("not system user");
+
+        for (String roleName : roleNames) {
+            Domain domain = domainManager.get(roleName);
+            if (domain != null) {
+                SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
+                simpleDomainVO.setRoles(getRoleTypeByDomainName(user, simpleDomainVO.getName()));
+                list.add(simpleDomainVO);
+            }
+        }
+
         return list;
     }
 
@@ -86,12 +87,15 @@ public class SystemDomainServiceBean implements SystemDomainService {
         //todo
     }
 
-    private Set<RoleVO.Type> getRoleTypeByDomainName(List<Role> fromRoles, String domainName) {
-        if ((fromRoles == null) || (domainName == null)) return null;
+    private Set<RoleVO.Type> getRoleTypeByDomainName(RZMUser user, String domainName) {
+        if ((user.getRoles() == null) || (domainName == null)) return null;
         Set<RoleVO.Type> roleTypeVOSet = new HashSet<RoleVO.Type>();
-        for(Role role : fromRoles)
-        if (role.getName().equals(domainName))
-            roleTypeVOSet.add(ToVOConverter.toRoleTypeVO(role.getType()));
+        for (Role role : user.getRoles())
+            if (!role.isAdmin()) {
+                SystemRole sr = (SystemRole) role;
+                if (sr.getName().equals(domainName))
+                    roleTypeVOSet.add(ToVOConverter.toRoleTypeVO(sr.getType()));
+            }
         return roleTypeVOSet;
     }
 }

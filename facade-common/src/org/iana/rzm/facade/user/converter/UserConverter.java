@@ -1,14 +1,12 @@
 package org.iana.rzm.facade.user.converter;
 
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminUser;
-import org.iana.rzm.user.SystemUser;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * org.iana.rzm.facade.user.converter.UserConverter
@@ -29,26 +27,7 @@ public class UserConverter {
 
         if (user == null) return null;
 
-        UserVO userVO;
-
-        //check is it safe with lazy user fetching?
-        if (user instanceof SystemUser) {
-            userVO = convertSystemUser((SystemUser)user);
-
-        } else if (user instanceof AdminUser) {
-            userVO = convertAdminUser((AdminUser)user);
-
-        } else {
-            throw new IllegalArgumentException("Unknown kind of user " + user.getClass().getName());
-        }
-
-        return userVO;
-    }
-
-    private static UserVO convertSystemUser(SystemUser user) {
-
         UserVO userVO = convertUser(user);
-        convertTrackData(user, userVO);
 
         //Note: in SystemUser there is a list, here a set. Possible loss of duplicated rolesVO.
         Set<RoleVO> rolesVO = new HashSet<RoleVO>();
@@ -58,16 +37,6 @@ public class UserConverter {
         }
 
         userVO.setRoles(rolesVO);
-
-        return userVO;
-    }
-
-    private static UserVO convertAdminUser(AdminUser user) {
-
-        UserVO userVO = convertUser(user);
-        convertTrackData(user, userVO);
-
-        userVO.addRole(RoleConverter.convertAdminRole(user));
 
         return userVO;
     }
@@ -85,25 +54,6 @@ public class UserConverter {
         userVO.setObjId(user.getObjId());
         userVO.setOrganization(user.getOrganization());
         userVO.setUserName(user.getLoginName());
-
-        return userVO;
-    }
-
-    /**
-     * Converts TrackData between layers
-     *
-     * Note: TrackData cannot be directly set in UserVO, bo passing UserVO to that method is required.
-     *
-     * @param user database user
-     * @param userVO facade user
-     * @return updated facade user
-     */
-    private static UserVO convertTrackData(RZMUser user, UserVO userVO) {
-
-        userVO.setCreated(user.getCreated());
-        userVO.setCreatedBy(user.getCreatedBy());
-        userVO.setModified(user.getModified());
-        userVO.setModifiedBy(user.getModifiedBy());
 
         return userVO;
     }

@@ -5,6 +5,9 @@ import org.iana.rzm.common.TrackedObject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * <p>
@@ -15,7 +18,7 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public abstract class RZMUser implements TrackedObject {
+public class RZMUser implements TrackedObject {
 
     @Basic
     private String firstName;
@@ -37,12 +40,16 @@ public abstract class RZMUser implements TrackedObject {
     private Long objId;
     @Embedded
     private TrackData trackData = new TrackData();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "RZMUser_Roles",
+            inverseJoinColumns = @JoinColumn(name = "Role_objId"))
+    private List<Role> roles;
 
-    protected RZMUser() {
+    public RZMUser() {
         this(null, null, null, null, null, null, false);
     }
 
-    protected RZMUser(String firstName, String lastName, String organization, String loginName, String email, String password, boolean securID) {
+    public RZMUser(String firstName, String lastName, String organization, String loginName, String email, String password, boolean securID) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.organization = organization;
@@ -50,6 +57,7 @@ public abstract class RZMUser implements TrackedObject {
         this.email = email;
         this.password = new MD5Password(password);
         this.securID = securID;
+        this.roles = new ArrayList<Role>();
     }
 
     public Long getObjId() {
@@ -138,6 +146,7 @@ public abstract class RZMUser implements TrackedObject {
         if (organization != null ? !organization.equals(user.organization) : user.organization != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (trackData != null ? !trackData.equals(user.trackData) : user.trackData != null) return false;
+        if (roles != null ? !roles.equals(user.roles) : user.roles != null) return false;
 
         return true;
     }
@@ -152,6 +161,7 @@ public abstract class RZMUser implements TrackedObject {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (securID ? 1 : 0);
         result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
         return result;
     }
 
@@ -178,5 +188,48 @@ public abstract class RZMUser implements TrackedObject {
     //marcinz: has to be public?
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
+    }
+
+    final public List<Role> getRoles() {
+        return Collections.unmodifiableList(roles);
+    }
+
+    final public void setRoles(List<Role> roles) {
+        this.roles.clear();
+        if (roles != null) this.roles.addAll(roles);
+    }
+
+    final public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    final public boolean removeRole(Role role) {
+        return this.roles.remove(role);
+    }
+
+    final public void clearRoles() {
+        this.roles.clear();
+    }
+
+    final public boolean mustAccept(String name, Role.Type type) {
+        for (Role role : roles)
+            if (!role.isAdmin()) {
+                SystemRole sr = (SystemRole) role;
+                if (name.equals(sr.getName()) && type.equals(sr.getType())
+                        && sr.isMustAccept())
+                    return true;
+            }
+        return false;
+    }
+
+    final public boolean isEligibleToAccept(String name, Role.Type type) {
+        for (Role role : roles)
+            if (!role.isAdmin()) {
+                SystemRole sr = (SystemRole) role;
+                if (name.equals(sr.getName()) && type.equals(sr.getType())
+                        && sr.isAcceptFrom())
+                    return true;
+            }
+        return false;
     }
 }

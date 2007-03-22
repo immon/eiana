@@ -43,8 +43,8 @@ public class TestSystemUserManagerStress implements UserManager {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    private SystemUser createSystemUser() {
-        SystemUser userCreated = new SystemUser();
+    private RZMUser createSystemUser() {
+        RZMUser userCreated = new RZMUser();
         userCreated.setFirstName("Geordi");
         userCreated.setLastName("LaForge");
         userCreated.setLoginName("test");
@@ -52,13 +52,14 @@ public class TestSystemUserManagerStress implements UserManager {
         userCreated.setObjId(1L);
         try {
             for (int i=0; i<NUMBER_OF_DOMAINS; i++) {
-                Role role = new Role();
+                SystemRole role = new SystemRole();
                 role.setName("facadesystemiana"+i+".org");
-                role.setType(Role.Type.TC);
+                role.setType(SystemRole.SystemType.TC);
                 userCreated.addRole(role);
-                role = new Role();
+
+                role = new SystemRole();
                 role.setName("facadesystemiana"+i+".org");
-                role.setType(Role.Type.AC);
+                role.setType(SystemRole.SystemType.AC);
                 userCreated.addRole(role);
             }
         } catch (InvalidNameException e) {

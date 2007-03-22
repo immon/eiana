@@ -9,6 +9,7 @@ import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -60,9 +61,9 @@ public class ToVOConverterTest {
 
     @Test
     public void testRoleTypeConversion() throws InvalidIPAddressException, InvalidNameException {
-        assert ToVOConverter.toRoleTypeVO(Role.Type.AC) == SystemRoleVO.SystemType.AC;
-        assert ToVOConverter.toRoleTypeVO(Role.Type.SO) == SystemRoleVO.SystemType.SO;
-        assert ToVOConverter.toRoleTypeVO(Role.Type.TC) == SystemRoleVO.SystemType.TC;
+        assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.AC) == SystemRoleVO.SystemType.AC;
+        assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.SO) == SystemRoleVO.SystemType.SO;
+        assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.TC) == SystemRoleVO.SystemType.TC;
     }
 
     @Test (dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})

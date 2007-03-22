@@ -1,12 +1,9 @@
 package org.iana.rzm.user.dao.accuracy;
 
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminUser;
-import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.user.*;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Piotr Tkaczyk
@@ -23,11 +20,11 @@ public class UserManagerBeanAccuracyTest {
 
     @Test
     public void testCreateUser() {
-        AdminUser userCreated = new AdminUser();
+        RZMUser userCreated = new RZMUser();
         userCreated.setFirstName("Ivan");
         userCreated.setLastName("Delphin");
         userCreated.setLoginName("ivan123");
-        userCreated.setType(AdminUser.Type.GOV_OVERSIGHT);
+        userCreated.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
         manager.create(userCreated);
         userId = userCreated.getObjId();
         RZMUser userRetrieved = manager.get(userId);
@@ -40,23 +37,27 @@ public class UserManagerBeanAccuracyTest {
     public void testGetUserById() throws Exception {
         RZMUser userRetrived = manager.get(userId);
         assert userRetrived != null;
-        assert userRetrived instanceof AdminUser;
-        AdminUser adminUser = (AdminUser) userRetrived;
-        assert adminUser.getType().equals(AdminUser.Type.GOV_OVERSIGHT);
-        assert adminUser.getFirstName().equals("Ivan");
-        assert adminUser.getLastName().equals("Delphin");
-        assert adminUser.getLoginName().equals("ivan123");
+        assert userRetrived.getRoles().size() == 1;
+        Role role = userRetrived.getRoles().iterator().next();
+        assert role instanceof AdminRole;
+        AdminRole ar = (AdminRole) role;
+        assert AdminRole.AdminType.GOV_OVERSIGHT.equals(ar.getTrackData());
+        assert userRetrived.getFirstName().equals("Ivan");
+        assert userRetrived.getLastName().equals("Delphin");
+        assert userRetrived.getLoginName().equals("ivan123");
     }
 
     @Test(dependsOnMethods = {"testGetUserById"})
     public void testGetUserByName() throws Exception {
         RZMUser userRetrived = manager.get("ivan123");
         assert userRetrived != null;
-        assert userRetrived instanceof AdminUser;
-        AdminUser adminUser = (AdminUser) userRetrived;
-        assert adminUser.getType().equals(AdminUser.Type.GOV_OVERSIGHT);
-        assert adminUser.getFirstName().equals("Ivan");
-        assert adminUser.getLastName().equals("Delphin");
-        assert adminUser.getLoginName().equals("ivan123");
+        assert userRetrived.getRoles().size() == 1;
+        Role role = userRetrived.getRoles().iterator().next();
+        assert role instanceof AdminRole;
+        AdminRole ar = (AdminRole) role;
+        assert AdminRole.AdminType.GOV_OVERSIGHT.equals(ar.getTrackData());
+        assert userRetrived.getFirstName().equals("Ivan");
+        assert userRetrived.getLastName().equals("Delphin");
+        assert userRetrived.getLoginName().equals("ivan123");
     }
 }
