@@ -237,7 +237,9 @@ public class Contact implements TrackedObject,Cloneable {
 
 
     public Object clone() throws CloneNotSupportedException {
-        Contact contact = (Contact) super.clone();
+        Contact contact = new Contact();
+        contact.setName(this.name);
+        contact.setRole(this.isRole());
         contact.setTrackData((TrackData) contact.getTrackData().clone());
         List<Address> oldAddresses = contact.getAddresses();
         List<Address> newAddresses = new ArrayList<Address>();
