@@ -29,10 +29,10 @@
 		<mapping class="org.iana.rzm.domain.IPv4Address"/>
 		<mapping class="org.iana.rzm.domain.IPv6Address"/>
 
-        <mapping class="org.iana.rzm.user.AdminUser"/>
+        <mapping class="org.iana.rzm.user.AdminRole"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>
-        <mapping class="org.iana.rzm.user.SystemUser"/>
+        <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
         
         <mapping class="org.iana.rzm.trans.TransactionAction"/>

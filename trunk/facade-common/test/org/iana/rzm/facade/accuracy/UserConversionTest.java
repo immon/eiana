@@ -1,10 +1,10 @@
 package org.iana.rzm.facade.accuracy;
 
 import org.iana.rzm.user.hibernate.test.common.HibernateMappingTestUtil;
-import org.iana.rzm.user.AdminUser;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemUser;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.AdminRoleVO;
@@ -35,10 +35,10 @@ public class UserConversionTest {
     //role and trackData are ignored
     public void testAdminUserConversion() throws Exception {
 
-        AdminUser user = new AdminUser();
+        RZMUser user = new RZMUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
-        user.setType(AdminUser.Type.GOV_OVERSIGHT);
-        
+        user.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+
         UserVO userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
     }
@@ -46,9 +46,9 @@ public class UserConversionTest {
     @Test
     public void testAdminUserTrackDataConversion() throws Exception {
 
-        AdminUser user = new AdminUser();
+        RZMUser user = new RZMUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
-        user.setType(AdminUser.Type.GOV_OVERSIGHT);
+        user.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
 
         TrackData trackData = new TrackData();
         //created is set in a constructor
@@ -65,22 +65,24 @@ public class UserConversionTest {
     @Test
     public void testAdminUserTypesConversion() throws Exception {
 
-        AdminUser user = new AdminUser();
+        RZMUser user = new RZMUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
-        user.setType(AdminUser.Type.GOV_OVERSIGHT);
+        user.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
 
         UserVO userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
         compareAdminUserType(userVO, AdminRoleVO.AdminType.GOV_OVERSIGHT);
 
         //could be in some delegated method
-        user.setType(AdminUser.Type.IANA_STAFF);
+        user.clearRoles();
+        user.addRole(new AdminRole(AdminRole.AdminType.IANA));
 
         userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
         compareAdminUserType(userVO, AdminRoleVO.AdminType.IANA);
 
-        user.setType(AdminUser.Type.ZONE_PUBLISHER);
+        user.clearRoles();
+        user.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
 
         userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
@@ -90,30 +92,32 @@ public class UserConversionTest {
     @Test
     public void testAdminRole() throws Exception {
 
-        AdminUser admin = new AdminUser();
+        RZMUser admin = new RZMUser();
         HibernateMappingTestUtil.setupUser(admin, "t", false);
-        admin.setType(AdminUser.Type.IANA_STAFF);
+        admin.addRole(new AdminRole(AdminRole.AdminType.IANA));
 
         UserVO adminVO = UserConverter.convert(admin);
         compareRZMUser(adminVO, admin);
         compareAdminUserType(adminVO, AdminRoleVO.AdminType.IANA);
         assert adminVO.isAdmin();
 
-        admin.setType(AdminUser.Type.GOV_OVERSIGHT);
+        admin.clearRoles();
+        admin.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
 
         adminVO = UserConverter.convert(admin);
         compareRZMUser(adminVO, admin);
         compareAdminUserType(adminVO, AdminRoleVO.AdminType.GOV_OVERSIGHT);
         assert adminVO.isAdmin();
 
-        admin.setType(AdminUser.Type.ZONE_PUBLISHER);
+        admin.clearRoles();
+        admin.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
 
         adminVO = UserConverter.convert(admin);
         compareRZMUser(adminVO, admin);
         compareAdminUserType(adminVO, AdminRoleVO.AdminType.ZONE_PUBLISHER);
         assert adminVO.isAdmin();
 
-        SystemUser user = new SystemUser();
+        RZMUser user = new RZMUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
         UserVO userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
@@ -134,7 +138,7 @@ public class UserConversionTest {
     @Test
     public void testSystemUserWithoutRolesConversion() throws Exception {
 
-        SystemUser user = new SystemUser();
+        RZMUser user = new RZMUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
 
         UserVO userVO = UserConverter.convert(user);
@@ -144,23 +148,23 @@ public class UserConversionTest {
     @Test
     public void testSystemUserOneRoleConversion() throws Exception {
 
-        SystemUser user = new SystemUser();
+        RZMUser user = new RZMUser();
         HibernateMappingTestUtil.setupUser(user, "t", false);
 
         user.clearRoles();
-        user.addRole(createRole(Role.Type.AC));
+        user.addRole(createSystemRole(SystemRole.SystemType.AC));
         UserVO userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
         compareRoles(userVO, user);
 
         user.clearRoles();
-        user.addRole(createRole(Role.Type.SO));
+        user.addRole(createSystemRole(SystemRole.SystemType.SO));
         userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
         compareRoles(userVO, user);
 
         user.clearRoles();
-        user.addRole(createRole(Role.Type.TC));
+        user.addRole(createSystemRole(SystemRole.SystemType.TC));
         userVO = UserConverter.convert(user);
         compareRZMUser(userVO, user);
         compareRoles(userVO, user);
@@ -186,7 +190,7 @@ public class UserConversionTest {
         assert (userVO.getModifiedBy() == null && user.getModifiedBy() == null) || userVO.getModifiedBy().equals(user.getModifiedBy());
     }
 
-    private void compareRoles(UserVO userVO, SystemUser user) {
+    private void compareRoles(UserVO userVO, RZMUser user) {
 
         if (userVO.getRoles() == null && user.getRoles() == null) return;
 
@@ -203,33 +207,34 @@ public class UserConversionTest {
             assert roleVO instanceof SystemRoleVO;
 
             for (Role role : roles) {
-                compareRole((SystemRoleVO)roleVO, role);
+                assert role instanceof SystemRole;
+                compareRole((SystemRoleVO) roleVO, (SystemRole) role);
             }
         }
     }
 
-    private void compareRole(SystemRoleVO systemRoleVO, Role role) {
+    private void compareRole(SystemRoleVO systemRoleVO, SystemRole systemRole) {
 
-        assert systemRoleVO.getName().equals(role.getName());
-        assert systemRoleVO.isNotify() == role.isNotify();
-        assert systemRoleVO.isAcceptFrom() == role.isNotify();
-        assert systemRoleVO.isMustAccept() == role.isMustAccept();
+        assert systemRoleVO.getName().equals(systemRole.getName());
+        assert systemRoleVO.isNotify() == systemRole.isNotify();
+        assert systemRoleVO.isAcceptFrom() == systemRole.isNotify();
+        assert systemRoleVO.isMustAccept() == systemRole.isMustAccept();
 
-        compareType(systemRoleVO.getType(), role.getType());
+        compareType(systemRoleVO.getType(), systemRole.getType());
     }
 
-    private void compareType(SystemRoleVO.SystemType typeVO, Role.Type type) {
+    private void compareType(SystemRoleVO.SystemType typeVO, SystemRole.SystemType type) {
 
         //todo could be done using map
-        if (!(type == Role.Type.AC && typeVO == SystemRoleVO.SystemType.AC))
-            if (!(type == Role.Type.SO && typeVO == SystemRoleVO.SystemType.SO))
-                if (!(type == Role.Type.TC && typeVO == SystemRoleVO.SystemType.TC))
+        if (!(type == SystemRole.SystemType.AC && typeVO == SystemRoleVO.SystemType.AC))
+            if (!(type == SystemRole.SystemType.SO && typeVO == SystemRoleVO.SystemType.SO))
+                if (!(type == SystemRole.SystemType.TC && typeVO == SystemRoleVO.SystemType.TC))
                     assert false : "unmatched role type";
     }
 
-    private Role createRole(Role.Type type) throws InvalidNameException {
+    private SystemRole createSystemRole(SystemRole.SystemType type) throws InvalidNameException {
 
-        Role role = new Role();
+        SystemRole role = new SystemRole();
         role.setAcceptFrom(true);
         role.setMustAccept(true);
         role.setName("roleName");

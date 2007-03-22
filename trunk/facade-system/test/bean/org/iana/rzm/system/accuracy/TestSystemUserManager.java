@@ -42,29 +42,32 @@ public class TestSystemUserManager implements UserManager {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    private SystemUser createSystemUser() {
-        SystemUser userCreated = new SystemUser();
+    private RZMUser createSystemUser() {
+        RZMUser userCreated = new RZMUser();
         userCreated.setFirstName("Geordi");
         userCreated.setLastName("LaForge");
         userCreated.setLoginName("test");
         userCreated.setPassword("test");
         userCreated.setObjId(1L);
         try {
-            Role role = new Role();
+            SystemRole role = new SystemRole();
             role.setName("facadesystemiana.org");
-            role.setType(Role.Type.TC);
+            role.setType(SystemRole.SystemType.TC);
             userCreated.addRole(role);
-            role = new Role();
+
+            role = new SystemRole();
             role.setName("facadesystemiana.org");
-            role.setType(Role.Type.AC);
+            role.setType(SystemRole.SystemType.AC);
             userCreated.addRole(role);
-            role = new Role();
+
+            role = new SystemRole();
             role.setName("facadesystemiana1.org");
-            role.setType(Role.Type.SO);
+            role.setType(SystemRole.SystemType.SO);
             userCreated.addRole(role);
-            role = new Role();
+
+            role = new SystemRole();
             role.setName("facadesystemiana1.org");
-            role.setType(Role.Type.AC);
+            role.setType(SystemRole.SystemType.AC);
             userCreated.addRole(role);
         } catch (InvalidNameException e) {
             //

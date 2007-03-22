@@ -1,8 +1,10 @@
 package org.iana.rzm.user.hibernate.test.accuracy;
 
-import org.iana.rzm.user.AdminUser;
-import org.iana.rzm.user.hibernate.test.common.HibernateMappingUnitTest;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.hibernate.test.common.HibernateMappingTestUtil;
+import org.iana.rzm.user.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
@@ -10,20 +12,23 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
-public class AdminUserHibernateMappingTest extends HibernateMappingUnitTest<AdminUser> {
-    protected AdminUser create() throws Exception {
-        AdminUser adminUser = (AdminUser) HibernateMappingTestUtil.setupUser(new AdminUser(), "created", true);
-        adminUser.setType(AdminUser.Type.GOV_OVERSIGHT);
+@Test(groups = {"hibernate", "eiana-user"})
+public class AdminUserHibernateMappingTest extends HibernateMappingUnitTest<RZMUser> {
+    protected RZMUser create() throws Exception {
+        RZMUser adminUser = HibernateMappingTestUtil.setupUser(new RZMUser(), "created", true);
+        adminUser.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
         return adminUser;
     }
 
-    protected AdminUser change(AdminUser o) throws Exception {
-        AdminUser adminUser = (AdminUser) HibernateMappingTestUtil.setupUser(o, "changed", false);
-        adminUser.setType(AdminUser.Type.IANA_STAFF);
+    protected RZMUser change(RZMUser o) throws Exception {
+        RZMUser adminUser = HibernateMappingTestUtil.setupUser(o, "changed", false);
+        Role role = adminUser.getRoles().iterator().next();
+        adminUser.removeRole(role);
+        adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         return adminUser;
     }
 
-    protected Serializable getId(AdminUser o) {
+    protected Serializable getId(RZMUser o) {
         return o.getObjId();
     }
 

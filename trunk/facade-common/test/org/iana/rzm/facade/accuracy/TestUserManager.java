@@ -16,9 +16,9 @@ public class TestUserManager implements UserManager {
     public static String COMMON_FIRST_NAME = "commonFirstName";
     public static String COMMON_LAST_NAME = "commonLastName";
 
-    private final AdminUser testAdminUser;
-    private final AdminUser testAdminUserWithSecurID;
-    private final AdminUser testWrongPasswordUser;
+    private final RZMUser testAdminUser;
+    private final RZMUser testAdminUserWithSecurID;
+    private final RZMUser testWrongPasswordUser;
 
     public TestUserManager() {
 
@@ -61,14 +61,14 @@ public class TestUserManager implements UserManager {
     public static String ADMIN_FIRST_NAME_VALID = "adminFirstName";
     public static String ADMIN_LAST_NAME_VALID = "adminLastName";
 
-    private AdminUser createTestAdminUser() {
+    private RZMUser createTestAdminUser() {
 
-        AdminUser adminUser = new AdminUser();
+        RZMUser adminUser = new RZMUser();
         adminUser.setFirstName(ADMIN_FIRST_NAME_VALID);
         adminUser.setLastName(ADMIN_LAST_NAME_VALID);
         adminUser.setLoginName(ADMIN_LOGIN_VALID);
         adminUser.setPassword(ADMIN_PASSWORD_VALID);
-        adminUser.setType(AdminUser.Type.IANA_STAFF);
+        adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         adminUser.setSecurID(false);
 
         return adminUser;
@@ -79,14 +79,14 @@ public class TestUserManager implements UserManager {
     public static String ADMIN_WITH_SECURID_FIRST_NAME_VALID = "adminWithSecurIDFirstName";
     public static String ADMIN_WITH_SECURID_LAST_NAME_VALID = "adminWithSecurIDLastName";
 
-    private AdminUser createTestAdminUserWithSecurID() {
+    private RZMUser createTestAdminUserWithSecurID() {
 
-        AdminUser adminUser = new AdminUser();
+        RZMUser adminUser = new RZMUser();
         adminUser.setFirstName(ADMIN_WITH_SECURID_FIRST_NAME_VALID);
         adminUser.setLastName(ADMIN_WITH_SECURID_LAST_NAME_VALID);
         adminUser.setLoginName(ADMIN_WITH_SECURID_VALID_LOGIN);
         adminUser.setPassword(ADMIN_WITH_SECURID_PASSWORD_VALID);
-        adminUser.setType(AdminUser.Type.IANA_STAFF);
+        adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         adminUser.setSecurID(true);
 
         return adminUser;
@@ -95,14 +95,14 @@ public class TestUserManager implements UserManager {
     public static String WRONG_PASSWORD_LOGIN = "wrongPasswordLogin";
     public static String WRONG_PASSWORD_PASSWORD = "wrongPasswordLogin";
 
-    private AdminUser createTestWrongPasswordUser() {
+    private RZMUser createTestWrongPasswordUser() {
 
-        AdminUser adminUser = new AdminUser();
+        RZMUser adminUser = new RZMUser();
         adminUser.setFirstName(COMMON_FIRST_NAME);
         adminUser.setLastName(COMMON_LAST_NAME);
         adminUser.setLoginName(WRONG_PASSWORD_LOGIN);
         adminUser.setPassword("bad" + WRONG_PASSWORD_PASSWORD);
-        adminUser.setType(AdminUser.Type.IANA_STAFF);
+        adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         adminUser.setSecurID(false);
 
         return adminUser;

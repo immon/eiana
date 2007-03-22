@@ -1,10 +1,13 @@
 package org.iana.rzm.user.hibernate.test.common;
 
+import org.testng.annotations.Test;
+
 import java.io.Serializable;
 
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-user"})
 abstract public class HibernateMappingUnitTest<T> extends HibernateTest {
 
     abstract protected T create() throws Exception;

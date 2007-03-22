@@ -7,6 +7,7 @@ import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
 
 import java.util.*;
 
@@ -36,9 +37,9 @@ public class ToVOConverter {
         domainBreakpoint.put(Domain.Breakpoint.SO_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.SO_CHANGE_EXT_REVIEW);
         domainBreakpoint.put(Domain.Breakpoint.TC_CHANGE_EXT_REVIEW, IDomainVO.Breakpoint.TC_CHANGE_EXT_REVIEW);
 
-        roleType.put(Role.Type.AC, SystemRoleVO.SystemType.AC);
-        roleType.put(Role.Type.SO, SystemRoleVO.SystemType.SO);
-        roleType.put(Role.Type.TC, SystemRoleVO.SystemType.TC);
+        roleType.put(SystemRole.SystemType.AC, SystemRoleVO.SystemType.AC);
+        roleType.put(SystemRole.SystemType.SO, SystemRoleVO.SystemType.SO);
+        roleType.put(SystemRole.SystemType.TC, SystemRoleVO.SystemType.TC);
     }
 
 // ---------------------- Domain convert methods ----------------------

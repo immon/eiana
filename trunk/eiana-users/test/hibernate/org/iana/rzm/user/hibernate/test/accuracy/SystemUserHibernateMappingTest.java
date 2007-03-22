@@ -1,7 +1,8 @@
 package org.iana.rzm.user.hibernate.test.accuracy;
 
-import org.iana.rzm.user.SystemUser;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.hibernate.test.common.HibernateMappingTestUtil;
 import org.iana.rzm.user.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
@@ -11,22 +12,22 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
-public class SystemUserHibernateMappingTest extends HibernateMappingUnitTest<SystemUser> {
-    protected SystemUser create() throws Exception {
-        SystemUser systemUser = (SystemUser) HibernateMappingTestUtil.setupUser(new SystemUser(), "created", true);
-        systemUser.addRole(HibernateMappingTestUtil.setupRole(new Role(), "1st", true));
-        systemUser.addRole(HibernateMappingTestUtil.setupRole(new Role(), "2nd", true));
+public class SystemUserHibernateMappingTest extends HibernateMappingUnitTest<RZMUser> {
+    protected RZMUser create() throws Exception {
+        RZMUser systemUser = HibernateMappingTestUtil.setupUser(new RZMUser(), "created", true);
+        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "1st", true));
+        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "2nd", true));
         return systemUser;
     }
 
-    protected SystemUser change(SystemUser o) throws Exception {
-        SystemUser systemUser = (SystemUser) HibernateMappingTestUtil.setupUser(o, "changed", false);
+    protected RZMUser change(RZMUser o) throws Exception {
+        RZMUser systemUser = HibernateMappingTestUtil.setupUser(o, "changed", false);
         systemUser.removeRole(systemUser.getRoles().iterator().next());
-        systemUser.addRole(HibernateMappingTestUtil.setupRole(new Role(), "3rd", true));
+        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "3rd", true));
         return systemUser;
     }
 
-    protected Serializable getId(SystemUser o) {
+    protected Serializable getId(RZMUser o) {
         return o.getObjId();
     }
 
