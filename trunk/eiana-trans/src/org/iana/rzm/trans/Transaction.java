@@ -124,10 +124,8 @@ public class Transaction implements TrackedObject {
     }
 
     public synchronized void accept(RZMUser user) throws TransactionException {
-        TaskInstance ti = getTaskInstance();
-        Node n = ti.getToken().getNode();
-
-        UserConfirmations uc = getTransactionData().getUserConfirmations(n.getName());
+        // todo: how to get node name???
+        UserConfirmations uc = getTransactionData().getUserConfirmations("");
         if (uc != null) {
             if (uc.getConfirmations().containsKey(user))
                 throw new UserConfirmationNotExpected();
@@ -138,22 +136,10 @@ public class Transaction implements TrackedObject {
                 return;
         }
 
-        if (n.getDefaultLeavingTransition() != null)
-            ti.end();
-        else
-            ti.end(StateTransition.ACCEPT);
+        pi.signal(StateTransition.ACCEPT);
     }
 
     public synchronized void reject() {
-        TaskInstance ti = getTaskInstance();
-        Node n = ti.getToken().getNode();
-        ti.end(StateTransition.REJECT);
-    }
-
-    private TaskInstance getTaskInstance() {
-        Collection<TaskInstance> tic = pi.getTaskMgmtInstance().getTaskInstances();
-        if (tic == null || tic.size() == 0)
-            throw new IllegalStateException("no task instances found for " + getTransactionID());
-        return tic.iterator().next();
+        pi.signal(StateTransition.REJECT);
     }
 }

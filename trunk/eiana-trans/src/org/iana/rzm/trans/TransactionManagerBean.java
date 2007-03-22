@@ -17,6 +17,9 @@ import java.util.List;
  * @author Jakub Laszkiewicz
  */
 public class TransactionManagerBean implements TransactionManager {
+
+    private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
+
     private JbpmContext context;
     private ProcessDAO processDAO;
     private TicketingService ticketingService;
@@ -28,7 +31,7 @@ public class TransactionManagerBean implements TransactionManager {
         this.domainDAO = domainDAO;
     }
 
-    public Transaction get(long id) throws NoSuchTransactionException {
+    public Transaction getTransaction(long id) throws NoSuchTransactionException {
         GraphSession graphSession = context.getGraphSession();
         ProcessInstance processInstances = graphSession.loadProcessInstance(id);
         if (processInstances == null) throw new NoSuchTransactionException(id);
@@ -36,11 +39,11 @@ public class TransactionManagerBean implements TransactionManager {
         return transaction;
     }
 
-    public Transaction create(Domain domain) {
+    public Transaction createDomainCreationTransaction(Domain domain) {
         return null;
     }
 
-    public Transaction modify(Domain domain) {
+    public Transaction createDomainModificationTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());

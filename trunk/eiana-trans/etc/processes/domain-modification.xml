@@ -1,4 +1,4 @@
-<process-definition name="Unified Workflow">
+<process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
         <transition to="PENDING_CONTACT_CONFIRMATION"></transition>
@@ -95,7 +95,7 @@
 
     <end-state name='COMPLETED'>
         <event type='node-enter'>
-            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+            <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>completed</notification>
             </action>
         </event>
@@ -103,7 +103,7 @@
 
     <end-state name='REJECTED'>
         <event type='node-enter'>
-            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+            <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>rejected</notification>
             </action>
         </event>
@@ -111,7 +111,7 @@
 
     <end-state name='WITHDRAWN'>
         <event type='node-enter'>
-            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+            <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>withdrawn</notification>
             </action>
         </event>
@@ -119,7 +119,7 @@
 
     <end-state name='ADMIN_CLOSED'>
         <event type='node-enter'>
-            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+            <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>admin-closed</notification>
             </action>
         </event>
@@ -127,7 +127,7 @@
 
     <state name='EXCEPTION'>
         <event type='node-enter'>
-            <action class='pl.nask.eiana.processes.ProcessStateNotifier'>
+            <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>exception</notification>
             </action>
         </event>

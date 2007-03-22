@@ -70,7 +70,7 @@ public class TransactionManagerTest {
         modifiedDomain.setNameServers(nameServersList);
         Contact someContact = new Contact("test Contact");
         modifiedDomain.addAdminContact(someContact);
-        Transaction t = transManager.modify(modifiedDomain);
+        Transaction t = transManager.createDomainModificationTransaction(modifiedDomain);
         TestChangeVisitor tcv = new TestChangeVisitor();
         List<TransactionAction> taList =  t.getActions();
         List<TransactionAction.Name> names = new ArrayList<TransactionAction.Name>();

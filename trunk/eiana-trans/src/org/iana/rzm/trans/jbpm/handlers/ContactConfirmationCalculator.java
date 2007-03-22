@@ -12,6 +12,6 @@ import org.jbpm.graph.exe.ExecutionContext;
 public class ContactConfirmationCalculator implements ActionHandler {
 
     public void execute(ExecutionContext executionContext) throws Exception {
-
+        
     }
 }
