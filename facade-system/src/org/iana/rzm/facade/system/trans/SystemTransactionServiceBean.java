@@ -37,7 +37,7 @@ public class SystemTransactionServiceBean implements SystemTransactionService {
 
     public TransactionVO getTransaction(long id) throws AccessDeniedException, InfrastructureException {
         try {
-            return TransactionConverter.toTransactionVO(transactionManager.get(id));
+            return TransactionConverter.toTransactionVO(transactionManager.getTransaction(id));
         } catch (NoSuchTransactionException e) {
             return null;
         }

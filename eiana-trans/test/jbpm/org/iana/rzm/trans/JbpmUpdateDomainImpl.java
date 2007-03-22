@@ -43,7 +43,7 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
 
         JbpmContextFactory fact = (JbpmContextFactory) appCtx.getBean("jbpmContextFactory");
         transMgr.setJBPMContext(fact.getJbpmContext());
-        transMgr.modify(clonedDomain);
+        transMgr.createDomainModificationTransaction(clonedDomain);
 
         ProcessInstance procesInst = processDAO.getProcessInstance(1L);
 
