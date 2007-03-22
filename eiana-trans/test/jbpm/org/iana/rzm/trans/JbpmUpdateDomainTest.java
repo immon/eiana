@@ -12,7 +12,7 @@ import org.iana.rzm.domain.Domain;
 
 import java.net.URL;
 
-@Test(sequential=true, groups = {"jbpm", "accuracy", "eiana-trans"})
+@Test(sequential=true, groups = {"jbpm", "eiana-trans"})
 public class JbpmUpdateDomainTest {
 
     ApplicationContext ctx;
