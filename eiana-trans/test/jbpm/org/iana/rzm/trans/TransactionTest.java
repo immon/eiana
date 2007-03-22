@@ -46,7 +46,7 @@ public class TransactionTest {
         transactionId = transaction.getTransactionID();
         context = JbpmTestContextFactory.getJbpmContext();
         manager.setJBPMContext(context);
-        Transaction transFromDB = manager.get(transactionId);
+        Transaction transFromDB = manager.getTransaction(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
     }
 
@@ -54,14 +54,14 @@ public class TransactionTest {
     public void testTranactionUpdate() throws NoSuchTransactionException {
         JbpmContext context = JbpmTestContextFactory.getJbpmContext();
         manager.setJBPMContext(context);
-        Transaction transToUpdate = manager.get(transactionId);
+        Transaction transToUpdate = manager.getTransaction(transactionId);
         assert transToUpdate.getTicketID().equals(new Long(ticketId));
         ticketId = 456L;
         transToUpdate.setTicketID(ticketId);
         context.close();
         context = JbpmTestContextFactory.getJbpmContext();
         manager.setJBPMContext(context);
-        Transaction transFromDB = manager.get(transactionId);
+        Transaction transFromDB = manager.getTransaction(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
         context.close();
     }
@@ -70,7 +70,7 @@ public class TransactionTest {
        public void testTranactionAccept() throws TransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
            manager.setJBPMContext(context);
-           Transaction trans = manager.get(transactionId);
+           Transaction trans = manager.getTransaction(transactionId);
            assert trans != null;
            trans.accept(null);
            System.out.println("State:"+trans.getState().getName());
@@ -81,7 +81,7 @@ public class TransactionTest {
        public void testTranactionReject() throws NoSuchTransactionException {
            JbpmContext context = JbpmTestContextFactory.getJbpmContext();
            manager.setJBPMContext(context);
-           Transaction trans = manager.get(transactionId);
+           Transaction trans = manager.getTransaction(transactionId);
            assert trans != null;
            trans.reject();
            System.out.println("State:"+trans.getState().getName());

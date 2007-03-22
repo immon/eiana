@@ -17,18 +17,25 @@ public interface TransactionManager {
      *
      * @param id the identifier of the transaction to be found
      * @return the found transaction
-     * @throws TransactionException
+     * @throws NoSuchTransactionException thrown when no transaction found
      */
-    Transaction get(long id) throws NoSuchTransactionException;
+    Transaction getTransaction(long id) throws NoSuchTransactionException;
 
     /**
-     * Creates a new transaction based on a
-     * @param domain
-     * @return
+     * Creates a new domain creation transaction.
+     *
+     * @param domain a domain to be created by the end of the transaction
+     * @return the new domain creation transaction
      */
-    Transaction create(Domain domain);
+    Transaction createDomainCreationTransaction(Domain domain);
 
-    Transaction modify(Domain domain);
+    /**
+     * Creates a new domain modification transaction.
+     *
+     * @param domain a domain to be created by the end of the transaction
+     * @return the new domain creation transaction
+     */
+    Transaction createDomainModificationTransaction(Domain domain);
 
     List<Transaction> findAll();
 
