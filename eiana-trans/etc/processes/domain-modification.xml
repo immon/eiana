@@ -30,7 +30,7 @@
     <state name="PENDING_IMPACTED_PARTIES">
         <event type='node-enter'>
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesNotifier"/>
-            <action class="org.iana.rzm.trans.jbpm.ImpactedPartiesConfirmationCalculator"/>
+            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationCalculator"/>
         </event>
         <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
         <transition name="reject" to="REJECTED"/>
