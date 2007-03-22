@@ -26,7 +26,7 @@ public class JbpmUpdateDomainTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void testUpdateDomain() throws Exception {
         assert updateDomainTest.doUpdate();
     }
 }
