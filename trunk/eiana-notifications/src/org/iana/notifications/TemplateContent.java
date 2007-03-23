@@ -36,4 +36,13 @@ public class TemplateContent implements Content {
     public void setValues(Map<String, String> values) {
         this.values = values;
     }
+
+
+    public String getSubject() {
+        return null;
+    }
+
+    public String getBody() {
+        return null;
+    }
 }
