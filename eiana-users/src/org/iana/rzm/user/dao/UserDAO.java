@@ -1,6 +1,10 @@
 package org.iana.rzm.user.dao;
 
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
+
+import java.util.List;
 
 /**
  * org.iana.rzm.user.dao.UserDAO
@@ -20,4 +24,7 @@ public interface UserDAO {
     public void update(RZMUser user);
 
     public void delete(RZMUser user);
+
+    public List<RZMUser> findUsersInSystemRole(String roleName, SystemRole.SystemType roleType,
+                                               boolean acceptFrom, boolean mustAccept);
 }

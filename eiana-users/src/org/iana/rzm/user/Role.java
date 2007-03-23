@@ -24,9 +24,6 @@ public abstract class Role implements TrackedObject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
 
-    @Transient
-    private Type type;
-
     @Embedded
     private TrackData trackData = new TrackData();
 
@@ -34,7 +31,7 @@ public abstract class Role implements TrackedObject {
 
     public Role(Type type) {
         CheckTool.checkNull(type, "type");
-        this.type = type;
+        setType(type);
     }
 
     public Long getObjId() {
@@ -45,14 +42,9 @@ public abstract class Role implements TrackedObject {
         this.objId = objId;
     }
 
-    public Type getType() {
-        return type;
-    }
+    public abstract Type getType();
 
-    public void setType(Type type) {
-        CheckTool.checkNull(type, "type");
-        this.type = type;
-    }
+    public abstract void setType(Type type);
 
     /**
      * Tells if role the Admin role
@@ -72,14 +64,14 @@ public abstract class Role implements TrackedObject {
         Role role = (Role) o;
 
         if (trackData != null ? !trackData.equals(role.trackData) : role.trackData != null) return false;
-        if (type != null ? !type.equals(role.type) : role.type != null) return false;
+        if (getType() != null ? !getType().equals(role.getType()) : role.getType() != null) return false;
 
         return true;
     }
 
     public int hashCode() {
         int result;
-        result = (type != null ? type.hashCode() : 0);
+        result = (getType() != null ? getType().hashCode() : 0);
         result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
     }
