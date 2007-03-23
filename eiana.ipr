@@ -417,6 +417,20 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="dynaxml">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/nask-commons/dynaxml.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jdom">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jdom/jdom.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
   </component>
   <component name="uidesigner-configuration">
     <option name="INSTRUMENT_CLASSES" value="true" />
