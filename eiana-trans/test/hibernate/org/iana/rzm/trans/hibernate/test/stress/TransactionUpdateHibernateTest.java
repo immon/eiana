@@ -25,11 +25,11 @@ public class TransactionUpdateHibernateTest extends HibernateOperationStressTest
     }
 
     protected void operation(Object o) throws Exception {
+        /*
         Transaction trans = (Transaction) o;
         List<TransactionAction> actions = trans.getActions();
         actions.remove(actions.iterator().next());
         actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.MODIFY_WHOIS_SERVER));
-        /*
         session.save(HibernateMappingTestUtil.setupTransaction(trans,
                 "changed", actions, getDomain("changed-" + trans.getCurrentDomain().getName()),
                 HibernateMappingTestUtil.createState(TransactionState.Name.COMPLETED)));

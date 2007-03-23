@@ -61,7 +61,7 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
 
         Domain domain = new Domain("testdomain.org");
        // domain.setWhoisServer("oldwhoisserver");
-        domain.setRegistryUrl(new URL("http://www.oldregistryurl.org"));
+        domain.setRegistryUrl("http://www.oldregistryurl.org");
         domain.setSupportingOrg(supportingOrg);
         domain.addTechContact(new Contact("aaaaaa"));
         domainDAO.create(domain);

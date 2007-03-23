@@ -8,9 +8,6 @@ import org.iana.rzm.trans.StateTransition;
 import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.change.Change;
-import org.iana.rzm.trans.change.Modification;
-import org.iana.rzm.trans.change.ModifiedPrimitiveValue;
-import org.iana.rzm.trans.change.ObjectValue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,7 +70,7 @@ public class HibernateMappingTestUtil {
 
     public static Domain setupDomain(Domain domain, String prefix) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
         domain.setName(prefix + domain.getName());
-        domain.setRegistryUrl(new URL("http://" + prefix + "registry.pl"));
+        domain.setRegistryUrl("http://" + prefix + "registry.pl");
         domain.setSpecialInstructions(prefix + " special instructions");
         domain.setState(Domain.State.NO_ACTIVITY);
         domain.setStatus(Domain.Status.NEW);
@@ -88,23 +85,6 @@ public class HibernateMappingTestUtil {
         domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech1", true));
         domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech2", true));
         return domain;
-    }
-
-    public static ModifiedPrimitiveValue setupMPV (ModifiedPrimitiveValue mpv, String prefix) {
-        mpv.setOldValue(prefix + " old value");
-        mpv.setNewValue(prefix + " new value");
-        return mpv;
-    }
-
-    public static ObjectValue setupObjectValue(ObjectValue ov, String prefix) {
-        ov.setId(System.currentTimeMillis());
-        ov.setName(prefix + "-name");
-        return ov;
-    }
-
-    public static Modification createPrimitiveModification(String prefix) {
-        return new Modification(prefix + "modification",
-                HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), prefix));
     }
 
     public static TransactionState setupState(TransactionState state, TransactionState.Name name, Set<StateTransition> availTrans) {
@@ -126,14 +106,5 @@ public class HibernateMappingTestUtil {
         action.setName(name);
         action.setChange(change);
         return action;
-    }
-
-    public static TransactionAction createAction(TransactionAction.Name name) {
-        List<Change> change = new ArrayList<Change>();
-        change.add(new Modification("1st modification",
-                HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
-        change.add(new Modification("2nd modification",
-                HibernateMappingTestUtil.setupMPV(new ModifiedPrimitiveValue(), "created")));
-        return HibernateMappingTestUtil.setupAction(new TransactionAction(), name, change);
     }
 }

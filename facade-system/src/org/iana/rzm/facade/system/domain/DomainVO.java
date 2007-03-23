@@ -15,7 +15,7 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO {
     private List<ContactVO> adminContacts;
     private List<ContactVO> techContacts;
     private List<HostVO> nameServers;
-    private URL registryUrl;
+    private String registryUrl;
     private Name whoisServer;
     private Set<Breakpoint> breakpoints;
     private String specialInstructions;
@@ -54,11 +54,11 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO {
         this.nameServers = nameServers;
     }
 
-    public URL getRegistryUrl() {
+    public String getRegistryUrl() {
         return registryUrl;
     }
 
-    public void setRegistryUrl(URL registryUrl) {
+    public void setRegistryUrl(String registryUrl) {
         this.registryUrl = registryUrl;
     }
 

@@ -20,7 +20,7 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
 
     protected Domain change(Domain o) throws Exception {
         o.setName("changed-iana.org");
-        o.setRegistryUrl(new URL("http://changed-registry.com"));
+        o.setRegistryUrl("http://changed-registry.com");
         o.setSpecialInstructions("changed special instructions");
         o.setState(Domain.State.OPERATIONS_PENDING);
         o.setStatus(Domain.Status.ACTIVE);

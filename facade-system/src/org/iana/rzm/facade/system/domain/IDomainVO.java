@@ -48,9 +48,9 @@ public interface IDomainVO extends Trackable {
 
     void setNameServers(List<HostVO> nameServers);
 
-    URL getRegistryUrl();
+    String getRegistryUrl();
 
-    void setRegistryUrl(URL registryUrl);
+    void setRegistryUrl(String registryUrl);
 
     Name getWhoisServer();
 

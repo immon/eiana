@@ -19,6 +19,18 @@ public class Address implements Cloneable{
     private String postalCode;
     private String countryCode;
     private String state;
+    private int id;
+
+    public Address() {
+    }
+
+    public Address(String street, String city, String postalCode, String countryCode, String state) {
+        this.street = street;
+        this.city = city;
+        this.postalCode = postalCode;
+        this.countryCode = countryCode;
+        this.state = state;
+    }
 
     public Long getObjId() {
         return objId;
@@ -96,5 +108,13 @@ public class Address implements Cloneable{
 
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

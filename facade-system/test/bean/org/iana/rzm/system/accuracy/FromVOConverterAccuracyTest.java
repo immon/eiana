@@ -222,7 +222,7 @@ public class FromVOConverterAccuracyTest {
         domainVO.setAdminContacts(contactVOList);
         domainVO.setBreakpoints(breakpointVOSet);
         domainVO.setNameServers(hostVOList);
-        domainVO.setRegistryUrl(new URL("http", "somepage.com", -1, "/someFile.txt"));
+        domainVO.setRegistryUrl("http://somepage.com/someFile.txt");
         domainVO.setSpecialInstructions("Super secret special instruction Alpha One");
         domainVO.setState(IDomainVO.State.NO_ACTIVITY);
         domainVO.setStatus(IDomainVO.Status.NEW);

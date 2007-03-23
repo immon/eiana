@@ -16,6 +16,7 @@
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
+    <path refid="library.util.classpath"/>
   </path>
   
   

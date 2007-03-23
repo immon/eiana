@@ -26,9 +26,12 @@ public class TransactionAction {
     private Long objId;
     @Enumerated
     private Name name;
+/*
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Action_Changes",
             inverseJoinColumns = @JoinColumn(name = "Change_objId"))
+*/
+    @Transient
     private List<Change> change;
 
     public Long getObjId() {

@@ -5,15 +5,13 @@ import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.trans.change.ObjectChange;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * This class represents a domain modification transaction.
@@ -68,12 +66,12 @@ public class Transaction implements TrackedObject {
         getTransactionData().setCurrentDomain(currentDomain);
     }
 
-    public List<TransactionAction> getActions() {
-        return getTransactionData().getActions();
+    public ObjectChange getDomainChange() {
+        return getTransactionData().getDomainChange();
     }
 
-    public void setActions(List<TransactionAction> actions) {
-        getTransactionData().setActions(actions);
+    public void setDomainChange(ObjectChange change) {
+        getTransactionData().setDomainChange(change);
     }
 
     public TransactionState getState() {

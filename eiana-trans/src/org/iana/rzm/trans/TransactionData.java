@@ -2,11 +2,11 @@ package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.trans.change.ObjectChange;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.MapKeyManyToMany;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -23,10 +23,9 @@ public class TransactionData {
     @ManyToOne
     @JoinColumn(name = "currentDomain_objId")
     private Domain currentDomain;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Trasaction_Actions",
-            inverseJoinColumns = @JoinColumn(name = "Action_objId"))
-    private List<TransactionAction> actions;
+    @ManyToOne
+    @JoinColumn(name = "domainChange_objId")
+    private ObjectChange domainChange;
     @CollectionOfElements
     @JoinTable(name = "Transaction_Confirmation_Users",
             joinColumns = @JoinColumn(name = "UserConfirmations_objId"))
@@ -57,12 +56,12 @@ public class TransactionData {
         this.currentDomain = currentDomain;
     }
 
-    public List<TransactionAction> getActions() {
-        return actions;
+    public ObjectChange getDomainChange() {
+        return domainChange;
     }
 
-    public void setActions(List<TransactionAction> actions) {
-        this.actions = actions;
+    public void setDomainChange(ObjectChange domainChange) {
+        this.domainChange = domainChange;
     }
 
     public void initUserConfirmations(String stateName, Set<RZMUser> impactedUsers) {
