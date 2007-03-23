@@ -42,6 +42,8 @@
     </orderEntry>
     <orderEntry type="library" name="apache-commons" level="project" />
     <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="library" name="dynaxml" level="project" />
     <orderEntryProperties />
   </component>
 </module>

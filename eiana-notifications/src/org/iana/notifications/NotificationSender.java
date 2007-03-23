@@ -1,5 +1,6 @@
 package org.iana.notifications;
 
+import org.iana.notifications.exception.NotificationException;
 import java.util.Collection;
 
 /**

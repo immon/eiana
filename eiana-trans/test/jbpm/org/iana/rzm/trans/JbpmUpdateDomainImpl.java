@@ -4,20 +4,19 @@ import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Address;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.jbpm.JbpmContextFactory;
+import org.iana.rzm.user.RZMUser;
+import org.iana.notifications.EmailAddress;
+import org.iana.notifications.EmailAddresses;
 
 import java.net.URL;
 import java.io.FileReader;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -28,7 +27,6 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
     TransactionManager transMgr;
     ProcessDAO processDAO;
     DomainDAO domainDAO;
-    HibernateTransactionManager hibernateTransactionManager;
 
     public void setContext(ApplicationContext ctx) {
         appCtx = ctx;
@@ -41,7 +39,6 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
     public boolean doUpdate() throws Exception {
         processDAO.deploy(getDefinedProcess());
         processDAO.close();
-
 
         Address address = new Address();
         address.setCity("Warsaw");
@@ -86,16 +83,35 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
 
         Token token = procesInstance.getRootToken();
         token.signal();
+
+        RZMUser user = new RZMUser();
+        user.setLoginName("gregorM");
+        user.setFirstName("Gregor");
+        user.setLastName("Martin");
+        procesInstance.getContextInstance().setVariable("EMAIL_TEMPLATE_DATA", user);
+        procesInstance.getContextInstance().setVariable("TEMPLATE_TYPE", "SAMPLE_TEMPLATE1");
+
+        procesInstance.getContextInstance().setVariable("EMAIL_ADDRESSES", new EmailAddress("someName", "somebody@mail.com"));
+
         token.signal("accept");
         token.signal("accept");
         token.signal("normal");
         token.signal("accept");
+
+        List<EmailAddress> addresses = new ArrayList<EmailAddress>();
+        addresses.add(new EmailAddress("Helmut", "helmut@mail.de"));
+        addresses.add(new EmailAddress("Ivan", "ivan@mail.ru"));
+        EmailAddresses eMailAddressesList = new EmailAddresses(addresses);
+        procesInstance.getContextInstance().setVariable("TEMPLATE_TYPE", "SAMPLE_TEMPLATE2");
+        procesInstance.getContextInstance().setVariable("EMAIL_ADDRESSES", eMailAddressesList);
+
+
         token.signal("accept");
 
         Domain retrivedDomain = domainDAO.get(clonedDomain.getName());
 
         return (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
-                retrivedDomain.getRegistryUrl().equals(new URL("http://supernewaddress.org/")));
+                retrivedDomain.getRegistryUrl() == null);
     }
 
     private ProcessDefinition getDefinedProcess() throws Exception {
