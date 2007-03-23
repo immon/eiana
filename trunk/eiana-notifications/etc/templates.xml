@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iana:templates xmlns:iana="todo">
+    <iana:template>
+        <iana:type>SAMPLE_TEMPLATE1</iana:type>
+        <iana:subject>Warning</iana:subject>
+        <iana:content>User %loginName% is trying to do something illegal.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>SAMPLE_TEMPLATE2</iana:type>
+        <iana:subject>User info</iana:subject>
+        <iana:content>%firstName% %lastName% has login %loginName% .</iana:content>
+    </iana:template>
+
+</iana:templates>

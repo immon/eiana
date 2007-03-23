@@ -47,12 +47,15 @@
         <mapping class="org.iana.rzm.trans.change.PrimitiveValue"/>
         <mapping class="org.iana.rzm.trans.change.Removal"/>
 
-        <mapping class="org.iana.rzm.user.AdminUser"/>
+        <mapping class="org.iana.rzm.user.AdminRole"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>
-        <mapping class="org.iana.rzm.user.SystemUser"/>
+        <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
 
+        <mapping class="org.iana.notifications.EmailAddress" />
+        <mapping class="org.iana.notifications.EmailAddresses" />
+        
         <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->
         <!-- ############################################ -->

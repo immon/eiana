@@ -6,6 +6,14 @@
 
     <!-- dao configuration -->
 
+    <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
+        <constructor-arg value="MailHost"/>
+        <constructor-arg value="mailer"/>
+        <constructor-arg value="fromAddress"/>
+        <constructor-arg value="username"/>
+        <constructor-arg value=""/> <!--Password-->
+    </bean>
+
     <bean id="UpdateDomainTest" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
