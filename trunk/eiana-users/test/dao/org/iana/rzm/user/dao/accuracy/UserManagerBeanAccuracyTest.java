@@ -1,9 +1,16 @@
 package org.iana.rzm.user.dao.accuracy;
 
 import org.iana.rzm.user.*;
+import org.iana.rzm.user.dao.common.UserManagementTestUtil;
+import org.iana.rzm.user.dao.UserDAO;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Piotr Tkaczyk
@@ -12,10 +19,13 @@ import org.testng.annotations.Test;
 public class UserManagerBeanAccuracyTest {
     UserManager manager;
     Long        userId;
+    UserDAO dao;
 
     @BeforeClass
     public void init() {
-        manager = (UserManager) new ClassPathXmlApplicationContext("eiana-users-spring.xml").getBean("userManager");
+        ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("eiana-users-spring.xml");
+        manager = (UserManager) ctx.getBean("userManager");
+        dao = (UserDAO) ctx.getBean("userDAO");
     }
 
     @Test
@@ -59,5 +69,27 @@ public class UserManagerBeanAccuracyTest {
         assert userRetrived.getFirstName().equals("Ivan");
         assert userRetrived.getLastName().equals("Delphin");
         assert userRetrived.getLoginName().equals("ivan123");
+    }
+
+    @Test
+    public void testFindConfirmingUsers() {
+        dao.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
+        dao.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
+        dao.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
+        dao.create(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
+        dao.create(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("aaa", false, false, SystemRole.SystemType.TC)));
+        dao.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        dao.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+
+        List<RZMUser> result = manager.findUsersRequiredToConfirm("aaa", SystemRole.SystemType.AC);
+        assert result.size() == 1;
+        RZMUser user = result.iterator().next();
+        assert "user-sys1".equals(user.getLoginName());
+
+        result = manager.findUsersEligibleToConfirm("aaa", SystemRole.SystemType.TC);
+        assert result.size() == 2;
+        Set<String> loginNames = new HashSet<String>();
+        for (RZMUser u : result) loginNames.add(u.getLoginName());
+        assert loginNames.contains("user-sys3") && loginNames.contains("user-sys4");
     }
 }

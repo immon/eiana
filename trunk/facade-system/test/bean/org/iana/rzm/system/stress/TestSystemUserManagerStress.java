@@ -4,6 +4,7 @@ import org.iana.rzm.user.*;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -40,6 +41,14 @@ public class TestSystemUserManagerStress implements UserManager {
     }
 
     public List<RZMUser> find(UserCriteria criteria) {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
+    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType) {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
+    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType) {
         throw new IllegalStateException("Not implemented yet.");
     }
 

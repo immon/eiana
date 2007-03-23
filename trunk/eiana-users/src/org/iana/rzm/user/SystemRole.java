@@ -1,6 +1,7 @@
 package org.iana.rzm.user;
 
 import org.iana.rzm.common.Name;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import javax.persistence.Basic;
@@ -35,6 +36,8 @@ public class SystemRole extends Role {
     private boolean acceptFrom;
     @Basic
     private boolean mustAccept;
+    @Enumerated
+    private SystemType type;
 
     public SystemRole() {}
 
@@ -42,21 +45,15 @@ public class SystemRole extends Role {
         super(type);
     }
 
-    @Enumerated
-    private SystemType getSystemType() {
-        return (SystemType) super.getType();
-    }
-
-    private void setSystemType(SystemType type) {
-        super.setType(type);
-    }
-
     final public SystemType getType() {
-        return (SystemType) super.getType();
+        return type;
     }
 
-    final public void setType(SystemType type) {
-        super.setType(type);
+    final public void setType(Type type) {
+        CheckTool.checkNull(type, "type");
+        if (!(type instanceof SystemType))
+            throw new IllegalArgumentException("type");
+        this.type = (SystemType) type;
     }
 
     final public String getName() {

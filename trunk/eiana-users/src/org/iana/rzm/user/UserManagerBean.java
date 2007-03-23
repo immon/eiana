@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
 
 public class UserManagerBean implements UserManager {
@@ -34,5 +35,13 @@ public class UserManagerBean implements UserManager {
 
     public List<RZMUser> find(UserCriteria criteria) {
         return null;
+    }
+
+    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType) {
+        return dao.findUsersInSystemRole(name, roleType, true, false);
+    }
+
+    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType) {
+        return dao.findUsersInSystemRole(name, roleType, true, true);
     }
 }

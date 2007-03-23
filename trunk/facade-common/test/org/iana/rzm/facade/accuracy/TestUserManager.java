@@ -56,6 +56,14 @@ public class TestUserManager implements UserManager {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
+    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType) {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
+    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType) {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
     public static String ADMIN_LOGIN_VALID = "adminLogin";
     public static String ADMIN_PASSWORD_VALID = "adminPassword";
     public static String ADMIN_FIRST_NAME_VALID = "adminFirstName";

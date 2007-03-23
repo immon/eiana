@@ -1,5 +1,7 @@
 package org.iana.rzm.user;
 
+import org.iana.rzm.common.validators.CheckTool;
+
 import javax.persistence.Enumerated;
 import javax.persistence.Entity;
 
@@ -21,27 +23,24 @@ public class AdminRole extends Role {
         ZONE_PUBLISHER
     }
 
+    @Enumerated
+    private AdminType type;
+
     public AdminRole() {}
 
     public AdminRole(AdminType type) {
         super(type);
     }
 
-    @Enumerated
-    private AdminType getSystemType() {
-        return (AdminType) super.getType();
-    }
-
-    private void setSystemType(AdminType type) {
-        super.setType(type);
-    }
-
     final public AdminType getType() {
-        return (AdminType) super.getType();
+        return type;
     }
 
-    final public void setType(AdminType type) {
-        super.setType(type);
+    final public void setType(Type type) {
+        CheckTool.checkNull(type, "type");
+        if (!(type instanceof AdminType))
+            throw new IllegalArgumentException("type");
+        this.type = (AdminType) type;
     }
 
     final public boolean isAdmin() {
