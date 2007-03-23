@@ -10,4 +10,8 @@ package org.iana.notifications;
  * @see TemplateContent
  */
 public interface Content {
+
+    String getSubject();
+
+    String getBody();
 }
