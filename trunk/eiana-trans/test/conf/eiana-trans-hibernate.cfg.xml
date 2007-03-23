@@ -19,7 +19,9 @@
         <property name="hibernate.hibernate.default_batch_fetch_size">32</property>
         <property name="hibernate.jdbc.batch_size">20</property>
 
+<!--
         <property name="hibernate.hbm2ddl.auto">create</property>
+-->
 
         <mapping class="org.iana.rzm.common.Name"/>
         <mapping class="org.iana.rzm.common.TrackData"/>
@@ -38,14 +40,12 @@
         <mapping class="org.iana.rzm.trans.TransactionData"/>
         <mapping class="org.iana.rzm.trans.StateTransition"/>
         <mapping class="org.iana.rzm.trans.UserConfirmations"/>
-        <mapping class="org.iana.rzm.trans.change.Addition"/>
-        <mapping class="org.iana.rzm.trans.change.AdditionOrRemoval"/>
+
         <mapping class="org.iana.rzm.trans.change.Change"/>
-        <mapping class="org.iana.rzm.trans.change.Modification"/>
-        <mapping class="org.iana.rzm.trans.change.ModifiedPrimitiveValue"/>
-        <mapping class="org.iana.rzm.trans.change.ObjectValue"/>
-        <mapping class="org.iana.rzm.trans.change.PrimitiveValue"/>
-        <mapping class="org.iana.rzm.trans.change.Removal"/>
+        <mapping class="org.iana.rzm.trans.change.ObjectChange"/>
+        <mapping class="org.iana.rzm.trans.change.CollectionChange"/>
+        <mapping class="org.iana.rzm.trans.change.SimpleChange"/>
+        <mapping class="org.iana.rzm.trans.change.FieldChange"/>
 
         <mapping class="org.iana.rzm.user.AdminRole"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>

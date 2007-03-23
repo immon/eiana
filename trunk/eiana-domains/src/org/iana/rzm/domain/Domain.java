@@ -63,7 +63,7 @@ public class Domain implements TrackedObject, Cloneable {
             inverseJoinColumns = @JoinColumn(name = "Host_objId"))
     private List<Host> nameServers;
     @Basic
-    private URL registryUrl;
+    private String registryUrl;
     @Embedded
     @AttributeOverride(name = "name",
             column = @Column(name = "whoisServer"))
@@ -199,19 +199,11 @@ public class Domain implements TrackedObject, Cloneable {
         return false;
     }
 
-    final public URL getRegistryUrl() {
+    final public String getRegistryUrl() {
         return registryUrl;
     }
 
-    final public void setRegistryUrl(URL registryUrl) {
-        this.registryUrl = registryUrl;
-    }
-
-    protected URL getDomainRegistryUrl() {
-        return registryUrl;
-    }
-
-    protected void setDomainRegistryUrl(URL registryUrl) {
+    final public void setRegistryUrl(String registryUrl) {
         this.registryUrl = registryUrl;
     }
 
@@ -220,7 +212,7 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public void setWhoisServer(String whoisServer) throws InvalidNameException {
-        this.whoisServer = new Name(whoisServer);
+        this.whoisServer = whoisServer == null ? null : new Name(whoisServer);
     }
 
     final public Set<Breakpoint> getBreakpoints() {
@@ -279,19 +271,30 @@ public class Domain implements TrackedObject, Cloneable {
 
         if (adminContacts != null ? !adminContacts.equals(domain.adminContacts) : domain.adminContacts != null)
             return false;
+        //System.out.println("1: breakpoints");
         if (breakpoints != null ? !breakpoints.equals(domain.breakpoints) : domain.breakpoints != null) return false;
+        //System.out.println("2: name");
         if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
+        //System.out.println("3: name servers");
         if (nameServers != null ? !nameServers.equals(domain.nameServers) : domain.nameServers != null) return false;
+        //System.out.println("4: registry url");
         if (registryUrl != null ? !registryUrl.equals(domain.registryUrl) : domain.registryUrl != null) return false;
+        //System.out.println("5: special instructions");
         if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
             return false;
+        //System.out.println("6: state");
         if (state != domain.state) return false;
+        //System.out.println("7: status");
         if (status != domain.status) return false;
+        //System.out.println("8: so");
         if (supportingOrg != null ? !supportingOrg.equals(domain.supportingOrg) : domain.supportingOrg != null)
             return false;
+        //System.out.println("9: tc");
         if (techContacts != null ? !techContacts.equals(domain.techContacts) : domain.techContacts != null)
             return false;
-        if (trackData != null ? !trackData.equals(domain.trackData) : domain.trackData != null) return false;
+        //System.out.println("10: td");
+        //if (trackData != null ? !trackData.equals(domain.trackData) : domain.trackData != null) return false;
+        //System.out.println("11: whois " + whoisServer);
         if (whoisServer != null ? !whoisServer.equals(domain.whoisServer) : domain.whoisServer != null) return false;
 
         return true;

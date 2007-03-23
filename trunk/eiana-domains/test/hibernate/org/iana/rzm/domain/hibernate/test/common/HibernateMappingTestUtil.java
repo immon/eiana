@@ -62,7 +62,7 @@ public class HibernateMappingTestUtil {
 
     public static Domain setupDomain(Domain domain, String prefix) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
         domain.setName(prefix + domain.getName());
-        domain.setRegistryUrl(new URL("http://" + prefix + "registry.pl"));
+        domain.setRegistryUrl("http://" + prefix + "registry.pl");
         domain.setSpecialInstructions(prefix + " special instructions");
         domain.setState(Domain.State.NO_ACTIVITY);
         domain.setStatus(Domain.Status.NEW);

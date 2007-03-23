@@ -5,6 +5,9 @@ import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.change.ChangeDetector;
+import org.iana.rzm.trans.change.DomainDiffConfiguration;
+import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.ticketing.TicketingService;
 import org.jbpm.JbpmContext;
 import org.jbpm.db.GraphSession;
@@ -47,7 +50,7 @@ public class TransactionManagerBean implements TransactionManager {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
-        td.setActions(createActions(domain));
+        td.setDomainChange((ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, DomainDiffConfiguration.getInstance()));
         ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition(DOMAIN_MODIFICATION_PROCESS));
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
@@ -67,25 +70,6 @@ public class TransactionManagerBean implements TransactionManager {
         List<Transaction> result = new ArrayList<Transaction>();
         for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
         return result;
-    }
-
-    private List<TransactionAction> createActions(Domain domain) {
-        List<TransactionAction> resultList = new ArrayList<TransactionAction>();
-        CheckTool.checkNull(domain, "new domain");
-        Domain originDomain = domainDAO.get(domain.getName());
-        CheckTool.checkNull(originDomain, "origin domain");
-
-        TransactionActionsListBuilder.addSupportingOrganizationAction(domain, originDomain, resultList);
-        TransactionActionsListBuilder.addAdministrationContactsActions(domain, originDomain, resultList);
-        TransactionActionsListBuilder.addTechnicalContactsActions(domain, originDomain, resultList);
-
-        TransactionActionsListBuilder.addWhoisServerAction(domain, originDomain, resultList);
-
-        TransactionActionsListBuilder.addRegisterURLAction(domain, originDomain, resultList);
-
-        TransactionActionsListBuilder.addNSAction(domain, originDomain, resultList);
-
-        return resultList;
     }
 
     //TEMPORARY METHOD, should be deleted later, when JbpmContext & spring problem will be reslowed.

@@ -53,11 +53,11 @@ class SystemDomainVO implements IDomainVO {
         domain.setNameServers(nameServers);
     }
 
-    public URL getRegistryUrl() {
+    public String getRegistryUrl() {
         return domain.getRegistryUrl();
     }
 
-    public void setRegistryUrl(URL registryUrl) {
+    public void setRegistryUrl(String registryUrl) {
         domain.setRegistryUrl(registryUrl);
     }
 
@@ -74,7 +74,7 @@ class SystemDomainVO implements IDomainVO {
     }
 
     public void setBreakpoints(Set<Breakpoint> breakpoints) {
-        throw new AccessDeniedException("system user is not allowed to modify breakpoints");
+        throw new AccessDeniedException("system user is not allowed to createDomainModificationTransaction breakpoints");
     }
 
     public String getSpecialInstructions() {
@@ -82,7 +82,7 @@ class SystemDomainVO implements IDomainVO {
     }
 
     public void setSpecialInstructions(String specialInstructions) {
-        throw new AccessDeniedException("system user is not allowed to modify special instructions");
+        throw new AccessDeniedException("system user is not allowed to createDomainModificationTransaction special instructions");
     }
 
     public Status getStatus() {

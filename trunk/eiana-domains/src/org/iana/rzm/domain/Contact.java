@@ -94,14 +94,25 @@ public class Contact implements TrackedObject,Cloneable {
         CheckTool.checkCollectionNull(phoneNumbers, "addresses");
         this.addresses.clear();
         this.addresses.addAll(addresses);
+        renumberAddresses();
     }
 
     final public void addAddress(Address address) {
+        address.setId(addresses.size());
         this.addresses.add(address);
     }
 
     final public boolean removeAddress(Address address) {
-        return this.addresses.remove(address);
+        boolean ret = this.addresses.remove(address);
+        renumberAddresses();
+        return ret;
+    }
+
+    private void renumberAddresses() {
+        int id = 0;
+        for (Address addr : addresses) {
+            addr.setId(id++);
+        }
     }
 
     final public List<String> getPhoneNumbers() {

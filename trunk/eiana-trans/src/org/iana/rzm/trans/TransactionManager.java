@@ -21,6 +21,8 @@ public interface TransactionManager {
      */
     Transaction getTransaction(long id) throws NoSuchTransactionException;
 
+    // Transaction createTransaction(List<TransactionAction> actions);
+    
     /**
      * Creates a new domain creation transaction.
      *

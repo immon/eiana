@@ -35,6 +35,12 @@
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
         
+        <mapping class="org.iana.rzm.trans.change.Change"/>
+        <mapping class="org.iana.rzm.trans.change.ObjectChange"/>
+        <mapping class="org.iana.rzm.trans.change.CollectionChange"/>
+        <mapping class="org.iana.rzm.trans.change.SimpleChange"/>
+        <mapping class="org.iana.rzm.trans.change.FieldChange"/>
+
         <mapping class="org.iana.rzm.trans.TransactionAction"/>
         <mapping class="org.iana.rzm.trans.TransactionState"/>
         <mapping class="org.iana.rzm.trans.Transaction"/>
@@ -42,14 +48,6 @@
         <mapping class="org.iana.rzm.trans.TransactionData"/>
         <mapping class="org.iana.rzm.trans.StateTransition"/>
         <mapping class="org.iana.rzm.trans.UserConfirmations"/>
-        <mapping class="org.iana.rzm.trans.change.Addition"/>
-        <mapping class="org.iana.rzm.trans.change.AdditionOrRemoval"/>
-        <mapping class="org.iana.rzm.trans.change.Change"/>
-        <mapping class="org.iana.rzm.trans.change.Modification"/>
-        <mapping class="org.iana.rzm.trans.change.ModifiedPrimitiveValue"/>
-        <mapping class="org.iana.rzm.trans.change.ObjectValue"/>
-        <mapping class="org.iana.rzm.trans.change.PrimitiveValue"/>
-        <mapping class="org.iana.rzm.trans.change.Removal"/>
 
 
 

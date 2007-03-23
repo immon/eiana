@@ -16,7 +16,7 @@ public class JbpmTestContextFactory {
                     "             factory='org.jbpm.scheduler.db.DbSchedulerServiceFactory' />" +
                     "  </jbpm-context>" +
                     "  <string name='resource.hibernate.cfg.xml' " +
-                    "          value='eiana-trans.jbpm.hibernate.cfg.xml' />" +
+                    "          value='eiana-trans-hibernate.cfg.xml' />" +
                     "  <string name='resource.business.calendar' " +
                     "          value='org/jbpm/calendar/jbpm.business.calendar.properties' />" +
                     "  <string name='resource.default.modules' " +

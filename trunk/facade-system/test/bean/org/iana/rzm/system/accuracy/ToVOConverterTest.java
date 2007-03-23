@@ -130,7 +130,7 @@ public class ToVOConverterTest {
         fromDomain.addNameServer(fromHost);
         fromDomain.addTechContact(fromContact);
 
-        fromDomain.setRegistryUrl(new URL("http", "tmp.something.org", 80, "/someFile"));
+        fromDomain.setRegistryUrl("http://tmp.something.org:80/someFile");
         fromDomain.setSpecialInstructions("Super Secret Special Instruction Alpha One");
         fromDomain.setState(Domain.State.NO_ACTIVITY);
         fromDomain.setStatus(Domain.Status.ACTIVE);

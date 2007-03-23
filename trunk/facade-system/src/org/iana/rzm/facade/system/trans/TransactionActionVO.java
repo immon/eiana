@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -37,5 +38,10 @@ public class TransactionActionVO {
 
     public void setChange(List<ChangeVO> change) {
         this.change = change;
+    }
+
+    public void addChange(ChangeVO change) {
+        if (this.change == null) this.change = new ArrayList<ChangeVO>();
+        this.change.add(change);
     }
 }

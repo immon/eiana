@@ -17,7 +17,7 @@ public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         Domain domain = (Domain) o;
         domain.setName("changed-" + domain.getName());
-        domain.setRegistryUrl(new URL("http://changed-registry.com"));
+        domain.setRegistryUrl("http://changed-registry.com");
         domain.setSpecialInstructions("changed special instructions");
         domain.setState(Domain.State.OPERATIONS_PENDING);
         domain.setStatus(Domain.Status.ACTIVE);
