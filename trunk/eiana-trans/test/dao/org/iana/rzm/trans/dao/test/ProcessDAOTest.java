@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"dao", "eiana-trans"})
+@Test(sequential = true, groups = {"dao", "eiana-trans"})
 public class ProcessDAOTest {
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
