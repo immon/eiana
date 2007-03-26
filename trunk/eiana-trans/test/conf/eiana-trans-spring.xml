@@ -14,26 +14,6 @@
         <constructor-arg value=""/> <!--Password-->
     </bean>
 
-    <bean id="UpdateDomainTest" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.rzm.trans.JbpmUpdateDomain</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="JbpmUpdateDomainImpl"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
-    </bean>
-
-    <bean id="JbpmUpdateDomainImpl" class="org.iana.rzm.trans.JbpmUpdateDomainImpl">
-    </bean>
-
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAOTarget" />
     </bean>
