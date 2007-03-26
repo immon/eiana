@@ -4,6 +4,11 @@ import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
@@ -13,6 +18,8 @@ import org.iana.rzm.trans.jbpm.JbpmContextFactory;
 import org.iana.rzm.user.RZMUser;
 import org.iana.notifications.EmailAddress;
 import org.iana.notifications.EmailAddresses;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 import java.net.URL;
 import java.io.FileReader;
@@ -22,23 +29,28 @@ import java.util.*;
  * @author Piotr Tkaczyk
  */
 
-public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
+public class JbpmUpdateDomainImpl {
     ApplicationContext appCtx;
     TransactionManager transMgr;
     ProcessDAO processDAO;
     DomainDAO domainDAO;
+    private PlatformTransactionManager txMgr;
+    private TransactionDefinition txDef = new DefaultTransactionDefinition();
 
-    public void setContext(ApplicationContext ctx) {
-        appCtx = ctx;
+    @BeforeTest
+    public void setContext() {
+        appCtx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
-
+        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
     }
 
-    public boolean doUpdate() throws Exception {
+    @Test
+    public void doUpdate() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         processDAO.deploy(getDefinedProcess());
-        processDAO.close();
+
 
         Address address = new Address();
         address.setCity("Warsaw");
@@ -108,10 +120,11 @@ public class JbpmUpdateDomainImpl implements JbpmUpdateDomain{
 
         token.signal("accept");
 
-        Domain retrivedDomain = domainDAO.get(clonedDomain.getName());
+        Domain retrivedDomain = domainDAO.get(domain.getObjId());
 
-        return (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
+        assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
                 retrivedDomain.getRegistryUrl() == null);
+        txMgr.commit(txStatus);
     }
 
     private ProcessDefinition getDefinedProcess() throws Exception {
