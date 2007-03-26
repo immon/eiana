@@ -23,14 +23,12 @@ public class TransactionManagerBean implements TransactionManager {
 
     private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
 
-    private JbpmContext context;
     private ProcessDAO processDAO;
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
 
     public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService) {
         this.processDAO = processDAO;
-        this.context = processDAO.getContext();
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
     }
@@ -52,7 +50,7 @@ public class TransactionManagerBean implements TransactionManager {
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
         td.setDomainChange((ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, DomainDiffConfiguration.getInstance()));
-        ProcessInstance pi = new ProcessInstance(context.getGraphSession().findLatestProcessDefinition(DOMAIN_MODIFICATION_PROCESS));
+        ProcessInstance pi = new ProcessInstance(processDAO.getGraphSession().findLatestProcessDefinition(DOMAIN_MODIFICATION_PROCESS));
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
         return new Transaction(pi);
