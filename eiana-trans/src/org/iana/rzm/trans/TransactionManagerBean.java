@@ -30,12 +30,13 @@ public class TransactionManagerBean implements TransactionManager {
 
     public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService) {
         this.processDAO = processDAO;
+        this.context = processDAO.getContext();
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
-        GraphSession graphSession = context.getGraphSession();
+        GraphSession graphSession = processDAO.getGraphSession();
         ProcessInstance processInstances = graphSession.loadProcessInstance(id);
         if (processInstances == null) throw new NoSuchTransactionException(id);
         Transaction transaction = new Transaction(processInstances);
@@ -71,10 +72,4 @@ public class TransactionManagerBean implements TransactionManager {
         for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
         return result;
     }
-
-    //TEMPORARY METHOD, should be deleted later, when JbpmContext & spring problem will be reslowed.
-    public void setJBPMContext(JbpmContext ctx) {
-        this.context = ctx;
-    }
-
 }
