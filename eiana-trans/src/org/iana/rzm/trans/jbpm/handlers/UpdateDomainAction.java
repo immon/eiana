@@ -17,7 +17,7 @@ public class UpdateDomainAction implements ActionHandler {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
 
-        Domain retrievedDomain = domainManager.get(td.getCurrentDomain().getName());
+        Domain retrievedDomain = domainManager.get(td.getCurrentDomain().getObjId());
 
         ObjectChange change = td.getDomainChange();
         ChangeApplicator.applyChange(retrievedDomain, change, DomainDiffConfiguration.getInstance());
