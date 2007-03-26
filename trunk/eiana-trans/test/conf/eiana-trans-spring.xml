@@ -203,4 +203,32 @@
         <constructor-arg index="0" ref="jbpmContextFactory"/>
     </bean>
     -->
+
+    <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
+        <constructor-arg ref="userDAO" />
+    </bean>
+
+    <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.user.dao.UserDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="userDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="userDAOTarget" class="org.iana.rzm.user.dao.HibernateUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
 </beans>
