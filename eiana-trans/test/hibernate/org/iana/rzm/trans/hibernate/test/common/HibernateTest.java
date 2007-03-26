@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.iana.rzm.trans.conf.SpringApplicationContext;
 
 /**
  * @author Jakub Laszkiewicz
@@ -20,7 +21,7 @@ abstract public class HibernateTest {
 
     @BeforeClass
     public void init() {
-        sessionFactory = (SessionFactory) new ClassPathXmlApplicationContext("eiana-trans-spring.xml").getBean("sessionFactory");        
+        sessionFactory = (SessionFactory) SpringApplicationContext.getInstance().getContext().getBean("sessionFactory");
     }
 
     protected void begin() {
