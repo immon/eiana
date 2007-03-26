@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileNotFoundException;
 
-
+@Test(sequential=true, groups = {"transactionManager", "eiana-trans"})
 public class TransactionManagerTest {
 
     TransactionManager transManager;
@@ -54,7 +54,7 @@ public class TransactionManagerTest {
 
     }
 
-    @Test(groups = {"transactionManager,eiana-trans"})
+    @Test
     public void test() throws Exception {
 
         TransactionStatus ts = hibernateTransactionManager.getTransaction(new DefaultTransactionDefinition());
