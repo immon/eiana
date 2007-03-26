@@ -1,14 +1,14 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.trans.change.ObjectChange;
-import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.MapKeyManyToMany;
+import org.iana.rzm.trans.confirmation.Confirmation;
+import org.iana.rzm.trans.confirmation.StateConfirmations;
 
 import javax.persistence.*;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,14 +23,15 @@ public class TransactionData {
     @ManyToOne
     @JoinColumn(name = "currentDomain_objId")
     private Domain currentDomain;
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "domainChange_objId")
     private ObjectChange domainChange;
-    @CollectionOfElements
-    @JoinTable(name = "Transaction_Confirmation_Users",
-            joinColumns = @JoinColumn(name = "UserConfirmations_objId"))
-    @MapKeyManyToMany
-    private Map<String, UserConfirmations> userConfirmations = new HashMap<String, UserConfirmations>();
+    @Transient
+    private Map<String, StateConfirmations> stateConfirmationsMap;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "TransactionData_stateConfirmations",
+            inverseJoinColumns = @JoinColumn(name = "StateConfirmations_objId"))
+    private Set<StateConfirmations> stateConfirmations = new HashSet<StateConfirmations>();
 
     public Long getObjId() {
         return objId;
@@ -64,11 +65,21 @@ public class TransactionData {
         this.domainChange = domainChange;
     }
 
-    public void initUserConfirmations(String stateName, Set<RZMUser> impactedUsers) {
-        userConfirmations.put(stateName, new UserConfirmations(impactedUsers));
+    private Map<String, StateConfirmations> getStateConfirmationsMap() {
+        if (stateConfirmationsMap == null) {
+            stateConfirmationsMap = new HashMap<String, StateConfirmations>();
+            for (StateConfirmations sc : stateConfirmations)
+                stateConfirmationsMap.put(sc.getState(), sc);
+        }
+        return stateConfirmationsMap;
     }
 
-    public UserConfirmations getUserConfirmations(String stateName) {
-        return userConfirmations.get(stateName);
+    public Confirmation getStateConfirmations(String name) {
+        return getStateConfirmationsMap().get(name);
+    }
+
+    public void setStateConfirmations(StateConfirmations stateConfirmations) {
+        this.stateConfirmations.add(stateConfirmations);
+        getStateConfirmationsMap().put(stateConfirmations.getState(), stateConfirmations);
     }
 }

@@ -5,6 +5,7 @@ import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.trans.confirmation.*;
 import org.iana.rzm.trans.change.ObjectChange;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
@@ -122,19 +123,20 @@ public class Transaction implements TrackedObject {
     }
 
     public synchronized void accept(RZMUser user) throws TransactionException {
-        // todo: how to get node name???
-        UserConfirmations uc = getTransactionData().getUserConfirmations("");
-        if (uc != null) {
-            if (uc.getConfirmations().containsKey(user))
-                throw new UserConfirmationNotExpected();
-            if (uc.getConfirmations().get(user))
-                throw new UserAlreadyAccepted();
-            uc.getConfirmations().put(user, true);
-            if (uc.getConfirmations().containsValue(false))
-                return;
+        try {
+            Token token = pi.getRootToken();
+            Node node = token.getNode();
+            Confirmation confirmation = getTransactionData().getStateConfirmations(node.getName());
+            if (confirmation != null) {
+                if (!confirmation.accept(user))
+                    return;
+            }
+            pi.signal(StateTransition.ACCEPT);
+        } catch (AlreadyAcceptedByUser e) {
+            throw new UserAlreadyAccepted(e);
+        } catch (NotAcceptableByUser e) {
+            throw new UserConfirmationNotExpected(e);
         }
-
-        pi.signal(StateTransition.ACCEPT);
     }
 
     public synchronized void reject() {
