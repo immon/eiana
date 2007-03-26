@@ -6,6 +6,8 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.conf.SpringApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -21,6 +23,7 @@ import org.testng.annotations.Test;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.FileNotFoundException;
 
 /**
  * @author Jakub Laszkiewicz
@@ -38,7 +41,7 @@ public class ProcessDAOTest {
 
     @BeforeClass
     public void init() throws InvalidNameException {
-        ApplicationContext appCtx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
+        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
@@ -80,7 +83,7 @@ public class ProcessDAOTest {
 
     private ProcessInstance createTransaction(final Long ticketId, final Domain domain) {
         try {
-            ProcessInstance pi = processDAO.newProcessInstance("process trans test");
+            ProcessInstance pi = processDAO.newProcessInstance(DefinedTestProcess.getProcessName());
             TransactionData td = new TransactionData();
             td.setTicketID(ticketId);
             td.setCurrentDomain(domain);
@@ -130,22 +133,7 @@ public class ProcessDAOTest {
     }
 
     private void deployProcessDefinition() {
-        ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
-                "<process-definition name='process trans test'>" +
-                "  <start-state name='PENDING_IANA_CONFIRMATION_1'>" +
-                "    <transition to='first' />" +
-                "  </start-state>" +
-                "   <task-node name='first'>" +
-                "    <task name='doSth'></task>" +
-                "    <transition name='ok' to='COMPLETED' />" +
-                "    <transition name='reject' to='REJECTED' />" +
-                "  </task-node>" +
-                "  <end-state name='COMPLETED' />" +
-                "  <end-state name='REJECTED' />" +
-                "</process-definition>"
-        );
-
-        processDAO.deploy(processDefinition);
+        processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
     }
 }
