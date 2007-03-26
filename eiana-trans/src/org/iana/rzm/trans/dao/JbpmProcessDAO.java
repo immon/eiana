@@ -16,7 +16,7 @@ public class JbpmProcessDAO implements ProcessDAO {
     private JbpmContextFactory jbpmContextFactory;
     private JbpmContext jbpmContext;
 
-    public JbpmContext getContext() {
+    private JbpmContext getContext() {
         if (jbpmContext == null)
             jbpmContext = jbpmContextFactory.getJbpmContext();
         return jbpmContext;
