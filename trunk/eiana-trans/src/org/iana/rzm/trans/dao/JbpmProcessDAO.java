@@ -3,6 +3,7 @@ package org.iana.rzm.trans.dao;
 import org.hibernate.Query;
 import org.iana.rzm.trans.jbpm.JbpmContextFactory;
 import org.jbpm.JbpmContext;
+import org.jbpm.db.GraphSession;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
@@ -15,7 +16,7 @@ public class JbpmProcessDAO implements ProcessDAO {
     private JbpmContextFactory jbpmContextFactory;
     private JbpmContext jbpmContext;
 
-    private JbpmContext getContext() {
+    public JbpmContext getContext() {
         if (jbpmContext == null)
             jbpmContext = jbpmContextFactory.getJbpmContext();
         return jbpmContext;
@@ -65,5 +66,9 @@ public class JbpmProcessDAO implements ProcessDAO {
         if (jbpmContext == null) return;
         jbpmContext.close();
         jbpmContext = null;
+    }
+
+    public GraphSession getGraphSession() {
+        return jbpmContext.getGraphSession();
     }
 }
