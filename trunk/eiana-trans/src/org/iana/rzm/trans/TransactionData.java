@@ -23,7 +23,7 @@ public class TransactionData {
     @ManyToOne
     @JoinColumn(name = "currentDomain_objId")
     private Domain currentDomain;
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn(name = "domainChange_objId")
     private ObjectChange domainChange;
     @CollectionOfElements
