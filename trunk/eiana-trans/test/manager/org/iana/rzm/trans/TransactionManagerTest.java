@@ -9,10 +9,11 @@ import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.change.ObjectChange;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -21,6 +22,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileNotFoundException;
 
 
 public class TransactionManagerTest {
@@ -29,14 +31,16 @@ public class TransactionManagerTest {
     DomainDAO domainDAO;
     JbpmConfiguration jbpmConfig;
     HibernateTransactionManager hibernateTransactionManager;    
+    ProcessDAO processDAO;
 
     @BeforeClass
-    public void init() throws InvalidIPAddressException, NameServerAlreadyExistsException {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
+    public void init() throws InvalidIPAddressException, NameServerAlreadyExistsException, FileNotFoundException {
+        ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
+        processDAO = (ProcessDAO) ctx.getBean("processDAO");
+        processDAO.deploy(DefinedTestProcess.getDefinition());
         domainDAO = (DomainDAO) ctx.getBean("domainDAOTarget");
         transManager = (TransactionManager) ctx.getBean("transactionManagerBean");//new TransactionManagerBean(JbpmTestContextFactory.getJbpmContext(),transDAO,new FakeTicketingService(),domainDAO);
         hibernateTransactionManager = (HibernateTransactionManager) ctx.getBean("transactionManager");
-        transManager.setJBPMContext(JbpmTestContextFactory.getJbpmContext());
         Domain domainCreated = new Domain("trans-manager.org");
         List<Host> nameServersList = new ArrayList<Host>();
         Host host = new Host("ns.nask.pl");
@@ -47,7 +51,6 @@ public class TransactionManagerTest {
         nameServersList.add(host);
         domainCreated.setNameServers(nameServersList);
         domainDAO.create(domainCreated);
-        deployProcessDefinition();
 
     }
 
@@ -89,29 +92,5 @@ public class TransactionManagerTest {
 */
         //tcv.printVisitedchanges();
 
-    }
-
-     private void deployProcessDefinition() {
-        ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
-                "<process-definition name='process trans test'>" +
-                        "  <start-state name='PENDING_IANA_CONFIRMATION'>" +
-                        "    <transition to='first' />" +
-                        "  </start-state>" +
-                        "   <task-node name='first'>" +
-                            "    <task name='doSmth'></task>" +
-                            "    <transition name='ok' to='COMPLETED' />" +
-                            "    <transition name='reject' to='REJECTED' />" +
-                            "  </task-node>" +
-                        "  <end-state name='COMPLETED' />" +
-                        "  <end-state name='REJECTED' />" +
-                        "</process-definition>"
-        );
-
-        JbpmContext jbpmContext = JbpmTestContextFactory.getJbpmContext();
-        try {
-            jbpmContext.deployProcessDefinition(processDefinition);
-        } finally {
-            jbpmContext.close();
-        }
     }
 }
