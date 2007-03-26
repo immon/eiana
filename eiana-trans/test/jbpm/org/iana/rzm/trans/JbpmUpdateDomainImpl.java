@@ -15,6 +15,8 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Address;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.jbpm.JbpmContextFactory;
+import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
 import org.iana.notifications.EmailAddress;
 import org.iana.notifications.EmailAddresses;
@@ -39,7 +41,7 @@ public class JbpmUpdateDomainImpl {
 
     @BeforeTest
     public void setContext() {
-        appCtx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
+        appCtx = SpringApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
@@ -49,7 +51,7 @@ public class JbpmUpdateDomainImpl {
     @Test
     public void doUpdate() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        processDAO.deploy(getDefinedProcess());
+        processDAO.deploy(DefinedTestProcess.getDefinition());
 
 
         Address address = new Address();
@@ -84,11 +86,9 @@ public class JbpmUpdateDomainImpl {
         clonedDomain.setSupportingOrg(clonedSupportingOrg);
         Contact newContact = new Contact("aaaaaa");
         newContact.addEmail("noContact new emial");
-        clonedDomain.addTechContact(newContact);
-
+        //clonedDomain.addTechContact(newContact);
+        clonedDomain.setTechContacts(new ArrayList<Contact>());
         
-        JbpmContextFactory fact = (JbpmContextFactory) appCtx.getBean("jbpmContextFactory");
-        transMgr.setJBPMContext(fact.getJbpmContext());
         transMgr.createDomainModificationTransaction(clonedDomain);
 
         ProcessInstance procesInstance = processDAO.getProcessInstance(1L);
@@ -125,10 +125,5 @@ public class JbpmUpdateDomainImpl {
         assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
                 retrivedDomain.getRegistryUrl() == null);
         txMgr.commit(txStatus);
-    }
-
-    private ProcessDefinition getDefinedProcess() throws Exception {
-        FileReader fileReader = new FileReader("eiana-trans\\etc\\processes\\domain-modification.xml");
-        return ProcessDefinition.parseXmlReader(fileReader);
     }
 }
