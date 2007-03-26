@@ -15,12 +15,14 @@ public class UpdateDomainAction implements ActionHandler {
     public void execute(org.jbpm.graph.exe.ExecutionContext executionContext) throws java.lang.Exception {
 
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
+        if(td != null) {
+            DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
 
-        Domain retrievedDomain = domainManager.get(td.getCurrentDomain().getObjId());
+            Domain retrievedDomain = domainManager.get(td.getCurrentDomain().getObjId());
 
-        ObjectChange change = td.getDomainChange();
-        ChangeApplicator.applyChange(retrievedDomain, change, DomainDiffConfiguration.getInstance());
-        domainManager.update(retrievedDomain);
+            ObjectChange change = td.getDomainChange();
+            ChangeApplicator.applyChange(retrievedDomain, change, DomainDiffConfiguration.getInstance());
+            domainManager.update(retrievedDomain);
+        }
     }
 }
