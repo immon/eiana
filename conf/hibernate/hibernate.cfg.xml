@@ -23,23 +23,34 @@
         <mapping class="org.iana.rzm.common.TrackData"/>
 
 		<mapping class="org.iana.rzm.domain.Address"/>
-		<mapping class="org.iana.rzm.domain.Contact"/>
-		<mapping class="org.iana.rzm.domain.Domain"/>
-		<mapping class="org.iana.rzm.domain.Host"/>
-		<mapping class="org.iana.rzm.domain.IPv4Address"/>
-		<mapping class="org.iana.rzm.domain.IPv6Address"/>
-
-        <mapping class="org.iana.rzm.user.AdminUser"/>
-        <mapping class="org.iana.rzm.user.MD5Password"/>
-        <mapping class="org.iana.rzm.user.Role"/>
-        <mapping class="org.iana.rzm.user.SystemUser"/>
-        <mapping class="org.iana.rzm.user.RZMUser"/>
+        <mapping class="org.iana.rzm.domain.Contact"/>
+        <mapping class="org.iana.rzm.domain.Domain"/>
+        <mapping class="org.iana.rzm.domain.Host"/>
+        <mapping class="org.iana.rzm.domain.IPv4Address"/>
+        <mapping class="org.iana.rzm.domain.IPv6Address"/>
 
         <mapping class="org.iana.rzm.trans.TransactionAction"/>
         <mapping class="org.iana.rzm.trans.TransactionState"/>
         <mapping class="org.iana.rzm.trans.Transaction"/>
         <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
+        <mapping class="org.iana.rzm.trans.TransactionData"/>
         <mapping class="org.iana.rzm.trans.StateTransition"/>
+        <mapping class="org.iana.rzm.trans.UserConfirmations"/>
+
+        <mapping class="org.iana.rzm.trans.change.Change"/>
+        <mapping class="org.iana.rzm.trans.change.ObjectChange"/>
+        <mapping class="org.iana.rzm.trans.change.CollectionChange"/>
+        <mapping class="org.iana.rzm.trans.change.SimpleChange"/>
+        <mapping class="org.iana.rzm.trans.change.FieldChange"/>
+
+        <mapping class="org.iana.rzm.user.AdminRole"/>
+        <mapping class="org.iana.rzm.user.MD5Password"/>
+        <mapping class="org.iana.rzm.user.Role"/>
+        <mapping class="org.iana.rzm.user.SystemRole"/>
+        <mapping class="org.iana.rzm.user.RZMUser"/>
+
+        <mapping class="org.iana.notifications.EmailAddress" />
+        <mapping class="org.iana.notifications.EmailAddresses" />
 
 
 
