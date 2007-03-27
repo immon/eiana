@@ -42,13 +42,15 @@ public class JbpmUpdateDomainImpl {
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        processDAO.deploy(DefinedTestProcess.getDefinition());
+        processDAO.close();
+        txMgr.commit(txStatus);
     }
 
     @Test
     public void doUpdate() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-
 
         Address address = new Address();
         address.setCity("Warsaw");
@@ -116,12 +118,12 @@ public class JbpmUpdateDomainImpl {
 
         token.signal("accept");        
 
+        processDAO.close();
+        txMgr.commit(txStatus);
+
         Domain retrivedDomain = domainDAO.get(domain.getName());
 
         assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
                 retrivedDomain.getRegistryUrl() == null);
-
-        txMgr.commit(txStatus);
-        processDAO.close();
     }
 }
