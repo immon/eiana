@@ -20,7 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ConfirmationTest {
     private UserDAO userDAO;
 
 
-    @BeforeTest
+    @BeforeClass
     public void setContext() {
         appCtx = SpringApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
@@ -48,20 +48,23 @@ public class ConfirmationTest {
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userDAO = (UserDAO) appCtx.getBean("userDAO");
-        userDAO.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("testdomain", true, true, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("testdomain", true, true, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("testdomain", true, false, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("testdomain", true, false, SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("testdomain", true, false, SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys6", UserManagementTestUtil.createSystemRole("testdomain", false, false, SystemRole.SystemType.TC)));
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        userDAO.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("conftestdomain", true, true, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("conftestdomain", true, true, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("conftestdomain", true, false, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("conftestdomain", true, false, SystemRole.SystemType.TC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("conftestdomain", true, false, SystemRole.SystemType.TC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys6", UserManagementTestUtil.createSystemRole("conftestdomain", false, false, SystemRole.SystemType.TC)));
         userDAO.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
         userDAO.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+        processDAO.deploy(DefinedTestProcess.getDefinition());
+        processDAO.close();
+        txMgr.commit(txStatus);
     }
 
     @Test
     public void doUpdate() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        processDAO.deploy(DefinedTestProcess.getDefinition());
 
         Address address = new Address();
         address.setCity("Warsaw");
@@ -82,7 +85,7 @@ public class ConfirmationTest {
         phones.add("newphone");
         clonedSupportingOrg.setPhoneNumbers(phones);
 
-        Domain domain = new Domain("testdomain");
+        Domain domain = new Domain("conftestdomain");
        // domain.setWhoisServer("oldwhoisserver");
         domain.setRegistryUrl("http://www.oldregistryurl.org");
         domain.setSupportingOrg(supportingOrg);
@@ -113,7 +116,7 @@ public class ConfirmationTest {
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        userDAO.create(UserManagementTestUtil.createUser("sys7", UserManagementTestUtil.createSystemRole("testdomain", true, true, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys7", UserManagementTestUtil.createSystemRole("conftestdomain", true, true, SystemRole.SystemType.AC)));
 
         trans.accept(userDAO.get("user-sys2"));
 
@@ -123,6 +126,7 @@ public class ConfirmationTest {
 
         assert "PENDING_IMPACTED_PARTIES".equals(processInstance.getRootToken().getNode().getName());
 
+        processDAO.close();
         txMgr.commit(txStatus);
     }
 }
