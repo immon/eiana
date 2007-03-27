@@ -1,10 +1,8 @@
 package org.iana.rzm.trans;
 
-import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -14,23 +12,21 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Address;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.jbpm.JbpmContextFactory;
 import org.iana.rzm.trans.conf.SpringApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
 import org.iana.notifications.EmailAddress;
 import org.iana.notifications.EmailAddresses;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.annotations.BeforeClass;
 
-import java.net.URL;
-import java.io.FileReader;
 import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
  */
 
+@Test(sequential=true, groups = {"eiana-trans", "jbpm", "UpdateDomain"})
 public class JbpmUpdateDomainImpl {
     ApplicationContext appCtx;
     TransactionManager transMgr;
@@ -39,7 +35,7 @@ public class JbpmUpdateDomainImpl {
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
 
-    @BeforeTest
+    @BeforeClass
     public void setContext() {
         appCtx = SpringApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
@@ -89,9 +85,9 @@ public class JbpmUpdateDomainImpl {
         //clonedDomain.addTechContact(newContact);
         clonedDomain.setTechContacts(new ArrayList<Contact>());
         
-        transMgr.createDomainModificationTransaction(clonedDomain);
+        Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
 
-        ProcessInstance procesInstance = processDAO.getProcessInstance(1L);
+        ProcessInstance procesInstance = processDAO.getProcessInstance(tr.getTransactionID());
 
         Token token = procesInstance.getRootToken();
         token.signal();
@@ -118,12 +114,14 @@ public class JbpmUpdateDomainImpl {
         procesInstance.getContextInstance().setVariable("EMAIL_ADDRESSES", eMailAddressesList);
 
 
-        token.signal("accept");
+        token.signal("accept");        
 
-        Domain retrivedDomain = domainDAO.get(domain.getObjId());
+        Domain retrivedDomain = domainDAO.get(domain.getName());
 
         assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
                 retrivedDomain.getRegistryUrl() == null);
+
         txMgr.commit(txStatus);
+        processDAO.close();
     }
 }
