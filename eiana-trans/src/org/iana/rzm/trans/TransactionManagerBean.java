@@ -1,7 +1,6 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -9,7 +8,6 @@ import org.iana.rzm.trans.change.ChangeDetector;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.ticketing.TicketingService;
-import org.jbpm.JbpmContext;
 import org.jbpm.db.GraphSession;
 import org.jbpm.graph.exe.ProcessInstance;
 
@@ -34,8 +32,7 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
-        GraphSession graphSession = processDAO.getGraphSession();
-        ProcessInstance processInstances = graphSession.loadProcessInstance(id);
+        ProcessInstance processInstances = processDAO.getProcessInstance(id);
         if (processInstances == null) throw new NoSuchTransactionException(id);
         Transaction transaction = new Transaction(processInstances);
         return transaction;
@@ -50,7 +47,7 @@ public class TransactionManagerBean implements TransactionManager {
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
         td.setDomainChange((ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, DomainDiffConfiguration.getInstance()));
-        ProcessInstance pi = new ProcessInstance(processDAO.getGraphSession().findLatestProcessDefinition(DOMAIN_MODIFICATION_PROCESS));
+        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
         return new Transaction(pi);
