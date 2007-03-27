@@ -18,5 +18,5 @@ public interface ProcessDAO {
     public void deploy(final ProcessDefinition pd);
     public void save(ProcessInstance pi);
     public void close();
-    public GraphSession getGraphSession();
+   // public GraphSession getGraphSession();
 }
