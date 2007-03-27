@@ -9,9 +9,10 @@ import org.testng.annotations.Test;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"accuracy", "eiana-trans", "jbpm","simple", "JbpmTest"})
 public class JbpmTest {
 
-    @Test(groups = {"accuracy", "eiana-trans", "jbpm","simple"})
+    @Test
     public void testSimpleProcess() {
         
         ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
@@ -40,7 +41,7 @@ public class JbpmTest {
         assert processDefinition.getNode("end") == token.getNode();
     }
 
-    @Test(groups = {"accuracy", "eiana-trans", "jbpm","simple"})
+    @Test
     public void testThreeStateProcess() {
         ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
                 "<process-definition>" +
