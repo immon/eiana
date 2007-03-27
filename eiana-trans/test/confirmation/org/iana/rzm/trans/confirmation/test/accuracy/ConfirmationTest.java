@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(sequential = true, groups = {"confirmation", "eiana-trans"})
 public class ConfirmationTest {
     private ApplicationContext appCtx;
     private TransactionManager transMgr;
@@ -99,7 +100,7 @@ public class ConfirmationTest {
 
         Transaction trans = transMgr.createDomainModificationTransaction(clonedDomain);
 
-        ProcessInstance processInstance = processDAO.getProcessInstance(1L);
+        ProcessInstance processInstance = processDAO.getProcessInstance(trans.getTransactionID());
 
         Token token = processInstance.getRootToken();
         token.signal();
