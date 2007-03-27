@@ -28,8 +28,6 @@ public class StateConfirmations implements Confirmation {
     @JoinTable(name = "StateConfirmations_pendingConfirmations",
             inverseJoinColumns = @JoinColumn(name = "Confirmation_objId"))
     private Set<Confirmation> pendingConfirmations = new HashSet<Confirmation>();
-    @Basic
-    private String state;
 
     public void addConfirmation(Confirmation confirmation) {
         pendingConfirmations.add(confirmation);
@@ -69,13 +67,5 @@ public class StateConfirmations implements Confirmation {
 
     public boolean isReceived() {
         return pendingConfirmations == null || pendingConfirmations.isEmpty();
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 }
