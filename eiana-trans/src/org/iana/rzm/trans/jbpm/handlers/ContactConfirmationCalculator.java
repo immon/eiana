@@ -32,7 +32,6 @@ public class ContactConfirmationCalculator implements ActionHandler {
 
         Token token = executionContext.getProcessInstance().getRootToken();
         Node node = token.getNode();
-        sc.setState(node.getName());
-        td.setStateConfirmations(sc);
+        td.setStateConfirmations(node.getName(), sc);
     }
 }
