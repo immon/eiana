@@ -16,17 +16,18 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeTest;
 
 /**
  * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
-@Test(groups={"eiana-trans"})
+@Test(sequential=true, groups={"eiana-trans", "TransactionTest"})
 public class TransactionTest {
 
-    private long transactionId;
+    private long transactionId, transactionId2;
 
-    private long ticketId;
+    private long ticketId, ticketId2;
 
     private ProcessDAO procesDAO;
 
@@ -36,7 +37,7 @@ public class TransactionTest {
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     TransactionStatus txStatus;
 
-    @BeforeClass(groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
+    @BeforeClass (dependsOnGroups = {"JbpmTest"})
     public void init() {
         ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
         procesDAO = (ProcessDAO) ctx.getBean("processDAO");
@@ -46,7 +47,7 @@ public class TransactionTest {
         txStatus = txMgr.getTransaction(txDef);
     }
 
-    @Test(dependsOnGroups = "simple",groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
+    @Test
     public void testTransactionCreation() throws TransactionException {
         ProcessInstance pi = procesDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
         TransactionData td = new TransactionData();
@@ -56,76 +57,78 @@ public class TransactionTest {
         pi.getContextInstance().setVariable("TRACK_DATA",new TrackData());
         pi.signal();
         Transaction transaction = new Transaction(pi);
-        //context.close();
         transactionId = transaction.getTransactionID();
-        //context = procesDAO.getContext();
-        //manager.setJBPMContext(context);
+
+        pi = procesDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
+        td = new TransactionData();
+        ticketId2 = 124L;
+        td.setTicketID(ticketId2);
+        pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
+        pi.getContextInstance().setVariable("TRACK_DATA",new TrackData());
+        pi.signal();
+        Transaction transaction2 = new Transaction(pi);
+        transactionId2  = transaction2.getTransactionID();
+        
+        procesDAO.close();
+        
         Transaction transFromDB = manager.getTransaction(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
+        Transaction transFromDB2 = manager.getTransaction(transactionId2);
+        assert (transFromDB2 != null && transFromDB2.getTransactionID() == transactionId2 && transFromDB2.getTicketID().equals(new Long(ticketId2)));
+
     }
 
-    @Test(dependsOnMethods = ("testTransactionCreation"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
+    @Test(dependsOnMethods = {"testTransactionCreation"})
     public void testTransactionUpdate() throws NoSuchTransactionException {
-        //JbpmContext context = procesDAO.getContext();
-        //manager.setJBPMContext(context);
         Transaction transToUpdate = manager.getTransaction(transactionId);
         assert transToUpdate.getTicketID().equals(new Long(ticketId));
         ticketId = 456L;
         transToUpdate.setTicketID(ticketId);
-        //context.close();
-        //context = procesDAO.getContext();
-        //manager.setJBPMContext(context);
+        procesDAO.close();
         Transaction transFromDB = manager.getTransaction(transactionId);
         assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
-        //context.close();
-       // procesDAO.close();
     }
 
-    @Test(dependsOnMethods = ("testTransactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
+    @Test(dependsOnMethods = {"testTransactionUpdate"})
        public void testTransactionAccept() throws TransactionException {
-           //JbpmContext context = procesDAO.getContext();
-           //manager.setJBPMContext(context);
            Transaction trans = manager.getTransaction(transactionId);
-            
+
            assert trans != null;
            trans.accept(null);
            System.out.println("State:"+trans.getState().getName());
-           assert trans.getState().getName().equals(TransactionState.Name.COMPLETED);           
+           assert trans.getState().getName().equals(TransactionState.Name.COMPLETED);
        }
 
-     @Test(dependsOnMethods = ("testTransactionUpdate"),groups = {"accuracy", "eiana-trans", "jbpm","transaction"})
-       public void testTransactionReject() throws NoSuchTransactionException {
-           //JbpmContext context = procesDAO.getContext();
-           //manager.setJBPMContext(context);
-           Transaction trans = manager.getTransaction(transactionId);
+     @Test(dependsOnMethods = {"testTransactionAccept"})
+      public void testTransactionReject() throws NoSuchTransactionException {
+           Transaction trans = manager.getTransaction(transactionId2);
            assert trans != null;
            trans.reject();
            System.out.println("State:"+trans.getState().getName());
-           assert trans.getState().getName().equals(TransactionState.Name.REJECTED);           
-       }
+           assert trans.getState().getName().equals(TransactionState.Name.REJECTED);
+     }
 
 
        private ProcessDefinition deployProcessDefinition() {
         return ProcessDefinition.parseXmlString(
                 "<process-definition name='Domain Modification Transaction (Unified Workflow)'>\n" +
-                        "    <start-state>\n" +
-                        "        <transition to='first' />\n" +
-                        "    </start-state>\n" +
-                        "   <task-node name='first'>" +
-                            "    <task name='doSmth'></task>" +
-                            "    <transition name='ok' to='COMPLETED' />" +
-                            "    <transition name='reject' to='REJECTED' />" +
-                            "  </task-node>" +
-                        "  <end-state name='COMPLETED' />" +
-                        "  <end-state name='REJECTED' />" +
+                        "   <start-state>\n" +
+                        "       <transition to='first' />\n" +
+                        "   </start-state>\n" +
+                        "   <state name='first'>" +
+                        "       <transition name='accept' to='COMPLETED' />" +
+                        "       <transition name='reject' to='REJECTED' />" +
+                        "   </state>" +
+                        "   <end-state name='COMPLETED' />" +
+                        "   <end-state name='REJECTED' />" +
                         "</process-definition>"
         );
     }
 
     @AfterClass
     public void finish() {
-
-       // procesDAO.close();
+        procesDAO.close();
+        txMgr.commit(txStatus);
     }
 
 }
