@@ -9,10 +9,8 @@ import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -23,7 +21,6 @@ import org.testng.annotations.Test;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.io.FileNotFoundException;
 
 /**
  * @author Jakub Laszkiewicz
@@ -60,7 +57,7 @@ public class ProcessDAOTest {
     */
 
     private void generateTestData() throws InvalidNameException {
-        Domain domain1 = new Domain("testdomain1");
+        Domain domain1 = new Domain("potestdomain1");
         domainDAO.create(domain1);
 
         ProcessInstance pi = createTransaction(1L, domain1);
@@ -70,7 +67,7 @@ public class ProcessDAOTest {
         pi = createTransaction(3L, domain1);
         domain1ProcIds.add(pi.getId());
 
-        Domain domain2 = new Domain("testdomain2");
+        Domain domain2 = new Domain("potestdomain2");
         domainDAO.create(domain2);
 
         pi = createTransaction(11L, domain2);
@@ -101,14 +98,14 @@ public class ProcessDAOTest {
     public void testFindAllProcessInstances() {
         txStatus = txMgr.getTransaction(txDef);
 
-        List<ProcessInstance> dbDomain1Processes = processDAO.findAllProcessInstances("testdomain1");
+        List<ProcessInstance> dbDomain1Processes = processDAO.findAllProcessInstances("potestdomain1");
 
         Set<Long> dbDomain1ProcIds = new HashSet<Long>();
         for (ProcessInstance pi : dbDomain1Processes) dbDomain1ProcIds.add(pi.getId());
 
         assert domain1ProcIds.equals(dbDomain1ProcIds);
 
-        List<ProcessInstance> dbDomain2Processes = processDAO.findAllProcessInstances("testdomain2");
+        List<ProcessInstance> dbDomain2Processes = processDAO.findAllProcessInstances("potestdomain2");
 
         Set<Long> dbDomain2ProcIds = new HashSet<Long>();
         for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
@@ -122,7 +119,7 @@ public class ProcessDAOTest {
     @Test
     public void testTxRollback() {
         txStatus = txMgr.getTransaction(txDef);
-        Domain domain = new Domain("testdomain3");
+        Domain domain = new Domain("potestdomain3");
         domainDAO.create(domain);
         ProcessInstance pi = createTransaction(1L, domain);
         long piId = pi.getId();
@@ -134,6 +131,5 @@ public class ProcessDAOTest {
 
     private void deployProcessDefinition() {
         processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
     }
 }
