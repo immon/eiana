@@ -27,7 +27,7 @@ public class TransactionData {
     private ObjectChange domainChange;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "TransactionData_stateConfirmations",
-            inverseJoinColumns = @JoinColumn(name = "StateConfirmation_objId"))
+            inverseJoinColumns = @JoinColumn(name = "stateConfirmations_objId"))
     @MapKeyManyToMany
     private Map<String, StateConfirmations> stateConfirmations = new HashMap<String, StateConfirmations>();
 
