@@ -67,8 +67,4 @@ public class JbpmProcessDAO implements ProcessDAO {
         jbpmContext.close();
         jbpmContext = null;
     }
-
-    public GraphSession getGraphSession() {
-        return jbpmContext.getGraphSession();
-    }
 }
