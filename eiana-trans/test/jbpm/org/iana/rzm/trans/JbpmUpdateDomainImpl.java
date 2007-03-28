@@ -12,7 +12,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Address;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
 import org.iana.notifications.EmailAddress;
@@ -37,7 +37,7 @@ public class JbpmUpdateDomainImpl {
 
     @BeforeClass
     public void setContext() {
-        appCtx = SpringApplicationContext.getInstance().getContext();
+        appCtx = SpringTransApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");

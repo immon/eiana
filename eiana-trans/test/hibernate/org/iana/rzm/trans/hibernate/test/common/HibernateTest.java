@@ -3,12 +3,9 @@ package org.iana.rzm.trans.hibernate.test.common;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 
 /**
  * @author Jakub Laszkiewicz
@@ -21,7 +18,7 @@ abstract public class HibernateTest {
 
     @BeforeClass
     public void init() {
-        sessionFactory = (SessionFactory) SpringApplicationContext.getInstance().getContext().getBean("sessionFactory");
+        sessionFactory = (SessionFactory) SpringTransApplicationContext.getInstance().getContext().getBean("sessionFactory");
     }
 
     protected void begin() {

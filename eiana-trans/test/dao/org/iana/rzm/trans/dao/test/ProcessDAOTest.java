@@ -7,7 +7,7 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
@@ -38,7 +38,7 @@ public class ProcessDAOTest {
 
     @BeforeClass
     public void init() throws InvalidNameException {
-        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
+        ApplicationContext appCtx = SpringTransApplicationContext.getInstance().getContext();
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");

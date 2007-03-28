@@ -6,17 +6,17 @@ package org.iana.rzm.trans.conf;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SpringApplicationContext {
+public class SpringTransApplicationContext {
 
-    private static SpringApplicationContext instance;
+    private static SpringTransApplicationContext instance;
     private ApplicationContext appCtx;
 
-    private SpringApplicationContext() {
+    private SpringTransApplicationContext() {
     }
 
-    public static SpringApplicationContext getInstance() {
+    public static SpringTransApplicationContext getInstance() {
         if(instance == null)
-            instance = new SpringApplicationContext();
+            instance = new SpringTransApplicationContext();
         return instance;
     }
 

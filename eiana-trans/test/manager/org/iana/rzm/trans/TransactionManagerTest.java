@@ -10,7 +10,7 @@ import org.iana.rzm.domain.*;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.JbpmConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +35,7 @@ public class TransactionManagerTest {
 
     @BeforeClass
     public void init() throws InvalidIPAddressException, NameServerAlreadyExistsException, FileNotFoundException {
-        ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
+        ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
         processDAO = (ProcessDAO) ctx.getBean("processDAO");
         processDAO.deploy(DefinedTestProcess.getDefinition());
         domainDAO = (DomainDAO) ctx.getBean("domainDAOTarget");

@@ -2,12 +2,9 @@ package org.iana.rzm.trans;
 
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.SpringApplicationContext;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.jbpm.JbpmContext;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -16,7 +13,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeTest;
 
 /**
  * @author Jakub Laszkiewicz
@@ -39,7 +35,7 @@ public class TransactionTest {
 
     @BeforeClass (dependsOnGroups = {"JbpmTest"})
     public void init() {
-        ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
+        ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
         procesDAO = (ProcessDAO) ctx.getBean("processDAO");
         manager = (TransactionManager) ctx.getBean("transactionManagerBean");
         procesDAO.deploy(deployProcessDefinition());

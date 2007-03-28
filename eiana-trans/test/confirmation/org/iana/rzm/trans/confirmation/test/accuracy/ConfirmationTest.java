@@ -7,7 +7,7 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.conf.SpringApplicationContext;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.SystemRole;
@@ -42,7 +42,7 @@ public class ConfirmationTest {
 
     @BeforeClass
     public void setContext() {
-        appCtx = SpringApplicationContext.getInstance().getContext();
+        appCtx = SpringTransApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
