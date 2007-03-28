@@ -11,6 +11,7 @@ import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.system.conf.SpringSystemApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"stress", "facade-system", "GuardedSystemDomainService"})
+@Test(sequential=true, groups = {"stress",  "GuardedSystemDomainService"})
 public class GuardedSystemDomainServiceStressTest {
     private static int NUMBER_OF_DOMAINS = 100; //must by changed also in TestSystemUserManagerStress class
     private SystemDomainService gsds;
@@ -29,10 +30,10 @@ public class GuardedSystemDomainServiceStressTest {
 
     @BeforeClass
     public void init() throws Exception {
-        gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainServiceStress");
-        DomainDAO domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
+        gsds = (SystemDomainService) SpringSystemApplicationContext.getInstance().getContext().getBean("GuardedSystemDomainServiceStress");
+        DomainDAO domainDAO = (DomainDAO) SpringSystemApplicationContext.getInstance().getContext().getBean("domainDAO");
         for(int i=0; i<NUMBER_OF_DOMAINS; i++) {
-            Domain domainCreated = new Domain("facadesystemiana"+i+".org");
+            Domain domainCreated = new Domain("stressfacadesystemiana"+i+".org");
             domainCreated.setWhoisServer("whoIsServer"+i);
             domainDAO.create(domainCreated);
             idList.add(domainCreated.getObjId());
@@ -52,7 +53,7 @@ public class GuardedSystemDomainServiceStressTest {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());
         gsds.setUser(testAuthUser.getAuthUser());
         for(int i=0; i<NUMBER_OF_DOMAINS; i++) {
-            DomainVO domainVO = (DomainVO) gsds.getDomain("facadesystemiana"+i+".org");
+            DomainVO domainVO = (DomainVO) gsds.getDomain("stressfacadesystemiana"+i+".org");
         }
     }
 
@@ -73,11 +74,11 @@ public class GuardedSystemDomainServiceStressTest {
         user.setUserName("test");
         for(int i=0; i<NUMBER_OF_DOMAINS; i++) {
             SystemRoleVO role = new SystemRoleVO();
-            role.setName("facadesystemiana"+i+".org");
+            role.setName("stressfacadesystemiana"+i+".org");
             role.setType(SystemRoleVO.SystemType.AC);
             user.addRole(role);
             role = new SystemRoleVO();
-            role.setName("facadesystemiana"+i+".org");
+            role.setName("stressfacadesystemiana"+i+".org");
             role.setType(SystemRoleVO.SystemType.TC);
             user.addRole(role);
         }

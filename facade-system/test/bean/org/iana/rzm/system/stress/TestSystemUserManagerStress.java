@@ -62,12 +62,12 @@ public class TestSystemUserManagerStress implements UserManager {
         try {
             for (int i=0; i<NUMBER_OF_DOMAINS; i++) {
                 SystemRole role = new SystemRole();
-                role.setName("facadesystemiana"+i+".org");
+                role.setName("stressfacadesystemiana"+i+".org");
                 role.setType(SystemRole.SystemType.TC);
                 userCreated.addRole(role);
 
                 role = new SystemRole();
-                role.setName("facadesystemiana"+i+".org");
+                role.setName("stressfacadesystemiana"+i+".org");
                 role.setType(SystemRole.SystemType.AC);
                 userCreated.addRole(role);
             }
