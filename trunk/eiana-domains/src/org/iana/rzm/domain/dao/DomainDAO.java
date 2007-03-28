@@ -15,4 +15,6 @@ public interface DomainDAO {
     public void create(Domain domain);
 
     public void update(Domain domain);
+
+    public void delete(Domain domain);
 }
