@@ -18,8 +18,8 @@ public class PasswordAuthenticatorTest {
 
     @BeforeClass
     public void init() {
-        authService = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("authenticationServiceBean");
-        passwordAuthenticator = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("passwordAuthenticator");
+        authService = (AuthenticationService) SpringCommonApplicationContext.getInstance().getContext().getBean("authenticationServiceBean");
+        passwordAuthenticator = (AuthenticationService) SpringCommonApplicationContext.getInstance().getContext().getBean("passwordAuthenticator");
     }
 
     //Note: expectedExceptions cannot be used because that exception can be throw in multiple places (and in some of them it's ok)
