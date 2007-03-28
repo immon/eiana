@@ -38,4 +38,8 @@ public class HibernateDomainDAO extends HibernateDaoSupport implements DomainDAO
     public void update(final Domain domain) {
         getHibernateTemplate().update(domain);
     }
+    
+    public void delete(Domain domain) {
+        getHibernateTemplate().delete(domain);
+    }
 }
