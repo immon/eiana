@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-domains"})
 public class IPAddressHibernateMappingTest extends HibernateMappingUnitTest<IPAddress> {
     protected IPAddress create() throws InvalidIPAddressException {
         return IPAddress.createIPv4Address("1.2.3.4");
@@ -23,7 +24,7 @@ public class IPAddressHibernateMappingTest extends HibernateMappingUnitTest<IPAd
         return o.getObjId();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains"})
+    @Test
     public void testIPAddress() throws Exception {
         super.test();
     }

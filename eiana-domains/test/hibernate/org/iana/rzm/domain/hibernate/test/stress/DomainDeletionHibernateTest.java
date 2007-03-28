@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-domains","stress"})
 public class DomainDeletionHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         session.delete(o);
@@ -18,7 +19,7 @@ public class DomainDeletionHibernateTest extends HibernateOperationStressTest {
         return session.createCriteria(Domain.class).list();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains","stress"})
+    @Test
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }

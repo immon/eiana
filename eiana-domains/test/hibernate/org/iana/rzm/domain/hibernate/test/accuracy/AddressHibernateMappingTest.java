@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-domains"})
 public class AddressHibernateMappingTest extends HibernateMappingUnitTest<Address> {
     protected Address create() {
         return HibernateMappingTestUtil.setupAddress(new Address(), "created");
@@ -23,7 +24,7 @@ public class AddressHibernateMappingTest extends HibernateMappingUnitTest<Addres
         return o.getObjId();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains"})
+    @Test
     public void testAddress() throws Exception {
         super.test();
     }
