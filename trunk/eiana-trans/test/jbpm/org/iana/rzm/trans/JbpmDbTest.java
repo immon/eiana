@@ -1,60 +1,46 @@
 package org.iana.rzm.trans;
 
 import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
 import org.jbpm.scheduler.impl.SchedulerThread;
-import org.jbpm.db.GraphSession;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.testng.annotations.Test;
-
-import java.util.List;
+import org.testng.annotations.BeforeClass;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Jakub Laszkiewicz
  */
+
+@Test(groups = {"accuracy", "eiana-trans", "jbpm"})
 public class JbpmDbTest {
-    private static final String jbpmConfigurationXml =
-            "<jbpm-configuration>" +
-                    "  <jbpm-context>" +
-                    "    <service name='persistence' " +
-                    "             factory='org.jbpm.persistence.db.DbPersistenceServiceFactory' />" +
-                    "    <service name='scheduler'" +
-                    "             factory='org.jbpm.scheduler.db.DbSchedulerServiceFactory' />" +
-                    "  </jbpm-context>" +
-                    "  <string name='resource.hibernate.cfg.xml' " +
-                    "          value='eiana-trans-hibernate.cfg.xml' />" +
-                    "  <string name='resource.business.calendar' " +
-                    "          value='org/jbpm/calendar/jbpm.business.calendar.properties' />" +
-                    "  <string name='resource.default.modules' " +
-                    "          value='org/jbpm/graph/def/jbpm.default.modules.properties' />" +
-                    "  <string name='resource.converter' " +
-                    "          value='org/jbpm/db/hibernate/jbpm.converter.properties' />" +
-                    "  <string name='resource.action.types' " +
-                    "          value='org/jbpm/graph/action/action.types.xml' />" +
-                    "  <string name='resource.node.types' " +
-                    "          value='org/jbpm/graph/node/node.types.xml' />" +
-                    "  <string name='resource.varmapping' " +
-                    "          value='org/jbpm/context/exe/jbpm.varmapping.xml' />" +
-                    "</jbpm-configuration>";
+    ProcessDAO processDAO;
 
-    private JbpmConfiguration jbpmConfiguration =
-            JbpmConfiguration.parseXmlString(jbpmConfigurationXml);
+    long processId;
 
-    private SchedulerThread schedulerThread = new SchedulerThread(jbpmConfiguration);
-    
+    private SchedulerThread schedulerThread;
+
+    @BeforeClass
+    public void init() {
+        ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
+        processDAO = (ProcessDAO) ctx.getBean("processDAO");
+        processDAO.deploy(getProcessDefinition());
+        schedulerThread = new SchedulerThread((JbpmConfiguration) ctx.getBean("jbpmConfiguration"));
+    }
+
     @Test
     public void testSimplePersistence() throws InterruptedException {
-        deployProcessDefinition();
         beginProcess();
         Thread.sleep(1001L);
         schedulerThread.executeTimers();
         finishProcess();
     }
 
-    private void deployProcessDefinition() {
-        ProcessDefinition processDefinition = ProcessDefinition.parseXmlString(
+    private ProcessDefinition getProcessDefinition() {
+         return ProcessDefinition.parseXmlString(
                 "<process-definition name='jbpm db test'>" +
                         "  <start-state name='start'>" +
                         "    <transition to='first' />" +
@@ -72,61 +58,27 @@ public class JbpmDbTest {
                         "  <end-state name='end' />" +
                         "</process-definition>"
         );
-
-        JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-        try {
-            jbpmContext.deployProcessDefinition(processDefinition);
-        } finally {
-            jbpmContext.close();
-        }
     }
 
     private void beginProcess() throws InterruptedException {
-        JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-        try {
-            GraphSession graphSession = jbpmContext.getGraphSession();
+        ProcessInstance processInstance = processDAO.newProcessInstance("jbpm db test");
+        processId = processInstance.getId();
+        Token token = processInstance.getRootToken();
+        assert "start".equals(token.getNode().getName());
 
-            ProcessDefinition processDefinition =
-                    graphSession.findLatestProcessDefinition("jbpm db test");
-
-            ProcessInstance processInstance =
-                    new ProcessInstance(processDefinition);
-
-            Token token = processInstance.getRootToken();
-            assert "start".equals(token.getNode().getName());
-
-            token.signal();
-            assert "first".equals(token.getNode().getName());
-
-            jbpmContext.save(processInstance);
-        } finally {
-            jbpmContext.close();
-        }
+        token.signal();
+        assert "first".equals(token.getNode().getName());
+        processDAO.close();
     }
 
     private void finishProcess() {
-        JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-        try {
-            GraphSession graphSession = jbpmContext.getGraphSession();
+        ProcessInstance processInstance = processDAO.getProcessInstance(processId);
 
-            ProcessDefinition processDefinition =
-                    graphSession.findLatestProcessDefinition("jbpm db test");
+        Token token = processInstance.getRootToken();
+        assert "second".equals(token.getNode().getName());
 
-            List processInstances =
-                    graphSession.findProcessInstances(processDefinition.getId());
-
-            ProcessInstance processInstance =
-                    (ProcessInstance) processInstances.get(0);
-
-            Token token = processInstance.getRootToken();
-            assert "second".equals(token.getNode().getName());
-
-            processInstance.signal();
-            assert processInstance.hasEnded();
-
-            jbpmContext.save(processInstance);
-        } finally {
-            jbpmContext.close();
-        }
+        processInstance.signal();
+        assert processInstance.hasEnded();
+        processDAO.close();
     }
 }
