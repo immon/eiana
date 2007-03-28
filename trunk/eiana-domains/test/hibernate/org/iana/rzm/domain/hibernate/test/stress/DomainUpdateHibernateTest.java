@@ -13,6 +13,7 @@ import java.net.URL;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-domains","stress"})
 public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         Domain domain = (Domain) o;
@@ -38,7 +39,7 @@ public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
         return session.createCriteria(Domain.class).list();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains","stress"})
+    @Test
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }

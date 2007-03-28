@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.conf.SpringDomainsApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
@@ -18,7 +19,7 @@ public class DomainDAOTest {
 
     @BeforeClass
     public void init() {
-        dao = (DomainDAO) new ClassPathXmlApplicationContext("eiana-domains-spring.xml").getBean("domainDAO");
+        dao = (DomainDAO) SpringDomainsApplicationContext.getInstance().getContext().getBean("domainDAO");
     }
 
     @Test

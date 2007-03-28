@@ -13,6 +13,7 @@ import java.net.URL;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-domains"})
 public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain> {
     protected Domain create() throws Exception {
         return HibernateMappingTestUtil.setupDomain(new Domain("iana.org"));
@@ -41,7 +42,7 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         return o.getObjId();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains"})
+    @Test
     public void testDomain() throws Exception {
         super.test();
     }

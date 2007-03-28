@@ -11,6 +11,7 @@ import java.util.ArrayList;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-domains","stress"})
 public class DomainCreationHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         session.save(HibernateMappingTestUtil.setupDomain(new Domain((String) o)));
@@ -23,17 +24,17 @@ public class DomainCreationHibernateTest extends HibernateOperationStressTest {
         return result;
     }
 
-    @Test(groups = {"hibernate", "eiana-domains","stress"})
+    @Test
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains","stress"})
+    @Test
     public void manyTransactions() throws Exception {
         super.manyTransactions();
     }
 
-    @Test(groups = {"hibernate", "eiana-domains","stress"})
+    @Test
     public void manySessions() throws Exception {
         super.manySessions();
     }
