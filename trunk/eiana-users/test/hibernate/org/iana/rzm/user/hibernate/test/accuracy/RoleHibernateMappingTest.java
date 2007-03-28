@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-user"})
 public class RoleHibernateMappingTest extends HibernateMappingUnitTest<SystemRole> {
     protected SystemRole create() throws Exception {
         return HibernateMappingTestUtil.setupRole(new SystemRole(), "created", true);
@@ -25,7 +26,7 @@ public class RoleHibernateMappingTest extends HibernateMappingUnitTest<SystemRol
         return o.getObjId();
     }
 
-    @Test(groups = {"hibernate", "eiana-user"})
+    @Test
     public void testRole() throws Exception {
         super.test();
     }

@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.iana.rzm.user.conf.SpringUsersApplicationContext;
 
 /**
  * @author Jakub Laszkiewicz
@@ -18,7 +19,7 @@ abstract public class HibernateTest {
 
     @BeforeClass
     public void init() {
-        sessionFactory = new AnnotationConfiguration().configure("eiana-users-hibernate.cfg.xml").buildSessionFactory();
+        sessionFactory = (SessionFactory) SpringUsersApplicationContext.getInstance().getContext().getBean("sessionFactory");
     }
 
     protected void begin() {
