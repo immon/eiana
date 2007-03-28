@@ -127,6 +127,8 @@
         </property>
     </bean>
 
+    <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory" />
+
     <bean id="jbpmConfiguration"
           class="org.jbpm.JbpmConfiguration">
         <constructor-arg index="0" ref="jbpmObjectFactory"/>
@@ -137,6 +139,9 @@
             <map>
                 <entry key="persistence">
                     <ref local="dbService"/>
+                </entry>
+                <entry key="scheduler">
+                    <ref local="scheduler"/>
                 </entry>
             </map>
         </constructor-arg>
