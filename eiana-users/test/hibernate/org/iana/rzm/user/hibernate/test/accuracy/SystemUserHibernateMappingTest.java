@@ -12,6 +12,7 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-user"})
 public class SystemUserHibernateMappingTest extends HibernateMappingUnitTest<RZMUser> {
     protected RZMUser create() throws Exception {
         RZMUser systemUser = HibernateMappingTestUtil.setupUser(new RZMUser(), "created", true);
@@ -31,7 +32,7 @@ public class SystemUserHibernateMappingTest extends HibernateMappingUnitTest<RZM
         return o.getObjId();
     }
 
-    @Test(groups = {"hibernate", "eiana-user"})
+    @Test
     public void testSystemUser() throws Exception {
         super.test();
     }

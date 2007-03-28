@@ -1,6 +1,7 @@
 package org.iana.rzm.user.dao.accuracy;
 
 import org.iana.rzm.user.*;
+import org.iana.rzm.user.conf.SpringUsersApplicationContext;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +20,7 @@ import java.util.Set;
 /**
  * @author Piotr Tkaczyk
  */
-@Test (sequential=true, groups = {"UserManagerBean", "dao", "eiana-users"})
+@Test (sequential=true, groups = {"UserManagerBean", "dao", "eiana-users", "user"})
 public class UserManagerBeanAccuracyTest {
     UserManager manager;
     Long        userId;
@@ -29,7 +30,7 @@ public class UserManagerBeanAccuracyTest {
 
     @BeforeClass
     public void init() {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("eiana-users-spring.xml");
+        ApplicationContext ctx = SpringUsersApplicationContext.getInstance().getContext();
         manager = (UserManager) ctx.getBean("userManager");
         dao = (UserDAO) ctx.getBean("userDAO");
         txMgr = (PlatformTransactionManager) ctx.getBean("transactionManager");
@@ -38,49 +39,35 @@ public class UserManagerBeanAccuracyTest {
     @Test
     public void testCreateUser() {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        RZMUser userCreated = new RZMUser();
-        userCreated.setFirstName("Ivan");
-        userCreated.setLastName("Delphin");
-        userCreated.setLoginName("ivan123");
-        userCreated.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+        RZMUser userCreated = UserManagementTestUtil.createUser("ivan123", UserManagementTestUtil.createSystemRole("Test", true, true, SystemRole.SystemType.AC));
         manager.create(userCreated);
         userId = userCreated.getObjId();
         RZMUser userRetrieved = manager.get(userId);
-
-        assert userRetrieved.getFirstName().equals("Ivan");
-        assert userRetrieved.getLastName().equals("Delphin");
+        assert userRetrieved.getFirstName().equals("fnivan123");
+        assert userRetrieved.getLastName().equals("lnivan123");
+        assert userRetrieved.getLoginName().equals("user-ivan123");
         txMgr.commit(txStatus);
     }
 
     @Test(dependsOnMethods = {"testCreateUser"})
     public void testGetUserById() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        RZMUser userRetrived = manager.get(userId);
-        assert userRetrived != null;
-        assert userRetrived.getRoles().size() == 1;
-        Role role = userRetrived.getRoles().iterator().next();
-        assert role instanceof AdminRole;
-        AdminRole ar = (AdminRole) role;
-        assert AdminRole.AdminType.GOV_OVERSIGHT.equals(ar.getType());
-        assert userRetrived.getFirstName().equals("Ivan");
-        assert userRetrived.getLastName().equals("Delphin");
-        assert userRetrived.getLoginName().equals("ivan123");
+        RZMUser userRetrieved = manager.get(userId);
+        assert userRetrieved != null;
+        assert userRetrieved.getFirstName().equals("fnivan123");
+        assert userRetrieved.getLastName().equals("lnivan123");
+        assert userRetrieved.getLoginName().equals("user-ivan123");
         txMgr.commit(txStatus);
     }
 
     @Test(dependsOnMethods = {"testGetUserById"})
     public void testGetUserByName() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        RZMUser userRetrived = manager.get("ivan123");
-        assert userRetrived != null;
-        assert userRetrived.getRoles().size() == 1;
-        Role role = userRetrived.getRoles().iterator().next();
-        assert role instanceof AdminRole;
-        AdminRole ar = (AdminRole) role;
-        assert AdminRole.AdminType.GOV_OVERSIGHT.equals(ar.getType());
-        assert userRetrived.getFirstName().equals("Ivan");
-        assert userRetrived.getLastName().equals("Delphin");
-        assert userRetrived.getLoginName().equals("ivan123");
+        RZMUser userRetrieved = manager.get("user-ivan123");
+        assert userRetrieved != null;
+        assert userRetrieved.getFirstName().equals("fnivan123");
+        assert userRetrieved.getLastName().equals("lnivan123");
+        assert userRetrieved.getLoginName().equals("user-ivan123");
         txMgr.commit(txStatus);
     }
 

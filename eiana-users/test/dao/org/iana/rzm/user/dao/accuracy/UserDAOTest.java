@@ -6,6 +6,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.user.conf.SpringUsersApplicationContext;
 import org.iana.rzm.common.TrackData;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.Test;
@@ -24,7 +25,7 @@ import java.sql.Timestamp;
  * @author Marcin Zajaczkowski
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"dao", "eiana-users", "UserDAOTest"})
+@Test(sequential=true, groups = {"dao", "eiana-users", "UserDAOTest", "user"})
 public class UserDAOTest {
 
     private UserDAO dao;
@@ -32,7 +33,7 @@ public class UserDAOTest {
 
     @BeforeClass
     public void init() {
-        dao = (UserDAO) new ClassPathXmlApplicationContext("eiana-users-spring.xml").getBean("userDAO");
+        dao = (UserDAO) SpringUsersApplicationContext.getInstance().getContext().getBean("userDAO");
     }
 
     @Test
@@ -72,32 +73,32 @@ public class UserDAOTest {
 
     @Test
     public void testFindUsersInRole() {
-        dao.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
-        dao.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", false, false, SystemRole.SystemType.SO)));
-        dao.create(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        dao.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+        dao.create(UserManagementTestUtil.createUser("DAOsys1", UserManagementTestUtil.createSystemRole("DAOaaa", true, true, SystemRole.SystemType.AC)));
+        dao.create(UserManagementTestUtil.createUser("DAOsys2", UserManagementTestUtil.createSystemRole("DAOaaa", true, false, SystemRole.SystemType.TC)));
+        dao.create(UserManagementTestUtil.createUser("DAOsys3", UserManagementTestUtil.createSystemRole("DAOaaa", false, false, SystemRole.SystemType.SO)));
+        dao.create(UserManagementTestUtil.createUser("DAOsys4", UserManagementTestUtil.createSystemRole("DAOaaa", true, true, SystemRole.SystemType.TC)));
+        dao.create(UserManagementTestUtil.createUser("DAOadmin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        dao.create(UserManagementTestUtil.createUser("DAOadmin2", new AdminRole(AdminRole.AdminType.IANA)));
 
-        List<RZMUser> result = dao.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
+        List<RZMUser> result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.AC, true, true);
         assert result.size() == 1;
         RZMUser user = result.iterator().next();
-        assert "user-sys1".equals(user.getLoginName());
+        assert "user-DAOsys1".equals(user.getLoginName());
 
-        result = dao.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, false);
+        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.TC, true, false);
         assert result.size() == 2;
         Set<String> loginNames = new HashSet<String>();
         for (RZMUser u : result) loginNames.add(u.getLoginName());
-        assert loginNames.contains("user-sys2") && loginNames.contains("user-sys4");
+        assert loginNames.contains("user-DAOsys2") && loginNames.contains("user-DAOsys4");
 
-        result = dao.findUsersInSystemRole("aaa", SystemRole.SystemType.SO, false, false);
+        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.SO, false, false);
         assert result.size() == 1;
         user = result.iterator().next();
-        assert "user-sys3".equals(user.getLoginName());
+        assert "user-DAOsys3".equals(user.getLoginName());
 
-        result = dao.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, true);
+        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.TC, true, true);
         assert result.size() == 1;
         user = result.iterator().next();
-        assert "user-sys4".equals(user.getLoginName());
+        assert "user-DAOsys4".equals(user.getLoginName());
     }
 }
