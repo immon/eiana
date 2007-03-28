@@ -2,6 +2,7 @@ package org.iana.rzm.system.accuracy;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.facade.system.domain.DomainVO;
@@ -11,7 +12,7 @@ import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.iana.rzm.system.conf.SpringSystemApplicationContext;
 
 import java.util.*;
 
@@ -27,20 +28,22 @@ public class GuardedSystemDomainServiceTest {
     private long domainId1;
     Set<String> domainNames = new HashSet<String>();
 
+    Domain domain1, domain2;
+
     @BeforeClass
     public void init() throws Exception{
-        gsds = (SystemDomainService) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("GuardedSystemDomainService");
-        domainDAO = (DomainDAO) new ClassPathXmlApplicationContext("spring-facade-system.xml").getBean("domainDAO");
+        gsds = (SystemDomainService) SpringSystemApplicationContext.getInstance().getContext().getBean("GuardedSystemDomainService");
+        domainDAO = (DomainDAO) SpringSystemApplicationContext.getInstance().getContext().getBean("domainDAO");
               
-        Domain domainCreated = new Domain("facadesystemiana.org");
-            domainDAO.create(domainCreated);
-            domainId = domainCreated.getObjId();
-            domainNames.add(domainCreated.getName());
+        domain1 = new Domain("facadesystemiana.org");
+        domainDAO.create(domain1);
+        domainId = domain1.getObjId();
+        domainNames.add(domain1.getName());
 
-        domainCreated = new Domain("facadesystemiana1.org");
-            domainDAO.create(domainCreated);
-            domainId1 = domainCreated.getObjId();
-            domainNames.add(domainCreated.getName());
+        domain2 = new Domain("facadesystemiana1.org");
+        domainDAO.create(domain2);
+        domainId1 = domain2.getObjId();
+        domainNames.add(domain2.getName());
     }
 
     @Test
@@ -113,6 +116,12 @@ public class GuardedSystemDomainServiceTest {
             assert retrivedNames.add(simpleDomainVO.getName());
 
         assert domainNames.equals(retrivedNames);
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        domainDAO.delete(domain1);
+        domainDAO.delete(domain2);
     }
 
     private UserVO generateUser() {
