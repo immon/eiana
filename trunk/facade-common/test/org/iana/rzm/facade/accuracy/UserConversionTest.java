@@ -24,6 +24,7 @@ import java.sql.Timestamp;
  *
  * @author Marcin Zajaczkowski
  */
+@Test(groups = {"facade", "facade-common", "UserConversion"})
 public class UserConversionTest {
 
     @BeforeClass

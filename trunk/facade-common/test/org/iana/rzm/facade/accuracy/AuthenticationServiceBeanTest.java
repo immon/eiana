@@ -17,7 +17,7 @@ public class AuthenticationServiceBeanTest {
 
     @BeforeClass
     public void init() {
-        authService = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("authenticationServiceBean");
+        authService = (AuthenticationService) SpringCommonApplicationContext.getInstance().getContext().getBean("authenticationServiceBean");
     }
 
     @Test

@@ -18,8 +18,8 @@ public class SecurIDAuthenticatorTest {
 
     @BeforeClass
     public void init() {
-        authService = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("authenticationServiceBean");
-        securIDAuthenticator = (AuthenticationService) new ClassPathXmlApplicationContext("spring-facade-common.xml").getBean("securIDAuthenticator");
+        authService = (AuthenticationService) SpringCommonApplicationContext.getInstance().getContext().getBean("authenticationServiceBean");
+        securIDAuthenticator = (AuthenticationService) SpringCommonApplicationContext.getInstance().getContext().getBean("securIDAuthenticator");
     }
 
     @Test (expectedExceptions = {ClassCastException.class})
