@@ -23,8 +23,6 @@
     <exclude name="**/.svn/**"/>
     <exclude name="**/vssver.scc/**"/>
     <exclude name="**/vssver2.scc/**"/>
-    <exclude name="**/.sbas/**"/>
-    <exclude name="**/.IJI.*/**"/>
   </patternset>
   <patternset id="compiler.resources">
     <include name="**/?*.properties"/>
@@ -37,6 +35,29 @@
     <include name="**/?*.dtd"/>
     <include name="**/?*.tld"/>
   </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.5" value="${jdk.home.1.5}/bin"/>
+  <path id="jdk.classpath.1.5">
+    <fileset dir="${jdk.home.1.5}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.5}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.5}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.5"/>
   
   
   <!-- Project Libraries -->
@@ -103,47 +124,53 @@
     <pathelement location="${basedir}/lib/mysql/mysql-connector-java-5.0.4-bin.jar"/>
   </path>
   
+  <path id="library.util.classpath">
+    <pathelement location="${basedir}/lib/nask-commons/util.jar"/>
+  </path>
   
-  <!-- Global Libraries -->
+  <path id="library.dynaxml.classpath">
+    <pathelement location="${basedir}/lib/nask-commons/dynaxml.jar"/>
+  </path>
   
-  
-  <!-- Application Server Libraries -->
+  <path id="library.jdom.classpath">
+    <pathelement location="${basedir}/lib/jdom/jdom.jar"/>
+  </path>
   
   <!-- Modules -->
+  
+  <import file="${basedir}/integration-rt/module_integration-rt.xml"/>
+  
+  <import file="${basedir}/integration-securid/module_integration-securid.xml"/>
+  
+  <import file="${basedir}/eiana-dns/module_eiana-dns.xml"/>
+  
+  <import file="${basedir}/eiana-logs/module_eiana-logs.xml"/>
   
   <import file="${basedir}/conf/module_conf.xml"/>
   
   <import file="${basedir}/tests/module_tests.xml"/>
   
-  <import file="${basedir}/eiana-logs/module_eiana-logs.xml"/>
-  
-  <import file="${basedir}/eiana-notifications/module_eiana-notifications.xml"/>
-  
-  <import file="${basedir}/integration-securid/module_integration-securid.xml"/>
-  
-  <import file="${basedir}/integration-rt/module_integration-rt.xml"/>
-  
   <import file="${basedir}/eiana-util/module_eiana-util.xml"/>
-  
-  <import file="${basedir}/eiana-users/module_eiana-users.xml"/>
-  
-  <import file="${basedir}/facade-common/module_facade-common.xml"/>
-  
-  <import file="${basedir}/facade-admin/module_facade-admin.xml"/>
   
   <import file="${basedir}/eiana-domains/module_eiana-domains.xml"/>
   
+  <import file="${basedir}/eiana-notifications/module_eiana-notifications.xml"/>
+  
+  <import file="${basedir}/eiana-users/module_eiana-users.xml"/>
+  
   <import file="${basedir}/eiana-trans/module_eiana-trans.xml"/>
+  
+  <import file="${basedir}/facade-common/module_facade-common.xml"/>
   
   <import file="${basedir}/facade-system/module_facade-system.xml"/>
   
-  <import file="${basedir}/eiana-dns/module_eiana-dns.xml"/>
+  <import file="${basedir}/facade-admin/module_facade-admin.xml"/>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.conf, clean.module.tests, clean.module.eiana-logs, clean.module.eiana-notifications, clean.module.integration-securid, clean.module.integration-rt, clean.module.eiana-util, clean.module.eiana-users, clean.module.facade-common, clean.module.facade-admin, clean.module.eiana-domains, clean.module.eiana-trans, clean.module.facade-system, clean.module.eiana-dns" description="cleanup all"/>
+  <target name="clean" depends="clean.module.integration-rt, clean.module.integration-securid, clean.module.eiana-dns, clean.module.eiana-logs, clean.module.conf, clean.module.tests, clean.module.eiana-util, clean.module.eiana-domains, clean.module.eiana-notifications, clean.module.eiana-users, clean.module.eiana-trans, clean.module.facade-common, clean.module.facade-system, clean.module.facade-admin" description="cleanup all"/>
   
-  <target name="all" depends="init, clean, compile.module.conf, compile.module.tests, compile.module.eiana-logs, compile.module.eiana-notifications, compile.module.integration-securid, compile.module.integration-rt, compile.module.eiana-util, compile.module.eiana-users, compile.module.facade-common, compile.module.facade-admin, compile.module.eiana-domains, compile.module.eiana-trans, compile.module.facade-system, compile.module.eiana-dns" description="build all"/>
+  <target name="all" depends="init, clean, compile.module.integration-rt, compile.module.integration-securid, compile.module.eiana-dns, compile.module.eiana-logs, compile.module.conf, compile.module.tests, compile.module.eiana-util, compile.module.eiana-domains, compile.module.eiana-notifications, compile.module.eiana-users, compile.module.eiana-trans, compile.module.facade-common, compile.module.facade-system, compile.module.facade-admin" description="build all"/>
 </project>
