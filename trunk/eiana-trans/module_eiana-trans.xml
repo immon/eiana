@@ -2,6 +2,9 @@
 <project name="module_eiana-trans" default="compile.module.eiana-trans">
   <dirname property="module.eiana-trans.basedir" file="${ant.file.module_eiana-trans}"/>
   
+  <property name="module.jdk.home.eiana-trans" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-trans" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-trans" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-trans" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="eiana-trans.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-trans}"/>
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
@@ -32,6 +36,8 @@
     <pathelement location="${eiana-users.output.dir}"/>
     <pathelement location="${eiana-users.testoutput.dir}"/>
     <path refid="library.util.classpath"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
   </path>
   
   
@@ -53,6 +59,7 @@
     <dirset dir="${module.eiana-trans.basedir}">
       <include name="test/change"/>
       <include name="test/conf"/>
+      <include name="test/confirmation"/>
       <include name="test/dao"/>
       <include name="test/hibernate"/>
       <include name="test/jbpm"/>
@@ -63,9 +70,9 @@
   
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
   
-  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.conf,compile.module.integration-rt,compile.module.eiana-users" description="Compile module eiana-trans; production classes">
+  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.conf,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications" description="Compile module eiana-trans; production classes">
     <mkdir dir="${eiana-trans.output.dir}"/>
-    <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-trans}/javac">
       <compilerarg line="${compiler.args.eiana-trans}"/>
       <bootclasspath refid="eiana-trans.module.bootclasspath"/>
       <classpath refid="eiana-trans.module.classpath"/>
@@ -83,7 +90,7 @@
   
   <target name="compile.module.eiana-trans.tests" depends="compile.module.eiana-trans.production" description="compile module eiana-trans; test classes" unless="skip.tests">
     <mkdir dir="${eiana-trans.testoutput.dir}"/>
-    <javac destdir="${eiana-trans.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-trans.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-trans}/javac">
       <compilerarg line="${compiler.args.eiana-trans}"/>
       <classpath refid="eiana-trans.module.classpath"/>
       <classpath location="${eiana-trans.output.dir}"/>
@@ -97,6 +104,10 @@
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-trans.basedir}/test/conf">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/confirmation">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

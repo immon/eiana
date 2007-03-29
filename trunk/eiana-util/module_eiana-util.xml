@@ -2,6 +2,9 @@
 <project name="module_eiana-util" default="compile.module.eiana-util">
   <dirname property="module.eiana-util.basedir" file="${ant.file.module_eiana-util}"/>
   
+  <property name="module.jdk.home.eiana-util" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-util" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-util" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-util" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="eiana-util.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-util}"/>
     <path refid="library.hibernate.classpath"/>
     <path refid="library.javaee.classpath"/>
   </path>
@@ -37,7 +41,7 @@
   
   <target name="compile.module.eiana-util.production" description="Compile module eiana-util; production classes">
     <mkdir dir="${eiana-util.output.dir}"/>
-    <javac destdir="${eiana-util.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-util.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-util}/javac">
       <compilerarg line="${compiler.args.eiana-util}"/>
       <bootclasspath refid="eiana-util.module.bootclasspath"/>
       <classpath refid="eiana-util.module.classpath"/>
