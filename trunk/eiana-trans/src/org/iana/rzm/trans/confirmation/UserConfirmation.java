@@ -19,7 +19,6 @@ public class UserConfirmation extends AbstractConfirmation {
     private UserConfirmation() {}
 
     public UserConfirmation(RZMUser user) {
-        super(null, null);
         this.user = user;
     }
 

@@ -3,7 +3,6 @@ package org.iana.rzm.trans.confirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
 import org.jbpm.configuration.ObjectFactory;
 
@@ -21,11 +20,16 @@ public class MandatoryRoleConfirmations extends AbstractConfirmation {
     @JoinTable(name = "MandatoryRoleConfirmations_Users",
             inverseJoinColumns = @JoinColumn(name = "RZMUser_objId"))
     private Set<RZMUser> receivedConfirmations = new HashSet<RZMUser>();
+    @Basic
+    private String name;
+    @Enumerated
+    private SystemRole.SystemType type;
 
     private MandatoryRoleConfirmations() {}
 
     public MandatoryRoleConfirmations(String name, SystemRole.SystemType type) {
-        super(name, type);
+        this.name = name;
+        this.type = type;
     }
 
     public boolean isAcceptableBy(RZMUser user) {
@@ -48,6 +52,6 @@ public class MandatoryRoleConfirmations extends AbstractConfirmation {
     private Set<RZMUser> getRequiredConfirmations() {
         ObjectFactory of = JbpmContext.getCurrentJbpmContext().getObjectFactory();
         UserManager um = (UserManager) of.createObject("userManager");
-        return new HashSet<RZMUser>(um.findUsersRequiredToConfirm(getName(), getType()));
+        return new HashSet<RZMUser>(um.findUsersRequiredToConfirm(name, type));
     }
 }

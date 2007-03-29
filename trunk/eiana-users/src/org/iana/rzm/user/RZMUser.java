@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * <p>
+ * <p/>
  * This class represents a user of the system, either an administrator or a normal user.
  * </p>
  *
@@ -31,12 +31,13 @@ public class RZMUser implements TrackedObject {
     @Basic
     private String email;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = MD5Password.class)
-    @JoinColumn(name="Password_objId")
+    @JoinColumn(name = "Password_objId")
     private Password password;
     @Basic
     private boolean securID;
     // todo: securid authenticator?, pgp certificate
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Embedded
     private TrackData trackData = new TrackData();
@@ -212,19 +213,25 @@ public class RZMUser implements TrackedObject {
     }
 
     final public boolean mustAccept(String name, Role.Type type) {
-        for (Role role : roles)
-            if (!role.isAdmin()) {
-                SystemRole sr = (SystemRole) role;
-                if (name.equals(sr.getName()) && type.equals(sr.getType())
-                        && sr.isMustAccept())
-                    return true;
-            }
+        if (type instanceof SystemRole.SystemType) {
+            for (Role role : roles)
+                if (!role.isAdmin()) {
+                    SystemRole sr = (SystemRole) role;
+                    if (name.equals(sr.getName()) && type.equals(sr.getType())
+                            && sr.isMustAccept())
+                        return true;
+                }
+        }
         return false;
     }
 
     final public boolean isEligibleToAccept(String name, Role.Type type) {
         for (Role role : roles)
-            if (!role.isAdmin()) {
+            if (role.isAdmin() && type instanceof AdminRole.AdminType) {
+                AdminRole ar = (AdminRole) role;
+                if (type.equals(ar.getType()))
+                    return true;
+            } else if (!role.isAdmin() && type instanceof SystemRole.SystemType) {
                 SystemRole sr = (SystemRole) role;
                 if (name.equals(sr.getName()) && type.equals(sr.getType())
                         && sr.isAcceptFrom())

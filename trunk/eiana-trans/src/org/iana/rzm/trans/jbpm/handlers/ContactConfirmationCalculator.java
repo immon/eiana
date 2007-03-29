@@ -3,7 +3,7 @@ package org.iana.rzm.trans.jbpm.handlers;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.confirmation.MandatoryRoleConfirmations;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
-import org.iana.rzm.trans.confirmation.RoleConfirmation;
+import org.iana.rzm.trans.confirmation.SystemRoleConfirmation;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.def.Node;
@@ -27,8 +27,8 @@ public class ContactConfirmationCalculator implements ActionHandler {
         if (!mrcAc.isReceived()) sc.addConfirmation(mrcAc);
         MandatoryRoleConfirmations mrcTc = new MandatoryRoleConfirmations(td.getCurrentDomain().getName(), SystemRole.SystemType.TC);
         if (!mrcTc.isReceived()) sc.addConfirmation(mrcTc);
-        sc.addConfirmation(new RoleConfirmation(td.getCurrentDomain().getName(), SystemRole.SystemType.AC));
-        sc.addConfirmation(new RoleConfirmation(td.getCurrentDomain().getName(), SystemRole.SystemType.TC));
+        sc.addConfirmation(new SystemRoleConfirmation(td.getCurrentDomain().getName(), SystemRole.SystemType.AC));
+        sc.addConfirmation(new SystemRoleConfirmation(td.getCurrentDomain().getName(), SystemRole.SystemType.TC));
 
         Token token = executionContext.getProcessInstance().getRootToken();
         Node node = token.getNode();
