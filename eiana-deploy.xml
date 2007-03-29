@@ -164,7 +164,7 @@
 
         <testng classpathref="eiana.test-ng.classpath"
                 outputDir="${test.report.output}"
-                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}">
+                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}" >
             <classfileset dir="${basedir}/classes/test" />
         </testng>
     </target>
