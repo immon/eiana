@@ -1,18 +1,18 @@
 package org.iana.rzm.trans.confirmation;
 
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.Role;
 
 import javax.persistence.Entity;
-import javax.persistence.Embedded;
+import javax.persistence.Enumerated;
 
 /**
  * @author Jakub Laszkiewicz
  */
 @Entity
 public class AdminRoleConfirmation extends RoleConfirmation {
-    @Embedded
+    @Enumerated
     private AdminRole.AdminType adminType;
 
     public AdminRoleConfirmation(String name, AdminRole.AdminType adminType) {
