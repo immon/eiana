@@ -49,12 +49,6 @@ public class ConfirmationTest {
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userDAO = (UserDAO) appCtx.getBean("userDAO");
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        userDAO.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("conftestdomain", true, true, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("conftestdomain", true, true, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("conftestdomain", true, false, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("conftestdomain", true, false, SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("conftestdomain", true, false, SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys6", UserManagementTestUtil.createSystemRole("conftestdomain", false, false, SystemRole.SystemType.TC)));
         userDAO.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
         userDAO.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
         userDAO.create(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
@@ -64,6 +58,25 @@ public class ConfirmationTest {
     }
 
     private Transaction createTransaction(String suffix) throws CloneNotSupportedException {
+        userDAO.create(UserManagementTestUtil.createUser("sys1" + suffix,
+                UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, true,
+                        SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys2" + suffix,
+                UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, true,
+                        SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys3" + suffix,
+                UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, false,
+                        SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys4" + suffix,
+                UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, false,
+                        SystemRole.SystemType.TC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys5" + suffix,
+                UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, false,
+                        SystemRole.SystemType.TC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys6" + suffix,
+                UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, false, false,
+                        SystemRole.SystemType.TC)));
+
         Address address = new Address();
         address.setCity("city" + suffix);
         address.setCountryCode("cc" + suffix);
@@ -114,21 +127,23 @@ public class ConfirmationTest {
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        transaction.accept(userDAO.get("user-sys1"));
+        transaction.accept(userDAO.get("user-sys1contact"));
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        transaction.accept(userDAO.get("user-sys4"));
+        transaction.accept(userDAO.get("user-sys4contact"));
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        userDAO.create(UserManagementTestUtil.createUser("sys7", UserManagementTestUtil.createSystemRole("conftestdomain", true, true, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys7contact",
+                UserManagementTestUtil.createSystemRole("conftestdomaincontact", true, true,
+                        SystemRole.SystemType.AC)));
 
-        transaction.accept(userDAO.get("user-sys2"));
+        transaction.accept(userDAO.get("user-sys2contact"));
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        transaction.accept(userDAO.get("user-sys7"));
+        transaction.accept(userDAO.get("user-sys7contact"));
 
         assert "PENDING_IMPACTED_PARTIES".equals(processInstance.getRootToken().getNode().getName());
 
