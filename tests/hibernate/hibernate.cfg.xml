@@ -49,9 +49,11 @@
         <mapping class="org.iana.rzm.trans.StateTransition"/>
 
         <mapping class="org.iana.rzm.trans.confirmation.AbstractConfirmation"/>
+        <mapping class="org.iana.rzm.trans.confirmation.AdminRoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.MandatoryRoleConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.RoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.StateConfirmations"/>
+        <mapping class="org.iana.rzm.trans.confirmation.SystemRoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
 
 
