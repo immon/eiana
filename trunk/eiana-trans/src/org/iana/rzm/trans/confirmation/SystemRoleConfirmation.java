@@ -5,14 +5,14 @@ import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 
 import javax.persistence.Entity;
-import javax.persistence.Embedded;
+import javax.persistence.Enumerated;
 
 /**
  * @author Jakub Laszkiewicz
  */
 @Entity
 public class SystemRoleConfirmation extends RoleConfirmation {
-    @Embedded
+    @Enumerated
     private SystemRole.SystemType systemType;
 
     public SystemRoleConfirmation(String name, Role.Type type) {
