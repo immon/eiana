@@ -2,6 +2,9 @@
 <project name="module_eiana-notifications" default="compile.module.eiana-notifications">
   <dirname property="module.eiana-notifications.basedir" file="${ant.file.module_eiana-notifications}"/>
   
+  <property name="module.jdk.home.eiana-notifications" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-notifications" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-notifications" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-notifications" value="${compiler.args}"/>
   
@@ -13,8 +16,14 @@
   </path>
   
   <path id="eiana-notifications.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-notifications}"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.util.classpath"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.dynaxml.classpath"/>
+    <path refid="library.jdom.classpath"/>
   </path>
   
   
@@ -35,9 +44,9 @@
   
   <target name="compile.module.eiana-notifications" depends="compile.module.eiana-notifications.production,compile.module.eiana-notifications.tests" description="Compile module eiana-notifications"/>
   
-  <target name="compile.module.eiana-notifications.production" description="Compile module eiana-notifications; production classes">
+  <target name="compile.module.eiana-notifications.production" depends="compile.module.eiana-util" description="Compile module eiana-notifications; production classes">
     <mkdir dir="${eiana-notifications.output.dir}"/>
-    <javac destdir="${eiana-notifications.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-notifications.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-notifications}/javac">
       <compilerarg line="${compiler.args.eiana-notifications}"/>
       <bootclasspath refid="eiana-notifications.module.bootclasspath"/>
       <classpath refid="eiana-notifications.module.classpath"/>

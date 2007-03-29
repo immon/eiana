@@ -2,6 +2,9 @@
 <project name="module_facade-system" default="compile.module.facade-system">
   <dirname property="module.facade-system.basedir" file="${ant.file.module_facade-system}"/>
   
+  <property name="module.jdk.home.facade-system" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.facade-system" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.facade-system" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.facade-system" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="facade-system.module.classpath">
+    <path refid="${module.jdk.classpath.facade-system}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
@@ -46,7 +50,7 @@
   <path id="facade-system.module.test.sourcepath">
     <dirset dir="${module.facade-system.basedir}">
       <include name="test/bean"/>
-      <include name="test/hibernate"/>
+      <include name="test/conf"/>
     </dirset>
   </path>
   
@@ -55,7 +59,7 @@
   
   <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans" description="Compile module facade-system; production classes">
     <mkdir dir="${facade-system.output.dir}"/>
-    <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.facade-system}/javac">
       <compilerarg line="${compiler.args.facade-system}"/>
       <bootclasspath refid="facade-system.module.bootclasspath"/>
       <classpath refid="facade-system.module.classpath"/>
@@ -73,7 +77,7 @@
   
   <target name="compile.module.facade-system.tests" depends="compile.module.facade-system.production" description="compile module facade-system; test classes" unless="skip.tests">
     <mkdir dir="${facade-system.testoutput.dir}"/>
-    <javac destdir="${facade-system.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${facade-system.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.facade-system}/javac">
       <compilerarg line="${compiler.args.facade-system}"/>
       <classpath refid="facade-system.module.classpath"/>
       <classpath location="${facade-system.output.dir}"/>
@@ -86,7 +90,7 @@
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
-      <fileset dir="${module.facade-system.basedir}/test/hibernate">
+      <fileset dir="${module.facade-system.basedir}/test/conf">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

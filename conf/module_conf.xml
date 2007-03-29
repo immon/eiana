@@ -2,6 +2,9 @@
 <project name="module_conf" default="compile.module.conf">
   <dirname property="module.conf.basedir" file="${ant.file.module_conf}"/>
   
+  <property name="module.jdk.home.conf" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.conf" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.conf" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.conf" value="${compiler.args}"/>
   
@@ -12,7 +15,9 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="conf.module.classpath"/>
+  <path id="conf.module.classpath">
+    <path refid="${module.jdk.classpath.conf}"/>
+  </path>
   
   
   <patternset id="excluded.from.module.conf">

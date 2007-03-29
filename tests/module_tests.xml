@@ -2,6 +2,9 @@
 <project name="module_tests" default="compile.module.tests">
   <dirname property="module.tests.basedir" file="${ant.file.module_tests}"/>
   
+  <property name="module.jdk.home.tests" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.tests" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.tests" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.tests" value="${compiler.args}"/>
   
@@ -12,7 +15,9 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="tests.module.classpath"/>
+  <path id="tests.module.classpath">
+    <path refid="${module.jdk.classpath.tests}"/>
+  </path>
   
   
   <patternset id="excluded.from.module.tests">
