@@ -3,7 +3,6 @@ package org.iana.rzm.trans.jbpm.handlers;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.configuration.ObjectFactory;
-import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.SystemRole;
@@ -32,7 +31,7 @@ public class ContactNotifier extends ProcessStateNotifier implements ActionHandl
     private void sendContactNotification(String domainName, RZMUser user) throws Exception {
         for (Role role : user.getRoles()) {
             if (((SystemRole)role).isNotify()) {
-                TemplateContactConfirmation tCC = new TemplateContactConfirmation(domainName, ((SystemRole)role).getFullTypeName(), user.mustAccept(domainName, role.getType()));
+                TemplateContactConfirmation tCC = new TemplateContactConfirmation(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()));
                 Notification notification = notificationTemplate.getNotificationInstance(tCC);
                 String userFullName = user.getFirstName() + " " + user.getLastName();
                 sendNotification(new EmailAddress(userFullName, user.getEmail()), notification);

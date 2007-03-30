@@ -10,7 +10,6 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.notifications.template.TemplateContactConfirmation;
 import org.iana.notifications.template.TemplateContactConfirmationRemainder;
 import org.iana.notifications.Notification;
 import org.iana.notifications.EmailAddress;
@@ -34,7 +33,7 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier implement
     private void sendContactNotification(String domainName, RZMUser user) throws Exception {
         for (Role role : user.getRoles()) {
             if (((SystemRole)role).isNotify()) {
-                TemplateContactConfirmationRemainder tCCR = new TemplateContactConfirmationRemainder(domainName, ((SystemRole)role).getFullTypeName(), user.mustAccept(domainName, role.getType()), 30-period);
+                TemplateContactConfirmationRemainder tCCR = new TemplateContactConfirmationRemainder(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()), 30-period);
                 Notification notification = notificationTemplate.getNotificationInstance(tCCR);
                 String userFullName = user.getFirstName() + " " + user.getLastName();
                 sendNotification(new EmailAddress(userFullName, user.getEmail()), notification);
