@@ -56,6 +56,14 @@ public class SystemRole extends Role {
         this.type = (SystemType) type;
     }
 
+    final public String getTypeName() {
+        if (type == SystemType.AC)
+            return "Administrative Contact";
+        if (type == SystemType.TC)
+            return "Technical Contact";
+        return "Supporting Organization";
+    }
+
     final public String getName() {
         return name == null ? null : name.getName();
     }
