@@ -26,8 +26,8 @@ public class NotificationSenderBean implements NotificationSender {
 
     public NotificationSenderBean(String mailHost, String mailer, String fromAddress, String userName, String password) {
         CheckTool.checkEmpty(mailHost, "mailHost param is null or empty");
-        CheckTool.checkEmpty(mailHost, "mailer param is null or empty");
-        CheckTool.checkEmpty(mailHost, "fromAddress param is null or empty");
+        CheckTool.checkEmpty(mailer, "mailer param is null or empty");
+        CheckTool.checkEmpty(fromAddress, "fromAddress param is null or empty");
         this.EMAIL_MAILHOST    = mailHost;
         this.EMAIL_MAILER      = mailer;
         this.EMAIL_FROMADDRESS = fromAddress;
@@ -37,14 +37,15 @@ public class NotificationSenderBean implements NotificationSender {
 
     public void send(Addressee addressee, String subject, String body) throws NotificationException {
         CheckTool.checkNull(addressee, "null addressee param");
-        sendMail(addressee.getEmail(), subject, body);
+        sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", subject, body);
     }
 
     public void send(Collection<Addressee> addressees, String subject, String body) throws NotificationException {
         CheckTool.checkCollectionNull(addressees, "null addressees list");
         StringBuffer address = new StringBuffer("");
         for(Iterator i = addressees.iterator();  i.hasNext();) {
-            address.append(((Addressee)i.next()).getEmail());
+            Addressee add = (Addressee)i.next();
+            address.append(add.getName() + "<" + add.getEmail() + ">");
             if (i.hasNext()) address.append(",");
         }
         sendMail(address.toString(), subject, body);
@@ -52,14 +53,15 @@ public class NotificationSenderBean implements NotificationSender {
 
     public void send(Addressee addressee, Content content) throws NotificationException {
         CheckTool.checkNull(addressee, "null addressee param");
-        sendMail(addressee.getEmail(), content.getSubject(), content.getBody());
+        sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", content.getSubject(), content.getBody());
     }
 
     public void send(Collection<Addressee> addressees, Content content) throws NotificationException {
         CheckTool.checkCollectionNull(addressees, "null addressees list");
         StringBuffer address = new StringBuffer("");
         for(Iterator i = addressees.iterator();  i.hasNext();) {
-            address.append(((Addressee)i.next()).getEmail());
+            Addressee add = (Addressee)i.next();
+            address.append(add.getName() + "<" + add.getEmail() + ">");
             if (i.hasNext()) address.append(",");
         }
         sendMail(address.toString(), content.getSubject(), content.getBody());
