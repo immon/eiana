@@ -11,10 +11,26 @@
             </action>
             <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
         </event>
+         <timer name="7d-time-out" duedate='1 seconds'>  <!--todo: change duedate to 7 days-->
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder" >
+                <period>7</period>
+                <notification>contact-confirmation-remainder</notification>
+            </action>
+        </timer>
+        <timer name="14d-time-out" duedate='2 seconds'></timer>  <!--todo: change duedate to 14 days-->
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder" >
+                <period>14</period>
+                <notification>contact-confirmation-remainder</notification>
+            </action>
+        <timer name="21d-time-out" duedate='3 seconds'></timer>  <!--todo: change duedate to 21 days-->
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder" >
+                <period>21</period>
+                <notification>contact-confirmation-remainder</notification>
+            </action>
+        <timer name="30d-time-out" duedate='30 days' transition='close' ></timer>
         <transition name="accept" to="PENDING_TECH_CHECK"/>
         <transition name="reject" to="REJECTED"/>
-        <!-- todo: remainders: 7/14/21 days -->
-        <!-- todo: admin closed: 30 days -->
+        <transition name="close" to="ADMIN_CLOSED"/>
     </state>
 
     <decision name="PENDING_TECH_CHECK">
@@ -32,8 +48,13 @@
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesNotifier"/>
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationCalculator"/>
         </event>
+        <timer name="7d-time-out" duedate='7 days'></timer>
+        <timer name="14d-time-out" duedate='14 days'></timer>
+        <timer name="21d-time-out" duedate='21 days'></timer>
+        <timer name="30d-time-out" duedate='30 days' transition='close' ></timer>
         <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
         <transition name="reject" to="REJECTED"/>
+        <transition name="close" to="ADMIN_CLOSED"/>
         <!-- todo: remainders: 7/14/21 days -->
         <!-- todo: admin closed: 30 days -->
     </state>
@@ -44,7 +65,9 @@
                 <role>IANA</role>
             </action>
         </event>
+        <timer name="3d-time-out" duedate='3 days' transition='alert' ></timer>
         <transition name="normal" to="PENDING_EXT_APPROVAL"/>
+        <transition name="alert" to="EXCEPTION"/>
         <!--
                 todo: future feature
                 <transition name="redelegation" to="PENDING_EVALUATION"/>
@@ -58,9 +81,11 @@
                 <role>IANA</role>
             </action>
         </event>
+        <timer name="30d-time-out" duedate='30 days' transition='alert' ></timer>
         <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
         <transition name="reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
+        <transition name="alert" to="EXCEPTION"/>
         <!-- todo: exception 30d, alert -->
     </state>
 
@@ -70,8 +95,11 @@
                 <role>USDoC</role>
             </action>
         </event>
+        <timer name="5d-time-out" duedate='5 days' ></timer>
+        <timer name="14d-time-out" duedate='14 days' transition='alert' ></timer>
         <transition name="accept" to="USDOC_APPROVED"/>
         <transition name="reject" to="REJECTED"/>
+        <transition name="alert" to="EXCEPTION"/>
         <!-- todo: reminder 5d  -->
         <!-- todo: exception 14d, alert -->
     </state>
