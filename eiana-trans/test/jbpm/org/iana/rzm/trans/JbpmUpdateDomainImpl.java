@@ -2,6 +2,8 @@ package org.iana.rzm.trans;
 
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
+import org.jbpm.scheduler.impl.SchedulerThread;
+import org.jbpm.JbpmConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -15,6 +17,9 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.dao.common.UserManagementTestUtil;
+import org.iana.rzm.user.dao.UserDAO;
 import org.iana.notifications.EmailAddress;
 import org.iana.notifications.EmailAddresses;
 import org.testng.annotations.Test;
@@ -32,6 +37,7 @@ public class JbpmUpdateDomainImpl {
     TransactionManager transMgr;
     ProcessDAO processDAO;
     DomainDAO domainDAO;
+    SchedulerThread schedulerThread;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
 
@@ -43,6 +49,17 @@ public class JbpmUpdateDomainImpl {
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        schedulerThread = new SchedulerThread((JbpmConfiguration) appCtx.getBean("jbpmConfiguration"));
+
+        UserDAO userDAO = (UserDAO) appCtx.getBean("userDAO");
+        userDAO.create(UserManagementTestUtil.createUser("UDsys1", UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("UDsys2", UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("UDsys3", UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("UDsys4", UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
+        userDAO.create(UserManagementTestUtil.createUser("UDsys5", UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
+        userDAO.create(UserManagementTestUtil.createUser("UDsys6", UserManagementTestUtil.createSystemRole("testdomain.org", false, false, SystemRole.SystemType.TC)));
+                
+
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
         txMgr.commit(txStatus);
@@ -94,29 +111,15 @@ public class JbpmUpdateDomainImpl {
         Token token = procesInstance.getRootToken();
         token.signal();
 
-        RZMUser user = new RZMUser();
-        user.setLoginName("gregorM");
-        user.setFirstName("Gregor");
-        user.setLastName("Martin");
-        procesInstance.getContextInstance().setVariable("EMAIL_TEMPLATE_DATA", user);
-        procesInstance.getContextInstance().setVariable("TEMPLATE_TYPE", "SAMPLE_TEMPLATE1");
-
-        procesInstance.getContextInstance().setVariable("EMAIL_ADDRESSES", new EmailAddress("someName", "somebody@mail.com"));
+        Thread.sleep(3001L);
+        schedulerThread.executeTimers();
 
         token.signal("accept");
         token.signal("accept");
         token.signal("normal");
         token.signal("accept");
 
-        List<EmailAddress> addresses = new ArrayList<EmailAddress>();
-        addresses.add(new EmailAddress("Helmut", "helmut@mail.de"));
-        addresses.add(new EmailAddress("Ivan", "ivan@mail.ru"));
-        EmailAddresses eMailAddressesList = new EmailAddresses(addresses);
-        procesInstance.getContextInstance().setVariable("TEMPLATE_TYPE", "SAMPLE_TEMPLATE2");
-        procesInstance.getContextInstance().setVariable("EMAIL_ADDRESSES", eMailAddressesList);
-
-
-        token.signal("accept");        
+        token.signal("accept");
 
         processDAO.close();
         txMgr.commit(txStatus);
