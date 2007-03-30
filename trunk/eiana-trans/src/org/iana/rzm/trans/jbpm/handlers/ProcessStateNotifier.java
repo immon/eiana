@@ -3,6 +3,8 @@ package org.iana.rzm.trans.jbpm.handlers;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.iana.notifications.*;
+import org.iana.notifications.exception.NotificationException;
+import org.iana.rzm.trans.TransactionData;
 
 import java.util.*;
 
@@ -12,30 +14,26 @@ import java.util.*;
  */
 public class ProcessStateNotifier implements ActionHandler {
 
-    private static final String EMAIL_TEMPLATE_DATA = "EMAIL_TEMPLATE_DATA";
-    private static final String TEMPLATE_TYPE       = "TEMPLATE_TYPE";
-    private static final String EMAIL_ADDRESSES     = "EMAIL_ADDRESSES";
-
-    String notification;
+    TransactionData td;
+    protected NotificationSender notificationSender;
+    protected NotificationTemplate notificationTemplate;
+    protected String notification;
     
     public void execute(ExecutionContext executionContext) throws Exception {
+        fillDataFromContext(executionContext);
+    }
 
-        Object o = executionContext.getContextInstance().getVariable(EMAIL_TEMPLATE_DATA);
-        String templateType = (String) executionContext.getContextInstance().getVariable(TEMPLATE_TYPE);
-        Object addresses = executionContext.getContextInstance().getVariable(EMAIL_ADDRESSES);
+    protected void sendNotification(Addressee addressee, Notification notif) throws NotificationException {
+        notificationSender.send(addressee, notif.getContent());
+    }
+    
+    protected void sendNotification(Collection<Addressee> addressees, Notification notif) throws NotificationException {
+        notificationSender.send(addressees, notif.getContent());
+    }
 
-        if ((o != null) && (addresses != null) && (templateType != null) && (templateType.trim().length() > 0)) {
-            NotificationTemplateManager notifTemplateMgr = NotificationTemplateManager.getInstance();
-            Notification notification = notifTemplateMgr.getNotificationTemplate(templateType).getNotificationInstance(o);
-            NotificationSender notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
-            if (addresses instanceof EmailAddress)
-                notificationSender.send((EmailAddress)addresses, notification.getContent());
-            else {
-                List<Addressee> addressesList = new ArrayList<Addressee>() ;
-                for (Addressee address : ((EmailAddresses)addresses).getAddressees())
-                    addressesList.add(address);
-                notificationSender.send(addressesList, notification.getContent());
-            }
-        }
+    protected void fillDataFromContext(ExecutionContext executionContext) throws NotificationException {
+        td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
+        notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
+        notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
     }
 }
