@@ -96,10 +96,10 @@ public class TransactionTest {
        }
 
      @Test(dependsOnMethods = {"testTransactionAccept"})
-      public void testTransactionReject() throws NoSuchTransactionException {
+      public void testTransactionReject() throws TransactionException {
            Transaction trans = manager.getTransaction(transactionId2);
            assert trans != null;
-           trans.reject();
+           trans.reject(null);
            System.out.println("State:"+trans.getState().getName());
            assert trans.getState().getName().equals(TransactionState.Name.REJECTED);
      }

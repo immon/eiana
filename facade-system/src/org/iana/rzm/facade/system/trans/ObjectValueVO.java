@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -38,5 +39,10 @@ public class ObjectValueVO extends ValueVO {
 
     void setChanges(List<ChangeVO> changes) {
         this.changes = changes;
+    }
+
+    public void addChanges(List<ChangeVO> changes) {
+        if (this.changes == null) this.changes = new ArrayList<ChangeVO>();
+        this.changes.addAll(changes);
     }
 }

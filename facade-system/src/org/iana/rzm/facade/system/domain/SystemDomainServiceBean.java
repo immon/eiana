@@ -32,7 +32,7 @@ public class SystemDomainServiceBean implements SystemDomainService {
 
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         Domain domain = domainManager.get(id);
-        if (domain == null) throw new NoObjectFoundException(id);
+        if (domain == null) throw new NoObjectFoundException(id, "domain");
         DomainVO domainVO = ToVOConverter.toDomainVO(domain);
         RZMUser user = userManager.get(this.user.getUserName());
         domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
@@ -41,7 +41,7 @@ public class SystemDomainServiceBean implements SystemDomainService {
 
     public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         Domain domain = domainManager.get(name);
-        if (domain == null) throw new NoObjectFoundException(name);
+        if (domain == null) throw new NoObjectFoundException(name, "domain");
         DomainVO domainVO = ToVOConverter.toDomainVO(domain);
         RZMUser user = userManager.get(this.user.getUserName());
         domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));

@@ -13,6 +13,7 @@ import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz
@@ -61,10 +62,20 @@ public class TransactionManagerBean implements TransactionManager {
         return null;
     }
 
-    public List<Transaction> findAllProcessInstances(String domainName) {
+    public List<Transaction> findTransactions(String domainName) {
         List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(domainName);
         List<Transaction> result = new ArrayList<Transaction>();
         for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
         return result;
+    }
+
+    public List<Transaction> findTransactions(Set<String> domainNames) {
+        List<Transaction> ret = new ArrayList<Transaction>();
+        if (domainNames != null) {
+            for (String domainName : domainNames) {
+                ret.addAll(findTransactions(domainName));
+            }
+        }
+        return ret;
     }
 }

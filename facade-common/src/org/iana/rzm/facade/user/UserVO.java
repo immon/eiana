@@ -77,6 +77,17 @@ public class UserVO implements Trackable {
         return ret;
     }
 
+    public boolean hasRole(RoleVO role) {
+        return roles.contains(role);
+    }
+
+    public boolean hasAnyRole(Set<RoleVO> roles) {
+        for (RoleVO role : roles) {
+            if (hasRole(role)) return true;
+        }
+        return false;
+    }
+
     public Set<RoleVO> getRoles() {
         return Collections.unmodifiableSet(roles);
     }

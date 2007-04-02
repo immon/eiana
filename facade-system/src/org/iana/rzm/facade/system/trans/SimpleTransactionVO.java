@@ -3,6 +3,7 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.common.Trackable;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
+import org.iana.rzm.common.TrackData;
 
 import java.sql.Timestamp;
 
@@ -13,9 +14,11 @@ import java.sql.Timestamp;
  */
 public class SimpleTransactionVO implements Trackable {
 
+    private Long transactionID;
+    private Long ticketID;
     private String name;
-    private SimpleDomainVO domain;
-    private TrackDataVO data;
+    private String domainName;
+    private TrackDataVO trackData = new TrackDataVO();
 
     public String getName() {
         return name;
@@ -25,43 +28,43 @@ public class SimpleTransactionVO implements Trackable {
         this.name = name;
     }
 
-    public SimpleDomainVO getDomain() {
-        return domain;
+    public Long getTransactionID() {
+        return transactionID;
     }
 
-    public void setDomain(SimpleDomainVO domain) {
-        this.domain = domain;
+    public void setTransactionID(Long transactionID) {
+        this.transactionID = transactionID;
+    }
+
+    public Long getTicketID() {
+        return ticketID;
+    }
+
+    public void setTicketID(Long ticketID) {
+        this.ticketID = ticketID;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 
     public Timestamp getCreated() {
-        return data.getCreated();
-    }
-
-    public void setCreated(Timestamp created) {
-        data.setCreated(created);
+        return trackData.getCreated();
     }
 
     public Timestamp getModified() {
-        return data.getModified();
-    }
-
-    public void setModified(Timestamp modified) {
-        data.setModified(modified);
-    }
-
-    public String getModifiedBy() {
-        return data.getModifiedBy();
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        data.setModifiedBy(modifiedBy);
-    }
-
-    public void setCreatedBy(String createdBy) {
-        data.setCreatedBy(createdBy);
+        return trackData.getModified();
     }
 
     public String getCreatedBy() {
-        return data.getCreatedBy();
+        return trackData.getCreatedBy();
+    }
+
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
     }
 }

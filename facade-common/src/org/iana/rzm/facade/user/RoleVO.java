@@ -29,7 +29,7 @@ public class RoleVO {
     /**
      * Tells if role the Admin role
      *
-     * Could be done by visitor, but I don't see a need to use it here 
+     * Could be done by visitor, but I don't see a need to use it here
      *
      * @return is role is the Admin role
      */
