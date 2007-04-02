@@ -49,7 +49,6 @@
       <include name="test/conf"/>
       <include name="test/dao"/>
       <include name="test/hibernate"/>
-      <include name="test/user"/>
     </dirset>
   </path>
   
@@ -94,10 +93,6 @@
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-users.basedir}/test/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-users.basedir}/test/user">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
