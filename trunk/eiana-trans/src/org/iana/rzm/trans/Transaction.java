@@ -139,7 +139,11 @@ public class Transaction implements TrackedObject {
         }
     }
 
-    public synchronized void reject() {
+    public synchronized void reject(RZMUser user) throws TransactionException {
         pi.signal(StateTransition.REJECT);
+    }
+
+    public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
+        
     }
 }

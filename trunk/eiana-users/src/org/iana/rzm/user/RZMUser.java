@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * <p/>
- * This class represents a user of the system, either an administrator or a normal user.
+ * This class represents a user of the system, either an administrator or a regular user.
  * </p>
  *
  * @author Patrycja Wegrzynowicz

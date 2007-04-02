@@ -31,7 +31,7 @@ public class GuardedSystemDomainService implements SystemDomainService {
 
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
-        if (id < 1) throw new IllegalArgumentException ("Domain Id value out of range");
+        if (id < 1) throw new IllegalArgumentException("Domain Id value out of range");
         DomainVO domainVO = (DomainVO) delegate.getDomain(id);
         if (!isInRole(domainVO.getName()))
             throw new AccessDeniedException("user is not in any role for this domain");
@@ -55,7 +55,7 @@ public class GuardedSystemDomainService implements SystemDomainService {
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
         CheckTool.checkEmpty(userName, "user name");
-        if(user.isAdmin() || user.getUserName().equals(userName))
+        if (user.isAdmin() || user.getUserName().equals(userName))
             return delegate.findUserDomains(userName);
         else
             throw new AccessDeniedException("invalid user");
@@ -72,13 +72,13 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     private boolean isInRole(String domainName) {
-        if(user.isAdmin()) {
+        if (user.isAdmin()) {
             return true;
         } else {
             Set<RoleVO> roles = user.getRoles();
-            for(Iterator iterator = roles.iterator(); iterator.hasNext();) {
+            for (Iterator iterator = roles.iterator(); iterator.hasNext();) {
                 SystemRoleVO systemRole = (SystemRoleVO) iterator.next();
-                if(systemRole.getName().equals(domainName))
+                if (systemRole.getName().equals(domainName))
                     return true;
             }
         }

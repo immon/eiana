@@ -44,4 +44,9 @@ public class TransactionActionVO {
         if (this.change == null) this.change = new ArrayList<ChangeVO>();
         this.change.add(change);
     }
+
+    public void addChange(List<ChangeVO> changes) {
+        if (this.change == null) this.change = new ArrayList<ChangeVO>();
+        this.change.addAll(changes);
+    }
 }

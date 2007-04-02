@@ -8,9 +8,8 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * <p>
- * This class represents a system user role and various configuration for this role.
- * </p>
+ * <p>This class represents a role which RZM user is allowed to posses.
+ * The role determines what system actions are available to the user.</p>
  *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
@@ -38,24 +37,11 @@ public abstract class Role implements TrackedObject {
         return objId;
     }
 
-    public void setObjId(Long objId) {
-        this.objId = objId;
-    }
-
+    public abstract boolean isAdmin();
+    
     public abstract Type getType();
 
     public abstract void setType(Type type);
-
-    /**
-     * Tells if role the Admin role
-     *
-     * Could be done by visitor, but I don't see a need to use it here
-     *
-     * @return is role is the Admin role
-     */
-    public boolean isAdmin() {
-        return false;
-    }
 
     public boolean equals(Object o) {
         if (this == o) return true;

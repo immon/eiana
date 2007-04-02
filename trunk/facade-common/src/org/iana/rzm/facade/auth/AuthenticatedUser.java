@@ -23,6 +23,10 @@ public class AuthenticatedUser {
      * A user who got authenticated.
      */
     private UserVO user;
+    /**
+     * A flag representing whether the user has been invalidated.
+     */
+    private boolean invalidated;
 
     /**
      * <p>A package-accessible constructor to protect creation of this class outside of the package,
@@ -36,20 +40,39 @@ public class AuthenticatedUser {
      */
     AuthenticatedUser(UserVO user) {
         this.user = user;
+        this.invalidated = false;
     }
 
     /**
-     * Checks whether this user has been granted a given permission.
+     * Determines whether the user is in a given role.
      *
-     * @param permission the permission to be checked
-     * @throws AccessDeniedException when this user has not been granted this permission
-     * @throws AuthenticationRequiredException when this user requires to re-authenticate in the system. This exception
-     * may be caused by the permission itself (a vulnerable operation that requires re-login) or by a timed-out user
-     * session.
-     * @throws UserInvalidatedException
+     * @param role the role that must be checked the user is in.
+     * @throws AccessDeniedException when this user is not is the role
+     * @throws AuthenticationRequiredException when this user requires to re-authenticate in the system.
+     * This exception may be caused, for example, by a timed-out session.
+     * @throws UserInvalidatedException when the user has been invalidated.
      */
-    public void checkPermission(Permission permission) throws AccessDeniedException, AuthenticationRequiredException {
-        // todo
+    public void isInRole(RoleVO role) throws AccessDeniedException, AuthenticationRequiredException {
+        if (invalidated) throw new UserInvalidatedException(user.getUserName());
+        if (!user.hasRole(role)) throw new AccessDeniedException("user " + user.getUserName() + " not in a role " + role.getType());
+    }
+
+    /**
+     * Determines whether the user is in a one of a given roles.
+     *
+     * @param roles the set of the roles that must be checked the user is in.
+     * @throws AccessDeniedException when this user is not is the role
+     * @throws AuthenticationRequiredException when this user requires to re-authenticate in the system.
+     * This exception may be caused, for example, by a timed-out session.
+     * @throws UserInvalidatedException when the user has been invalidated.
+     */
+    public void isInAnyRole(Set<RoleVO> roles) throws AccessDeniedException, AuthenticationRequiredException {
+         if (invalidated) throw new UserInvalidatedException(user.getUserName());
+         if (!user.hasAnyRole(roles)) throw new AccessDeniedException("user " + user.getUserName() + " not in any role");
+     }
+
+    public boolean hasRole(RoleVO role) {
+        return user.hasRole(role);    
     }
 
     /**
@@ -58,7 +81,7 @@ public class AuthenticatedUser {
      * <code>UserInvalidatedException</code>.
      */
     public void invalidate() {
-        // todo
+        invalidated = false;
     }
 
     public String getUserName() {

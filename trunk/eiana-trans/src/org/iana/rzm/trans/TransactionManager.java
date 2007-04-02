@@ -4,6 +4,7 @@ import org.iana.rzm.domain.Domain;
 import org.jbpm.JbpmContext;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This interface represents a service for retrieval and creation of domain modification transactions.
@@ -43,5 +44,7 @@ public interface TransactionManager {
 
     List<Transaction> find(TransactionCriteria criteria);
 
-    public List<Transaction> findAllProcessInstances(String domainName);
+    public List<Transaction> findTransactions(String domainName);
+
+    public List<Transaction> findTransactions(Set<String> domainNames);
 }

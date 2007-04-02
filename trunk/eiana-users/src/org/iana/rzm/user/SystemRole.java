@@ -11,7 +11,7 @@ import javax.persistence.Enumerated;
 
 /**
  * <p>
- * This class represents a role, which is owned by 'regular' (not administrator) user of the system.
+ * This class represents a role, which is owned by a 'regular' (not administrator) user of the system.
  * Those users embrace individuals acting on behalf of supporing organizations, administrator
  * or technical contacts of the top level domains.
  * </p>
@@ -23,9 +23,9 @@ import javax.persistence.Enumerated;
 @Entity
 public class SystemRole extends Role {
     public enum SystemType implements Role.Type {
-        AC, //Administrative Contact
-        TC, //Technical Contact
-        SO  //Supporting Organization
+        AC, // Administrative Contact
+        TC, // Technical Contact
+        SO  // Supporting Organization
     }
 
     @Embedded
