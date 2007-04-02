@@ -239,6 +239,15 @@ public class RZMUser implements TrackedObject {
         return false;
     }
 
+    final public boolean isAdmin() {
+        if (roles != null) {
+            for (Role role : roles) {
+                if (role.isAdmin()) return true;
+            }
+        }
+        return false;
+    }
+    
     final public boolean isInAnyRole(Set<Role> roles, Comparator<? super Role> comparator) {
         if (roles != null) {
             for (Role role : roles) {

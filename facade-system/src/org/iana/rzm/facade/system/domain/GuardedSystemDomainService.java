@@ -7,6 +7,7 @@ package org.iana.rzm.facade.system.domain;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
@@ -15,22 +16,38 @@ import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.user.*;
 
 import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.HashSet;
 
-public class GuardedSystemDomainService implements SystemDomainService {
+public class GuardedSystemDomainService extends AbstractRZMStatefulService implements SystemDomainService {
+
+    private static Set<Role> allowedRoles = new HashSet<Role>();
+
+    static {
+        allowedRoles.add(new IANARole());
+        allowedRoles.add(new SystemRole(SystemRole.SystemType.AC));
+        allowedRoles.add(new SystemRole(SystemRole.SystemType.TC));
+        allowedRoles.add(new SystemRole(SystemRole.SystemType.SO));
+    }
 
     private SystemDomainService delegate;
-    private AuthenticatedUser user;
 
-    public GuardedSystemDomainService(SystemDomainService delegate) {
+    public GuardedSystemDomainService(UserManager userManager, SystemDomainService delegate) {
+        super(userManager);
+        CheckTool.checkNull(delegate, "system domain service");
         this.delegate = delegate;
     }
 
+    private void isUserInRole() throws AccessDeniedException {
+        isUserInRole(allowedRoles);
+    }
+
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        isUserInRole();
         if (id < 1) throw new IllegalArgumentException("Domain Id value out of range");
         DomainVO domainVO = (DomainVO) delegate.getDomain(id);
         if (!isInRole(domainVO.getName()))
@@ -39,7 +56,7 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        isUserInRole();
         CheckTool.checkEmpty(name, "Domain name");
         DomainVO domainVO = (DomainVO) delegate.getDomain(name);
         if (!isInRole(domainVO.getName()))
@@ -48,14 +65,15 @@ public class GuardedSystemDomainService implements SystemDomainService {
     }
 
     public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {
-        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        isUserInRole();
         return findUserDomains(user.getUserName());
     }
 
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
-        if (this.user == null) throw new AccessDeniedException("AuthenticatedUser is null");
+        isUserInRole();
         CheckTool.checkEmpty(userName, "user name");
-        if (user.isAdmin() || user.getUserName().equals(userName))
+        RZMUser user = getUser();
+        if (user.isAdmin() || user.getLoginName().equals(userName))
             return delegate.findUserDomains(userName);
         else
             throw new AccessDeniedException("invalid user");
@@ -67,17 +85,14 @@ public class GuardedSystemDomainService implements SystemDomainService {
         this.user = user;
     }
 
-    public void close() {
-        delegate.close();
-    }
-
     private boolean isInRole(String domainName) {
-        if (user.isAdmin()) {
+        RZMUser rzmUser = getUser();
+        if (rzmUser.isAdmin()) {
             return true;
         } else {
-            Set<RoleVO> roles = user.getRoles();
+            List<Role> roles = rzmUser.getRoles();
             for (Iterator iterator = roles.iterator(); iterator.hasNext();) {
-                SystemRoleVO systemRole = (SystemRoleVO) iterator.next();
+                SystemRole systemRole = (SystemRole) iterator.next();
                 if (systemRole.getName().equals(domainName))
                     return true;
             }
