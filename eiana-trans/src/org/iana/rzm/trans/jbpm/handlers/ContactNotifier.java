@@ -43,10 +43,10 @@ public class ContactNotifier extends ProcessStateNotifier implements ActionHandl
         ObjectFactory of = executionContext.getJbpmContext().getObjectFactory();
         UserManager um = (UserManager) of.createObject("userManager");
         Set<RZMUser> users = new HashSet<RZMUser>();
-        users.addAll(um.findUsersRequiredToConfirm(domainName, SystemRole.SystemType.AC));
-        users.addAll(um.findUsersRequiredToConfirm(domainName, SystemRole.SystemType.TC));
-        users.addAll(um.findUsersEligibleToConfirm(domainName, SystemRole.SystemType.AC));
-        users.addAll(um.findUsersEligibleToConfirm(domainName, SystemRole.SystemType.TC));
+        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.AC, true, true));
+        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.TC, true, true));
+        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.AC, true, false));
+        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.TC, true, false));
         return users;
     }
 }
