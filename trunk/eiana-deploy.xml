@@ -14,7 +14,17 @@
     <property name="hibernate.dir" value="${config.dir}/hibernate"/>
     <property name="tests" value="${module.tests.basedir}"/>
     <property name="test.report.output" location="${tests}/reports"/>
+    <property name="test.cobertura.output" location="${tests}/cobertura_code_coverage" />
     <property name="hibernate.test.dir" value="${tests}/hibernate"/>
+
+    <path id="cobertura.classpath">
+        <fileset dir="${basedir}/lib/cobertura">
+            <include name="cobertura.jar" />
+            <include name="lib/**/*.jar" />
+        </fileset>
+    </path>
+
+    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
     <!--creating database structure
      Before preforming "database.create" target, you have to create "eiana" database instance.
@@ -146,27 +156,86 @@
          </condition>
          <condition property="test.group" value="">
              <not><isset property="test.group"/></not>
-         </condition>         
+         </condition>
+
+         <cobertura-instrument todir="${basedir}/classes/cobertura" >
+            <fileset dir="${basedir}/classes">
+                <include name="**/*.class"/>
+            </fileset>
+         </cobertura-instrument>
+
          <mkdir dir="${test.report.output}"/>
-        <path id="eiana.test-ng.classpath">
+         <path id="eiana.test-ng.classpath">
             <dirset dir="${basedir}/classes">
                 <include name="test/*"/>
                 <include name="production/*"/>
             </dirset>
             <fileset dir="${lib.dir}">
                 <include name="**/*jar"/>
+                <exclude name="cobertura/lib/asm-2.2.1.jar" />
             </fileset>
-        </path>
+         </path>
          <echo>
              test  inluded = ${test.group}
              test excluded = ${test.group.excluded}
          </echo>
 
-        <testng classpathref="eiana.test-ng.classpath"
+         <testng classpathref="eiana.test-ng.classpath"
                 outputDir="${test.report.output}"
                 haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}" >
-            <classfileset dir="${basedir}/classes/test" />
-        </testng>
+             <classfileset dir="${basedir}/classes/test" />
+
+             <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
+
+         </testng>
+
+         <delete dir="${test.cobertura.output}" />
+         <mkdir dir="${test.cobertura.output}"/>
+
+         <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
+            <!--common-dao-->
+            <fileset dir="${basedir}/common-dao/src">                   <include name="**/*.java" /></fileset>
+            <!--eiana-dns-->
+            <fileset dir="${basedir}/eiana-dns/src">                    <include name="**/*.java" /></fileset>
+            <!--eiana-domains-->
+            <fileset dir="${basedir}/eiana-domains/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-domains/test/conf">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-domains/test/dao">           <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-domains/test/hibernate">     <include name="**/*.java" /></fileset>
+            <!--eiana-logs-->
+            <fileset dir="${basedir}/eiana-logs/src">                   <include name="**/*.java" /></fileset>
+            <!--eiana-notifications-->
+            <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
+            <!--eiana-trans-->
+            <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/confirmation">    <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/dao">             <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/hibernate">       <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/jbpm">            <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/manager">         <include name="**/*.java" /></fileset>
+            <!--eiana-users-->
+            <fileset dir="${basedir}/eiana-users/src">                  <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-users/test/conf">            <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-users/test/dao">             <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-users/test/hibernate">       <include name="**/*.java" /></fileset>
+            <!--eiana-util-->
+            <fileset dir="${basedir}/eiana-util/src">                   <include name="**/*.java" /></fileset>
+            <!--facade-admin-->
+            <fileset dir="${basedir}/facade-admin/src">                 <include name="**/*.java" /></fileset>
+            <!--facade-common-->
+            <fileset dir="${basedir}/facade-common/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/facade-common/test">               <include name="**/*.java" /></fileset>
+            <!--facade-system-->
+            <fileset dir="${basedir}/facade-system/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/facade-system/test/bean">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/facade-system/test/conf">          <include name="**/*.java" /></fileset>
+            <!--integration-rt-->
+            <fileset dir="${basedir}/integration-rt/src">               <include name="**/*.java" /></fileset>
+            <!--integration-securid-->
+            <fileset dir="${basedir}/integration-securid/src">          <include name="**/*.java" /></fileset>
+        </cobertura-report>
     </target>
 
     <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
@@ -179,5 +248,5 @@
     If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">        
         <antcall target="all.test"/>
     </target>
-
+    
 </project>
