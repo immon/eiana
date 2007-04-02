@@ -27,8 +27,7 @@ public class AuthenticationServiceBeanTest {
 
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
         assert authenticatedUser != null;
-        assert TestUserManager.ADMIN_FIRST_NAME_VALID.equals(authenticatedUser.getFirstName());
-        assert TestUserManager.ADMIN_LAST_NAME_VALID.equals(authenticatedUser.getLastName());
+        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
     //could be moved to failure package
@@ -75,8 +74,7 @@ public class AuthenticationServiceBeanTest {
                         TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
                 AuthenticatedUser authenticatedUser = authService.authenticate(e.getToken(), securIDAuth);
-                assert TestUserManager.ADMIN_WITH_SECURID_FIRST_NAME_VALID.equals(authenticatedUser.getFirstName());
-                assert TestUserManager.ADMIN_WITH_SECURID_LAST_NAME_VALID.equals(authenticatedUser.getLastName());
+                assert TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN.equals(authenticatedUser.getUserName());
                 return;
             }
         }

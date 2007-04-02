@@ -20,9 +20,13 @@ import java.security.Permission;
 public class AuthenticatedUser {
 
     /**
-     * A user who got authenticated.
+     * A identifier of a user who got authenticated.
      */
-    private UserVO user;
+    private long objId;
+    /**
+     * A name of a user who got authenticated.
+     */
+    private String userName;
     /**
      * A flag representing whether the user has been invalidated.
      */
@@ -35,45 +39,15 @@ public class AuthenticatedUser {
      * a valid instance of an <code>AuthenticatedUser</code>, however this would mean a deliberate
      * action taken by a developer.)</p>
      *
-     * @param user the user to be represented by this authenticated user
+     * @param objId the identifier of the authenticated user.
+     * @param userName the user name of the authenticated user.
      * @throws IllegalArgumentException when user is null
      */
-    AuthenticatedUser(UserVO user) {
-        this.user = user;
-        this.invalidated = false;
+    public AuthenticatedUser(long objId, String userName) {
+        this.objId = objId;
+        this.userName = userName;
     }
 
-    /**
-     * Determines whether the user is in a given role.
-     *
-     * @param role the role that must be checked the user is in.
-     * @throws AccessDeniedException when this user is not is the role
-     * @throws AuthenticationRequiredException when this user requires to re-authenticate in the system.
-     * This exception may be caused, for example, by a timed-out session.
-     * @throws UserInvalidatedException when the user has been invalidated.
-     */
-    public void isInRole(RoleVO role) throws AccessDeniedException, AuthenticationRequiredException {
-        if (invalidated) throw new UserInvalidatedException(user.getUserName());
-        if (!user.hasRole(role)) throw new AccessDeniedException("user " + user.getUserName() + " not in a role " + role.getType());
-    }
-
-    /**
-     * Determines whether the user is in a one of a given roles.
-     *
-     * @param roles the set of the roles that must be checked the user is in.
-     * @throws AccessDeniedException when this user is not is the role
-     * @throws AuthenticationRequiredException when this user requires to re-authenticate in the system.
-     * This exception may be caused, for example, by a timed-out session.
-     * @throws UserInvalidatedException when the user has been invalidated.
-     */
-    public void isInAnyRole(Set<RoleVO> roles) throws AccessDeniedException, AuthenticationRequiredException {
-         if (invalidated) throw new UserInvalidatedException(user.getUserName());
-         if (!user.hasAnyRole(roles)) throw new AccessDeniedException("user " + user.getUserName() + " not in any role");
-     }
-
-    public boolean hasRole(RoleVO role) {
-        return user.hasRole(role);    
-    }
 
     /**
      * Invalidates this user object. After the invalidation happens the object can not be used as a valid
@@ -84,51 +58,15 @@ public class AuthenticatedUser {
         invalidated = false;
     }
 
+    public long getObjId() {
+        return objId;
+    }
+
     public String getUserName() {
-        return user.getUserName();
+        return userName;
     }
 
-    public String getFirstName() {
-        return user.getFirstName();
-    }
-
-    public String getLastName() {
-        return user.getLastName();
-    }
-
-    public String getOrganization() {
-        return user.getOrganization();
-    }
-
-    public boolean isAdmin() {
-        return user.isAdmin();
-    }
-
-    public Set<RoleVO> getRoles() {
-        return user.getRoles();
-    }
-
-    public Long getObjId() {
-        return user.getObjId();
-    }
-
-    public Timestamp getCreated() {
-        return user.getCreated();
-    }
-
-    public Timestamp getModified() {
-        return user.getModified();
-    }
-
-    public String getCreatedBy() {
-        return user.getCreatedBy();
-    }
-
-    public String getModifiedBy() {
-        return user.getModifiedBy();
-    }
-
-    public Set<String> getRoleDomainNames() {
-        return user.getRoleDomainNames();
+    public boolean isInvalidated() {
+        return invalidated;
     }
 }
