@@ -52,7 +52,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         return delegate.getTransaction(id);
     }
 
-    public List<SimpleTransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public List<TransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
         return delegate.findOpenTransactions();
     }

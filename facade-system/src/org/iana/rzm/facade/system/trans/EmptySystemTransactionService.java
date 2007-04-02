@@ -9,6 +9,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -27,8 +28,8 @@ public class EmptySystemTransactionService implements SystemTransactionService {
         return null;
     }
 
-    public List<SimpleTransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        return null;
+    public List<TransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        return new ArrayList<TransactionVO>();
     }
 
     public void performTransactionTechnicalCheck(DomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException {

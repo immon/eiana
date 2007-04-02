@@ -17,7 +17,7 @@ public interface SystemTransactionService extends RZMStatefulService {
 
     TransactionVO getTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
-    List<SimpleTransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    List<TransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     void performTransactionTechnicalCheck(DomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
 
