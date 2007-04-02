@@ -81,12 +81,12 @@ public class UserManagerBeanAccuracyTest {
         dao.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
         dao.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
 
-        List<RZMUser> result = manager.findUsersRequiredToConfirm("aaa", SystemRole.SystemType.AC);
+        List<RZMUser> result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
         assert result.size() == 1;
         RZMUser user = result.iterator().next();
         assert "user-sys1".equals(user.getLoginName());
 
-        result = manager.findUsersEligibleToConfirm("aaa", SystemRole.SystemType.TC);
+        result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, false);
         assert result.size() == 2;
         Set<String> loginNames = new HashSet<String>();
         for (RZMUser u : result) loginNames.add(u.getLoginName());

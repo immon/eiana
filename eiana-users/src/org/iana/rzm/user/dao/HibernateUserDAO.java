@@ -2,6 +2,7 @@ package org.iana.rzm.user.dao;
 
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.AdminRole;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.List;
@@ -66,5 +67,16 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
             query += "    and role.acceptFrom = true";
         Object[] args = {roleName, roleType};
         return (List<RZMUser>) getHibernateTemplate().find(query, args);
+    }
+
+    public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
+        String query = "select user " +
+                "from " +
+                "    RZMUser as user " +
+                "    inner join user.roles as role " +
+                "where " +
+                "    role.class = SystemRole" +
+                "    and role.type = ? ";
+        return (List<RZMUser>) getHibernateTemplate().find(query, roleType);
     }
 }

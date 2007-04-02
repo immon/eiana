@@ -68,4 +68,8 @@ public class StateConfirmations implements Confirmation {
     public boolean isReceived() {
         return pendingConfirmations == null || pendingConfirmations.isEmpty();
     }
+
+    public Set<RZMUser> getUsersAbleToAccept() {
+        return null;
+    }
 }

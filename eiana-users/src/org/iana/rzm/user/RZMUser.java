@@ -30,6 +30,7 @@ public class RZMUser implements TrackedObject {
     private String loginName;
     @Basic
     private String email;
+    // todo ono-to-one, delete orphans
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = MD5Password.class)
     @JoinColumn(name = "Password_objId")
     private Password password;

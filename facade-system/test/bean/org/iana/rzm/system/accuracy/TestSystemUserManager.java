@@ -4,11 +4,10 @@ package org.iana.rzm.system.accuracy;
  * @author Piotr Tkaczyk
  */
 
-import org.iana.rzm.user.*;
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.user.*;
 
 import java.util.List;
-import java.util.Set;
 
 public class TestSystemUserManager implements UserManager {
 
@@ -43,11 +42,11 @@ public class TestSystemUserManager implements UserManager {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType) {
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType, boolean acceptFrom, boolean mustAccept) {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType) {
+    public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
         throw new IllegalStateException("Not implemented yet.");
     }
 

@@ -37,11 +37,12 @@ public class UserManagerBean implements UserManager {
         return null;
     }
 
-    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType) {
-        return dao.findUsersInSystemRole(name, roleType, true, false);
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
+                                               boolean acceptFrom, boolean mustAccept) {
+        return dao.findUsersInSystemRole(name, roleType, acceptFrom, mustAccept);
     }
 
-    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType) {
-        return dao.findUsersInSystemRole(name, roleType, true, true);
+    public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
+        return dao.findUsersInAdminRole(roleType);
     }
 }
