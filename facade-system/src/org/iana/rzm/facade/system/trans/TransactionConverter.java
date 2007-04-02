@@ -44,21 +44,21 @@ class TransactionConverter {
         if (fieldChanges.containsKey("whoisServer")) {
             SimpleChange simpleChange = (SimpleChange) fieldChanges.get("whoisServer");
             TransactionActionVO action = new TransactionActionVO();
-            action.setName(TransactionActionVO.Name.MODIFY_WHOIS_SERVER);
+            action.setName(TransactionActionVO.MODIFY_WHOIS_SERVER);
             action.addChange(toChangeVOSimple("whoisServer", simpleChange));
             actions.add(action);
         }
         if (fieldChanges.containsKey("registryUrl")) {
             SimpleChange simpleChange = (SimpleChange) fieldChanges.get("registryUrl");
             TransactionActionVO action = new TransactionActionVO();
-            action.setName(TransactionActionVO.Name.MODIFY_REGISTRATION_URL);
+            action.setName(TransactionActionVO.MODIFY_REGISTRATION_URL);
             action.addChange(toChangeVOSimple("registryUrl", simpleChange));
             actions.add(action);
         }
 
         if (fieldChanges.containsKey("adminContacts") || fieldChanges.containsKey("techContacts")) {
             TransactionActionVO action = new TransactionActionVO();
-            action.setName(TransactionActionVO.Name.MODIFY_CONTACT);
+            action.setName(TransactionActionVO.MODIFY_CONTACT);
             if (fieldChanges.containsKey("adminContacts")) {
                 CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
                 action.addChange(toChangeVO("adminContacts", adminChange));
