@@ -5,9 +5,7 @@ import org.iana.rzm.common.TrackedObject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * <p/>
@@ -238,6 +236,22 @@ public class RZMUser implements TrackedObject {
                         && sr.isAcceptFrom())
                     return true;
             }
+        return false;
+    }
+
+    final public boolean isInAnyRole(Set<Role> roles, Comparator<? super Role> comparator) {
+        if (roles != null) {
+            for (Role role : roles) {
+                if (isInRole(role, comparator)) return true;
+            }
+        }
+        return false;
+    }
+
+    final public boolean isInRole(Role role, Comparator<? super Role> comparator) {
+        for (Role r : roles) {
+            if (comparator.compare(r, role) == 0) return true;
+        }
         return false;
     }
 }
