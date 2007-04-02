@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"stress",  "GuardedSystemDomainService"})
+@Test(sequential=true, groups = {"stress",  "facade-system"})
 public class GuardedSystemDomainServiceStressTest {
     private static int NUMBER_OF_DOMAINS = 100; //must by changed also in TestSystemUserManagerStress class
     private SystemDomainService gsds;
