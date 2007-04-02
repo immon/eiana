@@ -8,30 +8,22 @@ import java.util.ArrayList;
  */
 public class TransactionActionVO {
 
-    public static enum Name {
-        CREATE_NEW_TLD,
-        MODIFY_SUPPORTING_ORGANIZATION,
-        MODIFY_CONTACT,
-        MODIFY_NAMESERVER,
-        MODIFY_REGISTRATION_URL,
-        MODIFY_WHOIS_SERVER
-    }
+    public static final String MODIFY_CONTACT = "modify contact";
+    public static final String MODIFY_REGISTRATION_URL = "modify registration url";
+    public static final String MODIFY_WHOIS_SERVER = "modify whois server";
 
-    private Name name;
+    private String name;
     private List<ChangeVO> change;
 
-    public Name getName() {
+
+    public String getName() {
         return name;
     }
 
-    public void setName(Name name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setName(String name) {
-        this.name = Name.valueOf(name);
-    }
-    
     public List<ChangeVO> getChange() {
         return change;
     }
