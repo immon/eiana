@@ -3,6 +3,8 @@ package org.iana.rzm.trans.confirmation;
 import org.iana.rzm.user.RZMUser;
 
 import javax.persistence.*;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -37,5 +39,11 @@ public class UserConfirmation extends AbstractConfirmation {
 
     public boolean isReceived() {
         return accepted;
+    }
+
+    public Set<RZMUser> getUsersAbleToAccept() {
+        Set<RZMUser> result = new HashSet<RZMUser>();
+        if (!accepted) result.add(user);
+        return result;
     }
 }

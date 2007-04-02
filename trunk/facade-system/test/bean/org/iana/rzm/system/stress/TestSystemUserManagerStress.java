@@ -1,10 +1,9 @@
 package org.iana.rzm.system.stress;
 
-import org.iana.rzm.user.*;
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.user.*;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -44,11 +43,11 @@ public class TestSystemUserManagerStress implements UserManager {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType) {
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType, boolean acceptFrom, boolean mustAccept) {
         throw new IllegalStateException("Not implemented yet.");
     }
 
-    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType) {
+    public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
         throw new IllegalStateException("Not implemented yet.");
     }
 

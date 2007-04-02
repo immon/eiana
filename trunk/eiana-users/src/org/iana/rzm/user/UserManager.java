@@ -20,7 +20,8 @@ public interface UserManager {
 
     public List<RZMUser> find(UserCriteria criteria);
 
-    public List<RZMUser> findUsersEligibleToConfirm(String name, SystemRole.SystemType roleType);
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
+                                               boolean acceptFrom, boolean mustAccept);
 
-    public List<RZMUser> findUsersRequiredToConfirm(String name, SystemRole.SystemType roleType);
+    public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
 }

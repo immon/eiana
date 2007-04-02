@@ -49,9 +49,13 @@ public class MandatoryRoleConfirmations extends AbstractConfirmation {
         return receivedConfirmations.containsAll(getRequiredConfirmations());
     }
 
+    public Set<RZMUser> getUsersAbleToAccept() {
+        return getRequiredConfirmations();
+    }
+
     private Set<RZMUser> getRequiredConfirmations() {
         ObjectFactory of = JbpmContext.getCurrentJbpmContext().getObjectFactory();
         UserManager um = (UserManager) of.createObject("userManager");
-        return new HashSet<RZMUser>(um.findUsersRequiredToConfirm(name, type));
+        return new HashSet<RZMUser>(um.findUsersInSystemRole(name, type, true, true));
     }
 }

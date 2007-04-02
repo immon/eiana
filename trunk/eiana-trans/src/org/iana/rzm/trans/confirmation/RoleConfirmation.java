@@ -44,4 +44,8 @@ public abstract class RoleConfirmation extends AbstractConfirmation {
     public boolean isReceived() {
         return accepted;
     }
+
+    public String getName() {
+        return name;
+    }
 }
