@@ -2,6 +2,7 @@ package org.iana.rzm.system.stress;
 
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.*;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -9,11 +10,13 @@ import java.util.List;
  * @author Piotr Tkaczyk
  */
 
+@Test(sequential=true, groups = {"stress", "facade-system"})
 public class TestSystemUserManagerStress implements UserManager {
 
     private static int NUMBER_OF_DOMAINS = 100;
     private final RZMUser user;
 
+    @Test
     public TestSystemUserManagerStress() {
         this.user = createSystemUser();
     }

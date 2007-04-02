@@ -28,6 +28,8 @@ public class DomainDAOTest {
         dao.create(domainCreated);
         Domain domainRetrieved = dao.get(domainCreated.getObjId());
         assert "dao.org".equals(domainRetrieved.getName());
+        domainRetrieved = dao.get(domainCreated.getName());
+        assert "dao.org".equals(domainRetrieved.getName());
     }
 
     @Test(dependsOnMethods = {"testDomainCreate"})
