@@ -293,6 +293,7 @@
       <module fileurl="file://$PROJECT_DIR$/facade-system/facade-system.iml" filepath="$PROJECT_DIR$/facade-system/facade-system.iml" />
       <module fileurl="file://$PROJECT_DIR$/integration-rt/integration-rt.iml" filepath="$PROJECT_DIR$/integration-rt/integration-rt.iml" />
       <module fileurl="file://$PROJECT_DIR$/integration-securid/integration-securid.iml" filepath="$PROJECT_DIR$/integration-securid/integration-securid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/tests/tests.iml" filepath="$PROJECT_DIR$/tests/tests.iml" />
     </modules>
   </component>
