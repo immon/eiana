@@ -32,6 +32,10 @@ public interface IDomainVO extends Trackable {
         THIRD_PARTY_PENDING
     }
 
+    public Long getObjId();
+
+    public void setObjId(Long id);
+    
     ContactVO getSupportingOrg();
 
     void setSupportingOrg(ContactVO supportingOrg);

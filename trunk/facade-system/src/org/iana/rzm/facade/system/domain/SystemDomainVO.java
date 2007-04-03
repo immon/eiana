@@ -21,6 +21,14 @@ class SystemDomainVO implements IDomainVO {
         this.domain = domain;    
     }
 
+    public Long getObjId() {
+        return domain.getObjId();
+    }
+
+    public void setObjId(Long id) {
+        domain.setObjId(id);
+    }
+
     public ContactVO getSupportingOrg() {
         return domain.getSupportingOrg();
     }
