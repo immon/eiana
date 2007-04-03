@@ -72,6 +72,7 @@ public class TestUserManager implements UserManager {
     private RZMUser createTestAdminUser() {
 
         RZMUser adminUser = new RZMUser();
+        adminUser.setObjId(1L);
         adminUser.setFirstName(ADMIN_FIRST_NAME_VALID);
         adminUser.setLastName(ADMIN_LAST_NAME_VALID);
         adminUser.setLoginName(ADMIN_LOGIN_VALID);
@@ -90,6 +91,7 @@ public class TestUserManager implements UserManager {
     private RZMUser createTestAdminUserWithSecurID() {
 
         RZMUser adminUser = new RZMUser();
+        adminUser.setObjId(1L);
         adminUser.setFirstName(ADMIN_WITH_SECURID_FIRST_NAME_VALID);
         adminUser.setLastName(ADMIN_WITH_SECURID_LAST_NAME_VALID);
         adminUser.setLoginName(ADMIN_WITH_SECURID_VALID_LOGIN);
@@ -106,6 +108,7 @@ public class TestUserManager implements UserManager {
     private RZMUser createTestWrongPasswordUser() {
 
         RZMUser adminUser = new RZMUser();
+        adminUser.setObjId(1L);
         adminUser.setFirstName(COMMON_FIRST_NAME);
         adminUser.setLastName(COMMON_LAST_NAME);
         adminUser.setLoginName(WRONG_PASSWORD_LOGIN);
