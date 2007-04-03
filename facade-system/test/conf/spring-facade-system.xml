@@ -24,6 +24,7 @@
     </bean>
 
     <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
+        <constructor-arg ref="userManager" />
         <constructor-arg ref="SystemDomainServiceBean"/>
     </bean>
 
@@ -58,6 +59,7 @@
     </bean>
 
     <bean id="GuardedSystemDomainServiceTargetStress" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
+        <constructor-arg ref="userManagerStress" />
         <constructor-arg ref="SystemDomainServiceBeanStress"/>
     </bean>
 
