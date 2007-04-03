@@ -2,6 +2,7 @@ package org.iana.rzm.user;
 
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
+import org.iana.notifications.Addressee;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,7 +17,7 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class RZMUser implements TrackedObject {
+public class RZMUser implements Addressee, TrackedObject {
 
     @Basic
     private String firstName;
@@ -106,6 +107,10 @@ public class RZMUser implements TrackedObject {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getName() {
+        return getFirstName() + " " + getLastName();
     }
 
     public void setPassword(String password) {
