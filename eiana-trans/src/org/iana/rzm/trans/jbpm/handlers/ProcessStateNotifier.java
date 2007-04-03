@@ -3,8 +3,12 @@ package org.iana.rzm.trans.jbpm.handlers;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.iana.notifications.*;
+import org.iana.notifications.template.TemplateContactConfirmation;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
 
 import java.util.*;
 
@@ -21,6 +25,8 @@ public class ProcessStateNotifier implements ActionHandler {
     
     public void execute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
+
+
     }
 
     protected void sendNotification(Addressee addressee, Notification notif) throws NotificationException {
@@ -35,5 +41,10 @@ public class ProcessStateNotifier implements ActionHandler {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
         notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
+    }
+
+    protected void sendContactNotification(String domainName, RZMUser user, Object template) throws Exception {
+        Notification notification = notificationTemplate.getNotificationInstance(template);
+        sendNotification(user, notification);
     }
 }

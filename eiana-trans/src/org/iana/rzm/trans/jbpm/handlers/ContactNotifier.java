@@ -7,6 +7,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.trans.confirmation.SystemRoleConfirmation;
 import org.iana.notifications.*;
 import org.iana.notifications.template.TemplateContactConfirmation;
 
@@ -22,31 +23,16 @@ public class ContactNotifier extends ProcessStateNotifier implements ActionHandl
     public void execute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
 
-        Set<RZMUser> users = getAllUsersInRole(executionContext, td.getCurrentDomain().getName());
+        String domainName = td.getCurrentDomain().getName();
+
+        Set<RZMUser> users = new HashSet<RZMUser>();
+        users.addAll(new SystemRoleConfirmation(domainName, SystemRole.SystemType.AC).getUsersAbleToAccept());
+        users.addAll(new SystemRoleConfirmation(domainName, SystemRole.SystemType.TC).getUsersAbleToAccept());
 
         for(RZMUser user : users)
-            sendContactNotification(td.getCurrentDomain().getName(), user);
-    }
-
-    private void sendContactNotification(String domainName, RZMUser user) throws Exception {
-        for (Role role : user.getRoles()) {
-            if (((SystemRole)role).isNotify()) {
-                TemplateContactConfirmation tCC = new TemplateContactConfirmation(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()));
-                Notification notification = notificationTemplate.getNotificationInstance(tCC);
-                String userFullName = user.getFirstName() + " " + user.getLastName();
-                sendNotification(new EmailAddress(userFullName, user.getEmail()), notification);
+            for (Role role : user.getRoles()) {
+                TemplateContactConfirmation template = new TemplateContactConfirmation(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()));
+                sendContactNotification(domainName, user, template);
             }
-        }
-    }
-
-    private Set<RZMUser> getAllUsersInRole(ExecutionContext executionContext, String domainName) {
-        ObjectFactory of = executionContext.getJbpmContext().getObjectFactory();
-        UserManager um = (UserManager) of.createObject("userManager");
-        Set<RZMUser> users = new HashSet<RZMUser>();
-        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.AC, true, true));
-        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.TC, true, true));
-        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.AC, true, false));
-        users.addAll(um.findUsersInSystemRole(domainName, SystemRole.SystemType.TC, true, false));
-        return users;
     }
 }
