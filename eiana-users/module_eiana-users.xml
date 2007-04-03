@@ -27,6 +27,8 @@
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.dom4j.classpath"/>
     <path refid="library.mysql.classpath"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
   </path>
   
   
@@ -55,7 +57,7 @@
   
   <target name="compile.module.eiana-users" depends="compile.module.eiana-users.production,compile.module.eiana-users.tests" description="Compile module eiana-users"/>
   
-  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util" description="Compile module eiana-users; production classes">
+  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util,compile.module.eiana-notifications" description="Compile module eiana-users; production classes">
     <mkdir dir="${eiana-users.output.dir}"/>
     <javac destdir="${eiana-users.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-users}/javac">
       <compilerarg line="${compiler.args.eiana-users}"/>
