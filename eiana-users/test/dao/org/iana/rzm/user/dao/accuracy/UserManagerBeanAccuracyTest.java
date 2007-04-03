@@ -72,7 +72,7 @@ public class UserManagerBeanAccuracyTest {
     }
 
     @Test
-    public void testFindConfirmingUsers() {
+    public void testFindUsersInRoles() {
         dao.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
         dao.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
         dao.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
@@ -91,5 +91,15 @@ public class UserManagerBeanAccuracyTest {
         Set<String> loginNames = new HashSet<String>();
         for (RZMUser u : result) loginNames.add(u.getLoginName());
         assert loginNames.contains("user-sys3") && loginNames.contains("user-sys4");
+
+        result = manager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
+        assert result.size() == 1;
+        user = result.iterator().next();
+        assert "user-admin1".equals(user.getLoginName());
+
+        result = manager.findUsersInAdminRole(AdminRole.AdminType.IANA);
+        assert result.size() == 1;
+        user = result.iterator().next();
+        assert "user-admin2".equals(user.getLoginName());
     }
 }

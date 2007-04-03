@@ -100,5 +100,15 @@ public class UserDAOTest {
         assert result.size() == 1;
         user = result.iterator().next();
         assert "user-DAOsys4".equals(user.getLoginName());
+
+        result = dao.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
+        assert result.size() == 1;
+        user = result.iterator().next();
+        assert "user-DAOadmin1".equals(user.getLoginName());
+
+        result = dao.findUsersInAdminRole(AdminRole.AdminType.IANA);
+        assert result.size() == 1;
+        user = result.iterator().next();
+        assert "user-DAOadmin2".equals(user.getLoginName());
     }
 }
