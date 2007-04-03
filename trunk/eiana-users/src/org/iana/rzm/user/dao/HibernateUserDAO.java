@@ -75,7 +75,7 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
                 "    RZMUser as user " +
                 "    inner join user.roles as role " +
                 "where " +
-                "    role.class = SystemRole" +
+                "    role.class = AdminRole" +
                 "    and role.type = ? ";
         return (List<RZMUser>) getHibernateTemplate().find(query, roleType);
     }
