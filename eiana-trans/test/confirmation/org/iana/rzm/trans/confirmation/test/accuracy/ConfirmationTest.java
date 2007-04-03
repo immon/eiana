@@ -11,6 +11,7 @@ import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -22,9 +23,12 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Jakub Laszkiewicz
@@ -38,7 +42,7 @@ public class ConfirmationTest {
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     private UserDAO userDAO;
-
+    private Set<RZMUser> usersMap;
 
     @BeforeClass
     public void init() {
@@ -49,9 +53,15 @@ public class ConfirmationTest {
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userDAO = (UserDAO) appCtx.getBean("userDAO");
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        userDAO.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        userDAO.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
-        userDAO.create(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
+
+        usersMap = new HashSet<RZMUser>();
+        usersMap.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        usersMap.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+        usersMap.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
+
+        for(RZMUser user : usersMap)
+            userDAO.create(user);
+
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
         txMgr.commit(txStatus);
@@ -172,5 +182,11 @@ public class ConfirmationTest {
 
         processDAO.close();
         txMgr.commit(txStatus);
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        for(RZMUser user : usersMap)
+            userDAO.delete(user);
     }
 }
