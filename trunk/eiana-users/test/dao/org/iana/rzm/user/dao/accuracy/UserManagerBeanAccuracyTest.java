@@ -5,13 +5,13 @@ import org.iana.rzm.user.conf.SpringUsersApplicationContext;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +27,7 @@ public class UserManagerBeanAccuracyTest {
     UserDAO dao;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
+    Set<RZMUser> usersMap;
 
     @BeforeClass
     public void init() {
@@ -73,13 +74,17 @@ public class UserManagerBeanAccuracyTest {
 
     @Test
     public void testFindUsersInRoles() {
-        dao.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
-        dao.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
-        dao.create(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("aaa", false, false, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        dao.create(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+        usersMap = new HashSet<RZMUser>();
+        usersMap.add(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
+        usersMap.add(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
+        usersMap.add(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
+        usersMap.add(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
+        usersMap.add(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("aaa", false, false, SystemRole.SystemType.TC)));
+        usersMap.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        usersMap.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+
+        for(RZMUser user : usersMap)
+            dao.create(user);
 
         List<RZMUser> result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
         assert result.size() == 1;
@@ -101,5 +106,11 @@ public class UserManagerBeanAccuracyTest {
         assert result.size() == 1;
         user = result.iterator().next();
         assert "user-admin2".equals(user.getLoginName());
+    }
+
+    @AfterClass
+    private void cleanUp() {
+        for(RZMUser user : usersMap)
+            dao.delete(user);
     }
 }

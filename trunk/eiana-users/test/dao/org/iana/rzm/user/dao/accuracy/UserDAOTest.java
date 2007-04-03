@@ -5,18 +5,14 @@ import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.Role;
 import org.iana.rzm.user.conf.SpringUsersApplicationContext;
-import org.iana.rzm.common.TrackData;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
 
 import java.util.List;
-import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
-import java.sql.Timestamp;
 
 
 /**
@@ -30,6 +26,7 @@ public class UserDAOTest {
 
     private UserDAO dao;
     private long crObjId;
+    Set<RZMUser> usersMap;
 
     @BeforeClass
     public void init() {
@@ -73,12 +70,16 @@ public class UserDAOTest {
 
     @Test
     public void testFindUsersInRole() {
-        dao.create(UserManagementTestUtil.createUser("DAOsys1", UserManagementTestUtil.createSystemRole("DAOaaa", true, true, SystemRole.SystemType.AC)));
-        dao.create(UserManagementTestUtil.createUser("DAOsys2", UserManagementTestUtil.createSystemRole("DAOaaa", true, false, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("DAOsys3", UserManagementTestUtil.createSystemRole("DAOaaa", false, false, SystemRole.SystemType.SO)));
-        dao.create(UserManagementTestUtil.createUser("DAOsys4", UserManagementTestUtil.createSystemRole("DAOaaa", true, true, SystemRole.SystemType.TC)));
-        dao.create(UserManagementTestUtil.createUser("DAOadmin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        dao.create(UserManagementTestUtil.createUser("DAOadmin2", new AdminRole(AdminRole.AdminType.IANA)));
+        usersMap = new HashSet<RZMUser>();
+        usersMap.add(UserManagementTestUtil.createUser("DAOsys1", UserManagementTestUtil.createSystemRole("DAOaaa", true, true, SystemRole.SystemType.AC)));
+        usersMap.add(UserManagementTestUtil.createUser("DAOsys2", UserManagementTestUtil.createSystemRole("DAOaaa", true, false, SystemRole.SystemType.TC)));
+        usersMap.add(UserManagementTestUtil.createUser("DAOsys3", UserManagementTestUtil.createSystemRole("DAOaaa", false, false, SystemRole.SystemType.SO)));
+        usersMap.add(UserManagementTestUtil.createUser("DAOsys4", UserManagementTestUtil.createSystemRole("DAOaaa", true, true, SystemRole.SystemType.TC)));
+        usersMap.add(UserManagementTestUtil.createUser("DAOadmin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        usersMap.add(UserManagementTestUtil.createUser("DAOadmin2", new AdminRole(AdminRole.AdminType.IANA)));
+
+        for(RZMUser user : usersMap)
+            dao.create(user);
 
         List<RZMUser> result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.AC, true, true);
         assert result.size() == 1;
@@ -110,5 +111,11 @@ public class UserDAOTest {
         assert result.size() == 1;
         user = result.iterator().next();
         assert "user-DAOadmin2".equals(user.getLoginName());
+    }
+
+    @AfterClass
+    private void cleanUp() {
+        for(RZMUser user : usersMap)
+            dao.delete(user);
     }
 }
