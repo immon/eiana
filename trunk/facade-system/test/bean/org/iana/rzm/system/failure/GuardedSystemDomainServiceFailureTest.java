@@ -123,6 +123,7 @@ public class GuardedSystemDomainServiceFailureTest {
 
     private UserVO generateUser() {
         UserVO user = new UserVO();
+        user.setObjId(1L);
         user.setFirstName("Geordi");
         user.setLastName("LaForge");
         user.setUserName("test");
