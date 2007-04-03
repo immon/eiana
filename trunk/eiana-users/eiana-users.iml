@@ -21,6 +21,7 @@
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="library" name="dom4j" level="project" />
     <orderEntry type="library" name="mysql" level="project" />
+    <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntryProperties />
   </component>
 </module>
