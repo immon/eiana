@@ -45,7 +45,8 @@ public class NotificationSenderBean implements NotificationSender {
         StringBuffer address = new StringBuffer("");
         for(Iterator i = addressees.iterator();  i.hasNext();) {
             Addressee add = (Addressee)i.next();
-            address.append(add.getName() + "<" + add.getEmail() + ">");
+            address.append(add.getName());
+            address.append("<");address.append(add.getEmail()); address.append(">");
             if (i.hasNext()) address.append(",");
         }
         sendMail(address.toString(), subject, body);
@@ -61,7 +62,8 @@ public class NotificationSenderBean implements NotificationSender {
         StringBuffer address = new StringBuffer("");
         for(Iterator i = addressees.iterator();  i.hasNext();) {
             Addressee add = (Addressee)i.next();
-            address.append(add.getName() + "<" + add.getEmail() + ">");
+            address.append(add.getName());
+            address.append("<");address.append(add.getEmail()); address.append(">");
             if (i.hasNext()) address.append(",");
         }
         sendMail(address.toString(), content.getSubject(), content.getBody());
