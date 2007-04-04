@@ -16,12 +16,9 @@ import org.iana.rzm.domain.Address;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.rzm.user.dao.UserDAO;
-import org.iana.notifications.EmailAddress;
-import org.iana.notifications.EmailAddresses;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 

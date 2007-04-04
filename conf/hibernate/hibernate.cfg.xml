@@ -49,12 +49,7 @@
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
 
-        <mapping class="org.iana.notifications.EmailAddress" />
-        <mapping class="org.iana.notifications.EmailAddresses" />
-
-
-
-         <!-- ############################################ -->
+        <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->
         <!-- ############################################ -->
 
