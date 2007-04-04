@@ -5,15 +5,11 @@ package org.iana.rzm.trans.jbpm.handlers;
 
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.configuration.ObjectFactory;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
 import org.iana.rzm.trans.confirmation.SystemRoleConfirmation;
 import org.iana.notifications.template.TemplateContactConfirmationRemainder;
-import org.iana.notifications.Notification;
-import org.iana.notifications.EmailAddress;
 
 import java.util.Set;
 import java.util.HashSet;

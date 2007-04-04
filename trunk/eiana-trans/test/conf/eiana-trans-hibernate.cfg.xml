@@ -58,9 +58,6 @@
         <mapping class="org.iana.rzm.trans.confirmation.SystemRoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
 
-        <mapping class="org.iana.notifications.EmailAddress" />
-        <mapping class="org.iana.notifications.EmailAddresses" />
-        
         <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->
         <!-- ############################################ -->
