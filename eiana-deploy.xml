@@ -69,6 +69,7 @@
                 <path location="${eiana-util.output.dir}"/>
                 <path location="${eiana-users.output.dir}"/>
                 <path location="${eiana-trans.output.dir}"/>
+                <path location="${eiana-notifications.output.dir}"/>
                 <fileset dir="${lib.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
@@ -158,7 +159,7 @@
              <not><isset property="test.group"/></not>
          </condition>
 
-         <cobertura-instrument todir="${basedir}/classes/cobertura" >
+         <cobertura-instrument>
             <fileset dir="${basedir}/classes">
                 <include name="**/*.class"/>
             </fileset>
@@ -189,8 +190,12 @@
 
          </testng>
 
-         <delete dir="${test.cobertura.output}" />
          <mkdir dir="${test.cobertura.output}"/>
+         <delete>
+            <fileset dir="${test.cobertura.output}" >
+                <include name="**/*" />
+            </fileset>
+         </delete>
 
          <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
             <!--common-dao-->
@@ -206,7 +211,8 @@
             <fileset dir="${basedir}/eiana-logs/src">                   <include name="**/*.java" /></fileset>
             <!--eiana-notifications-->
             <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
-            <!--eiana-trans-->
+            <fileset dir="${basedir}/eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
+             <!--eiana-trans-->
             <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
