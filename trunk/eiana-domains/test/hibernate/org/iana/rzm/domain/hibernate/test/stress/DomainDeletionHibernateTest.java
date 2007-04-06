@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-domains","stress"})
+@Test(groups = {"hibernate", "eiana-domains","stress", "eiana-domains-stress-delete"},
+        dependsOnGroups = {"eiana-domains-stress-update"})
 public class DomainDeletionHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         session.delete(o);
