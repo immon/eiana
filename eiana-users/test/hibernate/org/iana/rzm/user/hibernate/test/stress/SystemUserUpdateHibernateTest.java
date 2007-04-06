@@ -11,7 +11,8 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-users", "stress", "eiana-users-stress-update"})
+@Test(groups = {"hibernate", "eiana-users", "stress", "eiana-users-stress-update"},
+        dependsOnGroups = {"eiana-users-stress-creation"})
 public class SystemUserUpdateHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         RZMUser systemUser = HibernateMappingTestUtil.setupUser((RZMUser ) o, "changed", false);

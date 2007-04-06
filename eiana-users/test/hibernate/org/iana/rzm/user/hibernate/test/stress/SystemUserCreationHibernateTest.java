@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-users", "stress", "eiana-users-stress-creation"})
+@Test(groups = {"eiana-users", "stress", "eiana-users-stress-creation"})
 public class SystemUserCreationHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         RZMUser systemUser = HibernateMappingTestUtil.setupUser(new RZMUser(), "" + o, true);
@@ -23,7 +23,7 @@ public class SystemUserCreationHibernateTest extends HibernateOperationStressTes
 
     protected List getList() throws Exception {
         List result = new ArrayList();
-        for (int i = 0; i < 1000; i++) result.add("user-" + i);
+        for (int i = 0; i < 100; i++) result.add("user-" + i);
         return result;
     }
 

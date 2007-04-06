@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-users", "stress", "eiana-users-stress-deletion"})
+@Test(groups = {"hibernate", "eiana-users", "stress", "eiana-users-stress-deletion"},
+        dependsOnGroups = {"eiana-users-stress-update"})
 public class SystemUserDeletionHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         session.delete(o);
