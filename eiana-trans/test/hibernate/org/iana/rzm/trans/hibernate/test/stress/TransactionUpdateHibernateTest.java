@@ -17,6 +17,8 @@ import java.net.MalformedURLException;
 /**
  * @author Jakub Laszkiewicz
  */
+@Test(groups = {"hibernate", "eiana-trans", "stress", "eiana-trans-stress-update"},
+        dependsOnGroups = {"eiana-trans-stress-create"})
 public class TransactionUpdateHibernateTest extends HibernateOperationStressTest {
     private Domain getDomain(String name) throws InvalidNameException, MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
         Domain domain = HibernateMappingTestUtil.setupDomain(new Domain(name));
@@ -40,7 +42,7 @@ public class TransactionUpdateHibernateTest extends HibernateOperationStressTest
         return session.createCriteria(Transaction.class).list();
     }
 
-    @Test(groups = {"hibernate", "eiana-trans","stress"})
+    @Test
     public void oneTransaction() throws Exception {
         super.oneTransaction();
     }
