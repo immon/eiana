@@ -10,7 +10,6 @@ import java.util.List;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"stress", "facade-system"})
 public class TestSystemUserManagerStress implements UserManager {
 
     private static int NUMBER_OF_DOMAINS = 100;
@@ -27,7 +26,7 @@ public class TestSystemUserManagerStress implements UserManager {
 
     public RZMUser get(String loginName) {
         //"facade-common-test" could be a constant
-        if ("test".equals(loginName)) {
+        if ("testSystemStress".equals(loginName)) {
             return user;
         } else {
             return null;
@@ -58,8 +57,8 @@ public class TestSystemUserManagerStress implements UserManager {
         RZMUser userCreated = new RZMUser();
         userCreated.setFirstName("Geordi");
         userCreated.setLastName("LaForge");
-        userCreated.setLoginName("test");
-        userCreated.setPassword("test");
+        userCreated.setLoginName("testSystemStress");
+        userCreated.setPassword("testSystemStress");
         userCreated.setObjId(1L);
         try {
             for (int i=0; i<NUMBER_OF_DOMAINS; i++) {
