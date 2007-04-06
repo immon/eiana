@@ -53,8 +53,4 @@ public class EmailAddress implements Cloneable {
     private void isValidEmail(String email) throws InvalidNameException {
         if (email != null && !email.matches(EMAIL_PATTERN)) throw new InvalidEmailException(email);
     }
-
-    public static void main(String[] args) {
-        new EmailAddress("so-email@post.org");
-    }
 }
