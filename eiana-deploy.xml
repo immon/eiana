@@ -159,6 +159,12 @@
              <not><isset property="test.group"/></not>
          </condition>
 
+         <delete>
+             <fileset dir="${basedir}" >
+                <include name="cobertura.ser" />
+            </fileset>
+         </delete>
+
          <cobertura-instrument>
             <fileset dir="${basedir}/classes">
                 <include name="**/*.class"/>
@@ -212,7 +218,8 @@
             <!--eiana-notifications-->
             <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
-             <!--eiana-trans-->
+            <fileset dir="${basedir}/eiana-notifications/test/dao">     <include name="**/*.java" /></fileset>
+            <!--eiana-trans-->
             <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
@@ -245,13 +252,14 @@
     </target>
 
     <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
-        <property name="test.group.excluded" value="stress"/>
+        <property name="test.group.excluded" value="excluded, stress"/>
         <antcall target="all.test"/>
     </target>
 
     <target name="all.test.slow" description="runs slow tests (includes slow tests e.g. stress tests)
     WARNING: Those tests can take a lot of time.
     If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">        
+        <property name="test.group.excluded" value="excluded"/>
         <antcall target="all.test"/>
     </target>
     
