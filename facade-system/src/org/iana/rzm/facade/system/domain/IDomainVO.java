@@ -75,4 +75,6 @@ public interface IDomainVO extends Trackable {
     State getState();
 
     void setState(DomainVO.State state);
+
+    String getName();
 }
