@@ -89,14 +89,14 @@ public class ConfirmationTest {
 
         Address address = new Address();
         address.setTextAddress("ta" + suffix);
-        address.setCountryCode("cc" + suffix);
+        address.setCountryCode("US");
 
         Contact supportingOrg = new Contact("supporg" + suffix);
-        supportingOrg.addEmail("oldemail" + suffix);
+        supportingOrg.addEmail("oldemail" + suffix + "@post.org");
         supportingOrg.addPhoneNumber("oldnum" + suffix);
 
         List<String> emails = new ArrayList<String>();
-        emails.add("newemail" + suffix);
+        emails.add("newemail" + suffix + "@post.org");
         Contact clonedSupportingOrg = (Contact) supportingOrg.clone();
         clonedSupportingOrg.setEmails(emails);
         List<String> phones = new ArrayList<String>();
@@ -115,7 +115,7 @@ public class ConfirmationTest {
         clonedDomain.setRegistryUrl(null);
         clonedDomain.setSupportingOrg(clonedSupportingOrg);
         Contact newContact = new Contact("aaa" + suffix);
-        newContact.addEmail("nocontactnewemial" + suffix);
+        newContact.addEmail("nocontactnewemial" + suffix + "@post.org");
         //clonedDomain.addTechContact(newContact);
         clonedDomain.setTechContacts(new ArrayList<Contact>());
 

@@ -2,8 +2,10 @@ package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.common.Trackable;
+import org.iana.rzm.common.EmailAddress;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.sql.Timestamp;
 
 /**
@@ -15,7 +17,7 @@ public class ContactVO implements Trackable {
     private List<AddressVO> addresses;
     private List<String> phoneNumbers;
     private List<String> faxNumbers;
-    private List<String> emails;
+    private List<EmailAddress> emails;
     private boolean role;
 
     private Long objId;
@@ -54,11 +56,16 @@ public class ContactVO implements Trackable {
     }
 
     public List<String> getEmails() {
-        return emails;
+        List<String> result = new ArrayList<String>();
+        for (EmailAddress emailAddress : emails)
+            result.add(emailAddress.getEmail());
+        return result;
     }
 
     public void setEmails(List<String> emails) {
-        this.emails = emails;
+        this.emails = new ArrayList<EmailAddress>(); 
+        for (String email : emails)
+            this.emails.add(new EmailAddress(email));
     }
 
     public boolean isRole() {

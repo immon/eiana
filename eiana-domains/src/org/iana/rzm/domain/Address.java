@@ -1,9 +1,8 @@
 package org.iana.rzm.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import org.iana.rzm.common.CountryCode;
+
+import javax.persistence.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -14,8 +13,11 @@ public class Address implements Cloneable{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+    @Basic
     private String textAddress;
-    private String countryCode;
+    @Embedded
+    private CountryCode countryCode;
+    @Basic
     private int id;
 
     public Address() {
@@ -23,7 +25,7 @@ public class Address implements Cloneable{
 
     public Address(String textAddress, String countryCode) {
         this.textAddress = textAddress;
-        this.countryCode = countryCode;
+        this.countryCode = new CountryCode(countryCode);
     }
 
     public Long getObjId() {
@@ -43,11 +45,11 @@ public class Address implements Cloneable{
     }
 
     public String getCountryCode() {
-        return countryCode;
+        return countryCode == null ? null : countryCode.getCountryCode();
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+        this.countryCode = new CountryCode(countryCode);
     }
 
 

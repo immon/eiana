@@ -1,13 +1,14 @@
 package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.iana.rzm.common.EmailAddress;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
-import java.util.*;
 import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -36,7 +37,7 @@ public class Contact implements TrackedObject,Cloneable {
     @CollectionOfElements
     @JoinTable(name = "Contact_Emails")
     @Column(name = "email", nullable = false)
-    private List<String> emails;
+    private List<EmailAddress> emails;
     @Basic
     private boolean role;
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +61,7 @@ public class Contact implements TrackedObject,Cloneable {
         this.addresses = new ArrayList<Address>();
         this.phoneNumbers = new ArrayList<String>();
         this.faxNumbers = new ArrayList<String>();
-        this.emails = new ArrayList<String>();
+        this.emails = new ArrayList<EmailAddress>();
         
         setName(name);
         setAddresses(addresses);
@@ -152,17 +153,21 @@ public class Contact implements TrackedObject,Cloneable {
     }
 
     final public List<String> getEmails() {
-        return Collections.unmodifiableList(emails);
+        List<String> result = new ArrayList<String>();
+        for (EmailAddress email : emails)
+            result.add(email.getEmail());
+        return Collections.unmodifiableList(result);
     }
 
     final public void setEmails(Collection<String> emails) {
         CheckTool.checkCollectionNull(emails, "emails");
         this.emails.clear();
-        CheckTool.addAllNoDup(this.emails, emails);
+        for (String email : emails)
+            CheckTool.addNoDup(this.emails, new EmailAddress(email));
     }
 
     final public void addEmail(String email) {
-        CheckTool.addNoDup(this.emails, email);
+        CheckTool.addNoDup(this.emails, new EmailAddress(email));
     }
 
     final public boolean removeEmail(String email) {
@@ -249,24 +254,22 @@ public class Contact implements TrackedObject,Cloneable {
 
     public Object clone() throws CloneNotSupportedException {
         Contact contact = new Contact();
-        contact.setName(this.name);
-        contact.setRole(this.isRole());
-        contact.setTrackData((TrackData) contact.getTrackData().clone());
-        List<Address> oldAddresses = contact.getAddresses();
-        List<Address> newAddresses = new ArrayList<Address>();
-        for(Address adr : oldAddresses)
-            newAddresses.add((Address) adr.clone());
-        contact.setAddresses(newAddresses);
-        contact.setPhoneNumbers(listOfStringCopy(contact.getPhoneNumbers()));
-        contact.setFaxNumbers(listOfStringCopy(contact.getFaxNumbers()));
-        contact.setEmails(listOfStringCopy(contact.getEmails()));
+        contact.setName(name);
+        contact.setRole(isRole());
+        contact.setTrackData((TrackData) trackData.clone());
+        for(Address addr : addresses)
+            contact.addAddress((Address) addr.clone());
+        contact.setPhoneNumbers(listOfStringCopy(phoneNumbers));
+        contact.setFaxNumbers(listOfStringCopy(faxNumbers));
+        for (EmailAddress email : emails)
+            contact.emails.add((EmailAddress) email.clone());
         return contact;
     }
 
     private List<String> listOfStringCopy(List<String> oldStringCollection){
         List<String> newList = new ArrayList<String>();
         for(String s : oldStringCollection)
-            newList.add(new String(s));
+            newList.add(s);
         return newList;
     }
 }

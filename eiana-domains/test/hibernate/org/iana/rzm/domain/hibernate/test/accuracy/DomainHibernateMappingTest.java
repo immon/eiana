@@ -25,16 +25,16 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         o.setSpecialInstructions("changed special instructions");
         o.setState(Domain.State.OPERATIONS_PENDING);
         o.setStatus(Domain.Status.ACTIVE);
-        o.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true));
+        o.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true, "US"));
         o.setWhoisServer("changed.whoid.server");
         o.removeAdminContact(o.getAdminContacts().iterator().next());
-        o.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true));
+        o.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true, "US"));
         o.removeBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         o.addBreakpoint(Domain.Breakpoint.NS_CHANGE_EXT_REVIEW);
         o.removeNameServer(o.getNameServers().iterator().next());
         o.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns3." + o.getName())));
         o.removeTechContact(o.getTechContacts().iterator().next());
-        o.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true));
+        o.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true, "US"));
         return o;
     }
 
