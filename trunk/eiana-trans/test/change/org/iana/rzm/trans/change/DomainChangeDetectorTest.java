@@ -106,7 +106,7 @@ public class DomainChangeDetectorTest {
     public void testSupportingOrgModification() {
         Domain src = createDomain();
         Domain dst = createDomain();
-        dst.getSupportingOrg().setEmails(createStringList("new-so-email", 2));
+        dst.getSupportingOrg().setEmails(createStringList("new-so-email@post.org", 2));
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null && change.isModification();
         ObjectChange objectChange = (ObjectChange) change;
@@ -152,16 +152,16 @@ public class DomainChangeDetectorTest {
     final static Contact createContact(String prefix) {
         Contact ret = new Contact();
         ret.setName(prefix + "-name");
-        ret.setEmails(createStringList(prefix+"-email", 1));
+        ret.setEmails(createStringList(prefix+"-email@post.org", 1));
         ret.setPhoneNumbers(createStringList(prefix+"-phone", 1));
         ret.setFaxNumbers(createStringList(prefix+"-fax", 1));
-        ret.addAddress(new Address(prefix+"-ta", prefix+"-cc"));
+        ret.addAddress(new Address(prefix+"-ta", "CC"));
         return ret;
     }
 
-    final static List<String> createStringList(String prefix, int size) {
+    final static List<String> createStringList(String suffix, int size) {
         List<String> ret = new ArrayList<String>();
-        for (int i = 0; i < size; ++i) ret.add(prefix + "-" + i);
+        for (int i = 0; i < size; ++i) ret.add(i + "-" + suffix);
         return ret;
     }
 }

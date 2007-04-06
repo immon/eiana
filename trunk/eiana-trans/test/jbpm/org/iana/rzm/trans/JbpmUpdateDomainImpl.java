@@ -71,11 +71,11 @@ public class JbpmUpdateDomainImpl {
         address.setCountryCode("PL");
        
         Contact supportingOrg = new Contact("NotRealOrg");
-        supportingOrg.addEmail("oldemil");
+        supportingOrg.addEmail("oldemail@post.org");
         supportingOrg.addPhoneNumber("staryNumer");
 
         List<String> emails = new ArrayList<String>();
-        emails.add("verynewemail");
+        emails.add("verynewemail@post.org");
         Contact clonedSupportingOrg = (Contact) supportingOrg.clone();
         clonedSupportingOrg.setEmails(emails);
         List<String> phones = new ArrayList<String>();
@@ -94,7 +94,7 @@ public class JbpmUpdateDomainImpl {
         clonedDomain.setRegistryUrl(null);
         clonedDomain.setSupportingOrg(clonedSupportingOrg);
         Contact newContact = new Contact("aaaaaa");
-        newContact.addEmail("noContact new emial");
+        newContact.addEmail("noContact-new-emial@post.org");
         //clonedDomain.addTechContact(newContact);
         clonedDomain.setTechContacts(new ArrayList<Contact>());
         

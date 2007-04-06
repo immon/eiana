@@ -43,7 +43,7 @@ public class DomainChangeApplicatorTest {
         Domain dst = DomainChangeDetectorTest.createDomain();
         dst.getSupportingOrg().setName("new-supporting-org");
         dst.getSupportingOrg().addPhoneNumber("new-email");
-        dst.getSupportingOrg().addEmail("new-email");
+        dst.getSupportingOrg().addEmail("new-email@post.org");
         assert !src.equals(dst);
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null;

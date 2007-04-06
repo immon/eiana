@@ -13,11 +13,11 @@ import java.io.Serializable;
 @Test(groups = {"hibernate", "eiana-domains"})
 public class AddressHibernateMappingTest extends HibernateMappingUnitTest<Address> {
     protected Address create() {
-        return HibernateMappingTestUtil.setupAddress(new Address(), "created");
+        return HibernateMappingTestUtil.setupAddress(new Address(), "created", "US");
     }
 
     protected Address change(Address o) {
-        return HibernateMappingTestUtil.setupAddress(o, "changed");
+        return HibernateMappingTestUtil.setupAddress(o, "changed", "CC");
     }
 
     protected Serializable getId(Address o) {

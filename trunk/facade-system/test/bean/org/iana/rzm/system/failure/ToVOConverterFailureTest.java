@@ -67,11 +67,11 @@ public class ToVOConverterFailureTest {
 
         assert ToVOConverter.toAddressVO(null) == null;
 
-        Address address = new Address();
+        Address address = new Address("text address", "US");
         AddressVO addressVO = ToVOConverter.toAddressVO(address);
 
-        assert addressVO.getTextAddress() == null;
-        assert addressVO.getCountryCode() == null;
+        assert "text address".equals(addressVO.getTextAddress());
+        assert "US".equals(addressVO.getCountryCode());
     }
 
     @Test

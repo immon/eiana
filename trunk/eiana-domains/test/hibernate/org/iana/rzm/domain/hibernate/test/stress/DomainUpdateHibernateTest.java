@@ -22,16 +22,16 @@ public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
         domain.setSpecialInstructions("changed special instructions");
         domain.setState(Domain.State.OPERATIONS_PENDING);
         domain.setStatus(Domain.Status.ACTIVE);
-        domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true));
+        domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true, "US"));
         domain.setWhoisServer("changed.whoid.server");
         domain.removeAdminContact(domain.getAdminContacts().iterator().next());
-        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true));
+        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true, "US"));
         domain.removeBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         domain.addBreakpoint(Domain.Breakpoint.NS_CHANGE_EXT_REVIEW);
         domain.removeNameServer(domain.getNameServers().iterator().next());
         domain.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns3." + domain.getName())));
         domain.removeTechContact(domain.getTechContacts().iterator().next());
-        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true));
+        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true, "US"));
         session.save(domain);
     }
 

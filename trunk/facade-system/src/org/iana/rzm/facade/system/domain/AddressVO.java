@@ -1,12 +1,14 @@
 package org.iana.rzm.facade.system.domain;
 
+import org.iana.rzm.common.CountryCode;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
 public class AddressVO {
 
     private String textAddress;
-    private String countryCode;
+    private CountryCode countryCode;
 
     public String getTextAddress() {
         return textAddress;
@@ -17,10 +19,10 @@ public class AddressVO {
     }
 
     public String getCountryCode() {
-        return countryCode;
+        return countryCode == null ? null : countryCode.getCountryCode();
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+        this.countryCode = new CountryCode(countryCode);
     }
 }

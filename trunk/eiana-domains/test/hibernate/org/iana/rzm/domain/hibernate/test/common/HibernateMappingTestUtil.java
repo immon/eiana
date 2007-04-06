@@ -13,9 +13,9 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 public class HibernateMappingTestUtil {
-    public static Address setupAddress(Address address, String prefix) {
+    public static Address setupAddress(Address address, String prefix, String countryCode) {
         address.setTextAddress(prefix + "text address");
-        address.setCountryCode(prefix + "country code");
+        address.setCountryCode(countryCode);
         return address;
     }
 
@@ -27,10 +27,10 @@ public class HibernateMappingTestUtil {
         return to;
     }
 
-    public static Contact setupContact(Contact contact, String prefix, boolean flag) {
+    public static Contact setupContact(Contact contact, String prefix, boolean flag, String countryCode) {
         contact.setName(prefix + " name");
         contact.setRole(flag);
-        contact.addAddress(HibernateMappingTestUtil.setupAddress(new Address(), "contact"));
+        contact.addAddress(HibernateMappingTestUtil.setupAddress(new Address(), "contact", countryCode));
         contact.addEmail("jakubl@nask.pl");
         contact.addEmail("jakub.laszkiewicz@nask.pl");
         contact.addFaxNumber("+1234567890");
@@ -63,16 +63,16 @@ public class HibernateMappingTestUtil {
         domain.setSpecialInstructions(prefix + " special instructions");
         domain.setState(Domain.State.NO_ACTIVITY);
         domain.setStatus(Domain.Status.NEW);
-        domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "supporting org", true));
+        domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "supporting org", true, "US"));
         domain.setWhoisServer("whois.server.com");
-        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin1", true));
-        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin2", true));
+        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin1", true, "US"));
+        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin2", true, "US"));
         domain.addBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         domain.addBreakpoint(Domain.Breakpoint.ANY_CHANGE_EXT_REVIEW);
         domain.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns1." + domain.getName()), prefix));
         domain.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns2." + domain.getName()), prefix));
-        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech1", true));
-        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech2", true));
+        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech1", true, "US"));
+        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech2", true, "US"));
         return domain;
     }
 }
