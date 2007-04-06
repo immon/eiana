@@ -22,11 +22,8 @@ import java.util.Set;
  */
 public class HibernateMappingTestUtil {
     public static Address setupAddress(Address address, String prefix) {
-        address.setCity(prefix + "city");
+        address.setTextAddress(prefix + "text address");
         address.setCountryCode(prefix + "country code");
-        address.setPostalCode(prefix + "postal code");
-        address.setState(prefix + "state");
-        address.setStreet(prefix + "street");
         return address;
     }
 

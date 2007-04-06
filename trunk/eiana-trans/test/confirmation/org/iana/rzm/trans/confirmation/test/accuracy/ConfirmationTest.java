@@ -88,11 +88,8 @@ public class ConfirmationTest {
                         SystemRole.SystemType.TC)));
 
         Address address = new Address();
-        address.setCity("city" + suffix);
+        address.setTextAddress("ta" + suffix);
         address.setCountryCode("cc" + suffix);
-        address.setPostalCode("pc" + suffix);
-        address.setState("st" + suffix);
-        address.setStreet("str" + suffix);
 
         Contact supportingOrg = new Contact("supporg" + suffix);
         supportingOrg.addEmail("oldemail" + suffix);

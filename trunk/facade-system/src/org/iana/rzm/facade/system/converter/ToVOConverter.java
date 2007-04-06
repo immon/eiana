@@ -42,7 +42,7 @@ public class ToVOConverter {
         roleType.put(SystemRole.SystemType.TC, SystemRoleVO.SystemType.TC);
     }
 
-// ---------------------- Domain convert methods ----------------------
+    // ---------------------- Domain convert methods ----------------------
     public static DomainVO toDomainVO(Domain fromDomain) {
         if (fromDomain == null) return null;
 
@@ -68,7 +68,7 @@ public class ToVOConverter {
         toDomainVO.setRegistryUrl(fromDomain.getRegistryUrl());
 
         if (fromDomain.getWhoisServer() != null) toDomainVO.setWhoisServer(new Name(fromDomain.getWhoisServer()));
-        
+
         toDomainVO.setBreakpoints(toBreakpointVOSet(fromDomain.getBreakpoints()));
 
         toDomainVO.setSpecialInstructions(fromDomain.getSpecialInstructions());
@@ -84,25 +84,25 @@ public class ToVOConverter {
         toSimpleDomainVO(fromDomain, simpleDomainVO);
         return simpleDomainVO;
     }
-    
-    private static void toSimpleDomainVO(Domain fromDomain, SimpleDomainVO toSimpleDomainVO ) {
+
+    private static void toSimpleDomainVO(Domain fromDomain, SimpleDomainVO toSimpleDomainVO) {
         if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
         if (toSimpleDomainVO == null) throw new IllegalArgumentException("null toSimpleDomainVO");
 
-        toSimpleDomainVO.setObjId (fromDomain.getObjId());
-        toSimpleDomainVO.setName  (fromDomain.getName());
+        toSimpleDomainVO.setObjId(fromDomain.getObjId());
+        toSimpleDomainVO.setName(fromDomain.getName());
 
         if (fromDomain.getTrackData() != null) {
-            toSimpleDomainVO.setCreated    (fromDomain.getCreated());
-            toSimpleDomainVO.setCreatedBy  (fromDomain.getCreatedBy());
-            toSimpleDomainVO.setModified   (fromDomain.getModified());
-            toSimpleDomainVO.setModifiedBy (fromDomain.getModifiedBy());
+            toSimpleDomainVO.setCreated(fromDomain.getCreated());
+            toSimpleDomainVO.setCreatedBy(fromDomain.getCreatedBy());
+            toSimpleDomainVO.setModified(fromDomain.getModified());
+            toSimpleDomainVO.setModifiedBy(fromDomain.getModifiedBy());
         }
     }
 
 // ---------------------- State convert methods ----------------------
 
-    public static IDomainVO.State toStateVO (Domain.State fromState) {
+    public static IDomainVO.State toStateVO(Domain.State fromState) {
         if (fromState == null) return null;
 
         IDomainVO.State stateVO = domainState.get(fromState);
@@ -112,7 +112,7 @@ public class ToVOConverter {
 
 // ---------------------- Status convert methods ----------------------
 
-    public static IDomainVO.Status toStatusVO (Domain.Status fromStatus) {
+    public static IDomainVO.Status toStatusVO(Domain.Status fromStatus) {
         if (fromStatus == null) return null;
 
         IDomainVO.Status statusVO = domainStatus.get(fromStatus);
@@ -121,7 +121,7 @@ public class ToVOConverter {
     }
 
 // ---------------------- Role convert methods ----------------------
-    
+
     public static RoleVO.Type toRoleTypeVO(Role.Type fromRoleType) {
         if (fromRoleType == null) return null;
 
@@ -136,12 +136,12 @@ public class ToVOConverter {
         if (fromBreakpointSet == null) return null;
 
         Set<IDomainVO.Breakpoint> toBreakpointVOSet = new HashSet<IDomainVO.Breakpoint>();
-        for(Domain.Breakpoint breakpoint : fromBreakpointSet)
+        for (Domain.Breakpoint breakpoint : fromBreakpointSet)
             toBreakpointVOSet.add(toBreakpointVO(breakpoint));
         return toBreakpointVOSet;
     }
 
-    public static IDomainVO.Breakpoint toBreakpointVO (Domain.Breakpoint fromBreakpoint) {
+    public static IDomainVO.Breakpoint toBreakpointVO(Domain.Breakpoint fromBreakpoint) {
         if (fromBreakpoint == null) return null;
 
         IDomainVO.Breakpoint breakpointVO = domainBreakpoint.get(fromBreakpoint);
@@ -155,7 +155,7 @@ public class ToVOConverter {
         if (fromHostsList == null) return null;
 
         List<HostVO> toHostVOList = new ArrayList<HostVO>();
-        for(Host fromHost : fromHostsList)
+        for (Host fromHost : fromHostsList)
             toHostVOList.add(toHostVO(fromHost));
         return toHostVOList;
     }
@@ -172,16 +172,16 @@ public class ToVOConverter {
         if (fromHost == null) throw new IllegalArgumentException("null fromHost");
         if (toHostVO == null) throw new IllegalArgumentException("null toHostVO");
 
-        toHostVO.setObjId     (fromHost.getObjId());
-        toHostVO.setAddresses (toIPAddressVOSet(fromHost.getAddresses()));
-        toHostVO.setName      (fromHost.getName());
-        toHostVO.setShared    (fromHost.isShared());
+        toHostVO.setObjId(fromHost.getObjId());
+        toHostVO.setAddresses(toIPAddressVOSet(fromHost.getAddresses()));
+        toHostVO.setName(fromHost.getName());
+        toHostVO.setShared(fromHost.isShared());
 
         if (fromHost.getTrackData() != null) {
-            toHostVO.setCreated     (fromHost.getCreated());
-            toHostVO.setCreatedBy   (fromHost.getCreatedBy());
-            toHostVO.setModified    (fromHost.getModified());
-            toHostVO.setModifiedBy  (fromHost.getModifiedBy());
+            toHostVO.setCreated(fromHost.getCreated());
+            toHostVO.setCreatedBy(fromHost.getCreatedBy());
+            toHostVO.setModified(fromHost.getModified());
+            toHostVO.setModifiedBy(fromHost.getModifiedBy());
         }
     }
 
@@ -190,8 +190,8 @@ public class ToVOConverter {
     public static Set<IPAddressVO> toIPAddressVOSet(Set<IPAddress> fromIPAddressSet) {
         if (fromIPAddressSet == null) return null;
 
-        Set<IPAddressVO>toIPAddressVOSet = new HashSet<IPAddressVO>();
-        for(IPAddress fromIPAddress : fromIPAddressSet)
+        Set<IPAddressVO> toIPAddressVOSet = new HashSet<IPAddressVO>();
+        for (IPAddress fromIPAddress : fromIPAddressSet)
             toIPAddressVOSet.add(toIPAddressVO(fromIPAddress));
         return toIPAddressVOSet;
     }
@@ -210,12 +210,12 @@ public class ToVOConverter {
 
         toIPAddressVO.setAddress(fromIPAddress.getAddress());
         if (fromIPAddress.isIPv4())
-                toIPAddressVO.setType(IPAddressVO.Type.IPv4);
+            toIPAddressVO.setType(IPAddressVO.Type.IPv4);
         else
-                toIPAddressVO.setType(IPAddressVO.Type.IPv6);
+            toIPAddressVO.setType(IPAddressVO.Type.IPv6);
     }
 
-// ---------------------- Contact convert methods ----------------------
+    // ---------------------- Contact convert methods ----------------------
     public static List<ContactVO> toContactVOList(List<Contact> fromContactsList) {
         if (fromContactsList == null) return null;
 
@@ -226,7 +226,7 @@ public class ToVOConverter {
     }
 
     public static ContactVO toContactVO(Contact fromContact) {
-        if(fromContact == null) return null;
+        if (fromContact == null) return null;
 
         ContactVO toContactVO = new ContactVO();
         toContactVO(fromContact, toContactVO);
@@ -240,18 +240,18 @@ public class ToVOConverter {
 
         toContactVO.setAddresses(toAddressVOList(fromContact.getAddresses()));
 
-        toContactVO.setObjId        (fromContact.getObjId());
-        toContactVO.setEmails       (fromContact.getEmails());
-        toContactVO.setFaxNumbers   (fromContact.getFaxNumbers());
-        toContactVO.setName         (fromContact.getName());
-        toContactVO.setPhoneNumbers (fromContact.getPhoneNumbers());
-        toContactVO.setRole         (fromContact.isRole());
+        toContactVO.setObjId(fromContact.getObjId());
+        toContactVO.setEmails(fromContact.getEmails());
+        toContactVO.setFaxNumbers(fromContact.getFaxNumbers());
+        toContactVO.setName(fromContact.getName());
+        toContactVO.setPhoneNumbers(fromContact.getPhoneNumbers());
+        toContactVO.setRole(fromContact.isRole());
 
         if (fromContact.getTrackData() != null) {
-            toContactVO.setCreated    (fromContact.getCreated());
-            toContactVO.setCreatedBy  (fromContact.getCreatedBy());
-            toContactVO.setModified   (fromContact.getModified());
-            toContactVO.setModifiedBy (fromContact.getModifiedBy());
+            toContactVO.setCreated(fromContact.getCreated());
+            toContactVO.setCreatedBy(fromContact.getCreatedBy());
+            toContactVO.setModified(fromContact.getModified());
+            toContactVO.setModifiedBy(fromContact.getModifiedBy());
         }
     }
 
@@ -278,10 +278,7 @@ public class ToVOConverter {
         if (fromAddress == null) throw new IllegalArgumentException("null fromAddress");
         if (toAddressVO == null) throw new IllegalArgumentException("null toAddressVO");
 
-        toAddressVO.setCity        (fromAddress.getCity());
-        toAddressVO.setCountryCode (fromAddress.getCountryCode());
-        toAddressVO.setPostalCode  (fromAddress.getPostalCode());
-        toAddressVO.setState       (fromAddress.getState());
-        toAddressVO.setStreet      (fromAddress.getStreet());
+        toAddressVO.setTextAddress(fromAddress.getTextAddress());
+        toAddressVO.setCountryCode(fromAddress.getCountryCode());
     }
 }
