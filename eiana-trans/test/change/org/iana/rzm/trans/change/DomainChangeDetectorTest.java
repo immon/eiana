@@ -130,7 +130,7 @@ public class DomainChangeDetectorTest {
     public void testContactAddressModification() {
         Contact src = createContact("contact");
         Contact dst = createContact("contact");
-        dst.getAddresses().get(0).setCity("new.city");
+        dst.getAddresses().get(0).setTextAddress("new.ta");
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null && change.isModification();
         ObjectChange objectChange = (ObjectChange) change;
@@ -155,7 +155,7 @@ public class DomainChangeDetectorTest {
         ret.setEmails(createStringList(prefix+"-email", 1));
         ret.setPhoneNumbers(createStringList(prefix+"-phone", 1));
         ret.setFaxNumbers(createStringList(prefix+"-fax", 1));
-        ret.addAddress(new Address(prefix+"-street", prefix+"-city", prefix+"-pc", prefix+"-cc", prefix+"-state"));
+        ret.addAddress(new Address(prefix+"-ta", prefix+"-cc"));
         return ret;
     }
 

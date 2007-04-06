@@ -70,11 +70,8 @@ public class ToVOConverterFailureTest {
         Address address = new Address();
         AddressVO addressVO = ToVOConverter.toAddressVO(address);
 
-        assert addressVO.getCity() == null;
+        assert addressVO.getTextAddress() == null;
         assert addressVO.getCountryCode() == null;
-        assert addressVO.getPostalCode() == null;
-        assert addressVO.getState() == null;
-        assert addressVO.getStreet() == null;
     }
 
     @Test

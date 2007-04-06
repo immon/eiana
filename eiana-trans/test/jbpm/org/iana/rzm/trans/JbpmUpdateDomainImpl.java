@@ -67,11 +67,8 @@ public class JbpmUpdateDomainImpl {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
 
         Address address = new Address();
-        address.setCity("Warsaw");
+        address.setTextAddress("66th Marszalkowska Str., 00-950 Warsaw, Mazovia");
         address.setCountryCode("PL");
-        address.setPostalCode("00-950");
-        address.setState("Mazovia");
-        address.setStreet("Marszalkowska Str. 66/6");
        
         Contact supportingOrg = new Contact("NotRealOrg");
         supportingOrg.addEmail("oldemil");

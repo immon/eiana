@@ -52,22 +52,16 @@ public class FromVOConverterAccuracyTest {
     }
 
     private boolean assertAddress(Address address) {
-        assert address.getCity().equals("Warsaw");
+        assert address.getTextAddress().equals("1st Marszalkowska Str., 00-009 Warsaw, Mazovia");
         assert address.getCountryCode().equals("PL");
-        assert address.getPostalCode().equals("00-009");
-        assert address.getState().equals("Mazovia");
-        assert address.getStreet().equals("Marszalkowska");
         return true;
     }
 
     @Test
     public void testAddressConversion() {
         AddressVO addressVO = new AddressVO();
-        addressVO.setCity("Warsaw");
+        addressVO.setTextAddress("1st Marszalkowska Str., 00-009 Warsaw, Mazovia");
         addressVO.setCountryCode("PL");
-        addressVO.setPostalCode("00-009");
-        addressVO.setState("Mazovia");
-        addressVO.setStreet("Marszalkowska");
 
         Address address = FromVOConverter.toAddress(addressVO);
         assert assertAddress(address);

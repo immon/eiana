@@ -95,18 +95,12 @@ public class ToVOConverterTest {
     @Test
     public void testAddressConversion() {
         fromAddress = new Address();
-        fromAddress.setCity("LosAngeles");
+        fromAddress.setTextAddress("Sun Set avenue, LosAngeles, CA ZIP-999");
         fromAddress.setCountryCode("US");
-        fromAddress.setPostalCode("ZIP-999");
-        fromAddress.setState("California");
-        fromAddress.setStreet("Sun Set avenue");
 
         toAddressVO = ToVOConverter.toAddressVO(fromAddress);
-        assert fromAddress.getCity().equals(toAddressVO.getCity());
+        assert fromAddress.getTextAddress().equals(toAddressVO.getTextAddress());
         assert fromAddress.getCountryCode().equals(toAddressVO.getCountryCode());
-        assert fromAddress.getPostalCode().equals(toAddressVO.getPostalCode());
-        assert fromAddress.getState().equals(toAddressVO.getState());
-        assert fromAddress.getStreet().equals(toAddressVO.getStreet());
     }
 
     @Test (dependsOnMethods = {"testAddressConversion"})

@@ -26,7 +26,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
         addObjectConfiguration(Contact.class, contactConfig);
 
         ObjectConfiguration addressConfig = new ObjectConfiguration(new String[]{
-            "street", "city", "postalCode", "countryCode", "state"
+            "textAddress", "countryCode"
         }, "id");
         addObjectConfiguration(Address.class, addressConfig);
     }
