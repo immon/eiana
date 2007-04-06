@@ -13,7 +13,8 @@ import java.net.URL;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-domains","stress"})
+@Test(groups = {"hibernate", "eiana-domains","stress", "eiana-domains-stress-update"},
+        dependsOnGroups = {"eiana-domains-stress-create"})
 public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
     protected void operation(Object o) throws Exception {
         Domain domain = (Domain) o;
