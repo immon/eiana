@@ -4,6 +4,63 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
+    <!-- facade services configuration -->
+
+    <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedSystemDomainServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
+        <constructor-arg ref="SystemDomainServiceBean"/>
+    </bean>
+
+    <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
+        <constructor-arg ref="domainManager" />
+        <constructor-arg ref="userManager" />
+    </bean>
+
+    <bean id="GuardedSystemTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.Transaction.SystemTransactionService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedSystemTransactionServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.Transaction.GuardedSystemTransactionService">
+        <constructor-arg ref="SystemTransactionServiceBean"/>
+    </bean>
+
+    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
+        <constructor-arg ref="userManager" />
+        <constructor-arg ref="transactionManagerBean" />
+        <constructor-arg ref="domainManager" />
+    </bean>
+
+    <!-- end of facade services configuration -->
+
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
         <constructor-arg value="MailHost"/>
         <constructor-arg value="mailer"/>
