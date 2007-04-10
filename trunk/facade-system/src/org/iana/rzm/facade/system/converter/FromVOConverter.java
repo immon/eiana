@@ -45,7 +45,7 @@ public class FromVOConverter {
 
 // ---------------------- Domain convert methods ----------------------
 
-    public static Domain toDomain(DomainVO fDomainVO) {
+    public static Domain toDomain(IDomainVO fDomainVO) {
         if (fDomainVO == null) return null;
 
         Domain tDomain = new Domain("defaultName");
@@ -55,7 +55,7 @@ public class FromVOConverter {
         return tDomain;
     }
 
-    private static void toDomain(DomainVO fDomainVO, Domain tDomain) {
+    private static void toDomain(IDomainVO fDomainVO, Domain tDomain) {
         try {
             tDomain.setName(fDomainVO.getName());
             tDomain.setObjId(fDomainVO.getObjId());

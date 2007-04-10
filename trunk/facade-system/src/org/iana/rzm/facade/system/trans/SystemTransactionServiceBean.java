@@ -10,6 +10,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
 import org.iana.rzm.user.UserManager;
 
@@ -51,15 +52,15 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         return ret;
     }
 
-    public void performTransactionTechnicalCheck(DomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException {
+    public void performTransactionTechnicalCheck(IDomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException {
         throw new UnsupportedOperationException();
     }
 
-    public List<TransactionSplitVO> getPossibleTransactionSplits(DomainVO domain) throws AccessDeniedException, InfrastructureException {
+    public List<TransactionSplitVO> getPossibleTransactionSplits(IDomainVO domain) throws AccessDeniedException, InfrastructureException {
         throw new UnsupportedOperationException();
     }
 
-    public TransactionVO createTransaction(DomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         CheckTool.checkNull(domain, "domain");
         if (domainManager.get(domain.getName()) == null) throw new NoObjectFoundException(domain.getName(), "domain");
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
