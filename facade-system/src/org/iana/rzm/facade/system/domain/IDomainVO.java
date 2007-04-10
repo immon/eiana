@@ -2,10 +2,10 @@ package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.Name;
 import org.iana.rzm.facade.common.Trackable;
+import org.iana.rzm.facade.user.RoleVO;
 
 import java.util.List;
 import java.util.Set;
-import java.net.URL;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -77,4 +77,6 @@ public interface IDomainVO extends Trackable {
     void setState(DomainVO.State state);
 
     String getName();
+
+    Set<RoleVO.Type> getRoles();
 }

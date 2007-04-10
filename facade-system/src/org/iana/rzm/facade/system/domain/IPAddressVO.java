@@ -1,9 +1,11 @@
 package org.iana.rzm.facade.system.domain;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class IPAddressVO {
+public class IPAddressVO implements Serializable {
 
     public enum Type { IPv4, IPv6 }
 

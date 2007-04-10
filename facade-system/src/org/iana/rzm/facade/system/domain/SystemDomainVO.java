@@ -2,7 +2,9 @@ package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.Name;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.user.RoleVO;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +14,7 @@ import java.util.Set;
  *
  * @author Patrycja Wegrzynowicz
  */
-class SystemDomainVO implements IDomainVO {
+class SystemDomainVO implements IDomainVO, Serializable {
 
     private IDomainVO domain;
 
@@ -110,6 +112,10 @@ class SystemDomainVO implements IDomainVO {
 
     public String getName() {
         return domain.getName();
+    }
+
+    public Set<RoleVO.Type> getRoles() {
+        return domain.getRoles();
     }
 
     public Timestamp getCreated() {
