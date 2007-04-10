@@ -6,13 +6,14 @@ import org.iana.rzm.facade.user.RoleVO;
 
 import java.util.Set;
 import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * A simplified version of DomainVO used with lists of domains. 
  *
  * @author Patrycja Wegrzynowicz
  */
-public class SimpleDomainVO implements Trackable {
+public class SimpleDomainVO implements Trackable, Serializable {
 
     private String name;
     private Set<RoleVO.Type> roles;

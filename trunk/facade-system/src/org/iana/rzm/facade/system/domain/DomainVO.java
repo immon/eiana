@@ -2,14 +2,14 @@ package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.Name;
 
-import java.util.Set;
+import java.io.Serializable;
 import java.util.List;
-import java.net.URL;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class DomainVO extends SimpleDomainVO implements IDomainVO {
+public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable {
 
     private ContactVO supportingOrg;
     private List<ContactVO> adminContacts;
@@ -101,5 +101,4 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO {
     public void setState(State state) {
         this.state = state;
     }
-
 }

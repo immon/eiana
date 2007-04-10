@@ -7,11 +7,12 @@ import org.iana.rzm.common.EmailAddress;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class ContactVO implements Trackable {
+public class ContactVO implements Trackable, Serializable {
 
     private String name;
     private List<AddressVO> addresses;

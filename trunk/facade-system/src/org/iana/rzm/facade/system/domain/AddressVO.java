@@ -2,10 +2,12 @@ package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.CountryCode;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class AddressVO {
+public class AddressVO implements Serializable {
 
     private String textAddress;
     private CountryCode countryCode;

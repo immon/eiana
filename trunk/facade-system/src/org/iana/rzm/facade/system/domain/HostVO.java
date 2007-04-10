@@ -5,11 +5,12 @@ import org.iana.rzm.facade.common.TrackDataVO;
 
 import java.util.Set;
 import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class HostVO implements Trackable {
+public class HostVO implements Trackable, Serializable {
 
     private String name;
     private Set<IPAddressVO> addresses;
