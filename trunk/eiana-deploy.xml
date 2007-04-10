@@ -218,7 +218,7 @@
             <!--eiana-notifications-->
             <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-notifications/test/dao">     <include name="**/*.java" /></fileset>
+            <!--<fileset dir="${basedir}/eiana-notifications/test/dao">     <include name="**/*.java" /></fileset>-->
             <!--eiana-trans-->
             <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
