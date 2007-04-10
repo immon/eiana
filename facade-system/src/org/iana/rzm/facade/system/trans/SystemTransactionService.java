@@ -19,11 +19,11 @@ public interface SystemTransactionService extends RZMStatefulService {
 
     List<TransactionVO> findOpenTransactions() throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
-    void performTransactionTechnicalCheck(DomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
+    void performTransactionTechnicalCheck(IDomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
 
-    List<TransactionSplitVO> getPossibleTransactionSplits(DomainVO domain) throws AccessDeniedException, InfrastructureException;
+    List<TransactionSplitVO> getPossibleTransactionSplits(IDomainVO domain) throws AccessDeniedException, InfrastructureException;
 
-    TransactionVO createTransaction(DomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
