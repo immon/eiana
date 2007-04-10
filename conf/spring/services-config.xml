@@ -24,18 +24,19 @@
     </bean>
 
     <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
-        <constructor-arg ref="SystemDomainServiceBean"/>
+        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="1" ref="SystemDomainServiceBean"/>
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
-        <constructor-arg ref="domainManager" />
-        <constructor-arg ref="userManager" />
+        <constructor-arg index="0" ref="domainManager" />
+        <constructor-arg index="1" ref="userManager" />
     </bean>
 
     <bean id="GuardedSystemTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
-                <value>org.iana.rzm.facade.system.Transaction.SystemTransactionService</value>
+                <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
             </list>
         </property>
         <property name="target">
@@ -49,11 +50,12 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.Transaction.GuardedSystemTransactionService">
+    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
+        <constructor-arg ref="userManager" />
         <constructor-arg ref="SystemTransactionServiceBean"/>
     </bean>
 
-    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
+    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.SystemTransactionServiceBean">
         <constructor-arg ref="userManager" />
         <constructor-arg ref="transactionManagerBean" />
         <constructor-arg ref="domainManager" />
