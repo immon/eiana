@@ -2,19 +2,82 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
-    <!-- database hibernate configuration -->
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
-        <property name="configLocation">
-            <value>classpath:hibernate.cfg.xml</value>
+    <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
+        <constructor-arg value="MailHost"/>
+        <constructor-arg value="mailer"/>
+        <constructor-arg value="fromAddress"/>
+        <constructor-arg value="username"/>
+        <constructor-arg value=""/>
+        <!--Password-->
+    </bean>
+
+    <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
+        <constructor-arg ref="domainDAOTarget"/>
+    </bean>
+
+    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.domain.dao.DomainDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="domainDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate.HibernateTransactionManager">
+    <bean id="domainDAOTarget" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="transactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.TransactionManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="transactionManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="faketicket" class="org.iana.rzm.trans.FakeTicketingService"/>
+
+    <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
+        <constructor-arg>
+            <ref bean="processDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="domainDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="faketicket"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="configLocation">
+            <value>eiana-trans-hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -30,64 +93,86 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         </property>
     </bean>
 
-    <bean id="daoTransactionAttributeSource"
+    <bean id="transactionAttributeSource"
           class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
         <property name="transactionAttribute">
             <ref bean="transactionAttribute"/>
         </property>
     </bean>
 
-    <!--Guarder System Domain Service configuration-->
-    <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="GuardedSystemDomainServiceTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
+    <!-- jBPM configuration -->
+
+    <bean id="jbpmObjectFactory"
+          class="org.iana.rzm.trans.jbpm.JbpmSpringObjectFactory">
+    </bean>
+
+    <bean id="dbService" class="org.iana.rzm.trans.jbpm.SpringDbPersistenceServiceFactory">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
         </property>
     </bean>
 
-        <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
-            <constructor-arg ref="SystemDomainServiceBean"/>
-        </bean>
+    <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory"/>
 
-            <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
-                <constructor-arg ref="domainManager" />
-                <constructor-arg ref="userManager" />
-            </bean>
+    <bean id="jbpmConfiguration"
+          class="org.jbpm.JbpmConfiguration">
+        <constructor-arg index="0" ref="jbpmObjectFactory"/>
+    </bean>
 
-                <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
-                    <constructor-arg ref="domainDAOTarget" />
-                </bean>
+    <bean id="services" class="org.jbpm.svc.Services" scope="prototype">
+        <constructor-arg index="0">
+            <map>
+                <entry key="persistence">
+                    <ref local="dbService"/>
+                </entry>
+                <entry key="scheduler">
+                    <ref local="scheduler"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
 
-                <bean id="userManager" class="org.iana.rzm.user.UserManagerBean" >
-                    <constructor-arg fer="userDAOTarget" />
-                </bean>
+    <bean id="default.jbpm.context" class="org.jbpm.JbpmContext" scope="prototype">
+        <constructor-arg index="0" ref="services"/>
+        <constructor-arg index="1" ref="jbpmObjectFactory"/>
+    </bean>
 
-    <!-- dao conf -->
-    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.rzm.domain.dao.DomainDAO</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="courseServiceTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="daoTransactionAttributeSource"/>
-        </property>
+    <bean id="resource.business.calendar" class="java.lang.String">
+        <constructor-arg value="org/jbpm/calendar/jbpm.business.calendar.properties"/>
+    </bean>
+
+    <bean id="resource.default.modules" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/def/jbpm.default.modules.properties"/>
+    </bean>
+
+    <bean id="resource.action.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/action/action.types.xml"/>
+    </bean>
+
+    <bean id="resource.node.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/node/node.types.xml"/>
+    </bean>
+
+    <bean id="resource.converter" class="java.lang.String">
+        <constructor-arg value="org/jbpm/db/hibernate/jbpm.converter.properties"/>
+    </bean>
+
+    <bean id="resource.varmapping" class="java.lang.String">
+        <!--<constructor-arg value="eiana-trans.jbpm.varmapping.xml"/>-->
+        <constructor-arg value="org/jbpm/context/exe/jbpm.varmapping.xml"/>
+    </bean>
+
+    <bean id="jbpmContextFactory"
+          class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+    </bean>
+
+    <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+    </bean>
+
+    <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
+        <constructor-arg ref="userDAO"/>
     </bean>
 
     <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -103,17 +188,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
             <ref bean="transactionManager"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="daoTransactionAttributeSource"/>
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
-     <bean id="domainDAOTarget" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
-    </bean>
-
-     <bean id="userDAOTarget" class="org.iana.rzm.user.dao.HibernateUserDAO">
+    <bean id="userDAOTarget" class="org.iana.rzm.user.dao.HibernateUserDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
