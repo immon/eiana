@@ -7,6 +7,7 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.change.ChangeDetector;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.trans.change.ObjectChange;
+import org.iana.rzm.user.RZMUser;
 import org.iana.ticketing.TicketingService;
 import org.jbpm.db.GraphSession;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -77,5 +78,19 @@ public class TransactionManagerBean implements TransactionManager {
             }
         }
         return ret;
+    }
+
+    public List<Transaction> findTransactions(RZMUser user) {
+        List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(user);
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
+        return result;
+    }
+
+    public List<Transaction> findTransactions(RZMUser user, String domainName) {
+        List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(user, domainName);
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
+        return result;
     }
 }

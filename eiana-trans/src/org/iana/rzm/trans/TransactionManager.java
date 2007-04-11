@@ -1,6 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.user.RZMUser;
 import org.jbpm.JbpmContext;
 
 import java.util.List;
@@ -47,4 +48,8 @@ public interface TransactionManager {
     public List<Transaction> findTransactions(String domainName);
 
     public List<Transaction> findTransactions(Set<String> domainNames);
+
+    public List<Transaction> findTransactions(RZMUser user);
+
+    public List<Transaction> findTransactions(RZMUser user, String domainName);
 }

@@ -9,6 +9,9 @@ import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.dao.common.UserManagementTestUtil;
+import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -34,7 +37,7 @@ public class ProcessDAOTest {
     private DomainDAO domainDAO;
     private Set<Long> domain1ProcIds = new HashSet<Long>();
     private Set<Long> domain2ProcIds = new HashSet<Long>();
-
+    private UserDAO userDAO;
 
     @BeforeClass
     public void init() throws InvalidNameException {
@@ -42,6 +45,7 @@ public class ProcessDAOTest {
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
+        userDAO = (UserDAO) appCtx.getBean("userDAO");
         txStatus = txMgr.getTransaction(txDef);
         deployProcessDefinition();
         generateTestData();
@@ -76,6 +80,13 @@ public class ProcessDAOTest {
         domain2ProcIds.add(pi.getId());
         pi = createTransaction(13L, domain2);
         domain2ProcIds.add(pi.getId());
+
+        userDAO.create(UserManagementTestUtil.createUser("sys1",
+                UserManagementTestUtil.createSystemRole("potestdomain1", true, true,
+                        SystemRole.SystemType.AC)));
+        userDAO.create(UserManagementTestUtil.createUser("sys2",
+                UserManagementTestUtil.createSystemRole("potestdomain2", true, true,
+                        SystemRole.SystemType.AC)));
     }
 
     private ProcessInstance createTransaction(final Long ticketId, final Domain domain) {
@@ -95,7 +106,7 @@ public class ProcessDAOTest {
     }
 
     @Test
-    public void testFindAllProcessInstances() {
+    public void testFindAllProcessInstancesByDomain() {
         txStatus = txMgr.getTransaction(txDef);
 
         List<ProcessInstance> dbDomain1Processes = processDAO.findAllProcessInstances("potestdomain1");
@@ -116,7 +127,51 @@ public class ProcessDAOTest {
         txMgr.commit(txStatus);
     }
 
-    @Test
+    @Test(dependsOnMethods = "testFindAllProcessInstancesByDomain")
+    public void testFindAllProcessInstancesByUser() {
+        txStatus = txMgr.getTransaction(txDef);
+
+        List<ProcessInstance> dbDomain1Processes = processDAO.findAllProcessInstances(userDAO.get("user-sys1"));
+
+        Set<Long> dbDomain1ProcIds = new HashSet<Long>();
+        for (ProcessInstance pi : dbDomain1Processes) dbDomain1ProcIds.add(pi.getId());
+
+        assert domain1ProcIds.equals(dbDomain1ProcIds);
+
+        List<ProcessInstance> dbDomain2Processes = processDAO.findAllProcessInstances(userDAO.get("user-sys2"));
+
+        Set<Long> dbDomain2ProcIds = new HashSet<Long>();
+        for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
+
+        assert domain2ProcIds.equals(dbDomain2ProcIds);
+
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
+    @Test(dependsOnMethods = "testFindAllProcessInstancesByUser")
+    public void testFindAllProcessInstancesByUserAndDomain() {
+        txStatus = txMgr.getTransaction(txDef);
+
+        List<ProcessInstance> dbDomain1Processes = processDAO.findAllProcessInstances(userDAO.get("user-sys1"), "potestdomain1");
+
+        Set<Long> dbDomain1ProcIds = new HashSet<Long>();
+        for (ProcessInstance pi : dbDomain1Processes) dbDomain1ProcIds.add(pi.getId());
+
+        assert domain1ProcIds.equals(dbDomain1ProcIds);
+
+        List<ProcessInstance> dbDomain2Processes = processDAO.findAllProcessInstances(userDAO.get("user-sys2"), "potestdomain2");
+
+        Set<Long> dbDomain2ProcIds = new HashSet<Long>();
+        for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
+
+        assert domain2ProcIds.equals(dbDomain2ProcIds);
+
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
+    @Test(dependsOnMethods = "testFindAllProcessInstancesByUserAndDomain")
     public void testTxRollback() {
         txStatus = txMgr.getTransaction(txDef);
         Domain domain = new Domain("potestdomain3");
