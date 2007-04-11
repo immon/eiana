@@ -2,8 +2,8 @@ package org.iana.rzm.test;
 
 import org.testng.annotations.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.hibernate.SessionFactory;
 
 import java.io.File;
 
@@ -18,8 +18,11 @@ public class SpringContextTest {
     @Test
     public void testSpringServiceConfig() {
 
-        System.out.println(new File("./conf/spring/services-config.xml").getAbsolutePath());
-        ApplicationContext appContext = new FileSystemXmlApplicationContext("./conf/spring/services-config.xml");
+        System.out.println(new File("conf/spring/services-config.xml").getAbsolutePath());
+        ApplicationContext appContext = new FileSystemXmlApplicationContext("conf/spring/services-config.xml");
         assert appContext != null;
+        SessionFactory sessionFactory = (SessionFactory) appContext.getBean("sessionFactory");
+        assert sessionFactory != null;
+       
     }
 }
