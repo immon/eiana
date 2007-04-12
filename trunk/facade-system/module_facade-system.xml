@@ -30,6 +30,8 @@
     <path refid="library.javaee.classpath"/>
     <pathelement location="${eiana-trans.output.dir}"/>
     <pathelement location="${eiana-trans.testoutput.dir}"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
   </path>
   
   
@@ -57,7 +59,7 @@
   
   <target name="compile.module.facade-system" depends="compile.module.facade-system.production,compile.module.facade-system.tests" description="Compile module facade-system"/>
   
-  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans" description="Compile module facade-system; production classes">
+  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans,compile.module.eiana-notifications" description="Compile module facade-system; production classes">
     <mkdir dir="${facade-system.output.dir}"/>
     <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.facade-system}/javac">
       <compilerarg line="${compiler.args.facade-system}"/>
