@@ -22,7 +22,6 @@ import java.sql.Timestamp;
  */
 public class Transaction implements TrackedObject {
     private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
-    private static final String TRACK_DATA = "TRACK_DATA";
 
     private ProcessInstance pi;
 
@@ -31,8 +30,6 @@ public class Transaction implements TrackedObject {
         this.pi = pi;
         if (!this.pi.getContextInstance().hasVariable(TRANSACTION_DATA))
             this.pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
-        if (!this.pi.getContextInstance().hasVariable(TRACK_DATA))
-            this.pi.getContextInstance().setVariable(TRACK_DATA, new TrackData());
     }
 
     private TransactionData getTransactionData() {
@@ -40,7 +37,7 @@ public class Transaction implements TrackedObject {
     }
 
     private TrackData getTrackData() {
-        return (TrackData) pi.getContextInstance().getVariable(TRACK_DATA);
+        return ((TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA)).getTrackData();
     }
 
     public Long getTransactionID() {
