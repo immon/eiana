@@ -22,12 +22,16 @@
         <property name="hibernate.hbm2ddl.auto">create</property>
 
         <mapping class="org.iana.rzm.common.Name"/>
-        <mapping class="org.iana.rzm.common.TrackData"/>
 
         <mapping class="org.iana.rzm.user.AdminRole"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
+
+        <mapping class="org.iana.notifications.Addressee" />
+        <mapping class="org.iana.notifications.Notification" />
+        <mapping class="org.iana.notifications.TemplateContent" />
+
     </session-factory>
 </hibernate-configuration>
