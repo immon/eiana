@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
  * @author Piotr Tkaczyk
  */
 
-@Test(groups = {"accuracy", "eiana-notifications"})
+@Test(sequential=true, groups = {"accuracy", "eiana-notifications"})
 public class TemplateContentConverterTest {
 
     @Test
