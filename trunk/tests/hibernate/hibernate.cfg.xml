@@ -20,7 +20,6 @@
         <property name="hibernate.jdbc.batch_size">20</property>
 
         <mapping class="org.iana.rzm.common.Name"/>
-        <mapping class="org.iana.rzm.common.TrackData"/>
 
 		<mapping class="org.iana.rzm.domain.Address"/>
 		<mapping class="org.iana.rzm.domain.Contact"/>
@@ -56,6 +55,11 @@
         <mapping class="org.iana.rzm.trans.confirmation.SystemRoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
 
+        <mapping class="org.iana.notifications.Content" />
+        <mapping class="org.iana.notifications.Addressee" />
+        <mapping class="org.iana.notifications.Notification" />
+        <mapping class="org.iana.notifications.TemplateContent" />
+        <mapping class="org.iana.notifications.TempContent" /> <!-- todo: Test purpose only-->
 
          <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->
