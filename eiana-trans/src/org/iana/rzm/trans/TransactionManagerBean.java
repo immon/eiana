@@ -1,6 +1,5 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -9,7 +8,6 @@ import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.rzm.user.RZMUser;
 import org.iana.ticketing.TicketingService;
-import org.jbpm.db.GraphSession;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
@@ -51,7 +49,6 @@ public class TransactionManagerBean implements TransactionManager {
         td.setDomainChange((ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, DomainDiffConfiguration.getInstance()));
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
         return new Transaction(pi);
     }
 

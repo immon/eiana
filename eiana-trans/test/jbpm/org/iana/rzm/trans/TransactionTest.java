@@ -1,6 +1,5 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.common.TrackData;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.jbpm.graph.def.ProcessDefinition;
@@ -50,7 +49,6 @@ public class TransactionTest {
         ticketId = 123L;
         td.setTicketID(ticketId);
         pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
-        pi.getContextInstance().setVariable("TRACK_DATA",new TrackData());
         pi.signal();
         Transaction transaction = new Transaction(pi);
         transactionId = transaction.getTransactionID();
@@ -60,7 +58,6 @@ public class TransactionTest {
         ticketId2 = 124L;
         td.setTicketID(ticketId2);
         pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
-        pi.getContextInstance().setVariable("TRACK_DATA",new TrackData());
         pi.signal();
         Transaction transaction2 = new Transaction(pi);
         transactionId2  = transaction2.getTransactionID();
