@@ -17,6 +17,36 @@
   
   <path id="tests.module.classpath">
     <path refid="${module.jdk.classpath.tests}"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <pathelement location="${eiana-dns.output.dir}"/>
+    <pathelement location="${eiana-dns.testoutput.dir}"/>
+    <pathelement location="${eiana-domains.output.dir}"/>
+    <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${eiana-logs.output.dir}"/>
+    <pathelement location="${eiana-logs.testoutput.dir}"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${eiana-trans.output.dir}"/>
+    <pathelement location="${eiana-trans.testoutput.dir}"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <pathelement location="${facade-admin.output.dir}"/>
+    <pathelement location="${facade-admin.testoutput.dir}"/>
+    <pathelement location="${facade-common.output.dir}"/>
+    <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${facade-system.output.dir}"/>
+    <pathelement location="${facade-system.testoutput.dir}"/>
+    <pathelement location="${integration-rt.output.dir}"/>
+    <pathelement location="${integration-rt.testoutput.dir}"/>
+    <pathelement location="${integration-securid.output.dir}"/>
+    <pathelement location="${integration-securid.testoutput.dir}"/>
   </path>
   
   
@@ -28,12 +58,39 @@
     <patternset refid="excluded.from.module.tests"/>
   </patternset>
   
+  <path id="tests.module.test.sourcepath">
+    <dirset dir="${module.tests.basedir}">
+      <include name="hibernate"/>
+      <include name="test"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.tests" depends="compile.module.tests.production,compile.module.tests.tests" description="Compile module tests"/>
   
-  <target name="compile.module.tests.production" description="Compile module tests; production classes"/>
+  <target name="compile.module.tests.production" depends="compile.module.eiana-dns,compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid" description="Compile module tests; production classes"/>
   
-  <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests"/>
+  <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests">
+    <mkdir dir="${tests.testoutput.dir}"/>
+    <javac destdir="${tests.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.tests}/javac">
+      <compilerarg line="${compiler.args.tests}"/>
+      <classpath refid="tests.module.classpath"/>
+      <classpath location="${tests.output.dir}"/>
+      <src refid="tests.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tests"/>
+    </javac>
+    
+    <copy todir="${tests.testoutput.dir}">
+      <fileset dir="${module.tests.basedir}/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.tests.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.tests" description="cleanup module">
     <delete dir="${tests.output.dir}"/>
