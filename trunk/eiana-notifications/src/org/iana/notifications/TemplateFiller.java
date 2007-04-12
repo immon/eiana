@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
  * @author Piotr Tkaczyk
  */
 
-public class TemplateFiller {
+public abstract class TemplateFiller {
 
     public static String fill(String template, Map<String, String> data) {
         Set<String> keys = data.keySet();
