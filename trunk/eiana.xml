@@ -138,9 +138,21 @@
   
   <!-- Modules -->
   
+  <import file="${basedir}/eiana-dns/module_eiana-dns.xml"/>
+  
+  <import file="${basedir}/lib/module_lib.xml"/>
+  
+  <import file="${basedir}/conf/module_conf.xml"/>
+  
   <import file="${basedir}/integration-securid/module_integration-securid.xml"/>
   
+  <import file="${basedir}/eiana-logs/module_eiana-logs.xml"/>
+  
+  <import file="${basedir}/integration-rt/module_integration-rt.xml"/>
+  
   <import file="${basedir}/eiana-util/module_eiana-util.xml"/>
+  
+  <import file="${basedir}/eiana-notifications/module_eiana-notifications.xml"/>
   
   <import file="${basedir}/eiana-users/module_eiana-users.xml"/>
   
@@ -148,29 +160,19 @@
   
   <import file="${basedir}/facade-admin/module_facade-admin.xml"/>
   
-  <import file="${basedir}/eiana-notifications/module_eiana-notifications.xml"/>
-  
   <import file="${basedir}/eiana-domains/module_eiana-domains.xml"/>
-  
-  <import file="${basedir}/eiana-dns/module_eiana-dns.xml"/>
-  
-  <import file="${basedir}/integration-rt/module_integration-rt.xml"/>
-  
-  <import file="${basedir}/eiana-logs/module_eiana-logs.xml"/>
-  
-  <import file="${basedir}/tests/module_tests.xml"/>
-  
-  <import file="${basedir}/conf/module_conf.xml"/>
   
   <import file="${basedir}/eiana-trans/module_eiana-trans.xml"/>
   
   <import file="${basedir}/facade-system/module_facade-system.xml"/>
   
+  <import file="${basedir}/tests/module_tests.xml"/>
+  
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.integration-securid, clean.module.eiana-util, clean.module.eiana-users, clean.module.facade-common, clean.module.facade-admin, clean.module.eiana-notifications, clean.module.eiana-domains, clean.module.eiana-dns, clean.module.integration-rt, clean.module.eiana-logs, clean.module.tests, clean.module.conf, clean.module.eiana-trans, clean.module.facade-system" description="cleanup all"/>
+  <target name="clean" depends="clean.module.eiana-dns, clean.module.lib, clean.module.conf, clean.module.integration-securid, clean.module.eiana-logs, clean.module.integration-rt, clean.module.eiana-util, clean.module.eiana-notifications, clean.module.eiana-users, clean.module.facade-common, clean.module.facade-admin, clean.module.eiana-domains, clean.module.eiana-trans, clean.module.facade-system, clean.module.tests" description="cleanup all"/>
   
-  <target name="all" depends="init, clean, compile.module.integration-securid, compile.module.eiana-util, compile.module.eiana-users, compile.module.facade-common, compile.module.facade-admin, compile.module.eiana-notifications, compile.module.eiana-domains, compile.module.eiana-dns, compile.module.integration-rt, compile.module.eiana-logs, compile.module.tests, compile.module.conf, compile.module.eiana-trans, compile.module.facade-system" description="build all"/>
+  <target name="all" depends="init, clean, compile.module.eiana-dns, compile.module.lib, compile.module.conf, compile.module.integration-securid, compile.module.eiana-logs, compile.module.integration-rt, compile.module.eiana-util, compile.module.eiana-notifications, compile.module.eiana-users, compile.module.facade-common, compile.module.facade-admin, compile.module.eiana-domains, compile.module.eiana-trans, compile.module.facade-system, compile.module.tests" description="build all"/>
 </project>

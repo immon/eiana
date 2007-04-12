@@ -70,6 +70,7 @@
                 <path location="${eiana-users.output.dir}"/>
                 <path location="${eiana-trans.output.dir}"/>
                 <path location="${eiana-notifications.output.dir}"/>
+                <path location="${tests.testoutput.dir}"/>
                 <fileset dir="${lib.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
@@ -84,7 +85,7 @@
     <!-- compiling, packeging & testing targets-->
 
     <target name="all.compile"
-            depends="init, compile.module.eiana-dns,compile.module.eiana-domains,
+            depends="init, compile.module.tests,compile.module.eiana-dns,compile.module.eiana-domains,
              compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,
              compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
@@ -218,7 +219,6 @@
             <!--eiana-notifications-->
             <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
-            <!--<fileset dir="${basedir}/eiana-notifications/test/dao">     <include name="**/*.java" /></fileset>-->
             <!--eiana-trans-->
             <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
             <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
@@ -248,6 +248,9 @@
             <fileset dir="${basedir}/integration-rt/src">               <include name="**/*.java" /></fileset>
             <!--integration-securid-->
             <fileset dir="${basedir}/integration-securid/src">          <include name="**/*.java" /></fileset>
+            <!--tests-->
+            <fileset dir="${basedir}/tests/test">                       <include name="**/*.java" /></fileset>
+
         </cobertura-report>
     </target>
 
