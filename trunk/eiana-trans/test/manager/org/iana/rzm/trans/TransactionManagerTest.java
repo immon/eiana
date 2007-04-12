@@ -1,6 +1,5 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
@@ -149,7 +148,6 @@ public class TransactionManagerTest {
             td.setTicketID(ticketId);
             td.setCurrentDomain(domain);
             pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-            pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
             Transaction transaction = new Transaction(pi);
             processDAO.save(pi);
             return transaction;
