@@ -1,6 +1,3 @@
-/**
- * @author Piotr Tkaczyk
- */
 package org.iana.rzm.trans.jbpm.handlers;
 
 import org.jbpm.graph.def.ActionHandler;
@@ -13,6 +10,10 @@ import org.iana.notifications.template.TemplateContactConfirmationRemainder;
 
 import java.util.Set;
 import java.util.HashSet;
+
+/**
+ * @author Piotr Tkaczyk
+ */
 
 public class ContactConfirmationRemainder extends ProcessStateNotifier implements ActionHandler {
 
@@ -29,7 +30,7 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier implement
         for(RZMUser user : users)
             for (Role role : user.getRoles()) {
                 TemplateContactConfirmationRemainder template = new TemplateContactConfirmationRemainder(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()), 30-period);
-                sendContactNotification(domainName, user, template);
+                sendContactNotification(user, template);
             }
     }
 }

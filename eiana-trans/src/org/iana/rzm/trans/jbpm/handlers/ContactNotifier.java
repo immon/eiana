@@ -2,13 +2,10 @@ package org.iana.rzm.trans.jbpm.handlers;
 
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.configuration.ObjectFactory;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.trans.confirmation.SystemRoleConfirmation;
-import org.iana.notifications.*;
 import org.iana.notifications.template.TemplateContactConfirmation;
 
 import java.util.*;
@@ -17,6 +14,7 @@ import java.util.*;
  * This class notifies all required contacts that a domain transaction needs to be confirmed.
  *
  * @author Patrycja Wegrzynowicz
+ * @author Piotr    Tkaczyk
  */
 public class ContactNotifier extends ProcessStateNotifier implements ActionHandler {
 
@@ -32,7 +30,7 @@ public class ContactNotifier extends ProcessStateNotifier implements ActionHandl
         for(RZMUser user : users)
             for (Role role : user.getRoles()) {
                 TemplateContactConfirmation template = new TemplateContactConfirmation(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()));
-                sendContactNotification(domainName, user, template);
+                sendContactNotification(user, template);
             }
     }
 }
