@@ -1,12 +1,11 @@
 package org.iana.rzm.user;
 
-import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.common.TrackData;
 import org.iana.notifications.Addressee;
-
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.*;
+import java.sql.Timestamp;
 
 /**
  * <p/>
@@ -14,10 +13,12 @@ import java.util.*;
  * </p>
  *
  * @author Patrycja Wegrzynowicz
- * @author Jakub Laszkiewicz
+ * @author Jakub    Laszkiewicz
+ * @author Piotr    Tkaczyk
  */
+
 @Entity
-public class RZMUser implements Addressee, TrackedObject {
+public class RZMUser extends Addressee implements TrackedObject {
 
     @Basic
     private String firstName;
@@ -36,15 +37,14 @@ public class RZMUser implements Addressee, TrackedObject {
     @Basic
     private boolean securID;
     // todo: securid authenticator?, pgp certificate
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
-    @Embedded
-    private TrackData trackData = new TrackData();
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "RZMUser_Roles",
             inverseJoinColumns = @JoinColumn(name = "Role_objId"))
     private List<Role> roles;
+
+    @Embedded
+    protected TrackData trackData = new TrackData();
 
     public RZMUser() {
         this(null, null, null, null, null, null, false);
@@ -59,14 +59,6 @@ public class RZMUser implements Addressee, TrackedObject {
         this.password = new MD5Password(password);
         this.securID = securID;
         this.roles = new ArrayList<Role>();
-    }
-
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
     }
 
     public String getFirstName() {
@@ -190,7 +182,6 @@ public class RZMUser implements Addressee, TrackedObject {
         return trackData;
     }
 
-    //marcinz: has to be public?
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
     }
