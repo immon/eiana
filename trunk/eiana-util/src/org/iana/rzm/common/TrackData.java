@@ -7,12 +7,9 @@ import java.sql.Timestamp;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-@Embeddable
-@Entity
-public class TrackData implements Cloneable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
+
+public class TrackData implements Cloneable {
+
     @Basic
     private Timestamp created;
     @Basic
@@ -24,14 +21,6 @@ public class TrackData implements Cloneable{
 
     public TrackData() {
         createNow();
-    }
-
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
     }
 
     final public Timestamp getCreated() {
