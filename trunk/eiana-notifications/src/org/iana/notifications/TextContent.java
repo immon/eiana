@@ -5,7 +5,7 @@ package org.iana.notifications;
  *
  * @author Patrycja Wegrzynowicz
  */
-public class TextContent implements Content {
+public class TextContent extends Content {
 
     String subject;
     String body;
