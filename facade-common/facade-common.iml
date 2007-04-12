@@ -17,6 +17,7 @@
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="module" module-name="integration-securid" />
     <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntryProperties />
   </component>
 </module>

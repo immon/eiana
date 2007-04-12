@@ -19,6 +19,7 @@
     <orderEntry type="module" module-name="eiana-users" />
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="module" module-name="eiana-trans" />
+    <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntryProperties />
   </component>
 </module>

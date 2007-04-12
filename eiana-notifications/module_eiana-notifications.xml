@@ -25,6 +25,8 @@
     <path refid="library.dynaxml.classpath"/>
     <path refid="library.jdom.classpath"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.spring.classpath"/>
   </path>
   
   
