@@ -1,6 +1,5 @@
 package org.iana.rzm.trans.dao.test;
 
-import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
@@ -96,7 +95,6 @@ public class ProcessDAOTest {
             td.setTicketID(ticketId);
             td.setCurrentDomain(domain);
             pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-            pi.getContextInstance().setVariable("TRACK_DATA", new TrackData());
             Transaction transaction = new Transaction(pi);
             processDAO.save(pi);
             return pi;
