@@ -5,10 +5,12 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
+import org.iana.rzm.common.TrackData;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.Timestamp;
 
 /**
  * @author Jakub Laszkiewicz
@@ -30,6 +32,9 @@ public class TransactionData {
             inverseJoinColumns = @JoinColumn(name = "stateConfirmations_objId"))
     @MapKeyManyToMany
     private Map<String, StateConfirmations> stateConfirmations = new HashMap<String, StateConfirmations>();
+
+    @Embedded
+    protected TrackData trackData = new TrackData();
 
     public Long getObjId() {
         return objId;
@@ -69,5 +74,25 @@ public class TransactionData {
 
     public void setStateConfirmations(String state, StateConfirmations stateConfirmations) {
         this.stateConfirmations.put(state, stateConfirmations);
+    }
+
+    public Timestamp getCreated() {
+        return trackData.getCreated();
+    }
+
+    public Timestamp getModified() {
+        return trackData.getModified();
+    }
+
+    public String getCreatedBy() {
+        return trackData.getCreatedBy();
+    }
+
+    public String getModifiedBy() {
+        return trackData.getModifiedBy();
+    }
+
+    public TrackData getTrackData() {
+        return trackData;
     }
 }
