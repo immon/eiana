@@ -1,17 +1,43 @@
 package org.iana.notifications;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Piotr    Tkaczyk
  */
+@Entity
 public class Notification {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long objId;
+
+    @Basic
     private Timestamp created;
+
+    @Basic
     private String type;
-    private Addressee addressee;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Addressee> addressee = new HashSet<Addressee>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Content content;
+
+    @Basic
     private boolean sent;
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
+    }
 
     public Timestamp getCreated() {
         return created;
@@ -29,12 +55,16 @@ public class Notification {
         this.type = type;
     }
 
-    public Addressee getAddressee() {
-        return addressee;
+    public Set<Addressee> getAddressee() {
+        return this.addressee;
     }
 
-    public void setAddressee(Addressee addressee) {
+    public void setAddressee(Set<Addressee> addressee) {
         this.addressee = addressee;
+    }
+
+    public void addAddressee(Addressee addressee) {
+        this.addressee.add(addressee);
     }
 
     public Content getContent() {
