@@ -20,21 +20,19 @@
         <property name="hibernate.jdbc.batch_size">20</property>
 
         <mapping class="org.iana.rzm.common.Name"/>
-        <mapping class="org.iana.rzm.common.TrackData"/>
 
 		<mapping class="org.iana.rzm.domain.Address"/>
-        <mapping class="org.iana.rzm.domain.Contact"/>
-        <mapping class="org.iana.rzm.domain.Domain"/>
-        <mapping class="org.iana.rzm.domain.Host"/>
-        <mapping class="org.iana.rzm.domain.IPv4Address"/>
-        <mapping class="org.iana.rzm.domain.IPv6Address"/>
+		<mapping class="org.iana.rzm.domain.Contact"/>
+		<mapping class="org.iana.rzm.domain.Domain"/>
+		<mapping class="org.iana.rzm.domain.Host"/>
+		<mapping class="org.iana.rzm.domain.IPv4Address"/>
+		<mapping class="org.iana.rzm.domain.IPv6Address"/>
 
-        <mapping class="org.iana.rzm.trans.TransactionAction"/>
-        <mapping class="org.iana.rzm.trans.TransactionState"/>
-        <mapping class="org.iana.rzm.trans.Transaction"/>
-        <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
-        <mapping class="org.iana.rzm.trans.TransactionData"/>
-        <mapping class="org.iana.rzm.trans.StateTransition"/>
+        <mapping class="org.iana.rzm.user.AdminRole"/>
+        <mapping class="org.iana.rzm.user.MD5Password"/>
+        <mapping class="org.iana.rzm.user.Role"/>
+        <mapping class="org.iana.rzm.user.SystemRole"/>
+        <mapping class="org.iana.rzm.user.RZMUser"/>
 
         <mapping class="org.iana.rzm.trans.change.Change"/>
         <mapping class="org.iana.rzm.trans.change.ObjectChange"/>
@@ -42,11 +40,12 @@
         <mapping class="org.iana.rzm.trans.change.SimpleChange"/>
         <mapping class="org.iana.rzm.trans.change.FieldChange"/>
 
-        <mapping class="org.iana.rzm.user.AdminRole"/>
-        <mapping class="org.iana.rzm.user.MD5Password"/>
-        <mapping class="org.iana.rzm.user.Role"/>
-        <mapping class="org.iana.rzm.user.SystemRole"/>
-        <mapping class="org.iana.rzm.user.RZMUser"/>
+        <mapping class="org.iana.rzm.trans.TransactionAction"/>
+        <mapping class="org.iana.rzm.trans.TransactionState"/>
+        <mapping class="org.iana.rzm.trans.Transaction"/>
+        <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
+        <mapping class="org.iana.rzm.trans.TransactionData"/>
+        <mapping class="org.iana.rzm.trans.StateTransition"/>
 
         <mapping class="org.iana.rzm.trans.confirmation.AbstractConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.AdminRoleConfirmation"/>
@@ -56,7 +55,12 @@
         <mapping class="org.iana.rzm.trans.confirmation.SystemRoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
 
-        <!-- ############################################ -->
+        <mapping class="org.iana.notifications.Content" />
+        <mapping class="org.iana.notifications.Addressee" />
+        <mapping class="org.iana.notifications.Notification" />
+        <mapping class="org.iana.notifications.TemplateContent" />
+
+         <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->
         <!-- ############################################ -->
 

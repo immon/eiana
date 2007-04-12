@@ -28,12 +28,39 @@
     <patternset refid="excluded.from.module.conf"/>
   </patternset>
   
+  <path id="conf.module.test.sourcepath">
+    <dirset dir="${module.conf.basedir}">
+      <include name="hibernate"/>
+      <include name="spring"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.conf" depends="compile.module.conf.production,compile.module.conf.tests" description="Compile module conf"/>
   
   <target name="compile.module.conf.production" description="Compile module conf; production classes"/>
   
-  <target name="compile.module.conf.tests" depends="compile.module.conf.production" description="compile module conf; test classes" unless="skip.tests"/>
+  <target name="compile.module.conf.tests" depends="compile.module.conf.production" description="compile module conf; test classes" unless="skip.tests">
+    <mkdir dir="${conf.testoutput.dir}"/>
+    <javac destdir="${conf.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.conf}/javac">
+      <compilerarg line="${compiler.args.conf}"/>
+      <classpath refid="conf.module.classpath"/>
+      <classpath location="${conf.output.dir}"/>
+      <src refid="conf.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.conf"/>
+    </javac>
+    
+    <copy todir="${conf.testoutput.dir}">
+      <fileset dir="${module.conf.basedir}/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.conf.basedir}/spring">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.conf" description="cleanup module">
     <delete dir="${conf.output.dir}"/>
