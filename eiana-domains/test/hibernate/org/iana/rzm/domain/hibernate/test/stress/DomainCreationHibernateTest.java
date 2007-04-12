@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-domains","stress", "eiana-domains-stress-create"})
+@Test(sequential=true, groups = {"hibernate", "eiana-domains","stress", "eiana-domains-stress-create"})
 public class DomainCreationHibernateTest extends HibernateOperationStressTest {
     private String prefix;
     protected void operation(Object o) throws Exception {
@@ -20,7 +20,7 @@ public class DomainCreationHibernateTest extends HibernateOperationStressTest {
 
 
     protected List getList() throws Exception {
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         for (int i = 0; i < 100; i++) result.add("iana" + prefix + i + ".org");
         return result;
     }
