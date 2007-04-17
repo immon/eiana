@@ -17,6 +17,8 @@ class FieldChange {
     @JoinColumn(name = "Change_objId")
     Change change;
 
+    private FieldChange() {}
+
     public FieldChange(String fieldName, Change change) {
         this.fieldName = fieldName;
         this.change = change;

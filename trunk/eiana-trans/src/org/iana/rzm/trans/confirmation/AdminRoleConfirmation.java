@@ -21,6 +21,8 @@ public class AdminRoleConfirmation extends RoleConfirmation {
     @Enumerated
     private AdminRole.AdminType adminType;
 
+    private AdminRoleConfirmation() {}
+
     public AdminRoleConfirmation(String name, AdminRole.AdminType adminType) {
         super(name, adminType);
     }

@@ -21,6 +21,8 @@ public class ObjectChange extends Change {
     @Transient
     private Map<String, Change> fieldChanges = new HashMap<String, Change>();
 
+    private ObjectChange() {}
+
     public ObjectChange(Type type, String id, Map<String, Change> fieldChanges) {
         super(type);
         this.id = id;

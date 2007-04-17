@@ -8,6 +8,8 @@ import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Collection;
 
 /**
  * @author Jakub Laszkiewicz
@@ -36,6 +38,10 @@ public class JbpmProcessDAO implements ProcessDAO {
 
     public ProcessInstance newProcessInstanceForUpdate(final String name) {
         return getContext().newProcessInstanceForUpdate(name);
+    }
+
+    public List<ProcessInstance> findAll() {
+        return getContext().getSession().createQuery("from ProcessInstance").list();
     }
 
     public List<ProcessInstance> findAllProcessInstances(final String domainName) {
@@ -98,12 +104,37 @@ public class JbpmProcessDAO implements ProcessDAO {
         return query.list();
     }
 
+    public List<ProcessInstance> find(ProcessCriteria criteria) {
+        if (criteria == null) throw new IllegalArgumentException("criteria is null");
+        HqlQuery hqlQuery = ProcessCriteriaHqlTranslator.translate(criteria);
+        System.out.println("HQL: " + hqlQuery.getHql());
+        Query query = getContext().getSession().createQuery(hqlQuery.getHql());
+        for (Map.Entry<String, Object> entry : hqlQuery.getParameters().entrySet()) {
+            if (entry.getValue() instanceof Collection)
+                query.setParameterList(entry.getKey(), (Collection) entry.getValue());
+            else
+                query.setParameter(entry.getKey(), entry.getValue());
+        }
+        return query.list();
+    }
+
     public void deploy(final ProcessDefinition pd) {
         getContext().deployProcessDefinition(pd);
     }
 
     public void save(ProcessInstance pi) {
         getContext().save(pi);
+    }
+
+    public void delete(ProcessInstance pi) {
+        // forcing deletion fo process instance variable (jBPM bug)
+        if (pi.getContextInstance().hasVariable("TRANSACTION_DATA")) {
+            Object variable = pi.getContextInstance().getVariable("TRANSACTION_DATA");
+            // setting null because deleteVariable() does not work
+            pi.getContextInstance().setVariable("TRANSACTION_DATA", null);
+            getContext().getSession().delete(variable);
+        }
+        getContext().getGraphSession().deleteProcessInstance(pi);
     }
 
     public void close() {

@@ -42,7 +42,9 @@ public class ConfirmationTest {
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     private UserDAO userDAO;
-    private Set<RZMUser> usersMap;
+    private Set<RZMUser> users = new HashSet<RZMUser>();
+    private Set<String> domains = new HashSet<String>();
+    private Set<Long> processes = new HashSet<Long>();
 
     @BeforeClass
     public void init() {
@@ -54,12 +56,11 @@ public class ConfirmationTest {
         userDAO = (UserDAO) appCtx.getBean("userDAO");
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
 
-        usersMap = new HashSet<RZMUser>();
-        usersMap.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        usersMap.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
-        usersMap.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
+        users.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        users.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+        users.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
 
-        for(RZMUser user : usersMap)
+        for (RZMUser user : users)
             userDAO.create(user);
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
@@ -68,24 +69,31 @@ public class ConfirmationTest {
     }
 
     private Transaction createTransaction(String suffix) throws CloneNotSupportedException {
-        userDAO.create(UserManagementTestUtil.createUser("sys1" + suffix,
+        Set<RZMUser> systemUsers = new HashSet<RZMUser>();
+
+        systemUsers.add(UserManagementTestUtil.createUser("sys1" + suffix,
                 UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, true,
                         SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys2" + suffix,
+        systemUsers.add(UserManagementTestUtil.createUser("sys2" + suffix,
                 UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, true,
                         SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys3" + suffix,
+        systemUsers.add(UserManagementTestUtil.createUser("sys3" + suffix,
                 UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, false,
                         SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys4" + suffix,
+        systemUsers.add(UserManagementTestUtil.createUser("sys4" + suffix,
                 UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, false,
                         SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys5" + suffix,
+        systemUsers.add(UserManagementTestUtil.createUser("sys5" + suffix,
                 UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, true, false,
                         SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("sys6" + suffix,
+        systemUsers.add(UserManagementTestUtil.createUser("sys6" + suffix,
                 UserManagementTestUtil.createSystemRole("conftestdomain" + suffix, false, false,
                         SystemRole.SystemType.TC)));
+
+        users.addAll(systemUsers);
+
+        for (RZMUser user : systemUsers)
+            userDAO.create(user);
 
         Address address = new Address();
         address.setTextAddress("ta" + suffix);
@@ -104,7 +112,8 @@ public class ConfirmationTest {
         clonedSupportingOrg.setPhoneNumbers(phones);
 
         Domain domain = new Domain("conftestdomain" + suffix);
-       // domain.setWhoisServer("oldwhoisserver");
+        domains.add("conftestdomain" + suffix);
+        // domain.setWhoisServer("oldwhoisserver");
         domain.setRegistryUrl("http://www.oldregistryurl" + suffix + ".org");
         domain.setSupportingOrg(supportingOrg);
         domain.addTechContact(new Contact("aaa" + suffix));
@@ -128,6 +137,7 @@ public class ConfirmationTest {
 
         Transaction transaction = createTransaction("contact");
         ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
+        processes.add(processInstance.getId());
 
         Token token = processInstance.getRootToken();
         token.signal();
@@ -142,9 +152,11 @@ public class ConfirmationTest {
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        userDAO.create(UserManagementTestUtil.createUser("sys7contact",
+        RZMUser anotherUser = UserManagementTestUtil.createUser("sys7contact",
                 UserManagementTestUtil.createSystemRole("conftestdomaincontact", true, true,
-                        SystemRole.SystemType.AC)));
+                        SystemRole.SystemType.AC));
+        users.add(anotherUser);
+        userDAO.create(anotherUser);
 
         transaction.accept(userDAO.get("user-sys2contact"));
 
@@ -164,6 +176,7 @@ public class ConfirmationTest {
 
         Transaction transaction = createTransaction("admin");
         ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
+        processes.add(processInstance.getId());
 
         Token token = processInstance.getRootToken();
         token.signal();
@@ -183,7 +196,20 @@ public class ConfirmationTest {
 
     @AfterClass
     public void cleanUp() {
-        for(RZMUser user : usersMap)
-            userDAO.delete(user);
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        for (Long id : processes)
+            processDAO.delete(processDAO.getProcessInstance(id));
+        processDAO.close();
+        txMgr.commit(txStatus);
+
+        txStatus = txMgr.getTransaction(txDef);
+        for (RZMUser user : users)
+            userDAO.delete(userDAO.get(user.getLoginName()));
+        txMgr.commit(txStatus);
+
+        txStatus = txMgr.getTransaction(txDef);
+        for (String name : domains)
+            domainDAO.delete(domainDAO.get(name));
+        txMgr.commit(txStatus);
     }
 }

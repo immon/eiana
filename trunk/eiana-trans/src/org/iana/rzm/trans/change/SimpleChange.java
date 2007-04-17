@@ -14,6 +14,8 @@ public class SimpleChange extends Change {
     @Basic
     private String newValue;
 
+    private SimpleChange() {}
+
     public SimpleChange(Object oldValue, Object newValue) {
         super(determineType(oldValue, newValue));
         this.oldValue = oldValue == null ? null : oldValue.toString();
