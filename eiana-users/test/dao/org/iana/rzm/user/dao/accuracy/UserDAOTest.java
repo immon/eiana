@@ -114,7 +114,7 @@ public class UserDAOTest {
     }
 
     @AfterClass
-    private void cleanUp() {
+    public void cleanUp() {
         for(RZMUser user : usersMap)
             dao.delete(user);
     }

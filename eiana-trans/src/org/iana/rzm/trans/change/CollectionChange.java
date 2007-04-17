@@ -23,6 +23,8 @@ public class CollectionChange extends Change {
             inverseJoinColumns = @JoinColumn(name = "Change_objId"))
     private Collection<Change> modified = new ArrayList<Change>();
 
+    private CollectionChange() {}
+
     public CollectionChange(Type type) {
         super(type);
     }

@@ -18,7 +18,7 @@ public abstract class RoleConfirmation extends AbstractConfirmation {
     @Basic
     private String name;
 
-    private RoleConfirmation() {}
+    protected RoleConfirmation() {}
 
     public RoleConfirmation(String name, Role.Type type) {
         this.name = name;

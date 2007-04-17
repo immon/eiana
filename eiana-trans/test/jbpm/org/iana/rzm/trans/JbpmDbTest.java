@@ -7,9 +7,14 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * @author Jakub Laszkiewicz
@@ -17,15 +22,18 @@ import org.springframework.context.ApplicationContext;
 
 @Test(groups = {"accuracy", "eiana-trans", "jbpm"})
 public class JbpmDbTest {
-    ProcessDAO processDAO;
-
-    long processId;
-
+    private ProcessDAO processDAO;
+    private long processId;
     private SchedulerThread schedulerThread;
+    private PlatformTransactionManager txMgr;
+    private TransactionDefinition txDef = new DefaultTransactionDefinition();
+    TransactionStatus txStatus;
 
     @BeforeClass
     public void init() {
         ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
+        txMgr = (PlatformTransactionManager) ctx.getBean("transactionManager");
+        txStatus = txMgr.getTransaction(txDef);
         processDAO = (ProcessDAO) ctx.getBean("processDAO");
         processDAO.deploy(getProcessDefinition());
         schedulerThread = new SchedulerThread((JbpmConfiguration) ctx.getBean("jbpmConfiguration"));
@@ -80,5 +88,12 @@ public class JbpmDbTest {
         processInstance.signal();
         assert processInstance.hasEnded();
         processDAO.close();
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        processDAO.delete(processDAO.getProcessInstance(processId));
+        processDAO.close();
+        txMgr.commit(txStatus);
     }
 }

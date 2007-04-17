@@ -17,10 +17,12 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.rzm.user.dao.UserDAO;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
 
 import java.util.*;
 
@@ -37,29 +39,60 @@ public class JbpmUpdateDomainImpl {
     SchedulerThread schedulerThread;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
+    private UserDAO userDAO;
+    private Set<String> userNames = new HashSet<String>();
+    private Long testProcessInstanceId;
 
     @BeforeClass
-    public void setContext() {
+    public void init() {
         appCtx = SpringTransApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         schedulerThread = new SchedulerThread((JbpmConfiguration) appCtx.getBean("jbpmConfiguration"));
+        userDAO = (UserDAO) appCtx.getBean("userDAO");
 
-        UserDAO userDAO = (UserDAO) appCtx.getBean("userDAO");
-        userDAO.create(UserManagementTestUtil.createUser("UDsys1", UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("UDsys2", UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("UDsys3", UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.AC)));
-        userDAO.create(UserManagementTestUtil.createUser("UDsys4", UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("UDsys5", UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
-        userDAO.create(UserManagementTestUtil.createUser("UDsys6", UserManagementTestUtil.createSystemRole("testdomain.org", false, false, SystemRole.SystemType.TC)));
-                
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+
+        createUser(UserManagementTestUtil.createUser("UDsys1",
+                UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
+        createUser(UserManagementTestUtil.createUser("UDsys2",
+                UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
+        createUser(UserManagementTestUtil.createUser("UDsys3",
+                UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.AC)));
+        createUser(UserManagementTestUtil.createUser("UDsys4",
+                UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
+        createUser(UserManagementTestUtil.createUser("UDsys5",
+                UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
+        createUser(UserManagementTestUtil.createUser("UDsys6",
+                UserManagementTestUtil.createSystemRole("testdomain.org", false, false, SystemRole.SystemType.TC)));
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
+
         processDAO.close();
         txMgr.commit(txStatus);
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        for (String name : userNames) userDAO.delete(userDAO.get(name));
+        txMgr.commit(txStatus);
+
+        txStatus = txMgr.getTransaction(txDef);
+        processDAO.delete(processDAO.getProcessInstance(testProcessInstanceId));
+        processDAO.close();
+        txMgr.commit(txStatus);
+
+        txStatus = txMgr.getTransaction(txDef);
+        domainDAO.delete(domainDAO.get("testdomain.org"));
+        txMgr.commit(txStatus);
+    }
+
+    private void createUser(RZMUser user) {
+        userNames.add(user.getLoginName());
+        userDAO.create(user);
     }
 
     @Test
@@ -100,9 +133,10 @@ public class JbpmUpdateDomainImpl {
         
         Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
 
-        ProcessInstance procesInstance = processDAO.getProcessInstance(tr.getTransactionID());
+        ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
+        testProcessInstanceId = pi.getId();
 
-        Token token = procesInstance.getRootToken();
+        Token token = pi.getRootToken();
         token.signal();
 
         Thread.sleep(3001L);
@@ -118,9 +152,13 @@ public class JbpmUpdateDomainImpl {
         processDAO.close();
         txMgr.commit(txStatus);
 
+        txStatus = txMgr.getTransaction(txDef);
+
         Domain retrivedDomain = domainDAO.get(domain.getName());
 
         assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
                 retrivedDomain.getRegistryUrl() == null);
+
+        txMgr.commit(txStatus);
     }
 }

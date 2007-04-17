@@ -21,6 +21,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -70,6 +71,27 @@ public class TransactionManagerTest {
 
         createTestTransactionsAndUsers();
 
+        txMgr.commit(txStatus);
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        for (Long pid : domain1TransIds)
+            processDAO.delete(processDAO.getProcessInstance(pid));
+        for (Long pid : domain2TransIds)
+            processDAO.delete(processDAO.getProcessInstance(pid));
+        processDAO.close();
+        txMgr.commit(txStatus);
+
+        txStatus = txMgr.getTransaction(txDef);
+        userDAO.delete(userDAO.get("user-sys1tm"));
+        userDAO.delete(userDAO.get("user-sys2tm"));
+        txMgr.commit(txStatus);
+
+        txStatus = txMgr.getTransaction(txDef);
+        domainDAO.delete(domainDAO.get("tmtestdomain1"));
+        domainDAO.delete(domainDAO.get("tmtestdomain2"));
         txMgr.commit(txStatus);
     }
 

@@ -19,6 +19,9 @@ abstract public class Change {
     @Enumerated
     private Type type;
 
+
+    protected Change() {}
+
     protected Change(Type type) {
         CheckTool.checkNull(type, "change type");
         this.type = type;

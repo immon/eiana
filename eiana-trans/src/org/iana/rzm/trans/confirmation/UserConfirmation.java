@@ -14,7 +14,7 @@ import java.util.HashSet;
 public class UserConfirmation extends AbstractConfirmation {
     @Basic
     private boolean accepted = false;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "RZMUser_objId")
     private RZMUser user;
 

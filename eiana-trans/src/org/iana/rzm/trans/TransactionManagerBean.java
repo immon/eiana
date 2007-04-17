@@ -3,6 +3,7 @@ package org.iana.rzm.trans;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.change.ChangeDetector;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.trans.change.ObjectChange;
@@ -57,7 +58,11 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public List<Transaction> find(TransactionCriteria criteria) {
-        return null;
+        ProcessCriteria processCriteria = TransactionToProcessCriteriaConverter.convert(criteria);
+        List<ProcessInstance> processInstances = processDAO.find(processCriteria);
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
+        return result;
     }
 
     public List<Transaction> findTransactions(String domainName) {

@@ -16,7 +16,7 @@ import java.util.Set;
  */
 @Entity
 public class MandatoryRoleConfirmations extends AbstractConfirmation {
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "MandatoryRoleConfirmations_Users",
             inverseJoinColumns = @JoinColumn(name = "RZMUser_objId"))
     private Set<RZMUser> receivedConfirmations = new HashSet<RZMUser>();

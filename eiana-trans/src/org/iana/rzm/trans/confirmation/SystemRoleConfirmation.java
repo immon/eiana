@@ -21,6 +21,8 @@ public class SystemRoleConfirmation extends RoleConfirmation {
     @Enumerated
     private SystemRole.SystemType systemType;
 
+    private SystemRoleConfirmation() {}
+
     public SystemRoleConfirmation(String name, Role.Type type) {
         super(name, type);
     }
