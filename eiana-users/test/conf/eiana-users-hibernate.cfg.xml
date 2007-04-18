@@ -23,6 +23,7 @@
 
         <mapping class="org.iana.rzm.common.Name"/>
 
+        <mapping class="org.iana.rzm.user.AbstractPassword"/>
         <mapping class="org.iana.rzm.user.AdminRole"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>

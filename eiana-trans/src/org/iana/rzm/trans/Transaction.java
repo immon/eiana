@@ -4,9 +4,12 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.trans.confirmation.*;
 import org.iana.rzm.trans.change.ObjectChange;
+import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
+import org.iana.rzm.trans.confirmation.Confirmation;
+import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
+import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -137,10 +140,18 @@ public class Transaction implements TrackedObject {
     }
 
     public synchronized void reject(RZMUser user) throws TransactionException {
-        pi.signal(StateTransition.REJECT);
+        transit(user, StateTransition.REJECT);
     }
 
     public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
-        
+        if (transitionName.equals(StateTransition.ACCEPT)) accept(user);
+        Token token = pi.getRootToken();
+        Node node = token.getNode();
+        TransitionConfirmations tc = getTransactionData().getTransitionConfirmations(node.getName());
+        if (tc == null) throw new UserNotAuthorizedToTransit();
+        if (tc.isAcceptableBy(transitionName, user))
+            pi.signal(transitionName);
+        else
+            throw new UserNotAuthorizedToTransit();
     }
 }

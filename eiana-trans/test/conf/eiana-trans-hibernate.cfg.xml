@@ -35,7 +35,6 @@
         <mapping class="org.iana.rzm.trans.Transaction"/>
         <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
         <mapping class="org.iana.rzm.trans.TransactionData"/>
-        <mapping class="org.iana.rzm.trans.StateTransition"/>
 
         <mapping class="org.iana.rzm.trans.change.Change"/>
         <mapping class="org.iana.rzm.trans.change.ObjectChange"/>
@@ -43,6 +42,7 @@
         <mapping class="org.iana.rzm.trans.change.SimpleChange"/>
         <mapping class="org.iana.rzm.trans.change.FieldChange"/>
 
+        <mapping class="org.iana.rzm.user.AbstractPassword"/>
         <mapping class="org.iana.rzm.user.AdminRole"/>
         <mapping class="org.iana.rzm.user.MD5Password"/>
         <mapping class="org.iana.rzm.user.Role"/>
@@ -50,11 +50,11 @@
         <mapping class="org.iana.rzm.user.RZMUser"/>
 
         <mapping class="org.iana.rzm.trans.confirmation.AbstractConfirmation"/>
-        <mapping class="org.iana.rzm.trans.confirmation.AdminRoleConfirmation"/>
+        <mapping class="org.iana.rzm.trans.confirmation.ConfirmationSet"/>
         <mapping class="org.iana.rzm.trans.confirmation.MandatoryRoleConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.RoleConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.StateConfirmations"/>
-        <mapping class="org.iana.rzm.trans.confirmation.SystemRoleConfirmation"/>
+        <mapping class="org.iana.rzm.trans.confirmation.TransitionConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
 
         <!-- ############################################ -->

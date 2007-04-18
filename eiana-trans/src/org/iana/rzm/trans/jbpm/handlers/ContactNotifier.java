@@ -1,14 +1,15 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.notifications.template.TemplateContactConfirmation;
+import org.iana.rzm.trans.confirmation.RoleConfirmation;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.trans.confirmation.SystemRoleConfirmation;
-import org.iana.notifications.template.TemplateContactConfirmation;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class notifies all required contacts that a domain transaction needs to be confirmed.
@@ -24,12 +25,14 @@ public class ContactNotifier extends ProcessStateNotifier implements ActionHandl
         String domainName = td.getCurrentDomain().getName();
 
         Set<RZMUser> users = new HashSet<RZMUser>();
-        users.addAll(new SystemRoleConfirmation(domainName, SystemRole.SystemType.AC).getUsersAbleToAccept());
-        users.addAll(new SystemRoleConfirmation(domainName, SystemRole.SystemType.TC).getUsersAbleToAccept());
+        users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
+        users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.TC, domainName, true, false)).getUsersAbleToAccept());
 
         for(RZMUser user : users)
             for (Role role : user.getRoles()) {
-                TemplateContactConfirmation template = new TemplateContactConfirmation(domainName, ((SystemRole)role).getTypeName(), user.mustAccept(domainName, role.getType()));
+                SystemRole systemRole = (SystemRole) role;
+                TemplateContactConfirmation template = new TemplateContactConfirmation(domainName,
+                        systemRole.getTypeName(), systemRole.isMustAccept());
                 sendContactNotification(user, template);
             }
     }
