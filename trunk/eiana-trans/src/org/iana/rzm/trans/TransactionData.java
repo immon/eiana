@@ -5,6 +5,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
+import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.common.TrackData;
 
 import javax.persistence.*;
@@ -32,6 +33,11 @@ public class TransactionData {
             inverseJoinColumns = @JoinColumn(name = "stateConfirmations_objId"))
     @MapKeyManyToMany
     private Map<String, StateConfirmations> stateConfirmations = new HashMap<String, StateConfirmations>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "TransactionData_transitionConfirmations",
+            inverseJoinColumns = @JoinColumn(name = "transitionConfirmations_objId"))
+    @MapKeyManyToMany
+    private Map<String, TransitionConfirmations> transitionConfirmations = new HashMap<String, TransitionConfirmations>();
 
     @Embedded
     protected TrackData trackData = new TrackData();
@@ -74,6 +80,19 @@ public class TransactionData {
 
     public void setStateConfirmations(String state, StateConfirmations stateConfirmations) {
         this.stateConfirmations.put(state, stateConfirmations);
+    }
+
+    public TransitionConfirmations getTransitionConfirmations(String stateName) {
+        return transitionConfirmations.get(stateName);
+    }
+
+    public void addTransitionConfirmation(String stateName, String transitionName, Confirmation confirmation) {
+        TransitionConfirmations tc = transitionConfirmations.get(stateName);
+        if (tc == null) {
+            tc = new TransitionConfirmations();
+            this.transitionConfirmations.put(stateName, tc);
+        }
+        tc.addConfirmation(transitionName, confirmation);
     }
 
     public Timestamp getCreated() {

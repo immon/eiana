@@ -13,10 +13,8 @@ import java.security.NoSuchAlgorithmException;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class MD5Password implements Password {
+public class MD5Password extends AbstractPassword {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
     /**
      * An MD5 encoded password.
      */
@@ -32,14 +30,6 @@ public class MD5Password implements Password {
      */
     public MD5Password(String password) {
         setPassword(password);
-    }
-
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
     }
 
     /**

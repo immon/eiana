@@ -1,11 +1,12 @@
 package org.iana.rzm.user;
 
-import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.common.TrackData;
 import org.iana.notifications.Addressee;
+import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.TrackedObject;
+
 import javax.persistence.*;
-import java.util.*;
 import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * <p/>
@@ -30,9 +31,10 @@ public class RZMUser extends Addressee implements TrackedObject {
     private String loginName;
     @Basic
     private String email;
-    // todo ono-to-one, delete orphans
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = MD5Password.class)
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = AbstractPassword.class)
     @JoinColumn(name = "Password_objId")
+    //@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    // todo delete orphan does not work (Hibernate bug)
     private Password password;
     @Basic
     private boolean securID;
@@ -41,6 +43,8 @@ public class RZMUser extends Addressee implements TrackedObject {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "RZMUser_Roles",
             inverseJoinColumns = @JoinColumn(name = "Role_objId"))
+    //@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    // todo delete orphan does not work (Hibernate bug)
     private List<Role> roles;
 
     @Embedded
@@ -205,34 +209,6 @@ public class RZMUser extends Addressee implements TrackedObject {
 
     final public void clearRoles() {
         this.roles.clear();
-    }
-
-    final public boolean mustAccept(String name, Role.Type type) {
-        if (type instanceof SystemRole.SystemType) {
-            for (Role role : roles)
-                if (!role.isAdmin()) {
-                    SystemRole sr = (SystemRole) role;
-                    if (name.equals(sr.getName()) && type.equals(sr.getType())
-                            && sr.isMustAccept())
-                        return true;
-                }
-        }
-        return false;
-    }
-
-    final public boolean isEligibleToAccept(String name, Role.Type type) {
-        for (Role role : roles)
-            if (role.isAdmin() && type instanceof AdminRole.AdminType) {
-                AdminRole ar = (AdminRole) role;
-                if (type.equals(ar.getType()))
-                    return true;
-            } else if (!role.isAdmin() && type instanceof SystemRole.SystemType) {
-                SystemRole sr = (SystemRole) role;
-                if (name.equals(sr.getName()) && type.equals(sr.getType())
-                        && sr.isAcceptFrom())
-                    return true;
-            }
-        return false;
     }
 
     final public boolean isAdmin() {

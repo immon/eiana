@@ -45,6 +45,13 @@ public class SystemRole extends Role {
         super(type);
     }
 
+    public SystemRole(Type type, String name, boolean acceptFrom, boolean mustAccept) {
+        super(type);
+        this.name = new Name(name);
+        this.acceptFrom = acceptFrom;
+        this.mustAccept = mustAccept;
+    }
+
     final public SystemType getType() {
         return type;
     }

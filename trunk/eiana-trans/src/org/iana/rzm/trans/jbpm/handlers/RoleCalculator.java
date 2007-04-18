@@ -1,8 +1,8 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.confirmation.AdminRoleConfirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
+import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.AdminRole;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.def.Node;
@@ -28,7 +28,7 @@ public class RoleCalculator implements ActionHandler {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
 
         StateConfirmations sc = new StateConfirmations();
-        sc.addConfirmation(new AdminRoleConfirmation(td.getCurrentDomain().getName(), getType(role)));
+        sc.addConfirmation(new RoleConfirmation(new AdminRole(getType(role))));
 
         Token token = executionContext.getProcessInstance().getRootToken();
         Node node = token.getNode();

@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.confirmation;
+package org.iana.rzm.user;
 
 import javax.persistence.*;
 
@@ -6,13 +6,11 @@ import javax.persistence.*;
  * @author Jakub Laszkiewicz
  */
 @Entity
-@Table(name = "Confirmation")
-public abstract class AbstractConfirmation implements Confirmation {
+@Table(name = "Password")
+public abstract class AbstractPassword implements Password {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
-
-    protected AbstractConfirmation() {}
 
     public Long getObjId() {
         return objId;
