@@ -345,32 +345,37 @@ public class Domain implements TrackedObject, Cloneable {
         this.trackData = trackData;
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        Domain domain = (Domain) super.clone();
-        Domain newDomain = new Domain(domain.getName());
+    public Domain clone() {
+        Domain domain = null;
         try {
-            //domain.setDomainRegistryUrl(new URL(domain.getRegistryUrl().toString()));            
-            if (domain.getNameServers() != null) {
-                List<Host> newHosts = new ArrayList<Host>();
-                List<Host> oldHosts = domain.getNameServers();
-                for (Host host : oldHosts)
-                    newHosts.add((Host) host.clone());
-                newDomain.setNameServers(newHosts);
+            domain = (Domain) super.clone();
+            Domain newDomain = new Domain(domain.getName());
+            try {
+                //domain.setDomainRegistryUrl(new URL(domain.getRegistryUrl().toString()));
+                if (domain.getNameServers() != null) {
+                    List<Host> newHosts = new ArrayList<Host>();
+                    List<Host> oldHosts = domain.getNameServers();
+                    for (Host host : oldHosts)
+                        newHosts.add((Host) host.clone());
+                    newDomain.setNameServers(newHosts);
+                }
+                if (domain.getTrackData() != null)
+                    newDomain.setTrackData((TrackData) domain.getTrackData().clone());
+                if (domain.getAdminContacts() != null)
+                    newDomain.setAdminContacts(copyListOfContacts(domain.getAdminContacts()));
+                if (domain.getTechContacts() != null)
+                    newDomain.setTechContacts(copyListOfContacts(domain.getTechContacts()));
+                if (domain.getSupportingOrg() != null)
+                    newDomain.setSupportingOrg((Contact) domain.getSupportingOrg().clone());
+                if (domain.getWhoisServer() != null)
+                    newDomain.setWhoisServer(domain.getWhoisServer());
+            } catch (NameServerAlreadyExistsException e) {
+                e.printStackTrace();
             }
-            if (domain.getTrackData() != null)
-                newDomain.setTrackData((TrackData) domain.getTrackData().clone());
-            if (domain.getAdminContacts() != null)
-                newDomain.setAdminContacts(copyListOfContacts(domain.getAdminContacts()));
-            if (domain.getTechContacts() != null)
-                newDomain.setTechContacts(copyListOfContacts(domain.getTechContacts()));
-            if (domain.getSupportingOrg() != null)
-                newDomain.setSupportingOrg((Contact) domain.getSupportingOrg().clone());
-            if (domain.getWhoisServer() != null)
-                newDomain.setWhoisServer(domain.getWhoisServer());
-        } catch (NameServerAlreadyExistsException e) {
-            e.printStackTrace();
+            return newDomain;
+        } catch (CloneNotSupportedException e) {
+            throw new UnsupportedOperationException(e);
         }
-        return newDomain;
     }
 
     private List<Contact> copyListOfContacts(List<Contact> oldContacts) throws CloneNotSupportedException {
