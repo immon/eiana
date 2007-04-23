@@ -82,4 +82,38 @@ public class TransactionVO extends TrackDataVO {
     public void setEnd(Timestamp end) {
         this.end = end;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        TransactionVO that = (TransactionVO) o;
+
+        if (domainActions != null ? !domainActions.equals(that.domainActions) : that.domainActions != null)
+            return false;
+        if (domainName != null ? !domainName.equals(that.domainName) : that.domainName != null) return false;
+        if (end != null ? !end.equals(that.end) : that.end != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (start != null ? !start.equals(that.start) : that.start != null) return false;
+        if (state != null ? !state.equals(that.state) : that.state != null) return false;
+        if (ticketID != null ? !ticketID.equals(that.ticketID) : that.ticketID != null) return false;
+        if (transactionID != null ? !transactionID.equals(that.transactionID) : that.transactionID != null)
+            return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (transactionID != null ? transactionID.hashCode() : 0);
+        result = 31 * result + (ticketID != null ? ticketID.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (domainName != null ? domainName.hashCode() : 0);
+        result = 31 * result + (domainActions != null ? domainActions.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (end != null ? end.hashCode() : 0);
+        return result;
+    }
 }

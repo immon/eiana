@@ -3,6 +3,7 @@ package org.iana.rzm.trans;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.trans.confirmation.UserConfirmation;
+import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.SystemRole;
@@ -100,8 +101,9 @@ public class TransactionTest {
         td = new TransactionData();
         ticketId2 = 124L;
         // PENDING_CONTACT_CONFIRMATION/reject transition authorized users
-        td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
-                "reject", new UserConfirmation(userDAO.get("user-sys1trans")));
+        StateConfirmations sc = new StateConfirmations();
+        sc.addConfirmation(new UserConfirmation(userDAO.get("user-sys1trans")));
+        td.setStateConfirmations(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(), sc);
         td.setTicketID(ticketId2);
         pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
         pi.signal();

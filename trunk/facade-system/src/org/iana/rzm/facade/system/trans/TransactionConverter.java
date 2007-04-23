@@ -40,36 +40,37 @@ class TransactionConverter {
 
         List<TransactionActionVO> actions = new ArrayList<TransactionActionVO>();
         ObjectChange domainChange = trans.getDomainChange();
-        Map<String, Change> fieldChanges = domainChange.getFieldChanges();
-        if (fieldChanges.containsKey("whoisServer")) {
-            SimpleChange simpleChange = (SimpleChange) fieldChanges.get("whoisServer");
-            TransactionActionVO action = new TransactionActionVO();
-            action.setName(TransactionActionVO.MODIFY_WHOIS_SERVER);
-            action.addChange(toChangeVOSimple("whoisServer", simpleChange));
-            actions.add(action);
-        }
-        if (fieldChanges.containsKey("registryUrl")) {
-            SimpleChange simpleChange = (SimpleChange) fieldChanges.get("registryUrl");
-            TransactionActionVO action = new TransactionActionVO();
-            action.setName(TransactionActionVO.MODIFY_REGISTRATION_URL);
-            action.addChange(toChangeVOSimple("registryUrl", simpleChange));
-            actions.add(action);
-        }
-
-        if (fieldChanges.containsKey("adminContacts") || fieldChanges.containsKey("techContacts")) {
-            TransactionActionVO action = new TransactionActionVO();
-            action.setName(TransactionActionVO.MODIFY_CONTACT);
-            if (fieldChanges.containsKey("adminContacts")) {
-                CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
-                action.addChange(toChangeVO("adminContacts", adminChange));
+        if (domainChange != null) {
+            Map<String, Change> fieldChanges = domainChange.getFieldChanges();
+            if (fieldChanges.containsKey("whoisServer")) {
+                SimpleChange simpleChange = (SimpleChange) fieldChanges.get("whoisServer");
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_WHOIS_SERVER);
+                action.addChange(toChangeVOSimple("whoisServer", simpleChange));
+                actions.add(action);
             }
-            if (fieldChanges.containsKey("techContacts")) {
-                CollectionChange techChange = (CollectionChange) fieldChanges.get("techContacts");
-                action.addChange(toChangeVO("techContacts", techChange));
+            if (fieldChanges.containsKey("registryUrl")) {
+                SimpleChange simpleChange = (SimpleChange) fieldChanges.get("registryUrl");
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_REGISTRATION_URL);
+                action.addChange(toChangeVOSimple("registryUrl", simpleChange));
+                actions.add(action);
+            }
+
+            if (fieldChanges.containsKey("adminContacts") || fieldChanges.containsKey("techContacts")) {
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_CONTACT);
+                if (fieldChanges.containsKey("adminContacts")) {
+                    CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
+                    action.addChange(toChangeVO("adminContacts", adminChange));
+                }
+                if (fieldChanges.containsKey("techContacts")) {
+                    CollectionChange techChange = (CollectionChange) fieldChanges.get("techContacts");
+                    action.addChange(toChangeVO("techContacts", techChange));
+                }
             }
         }
         ret.setDomainActions(actions);
-
         ret.setState(toStateVO(trans.getState()));
         ret.setStart(trans.getStart());
         ret.setEnd(trans.getEnd());

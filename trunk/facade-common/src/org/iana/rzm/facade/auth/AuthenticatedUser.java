@@ -55,7 +55,7 @@ public class AuthenticatedUser {
      * <code>UserInvalidatedException</code>.
      */
     public void invalidate() {
-        invalidated = false;
+        invalidated = true;
     }
 
     public long getObjId() {
