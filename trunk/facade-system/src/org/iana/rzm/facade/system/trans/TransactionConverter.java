@@ -38,8 +38,17 @@ class TransactionConverter {
         ret.setName(trans.getName());
         ret.setDomainName(trans.getCurrentDomain().getName());
 
+        ret.setDomainActions(toTransactionActionVO(trans.getDomainChange()));
+
+        ret.setState(toStateVO(trans.getState()));
+        ret.setStart(trans.getStart());
+        ret.setEnd(trans.getEnd());
+
+        return ret;
+    }
+
+    public static List<TransactionActionVO> toTransactionActionVO(ObjectChange domainChange) {
         List<TransactionActionVO> actions = new ArrayList<TransactionActionVO>();
-        ObjectChange domainChange = trans.getDomainChange();
         if (domainChange != null) {
             Map<String, Change> fieldChanges = domainChange.getFieldChanges();
             if (fieldChanges.containsKey("whoisServer")) {
@@ -70,12 +79,7 @@ class TransactionConverter {
                 }
             }
         }
-        ret.setDomainActions(actions);
-        ret.setState(toStateVO(trans.getState()));
-        ret.setStart(trans.getStart());
-        ret.setEnd(trans.getEnd());
-
-        return ret;
+        return actions;
     }
 
     private static List<ChangeVO> toChangeVO(String fieldName, Change change) {

@@ -36,7 +36,11 @@ public class EmptySystemTransactionService implements SystemTransactionService {
 
     }
 
-    public List<TransactionSplitVO> getPossibleTransactionSplits(IDomainVO domain) throws AccessDeniedException, InfrastructureException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        return null;
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         return null;
     }
 

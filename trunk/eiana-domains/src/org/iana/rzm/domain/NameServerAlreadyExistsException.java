@@ -1,6 +1,6 @@
 package org.iana.rzm.domain;
 
-public class NameServerAlreadyExistsException extends Exception {
+public class NameServerAlreadyExistsException extends RuntimeException {
 
     String name;
 

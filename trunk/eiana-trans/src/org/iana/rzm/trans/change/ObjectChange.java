@@ -14,6 +14,8 @@ public class ObjectChange extends Change {
 
     @Basic
     private String id;
+    @Basic
+    private String clazz;
     @OneToMany(cascade = CascadeType.ALL, targetEntity = FieldChange.class)
     @JoinTable(name = "CollectionChange_FieldChanges",
             inverseJoinColumns = @JoinColumn(name = "Change_objId"))

@@ -4,6 +4,7 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -12,11 +13,15 @@ import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.change.ObjectChange;
+import org.iana.rzm.trans.change.ChangeDetector;
+import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.user.UserManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.rmi.NoSuchObjectException;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -56,14 +61,14 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         throw new UnsupportedOperationException();
     }
 
-    public List<TransactionSplitVO> getPossibleTransactionSplits(IDomainVO domain) throws AccessDeniedException, InfrastructureException {
-        throw new UnsupportedOperationException();
-    }
-
     public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         CheckTool.checkNull(domain, "domain");
         if (domainManager.get(domain.getName()) == null) throw new NoObjectFoundException(domain.getName(), "domain");
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
+        return createTransaction(modifiedDomain);
+    }
+
+    private TransactionVO createTransaction(Domain modifiedDomain) {
         Transaction trans = transactionManager.createDomainModificationTransaction(modifiedDomain);
         return TransactionConverter.toTransactionVO(trans);
     }
@@ -119,4 +124,43 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         TransactionCriteria transactionCriteria = TransactionCriteriaConverter.convert(criteria);
         return TransactionConverter.toTransactionVOList(transactionManager.find(transactionCriteria));
     }
-}
+
+   public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        CheckTool.checkNull(domain, "null domain");
+
+        Domain currentDomain = domainManager.get(domain.getName());
+        if (currentDomain == null) throw new NoObjectFoundException(domain.getName(), "domain");
+
+        TransactionActionsVO ret = new TransactionActionsVO();
+        Domain modifiedDomain = FromVOConverter.toDomain(domain);
+        ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, DomainDiffConfiguration.getInstance());
+        List<TransactionActionVO> actions = TransactionConverter.toTransactionActionVO(change);
+        ret.setActions(actions);
+        return ret;
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        CheckTool.checkNull(domain, "null domain");
+
+        Domain currentDomain = domainManager.get(domain.getName());
+        if (currentDomain == null) throw new NoObjectFoundException(domain.getName(), "domain");
+
+        List<TransactionVO> ret = new ArrayList<TransactionVO>();
+        TransactionActionsVO actions = detectTransactionActions(domain);
+
+        if (actions.containsNameServerAction() && actions.containsOtherAction() && splitNameServerChange) {
+            // no name server change
+            Domain modifiedDomain = FromVOConverter.toDomain(domain);
+            List<Host> nameServers = modifiedDomain.getNameServers();
+            modifiedDomain.setNameServers(currentDomain.getNameServers());
+            ret.add(createTransaction(modifiedDomain));
+
+            // only name server change
+            Domain modifiedNsDomain = currentDomain.clone();
+            modifiedNsDomain.setNameServers(nameServers);
+            ret.add(createTransaction(modifiedDomain));
+        } else {
+            ret.add(createTransaction(domain));
+        }
+        return ret;
+    }}
