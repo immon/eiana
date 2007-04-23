@@ -20,6 +20,8 @@
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="module" module-name="eiana-trans" />
     <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="library" name="jbpm" level="project" />
+    <orderEntry type="library" name="hibernate" level="project" />
     <orderEntryProperties />
   </component>
 </module>
