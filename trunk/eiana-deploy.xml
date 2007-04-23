@@ -116,10 +116,10 @@
              classpathref="inittools.classpath"/>
 
     <target name="database.init.test"
-            depends="database.create.test">
-        <initusers annotationconfiguration="hibernate/hibernate.cfg.xml"/>
-        <initdomains annotationconfiguration="hibernate/hibernate.cfg.xml"/>
-    </target>
+            depends="database.create.test, all.compile">
+        <initdomains annotationconfiguration="${hibernate.test.dir}/hibernate.cfg.xml"/>
+        <initusers annotationconfiguration="${hibernate.test.dir}/hibernate.cfg.xml"/>
+     </target>
 
     <!-- compiling, packeging & testing targets-->
 
