@@ -355,7 +355,7 @@ public class Domain implements TrackedObject, Cloneable {
                 List<Host> oldHosts = domain.getNameServers();
                 for (Host host : oldHosts)
                     newHosts.add((Host) host.clone());
-                domain.setNameServers(newHosts);
+                newDomain.setNameServers(newHosts);
             }
             if (domain.getTrackData() != null)
                 newDomain.setTrackData((TrackData) domain.getTrackData().clone());
