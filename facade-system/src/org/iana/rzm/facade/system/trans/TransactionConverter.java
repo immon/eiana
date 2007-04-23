@@ -72,11 +72,20 @@ class TransactionConverter {
                 if (fieldChanges.containsKey("adminContacts")) {
                     CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
                     action.addChange(toChangeVO("adminContacts", adminChange));
+                    actions.add(action);
                 }
                 if (fieldChanges.containsKey("techContacts")) {
                     CollectionChange techChange = (CollectionChange) fieldChanges.get("techContacts");
                     action.addChange(toChangeVO("techContacts", techChange));
+                    actions.add(action);
                 }
+            }
+            if (fieldChanges.containsKey("nameServers")) {
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_NAME_SERVERS);
+                CollectionChange nameServersChange = (CollectionChange) fieldChanges.get("nameServers");
+                action.addChange(toChangeVO("nameServers", nameServersChange));
+                actions.add(action);
             }
         }
         return actions;

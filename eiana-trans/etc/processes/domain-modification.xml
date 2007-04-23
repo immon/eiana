@@ -109,11 +109,32 @@
     <decision name="USDOC_APPROVED">
         <handler class="org.iana.rzm.trans.jbpm.handlers.NameServerChange"/>
         <transition name="no-ns-change" to="PENDING_DATABASE_INSERTION"/>
-        <!--
-                todo: future feature
-                <transition name="ns-change" to="PENDING_IMPACTED_PARTIES"/>
-        -->
+        <transition name="ns-change" to="PENDING_ZONE_INSERTION"/>
     </decision>
+
+    <state name="PENDING_ZONE_INSERTION" >
+        <event type="node-enter">
+            <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAction">
+            </action>
+        </event>
+        <timer name="7d-time-out" duedate="7 days" ></timer>
+        <timer name="14d-time-out" duedate="14 days" transition="alert" ></timer>
+        <transition name="accept" to="PENDING_ZONE_PUBLICATION" />
+        <transition name="alert" to="EXCEPTION" />
+        <!--todo: 7days alert staff-->
+    </state>
+
+    <state name="PENDING_ZONE_PUBLICATION" >
+        <event type="node-enter">
+            <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAction">
+            </action>
+        </event>
+        <timer name="3d-time-out" duedate="3 days" ></timer>
+        <timer name="7d-time-out" duedate="7 days" transition="alert"></timer>
+        <transition name="accept" to="PENDING_DATABASE_INSERTION" />
+        <transition name="alert" to="EXCEPTION" />
+        <!--todo: 3days alert staff-->
+    </state>
 
     <node name='PENDING_DATABASE_INSERTION'>
         <event type='node-enter'>
