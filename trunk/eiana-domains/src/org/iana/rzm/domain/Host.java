@@ -40,7 +40,7 @@ public class Host implements TrackedObject,Cloneable {
     @Embedded
     private TrackData trackData = new TrackData();
 
-    protected Host() {
+    public Host() {
     }
 
     public Host(String name) throws InvalidNameException {

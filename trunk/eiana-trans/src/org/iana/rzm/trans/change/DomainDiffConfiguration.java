@@ -1,8 +1,6 @@
 package org.iana.rzm.trans.change;
 
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -12,11 +10,12 @@ public class DomainDiffConfiguration extends DiffConfiguration {
     private DomainDiffConfiguration() {
 
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
-            "supportingOrg", "adminContacts", "techContacts", "whoisServer", "registryUrl"
+            "supportingOrg", "adminContacts", "techContacts", "whoisServer", "registryUrl", "nameServers"
         }, "name");
         domainConfig.addFieldClass("supportingOrg", Contact.class);
         domainConfig.addFieldClass("adminContacts", Contact.class);
         domainConfig.addFieldClass("techContacts", Contact.class);
+        domainConfig.addFieldClass("nameServers", Host.class);
         addObjectConfiguration(Domain.class, domainConfig);
 
         ObjectConfiguration contactConfig = new ObjectConfiguration(new String[]{
@@ -29,6 +28,17 @@ public class DomainDiffConfiguration extends DiffConfiguration {
             "textAddress", "countryCode"
         }, "id");
         addObjectConfiguration(Address.class, addressConfig);
+
+        ObjectConfiguration hostConfig = new ObjectConfiguration(new String[]{
+            "name", "addresses", "numDelegations"
+        }, "name");
+        hostConfig.addFieldClass("addresses", IPAddress.class);
+        addObjectConfiguration(Host.class, hostConfig);
+
+        ObjectConfiguration IPAddressConfig = new ObjectConfiguration( new String[] {
+            "address", "type"
+        }, "address");
+        addObjectConfiguration(IPAddress.class, IPAddressConfig);
     }
 
     private static DiffConfiguration instance = new DomainDiffConfiguration();

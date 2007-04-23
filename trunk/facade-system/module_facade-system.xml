@@ -32,6 +32,8 @@
     <pathelement location="${eiana-trans.testoutput.dir}"/>
     <pathelement location="${eiana-notifications.output.dir}"/>
     <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <path refid="library.jbpm.classpath"/>
+    <path refid="library.hibernate.classpath"/>
   </path>
   
   
