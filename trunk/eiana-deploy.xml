@@ -81,7 +81,46 @@
             <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
         </hibernatetool>
     </target>
-    
+
+    <!-- database initialization -->
+
+    <path id="inittools.classpath">
+        <fileset dir="${lib.dir}/hibernate">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/apache-commons">
+            <include name="**/*.jar"/>
+        </fileset>
+        <path location="${lib.dir}/dom4j/dom4j-1.6.1.jar"/>
+        <path location="${lib.dir}/javaee/javaee.jar"/>
+        <path location="${lib.dir}/log4j/log4j-1.2.14.jar"/>
+        <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
+        <path location="${eiana-users.output.dir}"/>
+        <path location="${eiana-util.output.dir}"/>
+        <path location="${eiana-init.output.dir}"/>
+        <path location="${tests}"/>
+        <path location="${eiana-domains.output.dir}"/>
+        <path location="${eiana-trans.output.dir}"/>
+        <path location="${eiana-notifications.output.dir}"/>
+        <path location="${tests.testoutput.dir}"/>
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+    <taskdef name="initusers"
+             classname="org.iana.rzm.init.ant.InitUsersTask"
+             classpathref="inittools.classpath"/>
+
+    <taskdef name="initdomains"
+             classname="org.iana.rzm.init.ant.InitDomainsTask"
+             classpathref="inittools.classpath"/>
+
+    <target name="database.init.test"
+            depends="database.create.test">
+        <initusers annotationconfiguration="hibernate/hibernate.cfg.xml"/>
+        <initdomains annotationconfiguration="hibernate/hibernate.cfg.xml"/>
+    </target>
+
     <!-- compiling, packeging & testing targets-->
 
     <target name="all.compile"
@@ -173,6 +212,12 @@
          </cobertura-instrument>
 
          <mkdir dir="${test.report.output}"/>
+
+         <echo>
+             test  inluded = ${test.group}
+             test excluded = ${test.group.excluded}
+         </echo>
+
          <path id="eiana.test-ng.classpath">
             <dirset dir="${basedir}/classes">
                 <include name="test/*"/>
@@ -183,18 +228,23 @@
                 <exclude name="cobertura/lib/asm-2.2.1.jar" />
             </fileset>
          </path>
-         <echo>
-             test  inluded = ${test.group}
-             test excluded = ${test.group.excluded}
-         </echo>
+
+         <path id="eiana.test-ng.classpath">
+            <dirset dir="${basedir}/classes">
+                <include name="test/*"/>
+                <include name="production/*"/>
+            </dirset>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+                <exclude name="cobertura/lib/asm-2.2.1.jar" />
+            </fileset>
+         </path>
 
          <testng classpathref="eiana.test-ng.classpath"
                 outputDir="${test.report.output}"
                 haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}" >
              <classfileset dir="${basedir}/classes/test" />
-
              <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
-
          </testng>
 
          <mkdir dir="${test.cobertura.output}"/>
