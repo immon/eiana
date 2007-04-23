@@ -43,8 +43,8 @@
     </orderEntry>
     <orderEntry type="library" name="apache-commons" level="project" />
     <orderEntry type="module" module-name="eiana-users" />
-    <orderEntry type="library" name="util" level="project" />
     <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntryProperties />
   </component>
 </module>

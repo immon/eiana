@@ -9,6 +9,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="library" name="cobertura" level="project" />
     <orderEntryProperties />
   </component>
 </module>

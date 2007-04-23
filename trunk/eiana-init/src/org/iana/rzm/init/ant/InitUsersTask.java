@@ -33,4 +33,10 @@ public class InitUsersTask extends HibernateTask {
         zonePublisher.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         session.save(zonePublisher);
     }
+
+    public static void main(String[] args) {
+        InitUsersTask task = new InitUsersTask();
+        task.setAnnotationConfiguration("hibernate.cfg.xml");
+        task.execute();
+    }
 }

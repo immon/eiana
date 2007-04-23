@@ -5,15 +5,21 @@ package org.iana.notifications;
  */
 
 public class EmailAddressee extends Addressee {
+
     private String email;
-    private String Name;
+    private String name;
+
+    public EmailAddressee(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getEmail() {

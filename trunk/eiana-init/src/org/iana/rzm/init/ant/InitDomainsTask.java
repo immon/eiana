@@ -59,4 +59,10 @@ public class InitDomainsTask extends HibernateTask {
             session.save(domain);
         }
     }
+
+    public static void main(String[] args) {
+        InitDomainsTask task = new InitDomainsTask();
+        task.setAnnotationConfiguration("hibernate.cfg.xml");
+        task.execute();
+    }
 }
