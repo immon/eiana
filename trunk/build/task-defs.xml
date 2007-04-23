@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="task-defs">
+
+    <property name="lib.dir" value="../lib"/>
+    <patternset id="ignored.files">
+        <exclude name="**/CVS/**"/>
+        <exclude name="**/SCCS/**"/>
+        <exclude name="**/RCS/**"/>
+        <exclude name="**/rcs/**"/>
+        <exclude name="**/.DS_Store/**"/>
+        <exclude name="**/.svn/**"/>
+        <exclude name="**/vssver.scc/**"/>
+        <exclude name="**/vssver2.scc/**"/>
+        <exclude name="**/.sbas/**"/>
+        <exclude name="**/.IJI.*/**"/>
+    </patternset>
+    <patternset id="compiler.resources">
+        <include name="**/?*.properties"/>
+        <include name="**/?*.xml"/>
+        <include name="**/?*.gif"/>
+        <include name="**/?*.png"/>
+        <include name="**/?*.jpeg"/>
+        <include name="**/?*.jpg"/>
+        <include name="**/?*.html"/>
+        <include name="**/?*.dtd"/>
+        <include name="**/?*.tld"/>
+    </patternset>    
+
+    <path id="hibernatetool.classpath">
+        <fileset dir="${lib.dir}/hibernate">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/apache-commons">
+            <include name="**/*.jar"/>
+        </fileset>
+        <path location="${lib.dir}/dom4j/dom4j-1.6.1.jar"/>
+        <path location="${lib.dir}/javaee/javaee.jar"/>
+        <path location="${lib.dir}/log4j/log4j-1.2.14.jar"/>
+        <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
+    </path>
+    <taskdef name="hibernatetool"
+             classname="org.hibernate.tool.ant.HibernateToolTask"
+             classpathref="hibernatetool.classpath"/>
+
+    <path id="testng.classpath">
+        <path location="${lib.dir}/testng/testng-5.5-jdk15.jar"/>
+    </path>
+    <taskdef name="testng"
+             classname="org.testng.TestNGAntTask"
+             classpathref="testng.classpath"/>
+</project>
