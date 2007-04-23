@@ -1,6 +1,7 @@
 package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.Cascade;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
@@ -51,14 +52,17 @@ public class Domain implements TrackedObject, Cloneable {
     @JoinColumn(name = "supportingOrg_objId")
     private Contact supportingOrg;
     @OneToMany(cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @JoinTable(name = "Domain_AdminContacts",
             inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
     private List<Contact> adminContacts;
     @OneToMany(cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @JoinTable(name = "Domain_TechContacts",
             inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
     private List<Contact> techContacts;
     @OneToMany(cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @JoinTable(name = "Domain_NameServers",
             inverseJoinColumns = @JoinColumn(name = "Host_objId"))
     private List<Host> nameServers;
