@@ -87,6 +87,11 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         delegate.transitTransaction(id, transitionName);
     }
 
+    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria)  throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return delegate.findTransactions(criteria);
+    }
+
     public void setUser(AuthenticatedUser user) {
         super.setUser(user);
         delegate.setUser(user);

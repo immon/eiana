@@ -1,16 +1,13 @@
-package org.iana.rzm.trans;
+package org.iana.rzm.facade.system.trans;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Date;
 
 /**
- * Represents a set of filters.
- *
- * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-public class TransactionCriteria {
+public class TransactionCriteriaVO {
     private Collection<String> domainNames = new HashSet<String>();
     private Collection<String> states = new HashSet<String>();
     private Collection<Long> ticketIds = new HashSet<Long>();
@@ -34,10 +31,6 @@ public class TransactionCriteria {
         domainNames.add(domainName);
     }
 
-    public void addAllDomainNames(Collection<String> domainNames) {
-        this.domainNames.addAll(domainNames);
-    }
-
     public Collection<String> getStates() {
         return states;
     }
@@ -46,20 +39,12 @@ public class TransactionCriteria {
         states.add(state);
     }
 
-    public void addAllStates(Collection<String> states) {
-        this.states.addAll(states);
-    }
-
     public Collection<Long> getTicketIds() {
         return ticketIds;
     }
 
-    public void addTicketId(Long ticketId) {
+    public void addTickedId(Long ticketId) {
         ticketIds.add(ticketId);
-    }
-
-    public void addAllTicketIds(Collection<Long> ticketIds) {
-        this.ticketIds.addAll(ticketIds);
     }
 
     public Collection<String> getProcessNames() {
@@ -70,10 +55,6 @@ public class TransactionCriteria {
         processNames.add(processName);
     }
 
-    public void addAllProcessNames(Collection<String> processNames) {
-        this.processNames.addAll(processNames);
-    }
-
     public Collection<String> getCreators() {
         return creators;
     }
@@ -82,20 +63,12 @@ public class TransactionCriteria {
         creators.add(creator);
     }
 
-    public void addAllCreators(Collection<String> creators) {
-        this.creators.addAll(creators);
-    }
-
     public Collection<String> getModifiers() {
         return modifiers;
     }
 
     public void addModifier(String modifier) {
         modifiers.add(modifier);
-    }
-
-    public void addAllModifiers(Collection<String> modifiers) {
-        this.modifiers.addAll(modifiers);
     }
 
     public Date getStartedAfter() {

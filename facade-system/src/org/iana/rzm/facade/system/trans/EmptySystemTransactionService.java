@@ -55,4 +55,8 @@ public class EmptySystemTransactionService implements SystemTransactionService {
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
 
     }
+
+    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria)  throws AccessDeniedException, InfrastructureException {
+        return null;
+    }
 }

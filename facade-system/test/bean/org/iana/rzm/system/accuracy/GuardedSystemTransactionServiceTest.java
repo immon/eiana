@@ -13,6 +13,7 @@ import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.trans.SystemTransactionService;
 import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.system.conf.SpringSystemApplicationContext;
@@ -33,6 +34,8 @@ import org.jbpm.graph.exe.ProcessInstance;
 
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -47,8 +50,8 @@ public class GuardedSystemTransactionServiceTest {
     private IDomainVO domain;
     private ProcessDAO processDAO;
     private TransactionVO transaction;
-    private TransactionVO transactionToReject;
     private UserVO userAc, userTc;
+    private List<Long> transactionIds = new ArrayList<Long>();
 
     @BeforeClass
     public void init() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
@@ -72,6 +75,7 @@ public class GuardedSystemTransactionServiceTest {
     public void testCreateTransaction() throws InfrastructureException, NoObjectFoundException {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         transaction = gsts.createTransaction(domain);
+        transactionIds.add(transaction.getTransactionID());
         assert transaction != null;
         processDAO.close();
         txMgr.commit(txStatus);
@@ -141,7 +145,8 @@ public class GuardedSystemTransactionServiceTest {
     @Test(dependsOnMethods = "testTransitTransaction")
     public void testRejectTransaction() throws InfrastructureException, NoObjectFoundException {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        transactionToReject = gsts.createTransaction(domain);
+        TransactionVO transactionToReject = gsts.createTransaction(domain);
+        transactionIds.add(transactionToReject.getTransactionID());
         gsts.rejectTransaction(transactionToReject.getTransactionID());
         transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
         assert transactionToReject != null;
@@ -152,14 +157,99 @@ public class GuardedSystemTransactionServiceTest {
         txMgr.commit(txStatus);
     }
 
+    @Test(dependsOnMethods = "testRejectTransaction")
+    public void testFindTransactionByDomain() throws InfrastructureException, NoObjectFoundException {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+        criteria.addDomainName("gsts");
+        List<TransactionVO> found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 2;
+        criteria = new TransactionCriteriaVO();
+        criteria.addDomainName("nonexistent");
+        found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 0;
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByDomain")
+    public void testFindTransactionByState() throws InfrastructureException, NoObjectFoundException {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+        criteria.addState("REJECTED");
+        List<TransactionVO> found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 1;
+        criteria = new TransactionCriteriaVO();
+        criteria.addState("nonexistent");
+        found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 0;
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByState")
+    public void testFindTransactionByTicketId() throws InfrastructureException, NoObjectFoundException {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+        criteria.addTickedId(0L);
+        List<TransactionVO> found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 2;
+        criteria = new TransactionCriteriaVO();
+        criteria.addTickedId(10L);
+        found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 0;
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByTicketId")
+    public void testFindTransactionByProcessName() throws InfrastructureException, NoObjectFoundException {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+        criteria.addProcessName(DefinedTestProcess.getProcessName());
+        List<TransactionVO> found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 2;
+        criteria = new TransactionCriteriaVO();
+        criteria.addProcessName("nonexistent");
+        found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 0;
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByProcessName")
+    public void testFindTransactionByStartDate() throws InfrastructureException, NoObjectFoundException {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+        criteria.setStartedBefore(new Date());
+        List<TransactionVO> found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 2;
+        criteria = new TransactionCriteriaVO();
+        criteria.setStartedAfter(new Date());
+        found = gsts.findTransactions(criteria);
+        assert found != null;
+        assert found.size() == 0;
+        processDAO.close();
+        txMgr.commit(txStatus);
+    }
+
     @AfterClass
     public void cleanUp() {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         gsts.close();
-        ProcessInstance pi = processDAO.getProcessInstance(transaction.getTransactionID());
-        if (pi != null) processDAO.delete(pi);
-        pi = processDAO.getProcessInstance(transactionToReject.getTransactionID());
-        if (pi != null) processDAO.delete(pi);
+        for (Long id : transactionIds) {
+            ProcessInstance pi = processDAO.getProcessInstance(id);
+            if (pi != null) processDAO.delete(pi);
+        }
         processDAO.close();
         txMgr.commit(txStatus);
 

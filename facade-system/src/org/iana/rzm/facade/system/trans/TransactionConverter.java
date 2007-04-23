@@ -162,4 +162,10 @@ class TransactionConverter {
         ret.setEnd(state.getEnd());
         return ret;
     }
+
+    public static List<TransactionVO> toTransactionVOList(List<Transaction> transactionList) {
+        List<TransactionVO> result = new ArrayList<TransactionVO>();
+        for (Transaction transaction : transactionList) result.add(toTransactionVO(transaction));
+        return result;
+    }
 }
