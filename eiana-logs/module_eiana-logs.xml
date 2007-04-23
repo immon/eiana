@@ -2,9 +2,6 @@
 <project name="module_eiana-logs" default="compile.module.eiana-logs">
   <dirname property="module.eiana-logs.basedir" file="${ant.file.module_eiana-logs}"/>
   
-  <property name="module.jdk.home.eiana-logs" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.eiana-logs" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.eiana-logs" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-logs" value="${compiler.args}"/>
   
@@ -16,7 +13,6 @@
   </path>
   
   <path id="eiana-logs.module.classpath">
-    <path refid="${module.jdk.classpath.eiana-logs}"/>
     <path refid="library.javaee.classpath"/>
   </path>
   
@@ -40,7 +36,7 @@
   
   <target name="compile.module.eiana-logs.production" description="Compile module eiana-logs; production classes">
     <mkdir dir="${eiana-logs.output.dir}"/>
-    <javac destdir="${eiana-logs.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-logs}/javac">
+    <javac destdir="${eiana-logs.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-logs}"/>
       <bootclasspath refid="eiana-logs.module.bootclasspath"/>
       <classpath refid="eiana-logs.module.classpath"/>

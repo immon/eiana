@@ -10,7 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="facade-common" />
     <orderEntry type="library" name="javaee" level="project" />
-    <orderEntry type="library" name="util" level="project" />
+    <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntryProperties />
   </component>
 </module>
