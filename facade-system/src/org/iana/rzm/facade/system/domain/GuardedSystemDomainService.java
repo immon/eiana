@@ -4,24 +4,18 @@ package org.iana.rzm.facade.system.domain;
  * @author Piotr Tkaczyk
  */
 
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.common.AbstractRZMStatefulService;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.common.AbstractRZMStatefulService;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.user.*;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Iterator;
-import java.util.HashSet;
 
 public class GuardedSystemDomainService extends AbstractRZMStatefulService implements SystemDomainService {
 
@@ -82,7 +76,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
     public void setUser(AuthenticatedUser user) {
         CheckTool.checkNull(user, "authenticated user");
         delegate.setUser(user);
-        this.user = user;
+        super.setUser(user);
     }
 
     private boolean isInRole(String domainName) {

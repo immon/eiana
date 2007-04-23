@@ -59,4 +59,25 @@ public class TransactionStateVO {
     public void setEnd(Timestamp end) {
         this.end = end;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TransactionStateVO that = (TransactionStateVO) o;
+
+        if (end != null ? !end.equals(that.end) : that.end != null) return false;
+        if (name != that.name) return false;
+        if (start != null ? !start.equals(that.start) : that.start != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (end != null ? end.hashCode() : 0);
+        return result;
+    }
 }

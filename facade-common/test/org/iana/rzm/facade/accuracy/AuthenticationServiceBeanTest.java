@@ -34,7 +34,9 @@ public class AuthenticationServiceBeanTest {
     @Test (expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoUser() throws Exception {
 
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.NON_EXIST_LOGIN, "foo");
+        PasswordAuth passwordAuth = new PasswordAuth();
+        passwordAuth.setUserName(TestUserManager.NON_EXIST_LOGIN);
+        passwordAuth.setPassword("foo");
 
         authService.authenticate(passwordAuth);
     }
@@ -138,9 +140,9 @@ public class AuthenticationServiceBeanTest {
     @Test (expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullToken() throws Exception {
 
-        SecurIDAuth securIDAuth = new SecurIDAuth(
-                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
-                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
+        SecurIDAuth securIDAuth = new SecurIDAuth();
+        securIDAuth.setUserName(TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN);
+        securIDAuth.setPassword(TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
         authService.authenticate(null, securIDAuth);
     }
@@ -149,5 +151,20 @@ public class AuthenticationServiceBeanTest {
     public void testAuthenticateWithNullBoth() throws Exception {
 
         authService.authenticate(null, null);
+    }
+
+    @Test
+    public void testInvalidateUser() throws AuthenticationFailedException, AuthenticationRequiredException {
+        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
+
+        AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+
+        assert authenticatedUser != null;
+        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+        assert !authenticatedUser.isInvalidated();
+
+        authenticatedUser.invalidate();
+
+        assert authenticatedUser.isInvalidated();
     }
 }

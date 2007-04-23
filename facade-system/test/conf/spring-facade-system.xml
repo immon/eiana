@@ -24,20 +24,20 @@
     </bean>
 
     <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
-        <constructor-arg ref="userManager" />
+        <constructor-arg ref="userManagerGSDomainS" />
         <constructor-arg ref="SystemDomainServiceBean"/>
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
         <constructor-arg ref="domainManager" />
-        <constructor-arg ref="userManager" />
+        <constructor-arg ref="userManagerGSDomainS" />
     </bean>
 
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO" />
     </bean>
 
-    <bean id="userManager" class="org.iana.rzm.system.accuracy.TestSystemUserManager"/>
+    <bean id="userManagerGSDomainS" class="org.iana.rzm.system.accuracy.TestSystemUserManager"/>
 
 
     <!--Sterss-->
@@ -149,4 +149,163 @@
             <ref bean="transactionAttribute"/>
         </property>
     </bean>
+
+    <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.user.dao.UserDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="userDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="userDAOTarget" class="org.iana.rzm.user.dao.HibernateUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="guardedSystemTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedSystemTransactionServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
+        <constructor-arg ref="userDAO" />
+    </bean>
+
+    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
+        <constructor-arg ref="userManager" />
+        <constructor-arg ref="SystemTransactionServiceBean"/>
+    </bean>
+
+    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.SystemTransactionServiceBean">
+        <constructor-arg ref="userManager" />
+        <constructor-arg ref="transactionManagerBean" />
+        <constructor-arg ref="domainManager" />
+    </bean>
+
+    <bean id="transactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.TransactionManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="transactionManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="faketicket" class="org.iana.rzm.trans.FakeTicketingService"/>
+
+    <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
+        <constructor-arg>
+            <ref bean="processDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="domainDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="faketicket"/>
+        </constructor-arg>
+    </bean>
+
+    <!-- jBPM configuration -->
+
+    <bean id="jbpmObjectFactory"
+          class="org.iana.rzm.trans.jbpm.JbpmSpringObjectFactory">
+    </bean>
+
+    <bean id="dbService" class="org.iana.rzm.trans.jbpm.SpringDbPersistenceServiceFactory">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory"/>
+
+    <bean id="jbpmConfiguration"
+          class="org.jbpm.JbpmConfiguration">
+        <constructor-arg index="0" ref="jbpmObjectFactory"/>
+    </bean>
+
+    <bean id="services" class="org.jbpm.svc.Services" scope="prototype">
+        <constructor-arg index="0">
+            <map>
+                <entry key="persistence">
+                    <ref local="dbService"/>
+                </entry>
+                <entry key="scheduler">
+                    <ref local="scheduler"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="default.jbpm.context" class="org.jbpm.JbpmContext" scope="prototype">
+        <constructor-arg index="0" ref="services"/>
+        <constructor-arg index="1" ref="jbpmObjectFactory"/>
+    </bean>
+
+    <bean id="resource.business.calendar" class="java.lang.String">
+        <constructor-arg value="org/jbpm/calendar/jbpm.business.calendar.properties"/>
+    </bean>
+
+    <bean id="resource.default.modules" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/def/jbpm.default.modules.properties"/>
+    </bean>
+
+    <bean id="resource.action.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/action/action.types.xml"/>
+    </bean>
+
+    <bean id="resource.node.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/node/node.types.xml"/>
+    </bean>
+
+    <bean id="resource.converter" class="java.lang.String">
+        <constructor-arg value="org/jbpm/db/hibernate/jbpm.converter.properties"/>
+    </bean>
+
+    <bean id="resource.varmapping" class="java.lang.String">
+        <!--<constructor-arg value="eiana-trans.jbpm.varmapping.xml"/>-->
+        <constructor-arg value="org/jbpm/context/exe/jbpm.varmapping.xml"/>
+    </bean>
+
+    <bean id="jbpmContextFactory"
+          class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+    </bean>
+
+    <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+    </bean>
+
+    <bean id="NotificationSenderBean" class="org.iana.rzm.system.accuracy.FakeNotificationSenderBean"/>
 </beans>

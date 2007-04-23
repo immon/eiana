@@ -73,7 +73,11 @@ public class TransactionState {
     }
 
     public void setStart(Date start) {
-        this.start = new Timestamp(start.getTime());
+        if (start != null) {
+            this.start = new Timestamp(start.getTime());
+            this.start.setNanos(0);
+        } else
+            this.start = null;
     }
 
     public Timestamp getEnd() {
@@ -85,7 +89,11 @@ public class TransactionState {
     }
 
     public void setEnd(Date end) {
-        this.end = new Timestamp(end.getTime());
+        if (end != null) {
+            this.end = new Timestamp(end.getTime());
+            this.end.setNanos(0);
+        } else
+            this.end = null;
     }
 
     public Set<StateTransition> getAvailableTransitions() {

@@ -108,6 +108,8 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
             // do nothing
         } catch (UserConfirmationNotExpected e) {
             throw new AccessDeniedException(e.getMessage());
+        } catch (UserNotAuthorizedToTransit e) {
+            throw new AccessDeniedException(e.getMessage());
         } catch (TransactionException e) {
             throw new InfrastructureException(e);
         }

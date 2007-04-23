@@ -91,7 +91,10 @@ public class Transaction implements TrackedObject {
     }
 
     public Timestamp getStart() {
-        return new Timestamp(pi.getStart().getTime());
+        Timestamp result = new Timestamp(pi.getStart().getTime());
+        // when process instance is persisted in db, nanos are missing
+        result.setNanos(0);
+        return result;
     }
 
     public void setStart(Timestamp start) {
@@ -99,7 +102,11 @@ public class Transaction implements TrackedObject {
     }
 
     public Timestamp getEnd() {
-        return new Timestamp(pi.getEnd().getTime());
+        if (pi.getEnd() == null) return null;
+        Timestamp result = new Timestamp(pi.getEnd().getTime());
+        // when process instance is persisted in db, nanos are missing
+        result.setNanos(0);
+        return result; 
     }
 
     public void setEnd(Timestamp end) {
@@ -140,7 +147,15 @@ public class Transaction implements TrackedObject {
     }
 
     public synchronized void reject(RZMUser user) throws TransactionException {
-        transit(user, StateTransition.REJECT);
+        Token token = pi.getRootToken();
+        Node node = token.getNode();
+        Confirmation confirmation = getTransactionData().getStateConfirmations(node.getName());
+        if (confirmation != null) {
+            if (confirmation.isAcceptableBy(user))
+                pi.signal(StateTransition.REJECT);
+            else
+                throw new UserConfirmationNotExpected();
+        }
     }
 
     public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {

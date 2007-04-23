@@ -139,8 +139,8 @@ public class ConfirmationTest {
         ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
         processes.add(processInstance.getId());
 
-        Token token = processInstance.getRootToken();
-        token.signal();
+        //Token token = processInstance.getRootToken();
+        //token.signal();
 
         assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
@@ -179,7 +179,7 @@ public class ConfirmationTest {
         processes.add(processInstance.getId());
 
         Token token = processInstance.getRootToken();
-        token.signal();
+        //token.signal();
         token.signal("accept");
         token.signal("accept");
         token.signal("normal");

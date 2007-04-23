@@ -137,7 +137,7 @@ public class JbpmUpdateDomainImpl {
         testProcessInstanceId = pi.getId();
 
         Token token = pi.getRootToken();
-        token.signal();
+        //token.signal();
 
         Thread.sleep(3001L);
         schedulerThread.executeTimers();
