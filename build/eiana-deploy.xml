@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="eiana-deploy" default="all.compile">
+
+    <import file="eiana.xml"/>
+    <import file="task-defs.xml"/>
+
+    <property environment="env"/>
+
+    <property name="lib.dir" location="../lib"/>
+    <property name="output.dir" value="dist"/>
+    <property name="jar.output.dir" value="${output.dir}/jar"/>
+    <property name="war.output.dir" value="${output.dir}/war"/>
+    <property name="config.dir" value="../conf"/>
+    <property name="hibernate.dir" value="${config.dir}/hibernate"/>
+    <property name="tests" value="../tests"/>
+    <property name="test.report.output" location="${tests}/reports"/>
+    <property name="test.cobertura.output" location="${tests}/cobertura_code_coverage" />
+    <property name="hibernate.test.dir" value="../tests/hibernate"/>
+
+    <path id="cobertura.classpath">
+        <fileset dir="${lib.dir}/cobertura">
+            <include name="cobertura.jar" />
+            <include name="lib/**/*.jar" />
+        </fileset>
+    </path>
+
+    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
+    <!--creating database structure
+     Before preforming "database.create" target, you have to create "eiana" database instance.
+     To do create that instance you should execute these sql commands on your mysql database.
+     You can use the standard mysql account "root" with empty password ("mysql -u root -p").
+
+     CREATE DATABASE eiana;
+     GRANT ALL PRIVILEGES ON *.* TO 'eiana'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
+    -->
+    <target name="database.create"
+            depends="all.compile">
+        <hibernatetool destdir="${hibernate.dir}">
+            <classpath>
+                <path location="${eiana-domains.output.dir}"/>
+                <path location="${eiana-util.output.dir}"/>
+                <path location="${eiana-users.output.dir}"/>
+                <path location="${eiana-trans.output.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <annotationconfiguration
+                    configurationfile="${hibernate.dir}/hibernate.cfg.xml">
+            </annotationconfiguration>
+            <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
+        </hibernatetool>
+    </target>
+
+    <!--creating test database
+     To create test database instance "eianatest", you have to execute these sql commands on your mysql database.
+     You can use the standard mysql account "root" with empty password ("mysql -u root -p").
+
+     CREATE DATABASE eianatest;
+     GRANT ALL PRIVILEGES ON *.* TO 'testng'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
+
+     -->
+    <target name="database.create.test"
+            depends="all.compile">
+        <hibernatetool destdir="${hibernate.test.dir}">
+            <classpath>
+                <path location="${eiana-domains.output.dir}"/>
+                <path location="${eiana-util.output.dir}"/>
+                <path location="${eiana-users.output.dir}"/>
+                <path location="${eiana-trans.output.dir}"/>
+                <path location="${eiana-notifications.output.dir}"/>
+                <path location="${tests.testoutput.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <annotationconfiguration
+                    configurationfile="${hibernate.test.dir}/hibernate.cfg.xml">
+            </annotationconfiguration>
+            <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
+        </hibernatetool>
+    </target>
+
+    <!-- database initialization -->
+
+    <path id="inittools.classpath">
+        <fileset dir="${lib.dir}/hibernate">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/apache-commons">
+            <include name="**/*.jar"/>
+        </fileset>
+        <path location="${lib.dir}/dom4j/dom4j-1.6.1.jar"/>
+        <path location="${lib.dir}/javaee/javaee.jar"/>
+        <path location="${lib.dir}/log4j/log4j-1.2.14.jar"/>
+        <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
+        <path location="${eiana-users.output.dir}"/>
+        <path location="${eiana-util.output.dir}"/>
+        <path location="${eiana-init.output.dir}"/>
+        <path location="${tests}"/>
+        <path location="${tests}/hibernate"/>
+        <path location="${eiana-domains.output.dir}"/>
+        <path location="${eiana-trans.output.dir}"/>
+        <path location="${eiana-notifications.output.dir}"/>
+        <path location="${tests.testoutput.dir}"/>
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="database.init.test" depends="database.create.test, all.compile">
+        <java classname="org.iana.rzm.init.ant.InitUsersTask">
+            <classpath refid="inittools.classpath"/>
+        </java>
+        <java classname="org.iana.rzm.init.ant.InitDomainsTask">
+            <classpath refid="inittools.classpath"/>
+        </java>
+    </target>
+
+    <!-- compiling, packaging & testing targets-->
+
+    <target name="all.compile"
+            depends="init, compile.module.tests,compile.module.eiana-dns,compile.module.eiana-domains,
+             compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,
+             compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,
+             compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
+             compile.module.integration-securid,compile.module.eiana-init"
+            description="build all"/>
+
+    <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
+        <mkdir dir="${jar.output.dir}"/>
+
+        <jar destfile="${jar.output.dir}/eiana-dns.jar">
+            <fileset dir="${eiana-dns.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-domains.jar">
+            <fileset dir="${eiana-domains.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-logs.jar">
+            <fileset dir="${eiana-logs.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-notifications.jar">
+            <fileset dir="${eiana-notifications.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-trans.jar">
+            <fileset dir="${eiana-trans.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-users.jar">
+            <fileset dir="${eiana-users.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-util.jar">
+            <fileset dir="${eiana-util.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/facade-admin.jar">
+            <fileset dir="${facade-admin.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/facade-common.jar">
+            <fileset dir="${facade-common.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/facade-system.jar">
+            <fileset dir="${facade-system.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/integration-rt.jar">
+            <fileset dir="${integration-rt.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/integration-securid.jar">
+            <fileset dir="${integration-securid.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/config.jar">
+            <fileset dir="${config.dir}/hibernate"/>
+            <fileset dir="${config.dir}/spring"/>
+        </jar>
+    </target>
+
+    <target name="all.war" depends="all.jar" description="makes war archive">
+        <mkdir dir="${war.output.dir}"/>
+        <war destfile="${war.output.dir}/eiana.war" webxml="${module.conf.basedir}/WEB-INF/web.xml">
+            <lib dir="${jar.output.dir}" includes="*.jar"/>
+            <lib dir="${lib.dir}" includes="**/*.jar" excludes="**/*javaee*.jar,**/*j2ee*.jar,**/*testng*.jar"/>
+        </war>
+    </target>
+
+<!-- runs all test from group that is equal to property value ${test.group}
+     and excludes all tests from group that is equal toproperty value ${test.group.excluded}.
+     You can put many groups into one property, separated by spaces or commas.
+     Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
+     Reports from tests are aviable in "Report" directory.
+     -->
+     <target name="all.test" depends="clean,all.compile,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+     and excludes all tests from groups that is equal to property value (test.group.excluded).">
+         <condition property="test.group.excluded" value="">
+             <not><isset property="test.group.excluded"/></not>
+         </condition>
+         <condition property="test.group" value="">
+             <not><isset property="test.group"/></not>
+         </condition>
+
+         <delete>
+             <fileset dir="${basedir}" >
+                <include name="cobertura.ser" />
+            </fileset>
+         </delete>
+
+         <cobertura-instrument>
+            <fileset dir="${basedir}/classes">
+                <include name="**/*.class"/>
+            </fileset>
+         </cobertura-instrument>
+
+         <mkdir dir="${test.report.output}"/>
+
+         <echo>
+             test  inluded = ${test.group}
+             test excluded = ${test.group.excluded}
+         </echo>
+
+         <path id="eiana.test-ng.classpath">
+            <dirset dir="${basedir}/classes">
+                <include name="test/*"/>
+                <include name="production/*"/>
+            </dirset>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+                <exclude name="cobertura/lib/asm-2.2.1.jar" />
+            </fileset>
+         </path>
+
+         <path id="eiana.test-ng.classpath">
+            <dirset dir="${basedir}/classes">
+                <include name="test/*"/>
+                <include name="production/*"/>
+            </dirset>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+                <exclude name="cobertura/lib/asm-2.2.1.jar" />
+            </fileset>
+         </path>
+
+         <testng classpathref="eiana.test-ng.classpath"
+                outputDir="${test.report.output}"
+                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}" >
+             <classfileset dir="${basedir}/classes/test" />
+             <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
+         </testng>
+
+         <mkdir dir="${test.cobertura.output}"/>
+         <delete>
+            <fileset dir="${test.cobertura.output}" >
+                <include name="**/*" />
+            </fileset>
+         </delete>
+
+         <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
+            <!--common-dao-->
+            <fileset dir="${basedir}/common-dao/src">                   <include name="**/*.java" /></fileset>
+            <!--eiana-dns-->
+            <fileset dir="${basedir}/eiana-dns/src">                    <include name="**/*.java" /></fileset>
+            <!--eiana-domains-->
+            <fileset dir="${basedir}/eiana-domains/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-domains/test/conf">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-domains/test/dao">           <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-domains/test/hibernate">     <include name="**/*.java" /></fileset>
+            <!--eiana-logs-->
+            <fileset dir="${basedir}/eiana-logs/src">                   <include name="**/*.java" /></fileset>
+            <!--eiana-notifications-->
+            <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
+            <!--eiana-trans-->
+            <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/confirmation">    <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/dao">             <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/hibernate">       <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/jbpm">            <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-trans/test/manager">         <include name="**/*.java" /></fileset>
+            <!--eiana-users-->
+            <fileset dir="${basedir}/eiana-users/src">                  <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-users/test/conf">            <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-users/test/dao">             <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/eiana-users/test/hibernate">       <include name="**/*.java" /></fileset>
+            <!--eiana-util-->
+            <fileset dir="${basedir}/eiana-util/src">                   <include name="**/*.java" /></fileset>
+            <!--facade-admin-->
+            <fileset dir="${basedir}/facade-admin/src">                 <include name="**/*.java" /></fileset>
+            <!--facade-common-->
+            <fileset dir="${basedir}/facade-common/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/facade-common/test">               <include name="**/*.java" /></fileset>
+            <!--facade-system-->
+            <fileset dir="${basedir}/facade-system/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/facade-system/test/bean">          <include name="**/*.java" /></fileset>
+            <fileset dir="${basedir}/facade-system/test/conf">          <include name="**/*.java" /></fileset>
+            <!--integration-rt-->
+            <fileset dir="${basedir}/integration-rt/src">               <include name="**/*.java" /></fileset>
+            <!--integration-securid-->
+            <fileset dir="${basedir}/integration-securid/src">          <include name="**/*.java" /></fileset>
+            <!--tests-->
+            <fileset dir="${basedir}/tests/test">                       <include name="**/*.java" /></fileset>
+
+        </cobertura-report>
+    </target>
+
+    <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
+        <property name="test.group.excluded" value="excluded, stress"/>
+        <antcall target="all.test"/>
+    </target>
+
+    <target name="all.test.slow" description="runs slow tests (includes slow tests e.g. stress tests)
+    WARNING: Those tests can take a lot of time.
+    If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">        
+        <property name="test.group.excluded" value="excluded"/>
+        <antcall target="all.test"/>
+    </target>
+    
+</project>
