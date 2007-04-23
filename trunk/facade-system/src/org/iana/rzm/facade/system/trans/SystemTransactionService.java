@@ -29,5 +29,7 @@ public interface SystemTransactionService extends RZMStatefulService {
 
     void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
-    void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException; 
+    void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+
+    List<TransactionVO> findTransactions(TransactionCriteriaVO criteria) throws AccessDeniedException, InfrastructureException;
 }

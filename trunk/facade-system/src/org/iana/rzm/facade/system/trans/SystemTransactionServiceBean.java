@@ -114,4 +114,9 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
             throw new InfrastructureException(e);
         }
     }
+
+    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria) throws AccessDeniedException, InfrastructureException {
+        TransactionCriteria transactionCriteria = TransactionCriteriaConverter.convert(criteria);
+        return TransactionConverter.toTransactionVOList(transactionManager.find(transactionCriteria));
+    }
 }
