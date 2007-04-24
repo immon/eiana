@@ -38,4 +38,13 @@ public class HibernateNotificationDAO extends HibernateDaoSupport implements Not
                 "   addr = ? ";
         return (List<Notification>) getHibernateTemplate().find(query, addressee);
     }
+
+    public List<Notification> findUnSentNotifications(int maxSentFailures) {
+        String query = " select notif " +
+                " from " +
+                "   Notification as notif " +
+                "where notif.sent = false and "+
+                "notif.sentFailures < ?";
+        return (List<Notification>) getHibernateTemplate().find(query, maxSentFailures);
+    }
 }

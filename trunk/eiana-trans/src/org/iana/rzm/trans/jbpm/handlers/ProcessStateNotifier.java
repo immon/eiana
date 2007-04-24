@@ -23,8 +23,6 @@ public class ProcessStateNotifier implements ActionHandler {
     
     public void execute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
-
-
     }
 
     protected void sendNotification(Addressee addressee, Notification notif) throws NotificationException {

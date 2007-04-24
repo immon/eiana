@@ -31,8 +31,19 @@ public class Notification {
     @Basic
     private boolean sent;
 
+    @Basic
+    private int sentFailures = 0;
+
     public Long getObjId() {
         return objId;
+    }
+
+    public int getSentFailures() {
+        return sentFailures;
+    }
+
+    public void setSentFailures(int sentFailures) {
+        this.sentFailures = sentFailures;
     }
 
     public void setObjId(Long objId) {

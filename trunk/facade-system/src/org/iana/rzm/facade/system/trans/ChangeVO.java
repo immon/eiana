@@ -5,7 +5,7 @@ package org.iana.rzm.facade.system.trans;
  */
 public class ChangeVO {
 
-    public enum Type { ADD, REMOVE, UPDATE }
+    public enum Type { ADDITION, REMOVAL, UPDATE }
 
     private String fieldName;
     private Type type;
