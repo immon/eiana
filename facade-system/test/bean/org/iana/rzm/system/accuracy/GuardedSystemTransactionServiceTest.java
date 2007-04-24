@@ -40,7 +40,7 @@ import java.util.Date;
 /**
  * @author Patrycja Wegrzynowicz
  */
-@Test(sequential = true)
+@Test(sequential = true, groups ={"facade-system", "GuardedSystemTransactionService"})
 public class GuardedSystemTransactionServiceTest {
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
@@ -109,6 +109,7 @@ public class GuardedSystemTransactionServiceTest {
 //            expectedExceptions = UnsupportedOperationException.class)
     public void testGetPossibleTransactionSplits() throws InfrastructureException {
 //        gsts.getPossibleTransactionSplits(domain);
+//        todo
     }
 
     @Test(dependsOnMethods = "testGetPossibleTransactionSplits")
