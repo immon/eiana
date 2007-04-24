@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 
 public class DefinedTestProcess {
 
-    private static final String PROCESS_DEFINITION_FILE = "eiana-trans\\etc\\processes\\domain-modification.xml";
+    private static final String PROCESS_DEFINITION_FILE = "eiana-trans/etc/processes/domain-modification.xml";
     private static ProcessDefinition pd;
     private static String processName;
 
@@ -21,7 +21,13 @@ public class DefinedTestProcess {
             pd = ProcessDefinition.parseXmlReader(fileReader);
             processName = pd.getName();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            try {
+                FileReader fileReader = new FileReader("../" + PROCESS_DEFINITION_FILE);
+                pd = ProcessDefinition.parseXmlReader(fileReader);
+                processName = pd.getName();
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
         }
         return pd;
     }

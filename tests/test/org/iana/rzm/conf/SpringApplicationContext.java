@@ -22,7 +22,7 @@ public class SpringApplicationContext {
 
     public ApplicationContext getContext() {
         if(appCtx == null)
-            appCtx = new FileSystemXmlApplicationContext("conf/spring/services-config.xml");
+            appCtx = new FileSystemXmlApplicationContext("../conf/spring/services-config.xml");
         return appCtx;
     }
 }

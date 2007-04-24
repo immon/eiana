@@ -18,8 +18,8 @@ public class SpringContextTest {
     @Test
     public void testSpringServiceConfig() {
 
-        System.out.println(new File("conf/spring/services-config.xml").getAbsolutePath());
-        ApplicationContext appContext = new FileSystemXmlApplicationContext("conf/spring/services-config.xml");
+        System.out.println(new File("../conf/spring/services-config.xml").getAbsolutePath());
+        ApplicationContext appContext = new FileSystemXmlApplicationContext("../conf/spring/services-config.xml");
         assert appContext != null;
         SessionFactory sessionFactory = (SessionFactory) appContext.getBean("sessionFactory");
         assert sessionFactory != null;
