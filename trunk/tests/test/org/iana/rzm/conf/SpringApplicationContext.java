@@ -2,6 +2,7 @@ package org.iana.rzm.conf;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Piotr Tkaczyk
@@ -22,7 +23,7 @@ public class SpringApplicationContext {
 
     public ApplicationContext getContext() {
         if(appCtx == null)
-            appCtx = new FileSystemXmlApplicationContext("../conf/spring/services-config.xml");
+            appCtx = new ClassPathXmlApplicationContext("services-config.xml");
         return appCtx;
     }
 }

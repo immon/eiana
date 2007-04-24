@@ -8,27 +8,21 @@ import org.testng.annotations.Test;
 
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.InputStream;
 
 public class DefinedTestProcess {
 
-    private static final String PROCESS_DEFINITION_FILE = "eiana-trans/etc/processes/domain-modification.xml";
+    private static final String PROCESS_DEFINITION_FILE = "domain-modification.xml";
     private static ProcessDefinition pd;
     private static String processName;
 
     public static ProcessDefinition getDefinition()  {
-        try {
-            FileReader fileReader = new FileReader(PROCESS_DEFINITION_FILE);
-            pd = ProcessDefinition.parseXmlReader(fileReader);
-            processName = pd.getName();
-        } catch (FileNotFoundException e) {
-            try {
-                FileReader fileReader = new FileReader("../" + PROCESS_DEFINITION_FILE);
-                pd = ProcessDefinition.parseXmlReader(fileReader);
-                processName = pd.getName();
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            }
-        }
+        String path[] = System.getProperty("java.class.path").split(";");
+        InputStream inputStream = DefinedTestProcess.class.getClassLoader().getResourceAsStream(PROCESS_DEFINITION_FILE);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        pd = ProcessDefinition.parseXmlReader(inputStreamReader);
+        processName = pd.getName();
         return pd;
     }
 
