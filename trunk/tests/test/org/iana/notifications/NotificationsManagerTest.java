@@ -18,7 +18,7 @@ import java.util.*;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"tests", "notificationManager"})
+@Test(sequential=true, groups = {"excluded", "tests", "notificationManager"})
 public class NotificationsManagerTest {
     private PlatformTransactionManager txMgr;
     private UserDAO                    userDAO;
