@@ -13,8 +13,8 @@ import pl.nask.xml.dynamic.exceptions.DynaXMLException;
 import java.io.*;
 
 public class NotificationTemplateManager {
-    private final static String IANA_TEMPLATES_PROPERTIES = "../eiana-notifications/etc/iana-templates.properties";
-    private final static String IANA_TEMPLATES_CONFIG = "../eiana-notifications/etc/templates.xml";
+    private final static String IANA_TEMPLATES_PROPERTIES = "iana-templates.properties";
+    private final static String IANA_TEMPLATES_CONFIG = "templates.xml";
 
     private NotificationTemplateMapper mapper = null;
 
