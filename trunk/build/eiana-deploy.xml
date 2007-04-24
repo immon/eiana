@@ -252,51 +252,49 @@
          </delete>
 
          <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
-            <!--common-dao-->
-            <fileset dir="${basedir}/common-dao/src">                   <include name="**/*.java" /></fileset>
             <!--eiana-dns-->
-            <fileset dir="${basedir}/eiana-dns/src">                    <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-dns/src">                    <include name="**/*.java" /></fileset>
             <!--eiana-domains-->
-            <fileset dir="${basedir}/eiana-domains/src">                <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-domains/test/conf">          <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-domains/test/dao">           <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-domains/test/hibernate">     <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-domains/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-domains/test/conf">          <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-domains/test/dao">           <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-domains/test/hibernate">     <include name="**/*.java" /></fileset>
             <!--eiana-logs-->
-            <fileset dir="${basedir}/eiana-logs/src">                   <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-logs/src">                   <include name="**/*.java" /></fileset>
             <!--eiana-notifications-->
-            <fileset dir="${basedir}/eiana-notifications/src">          <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-notifications/src">          <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
             <!--eiana-trans-->
-            <fileset dir="${basedir}/eiana-trans/src">                  <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/change">          <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/confirmation">    <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/dao">             <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/hibernate">       <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/jbpm">            <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-trans/test/manager">         <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/src">                  <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/change">          <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/confirmation">    <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/dao">             <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/hibernate">       <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/jbpm">            <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/test/manager">         <include name="**/*.java" /></fileset>
             <!--eiana-users-->
-            <fileset dir="${basedir}/eiana-users/src">                  <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-users/test/conf">            <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-users/test/dao">             <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/eiana-users/test/hibernate">       <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-users/src">                  <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-users/test/conf">            <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-users/test/dao">             <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-users/test/hibernate">       <include name="**/*.java" /></fileset>
             <!--eiana-util-->
-            <fileset dir="${basedir}/eiana-util/src">                   <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-util/src">                   <include name="**/*.java" /></fileset>
             <!--facade-admin-->
-            <fileset dir="${basedir}/facade-admin/src">                 <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-admin/src">                 <include name="**/*.java" /></fileset>
             <!--facade-common-->
-            <fileset dir="${basedir}/facade-common/src">                <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/facade-common/test">               <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-common/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-common/test">               <include name="**/*.java" /></fileset>
             <!--facade-system-->
-            <fileset dir="${basedir}/facade-system/src">                <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/facade-system/test/bean">          <include name="**/*.java" /></fileset>
-            <fileset dir="${basedir}/facade-system/test/conf">          <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-system/src">                <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-system/test/bean">          <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-system/test/conf">          <include name="**/*.java" /></fileset>
             <!--integration-rt-->
-            <fileset dir="${basedir}/integration-rt/src">               <include name="**/*.java" /></fileset>
+            <fileset dir="../integration-rt/src">               <include name="**/*.java" /></fileset>
             <!--integration-securid-->
-            <fileset dir="${basedir}/integration-securid/src">          <include name="**/*.java" /></fileset>
+            <fileset dir="../integration-securid/src">          <include name="**/*.java" /></fileset>
             <!--tests-->
-            <fileset dir="${basedir}/tests/test">                       <include name="**/*.java" /></fileset>
+            <fileset dir="../tests/test">                       <include name="**/*.java" /></fileset>
 
         </cobertura-report>
     </target>
