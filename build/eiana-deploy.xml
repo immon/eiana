@@ -110,10 +110,7 @@
     </path>
 
     <target name="database.init.test" depends="database.create.test, all.compile">
-        <java classname="org.iana.rzm.init.ant.InitUsersTask">
-            <classpath refid="inittools.classpath"/>
-        </java>
-        <java classname="org.iana.rzm.init.ant.InitDomainsTask">
+        <java classname="org.iana.rzm.init.ant.InitDatabaseTask">
             <classpath refid="inittools.classpath"/>
         </java>
     </target>
