@@ -284,4 +284,30 @@
         </property>
     </bean>
 
+    <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
+        <constructor-arg>
+            <map>
+                <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.SecurIDAuth" value-ref="securIDAuthenticator"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="passwordAuthenticator" class="org.iana.rzm.facade.auth.PasswordAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="securIDAuthenticator" class="org.iana.rzm.facade.auth.SecurIDAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="securID"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="securID" class="org.iana.rzm.facade.accuracy.TestSecurIDService"/>
+
 </beans>
