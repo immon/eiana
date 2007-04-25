@@ -45,7 +45,7 @@ public class SecurIDAuthenticator implements AuthenticationService {
         }
         try {
             securID.authenticate(securData.getUserName(), securData.getPassword());
-            return new AuthenticatedUser(user.getObjId(), user.getLoginName());
+            return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
         } catch (InvalidAuthenticationDataException e) {
             throw new AuthenticationFailedException(e);
         }

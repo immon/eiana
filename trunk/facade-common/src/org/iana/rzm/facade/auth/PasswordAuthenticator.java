@@ -38,7 +38,7 @@ public class PasswordAuthenticator implements AuthenticationService {
             AuthenticationToken token = new AuthenticationToken(data.getUserName(), Authentication.PASSWORD);
             throw new AuthenticationRequiredException(token, Authentication.SECURID);
         }
-        return new AuthenticatedUser(user.getObjId(), user.getLoginName());
+        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
     }
 
     public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {

@@ -81,16 +81,11 @@ public class AuthenticationServiceBeanTest {
 
     @Test
     public void testAuthenticate() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
 
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
         assert authenticatedUser != null;
         assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
-
-        //todo try...finally block could be added
-        txMgr.commit(txStatus);
     }
 
     //could be moved to failure package

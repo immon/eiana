@@ -10,7 +10,7 @@ public class TestAuthenticatedUser {
     AuthenticatedUser authUser;
 
     public TestAuthenticatedUser(UserVO user) {
-        authUser = new AuthenticatedUser(user.getObjId(), user.getUserName());
+        authUser = new AuthenticatedUser(user.getObjId(), user.getUserName(), false);
     }
 
     public AuthenticatedUser getAuthUser() {
