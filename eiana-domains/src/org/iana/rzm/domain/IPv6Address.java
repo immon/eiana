@@ -19,9 +19,8 @@ public class IPv6Address extends IPAddress {
         super(address, Type.IPv6);
         isValidAddress(address);
     }
-
-    @Transient
-    private void isValidAddress(String address) throws InvalidIPAddressException {
+    
+    protected void isValidAddress(String address) throws InvalidIPAddressException {
         IPAddressValidator.getInstance().validateIPv6(address);
     }
 }

@@ -35,6 +35,13 @@ public abstract class IPAddress {
 
     final public String getAddress() { return address; }
 
+    final public void setAddress(String address) {
+        isValidAddress(address);
+        this.address = address;
+    }
+
+    abstract protected void isValidAddress(String addr) throws InvalidIPAddressException;
+    
     public static IPAddress createIPAddress(String addr) throws InvalidIPAddressException {
         try {
             return createIPv4Address(addr);

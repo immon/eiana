@@ -3,7 +3,7 @@ package org.iana.rzm.common.exceptions;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class InvalidIPAddressException extends Exception {
+public class InvalidIPAddressException extends RuntimeException {
 
     String address;
 

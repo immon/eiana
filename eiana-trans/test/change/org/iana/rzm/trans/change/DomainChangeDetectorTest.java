@@ -4,9 +4,7 @@ import org.iana.objectdiff.Change;
 import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.*;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -141,6 +139,16 @@ public class DomainChangeDetectorTest {
         assert fieldChanges.size() == 1 && fieldChanges.get("addresses").isModification();
     }
 
+    @Test
+    public void testIPAddressAddition() {
+        Host src = createHost("host.test");
+        Host dst = createHost("host.test");
+        dst.addIPAddress("3.3.3.3");
+        Change change = ChangeDetector.diff(src, dst, config);
+        ObjectChange objectChange = (ObjectChange) change;
+        Map<String, Change> fieldChanges = objectChange.getFieldChanges();
+        assert fieldChanges.size() == 1 && fieldChanges.get("addresses").isModification();
+    }
 
     final static Domain createDomain() {
         Domain ret = new Domain("test.change");
@@ -159,6 +167,13 @@ public class DomainChangeDetectorTest {
         ret.setPhoneNumbers(createStringList(prefix+"-phone", 1));
         ret.setFaxNumbers(createStringList(prefix+"-fax", 1));
         ret.addAddress(new Address(prefix+"-ta", "CC"));
+        return ret;
+    }
+
+    final static Host createHost(String hostName) {
+        Host ret = new Host(hostName);
+        ret.addIPAddress(IPAddress.createIPAddress("1.1.1.1"));
+        ret.addIPAddress(IPAddress.createIPAddress("2.2.2.2"));
         return ret;
     }
 
