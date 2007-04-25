@@ -50,7 +50,6 @@ public class TransactionManagerBean implements TransactionManager {
         td.setDomainChange((ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, DomainDiffConfiguration.getInstance()));
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.signal();
         return new Transaction(pi);
     }
 
