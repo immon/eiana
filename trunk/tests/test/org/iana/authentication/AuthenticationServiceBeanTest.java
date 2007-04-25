@@ -18,8 +18,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
- * org.iana.authentication.AuthenticationServiceBeanTest
- * (C) Research and Academic Computer Network - NASK
  * marcinz, 2007-04-25, 14:38:46
  */
 public class AuthenticationServiceBeanTest {
