@@ -18,11 +18,10 @@ public class IPv4Address extends IPAddress {
 
     IPv4Address(String address) throws InvalidIPAddressException {
         super(address, Type.IPv4);
-        isValidAddress(address);
+        setAddress(address);
     }
 
-    @Transient
-    private void isValidAddress(String address) throws InvalidIPAddressException {
+    protected void isValidAddress(String address) throws InvalidIPAddressException {
         IPAddressValidator.getInstance().validateIPv4(address);
     }
 }

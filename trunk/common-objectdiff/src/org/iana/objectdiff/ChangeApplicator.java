@@ -77,7 +77,7 @@ public class ChangeApplicator {
             if (change.isRemoval()) {
                 setField(object, field, null);
             } else if (change.isAddition()) {
-                Object value = createObject(config, object, field);
+                Object value = createObject(change, config, object, field);
                 if (value != null) {
                     setField(object, field, value);
                     applyChange(value, change, config);
@@ -91,12 +91,12 @@ public class ChangeApplicator {
         }
     }
 
-    private static Object createObject(DiffConfiguration config, Object object, String field) throws InstantiationException, IllegalAccessException {
+    private static Object createObject(Change change, DiffConfiguration config, Object object, String field) throws InstantiationException, IllegalAccessException {
         ObjectConfiguration objectConfig = config.getObjectConfig(object.getClass());
         if (objectConfig != null) {
-            Class clazz = objectConfig.getFieldClass(field);
-            if (clazz != null) {
-                return clazz.newInstance();
+            ObjectInstantiator inst = objectConfig.getFieldInstantiator(field);
+            if (inst != null) {
+                return inst.instantiate(change);
             }
         }
         return null;
@@ -113,13 +113,13 @@ public class ChangeApplicator {
             }
 
             List toAdd = new ArrayList();
-            Class clazz = config.getObjectConfig(object.getClass()).getFieldClass(field);
+            ObjectInstantiator inst = config.getObjectConfig(object.getClass()).getFieldInstantiator(field);
             for (Change add : change.getAdded()) {
                 if (add instanceof SimpleChange) {
                     SimpleChange simpleAdd = (SimpleChange) add;
                     toAdd.add(simpleAdd.getNewValue());
                 } else if (add instanceof ObjectChange) {
-                    Object objectToAdd = clazz.newInstance();
+                    Object objectToAdd = inst.instantiate(add);
                     applyChange(objectToAdd, (ObjectChange) add, config);
                     toAdd.add(objectToAdd);
                 }

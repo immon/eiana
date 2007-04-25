@@ -8,7 +8,7 @@ import java.util.*;
 public class ObjectConfiguration {
 
     private List<String> fields = new ArrayList();
-    private Map<String, Class> classes = new HashMap<String, Class>();
+    private Map<String, ObjectInstantiator> classes = new HashMap<String, ObjectInstantiator>();
     private String id;
 
     public ObjectConfiguration(String[] fields, String id) {
@@ -21,11 +21,16 @@ public class ObjectConfiguration {
         this.id = id;
     }
 
-    public void addFieldClass(String field, Class clazz) {
-        classes.put(field, clazz);
+    public void addFieldInstantiator(String field, ObjectInstantiator inst) {
+        if (inst == null) throw new IllegalArgumentException("null object instantiator");
+        classes.put(field, inst);
     }
 
-    public Class getFieldClass(String field) {
+    public void addFieldClass(String field, Class clazz) {
+        classes.put(field, new ClassBasedInstantiator(clazz));
+    }
+
+    public ObjectInstantiator getFieldInstantiator(String field) {
         return classes.get(field);
     }
     

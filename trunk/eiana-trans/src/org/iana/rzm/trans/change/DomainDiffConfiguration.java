@@ -34,13 +34,14 @@ public class DomainDiffConfiguration extends DiffConfiguration {
         ObjectConfiguration hostConfig = new ObjectConfiguration(new String[]{
             "name", "addresses", "numDelegations"
         }, "name");
-        hostConfig.addFieldClass("addresses", IPAddress.class);
+        hostConfig.addFieldInstantiator("addresses", new IPAddressInstantiator());
         addObjectConfiguration(Host.class, hostConfig);
 
-        ObjectConfiguration IPAddressConfig = new ObjectConfiguration( new String[] {
+        ObjectConfiguration ipAddressConfig = new ObjectConfiguration( new String[] {
             "address", "type"
         }, "address");
-        addObjectConfiguration(IPAddress.class, IPAddressConfig);
+        addObjectConfiguration(IPv4Address.class, ipAddressConfig);
+        addObjectConfiguration(IPv6Address.class, ipAddressConfig);
     }
 
     private static DiffConfiguration instance = new DomainDiffConfiguration();
