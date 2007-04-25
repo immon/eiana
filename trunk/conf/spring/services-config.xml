@@ -6,32 +6,35 @@
 
     <!-- facade services configuration -->
 
-    <bean id="NotificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.notifications.NotificationManager</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="NotificationManagerBeanTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
+    <!-- authentication service -->
+
+    <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
+        <constructor-arg>
+            <map>
+                <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.SecurIDAuth" value-ref="securIDAuthenticator"/>
+            </map>
+        </constructor-arg>
     </bean>
 
-    <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO" />
+    <bean id="passwordAuthenticator" class="org.iana.rzm.facade.auth.PasswordAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
     </bean>
 
-    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
+    <bean id="securIDAuthenticator" class="org.iana.rzm.facade.auth.SecurIDAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="securID"/>
+        </constructor-arg>
     </bean>
+
+    <bean id="securID" class="org.iana.rzm.facade.accuracy.TestSecurIDService"/>
+
+    <!-- system domain service -->
 
     <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
@@ -77,6 +80,8 @@
         </property>
     </bean>
 
+    <!-- transaction service -->
+
     <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
         <constructor-arg ref="userManager" />
         <constructor-arg ref="SystemTransactionServiceBean"/>
@@ -89,6 +94,33 @@
     </bean>
 
     <!-- end of facade services configuration -->
+
+    <bean id="NotificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.notifications.NotificationManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="NotificationManagerBeanTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
+        <constructor-arg index="0" ref="notificationDAO" />
+    </bean>
+
+    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
 
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
         <constructor-arg value="MailHost"/>
@@ -283,31 +315,5 @@
             <ref bean="sessionFactory"/>
         </property>
     </bean>
-
-    <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
-        <constructor-arg>
-            <map>
-                <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
-                <entry key="org.iana.rzm.facade.auth.SecurIDAuth" value-ref="securIDAuthenticator"/>
-            </map>
-        </constructor-arg>
-    </bean>
-
-    <bean id="passwordAuthenticator" class="org.iana.rzm.facade.auth.PasswordAuthenticator">
-        <constructor-arg>
-            <ref bean="userManager"/>
-        </constructor-arg>
-    </bean>
-
-    <bean id="securIDAuthenticator" class="org.iana.rzm.facade.auth.SecurIDAuthenticator">
-        <constructor-arg>
-            <ref bean="userManager"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="securID"/>
-        </constructor-arg>
-    </bean>
-
-    <bean id="securID" class="org.iana.rzm.facade.accuracy.TestSecurIDService"/>
 
 </beans>
