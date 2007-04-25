@@ -13,10 +13,10 @@ import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.change.ObjectChange;
-import org.iana.rzm.trans.change.ChangeDetector;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.user.UserManager;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.ChangeDetector;
 
 import java.util.ArrayList;
 import java.util.List;

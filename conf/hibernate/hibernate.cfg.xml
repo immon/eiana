@@ -35,11 +35,11 @@
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
 
-        <mapping class="org.iana.rzm.trans.change.Change"/>
-        <mapping class="org.iana.rzm.trans.change.ObjectChange"/>
-        <mapping class="org.iana.rzm.trans.change.CollectionChange"/>
-        <mapping class="org.iana.rzm.trans.change.SimpleChange"/>
-        <mapping class="org.iana.rzm.trans.change.FieldChange"/>
+        <mapping class="org.iana.objectdiff.Change"/>
+        <mapping class="org.iana.objectdiff.ObjectChange"/>
+        <mapping class="org.iana.objectdiff.CollectionChange"/>
+        <mapping class="org.iana.objectdiff.SimpleChange"/>
+        <mapping class="org.iana.objectdiff.FieldChange"/>
 
         <mapping class="org.iana.rzm.trans.TransactionAction"/>
         <mapping class="org.iana.rzm.trans.TransactionState"/>

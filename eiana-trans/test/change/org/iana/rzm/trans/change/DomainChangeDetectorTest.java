@@ -1,14 +1,17 @@
 package org.iana.rzm.trans.change;
 
-import org.testng.annotations.Test;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
+import org.iana.objectdiff.Change;
+import org.iana.objectdiff.ChangeDetector;
+import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Address;
-import org.iana.rzm.trans.change.*;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz

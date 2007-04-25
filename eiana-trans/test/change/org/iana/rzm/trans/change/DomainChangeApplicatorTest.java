@@ -1,7 +1,8 @@
 package org.iana.rzm.trans.change;
 
-import org.testng.annotations.Test;
+import org.iana.objectdiff.*;
 import org.iana.rzm.domain.Domain;
+import org.testng.annotations.Test;
 
 /**
  * @author Patrycja Wegrzynowicz

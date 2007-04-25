@@ -1,6 +1,6 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.trans.change.Change;
+import org.iana.objectdiff.Change;
 
 import javax.persistence.*;
 import java.util.List;

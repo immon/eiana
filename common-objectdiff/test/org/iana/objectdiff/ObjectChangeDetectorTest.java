@@ -1,8 +1,10 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz

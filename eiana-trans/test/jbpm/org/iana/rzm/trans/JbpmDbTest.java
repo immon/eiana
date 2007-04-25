@@ -1,20 +1,20 @@
 package org.iana.rzm.trans;
 
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.JbpmConfiguration;
-import org.jbpm.scheduler.impl.SchedulerThread;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Jakub Laszkiewicz

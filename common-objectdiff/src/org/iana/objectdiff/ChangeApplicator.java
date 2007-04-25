@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 import pl.nask.util.ReflectionTool;
 import pl.nask.util.StringTool;

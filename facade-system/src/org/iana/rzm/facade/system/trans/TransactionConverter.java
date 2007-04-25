@@ -5,6 +5,7 @@ import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.change.*;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.objectdiff.*;
 
 import java.util.List;
 import java.util.ArrayList;

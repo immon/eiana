@@ -2,11 +2,11 @@ package org.iana.rzm.trans;
 
 import org.hibernate.annotations.MapKeyManyToMany;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.common.TrackData;
+import org.iana.objectdiff.ObjectChange;
 
 import javax.persistence.*;
 import java.util.HashMap;

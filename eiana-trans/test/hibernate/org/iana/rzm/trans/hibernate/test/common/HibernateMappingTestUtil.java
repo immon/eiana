@@ -1,5 +1,6 @@
 package org.iana.rzm.trans.hibernate.test.common;
 
+import org.iana.objectdiff.Change;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
@@ -7,12 +8,9 @@ import org.iana.rzm.domain.*;
 import org.iana.rzm.trans.StateTransition;
 import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.change.Change;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

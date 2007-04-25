@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 import org.iana.rzm.common.validators.CheckTool;
 
@@ -18,7 +18,6 @@ abstract public class Change {
     private Long objId;
     @Enumerated
     private Type type;
-
 
     protected Change() {}
 

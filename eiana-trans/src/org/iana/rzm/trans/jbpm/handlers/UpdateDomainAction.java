@@ -7,9 +7,9 @@ import org.jbpm.graph.def.ActionHandler;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.ObjectChange;
-import org.iana.rzm.trans.change.ChangeApplicator;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.ChangeApplicator;
 
 public class UpdateDomainAction implements ActionHandler {
     public void execute(org.jbpm.graph.exe.ExecutionContext executionContext) throws java.lang.Exception {

@@ -1,34 +1,23 @@
 package org.iana.rzm.trans;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.jbpm.JbpmConfiguration;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.exe.Token;
+import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.SpringTransApplicationContext;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.RZMUser;
-import org.jbpm.scheduler.impl.SchedulerThread;
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.graph.exe.Token;
-
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Piotr Tkaczyk

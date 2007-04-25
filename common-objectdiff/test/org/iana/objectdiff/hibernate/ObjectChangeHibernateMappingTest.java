@@ -1,14 +1,14 @@
-package org.iana.rzm.trans.hibernate.test.accuracy;
+package org.iana.objectdiff.hibernate;
 
-import org.iana.rzm.trans.change.ObjectChange;
-import org.iana.rzm.trans.change.Change;
-import org.iana.rzm.trans.change.SimpleChange;
+import org.iana.objectdiff.Change;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.trans.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Patrycja Wegrzynowicz

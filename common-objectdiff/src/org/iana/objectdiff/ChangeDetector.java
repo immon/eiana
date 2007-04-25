@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 import org.iana.rzm.common.validators.CheckTool;
 
@@ -11,10 +11,11 @@ import pl.nask.util.ReflectionTool;
  *
  * @author Patrycja Wegrzynowicz
  */
+@SuppressWarnings("unchecked")
 public class ChangeDetector {
 
     /**
-     * Determinas a difference between source and destination objects.
+     * Determines a difference between source and destination objects.
      *
      * @param src the source object
      * @param dst the destination object
@@ -167,7 +168,7 @@ public class ChangeDetector {
                     } else if (src == null) {
                         type = Change.Type.ADDITION;
                         id = getId(dst, objectConfig.getFieldId());
-                    } else if (dst == null) {
+                    } else {
                         type = Change.Type.REMOVAL;
                         id = getId(src, objectConfig.getFieldId());
                     }

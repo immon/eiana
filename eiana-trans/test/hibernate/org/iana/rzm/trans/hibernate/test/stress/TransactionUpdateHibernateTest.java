@@ -1,18 +1,16 @@
 package org.iana.rzm.trans.hibernate.test.stress;
 
-import org.iana.rzm.trans.hibernate.test.common.HibernateOperationStressTest;
-import org.iana.rzm.trans.hibernate.test.common.HibernateMappingTestUtil;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionAction;
-import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.NameServerAlreadyExistsException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.hibernate.test.common.HibernateMappingTestUtil;
+import org.iana.rzm.trans.hibernate.test.common.HibernateOperationStressTest;
 import org.testng.annotations.Test;
 
-import java.util.List;
 import java.net.MalformedURLException;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz

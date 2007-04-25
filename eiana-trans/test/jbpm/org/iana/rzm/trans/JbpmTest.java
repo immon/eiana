@@ -3,7 +3,6 @@ package org.iana.rzm.trans;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.jbpm.JbpmContext;
 import org.testng.annotations.Test;
 
 /**
