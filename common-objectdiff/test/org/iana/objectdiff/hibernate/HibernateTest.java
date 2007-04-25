@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.hibernate.test.common;
+package org.iana.objectdiff.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
