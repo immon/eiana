@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 import javax.persistence.*;
 import java.util.Collection;

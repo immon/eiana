@@ -1,7 +1,5 @@
 package org.iana.rzm.trans.hibernate.test.accuracy;
 
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.hibernate.test.common.HibernateTest;
 
 /**

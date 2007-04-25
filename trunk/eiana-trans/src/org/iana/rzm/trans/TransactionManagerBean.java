@@ -4,11 +4,11 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.dao.ProcessCriteria;
-import org.iana.rzm.trans.change.ChangeDetector;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
-import org.iana.rzm.trans.change.ObjectChange;
 import org.iana.rzm.user.RZMUser;
 import org.iana.ticketing.TicketingService;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.ChangeDetector;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;

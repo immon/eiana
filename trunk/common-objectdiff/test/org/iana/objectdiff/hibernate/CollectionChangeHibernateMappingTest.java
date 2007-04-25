@@ -1,8 +1,8 @@
-package org.iana.rzm.trans.hibernate.test.accuracy;
+package org.iana.objectdiff.hibernate;
 
-import org.iana.rzm.trans.change.CollectionChange;
-import org.iana.rzm.trans.change.Change;
-import org.iana.rzm.trans.change.SimpleChange;
+import org.iana.objectdiff.Change;
+import org.iana.objectdiff.CollectionChange;
+import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.trans.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 

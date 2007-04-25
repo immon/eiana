@@ -1,6 +1,7 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Patrycja Wegrzynowicz

@@ -46,6 +46,7 @@
     <orderEntry type="module" module-name="eiana-users" />
     <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntry type="library" name="nask-commons" level="project" />
+    <orderEntry type="module" module-name="common-objectdiff" />
     <orderEntryProperties />
   </component>
 </module>

@@ -3,7 +3,7 @@ package org.iana.rzm.trans.jbpm.handlers;
 import org.jbpm.graph.node.DecisionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.ObjectChange;
+import org.iana.objectdiff.ObjectChange;
 
 import java.util.Map;
 

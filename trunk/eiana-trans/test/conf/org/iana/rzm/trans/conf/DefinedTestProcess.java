@@ -4,8 +4,9 @@
 package org.iana.rzm.trans.conf;
 
 import org.jbpm.graph.def.ProcessDefinition;
-import java.io.InputStreamReader;
+
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class DefinedTestProcess {
 

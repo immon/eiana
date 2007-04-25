@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 /**
  * @author Patrycja Wegrzynowicz

@@ -1,10 +1,10 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
-import org.iana.rzm.trans.change.ObjectConfiguration;
-import org.iana.rzm.trans.change.DiffConfiguration;
+import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.ObjectConfiguration;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz

@@ -1,8 +1,6 @@
-package org.iana.rzm.trans.change;
+package org.iana.objectdiff;
 
 import org.testng.annotations.Test;
-import org.iana.rzm.trans.change.ChangeDetector;
-import org.iana.rzm.trans.change.DiffConfiguration;
 
 import java.util.Collection;
 import java.util.HashSet;

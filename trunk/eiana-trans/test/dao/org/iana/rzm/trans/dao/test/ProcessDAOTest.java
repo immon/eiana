@@ -8,23 +8,23 @@ import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
-import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.dao.ProcessCriteria;
-import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
 
-import java.util.*;
 import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz

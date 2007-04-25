@@ -2,12 +2,12 @@ package org.iana.rzm.trans;
 
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
-import org.iana.rzm.trans.confirmation.UserConfirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
+import org.iana.rzm.trans.confirmation.UserConfirmation;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.jbpm.graph.def.ProcessDefinition;
@@ -17,12 +17,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz
