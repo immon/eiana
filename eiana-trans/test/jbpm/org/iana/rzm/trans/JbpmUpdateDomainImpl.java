@@ -35,11 +35,11 @@ import java.util.Set;
 
 @Test(sequential=true, groups = {"eiana-trans", "jbpm", "UpdateDomain"})
 public class JbpmUpdateDomainImpl {
-    ApplicationContext appCtx;
-    TransactionManager transMgr;
-    ProcessDAO processDAO;
-    DomainDAO domainDAO;
-    SchedulerThread schedulerThread;
+    private ApplicationContext appCtx;
+    private TransactionManager transMgr;
+    private ProcessDAO processDAO;
+    private DomainDAO domainDAO;
+    private SchedulerThread schedulerThread;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     private UserDAO userDAO;
@@ -47,7 +47,7 @@ public class JbpmUpdateDomainImpl {
     private Long testProcessInstanceId;
 
     @BeforeClass
-    public void init() {
+    public void init() throws Exception {
         appCtx = SpringTransApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
@@ -57,40 +57,70 @@ public class JbpmUpdateDomainImpl {
         userDAO = (UserDAO) appCtx.getBean("userDAO");
 
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            createUser(UserManagementTestUtil.createUser("UDsys1",
+                    UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
+            createUser(UserManagementTestUtil.createUser("UDsys2",
+                    UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
+            createUser(UserManagementTestUtil.createUser("UDsys3",
+                    UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.AC)));
+            createUser(UserManagementTestUtil.createUser("UDsys4",
+                    UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
+            createUser(UserManagementTestUtil.createUser("UDsys5",
+                    UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
+            createUser(UserManagementTestUtil.createUser("UDsys6",
+                    UserManagementTestUtil.createSystemRole("testdomain.org", false, false, SystemRole.SystemType.TC)));
 
-        createUser(UserManagementTestUtil.createUser("UDsys1",
-                UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
-        createUser(UserManagementTestUtil.createUser("UDsys2",
-                UserManagementTestUtil.createSystemRole("testdomain.org", true, true, SystemRole.SystemType.AC)));
-        createUser(UserManagementTestUtil.createUser("UDsys3",
-                UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.AC)));
-        createUser(UserManagementTestUtil.createUser("UDsys4",
-                UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
-        createUser(UserManagementTestUtil.createUser("UDsys5",
-                UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
-        createUser(UserManagementTestUtil.createUser("UDsys6",
-                UserManagementTestUtil.createSystemRole("testdomain.org", false, false, SystemRole.SystemType.TC)));
+            processDAO.deploy(DefinedTestProcess.getDefinition());
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        for (String name : userNames) userDAO.delete(userDAO.get(name));
-        txMgr.commit(txStatus);
+        try {
+            for (String name : userNames) {
+                RZMUser user = userDAO.get(name);
+                if (user != null) userDAO.delete(user);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        processDAO.delete(processDAO.getProcessInstance(testProcessInstanceId));
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);
+            if (pi != null) processDAO.delete(pi);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        domainDAO.delete(domainDAO.get("testdomain.org"));
-        txMgr.commit(txStatus);
+        try {
+            Domain domain = domainDAO.get("testdomain.org");
+            if (domain != null) domainDAO.delete(domain);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     private void createUser(RZMUser user) {
@@ -101,66 +131,83 @@ public class JbpmUpdateDomainImpl {
     @Test
     public void doUpdate() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Address address = new Address();
+            address.setTextAddress("66th Marszalkowska Str., 00-950 Warsaw, Mazovia");
+            address.setCountryCode("PL");
 
-        Address address = new Address();
-        address.setTextAddress("66th Marszalkowska Str., 00-950 Warsaw, Mazovia");
-        address.setCountryCode("PL");
-       
-        Contact supportingOrg = new Contact("NotRealOrg");
-        supportingOrg.addEmail("oldemail@post.org");
-        supportingOrg.addPhoneNumber("staryNumer");
+            Contact supportingOrg = new Contact("NotRealOrg");
+            supportingOrg.addEmail("oldemail@post.org");
+            supportingOrg.addPhoneNumber("staryNumer");
 
-        List<String> emails = new ArrayList<String>();
-        emails.add("verynewemail@post.org");
-        Contact clonedSupportingOrg = (Contact) supportingOrg.clone();
-        clonedSupportingOrg.setEmails(emails);
-        List<String> phones = new ArrayList<String>();
-        phones.add("newphone");
-        clonedSupportingOrg.setPhoneNumbers(phones);
+            List<String> emails = new ArrayList<String>();
+            emails.add("verynewemail@post.org");
+            Contact clonedSupportingOrg = (Contact) supportingOrg.clone();
+            clonedSupportingOrg.setEmails(emails);
+            List<String> phones = new ArrayList<String>();
+            phones.add("newphone");
+            clonedSupportingOrg.setPhoneNumbers(phones);
 
-        Domain domain = new Domain("testdomain.org");
-       // domain.setWhoisServer("oldwhoisserver");
-        domain.setRegistryUrl("http://www.oldregistryurl.org");
-        domain.setSupportingOrg(supportingOrg);
-        domain.addTechContact(new Contact("aaaaaa"));
-        domainDAO.create(domain);
+            Domain domain = new Domain("testdomain.org");
+           // domain.setWhoisServer("oldwhoisserver");
+            domain.setRegistryUrl("http://www.oldregistryurl.org");
+            domain.setSupportingOrg(supportingOrg);
+            domain.addTechContact(new Contact("aaaaaa"));
+            domainDAO.create(domain);
 
-        Domain clonedDomain = (Domain) domain.clone();
-        clonedDomain.setWhoisServer("newwhoisserver");
-        clonedDomain.setRegistryUrl(null);
-        clonedDomain.setSupportingOrg(clonedSupportingOrg);
-        Contact newContact = new Contact("aaaaaa");
-        newContact.addEmail("noContact-new-emial@post.org");
-        //clonedDomain.addTechContact(newContact);
-        clonedDomain.setTechContacts(new ArrayList<Contact>());
+            Domain clonedDomain = (Domain) domain.clone();
+            clonedDomain.setWhoisServer("newwhoisserver");
+            clonedDomain.setRegistryUrl(null);
+            clonedDomain.setSupportingOrg(clonedSupportingOrg);
+            Contact newContact = new Contact("aaaaaa");
+            newContact.addEmail("noContact-new-emial@post.org");
+            //clonedDomain.addTechContact(newContact);
+            clonedDomain.setTechContacts(new ArrayList<Contact>());
+
+            Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
+
+            ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
+            testProcessInstanceId = pi.getId();
+
+            Token token = pi.getRootToken();
+
+            Thread.sleep(3001L);
+            schedulerThread.executeTimers();
+
+            assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("normal");
+            assert token.getNode().getName().equals("PENDING_EXT_APPROVAL") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_USDOC_APPROVAL") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("COMPLETED") : "unexpected state: " + token.getNode().getName();
+
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
         
-        Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
-
-        ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
-        testProcessInstanceId = pi.getId();
-
-        Token token = pi.getRootToken();
-        token.signal();
-
-        Thread.sleep(3001L);
-        schedulerThread.executeTimers();
-
-        token.signal("accept");
-        token.signal("normal");
-        token.signal("accept");
-
-        token.signal("accept");
-
-        processDAO.close();
-        txMgr.commit(txStatus);
-
         txStatus = txMgr.getTransaction(txDef);
+        try {
 
-        Domain retrivedDomain = domainDAO.get(domain.getName());
+            Domain retrivedDomain = domainDAO.get("testdomain.org");
 
-        assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
-                retrivedDomain.getRegistryUrl() == null);
+            assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
+                    retrivedDomain.getRegistryUrl() == null);
 
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 }

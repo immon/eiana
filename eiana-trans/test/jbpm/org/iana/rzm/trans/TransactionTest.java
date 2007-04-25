@@ -1,6 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.UserConfirmation;
@@ -44,20 +45,30 @@ public class TransactionTest {
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     private Set<Long> processes = new HashSet<Long>();
     private Set<String> users = new HashSet<String>();
-    private TransactionStatus globalTxStatus;
 
     @BeforeClass(dependsOnGroups = {"JbpmTest"})
-    public void init() {
+    public void init() throws Exception {
         ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
         processDAO = (ProcessDAO) ctx.getBean("processDAO");
         manager = (TransactionManager) ctx.getBean("transactionManagerBean");
         userDAO = (UserDAO) ctx.getBean("userDAO");
         txMgr = (PlatformTransactionManager) ctx.getBean("transactionManager");
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         processDAO.deploy(deployProcessDefinition());
-        createUsers();
-        processDAO.close();
-        txMgr.commit(txStatus);
+        TransactionStatus txStatus;
+        try {
+            txStatus = txMgr.getTransaction(txDef);
+        } finally {
+            processDAO.close();
+        }
+        try {
+            createUsers();
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     private void createUsers() {
@@ -83,138 +94,182 @@ public class TransactionTest {
     }
 
     @Test
-    public void testTransactionCreation() throws TransactionException {
+    public void testTransactionCreation() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            ProcessInstance pi = processDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
+            processes.add(pi.getId());
+            TransactionData td = new TransactionData();
+            ticketId = 123L;
+            td.setTicketID(ticketId);
+            pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
+            pi.signal();
+            Transaction transaction = new Transaction(pi);
+            transactionId = transaction.getTransactionID();
 
-        ProcessInstance pi = processDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
-        processes.add(pi.getId());
-        TransactionData td = new TransactionData();
-        ticketId = 123L;
-        td.setTicketID(ticketId);
-        pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
-        pi.signal();
-        Transaction transaction = new Transaction(pi);
-        transactionId = transaction.getTransactionID();
+            pi = processDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
+            processes.add(pi.getId());
+            td = new TransactionData();
+            ticketId2 = 124L;
+            // PENDING_CONTACT_CONFIRMATION/reject transition authorized users
+            StateConfirmations sc = new StateConfirmations();
+            sc.addConfirmation(new UserConfirmation(userDAO.get("user-sys1trans")));
+            td.setStateConfirmations(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(), sc);
+            td.setTicketID(ticketId2);
+            pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
+            pi.signal();
+            Transaction transaction2 = new Transaction(pi);
+            transactionId2 = transaction2.getTransactionID();
 
-        pi = processDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
-        processes.add(pi.getId());
-        td = new TransactionData();
-        ticketId2 = 124L;
-        // PENDING_CONTACT_CONFIRMATION/reject transition authorized users
-        StateConfirmations sc = new StateConfirmations();
-        sc.addConfirmation(new UserConfirmation(userDAO.get("user-sys1trans")));
-        td.setStateConfirmations(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(), sc);
-        td.setTicketID(ticketId2);
-        pi.getContextInstance().setVariable("TRANSACTION_DATA",td);
-        pi.signal();
-        Transaction transaction2 = new Transaction(pi);
-        transactionId2 = transaction2.getTransactionID();
+            pi = processDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
+            processes.add(pi.getId());
+            td = new TransactionData();
+            long ticketId3 = 125L;
+            td.setTicketID(ticketId3);
+            // PENDING_CONTACT_CONFIRMATION/test transition authorized users and roles
+            td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
+                    "test", new UserConfirmation(userDAO.get("user-sys1trans")));
+            td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
+                    "test", new RoleConfirmation(new AdminRole(AdminRole.AdminType.IANA)));
+            td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
+                    "test", new RoleConfirmation(
+                    UserManagementTestUtil.createSystemRole("transtestdomain", true, true,
+                            SystemRole.SystemType.TC)));
+            pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
+            pi.signal();
+            Transaction transaction3 = new Transaction(pi);
+            transactionId3 = transaction3.getTransactionID();
 
-        pi = processDAO.newProcessInstance("Domain Modification Transaction (Unified Workflow)");
-        processes.add(pi.getId());
-        td = new TransactionData();
-        long ticketId3 = 125L;
-        td.setTicketID(ticketId3);
-        // PENDING_CONTACT_CONFIRMATION/test transition authorized users and roles
-        td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
-                "test", new UserConfirmation(userDAO.get("user-sys1trans")));
-        td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
-                "test", new RoleConfirmation(new AdminRole(AdminRole.AdminType.IANA)));
-        td.addTransitionConfirmation(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.name(),
-                "test", new RoleConfirmation(
-                UserManagementTestUtil.createSystemRole("transtestdomain", true, true,
-                        SystemRole.SystemType.TC)));
-        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.signal();
-        Transaction transaction3 = new Transaction(pi);
-        transactionId3 = transaction3.getTransactionID();
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
-        processDAO.close();
-        txMgr.commit(txStatus);
         txStatus = txMgr.getTransaction(txDef);
-
-        Transaction transFromDB = manager.getTransaction(transactionId);
-        assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
-        Transaction transFromDB2 = manager.getTransaction(transactionId2);
-        assert (transFromDB2 != null && transFromDB2.getTransactionID() == transactionId2 && transFromDB2.getTicketID().equals(new Long(ticketId2)));
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            Transaction transFromDB = manager.getTransaction(transactionId);
+            assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
+            Transaction transFromDB2 = manager.getTransaction(transactionId2);
+            assert (transFromDB2 != null && transFromDB2.getTransactionID() == transactionId2 && transFromDB2.getTicketID().equals(new Long(ticketId2)));
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = {"testTransactionCreation"})
-    public void testTransactionUpdate() throws NoSuchTransactionException {
+    public void testTransactionUpdate() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction transToUpdate = manager.getTransaction(transactionId);
+            assert transToUpdate.getTicketID().equals(new Long(ticketId));
+            ticketId = 456L;
+            transToUpdate.setTicketID(ticketId);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
-        Transaction transToUpdate = manager.getTransaction(transactionId);
-        assert transToUpdate.getTicketID().equals(new Long(ticketId));
-        ticketId = 456L;
-        transToUpdate.setTicketID(ticketId);
-        processDAO.close();
-        txMgr.commit(txStatus);
         txStatus = txMgr.getTransaction(txDef);
-
-        Transaction transFromDB = manager.getTransaction(transactionId);
-        assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            Transaction transFromDB = manager.getTransaction(transactionId);
+            assert (transFromDB != null && transFromDB.getTransactionID() == transactionId && transFromDB.getTicketID().equals(new Long(ticketId)));
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = {"testTransactionUpdate"})
-    public void testTransactionAccept() throws TransactionException {
+    public void testTransactionAccept() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction trans = manager.getTransaction(transactionId);
 
-        Transaction trans = manager.getTransaction(transactionId);
+            assert trans != null;
+            trans.accept(null);
 
-        assert trans != null;
-        trans.accept(null);
+            System.out.println("State:" + trans.getState().getName());
+            assert trans.getState().getName().equals(TransactionState.Name.COMPLETED);
 
-        System.out.println("State:" + trans.getState().getName());
-        assert trans.getState().getName().equals(TransactionState.Name.COMPLETED);
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = {"testTransactionAccept"})
-    public void testTransactionReject() throws TransactionException {
+    public void testTransactionReject() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction trans = manager.getTransaction(transactionId2);
+            assert trans != null;
+            trans.reject(userDAO.get("user-sys1trans"));
 
-        Transaction trans = manager.getTransaction(transactionId2);
-        assert trans != null;
-        trans.reject(userDAO.get("user-sys1trans"));
+            System.out.println("State:" + trans.getState().getName());
+            assert trans.getState().getName().equals(TransactionState.Name.REJECTED);
 
-        System.out.println("State:" + trans.getState().getName());
-        assert trans.getState().getName().equals(TransactionState.Name.REJECTED);
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = {"testTransactionReject"},
           expectedExceptions = {UserNotAuthorizedToTransit.class})
-    public void testTransactionTransitionFailed() throws TransactionException {
-        globalTxStatus = txMgr.getTransaction(txDef);
+    public void testTransactionTransitionFailed() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction trans = manager.getTransaction(transactionId3);
+            assert trans != null;
 
-        Transaction trans = manager.getTransaction(transactionId3);
-        assert trans != null;
-
-        trans.transit(userDAO.get("user-sys2trans"), "test");
+            trans.transit(userDAO.get("user-sys2trans"), "test");
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = {"testTransactionTransitionFailed"})
-    public void testTransactionTransitionSuccessful() throws TransactionException {
-        Transaction trans = manager.getTransaction(transactionId3);
+    public void testTransactionTransitionSuccessful() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction trans = manager.getTransaction(transactionId3);
 
-        assert trans != null;
-        assert trans.getState().getName().equals(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
+            assert trans != null;
+            assert trans.getState().getName().equals(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
 
-        trans.transit(userDAO.get("user-admin2trans"), "test");
-        assert trans.getState().getName().equals(TransactionState.Name.ADMIN_CLOSE);
+            trans.transit(userDAO.get("user-admin2trans"), "test");
+            assert trans.getState().getName().equals(TransactionState.Name.ADMIN_CLOSE);
 
-        processDAO.close();
-        txMgr.commit(globalTxStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     private ProcessDefinition deployProcessDefinition() {
@@ -236,17 +291,34 @@ public class TransactionTest {
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        for (Long id : processes)
-            processDAO.delete(processDAO.getProcessInstance(id));
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            for (Long id : processes) {
+                ProcessInstance pi = processDAO.getProcessInstance(id);
+                if (pi != null) processDAO.delete(pi);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        for (String name : users)
-            userDAO.delete(userDAO.get(name));
-        txMgr.commit(txStatus);
+        try {
+            for (String name : users) {
+                RZMUser user = userDAO.get(name);
+                if (user != null) userDAO.delete(user);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
 }

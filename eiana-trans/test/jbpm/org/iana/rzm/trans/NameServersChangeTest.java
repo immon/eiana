@@ -23,20 +23,19 @@ import org.testng.annotations.Test;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"eiana-trans", "jbpm", "NameServersChange"})
+@Test(sequential=true, groups = {"excluded", "eiana-trans", "jbpm", "NameServersChange"})
 public class NameServersChangeTest {
-    ApplicationContext appCtx;
-    TransactionManager transMgr;
-    ProcessDAO processDAO;
-    DomainDAO domainDAO;
-    SchedulerThread schedulerThread;
+    private TransactionManager transMgr;
+    private ProcessDAO processDAO;
+    private DomainDAO domainDAO;
+    private SchedulerThread schedulerThread;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     private Long testProcessInstanceId;
 
     @BeforeClass
-    public void init() {
-        appCtx = SpringTransApplicationContext.getInstance().getContext();
+    public void init() throws Exception {
+        ApplicationContext appCtx = SpringTransApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
@@ -44,70 +43,105 @@ public class NameServersChangeTest {
         schedulerThread = new SchedulerThread((JbpmConfiguration) appCtx.getBean("jbpmConfiguration"));
 
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            processDAO.deploy(DefinedTestProcess.getDefinition());
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        processDAO.delete(processDAO.getProcessInstance(testProcessInstanceId));
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);
+            if (pi != null) processDAO.delete(pi);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        Domain domain = domainDAO.get("testdomain-ns.org");
-        domainDAO.delete(domain);
-        txMgr.commit(txStatus);
+        try {
+            Domain domain = domainDAO.get("testdomain-ns.org");
+            if (domain != null) domainDAO.delete(domain);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test
     public void testNameServersChange() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        Domain domain = null;
+        try {
+            Host firstNameServer = new Host("first");
+            firstNameServer.addIPAddress("192.168.0.1");
 
-        Host firstNameServer = new Host("first");
-        firstNameServer.addIPAddress("192.168.0.1");
+            domain = new Domain("testdomain-ns.org");
+            domain.addNameServer(firstNameServer);
+            domainDAO.create(domain);
 
+            Host secondNameServer = new Host("second");
+            secondNameServer.addIPAddress("192.168.0.2");
 
-        Domain domain = new Domain("testdomain-ns.org");
-        domain.addNameServer(firstNameServer);
-        domainDAO.create(domain);
+            Domain clonedDomain = (Domain) domain.clone();
+            clonedDomain.addNameServer(secondNameServer);
 
-        Host secondNameServer = new Host("second");
-        secondNameServer.addIPAddress("192.168.0.2");
+            Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
 
-        Domain clonedDomain = (Domain) domain.clone();
-        clonedDomain.addNameServer(secondNameServer);
+            ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
+            testProcessInstanceId = pi.getId();
 
-        Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
+            Token token = pi.getRootToken();
+            assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("normal");
+            assert token.getNode().getName().equals("PENDING_EXT_APPROVAL") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_USDOC_APPROVAL") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_ZONE_INSERTION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
 
-        ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
-        testProcessInstanceId = pi.getId();
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
+        
+        try {
+            txStatus = txMgr.getTransaction(txDef);
 
-        Token token = pi.getRootToken();
-        token.signal();
+            Domain retrivedDomain = domainDAO.get(domain.getName());
 
-        token.signal("accept");
-        token.signal("normal");
-        token.signal("accept");
+            //assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
+            //        retrivedDomain.getRegistryUrl() == null);
 
-        token.signal("accept");
-        assert token.getNode().getName().equals("PENDING_ZONE_INSERTION");
-        token.signal("accept");
-        assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION");
-        token.signal("accept");
-
-        processDAO.close();
-        txMgr.commit(txStatus);
-
-        txStatus = txMgr.getTransaction(txDef);
-
-        Domain retrivedDomain = domainDAO.get(domain.getName());
-
-//        assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
-//                retrivedDomain.getRegistryUrl() == null);
-
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 }

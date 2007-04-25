@@ -1,15 +1,14 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.IPAddress;
-import org.iana.rzm.domain.NameServerAlreadyExistsException;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
@@ -46,7 +45,7 @@ public class TransactionManagerTest {
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
 
     @BeforeClass
-    public void init() throws InvalidIPAddressException, NameServerAlreadyExistsException, FileNotFoundException {
+    public void init() throws Exception, FileNotFoundException {
         ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
         processDAO = (ProcessDAO) ctx.getBean("processDAO");
         domainDAO = (DomainDAO) ctx.getBean("domainDAOTarget");
@@ -55,44 +54,77 @@ public class TransactionManagerTest {
         transManager = (TransactionManager) ctx.getBean("transactionManagerBean");//new TransactionManagerBean(JbpmTestContextFactory.getJbpmContext(),transDAO,new FakeTicketingService(),domainDAO);
 
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            processDAO.deploy(DefinedTestProcess.getDefinition());
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
+            Domain domainCreated = new Domain("trans-manager.org");
+            List<Host> nameServersList = new ArrayList<Host>();
+            Host host = new Host("ns.nask.pl");
+            List<IPAddress> ipsList = new ArrayList<IPAddress>();
+            ipsList.add(IPAddress.createIPAddress("123.123.123.123"));
+            ipsList.add(IPAddress.createIPAddress("123.123.123.124"));
+            host.setAddresses(ipsList);
+            nameServersList.add(host);
+            domainCreated.setNameServers(nameServersList);
+            domainDAO.create(domainCreated);
 
-        Domain domainCreated = new Domain("trans-manager.org");
-        List<Host> nameServersList = new ArrayList<Host>();
-        Host host = new Host("ns.nask.pl");
-        List<IPAddress> ipsList = new ArrayList<IPAddress>();
-        ipsList.add(IPAddress.createIPAddress("123.123.123.123"));
-        ipsList.add(IPAddress.createIPAddress("123.123.123.124"));
-        host.setAddresses(ipsList);
-        nameServersList.add(host);
-        domainCreated.setNameServers(nameServersList);
-        domainDAO.create(domainCreated);
-
-        createTestTransactionsAndUsers();
-
-        txMgr.commit(txStatus);
+            createTestTransactionsAndUsers();
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        for (Long pid : domain1TransIds)
-            processDAO.delete(processDAO.getProcessInstance(pid));
-        for (Long pid : domain2TransIds)
-            processDAO.delete(processDAO.getProcessInstance(pid));
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            for (Long pid : domain1TransIds) {
+                ProcessInstance pi = processDAO.getProcessInstance(pid);
+                if (pi != null ) processDAO.delete(pi);
+            }
+            for (Long pid : domain2TransIds) {
+                ProcessInstance pi = processDAO.getProcessInstance(pid); 
+                if (pi != null ) processDAO.delete(pi);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        userDAO.delete(userDAO.get("user-sys1tm"));
-        userDAO.delete(userDAO.get("user-sys2tm"));
-        txMgr.commit(txStatus);
+        try {
+            RZMUser user = userDAO.get("user-sys1tm");
+            if (user != null) userDAO.delete(user);
+            user = userDAO.get("user-sys2tm");
+            if (user != null) userDAO.delete(user);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        domainDAO.delete(domainDAO.get("tmtestdomain1"));
-        domainDAO.delete(domainDAO.get("tmtestdomain2"));
-        txMgr.commit(txStatus);
+        try {
+            Domain domain = domainDAO.get("tmtestdomain1");
+            domainDAO.delete(domain);
+            domain = domainDAO.get("tmtestdomain2");
+            domainDAO.delete(domain);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
 /*
@@ -179,68 +211,83 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void testFindTransactionsByDomain() {
+    public void testFindTransactionsByDomain() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            List<Transaction> dbDomain1Trans = transManager.findTransactions("tmtestdomain1");
 
-        List<Transaction> dbDomain1Trans = transManager.findTransactions("tmtestdomain1");
+            Set<Long> dbDomain1TransIds = new HashSet<Long>();
+            for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
 
-        Set<Long> dbDomain1TransIds = new HashSet<Long>();
-        for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
+            assert domain1TransIds.equals(dbDomain1TransIds);
 
-        assert domain1TransIds.equals(dbDomain1TransIds);
+            List<Transaction> dbDomain2Trans = transManager.findTransactions("tmtestdomain2");
 
-        List<Transaction> dbDomain2Trans = transManager.findTransactions("tmtestdomain2");
+            Set<Long> dbDomain2TransIds = new HashSet<Long>();
+            for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
-        Set<Long> dbDomain2TransIds = new HashSet<Long>();
-        for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
+            assert domain2TransIds.equals(dbDomain2TransIds);
 
-        assert domain2TransIds.equals(dbDomain2TransIds);
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindTransactionsByDomain")
-    public void testFindTransactionsByUser() {
+    public void testFindTransactionsByUser() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            List<Transaction> dbDomain1Trans = transManager.findTransactions(userDAO.get("user-sys1tm"));
 
-        List<Transaction> dbDomain1Trans = transManager.findTransactions(userDAO.get("user-sys1tm"));
+            Set<Long> dbDomain1TransIds = new HashSet<Long>();
+            for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
 
-        Set<Long> dbDomain1TransIds = new HashSet<Long>();
-        for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
+            assert domain1TransIds.equals(dbDomain1TransIds);
 
-        assert domain1TransIds.equals(dbDomain1TransIds);
+            List<Transaction> dbDomain2Trans = transManager.findTransactions(userDAO.get("user-sys2tm"));
 
-        List<Transaction> dbDomain2Trans = transManager.findTransactions(userDAO.get("user-sys2tm"));
+            Set<Long> dbDomain2TransIds = new HashSet<Long>();
+            for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
-        Set<Long> dbDomain2TransIds = new HashSet<Long>();
-        for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
+            assert domain2TransIds.equals(dbDomain2TransIds);
 
-        assert domain2TransIds.equals(dbDomain2TransIds);
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindTransactionsByUser")
-    public void testFindTransactionsByUserAndDomain() {
+    public void testFindTransactionsByUserAndDomain() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            List<Transaction> dbDomain1Trans = transManager.findTransactions(userDAO.get("user-sys1tm"), "tmtestdomain1");
 
-        List<Transaction> dbDomain1Trans = transManager.findTransactions(userDAO.get("user-sys1tm"), "tmtestdomain1");
+            Set<Long> dbDomain1TransIds = new HashSet<Long>();
+            for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
 
-        Set<Long> dbDomain1TransIds = new HashSet<Long>();
-        for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
+            assert domain1TransIds.equals(dbDomain1TransIds);
 
-        assert domain1TransIds.equals(dbDomain1TransIds);
+            List<Transaction> dbDomain2Trans = transManager.findTransactions(userDAO.get("user-sys2tm"), "tmtestdomain2");
 
-        List<Transaction> dbDomain2Trans = transManager.findTransactions(userDAO.get("user-sys2tm"), "tmtestdomain2");
+            Set<Long> dbDomain2TransIds = new HashSet<Long>();
+            for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
-        Set<Long> dbDomain2TransIds = new HashSet<Long>();
-        for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
+            assert domain2TransIds.equals(dbDomain2TransIds);
 
-        assert domain2TransIds.equals(dbDomain2TransIds);
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 }
