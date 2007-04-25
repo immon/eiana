@@ -86,49 +86,34 @@ public class AuthenticationServiceBeanTest {
         assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
+/*
     //could be moved to failure package
-    @Test (expectedExceptions = {AuthenticationFailedException.class})
+    @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoUser() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth();
         passwordAuth.setUserName(TestUserManager.NON_EXIST_LOGIN);
         passwordAuth.setPassword("foo");
-
-        authService.authenticate(passwordAuth);
-
-        txMgr.commit(txStatus);
     }
 
     //could be moved to failure package
-    @Test (expectedExceptions = {AuthenticationFailedException.class})
+    @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateWrongPassword() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.WRONG_PASSWORD_LOGIN, TestUserManager.WRONG_PASSWORD_PASSWORD);
 
         authService.authenticate(passwordAuth);
-
-        txMgr.commit(txStatus);
     }
 
     //from securID
 
-    @Test (expectedExceptions = {AuthenticationRequiredException.class})
+    @Test(expectedExceptions = {AuthenticationRequiredException.class})
     public void testAuthenticateWrongSecurdIDNeeded() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         authService.authenticate(passwordAuth);
-
-        txMgr.commit(txStatus);
     }
 
     @Test
     public void testAuthenticateWithSecurID() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
@@ -143,7 +128,6 @@ public class AuthenticationServiceBeanTest {
 
                 AuthenticatedUser authenticatedUser = authService.authenticate(e.getToken(), securIDAuth);
                 assert TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN.equals(authenticatedUser.getUserName());
-                txMgr.commit(txStatus);
                 return;
             }
         }
@@ -154,8 +138,6 @@ public class AuthenticationServiceBeanTest {
     //it's more reliable to catch exception in try..catch construction
     @Test
     public void testAuthenticateWrongSecurdID() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
@@ -172,7 +154,6 @@ public class AuthenticationServiceBeanTest {
                     authService.authenticate(e.getToken(), securIDAuth);
 
                 } catch (AuthenticationFailedException ee) {
-                    txMgr.commit(txStatus);
                     return;
                 }
             }
@@ -182,8 +163,6 @@ public class AuthenticationServiceBeanTest {
 
     @Test
     public void testAuthenticateOnlySecurID() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         SecurIDAuth securIDAuth = new SecurIDAuth(
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
                 TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
@@ -193,7 +172,6 @@ public class AuthenticationServiceBeanTest {
 
         } catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.PASSWORD) {
-                txMgr.commit(txStatus);
                 return;
             }
         }
@@ -202,41 +180,27 @@ public class AuthenticationServiceBeanTest {
 
     //common
 
-    @Test (expectedExceptions = {IllegalArgumentException.class})
+    @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullData() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         authService.authenticate(null);
-
-        txMgr.commit(txStatus);
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class})
+    @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullToken() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         SecurIDAuth securIDAuth = new SecurIDAuth();
         securIDAuth.setUserName(TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN);
         securIDAuth.setPassword(TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
 
         authService.authenticate(null, securIDAuth);
-
-        txMgr.commit(txStatus);
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class})
+    @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullBoth() throws Exception {
-        txStatus = txMgr.getTransaction(txDef);
-
         authService.authenticate(null, null);
-
-        txMgr.commit(txStatus);
     }
 
     @Test
     public void testInvalidateUser() throws AuthenticationFailedException, AuthenticationRequiredException {
-        txStatus = txMgr.getTransaction(txDef);
-
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
 
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
@@ -248,18 +212,15 @@ public class AuthenticationServiceBeanTest {
         authenticatedUser.invalidate();
 
         assert authenticatedUser.isInvalidated();
-
-        txMgr.commit(txStatus);
     }
 
-    /**
+    */
+/**
      * Lazy collection should be initialized inside open session
      */
+/*
     @Test
     public void testGetLazyPropertyInSession() throws Exception {
-
-        txStatus = txMgr.getTransaction(txDef);
-
         RZMUser testLazyUser1 = userDAO.get(testLazyUser1ID);
         assert testLazyUser1 != null;
 
@@ -268,14 +229,14 @@ public class AuthenticationServiceBeanTest {
         if (size > 0) {
             Role role = testLazyUser1.getRoles().get(0);
         }
-
-        txMgr.commit(txStatus);
     }
 
-    /**
+    */
+/**
      * Lazy collection shouldn't be initialized outside open session
      */
-    @Test (expectedExceptions = {org.hibernate.LazyInitializationException.class})
+/*
+    @Test(expectedExceptions = {org.hibernate.LazyInitializationException.class})
     public void testGetLazyPropertyOutsideSession() throws Exception {
 
         //first line should be enough to make a try to initialized lazy fetched collection
@@ -284,19 +245,22 @@ public class AuthenticationServiceBeanTest {
             Role role = testLazyUser2.getRoles().get(0);
         }
     }
+*/
 
     @AfterClass
     public void cleanUp() {
         txStatus = txMgr.getTransaction(txDef);
 
         //problem with delete when object taken another time in the same session
-        userDAO.delete(testAdminUser);
-        userDAO.delete(testAdminUserWithSecurID);
-        userDAO.delete(testWrongPasswordUser);
-        userDAO.delete(userDAO.get(testLazyUser1ID));
-        userDAO.delete(testLazyUser2);
-
-        txMgr.commit(txStatus);
+        try {
+            userDAO.delete(testAdminUser);
+            userDAO.delete(testAdminUserWithSecurID);
+            userDAO.delete(testWrongPasswordUser);
+            userDAO.delete(userDAO.get(testLazyUser1ID));
+            userDAO.delete(testLazyUser2);
+        } finally {
+            txMgr.commit(txStatus);
+        }
     }
 
 
