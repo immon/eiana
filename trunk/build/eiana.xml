@@ -121,6 +121,136 @@
   <!-- Modules -->
   
   
+  <!-- Module integration-securid -->
+  
+  <dirname property="module.integration-securid.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.integration-securid" value="${compiler.args}"/>
+  
+  <property name="integration-securid.output.dir" value="${module.integration-securid.basedir}/classes/production/integration-securid"/>
+  <property name="integration-securid.testoutput.dir" value="${module.integration-securid.basedir}/classes/test/integration-securid"/>
+  
+  <path id="integration-securid.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="integration-securid.module.classpath"/>
+  
+  
+  <patternset id="excluded.from.module.integration-securid">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.integration-securid">
+    <patternset refid="excluded.from.module.integration-securid"/>
+  </patternset>
+  
+  <path id="integration-securid.module.sourcepath">
+    <dirset dir="${module.integration-securid.basedir}/../integration-securid">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.integration-securid" depends="compile.module.integration-securid.production,compile.module.integration-securid.tests" description="Compile module integration-securid"/>
+  
+  <target name="compile.module.integration-securid.production" description="Compile module integration-securid; production classes">
+    <mkdir dir="${integration-securid.output.dir}"/>
+    <javac destdir="${integration-securid.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.integration-securid}"/>
+      <bootclasspath refid="integration-securid.module.bootclasspath"/>
+      <classpath refid="integration-securid.module.classpath"/>
+      <src refid="integration-securid.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.integration-securid"/>
+    </javac>
+    
+    <copy todir="${integration-securid.output.dir}">
+      <fileset dir="${module.integration-securid.basedir}/../integration-securid/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.integration-securid.tests" depends="compile.module.integration-securid.production" description="compile module integration-securid; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.integration-securid" description="cleanup module">
+    <delete dir="${integration-securid.output.dir}"/>
+    <delete dir="${integration-securid.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module conf -->
+  
+  <dirname property="module.conf.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.conf" value="${compiler.args}"/>
+  
+  <property name="conf.output.dir" value="${module.conf.basedir}/classes/production/conf"/>
+  <property name="conf.testoutput.dir" value="${module.conf.basedir}/classes/test/conf"/>
+  
+  <path id="conf.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="conf.module.classpath">
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.javaee.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.conf">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.conf">
+    <patternset refid="excluded.from.module.conf"/>
+  </patternset>
+  
+  <path id="conf.module.test.sourcepath">
+    <dirset dir="${module.conf.basedir}/../conf">
+      <include name="hibernate"/>
+      <include name="spring"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.conf" depends="compile.module.conf.production,compile.module.conf.tests" description="Compile module conf"/>
+  
+  <target name="compile.module.conf.production" description="Compile module conf; production classes"/>
+  
+  <target name="compile.module.conf.tests" depends="compile.module.conf.production" description="compile module conf; test classes" unless="skip.tests">
+    <mkdir dir="${conf.testoutput.dir}"/>
+    <javac destdir="${conf.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.conf}"/>
+      <classpath refid="conf.module.classpath"/>
+      <classpath location="${conf.output.dir}"/>
+      <src refid="conf.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.conf"/>
+    </javac>
+    
+    <copy todir="${conf.testoutput.dir}">
+      <fileset dir="${module.conf.basedir}/../conf/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.conf.basedir}/../conf/spring">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.conf" description="cleanup module">
+    <delete dir="${conf.output.dir}"/>
+    <delete dir="${conf.testoutput.dir}"/>
+  </target>
+  
+  
   <!-- Module eiana-util -->
   
   <dirname property="module.eiana-util.basedir" file="${ant.file}"/>
@@ -182,6 +312,106 @@
   <target name="clean.module.eiana-util" description="cleanup module">
     <delete dir="${eiana-util.output.dir}"/>
     <delete dir="${eiana-util.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module common-objectdiff -->
+  
+  <dirname property="module.common-objectdiff.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.common-objectdiff" value="${compiler.args}"/>
+  
+  <property name="common-objectdiff.output.dir" value="${module.common-objectdiff.basedir}/classes/production/common-objectdiff"/>
+  <property name="common-objectdiff.testoutput.dir" value="${module.common-objectdiff.basedir}/classes/test/common-objectdiff"/>
+  
+  <path id="common-objectdiff.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common-objectdiff.module.classpath">
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.dom4j.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common-objectdiff">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common-objectdiff">
+    <patternset refid="excluded.from.module.common-objectdiff"/>
+  </patternset>
+  
+  <path id="common-objectdiff.module.sourcepath">
+    <dirset dir="${module.common-objectdiff.basedir}/../common-objectdiff">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="common-objectdiff.module.test.sourcepath">
+    <dirset dir="${module.common-objectdiff.basedir}/../common-objectdiff">
+      <include name="test/conf"/>
+      <include name="test/hibernate"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common-objectdiff" depends="compile.module.common-objectdiff.production,compile.module.common-objectdiff.tests" description="Compile module common-objectdiff"/>
+  
+  <target name="compile.module.common-objectdiff.production" depends="compile.module.eiana-util" description="Compile module common-objectdiff; production classes">
+    <mkdir dir="${common-objectdiff.output.dir}"/>
+    <javac destdir="${common-objectdiff.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-objectdiff}"/>
+      <bootclasspath refid="common-objectdiff.module.bootclasspath"/>
+      <classpath refid="common-objectdiff.module.classpath"/>
+      <src refid="common-objectdiff.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-objectdiff"/>
+    </javac>
+    
+    <copy todir="${common-objectdiff.output.dir}">
+      <fileset dir="${module.common-objectdiff.basedir}/../common-objectdiff/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.common-objectdiff.tests" depends="compile.module.common-objectdiff.production" description="compile module common-objectdiff; test classes" unless="skip.tests">
+    <mkdir dir="${common-objectdiff.testoutput.dir}"/>
+    <javac destdir="${common-objectdiff.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-objectdiff}"/>
+      <classpath refid="common-objectdiff.module.classpath"/>
+      <classpath location="${common-objectdiff.output.dir}"/>
+      <src refid="common-objectdiff.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-objectdiff"/>
+    </javac>
+    
+    <copy todir="${common-objectdiff.testoutput.dir}">
+      <fileset dir="${module.common-objectdiff.basedir}/../common-objectdiff/test/conf">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.common-objectdiff.basedir}/../common-objectdiff/test/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.common-objectdiff" description="cleanup module">
+    <delete dir="${common-objectdiff.output.dir}"/>
+    <delete dir="${common-objectdiff.testoutput.dir}"/>
   </target>
   
   
@@ -280,6 +510,110 @@
   <target name="clean.module.eiana-notifications" description="cleanup module">
     <delete dir="${eiana-notifications.output.dir}"/>
     <delete dir="${eiana-notifications.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module eiana-domains -->
+  
+  <dirname property="module.eiana-domains.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
+  
+  <property name="eiana-domains.output.dir" value="${module.eiana-domains.basedir}/classes/production/eiana-domains"/>
+  <property name="eiana-domains.testoutput.dir" value="${module.eiana-domains.basedir}/classes/test/eiana-domains"/>
+  
+  <path id="eiana-domains.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-domains.module.classpath">
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.mysql.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-domains">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-domains">
+    <patternset refid="excluded.from.module.eiana-domains"/>
+  </patternset>
+  
+  <path id="eiana-domains.module.sourcepath">
+    <dirset dir="${module.eiana-domains.basedir}/../eiana-domains">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="eiana-domains.module.test.sourcepath">
+    <dirset dir="${module.eiana-domains.basedir}/../eiana-domains">
+      <include name="test/conf"/>
+      <include name="test/dao"/>
+      <include name="test/hibernate"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-domains" depends="compile.module.eiana-domains.production,compile.module.eiana-domains.tests" description="Compile module eiana-domains"/>
+  
+  <target name="compile.module.eiana-domains.production" depends="compile.module.eiana-util" description="Compile module eiana-domains; production classes">
+    <mkdir dir="${eiana-domains.output.dir}"/>
+    <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-domains}"/>
+      <bootclasspath refid="eiana-domains.module.bootclasspath"/>
+      <classpath refid="eiana-domains.module.classpath"/>
+      <src refid="eiana-domains.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-domains"/>
+    </javac>
+    
+    <copy todir="${eiana-domains.output.dir}">
+      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production" description="compile module eiana-domains; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-domains.testoutput.dir}"/>
+    <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-domains}"/>
+      <classpath refid="eiana-domains.module.classpath"/>
+      <classpath location="${eiana-domains.output.dir}"/>
+      <src refid="eiana-domains.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-domains"/>
+    </javac>
+    
+    <copy todir="${eiana-domains.testoutput.dir}">
+      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/test/conf">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/test/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.eiana-domains" description="cleanup module">
+    <delete dir="${eiana-domains.output.dir}"/>
+    <delete dir="${eiana-domains.testoutput.dir}"/>
   </target>
   
   
@@ -389,201 +723,100 @@
   </target>
   
   
-  <!-- Module common-objectdiff -->
+  <!-- Module facade-common -->
   
-  <dirname property="module.common-objectdiff.basedir" file="${ant.file}"/>
+  <dirname property="module.facade-common.basedir" file="${ant.file}"/>
   
   
   
-  <property name="compiler.args.common-objectdiff" value="${compiler.args}"/>
+  <property name="compiler.args.facade-common" value="${compiler.args}"/>
   
-  <property name="common-objectdiff.output.dir" value="${module.common-objectdiff.basedir}/classes/production/common-objectdiff"/>
-  <property name="common-objectdiff.testoutput.dir" value="${module.common-objectdiff.basedir}/classes/test/common-objectdiff"/>
+  <property name="facade-common.output.dir" value="${module.facade-common.basedir}/classes/production/facade-common"/>
+  <property name="facade-common.testoutput.dir" value="${module.facade-common.basedir}/classes/test/facade-common"/>
   
-  <path id="common-objectdiff.module.bootclasspath">
+  <path id="facade-common.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="common-objectdiff.module.classpath">
-    <path refid="library.hibernate.classpath"/>
-    <path refid="library.javaee.classpath"/>
+  <path id="facade-common.module.classpath">
+    <path refid="library.jbpm.classpath"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
     <path refid="library.log4j.classpath"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.spring.classpath"/>
-    <path refid="library.mysql.classpath"/>
-    <path refid="library.apache-commons.classpath"/>
-    <path refid="library.nask-commons.classpath"/>
-    <pathelement location="${eiana-util.output.dir}"/>
-    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <pathelement location="${integration-securid.output.dir}"/>
+    <pathelement location="${integration-securid.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
   </path>
   
   
-  <patternset id="excluded.from.module.common-objectdiff">
+  <patternset id="excluded.from.module.facade-common">
     <patternset refid="ignored.files"/>
   </patternset>
   
-  <patternset id="excluded.from.compilation.common-objectdiff">
-    <patternset refid="excluded.from.module.common-objectdiff"/>
+  <patternset id="excluded.from.compilation.facade-common">
+    <patternset refid="excluded.from.module.facade-common"/>
   </patternset>
   
-  <path id="common-objectdiff.module.sourcepath">
-    <dirset dir="${module.common-objectdiff.basedir}/../common-objectdiff">
+  <path id="facade-common.module.sourcepath">
+    <dirset dir="${module.facade-common.basedir}/../facade-common">
       <include name="src"/>
     </dirset>
   </path>
   
-  <path id="common-objectdiff.module.test.sourcepath">
-    <dirset dir="${module.common-objectdiff.basedir}/../common-objectdiff">
+  <path id="facade-common.module.test.sourcepath">
+    <dirset dir="${module.facade-common.basedir}/../facade-common">
       <include name="test"/>
     </dirset>
   </path>
   
   
-  <target name="compile.module.common-objectdiff" depends="compile.module.common-objectdiff.production,compile.module.common-objectdiff.tests" description="Compile module common-objectdiff"/>
+  <target name="compile.module.facade-common" depends="compile.module.facade-common.production,compile.module.facade-common.tests" description="Compile module facade-common"/>
   
-  <target name="compile.module.common-objectdiff.production" depends="compile.module.eiana-util" description="Compile module common-objectdiff; production classes">
-    <mkdir dir="${common-objectdiff.output.dir}"/>
-    <javac destdir="${common-objectdiff.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.common-objectdiff}"/>
-      <bootclasspath refid="common-objectdiff.module.bootclasspath"/>
-      <classpath refid="common-objectdiff.module.classpath"/>
-      <src refid="common-objectdiff.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.common-objectdiff"/>
+  <target name="compile.module.facade-common.production" depends="compile.module.eiana-users,compile.module.eiana-util,compile.module.integration-securid,compile.module.eiana-notifications" description="Compile module facade-common; production classes">
+    <mkdir dir="${facade-common.output.dir}"/>
+    <javac destdir="${facade-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-common}"/>
+      <bootclasspath refid="facade-common.module.bootclasspath"/>
+      <classpath refid="facade-common.module.classpath"/>
+      <src refid="facade-common.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-common"/>
     </javac>
     
-    <copy todir="${common-objectdiff.output.dir}">
-      <fileset dir="${module.common-objectdiff.basedir}/../common-objectdiff/src">
+    <copy todir="${facade-common.output.dir}">
+      <fileset dir="${module.facade-common.basedir}/../facade-common/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
     </copy>
   </target>
   
-  <target name="compile.module.common-objectdiff.tests" depends="compile.module.common-objectdiff.production" description="compile module common-objectdiff; test classes" unless="skip.tests">
-    <mkdir dir="${common-objectdiff.testoutput.dir}"/>
-    <javac destdir="${common-objectdiff.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.common-objectdiff}"/>
-      <classpath refid="common-objectdiff.module.classpath"/>
-      <classpath location="${common-objectdiff.output.dir}"/>
-      <src refid="common-objectdiff.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.common-objectdiff"/>
+  <target name="compile.module.facade-common.tests" depends="compile.module.facade-common.production" description="compile module facade-common; test classes" unless="skip.tests">
+    <mkdir dir="${facade-common.testoutput.dir}"/>
+    <javac destdir="${facade-common.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-common}"/>
+      <classpath refid="facade-common.module.classpath"/>
+      <classpath location="${facade-common.output.dir}"/>
+      <src refid="facade-common.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-common"/>
     </javac>
     
-    <copy todir="${common-objectdiff.testoutput.dir}">
-      <fileset dir="${module.common-objectdiff.basedir}/../common-objectdiff/test">
+    <copy todir="${facade-common.testoutput.dir}">
+      <fileset dir="${module.facade-common.basedir}/../facade-common/test">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
     </copy>
   </target>
   
-  <target name="clean.module.common-objectdiff" description="cleanup module">
-    <delete dir="${common-objectdiff.output.dir}"/>
-    <delete dir="${common-objectdiff.testoutput.dir}"/>
-  </target>
-  
-  
-  <!-- Module eiana-domains -->
-  
-  <dirname property="module.eiana-domains.basedir" file="${ant.file}"/>
-  
-  
-  
-  <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
-  
-  <property name="eiana-domains.output.dir" value="${module.eiana-domains.basedir}/classes/production/eiana-domains"/>
-  <property name="eiana-domains.testoutput.dir" value="${module.eiana-domains.basedir}/classes/test/eiana-domains"/>
-  
-  <path id="eiana-domains.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="eiana-domains.module.classpath">
-    <pathelement location="${eiana-util.output.dir}"/>
-    <pathelement location="${eiana-util.testoutput.dir}"/>
-    <path refid="library.javaee.classpath"/>
-    <path refid="library.hibernate.classpath"/>
-    <path refid="library.log4j.classpath"/>
-    <path refid="library.spring.classpath"/>
-    <path refid="library.apache-commons.classpath"/>
-    <path refid="library.testng-5.5-jdk15.classpath"/>
-    <path refid="library.dom4j.classpath"/>
-    <path refid="library.mysql.classpath"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.eiana-domains">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.eiana-domains">
-    <patternset refid="excluded.from.module.eiana-domains"/>
-  </patternset>
-  
-  <path id="eiana-domains.module.sourcepath">
-    <dirset dir="${module.eiana-domains.basedir}/../eiana-domains">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  <path id="eiana-domains.module.test.sourcepath">
-    <dirset dir="${module.eiana-domains.basedir}/../eiana-domains">
-      <include name="test/conf"/>
-      <include name="test/dao"/>
-      <include name="test/hibernate"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.eiana-domains" depends="compile.module.eiana-domains.production,compile.module.eiana-domains.tests" description="Compile module eiana-domains"/>
-  
-  <target name="compile.module.eiana-domains.production" depends="compile.module.eiana-util" description="Compile module eiana-domains; production classes">
-    <mkdir dir="${eiana-domains.output.dir}"/>
-    <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-domains}"/>
-      <bootclasspath refid="eiana-domains.module.bootclasspath"/>
-      <classpath refid="eiana-domains.module.classpath"/>
-      <src refid="eiana-domains.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-domains"/>
-    </javac>
-    
-    <copy todir="${eiana-domains.output.dir}">
-      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production" description="compile module eiana-domains; test classes" unless="skip.tests">
-    <mkdir dir="${eiana-domains.testoutput.dir}"/>
-    <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-domains}"/>
-      <classpath refid="eiana-domains.module.classpath"/>
-      <classpath location="${eiana-domains.output.dir}"/>
-      <src refid="eiana-domains.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-domains"/>
-    </javac>
-    
-    <copy todir="${eiana-domains.testoutput.dir}">
-      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/test/conf">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/test/dao">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-domains.basedir}/../eiana-domains/test/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="clean.module.eiana-domains" description="cleanup module">
-    <delete dir="${eiana-domains.output.dir}"/>
-    <delete dir="${eiana-domains.testoutput.dir}"/>
+  <target name="clean.module.facade-common" description="cleanup module">
+    <delete dir="${facade-common.output.dir}"/>
+    <delete dir="${facade-common.testoutput.dir}"/>
   </target>
   
   
@@ -661,67 +894,42 @@
   </target>
   
   
-  <!-- Module eiana-logs -->
+  <!-- Module lib -->
   
-  <dirname property="module.eiana-logs.basedir" file="${ant.file}"/>
+  <dirname property="module.lib.basedir" file="${ant.file}"/>
   
   
   
-  <property name="compiler.args.eiana-logs" value="${compiler.args}"/>
+  <property name="compiler.args.lib" value="${compiler.args}"/>
   
-  <property name="eiana-logs.output.dir" value="${module.eiana-logs.basedir}/classes/production/eiana-logs"/>
-  <property name="eiana-logs.testoutput.dir" value="${module.eiana-logs.basedir}/classes/test/eiana-logs"/>
+  <property name="lib.output.dir" value="${module.lib.basedir}/classes/production/lib"/>
+  <property name="lib.testoutput.dir" value="${module.lib.basedir}/classes/test/lib"/>
   
-  <path id="eiana-logs.module.bootclasspath">
+  <path id="lib.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="eiana-logs.module.classpath">
-    <path refid="library.javaee.classpath"/>
-    <path refid="library.cobertura.classpath"/>
-  </path>
+  <path id="lib.module.classpath"/>
   
   
-  <patternset id="excluded.from.module.eiana-logs">
+  <patternset id="excluded.from.module.lib">
     <patternset refid="ignored.files"/>
   </patternset>
   
-  <patternset id="excluded.from.compilation.eiana-logs">
-    <patternset refid="excluded.from.module.eiana-logs"/>
+  <patternset id="excluded.from.compilation.lib">
+    <patternset refid="excluded.from.module.lib"/>
   </patternset>
   
-  <path id="eiana-logs.module.sourcepath">
-    <dirset dir="${module.eiana-logs.basedir}/../eiana-logs">
-      <include name="src"/>
-    </dirset>
-  </path>
   
+  <target name="compile.module.lib" depends="compile.module.lib.production,compile.module.lib.tests" description="Compile module lib"/>
   
-  <target name="compile.module.eiana-logs" depends="compile.module.eiana-logs.production,compile.module.eiana-logs.tests" description="Compile module eiana-logs"/>
+  <target name="compile.module.lib.production" description="Compile module lib; production classes"/>
   
-  <target name="compile.module.eiana-logs.production" description="Compile module eiana-logs; production classes">
-    <mkdir dir="${eiana-logs.output.dir}"/>
-    <javac destdir="${eiana-logs.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-logs}"/>
-      <bootclasspath refid="eiana-logs.module.bootclasspath"/>
-      <classpath refid="eiana-logs.module.classpath"/>
-      <src refid="eiana-logs.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-logs"/>
-    </javac>
-    
-    <copy todir="${eiana-logs.output.dir}">
-      <fileset dir="${module.eiana-logs.basedir}/../eiana-logs/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
+  <target name="compile.module.lib.tests" depends="compile.module.lib.production" description="compile module lib; test classes" unless="skip.tests"/>
   
-  <target name="compile.module.eiana-logs.tests" depends="compile.module.eiana-logs.production" description="compile module eiana-logs; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.eiana-logs" description="cleanup module">
-    <delete dir="${eiana-logs.output.dir}"/>
-    <delete dir="${eiana-logs.testoutput.dir}"/>
+  <target name="clean.module.lib" description="cleanup module">
+    <delete dir="${lib.output.dir}"/>
+    <delete dir="${lib.testoutput.dir}"/>
   </target>
   
   
@@ -783,6 +991,70 @@
   <target name="clean.module.eiana-dns" description="cleanup module">
     <delete dir="${eiana-dns.output.dir}"/>
     <delete dir="${eiana-dns.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module eiana-logs -->
+  
+  <dirname property="module.eiana-logs.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.eiana-logs" value="${compiler.args}"/>
+  
+  <property name="eiana-logs.output.dir" value="${module.eiana-logs.basedir}/classes/production/eiana-logs"/>
+  <property name="eiana-logs.testoutput.dir" value="${module.eiana-logs.basedir}/classes/test/eiana-logs"/>
+  
+  <path id="eiana-logs.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-logs.module.classpath">
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.cobertura.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-logs">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-logs">
+    <patternset refid="excluded.from.module.eiana-logs"/>
+  </patternset>
+  
+  <path id="eiana-logs.module.sourcepath">
+    <dirset dir="${module.eiana-logs.basedir}/../eiana-logs">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-logs" depends="compile.module.eiana-logs.production,compile.module.eiana-logs.tests" description="Compile module eiana-logs"/>
+  
+  <target name="compile.module.eiana-logs.production" description="Compile module eiana-logs; production classes">
+    <mkdir dir="${eiana-logs.output.dir}"/>
+    <javac destdir="${eiana-logs.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-logs}"/>
+      <bootclasspath refid="eiana-logs.module.bootclasspath"/>
+      <classpath refid="eiana-logs.module.classpath"/>
+      <src refid="eiana-logs.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-logs"/>
+    </javac>
+    
+    <copy todir="${eiana-logs.output.dir}">
+      <fileset dir="${module.eiana-logs.basedir}/../eiana-logs/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-logs.tests" depends="compile.module.eiana-logs.production" description="compile module eiana-logs; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.eiana-logs" description="cleanup module">
+    <delete dir="${eiana-logs.output.dir}"/>
+    <delete dir="${eiana-logs.testoutput.dir}"/>
   </target>
   
   
@@ -987,311 +1259,6 @@
   </target>
   
   
-  <!-- Module build -->
-  
-  <dirname property="module.build.basedir" file="${ant.file}"/>
-  
-  
-  
-  <property name="compiler.args.build" value="${compiler.args}"/>
-  
-  <property name="build.output.dir" value="${module.build.basedir}/classes/production/build"/>
-  <property name="build.testoutput.dir" value="${module.build.basedir}/classes/test/build"/>
-  
-  <path id="build.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="build.module.classpath"/>
-  
-  
-  <patternset id="excluded.from.module.build">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.build">
-    <patternset refid="excluded.from.module.build"/>
-  </patternset>
-  
-  
-  <target name="compile.module.build" depends="compile.module.build.production,compile.module.build.tests" description="Compile module build"/>
-  
-  <target name="compile.module.build.production" description="Compile module build; production classes"/>
-  
-  <target name="compile.module.build.tests" depends="compile.module.build.production" description="compile module build; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.build" description="cleanup module">
-    <delete dir="${build.output.dir}"/>
-    <delete dir="${build.testoutput.dir}"/>
-  </target>
-  
-  
-  <!-- Module lib -->
-  
-  <dirname property="module.lib.basedir" file="${ant.file}"/>
-  
-  
-  
-  <property name="compiler.args.lib" value="${compiler.args}"/>
-  
-  <property name="lib.output.dir" value="${module.lib.basedir}/classes/production/lib"/>
-  <property name="lib.testoutput.dir" value="${module.lib.basedir}/classes/test/lib"/>
-  
-  <path id="lib.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="lib.module.classpath"/>
-  
-  
-  <patternset id="excluded.from.module.lib">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.lib">
-    <patternset refid="excluded.from.module.lib"/>
-  </patternset>
-  
-  
-  <target name="compile.module.lib" depends="compile.module.lib.production,compile.module.lib.tests" description="Compile module lib"/>
-  
-  <target name="compile.module.lib.production" description="Compile module lib; production classes"/>
-  
-  <target name="compile.module.lib.tests" depends="compile.module.lib.production" description="compile module lib; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.lib" description="cleanup module">
-    <delete dir="${lib.output.dir}"/>
-    <delete dir="${lib.testoutput.dir}"/>
-  </target>
-  
-  
-  <!-- Module conf -->
-  
-  <dirname property="module.conf.basedir" file="${ant.file}"/>
-  
-  
-  
-  <property name="compiler.args.conf" value="${compiler.args}"/>
-  
-  <property name="conf.output.dir" value="${module.conf.basedir}/classes/production/conf"/>
-  <property name="conf.testoutput.dir" value="${module.conf.basedir}/classes/test/conf"/>
-  
-  <path id="conf.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="conf.module.classpath">
-    <path refid="library.testng-5.5-jdk15.classpath"/>
-    <path refid="library.javaee.classpath"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.conf">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.conf">
-    <patternset refid="excluded.from.module.conf"/>
-  </patternset>
-  
-  <path id="conf.module.test.sourcepath">
-    <dirset dir="${module.conf.basedir}/../conf">
-      <include name="hibernate"/>
-      <include name="spring"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.conf" depends="compile.module.conf.production,compile.module.conf.tests" description="Compile module conf"/>
-  
-  <target name="compile.module.conf.production" description="Compile module conf; production classes"/>
-  
-  <target name="compile.module.conf.tests" depends="compile.module.conf.production" description="compile module conf; test classes" unless="skip.tests">
-    <mkdir dir="${conf.testoutput.dir}"/>
-    <javac destdir="${conf.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.conf}"/>
-      <classpath refid="conf.module.classpath"/>
-      <classpath location="${conf.output.dir}"/>
-      <src refid="conf.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.conf"/>
-    </javac>
-    
-    <copy todir="${conf.testoutput.dir}">
-      <fileset dir="${module.conf.basedir}/../conf/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.conf.basedir}/../conf/spring">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="clean.module.conf" description="cleanup module">
-    <delete dir="${conf.output.dir}"/>
-    <delete dir="${conf.testoutput.dir}"/>
-  </target>
-  
-  
-  <!-- Module integration-securid -->
-  
-  <dirname property="module.integration-securid.basedir" file="${ant.file}"/>
-  
-  
-  
-  <property name="compiler.args.integration-securid" value="${compiler.args}"/>
-  
-  <property name="integration-securid.output.dir" value="${module.integration-securid.basedir}/classes/production/integration-securid"/>
-  <property name="integration-securid.testoutput.dir" value="${module.integration-securid.basedir}/classes/test/integration-securid"/>
-  
-  <path id="integration-securid.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="integration-securid.module.classpath"/>
-  
-  
-  <patternset id="excluded.from.module.integration-securid">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.integration-securid">
-    <patternset refid="excluded.from.module.integration-securid"/>
-  </patternset>
-  
-  <path id="integration-securid.module.sourcepath">
-    <dirset dir="${module.integration-securid.basedir}/../integration-securid">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.integration-securid" depends="compile.module.integration-securid.production,compile.module.integration-securid.tests" description="Compile module integration-securid"/>
-  
-  <target name="compile.module.integration-securid.production" description="Compile module integration-securid; production classes">
-    <mkdir dir="${integration-securid.output.dir}"/>
-    <javac destdir="${integration-securid.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.integration-securid}"/>
-      <bootclasspath refid="integration-securid.module.bootclasspath"/>
-      <classpath refid="integration-securid.module.classpath"/>
-      <src refid="integration-securid.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.integration-securid"/>
-    </javac>
-    
-    <copy todir="${integration-securid.output.dir}">
-      <fileset dir="${module.integration-securid.basedir}/../integration-securid/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.integration-securid.tests" depends="compile.module.integration-securid.production" description="compile module integration-securid; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.integration-securid" description="cleanup module">
-    <delete dir="${integration-securid.output.dir}"/>
-    <delete dir="${integration-securid.testoutput.dir}"/>
-  </target>
-  
-  
-  <!-- Module facade-common -->
-  
-  <dirname property="module.facade-common.basedir" file="${ant.file}"/>
-  
-  
-  
-  <property name="compiler.args.facade-common" value="${compiler.args}"/>
-  
-  <property name="facade-common.output.dir" value="${module.facade-common.basedir}/classes/production/facade-common"/>
-  <property name="facade-common.testoutput.dir" value="${module.facade-common.basedir}/classes/test/facade-common"/>
-  
-  <path id="facade-common.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="facade-common.module.classpath">
-    <path refid="library.jbpm.classpath"/>
-    <pathelement location="${eiana-users.output.dir}"/>
-    <pathelement location="${eiana-users.testoutput.dir}"/>
-    <pathelement location="${eiana-util.output.dir}"/>
-    <pathelement location="${eiana-util.testoutput.dir}"/>
-    <path refid="library.log4j.classpath"/>
-    <path refid="library.testng-5.5-jdk15.classpath"/>
-    <path refid="library.spring.classpath"/>
-    <pathelement location="${integration-securid.output.dir}"/>
-    <pathelement location="${integration-securid.testoutput.dir}"/>
-    <path refid="library.javaee.classpath"/>
-    <pathelement location="${eiana-notifications.output.dir}"/>
-    <pathelement location="${eiana-notifications.testoutput.dir}"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.facade-common">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.facade-common">
-    <patternset refid="excluded.from.module.facade-common"/>
-  </patternset>
-  
-  <path id="facade-common.module.sourcepath">
-    <dirset dir="${module.facade-common.basedir}/../facade-common">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  <path id="facade-common.module.test.sourcepath">
-    <dirset dir="${module.facade-common.basedir}/../facade-common">
-      <include name="test"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.facade-common" depends="compile.module.facade-common.production,compile.module.facade-common.tests" description="Compile module facade-common"/>
-  
-  <target name="compile.module.facade-common.production" depends="compile.module.eiana-users,compile.module.eiana-util,compile.module.integration-securid,compile.module.eiana-notifications" description="Compile module facade-common; production classes">
-    <mkdir dir="${facade-common.output.dir}"/>
-    <javac destdir="${facade-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.facade-common}"/>
-      <bootclasspath refid="facade-common.module.bootclasspath"/>
-      <classpath refid="facade-common.module.classpath"/>
-      <src refid="facade-common.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.facade-common"/>
-    </javac>
-    
-    <copy todir="${facade-common.output.dir}">
-      <fileset dir="${module.facade-common.basedir}/../facade-common/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.facade-common.tests" depends="compile.module.facade-common.production" description="compile module facade-common; test classes" unless="skip.tests">
-    <mkdir dir="${facade-common.testoutput.dir}"/>
-    <javac destdir="${facade-common.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.facade-common}"/>
-      <classpath refid="facade-common.module.classpath"/>
-      <classpath location="${facade-common.output.dir}"/>
-      <src refid="facade-common.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.facade-common"/>
-    </javac>
-    
-    <copy todir="${facade-common.testoutput.dir}">
-      <fileset dir="${module.facade-common.basedir}/../facade-common/test">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="clean.module.facade-common" description="cleanup module">
-    <delete dir="${facade-common.output.dir}"/>
-    <delete dir="${facade-common.testoutput.dir}"/>
-  </target>
-  
-  
   <!-- Module facade-system -->
   
   <dirname property="module.facade-system.basedir" file="${ant.file}"/>
@@ -1420,6 +1387,8 @@
     <pathelement location="${facade-common.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${facade-system.output.dir}"/>
+    <pathelement location="${facade-system.testoutput.dir}"/>
   </path>
   
   
@@ -1440,7 +1409,7 @@
   
   <target name="compile.module.facade-admin" depends="compile.module.facade-admin.production,compile.module.facade-admin.tests" description="Compile module facade-admin"/>
   
-  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common" description="Compile module facade-admin; production classes">
+  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common,compile.module.facade-system" description="Compile module facade-admin; production classes">
     <mkdir dir="${facade-admin.output.dir}"/>
     <javac destdir="${facade-admin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-admin}"/>
@@ -1562,11 +1531,50 @@
     <delete dir="${tests.testoutput.dir}"/>
   </target>
   
+  
+  <!-- Module build -->
+  
+  <dirname property="module.build.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.build" value="${compiler.args}"/>
+  
+  <property name="build.output.dir" value="${module.build.basedir}/classes/production/build"/>
+  <property name="build.testoutput.dir" value="${module.build.basedir}/classes/test/build"/>
+  
+  <path id="build.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="build.module.classpath"/>
+  
+  
+  <patternset id="excluded.from.module.build">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.build">
+    <patternset refid="excluded.from.module.build"/>
+  </patternset>
+  
+  
+  <target name="compile.module.build" depends="compile.module.build.production,compile.module.build.tests" description="Compile module build"/>
+  
+  <target name="compile.module.build.production" description="Compile module build; production classes"/>
+  
+  <target name="compile.module.build.tests" depends="compile.module.build.production" description="compile module build; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.build" description="cleanup module">
+    <delete dir="${build.output.dir}"/>
+    <delete dir="${build.testoutput.dir}"/>
+  </target>
+  
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.eiana-util, clean.module.eiana-notifications, clean.module.eiana-users, clean.module.common-objectdiff, clean.module.eiana-domains, clean.module.eiana-init, clean.module.eiana-logs, clean.module.eiana-dns, clean.module.integration-rt, clean.module.eiana-trans, clean.module.build, clean.module.lib, clean.module.conf, clean.module.integration-securid, clean.module.facade-common, clean.module.facade-system, clean.module.facade-admin, clean.module.tests" description="cleanup all"/>
+  <target name="clean" depends="clean.module.integration-securid, clean.module.conf, clean.module.eiana-util, clean.module.common-objectdiff, clean.module.eiana-notifications, clean.module.eiana-domains, clean.module.eiana-users, clean.module.facade-common, clean.module.eiana-init, clean.module.lib, clean.module.eiana-dns, clean.module.eiana-logs, clean.module.integration-rt, clean.module.eiana-trans, clean.module.facade-system, clean.module.facade-admin, clean.module.tests, clean.module.build" description="cleanup all"/>
   
-  <target name="all" depends="init, clean, compile.module.eiana-util, compile.module.eiana-notifications, compile.module.eiana-users, compile.module.common-objectdiff, compile.module.eiana-domains, compile.module.eiana-init, compile.module.eiana-logs, compile.module.eiana-dns, compile.module.integration-rt, compile.module.eiana-trans, compile.module.build, compile.module.lib, compile.module.conf, compile.module.integration-securid, compile.module.facade-common, compile.module.facade-system, compile.module.facade-admin, compile.module.tests" description="build all"/>
+  <target name="all" depends="init, clean, compile.module.integration-securid, compile.module.conf, compile.module.eiana-util, compile.module.common-objectdiff, compile.module.eiana-notifications, compile.module.eiana-domains, compile.module.eiana-users, compile.module.facade-common, compile.module.eiana-init, compile.module.lib, compile.module.eiana-dns, compile.module.eiana-logs, compile.module.integration-rt, compile.module.eiana-trans, compile.module.facade-system, compile.module.facade-admin, compile.module.tests, compile.module.build" description="build all"/>
 </project>
