@@ -41,6 +41,8 @@ public class Host implements TrackedObject,Cloneable {
     private TrackData trackData = new TrackData();
 
     public Host() {
+        this.addresses = new HashSet<IPAddress>();
+        this.numDelegations = 0;
     }
 
     public Host(String name) throws InvalidNameException {
