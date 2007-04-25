@@ -7,7 +7,8 @@ import java.io.Serializable;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-trans"})
+
+@Test(groups = {"hibernate", "common-objectdiff"})
 abstract public class HibernateMappingUnitTest<T> extends HibernateTest {
 
     abstract protected T create() throws Exception;
