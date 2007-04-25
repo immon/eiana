@@ -27,6 +27,8 @@ public class AuthenticatedUser {
      * A name of a user who got authenticated.
      */
     private String userName;
+
+    private boolean admin;
     /**
      * A flag representing whether the user has been invalidated.
      */
@@ -41,11 +43,13 @@ public class AuthenticatedUser {
      *
      * @param objId the identifier of the authenticated user.
      * @param userName the user name of the authenticated user.
+     * @param admin the boolean flag indicating whether the authenticated user is an administrator or not.
      * @throws IllegalArgumentException when user is null
      */
-    public AuthenticatedUser(long objId, String userName) {
+    public AuthenticatedUser(long objId, String userName, boolean admin) {
         this.objId = objId;
         this.userName = userName;
+        this.admin = admin;
     }
 
 
@@ -64,6 +68,11 @@ public class AuthenticatedUser {
 
     public String getUserName() {
         return userName;
+    }
+
+
+    public boolean isAdmin() {
+        return admin;
     }
 
     public boolean isInvalidated() {
