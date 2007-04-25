@@ -47,7 +47,7 @@ public class ConfirmationTest {
     private Set<Long> processes = new HashSet<Long>();
 
     @BeforeClass
-    public void init() {
+    public void init() throws Exception {
         appCtx = SpringTransApplicationContext.getInstance().getContext();
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
@@ -55,17 +55,22 @@ public class ConfirmationTest {
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userDAO = (UserDAO) appCtx.getBean("userDAO");
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            users.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+            users.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+            users.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
 
-        users.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        users.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
-        users.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
+            for (RZMUser user : users)
+                userDAO.create(user);
 
-        for (RZMUser user : users)
-            userDAO.create(user);
-
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
-        txMgr.commit(txStatus);
+            processDAO.deploy(DefinedTestProcess.getDefinition());
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     private Transaction createTransaction(String suffix) throws CloneNotSupportedException {
@@ -134,82 +139,120 @@ public class ConfirmationTest {
     @Test
     public void testContactConfirmations() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction transaction = createTransaction("contact");
+            ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
+            processes.add(processInstance.getId());
 
-        Transaction transaction = createTransaction("contact");
-        ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
-        processes.add(processInstance.getId());
+            //Token token = processInstance.getRootToken();
+            //token.signal();
 
-        //Token token = processInstance.getRootToken();
-        //token.signal();
+            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
+            transaction.accept(userDAO.get("user-sys1contact"));
 
-        transaction.accept(userDAO.get("user-sys1contact"));
+            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
+            transaction.accept(userDAO.get("user-sys4contact"));
 
-        transaction.accept(userDAO.get("user-sys4contact"));
+            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
+            RZMUser anotherUser = UserManagementTestUtil.createUser("sys7contact",
+                    UserManagementTestUtil.createSystemRole("conftestdomaincontact", true, true,
+                            SystemRole.SystemType.AC));
+            users.add(anotherUser);
+            userDAO.create(anotherUser);
 
-        RZMUser anotherUser = UserManagementTestUtil.createUser("sys7contact",
-                UserManagementTestUtil.createSystemRole("conftestdomaincontact", true, true,
-                        SystemRole.SystemType.AC));
-        users.add(anotherUser);
-        userDAO.create(anotherUser);
+            transaction.accept(userDAO.get("user-sys2contact"));
 
-        transaction.accept(userDAO.get("user-sys2contact"));
+            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
 
-        assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
+            transaction.accept(userDAO.get("user-sys7contact"));
 
-        transaction.accept(userDAO.get("user-sys7contact"));
+            assert "PENDING_IMPACTED_PARTIES".equals(processInstance.getRootToken().getNode().getName());
 
-        assert "PENDING_IMPACTED_PARTIES".equals(processInstance.getRootToken().getNode().getName());
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test
     public void testAdminConfirmations() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            Transaction transaction = createTransaction("admin");
+            ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
+            processes.add(processInstance.getId());
 
-        Transaction transaction = createTransaction("admin");
-        ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
-        processes.add(processInstance.getId());
+            Token token = processInstance.getRootToken();
+            assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("normal");
 
-        Token token = processInstance.getRootToken();
-        //token.signal();
-        token.signal("accept");
-        token.signal("accept");
-        token.signal("normal");
+            assert "PENDING_EXT_APPROVAL".equals(processInstance.getRootToken().getNode().getName()) : "unexpected state: " + token.getNode().getName();
 
-        assert "PENDING_EXT_APPROVAL".equals(processInstance.getRootToken().getNode().getName());
+            transaction.accept(userDAO.get("user-admin2"));
 
-        transaction.accept(userDAO.get("user-admin2"));
+            assert "PENDING_USDOC_APPROVAL".equals(processInstance.getRootToken().getNode().getName()) : "unexpected state: " + token.getNode().getName();
 
-        assert "PENDING_USDOC_APPROVAL".equals(processInstance.getRootToken().getNode().getName());
-
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        for (Long id : processes)
-            processDAO.delete(processDAO.getProcessInstance(id));
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            for (Long id : processes) {
+                ProcessInstance pi = processDAO.getProcessInstance(id);
+                if (pi != null) processDAO.delete(pi);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        for (RZMUser user : users)
-            userDAO.delete(userDAO.get(user.getLoginName()));
-        txMgr.commit(txStatus);
+        try {
+            for (RZMUser user : users) {
+                user = userDAO.get(user.getObjId());
+                if (user != null) userDAO.delete(user);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        for (String name : domains)
-            domainDAO.delete(domainDAO.get(name));
-        txMgr.commit(txStatus);
+        try {
+            for (String name : domains) {
+                Domain domain = domainDAO.get(name);
+                if (domain != null) domainDAO.delete(domain);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 }

@@ -27,31 +27,43 @@ public class JbpmDbTest {
     private SchedulerThread schedulerThread;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
-    TransactionStatus txStatus;
 
     @BeforeClass
-    public void init() {
+    public void init() throws Exception {
         ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
-        txMgr = (PlatformTransactionManager) ctx.getBean("transactionManager");
-        txStatus = txMgr.getTransaction(txDef);
         processDAO = (ProcessDAO) ctx.getBean("processDAO");
-        processDAO.deploy(getProcessDefinition());
         schedulerThread = new SchedulerThread((JbpmConfiguration) ctx.getBean("jbpmConfiguration"));
+        txMgr = (PlatformTransactionManager) ctx.getBean("transactionManager");
+        try {
+            processDAO.deploy(getProcessDefinition());
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test
-    public void testSimplePersistence() throws InterruptedException {
-        beginProcess();
-        Thread.sleep(1001L);
-        schedulerThread.executeTimers();
-        finishProcess();
+    public void testSimplePersistence() throws Exception {
+        //System.exit(0);
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            beginProcess();
+            Thread.sleep(1001L);
+            schedulerThread.executeTimers();
+            finishProcess();
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     private ProcessDefinition getProcessDefinition() {
          return ProcessDefinition.parseXmlString(
                 "<process-definition name='jbpm db test'>" +
                         "  <start-state name='start'>" +
-                        "    <transition to='first' />" +
+                        "    <transition name='to-first' to='first' />" +
                         "  </start-state>" +
                         "  <state name='first'>" +
                         "    <timer name='first-time-out'" +
@@ -72,11 +84,10 @@ public class JbpmDbTest {
         ProcessInstance processInstance = processDAO.newProcessInstance("jbpm db test");
         processId = processInstance.getId();
         Token token = processInstance.getRootToken();
-        assert "start".equals(token.getNode().getName());
+        //assert "start".equals(token.getNode().getName()) : "unexpected state: " + token.getNode().getName();
 
-        token.signal();
-        assert "first".equals(token.getNode().getName());
-        processDAO.close();
+        token.signal("to-first");
+        assert "first".equals(token.getNode().getName()) : "unexpected state: " + token.getNode().getName();
     }
 
     private void finishProcess() {
@@ -87,13 +98,20 @@ public class JbpmDbTest {
 
         processInstance.signal();
         assert processInstance.hasEnded();
-        processDAO.close();
     }
 
     @AfterClass
-    public void cleanUp() {
-        processDAO.delete(processDAO.getProcessInstance(processId));
-        processDAO.close();
-        txMgr.commit(txStatus);
+    public void cleanUp() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            ProcessInstance pi = processDAO.getProcessInstance(processId);
+            if (pi != null) processDAO.delete(pi);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 }

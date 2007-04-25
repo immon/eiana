@@ -76,16 +76,18 @@ public class Transaction implements TrackedObject {
     }
 
     public TransactionState getState() {
+        TransactionState ts = new TransactionState();
         Token token = pi.getRootToken();
         Node node = token.getNode();
-        TransactionState ts = new TransactionState();
-        ts.setName(node.getName());
-        ts.setStart(token.getStart());
-        if (token.getEnd() != null)
-            ts.setEnd(token.getEnd());
-        for (Object o : node.getLeavingTransitions()) {
-            Transition transition = (Transition) o;
-            ts.addAvailableTransition(new StateTransition(transition.getName()));
+            if (node != null) {
+            ts.setName(node.getName());
+            ts.setStart(token.getStart());
+            if (token.getEnd() != null)
+                ts.setEnd(token.getEnd());
+            for (Object o : node.getLeavingTransitions()) {
+                Transition transition = (Transition) o;
+                ts.addAvailableTransition(new StateTransition(transition.getName()));
+            }
         }
         return ts;
     }

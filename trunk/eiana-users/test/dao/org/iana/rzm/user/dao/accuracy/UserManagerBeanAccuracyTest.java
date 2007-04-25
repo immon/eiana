@@ -53,64 +53,91 @@ public class UserManagerBeanAccuracyTest {
     @Test(dependsOnMethods = {"testCreateUser"})
     public void testGetUserById() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        RZMUser userRetrieved = manager.get(userId);
-        assert userRetrieved != null;
-        assert userRetrieved.getFirstName().equals("fnivan123");
-        assert userRetrieved.getLastName().equals("lnivan123");
-        assert userRetrieved.getLoginName().equals("user-ivan123");
-        txMgr.commit(txStatus);
+        try {
+            RZMUser userRetrieved = manager.get(userId);
+            assert userRetrieved != null;
+            assert userRetrieved.getFirstName().equals("fnivan123");
+            assert userRetrieved.getLastName().equals("lnivan123");
+            assert userRetrieved.getLoginName().equals("user-ivan123");
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
     }
 
     @Test(dependsOnMethods = {"testGetUserById"})
     public void testGetUserByName() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        RZMUser userRetrieved = manager.get("user-ivan123");
-        assert userRetrieved != null;
-        assert userRetrieved.getFirstName().equals("fnivan123");
-        assert userRetrieved.getLastName().equals("lnivan123");
-        assert userRetrieved.getLoginName().equals("user-ivan123");
-        txMgr.commit(txStatus);
+        try {
+            RZMUser userRetrieved = manager.get("user-ivan123");
+            assert userRetrieved != null;
+            assert userRetrieved.getFirstName().equals("fnivan123");
+            assert userRetrieved.getLastName().equals("lnivan123");
+            assert userRetrieved.getLoginName().equals("user-ivan123");
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
     }
 
     @Test
-    public void testFindUsersInRoles() {
-        usersMap = new HashSet<RZMUser>();
-        usersMap.add(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
-        usersMap.add(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
-        usersMap.add(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
-        usersMap.add(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
-        usersMap.add(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("aaa", false, false, SystemRole.SystemType.TC)));
-        usersMap.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-        usersMap.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+    public void testFindUsersInRoles() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            usersMap = new HashSet<RZMUser>();
+            usersMap.add(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
+            usersMap.add(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
+            usersMap.add(UserManagementTestUtil.createUser("sys3", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
+            usersMap.add(UserManagementTestUtil.createUser("sys4", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.TC)));
+            usersMap.add(UserManagementTestUtil.createUser("sys5", UserManagementTestUtil.createSystemRole("aaa", false, false, SystemRole.SystemType.TC)));
+            usersMap.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+            usersMap.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
 
-        for(RZMUser user : usersMap)
-            dao.create(user);
+            for(RZMUser user : usersMap)
+                dao.create(user);
 
-        List<RZMUser> result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
-        assert result.size() == 1;
-        RZMUser user = result.iterator().next();
-        assert "user-sys1".equals(user.getLoginName());
+            List<RZMUser> result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
+            assert result.size() == 1;
+            RZMUser user = result.iterator().next();
+            assert "user-sys1".equals(user.getLoginName());
 
-        result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, false);
-        assert result.size() == 2;
-        Set<String> loginNames = new HashSet<String>();
-        for (RZMUser u : result) loginNames.add(u.getLoginName());
-        assert loginNames.contains("user-sys3") && loginNames.contains("user-sys4");
+            result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, false);
+            assert result.size() == 2;
+            Set<String> loginNames = new HashSet<String>();
+            for (RZMUser u : result) loginNames.add(u.getLoginName());
+            assert loginNames.contains("user-sys3") && loginNames.contains("user-sys4");
 
-        result = manager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
-        assert result.size() == 1;
-        user = result.iterator().next();
-        assert "user-admin1".equals(user.getLoginName());
+            result = manager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
+            assert result.size() == 1;
+            user = result.iterator().next();
+            assert "user-admin1".equals(user.getLoginName());
 
-        result = manager.findUsersInAdminRole(AdminRole.AdminType.IANA);
-        assert result.size() == 1;
-        user = result.iterator().next();
-        assert "user-admin2".equals(user.getLoginName());
+            result = manager.findUsersInAdminRole(AdminRole.AdminType.IANA);
+            assert result.size() == 1;
+            user = result.iterator().next();
+            assert "user-admin2".equals(user.getLoginName());
+
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
     }
 
     @AfterClass
-    public void cleanUp() {
-        for(RZMUser user : usersMap)
-            dao.delete(user);
+    public void cleanUp() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            for(RZMUser user : usersMap) {
+                user = dao.get(user.getObjId());
+                if (user != null) dao.delete(user);
+            }
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
     }
 }

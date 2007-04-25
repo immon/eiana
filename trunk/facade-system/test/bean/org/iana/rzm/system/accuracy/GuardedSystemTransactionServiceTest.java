@@ -54,49 +54,73 @@ public class GuardedSystemTransactionServiceTest {
     private List<Long> transactionIds = new ArrayList<Long>();
 
     @BeforeClass
-    public void init() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
+    public void init() throws Exception {
         processDAO = (ProcessDAO) SpringSystemApplicationContext.getInstance().getContext().getBean("processDAO");
         userDAO = (UserDAO) SpringSystemApplicationContext.getInstance().getContext().getBean("userDAO");
         domainDAO = (DomainDAO) SpringSystemApplicationContext.getInstance().getContext().getBean("domainDAO");
         txMgr = (PlatformTransactionManager) SpringSystemApplicationContext.getInstance().getContext().getBean("transactionManager");
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        userAc = createUser("ac", SystemRole.SystemType.AC);
-        userTc = createUser("tc", SystemRole.SystemType.TC);
-        gsts = (SystemTransactionService) SpringSystemApplicationContext.getInstance().getContext().getBean("guardedSystemTransactionService");
-        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(userAc);
-        gsts.setUser(testAuthUser.getAuthUser());
-        domain = createDomain();
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            userAc = createUser("ac", SystemRole.SystemType.AC);
+            userTc = createUser("tc", SystemRole.SystemType.TC);
+            gsts = (SystemTransactionService) SpringSystemApplicationContext.getInstance().getContext().getBean("guardedSystemTransactionService");
+            TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(userAc);
+            gsts.setUser(testAuthUser.getAuthUser());
+            domain = createDomain();
+            processDAO.deploy(DefinedTestProcess.getDefinition());
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test
-    public void testCreateTransaction() throws InfrastructureException, NoObjectFoundException {
+    public void testCreateTransaction() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        transaction = gsts.createTransaction(domain);
-        transactionIds.add(transaction.getTransactionID());
-        assert transaction != null;
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            transaction = gsts.createTransaction(domain);
+            transactionIds.add(transaction.getTransactionID());
+            assert transaction != null;
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
-        assert loadedTransaction != null;
-        assert transaction.equals(loadedTransaction);
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
+            assert loadedTransaction != null;
+            assert transaction.equals(loadedTransaction);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testCreateTransaction")
-    public void testFindOpenTransactions() throws InfrastructureException, NoObjectFoundException {
+    public void testFindOpenTransactions() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        List<TransactionVO> foundTransactions = gsts.findOpenTransactions();
-        assert foundTransactions != null;
-        assert foundTransactions.size() == 1;
-        assert transaction.equals(foundTransactions.iterator().next());
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            List<TransactionVO> foundTransactions = gsts.findOpenTransactions();
+            assert foundTransactions != null;
+            assert foundTransactions.size() == 1;
+            assert transaction.equals(foundTransactions.iterator().next());
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindOpenTransactions",
@@ -113,24 +137,30 @@ public class GuardedSystemTransactionServiceTest {
     }
 
     @Test(dependsOnMethods = "testGetPossibleTransactionSplits")
-    public void testAcceptTransaction() throws InfrastructureException, NoObjectFoundException {
+    public void testAcceptTransaction() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        gsts.acceptTransaction(transaction.getTransactionID());
-        transaction = gsts.getTransaction(transaction.getTransactionID());
-        assert transaction != null;
-        assert transaction.getState() != null;
-        assert transaction.getState().getName() != null;
-        assert "PENDING_CONTACT_CONFIRMATION".equals(transaction.getState().getName().toString());
-        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(userTc);
-        gsts.setUser(testAuthUser.getAuthUser());
-        gsts.acceptTransaction(transaction.getTransactionID());
-        transaction = gsts.getTransaction(transaction.getTransactionID());
-        assert transaction != null;
-        assert transaction.getState() != null;
-        assert transaction.getState().getName() != null;
-        assert "PENDING_IMPACTED_PARTIES".equals(transaction.getState().getName().toString());
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            gsts.acceptTransaction(transaction.getTransactionID());
+            transaction = gsts.getTransaction(transaction.getTransactionID());
+            assert transaction != null;
+            assert transaction.getState() != null;
+            assert transaction.getState().getName() != null;
+            assert "PENDING_CONTACT_CONFIRMATION".equals(transaction.getState().getName().toString());
+            TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(userTc);
+            gsts.setUser(testAuthUser.getAuthUser());
+            gsts.acceptTransaction(transaction.getTransactionID());
+            transaction = gsts.getTransaction(transaction.getTransactionID());
+            assert transaction != null;
+            assert transaction.getState() != null;
+            assert transaction.getState().getName() != null;
+            assert "PENDING_IMPACTED_PARTIES".equals(transaction.getState().getName().toString());
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testAcceptTransaction",
@@ -144,127 +174,179 @@ public class GuardedSystemTransactionServiceTest {
     }
 
     @Test(dependsOnMethods = "testTransitTransaction")
-    public void testRejectTransaction() throws InfrastructureException, NoObjectFoundException {
+    public void testRejectTransaction() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        TransactionVO transactionToReject = gsts.createTransaction(domain);
-        transactionIds.add(transactionToReject.getTransactionID());
-        gsts.rejectTransaction(transactionToReject.getTransactionID());
-        transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
-        assert transactionToReject != null;
-        assert transactionToReject.getState() != null;
-        assert transactionToReject.getState().getName() != null;
-        assert "REJECTED".equals(transactionToReject.getState().getName().toString());
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionVO transactionToReject = gsts.createTransaction(domain);
+            transactionIds.add(transactionToReject.getTransactionID());
+            gsts.rejectTransaction(transactionToReject.getTransactionID());
+            transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
+            assert transactionToReject != null;
+            assert transactionToReject.getState() != null;
+            assert transactionToReject.getState().getName() != null;
+            assert "REJECTED".equals(transactionToReject.getState().getName().toString());
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testRejectTransaction")
-    public void testFindTransactionByDomain() throws InfrastructureException, NoObjectFoundException {
+    public void testFindTransactionByDomain() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addDomainName("gsts");
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-        criteria = new TransactionCriteriaVO();
-        criteria.addDomainName("nonexistent");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+            criteria.addDomainName("gsts");
+            List<TransactionVO> found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 2;
+            criteria = new TransactionCriteriaVO();
+            criteria.addDomainName("nonexistent");
+            found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 0;
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindTransactionByDomain")
-    public void testFindTransactionByState() throws InfrastructureException, NoObjectFoundException {
+    public void testFindTransactionByState() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addState("REJECTED");
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 1;
-        criteria = new TransactionCriteriaVO();
-        criteria.addState("nonexistent");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+            criteria.addState("REJECTED");
+            List<TransactionVO> found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 1;
+            criteria = new TransactionCriteriaVO();
+            criteria.addState("nonexistent");
+            found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 0;
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindTransactionByState")
-    public void testFindTransactionByTicketId() throws InfrastructureException, NoObjectFoundException {
+    public void testFindTransactionByTicketId() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addTickedId(0L);
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-        criteria = new TransactionCriteriaVO();
-        criteria.addTickedId(10L);
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+            criteria.addTickedId(0L);
+            List<TransactionVO> found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 2;
+            criteria = new TransactionCriteriaVO();
+            criteria.addTickedId(10L);
+            found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 0;
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindTransactionByTicketId")
-    public void testFindTransactionByProcessName() throws InfrastructureException, NoObjectFoundException {
+    public void testFindTransactionByProcessName() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addProcessName(DefinedTestProcess.getProcessName());
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-        criteria = new TransactionCriteriaVO();
-        criteria.addProcessName("nonexistent");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+            criteria.addProcessName(DefinedTestProcess.getProcessName());
+            List<TransactionVO> found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 2;
+            criteria = new TransactionCriteriaVO();
+            criteria.addProcessName("nonexistent");
+            found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 0;
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test(dependsOnMethods = "testFindTransactionByProcessName")
-    public void testFindTransactionByStartDate() throws InfrastructureException, NoObjectFoundException {
+    public void testFindTransactionByStartDate() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.setStartedBefore(new Date());
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-        criteria = new TransactionCriteriaVO();
-        criteria.setStartedAfter(new Date());
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-        processDAO.close();
-        txMgr.commit(txStatus);
+        try {
+            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+            criteria.setStartedBefore(new Date());
+            List<TransactionVO> found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 2;
+            criteria = new TransactionCriteriaVO();
+            criteria.setStartedAfter(new Date());
+            found = gsts.findTransactions(criteria);
+            assert found != null;
+            assert found.size() == 0;
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
         gsts.close();
         for (Long id : transactionIds) {
             ProcessInstance pi = processDAO.getProcessInstance(id);
             if (pi != null) processDAO.delete(pi);
         }
-        processDAO.close();
-        txMgr.commit(txStatus);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        RZMUser user = userDAO.get(userAc.getObjId());
-        if (user != null) userDAO.delete(user);
-        user = userDAO.get(userTc.getObjId());
-        if (user != null) userDAO.delete(user);
-        txMgr.commit(txStatus);
+        try {
+            RZMUser user = userDAO.get(userAc.getObjId());
+            if (user != null) userDAO.delete(user);
+            user = userDAO.get(userTc.getObjId());
+            if (user != null) userDAO.delete(user);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
 
         txStatus = txMgr.getTransaction(txDef);
-        Domain dom = domainDAO.get(domain.getObjId());
-        domainDAO.delete(dom);
-        txMgr.commit(txStatus);
+        try {
+            Domain dom = domainDAO.get(domain.getObjId());
+            domainDAO.delete(dom);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
     }
 
     private UserVO createUser(String name, SystemRole.SystemType role) {

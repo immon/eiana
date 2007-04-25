@@ -118,7 +118,7 @@ public class JbpmProcessDAO implements ProcessDAO {
         return query.list();
     }
 
-    public void deploy(final ProcessDefinition pd) {
+    public void deploy(ProcessDefinition pd) {
         getContext().deployProcessDefinition(pd);
     }
 
