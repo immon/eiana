@@ -69,7 +69,7 @@ public class DomainChangeApplicatorTest {
     }
 
     @Test
-    public void testIPAddressAddition() {
+    public void testIPAddressAdditionApplication() {
         Host src = DomainChangeDetectorTest.createHost("host.test");
         Host dst = DomainChangeDetectorTest.createHost("host.test");
         dst.addIPAddress("3.3.3.3");
