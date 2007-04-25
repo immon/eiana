@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class ObjectChangeHibernateMappingTest extends HibernateMappingUnitTest<ObjectChange> {
+public class ObjectChangeHibernateMappingTest extends org.iana.objectdiff.hibernate.HibernateMappingUnitTest<ObjectChange> {
 
     protected ObjectChange create() throws Exception {
         Map<String, Change> fieldChanges = new HashMap<String, Change>();
