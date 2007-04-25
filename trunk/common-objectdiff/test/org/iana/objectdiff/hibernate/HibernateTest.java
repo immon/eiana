@@ -12,7 +12,7 @@ import org.testng.annotations.AfterClass;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-trans"})
+@Test(groups = {"hibernate", "common-objectdiff"})
 abstract public class HibernateTest {
     protected Session session;
     protected Transaction tx = null;
@@ -58,6 +58,11 @@ abstract public class HibernateTest {
         tx = session.beginTransaction();
     }
 
+    protected void rollbackTx() {
+        tx.rollback();
+        tx = null;
+    }
+    
     protected void closeTx() {
         tx.commit();
         tx = null;
