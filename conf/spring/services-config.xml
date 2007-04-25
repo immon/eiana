@@ -8,7 +8,24 @@
 
     <!-- authentication service -->
 
-    <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
+    <bean id="authenticationServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.auth.AuthenticationService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="authenticationServiceBeanTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="authenticationServiceBeanTarget" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
         <constructor-arg>
             <map>
                 <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
