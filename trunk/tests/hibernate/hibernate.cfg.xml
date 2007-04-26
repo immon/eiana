@@ -62,7 +62,7 @@
         <mapping class="org.iana.notifications.Notification" />
         <mapping class="org.iana.notifications.TemplateContent" />
         <mapping class="org.iana.notifications.TextContent" />
-        <mapping class="org.iana.notifications.TempContent" /> <!-- todo: Test purpose only-->
+        <mapping class="org.iana.rzm.notifications.TempContent" /> <!-- todo: Test purpose only-->
 
          <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->

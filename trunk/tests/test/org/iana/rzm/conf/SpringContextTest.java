@@ -1,4 +1,4 @@
-package org.iana.rzm.test;
+package org.iana.rzm.conf;
 
 import org.testng.annotations.Test;
 import org.springframework.context.ApplicationContext;
