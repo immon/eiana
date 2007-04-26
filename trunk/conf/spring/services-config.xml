@@ -8,7 +8,8 @@
 
     <!-- authentication service -->
 
-    <bean id="authenticationServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="authenticationServiceBean"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.auth.AuthenticationService</value>
@@ -53,7 +54,8 @@
 
     <!-- system domain service -->
 
-    <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedSystemDomainService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
@@ -71,16 +73,23 @@
     </bean>
 
     <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
-        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="SystemDomainServiceBean"/>
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
-        <constructor-arg index="0" ref="domainManager" />
-        <constructor-arg index="1" ref="userManager" />
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="userManager"/>
     </bean>
 
-    <bean id="GuardedSystemTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
+        <property name="processDAO">
+            <ref bean="processDAO"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedSystemTransactionService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
@@ -95,19 +104,25 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
+        <property name="postInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
+        </property>
     </bean>
 
     <!-- transaction service -->
 
-    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
-        <constructor-arg ref="userManager" />
+    <bean id="GuardedSystemTransactionServiceTarget"
+          class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
+        <constructor-arg ref="userManager"/>
         <constructor-arg ref="SystemTransactionServiceBean"/>
     </bean>
 
     <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.SystemTransactionServiceBean">
-        <constructor-arg ref="userManager" />
-        <constructor-arg ref="transactionManagerBean" />
-        <constructor-arg ref="domainManager" />
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="domainManager"/>
     </bean>
 
     <!-- end of facade services configuration -->
@@ -130,7 +145,7 @@
     </bean>
 
     <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO" />
+        <constructor-arg index="0" ref="notificationDAO"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
@@ -325,7 +340,7 @@
 
     <bean id="userManagerTarget" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg index="0" ref="userDAO"/>
-        <constructor-arg index="1" ref="notificationDAO" />
+        <constructor-arg index="1" ref="notificationDAO"/>
     </bean>
 
     <bean id="userDAO" class="org.iana.rzm.user.dao.HibernateUserDAO">
