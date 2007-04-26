@@ -1,0 +1,21 @@
+<process-definition name="Notifications reSender">
+
+    <start-state>
+        <transition to="TRY_SEND"></transition>
+    </start-state>
+
+    <state name="TRY_SEND">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.NotificationsReSender">
+                <notifyTryNbr>48</notifyTryNbr>
+            </action>
+        </event>
+        <timer name="1h-time-out" duedate="1 hour" transition="try"></timer>
+        <transition name="try" to="TRY_SEND"/>
+        <transition name="end" to="END_PROCESS"/>
+    </state>
+
+    <end-state name='END_PROCESS'>
+    </end-state>
+
+</process-definition>

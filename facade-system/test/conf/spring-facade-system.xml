@@ -5,6 +5,32 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
     <!-- dao configuration -->
+    <bean id="NotificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.notifications.NotificationManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="NotificationManagerBeanTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
+        <constructor-arg index="0" ref="notificationDAO" />
+    </bean>
+
+    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
 
     <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
