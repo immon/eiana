@@ -397,11 +397,12 @@
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring-aspects.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring-mock.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../lib/spring/spring-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/../lib/spring/spring-src.zip!/" />
+      </SOURCES>
     </library>
     <library name="testng-5.5-jdk15">
       <CLASSES>

@@ -55,7 +55,7 @@
     <!-- system domain service -->
 
     <bean id="GuardedSystemDomainService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
@@ -89,7 +89,7 @@
     </bean>
 
     <bean id="GuardedSystemTransactionService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
