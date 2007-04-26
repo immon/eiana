@@ -2,7 +2,6 @@ package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
-import org.jbpm.JbpmContext;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +23,7 @@ public interface TransactionManager {
     Transaction getTransaction(long id) throws NoSuchTransactionException;
 
     // Transaction createTransaction(List<TransactionAction> actions);
-    
+
     /**
      * Creates a new domain creation transaction.
      *
@@ -52,4 +51,8 @@ public interface TransactionManager {
     public List<Transaction> findTransactions(RZMUser user);
 
     public List<Transaction> findTransactions(RZMUser user, String domainName);
+
+    public void deleteTransaction(Transaction transaction) throws NoSuchTransactionException;
+
+    public void deleteTransaction(Long transactionId) throws NoSuchTransactionException;
 }
