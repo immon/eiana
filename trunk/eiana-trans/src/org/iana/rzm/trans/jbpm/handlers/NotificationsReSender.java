@@ -14,15 +14,15 @@ import java.util.List;
  */
 public class NotificationsReSender implements ActionHandler {
 
-    private NotificationManager notificationManagerBean;
-    private NotificationSender  notificationSender;
-    private long                notifiyTryNbr;
+    private   NotificationManager notificationManagerBean;
+    private   NotificationSender  notificationSender;
+    protected int                 maxSendNbr;
 
     public void execute(ExecutionContext executionContext) throws Exception {
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
 
-        List<Notification> unSentNotifications = notificationManagerBean.findUnSentNotifications(notifiyTryNbr);
+        List<Notification> unSentNotifications = notificationManagerBean.findUnSentNotifications(maxSendNbr);
         for (Notification notification : unSentNotifications)
             try {
                 notificationSender.send(notification.getAddressee(), notification.getContent());
