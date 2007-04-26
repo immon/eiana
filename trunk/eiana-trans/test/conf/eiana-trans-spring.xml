@@ -6,6 +6,33 @@
 
     <!-- dao configuration -->
 
+    <bean id="NotificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.notifications.NotificationManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="NotificationManagerBeanTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
+        <constructor-arg index="0" ref="notificationDAO" />
+    </bean>
+
+    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
         <constructor-arg value="MailHost"/>
         <constructor-arg value="mailer"/>
@@ -211,6 +238,7 @@
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg ref="userDAO" />
+        <constructor-arg ref="notifDAO" />
     </bean>
 
     <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -231,6 +259,29 @@
     </bean>
 
     <bean id="userDAOTarget" class="org.iana.rzm.user.dao.HibernateUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="notifDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.notifications.dao.NotificationDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="notifDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="notifDAOTarget" class="org.iana.notifications.dao.HibernateNotificationDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
