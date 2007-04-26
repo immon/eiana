@@ -1,4 +1,6 @@
-package org.iana.notifications;
+package org.iana.rzm.notifications;
+
+import org.iana.notifications.Content;
 
 import javax.persistence.Entity;
 import javax.persistence.Basic;

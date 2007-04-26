@@ -1,4 +1,4 @@
-package org.iana.authentication;
+package org.iana.rzm.facade.common.auth;
 
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.accuracy.TestUserManager;
@@ -8,6 +8,7 @@ import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.user.UserManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterClass;
@@ -18,66 +19,36 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
- * marcinz, 2007-04-25, 14:38:46
+ * @author Marcin Zajaczkowski
+ * @author Patrycja Wegrzynowicz
  */
-@Test(sequential=true, groups = {"tests", "authenticationManager"})
+@Test(sequential = true, groups = {"tests", "authenticationManager"})
 public class AuthenticationServiceBeanTest {
 
-    private PlatformTransactionManager txMgr;
-    private UserDAO userDAO;
-    private TransactionDefinition txDef = new DefaultTransactionDefinition();
+    private UserManager userManager;
     private AuthenticationService authService;
 
     private RZMUser testAdminUser;
     private RZMUser testAdminUserWithSecurID;
     private RZMUser testWrongPasswordUser;
-    private long testLazyUser1ID;
-    private RZMUser testLazyUser2;
-
 
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        userDAO = (UserDAO) appCtx.getBean("userDAO");
+        userManager = (UserManager) appCtx.getBean("userManager");
         authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
-
         createTestUsers();
     }
 
     private void createTestUsers() {
+        testAdminUser = createTestAdminUser();
+        userManager.create(testAdminUser);
 
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            testAdminUser = createTestAdminUser();
-            userDAO.create(testAdminUser);
+        testAdminUserWithSecurID = createTestAdminUserWithSecurID();
+        userManager.create(testAdminUserWithSecurID);
 
-            testAdminUserWithSecurID = createTestAdminUserWithSecurID();
-            userDAO.create(testAdminUserWithSecurID);
-
-            testWrongPasswordUser = createTestWrongPasswordUser();
-            userDAO.create(testWrongPasswordUser);
-
-            RZMUser tempTestLazyUser1 = createTestWrongPasswordUser();
-            userDAO.create(tempTestLazyUser1);
-            testLazyUser1ID = tempTestLazyUser1.getObjId();
-
-            testLazyUser2 = createTestWrongPasswordUser();
-            userDAO.create(testLazyUser2);
-            long testLazyUser2ID = testLazyUser2.getObjId();
-
-            txMgr.commit(txStatus);
-
-            txStatus = txMgr.getTransaction(txDef);
-
-            //get from a database to prevent keeping reference of a local object
-            testLazyUser2 = userDAO.get(testLazyUser2ID);
-
-            txMgr.commit(txStatus);
-
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-        }
+        testWrongPasswordUser = createTestWrongPasswordUser();
+        userManager.create(testWrongPasswordUser);
     }
 
     @Test
@@ -89,7 +60,6 @@ public class AuthenticationServiceBeanTest {
         assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
-    //could be moved to failure package
     @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoUser() throws Exception {
         PasswordAuth passwordAuth = new PasswordAuth();
@@ -99,15 +69,12 @@ public class AuthenticationServiceBeanTest {
         authService.authenticate(passwordAuth);
     }
 
-    //could be moved to failure package
     @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateWrongPassword() throws Exception {
         PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.WRONG_PASSWORD_LOGIN, TestUserManager.WRONG_PASSWORD_PASSWORD);
 
         authService.authenticate(passwordAuth);
     }
-
-    //from securID
 
     @Test(expectedExceptions = {AuthenticationRequiredException.class})
     public void testAuthenticateWrongSecurdIDNeeded() throws Exception {
@@ -182,8 +149,6 @@ public class AuthenticationServiceBeanTest {
         assert false;
     }
 
-    //common
-
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullData() throws Exception {
         authService.authenticate(null);
@@ -218,61 +183,13 @@ public class AuthenticationServiceBeanTest {
         assert authenticatedUser.isInvalidated();
     }
 
-    /**
-     * Lazy collection should be initialized inside open session
-     */
-    @Test
-    public void testGetLazyPropertyInSession() throws Exception {
-
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-
-            RZMUser testLazyUser1 = userDAO.get(testLazyUser1ID);
-            assert testLazyUser1 != null;
-
-            //first line should be enough to make a try to initialized lazy fetched collection
-            int size = testLazyUser1.getRoles().size();
-            if (size > 0) {
-                Role role = testLazyUser1.getRoles().get(0);
-            }
-
-            txMgr.commit(txStatus);
-
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-        }
-    }
-
-    /**
-     * Lazy collection shouldn't be initialized outside open session
-     */
-    @Test(expectedExceptions = {org.hibernate.LazyInitializationException.class})
-    public void testGetLazyPropertyOutsideSession() throws Exception {
-
-        //first line should be enough to make a try to initialized lazy fetched collection
-        int size = testLazyUser2.getRoles().size();
-        if (size > 0) {
-            Role role = testLazyUser2.getRoles().get(0);
-        }
-    }
-
     @AfterClass
     public void cleanUp() {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-
-        try {
-            userDAO.delete(testAdminUser);
-            userDAO.delete(testAdminUserWithSecurID);
-            userDAO.delete(testWrongPasswordUser);
-            userDAO.delete(userDAO.get(testLazyUser1ID));
-            userDAO.delete(testLazyUser2);
-        } finally {
-            txMgr.commit(txStatus);
-        }
+        userManager.delete(testAdminUser);
+        userManager.delete(testAdminUserWithSecurID);
+        userManager.delete(testWrongPasswordUser);
     }
 
-
-    //todo could be moved to some common class
     public static String NON_EXIST_LOGIN = "nonExistLogin";
     public static String COMMON_FIRST_NAME = "commonFirstName";
     public static String COMMON_LAST_NAME = "commonLastName";

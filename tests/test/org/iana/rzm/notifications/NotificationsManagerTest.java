@@ -1,4 +1,4 @@
-package org.iana.notifications;
+package org.iana.rzm.notifications;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
@@ -8,10 +8,13 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.context.ApplicationContext;
-import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.notifications.NotificationManager;
+import org.iana.notifications.Notification;
+import org.iana.notifications.TemplateContent;
+import org.iana.notifications.Addressee;
 
 import java.util.*;
 
@@ -23,7 +26,7 @@ import java.util.*;
 public class NotificationsManagerTest {
     private PlatformTransactionManager txMgr;
     private UserManager                userManager;
-    private NotificationManager        notificationManager;
+    private NotificationManager notificationManager;
     private TransactionDefinition      txDef = new DefaultTransactionDefinition();
 
     private RZMUser      firstUser, secondUser;

@@ -39,7 +39,7 @@ import java.util.Set;
  */
 
 @Test(sequential=true, groups = {"tests", "jbpm", "UpdateDomain"})
-public class JbpmUpdateDomainImpl {
+public class DomainModificationWorkflowTest {
     ApplicationContext appCtx;
     TransactionManager transMgr;
     ProcessDAO processDAO;

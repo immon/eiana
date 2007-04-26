@@ -1,4 +1,4 @@
-package org.iana.trans.org.iana.trans;
+package org.iana.rzm.trans;
 
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
