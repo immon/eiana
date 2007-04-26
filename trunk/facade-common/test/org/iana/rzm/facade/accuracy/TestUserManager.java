@@ -8,7 +8,6 @@ import java.util.List;
  * org.iana.rzm.facade.accuracy.TestUserManager
  *
  * @author Marcin Zajaczkowski
- *
  */
 public class TestUserManager implements UserManager {
 
@@ -52,7 +51,7 @@ public class TestUserManager implements UserManager {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
-    public List<RZMUser> find(UserCriteria criteria){
+    public List<RZMUser> find(UserCriteria criteria) {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
@@ -121,5 +120,10 @@ public class TestUserManager implements UserManager {
 
     //todo createGenericAdminUSer() could be added
     public void delete(RZMUser user) {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
+    public void delete(String loginName) {
+        throw new UnsupportedOperationException("Not implemented in test class.");
     }
 }
