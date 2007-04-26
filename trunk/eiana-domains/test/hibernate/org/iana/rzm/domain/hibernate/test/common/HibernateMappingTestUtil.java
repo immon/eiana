@@ -53,11 +53,11 @@ public class HibernateMappingTestUtil {
         return host;
     }
 
-    public static Domain setupDomain(Domain domain) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
+    public static Domain setupDomain(Domain domain)  {
         return HibernateMappingTestUtil.setupDomain(domain, "");
     }
 
-    public static Domain setupDomain(Domain domain, String prefix) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
+    public static Domain setupDomain(Domain domain, String prefix) {
         domain.setName(prefix + domain.getName());
         domain.setRegistryUrl("http://" + prefix + "registry.pl");
         domain.setSpecialInstructions(prefix + " special instructions");

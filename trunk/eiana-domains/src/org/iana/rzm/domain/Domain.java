@@ -122,6 +122,11 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public void setSupportingOrg(Contact supportingOrg) {
+        CheckTool.checkNull(supportingOrg, "supportingOrg");
+        // hibernate trick; note it only works when no-null arg is required
+        if (this.supportingOrg != null) {
+            supportingOrg.setObjId(this.supportingOrg.getObjId());
+        }
         this.supportingOrg = supportingOrg;
     }
 
