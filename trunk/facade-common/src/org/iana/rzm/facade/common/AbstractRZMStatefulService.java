@@ -24,8 +24,16 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
     protected UserManager userManager;
     protected AuthenticatedUser user;
 
+
+    protected AbstractRZMStatefulService() {
+    }
+
     protected AbstractRZMStatefulService(UserManager userManager) {
         CheckTool.checkNull(userManager, "user manager");
+        this.userManager = userManager;
+    }
+
+    public void setUserManager(UserManager userManager) {
         this.userManager = userManager;
     }
 
@@ -37,11 +45,11 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         this.user = null;
     }
 
-    final protected RZMUser getUser() {
+    protected RZMUser getUser() {
         return userManager.get(user.getObjId());
     }
 
-    final protected Set<String> getRoleDomainNames() {
+    protected Set<String> getRoleDomainNames() {
         Set<String> ret = new HashSet<String>();
         RZMUser rzmUser = getUser();
         for (Role role : rzmUser.getRoles()) {
@@ -52,13 +60,13 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         return ret;
     }
 
-    final protected void isUserInRole(Role role) throws AccessDeniedException {
+    protected void isUserInRole(Role role) throws AccessDeniedException {
         if (user == null) throw new AccessDeniedException("no authenticated user");
         RZMUser rzmUser = getUser();
         if (!rzmUser.isInRole(role, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + role);            
     }
 
-    final protected void isUserInRole(Set<Role> roles) throws AccessDeniedException {
+    protected void isUserInRole(Set<Role> roles) throws AccessDeniedException {
         if (user == null) throw new AccessDeniedException("no authenticated user");
         RZMUser rzmUser = getUser();
         if (!rzmUser.isInAnyRole(roles, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + roles);
