@@ -20,12 +20,12 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 /**
  * marcinz, 2007-04-25, 14:38:46
  */
+@Test(sequential=true, groups = {"tests", "authenticationManager"})
 public class AuthenticationServiceBeanTest {
 
     private PlatformTransactionManager txMgr;
     private UserDAO userDAO;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
-    TransactionStatus txStatus;
     private AuthenticationService authService;
 
     private RZMUser testAdminUser;
@@ -47,34 +47,37 @@ public class AuthenticationServiceBeanTest {
 
     private void createTestUsers() {
 
-        txStatus = txMgr.getTransaction(txDef);
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            testAdminUser = createTestAdminUser();
+            userDAO.create(testAdminUser);
 
-        testAdminUser = createTestAdminUser();
-        userDAO.create(testAdminUser);
+            testAdminUserWithSecurID = createTestAdminUserWithSecurID();
+            userDAO.create(testAdminUserWithSecurID);
 
-        testAdminUserWithSecurID = createTestAdminUserWithSecurID();
-        userDAO.create(testAdminUserWithSecurID);
+            testWrongPasswordUser = createTestWrongPasswordUser();
+            userDAO.create(testWrongPasswordUser);
 
-        testWrongPasswordUser = createTestWrongPasswordUser();
-        userDAO.create(testWrongPasswordUser);
+            RZMUser tempTestLazyUser1 = createTestWrongPasswordUser();
+            userDAO.create(tempTestLazyUser1);
+            testLazyUser1ID = tempTestLazyUser1.getObjId();
 
-        RZMUser tempTestLazyUser1 = createTestWrongPasswordUser();
-        userDAO.create(tempTestLazyUser1);
-        testLazyUser1ID = tempTestLazyUser1.getObjId();
+            testLazyUser2 = createTestWrongPasswordUser();
+            userDAO.create(testLazyUser2);
+            long testLazyUser2ID = testLazyUser2.getObjId();
 
-        testLazyUser2 = createTestWrongPasswordUser();
-        userDAO.create(testLazyUser2);
-        long testLazyUser2ID = testLazyUser2.getObjId();
+            txMgr.commit(txStatus);
 
-        txMgr.commit(txStatus);
+            txStatus = txMgr.getTransaction(txDef);
 
+            //get from a database to prevent keeping reference of a local object
+            testLazyUser2 = userDAO.get(testLazyUser2ID);
 
-        txStatus = txMgr.getTransaction(txDef);
+            txMgr.commit(txStatus);
 
-        //get from a database to prevent keeping reference of a local object
-        testLazyUser2 = userDAO.get(testLazyUser2ID);
-
-        txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+        }
     }
 
     @Test
@@ -86,13 +89,14 @@ public class AuthenticationServiceBeanTest {
         assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
-/*
     //could be moved to failure package
     @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoUser() throws Exception {
         PasswordAuth passwordAuth = new PasswordAuth();
         passwordAuth.setUserName(TestUserManager.NON_EXIST_LOGIN);
         passwordAuth.setPassword("foo");
+
+        authService.authenticate(passwordAuth);
     }
 
     //could be moved to failure package
@@ -214,28 +218,34 @@ public class AuthenticationServiceBeanTest {
         assert authenticatedUser.isInvalidated();
     }
 
-    */
-/**
+    /**
      * Lazy collection should be initialized inside open session
      */
-/*
     @Test
     public void testGetLazyPropertyInSession() throws Exception {
-        RZMUser testLazyUser1 = userDAO.get(testLazyUser1ID);
-        assert testLazyUser1 != null;
 
-        //first line should be enough to make a try to initialized lazy fetched collection
-        int size = testLazyUser1.getRoles().size();
-        if (size > 0) {
-            Role role = testLazyUser1.getRoles().get(0);
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+
+            RZMUser testLazyUser1 = userDAO.get(testLazyUser1ID);
+            assert testLazyUser1 != null;
+
+            //first line should be enough to make a try to initialized lazy fetched collection
+            int size = testLazyUser1.getRoles().size();
+            if (size > 0) {
+                Role role = testLazyUser1.getRoles().get(0);
+            }
+
+            txMgr.commit(txStatus);
+
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
         }
     }
 
-    */
-/**
+    /**
      * Lazy collection shouldn't be initialized outside open session
      */
-/*
     @Test(expectedExceptions = {org.hibernate.LazyInitializationException.class})
     public void testGetLazyPropertyOutsideSession() throws Exception {
 
@@ -245,13 +255,11 @@ public class AuthenticationServiceBeanTest {
             Role role = testLazyUser2.getRoles().get(0);
         }
     }
-*/
 
     @AfterClass
     public void cleanUp() {
-        txStatus = txMgr.getTransaction(txDef);
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
 
-        //problem with delete when object taken another time in the same session
         try {
             userDAO.delete(testAdminUser);
             userDAO.delete(testAdminUserWithSecurID);
