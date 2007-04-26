@@ -134,6 +134,9 @@ public class UserManagerBeanAccuracyTest {
                 user = dao.get(user.getObjId());
                 if (user != null) dao.delete(user);
             }
+            RZMUser user = dao.get("user-ivan123");
+            assert user != null;
+            dao.delete(user);
             txMgr.commit(txStatus);
         } catch (Exception e) {
             txMgr.rollback(txStatus);

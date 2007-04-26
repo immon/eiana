@@ -118,6 +118,8 @@ public class TransactionManagerTest {
             domainDAO.delete(domain);
             domain = domainDAO.get("tmtestdomain2");
             domainDAO.delete(domain);
+            domain = domainDAO.get("trans-manager.org");
+            domainDAO.delete(domain);
             txMgr.commit(txStatus);
         } catch (Exception e) {
             txMgr.rollback(txStatus);
