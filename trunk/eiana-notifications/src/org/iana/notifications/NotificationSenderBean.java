@@ -54,11 +54,13 @@ public class NotificationSenderBean implements NotificationSender {
 
     public void send(Addressee addressee, Content content) throws NotificationException {
         CheckTool.checkNull(addressee, "null addressee param");
+        CheckTool.checkNull(content, "null notification content");
         sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", content.getSubject(), content.getBody());
     }
 
     public void send(Collection<Addressee> addressees, Content content) throws NotificationException {
         CheckTool.checkCollectionNull(addressees, "null addressees list");
+        CheckTool.checkNull(content, "null notification content");
         StringBuffer address = new StringBuffer("");
         for(Iterator i = addressees.iterator();  i.hasNext();) {
             Addressee add = (Addressee)i.next();
