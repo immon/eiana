@@ -13,9 +13,9 @@ public interface AdminRoleService extends RZMStatefulService {
 
     public RoleVO getRole(long id);
 
-    public void createRole(RoleVO Role);
+    public void createRole(RoleVO role);
 
-    public void updateRole(RoleVO Role);
+    public void updateRole(RoleVO role);
 
     public void deleteRole(long id);
 
