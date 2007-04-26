@@ -1,8 +1,6 @@
 package org.iana.rzm.domain.hibernate.test.common;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.conf.SpringDomainsApplicationContext;
@@ -36,5 +34,23 @@ abstract public class HibernateTest {
     protected void closeTx() {
         tx.commit();
         tx = null;
+    }
+
+    protected static interface HibernateSeq {
+        void run(Session session) throws HibernateException;
+    }
+
+    protected final void runInTransaction(HibernateSeq seq) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        try {
+            seq.run(session);
+            tx.commit();
+        } catch (HibernateException e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
     }
 }
