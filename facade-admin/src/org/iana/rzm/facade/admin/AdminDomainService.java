@@ -11,15 +11,15 @@ import java.util.List;
  */
 public interface AdminDomainService extends RZMStatefulService {
 
-    public DomainVO getDomain(String DomainName);
+    public DomainVO getDomain(String domainName);
 
     public DomainVO getDomain(long id);
 
-    public void createDomain(DomainVO Domain);
+    public void createDomain(DomainVO domain);
 
-    public void updateDomain(DomainVO Domain);
+    public void updateDomain(DomainVO domain);
 
-    public void deleteDomain(String DomainName);
+    public void deleteDomain(String domainName);
 
     public void deleteDomain(long id);
 
