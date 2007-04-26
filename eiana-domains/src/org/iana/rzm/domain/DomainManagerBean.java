@@ -32,6 +32,10 @@ public class DomainManagerBean implements DomainManager {
         dao.update(domain);
     }
 
+    public void delete(Domain domain) {
+        dao.delete(domain);
+    }
+
     public List<Domain> findAll() {
         return null;
     }
