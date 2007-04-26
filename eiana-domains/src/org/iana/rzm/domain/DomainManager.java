@@ -3,7 +3,7 @@ package org.iana.rzm.domain;
 import java.util.List;
 
 /**
- * <p>
+ * <p/>
  * This interface provides a way to access and modify domain objects directly
  * i.e. without a mean of creating domain transactions.
  * </p>
@@ -21,6 +21,8 @@ public interface DomainManager {
     public void update(Domain domain);
 
     public void delete(Domain domain);
+
+    public void delete(String name);
 
     public List<Domain> findAll();
 

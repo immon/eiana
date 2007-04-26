@@ -5,7 +5,6 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import java.util.List;
 
 /**
- * 
  * @author Patrycja Wegrzynowicz
  */
 public class DomainManagerBean implements DomainManager {
@@ -34,6 +33,10 @@ public class DomainManagerBean implements DomainManager {
 
     public void delete(Domain domain) {
         dao.delete(domain);
+    }
+
+    public void delete(String name) {
+        delete(get(name));
     }
 
     public List<Domain> findAll() {
