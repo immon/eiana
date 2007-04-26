@@ -33,7 +33,7 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(sequential = true, groups = {"confirmation", "eiana-trans"})
+@Test(sequential = true, groups = {"excluded", "confirmation", "eiana-trans"})
 public class ConfirmationTest {
     private ApplicationContext appCtx;
     private TransactionManager transMgr;
