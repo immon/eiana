@@ -7,6 +7,8 @@ import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.user.RZMUser;
 import org.iana.notifications.Addressee;
+import org.iana.notifications.dao.NotificationDAO;
+import org.iana.notifications.dao.HibernateNotificationDAO;
 
 import java.util.*;
 
@@ -17,30 +19,30 @@ import java.util.*;
 public class ProcessStateNotifier implements ActionHandler {
 
     TransactionData td;
-    private   NotificationSender    notificationSender;
-    protected NotificationTemplate  notificationTemplate;
-    protected String                notification;
+    private   NotificationSender   notificationSender;
+    protected NotificationTemplate notificationTemplate;
+    protected String               notification;
+    protected NotificationManager  notificationManagerBean;
     
     public void execute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
     }
 
-    protected void sendNotification(Addressee addressee, Notification notif) throws NotificationException {
-        notificationSender.send(addressee, notif.getContent());
-    }
-    
-    protected void sendNotification(Collection<Addressee> addressees, Notification notif) throws NotificationException {
-        notificationSender.send(addressees, notif.getContent());
-    }
-
     protected void fillDataFromContext(ExecutionContext executionContext) throws NotificationException {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
+        notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
         notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
     }
 
     protected void sendContactNotification(RZMUser user, Object template) throws Exception {
         Notification notification = notificationTemplate.getNotificationInstance(template);
-        sendNotification(user, notification);
+        notification.addAddressee(user);
+        try {
+            notificationSender.send(notification.getAddressee(), notification.getContent());
+        } catch(NotificationException e) {
+            notification.incSentFailures();
+            notificationManagerBean .create(notification);
+        }
     }
 }

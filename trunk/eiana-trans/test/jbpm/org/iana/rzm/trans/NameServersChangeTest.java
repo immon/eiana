@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"excluded", "eiana-trans", "jbpm", "NameServersChange"})
+@Test(sequential=true, groups = {"eiana-trans", "jbpm", "NameServersChange"})
 public class NameServersChangeTest {
     private TransactionManager transMgr;
     private ProcessDAO processDAO;

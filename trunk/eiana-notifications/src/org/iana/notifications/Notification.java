@@ -1,5 +1,7 @@
 package org.iana.notifications;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
@@ -32,18 +34,25 @@ public class Notification {
     private boolean sent;
 
     @Basic
-    private int sentFailures = 0;
+    private long sentFailures;
+
+
+    public Notification() {
+        this.created = new Timestamp(System.currentTimeMillis());
+        this.sent = false;
+        this.sentFailures = 0;
+    }
 
     public Long getObjId() {
         return objId;
     }
 
-    public int getSentFailures() {
+    public long getSentFailures() {
         return sentFailures;
     }
 
-    public void setSentFailures(int sentFailures) {
-        this.sentFailures = sentFailures;
+    public void incSentFailures() {
+        this.sentFailures++;
     }
 
     public void setObjId(Long objId) {
@@ -52,10 +61,6 @@ public class Notification {
 
     public Timestamp getCreated() {
         return created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
     }
 
     public String getType() {

@@ -15,5 +15,6 @@ public interface NotificationDAO {
     public void               update(Notification notification);
     public void               delete(Notification notification);
     public List<Notification> findUserNotifications(Addressee addressee);
-    public List<Notification> findUnSentNotifications(int maxSentFailures);
+    public List<Notification> findUnSentNotifications(long maxSentFailures);
+    public void               deleteUserNotifications(Addressee addressee);
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.context.ApplicationContext;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 import org.iana.rzm.conf.SpringApplicationContext;
 
 import java.util.*;
@@ -21,7 +22,7 @@ import java.util.*;
 @Test(sequential=true, groups = {"tests", "notificationManager"})
 public class NotificationsManagerTest {
     private PlatformTransactionManager txMgr;
-    private UserDAO                    userDAO;
+    private UserManager                userManager;
     private NotificationManager        notificationManager;
     private TransactionDefinition      txDef = new DefaultTransactionDefinition();
 
@@ -35,7 +36,7 @@ public class NotificationsManagerTest {
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
         txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        userDAO = (UserDAO) appCtx.getBean("userDAO");
+        userManager = (UserManager) appCtx.getBean("userManager");
         notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
     }
 
@@ -44,10 +45,10 @@ public class NotificationsManagerTest {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             firstUser = new RZMUser("John", "Do", "Organization", "john345", "john@do.com", "magic", false);
-            userDAO.create(firstUser);
+            userManager.create(firstUser);
 
             secondUser = new RZMUser("temp","temp", "temp", "temp", "temp@temp.com", "temp", false);
-            userDAO.create(secondUser);
+            userManager.create(secondUser);
             secondUserId = secondUser.getObjId();
 
             Map<String, String> values = new HashMap<String, String>();
@@ -138,38 +139,6 @@ public class NotificationsManagerTest {
     }
 
     @Test(dependsOnMethods = {"testNotificationsDAO_Update"})
-    public void testNotificationsDAO_DeleteUser() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            List<Notification> notifList = notificationManager.findUserNotifications(secondUser);
-            assert notifList.size() == 2;
-            for(Notification notif : notifList) {
-                Set<Addressee> newAddressee = new HashSet<Addressee>();
-                for(Addressee addressee : notif.getAddressee()) {
-                    if (!addressee.getObjId().equals(secondUserId))
-                        newAddressee.add(addressee);
-                }
-                notif.setAddressee(newAddressee);
-                notificationManager.update(notif);
-            }
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            List<Notification> notifList = notificationManager.findUserNotifications(secondUser);
-            assert notifList.size() == 0;
-            userDAO.delete(secondUser);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
-    }
-
-    @Test(dependsOnMethods = {"testNotificationsDAO_DeleteUser"})
     public void testNotificationsDAO_TempContent() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
@@ -202,12 +171,18 @@ public class NotificationsManagerTest {
     @AfterClass
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        for (Long id : notificationIds) {
-            Notification notification = notificationManager.get(id);
-            notificationManager.delete(notification);
-        }
         try {
-            userDAO.delete(firstUser);
+            userManager.delete(firstUser);
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            if (!txStatus.isCompleted())
+                txMgr.rollback(txStatus);
+            throw e;
+        }
+        txStatus = txMgr.getTransaction(txDef);
+        try {
+            notificationManager.deleteUserNotifications(secondUser);
+            userManager.delete(secondUser);
             txMgr.commit(txStatus);
         } catch (Exception e) {
             if (!txStatus.isCompleted())
