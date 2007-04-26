@@ -1,14 +1,14 @@
 package org.iana.rzm.trans;
 
+import org.iana.objectdiff.ChangeDetector;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
+import org.iana.rzm.trans.dao.ProcessCriteria;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.ticketing.TicketingService;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.ChangeDetector;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
@@ -95,5 +95,17 @@ public class TransactionManagerBean implements TransactionManager {
         List<Transaction> result = new ArrayList<Transaction>();
         for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
         return result;
+    }
+
+    public void deleteTransaction(Transaction transaction) throws NoSuchTransactionException {
+        ProcessInstance pi = processDAO.getProcessInstance(transaction.getTransactionID());
+        if (pi == null) throw new NoSuchTransactionException(transaction.getTransactionID());
+        processDAO.delete(pi);
+    }
+
+    public void deleteTransaction(Long transactionId) throws NoSuchTransactionException {
+        ProcessInstance pi = processDAO.getProcessInstance(transactionId);
+        if (pi == null) throw new NoSuchTransactionException(transactionId);
+        processDAO.delete(pi);
     }
 }
