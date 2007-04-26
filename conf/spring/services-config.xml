@@ -164,7 +164,7 @@
     </bean>
 
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
-        <constructor-arg ref="domainDAOTarget"/>
+        <constructor-arg ref="domainDAO"/>
     </bean>
 
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
