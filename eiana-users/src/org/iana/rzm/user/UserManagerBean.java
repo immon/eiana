@@ -1,7 +1,7 @@
 package org.iana.rzm.user;
 
-import org.iana.rzm.user.dao.UserDAO;
 import org.iana.notifications.dao.NotificationDAO;
+import org.iana.rzm.user.dao.UserDAO;
 
 import java.util.List;
 
@@ -44,6 +44,10 @@ public class UserManagerBean implements UserManager {
         } else {
             dao.delete(user);
         }
+    }
+
+    public void delete(String loginName) {
+        delete(get(loginName));
     }
 
     public List<RZMUser> findAll() {
