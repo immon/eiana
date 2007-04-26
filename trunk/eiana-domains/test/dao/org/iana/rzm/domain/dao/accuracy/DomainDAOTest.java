@@ -38,6 +38,7 @@ public class DomainDAOTest {
 
     @Test(dependsOnMethods = {"testDomainUpdate"})
     public void testDelete() throws Exception {
+        dao.delete(dao.get("dao.org"));
     }
 
 //    public static void main(String[] args) {
