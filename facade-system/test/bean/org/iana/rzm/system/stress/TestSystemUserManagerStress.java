@@ -61,14 +61,14 @@ public class TestSystemUserManagerStress implements UserManager {
         userCreated.setPassword("testSystemStress");
         userCreated.setObjId(1L);
         try {
-            for (int i=0; i<NUMBER_OF_DOMAINS; i++) {
+            for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
                 SystemRole role = new SystemRole();
-                role.setName("stressfacadesystemiana"+i+".org");
+                role.setName("stressfacadesystemiana" + i + ".org");
                 role.setType(SystemRole.SystemType.TC);
                 userCreated.addRole(role);
 
                 role = new SystemRole();
-                role.setName("stressfacadesystemiana"+i+".org");
+                role.setName("stressfacadesystemiana" + i + ".org");
                 role.setType(SystemRole.SystemType.AC);
                 userCreated.addRole(role);
             }
@@ -79,5 +79,10 @@ public class TestSystemUserManagerStress implements UserManager {
     }
 
     public void delete(RZMUser user) {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
+    public void delete(String loginName) {
+        throw new IllegalStateException("Not implemented yet.");
     }
 }

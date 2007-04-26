@@ -82,7 +82,12 @@ public class TestSystemUserManager implements UserManager {
         }
         return userCreated;
     }
-    
+
     public void delete(RZMUser user) {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
+    public void delete(String loginName) {
+        throw new IllegalStateException("Not implemented yet.");
     }
 }
