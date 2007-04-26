@@ -29,6 +29,7 @@
     <orderEntry type="module" module-name="facade-system" />
     <orderEntry type="module" module-name="integration-rt" />
     <orderEntry type="module" module-name="integration-securid" />
+    <orderEntry type="library" name="jbpm" level="project" />
     <orderEntryProperties />
   </component>
 </module>
