@@ -1,6 +1,7 @@
 package org.iana.rzm.user;
 
 import org.iana.rzm.user.dao.UserDAO;
+import org.iana.notifications.dao.NotificationDAO;
 
 import java.util.List;
 
@@ -12,9 +13,15 @@ import java.util.List;
 public class UserManagerBean implements UserManager {
 
     private UserDAO dao;
+    private NotificationDAO notificationDAO;
 
     public UserManagerBean(UserDAO dao) {
         this.dao = dao;
+    }
+
+    public UserManagerBean(UserDAO dao, NotificationDAO notificationDAO) {
+        this.dao = dao;
+        this.notificationDAO = notificationDAO;
     }
 
     public RZMUser get(String name) {
@@ -27,6 +34,16 @@ public class UserManagerBean implements UserManager {
 
     public void create(RZMUser user) {
         dao.create(user);
+    }
+
+    public void delete(RZMUser user) {
+        if (notificationDAO != null) {
+            notificationDAO.deleteUserNotifications(user);
+            RZMUser tempUser = dao.get(user.getObjId());
+            dao.delete(tempUser);
+        } else {
+            dao.delete(user);
+        }
     }
 
     public List<RZMUser> findAll() {

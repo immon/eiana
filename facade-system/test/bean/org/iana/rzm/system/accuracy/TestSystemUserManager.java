@@ -82,4 +82,7 @@ public class TestSystemUserManager implements UserManager {
         }
         return userCreated;
     }
+    
+    public void delete(RZMUser user) {
+    }
 }

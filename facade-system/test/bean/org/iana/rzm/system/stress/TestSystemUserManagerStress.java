@@ -77,4 +77,7 @@ public class TestSystemUserManagerStress implements UserManager {
         }
         return userCreated;
     }
+
+    public void delete(RZMUser user) {
+    }
 }

@@ -120,4 +120,6 @@ public class TestUserManager implements UserManager {
     }
 
     //todo createGenericAdminUSer() could be added
+    public void delete(RZMUser user) {
+    }
 }

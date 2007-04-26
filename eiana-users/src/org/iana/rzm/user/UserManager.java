@@ -16,6 +16,8 @@ public interface UserManager {
 
     public void create(RZMUser user);
 
+    public void delete(RZMUser user);
+
     public List<RZMUser> findAll();
 
     public List<RZMUser> find(UserCriteria criteria);
