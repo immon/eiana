@@ -18,6 +18,8 @@ public interface UserManager {
 
     public void delete(RZMUser user);
 
+    public void delete(String loginName);
+
     public List<RZMUser> findAll();
 
     public List<RZMUser> find(UserCriteria criteria);
