@@ -85,4 +85,5 @@ public class TestSystemUserManagerStress implements UserManager {
     public void delete(String loginName) {
         throw new IllegalStateException("Not implemented yet.");
     }
+    public void update(RZMUser user) {}
 }

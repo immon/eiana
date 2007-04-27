@@ -126,4 +126,6 @@ public class TestUserManager implements UserManager {
     public void delete(String loginName) {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }
+
+    public void update(RZMUser user) {}
 }
