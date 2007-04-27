@@ -19,6 +19,7 @@ public class UserVO implements Trackable {
     private String firstName;
     private String lastName;
     private String organization;
+    private String email;
     private Set<RoleVO> roles = new HashSet<RoleVO>();
 
     private Long objId;
@@ -54,6 +55,14 @@ public class UserVO implements Trackable {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean isAdmin() {
