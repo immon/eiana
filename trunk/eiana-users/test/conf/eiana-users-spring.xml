@@ -33,6 +33,50 @@
         </property>
     </bean>
 
+    <bean id="roleManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.user.RoleManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="roleManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="roleManagerTarget" class="org.iana.rzm.user.RoleManagerBean">
+        <constructor-arg ref="roleDAOTarget" />
+    </bean>
+
+    <bean id="roleDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.user.dao.RoleDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="roleDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="roleDAOTarget" class="org.iana.rzm.user.dao.HibernateRoleDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
 
     <!-- database hibernate configuration -->
 
