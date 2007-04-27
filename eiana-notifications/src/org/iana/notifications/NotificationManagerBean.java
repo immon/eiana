@@ -28,6 +28,10 @@ public class NotificationManagerBean implements NotificationManager {
         notificationDAO.update(notification);
     }
 
+    public void delete(Notification notification) {
+        notificationDAO.delete(notification);
+    }
+
     public List<Notification> findUserNotifications(Addressee addressee) {
         return notificationDAO.findUserNotifications(addressee);
     }

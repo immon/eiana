@@ -26,9 +26,10 @@ public class NotificationsReSender implements ActionHandler {
         for (Notification notification : unSentNotifications)
             try {
                 notificationSender.send(notification.getAddressee(), notification.getContent());
+                notificationManagerBean.delete(notification);
             } catch(NotificationException e) {
                 notification.incSentFailures();
-                notificationManagerBean .update(notification);
+                notificationManagerBean.update(notification);
             }
     }
 }
