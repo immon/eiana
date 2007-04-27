@@ -6,6 +6,49 @@
 
     <!-- facade services configuration -->
 
+    <bean id="GuardedAdminUserServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.admin.AdminUserService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedAdminUserServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedAdminUserServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean">
+        <constructor-arg index="0" ref="userManager" />
+    </bean>
+
+    <bean id="GuardedAdminDomainServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.admin.AdminDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedAdminDomainServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedAdminDomainServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean">
+        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="1" ref="domainManager" />
+    </bean>
+
     <!-- authentication service -->
 
     <bean id="authenticationServiceBean"

@@ -12,6 +12,11 @@
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntry type="module" module-name="facade-system" />
+    <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="module" module-name="eiana-domains" />
+    <orderEntry type="module" module-name="eiana-util" />
+    <orderEntry type="library" name="hibernate" level="project" />
+    <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntryProperties />
   </component>
 </module>
