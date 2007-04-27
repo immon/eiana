@@ -81,7 +81,7 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
     }
 
     public List<RZMUser> findAll() {
-        String query = "from User";
+        String query = "from RZMUser";
         return (List<RZMUser>) getHibernateTemplate().find(query);
     }
 }
