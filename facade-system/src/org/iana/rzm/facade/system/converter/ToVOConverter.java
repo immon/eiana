@@ -241,10 +241,10 @@ public class ToVOConverter {
         toContactVO.setAddresses(toAddressVOList(fromContact.getAddresses()));
 
         toContactVO.setObjId(fromContact.getObjId());
-        toContactVO.setEmails(fromContact.getEmails());
-        toContactVO.setFaxNumbers(fromContact.getFaxNumbers());
+        toContactVO.setEmails(toStringList(fromContact.getEmails()));
+        toContactVO.setFaxNumbers(toStringList(fromContact.getFaxNumbers()));
         toContactVO.setName(fromContact.getName());
-        toContactVO.setPhoneNumbers(fromContact.getPhoneNumbers());
+        toContactVO.setPhoneNumbers(toStringList(fromContact.getPhoneNumbers()));
         toContactVO.setRole(fromContact.isRole());
 
         if (fromContact.getTrackData() != null) {
@@ -280,5 +280,12 @@ public class ToVOConverter {
 
         toAddressVO.setTextAddress(fromAddress.getTextAddress());
         toAddressVO.setCountryCode(fromAddress.getCountryCode());
+    }
+
+    private static List<String> toStringList(List<String> src) {
+        List<String> dest = new ArrayList<String>();
+        for(String srcStr : src)
+            dest.add(srcStr);
+        return dest;
     }
 }
