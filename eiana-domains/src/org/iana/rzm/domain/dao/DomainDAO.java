@@ -2,6 +2,8 @@ package org.iana.rzm.domain.dao;
 
 import org.iana.rzm.domain.Domain;
 
+import java.util.List;
+
 /**
  *
  * @author Patrycja Wegrzynowicz
@@ -17,4 +19,6 @@ public interface DomainDAO {
     public void update(Domain domain);
 
     public void delete(Domain domain);
+
+    public List<Domain> findAll();
 }

@@ -40,7 +40,7 @@ public class DomainManagerBean implements DomainManager {
     }
 
     public List<Domain> findAll() {
-        return null;
+        return dao.findAll();
     }
 
     public List<Domain> find(DomainCriteria criteria) {
