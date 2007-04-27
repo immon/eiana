@@ -36,6 +36,10 @@ public class UserManagerBean implements UserManager {
         dao.create(user);
     }
 
+    public void update(RZMUser user) {
+        dao.update(user);
+    }
+
     public void delete(RZMUser user) {
         if (notificationDAO != null) {
             notificationDAO.deleteUserNotifications(user);
@@ -51,7 +55,7 @@ public class UserManagerBean implements UserManager {
     }
 
     public List<RZMUser> findAll() {
-        return null;
+        return dao.findAll();
     }
 
     public List<RZMUser> find(UserCriteria criteria) {

@@ -1,7 +1,6 @@
 package org.iana.rzm.user.dao;
 
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
 
@@ -30,4 +29,6 @@ public interface UserDAO {
                                                boolean acceptFrom, boolean mustAccept);
 
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
+
+    public List<RZMUser> findAll();
 }

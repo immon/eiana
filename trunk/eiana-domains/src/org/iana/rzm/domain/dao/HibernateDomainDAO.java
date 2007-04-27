@@ -1,14 +1,9 @@
 package org.iana.rzm.domain.dao;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.orm.hibernate3.HibernateCallback;
 import org.iana.rzm.domain.Domain;
-import org.hibernate.Session;
-import org.hibernate.HibernateException;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Iterator;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -41,5 +36,10 @@ public class HibernateDomainDAO extends HibernateDaoSupport implements DomainDAO
     
     public void delete(Domain domain) {
         getHibernateTemplate().delete(domain);
+    }
+
+    public List<Domain> findAll() {
+        String query = "from Domain";
+        return (List<Domain>) getHibernateTemplate().find(query);
     }
 }
