@@ -4,9 +4,12 @@ import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
+import org.iana.rzm.common.TrackData;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * org.iana.rzm.facade.user.converter.UserConverter
@@ -54,7 +57,43 @@ public class UserConverter {
         userVO.setObjId(user.getObjId());
         userVO.setOrganization(user.getOrganization());
         userVO.setUserName(user.getLoginName());
+        userVO.setEmail(user.getEmail());
 
         return userVO;
+    }
+
+    public static RZMUser convert(UserVO user) {
+        if (user == null) return null;
+
+        RZMUser rzmUser = convertUser(user);
+
+        List<Role> roles = new ArrayList<Role>();
+        for (RoleVO roleVO : user.getRoles()) {
+            roles.add(RoleConverter.convertRole(roleVO));
+        }
+        rzmUser.setRoles(roles);
+
+        return rzmUser;
+    }
+
+    private static RZMUser convertUser(UserVO userVO) {
+        RZMUser rzmUser = new RZMUser();
+
+        TrackData trackData = new TrackData();
+
+        trackData.setCreated(userVO.getCreated());
+        trackData.setCreatedBy(userVO.getCreatedBy());
+        trackData.setModified(userVO.getModified());
+        trackData.setModifiedBy(userVO.getModifiedBy());
+        rzmUser.setTrackData(trackData);
+
+        rzmUser.setFirstName(userVO.getFirstName());
+        rzmUser.setLastName(userVO.getLastName());
+        rzmUser.setObjId(userVO.getObjId());
+        rzmUser.setOrganization(userVO.getOrganization());
+        rzmUser.setLoginName(userVO.getUserName());
+        rzmUser.setEmail(userVO.getEmail());
+
+        return rzmUser;
     }
 }

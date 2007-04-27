@@ -23,6 +23,9 @@ class RoleConverter {
     static Map<SystemRole.SystemType, SystemRoleVO.SystemType> systemRolesMap = new HashMap<SystemRole.SystemType, SystemRoleVO.SystemType>();
     static Map<AdminRole.AdminType, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminRole.AdminType, AdminRoleVO.AdminType>();
 
+    static Map<SystemRoleVO.SystemType, SystemRole.SystemType> systemRolesVOMap = new HashMap<SystemRoleVO.SystemType, SystemRole.SystemType>();
+    static Map<AdminRoleVO.AdminType, AdminRole.AdminType> adminRolesVOMap = new HashMap<AdminRoleVO.AdminType, AdminRole.AdminType>();
+
     static {
         systemRolesMap.put(SystemRole.SystemType.AC, SystemRoleVO.SystemType.AC);
         systemRolesMap.put(SystemRole.SystemType.TC, SystemRoleVO.SystemType.TC);
@@ -31,12 +34,25 @@ class RoleConverter {
         adminRolesMap.put(AdminRole.AdminType.IANA, AdminRoleVO.AdminType.IANA);
         adminRolesMap.put(AdminRole.AdminType.GOV_OVERSIGHT, AdminRoleVO.AdminType.GOV_OVERSIGHT);
         adminRolesMap.put(AdminRole.AdminType.ZONE_PUBLISHER, AdminRoleVO.AdminType.ZONE_PUBLISHER);
+
+        systemRolesVOMap.put(SystemRoleVO.SystemType.AC, SystemRole.SystemType.AC);
+        systemRolesVOMap.put(SystemRoleVO.SystemType.TC, SystemRole.SystemType.TC);
+        systemRolesVOMap.put(SystemRoleVO.SystemType.SO, SystemRole.SystemType.SO);
+
+        adminRolesVOMap.put(AdminRoleVO.AdminType.IANA, AdminRole.AdminType.IANA);
+        adminRolesVOMap.put(AdminRoleVO.AdminType.GOV_OVERSIGHT, AdminRole.AdminType.GOV_OVERSIGHT);
+        adminRolesVOMap.put(AdminRoleVO.AdminType.ZONE_PUBLISHER, AdminRole.AdminType.ZONE_PUBLISHER);
     }
 
     static RoleVO convertRole(Role role) {
 
         return role.isAdmin() ? convertAdminRole((AdminRole) role)
                 : convertSystemRole((SystemRole) role);
+    }
+
+    static Role convertRole(RoleVO roleVO) {
+        return roleVO.isAdmin() ? convertAdminRole((AdminRoleVO) roleVO)
+                : convertSystemRole((SystemRoleVO) roleVO);
     }
 
     static RoleVO convertSystemRole(SystemRole systemRole) {
@@ -56,6 +72,22 @@ class RoleConverter {
         return systemRoleVO;
     }
 
+    static Role convertSystemRole(SystemRoleVO systemRoleVO) {
+        CheckTool.checkNull(systemRoleVO.getType(), "system roleVO");
+
+        SystemRole systemRole = new SystemRole();
+
+        SystemRole.Type systemRoleType = systemRolesVOMap.get(systemRoleVO.getType());
+        CheckTool.checkNull(systemRoleType, "Unknown system roleVO type: " + systemRoleVO.getType().toString());
+        systemRole.setType(systemRoleType);
+        systemRole.setName(systemRoleVO.getName());
+        systemRole.setNotify(systemRoleVO.isNotify());
+        systemRole.setAcceptFrom(systemRoleVO.isAcceptFrom());
+        systemRole.setMustAccept(systemRoleVO.isMustAccept());
+
+        return systemRole;
+    }
+
     static RoleVO convertAdminRole(AdminRole adminRole) {
 
         CheckTool.checkNull(adminRole.getType(), "admin role");
@@ -67,5 +99,17 @@ class RoleConverter {
         adminRoleVO.setType(adminRoleVOType);
 
         return adminRoleVO;
+    }
+
+    static Role convertAdminRole(AdminRoleVO adminRoleVO) {
+        CheckTool.checkNull(adminRoleVO.getType(), "admin roleVO");
+
+        AdminRole adminRole = new AdminRole();
+
+        AdminRole.Type adminRoleType = adminRolesVOMap.get(adminRoleVO.getType());
+        CheckTool.checkNull(adminRoleType, "Unknown admin roleVO type: " + adminRoleVO.getType().toString());
+        adminRole.setType(adminRoleType);
+
+        return adminRole;
     }
 }
