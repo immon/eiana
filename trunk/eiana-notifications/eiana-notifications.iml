@@ -20,6 +20,7 @@
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="nask-commons" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
     <orderEntryProperties />
   </component>
 </module>

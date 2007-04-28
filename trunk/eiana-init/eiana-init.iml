@@ -16,6 +16,7 @@
     <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntry type="module" module-name="eiana-util" />
     <orderEntry type="library" name="cobertura" level="project" />
+    <orderEntry type="module" module-name="tests" />
     <orderEntryProperties />
   </component>
 </module>

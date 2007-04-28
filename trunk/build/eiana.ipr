@@ -362,7 +362,9 @@
         <root url="jar://$PROJECT_DIR$/../lib/jbpm/jbpm-identity-3.1.4.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/java/jbpm-3.1.4/src/java.jbpm" />
+      </SOURCES>
     </library>
     <library name="jdom">
       <CLASSES>
