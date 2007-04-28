@@ -1,0 +1,29 @@
+<process-definition name="Confirmation Test">
+
+    <start-state>
+        <transition to="PENDING_CONTACT_CONFIRMATION"></transition>
+    </start-state>
+
+    <state name="PENDING_CONTACT_CONFIRMATION">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
+        </event>
+        <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
+        <transition name="reject" to="REJECTED"/>
+        <transition name="close" to="ADMIN_CLOSED"/>
+    </state>
+
+    <state name="PENDING_IANA_CONFIRMATION">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.TestRoleCalculator">
+                <role>IANA</role>
+            </action>
+        </event>
+        <transition name="accept" to="COMPLETED"/>
+        <transition name="reject" to="REJECTED"/>
+    </state>
+
+    <end-state name='COMPLETED'/>
+    <end-state name='REJECTED'/>
+    <end-state name='ADMIN_CLOSED'/>
+</process-definition>
