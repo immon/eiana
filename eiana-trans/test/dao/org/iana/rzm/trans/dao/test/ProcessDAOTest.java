@@ -3,22 +3,21 @@ package org.iana.rzm.trans.dao.test;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -50,14 +49,9 @@ public class ProcessDAOTest {
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
         userDAO = (UserDAO) appCtx.getBean("userDAO");
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
             generateTestData();
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -65,7 +59,6 @@ public class ProcessDAOTest {
 
     @AfterClass
     public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             for (Long pid : domain1ProcIds) {
                 ProcessInstance pi = processDAO.getProcessInstance(pid);
@@ -75,38 +68,24 @@ public class ProcessDAOTest {
                 ProcessInstance pi = processDAO.getProcessInstance(pid);
                 if (pi != null) processDAO.delete(pi);
             }
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
 
-        txStatus = txMgr.getTransaction(txDef);
         try {
             RZMUser user = userDAO.get("user-posys1");
             if (user != null) userDAO.delete(user);
             user = userDAO.get("user-posys2");
             if (user != null) userDAO.delete(user);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
 
-        txStatus = txMgr.getTransaction(txDef);
         try {
             Domain domain = domainDAO.get("potestdomain1");
             if (domain!= null) domainDAO.delete(domain);
             domain = domainDAO.get("potestdomain2");
             if (domain!= null) domainDAO.delete(domain);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -167,7 +146,6 @@ public class ProcessDAOTest {
             td.getTrackData().setCreatedBy(ticketId + "-creator");
             td.getTrackData().setModifiedBy(ticketId + "-modifier");
             pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-            Transaction transaction = new Transaction(pi);
             pi.signal();
             processDAO.save(pi);
             return pi;
@@ -178,7 +156,6 @@ public class ProcessDAOTest {
 
     @Test
     public void findProcessInstancesByDomain() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
             criteria1.addDomainName("potestdomain1");
@@ -201,11 +178,6 @@ public class ProcessDAOTest {
             for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
 
             assert domain2ProcIds.equals(dbDomain2ProcIds);
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -213,7 +185,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByDomain")
     public void findProcessInstancesByUser() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
             criteria1.addUserName("user-posys1");
@@ -236,11 +207,6 @@ public class ProcessDAOTest {
             for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
 
             assert domain2ProcIds.equals(dbDomain2ProcIds);
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -248,7 +214,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByUser")
     public void findProcessInstancesByUserAndDomain() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
             criteria1.addUserName("user-posys1");
@@ -273,11 +238,6 @@ public class ProcessDAOTest {
             for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
 
             assert domain2ProcIds.equals(dbDomain2ProcIds);
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -305,7 +265,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "testTxRollback")
     public void findProcessInstancesByState() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
             criteria1.addState(TransactionState.Name.EXCEPTION.toString());
@@ -327,11 +286,6 @@ public class ProcessDAOTest {
             allProcIds.addAll(domain2ProcIds);
 
             assert allProcIds.equals(processIds2);
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -339,7 +293,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByState")
     public void findProcessInstancesByTicketId() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
             criteria1.addTicketId(121L);
@@ -363,11 +316,6 @@ public class ProcessDAOTest {
             for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
 
             assert domain2ProcIds.equals(processIds2);
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -375,7 +323,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByTicketId")
     public void findProcessInstancesByProcessName() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
             criteria1.addProcessName("Nonexistent Transaction (Unified Workflow)");
@@ -398,10 +345,6 @@ public class ProcessDAOTest {
 
             assert allProcIds.equals(processIds2);
 
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -409,7 +352,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByProcessName")
     public void findProcessInstancesByCreatorsAndModifiers() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria0 = new ProcessCriteria();
             criteria0.addCreator("101-creator");
@@ -435,11 +377,6 @@ public class ProcessDAOTest {
             assert processes2 != null;
             assert processes2.size() == 1;
             assert processes2.iterator().next().getId() == domain2FirstProcId;
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -447,7 +384,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByCreatorsAndModifiers")
     public void findProcessInstancesByTrackDates() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria0 = new ProcessCriteria();
             Calendar cal = Calendar.getInstance();
@@ -479,11 +415,6 @@ public class ProcessDAOTest {
             assert processes2 != null;
             assert processes2.size() == 1;
             assert processes2.iterator().next().getId() == domain2FirstProcId;
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -491,7 +422,6 @@ public class ProcessDAOTest {
 
     @Test(dependsOnMethods = "findProcessInstancesByTrackDates")
     public void findProcessInstancesByProcDates() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessCriteria criteria0 = new ProcessCriteria();
             criteria0.setStartedBefore(date0);
@@ -534,11 +464,6 @@ public class ProcessDAOTest {
 
             assert processes3 != null;
             assert processes3.isEmpty();
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }

@@ -42,7 +42,7 @@
     </bean>
 
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
-        <constructor-arg ref="domainDAOTarget" />
+        <constructor-arg ref="domainDAO" />
     </bean>
 
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -69,21 +69,21 @@
     </bean>
 
     <bean id="transactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-            <property name="proxyInterfaces">
-                <list>
-                    <value>org.iana.rzm.trans.TransactionManager</value>
-                </list>
-            </property>
-            <property name="target">
-                <ref bean="transactionManagerTarget"/>
-            </property>
-            <property name="transactionManager">
-                <ref bean="transactionManager"/>
-            </property>
-            <property name="transactionAttributeSource">
-                <ref bean="transactionAttributeSource"/>
-            </property>
-        </bean>
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.TransactionManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="transactionManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
 
     <bean id="faketicket" class="org.iana.rzm.trans.FakeTicketingService"/>
 
@@ -99,6 +99,35 @@
         </constructor-arg>        
     </bean>
     
+    <bean id="testTransactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.trans.TestTransactionManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="testTransactionManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="testTransactionManagerTarget" class="org.iana.rzm.trans.TestTransactionManagerBean">
+        <constructor-arg>
+            <ref bean="processDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="domainDAO"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="faketicket"/>
+        </constructor-arg>        
+    </bean>
+
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="configLocation">
             <value>eiana-trans-hibernate.cfg.xml</value>
@@ -212,29 +241,6 @@
     <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
         <constructor-arg index="0" ref="jbpmContextFactory"/>
     </bean>
-
-    <!--
-    <bean id="processDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.rzm.trans.dao.ProcessDAO</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="processDAOTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
-    </bean>
-
-    <bean id="processDAOTarget" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
-        <constructor-arg index="0" ref="jbpmContextFactory"/>
-    </bean>
-    -->
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg ref="userDAO" />

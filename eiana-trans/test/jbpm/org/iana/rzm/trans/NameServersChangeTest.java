@@ -2,6 +2,7 @@ package org.iana.rzm.trans;
 
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
@@ -25,30 +26,23 @@ import org.testng.annotations.Test;
 
 @Test(sequential=true, groups = {"eiana-trans", "jbpm", "NameServersChange"})
 public class NameServersChangeTest {
+    private PlatformTransactionManager txManager;
+    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
     private TransactionManager transMgr;
     private ProcessDAO processDAO;
-    private DomainDAO domainDAO;
-    private SchedulerThread schedulerThread;
-    private PlatformTransactionManager txMgr;
-    private TransactionDefinition txDef = new DefaultTransactionDefinition();
+    private DomainManager domainManager;
     private Long testProcessInstanceId;
 
     @BeforeClass
     public void init() throws Exception {
         ApplicationContext appCtx = SpringTransApplicationContext.getInstance().getContext();
+        txManager = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        schedulerThread = new SchedulerThread((JbpmConfiguration) appCtx.getBean("jbpmConfiguration"));
+        domainManager = (DomainManager) appCtx.getBean("domainManager");
 
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -56,47 +50,30 @@ public class NameServersChangeTest {
 
     @AfterClass
     public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);
-            if (pi != null) processDAO.delete(pi);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
+            transMgr.deleteTransaction(testProcessInstanceId);
         } finally {
             processDAO.close();
         }
 
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            Domain domain = domainDAO.get("testdomain-ns.org");
-            if (domain != null) domainDAO.delete(domain);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        } finally {
-            processDAO.close();
-        }
+        domainManager.delete("testdomain-ns.org");
     }
 
     @Test
     public void testNameServersChange() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        Domain domain = null;
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
             Host firstNameServer = new Host("first");
             firstNameServer.addIPAddress("192.168.0.1");
 
-            domain = new Domain("testdomain-ns.org");
+            Domain domain = new Domain("testdomain-ns.org");
             domain.addNameServer(firstNameServer);
-            domainDAO.create(domain);
+            domainManager.create(domain);
 
             Host secondNameServer = new Host("second");
             secondNameServer.addIPAddress("192.168.0.2");
 
-            Domain clonedDomain = (Domain) domain.clone();
+            Domain clonedDomain = domain.clone();
             clonedDomain.addNameServer(secondNameServer);
 
             Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
@@ -119,26 +96,16 @@ public class NameServersChangeTest {
             token.signal("accept");
             assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
+            //todo: lazy initialization - error in changes?
 
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        } finally {
-            processDAO.close();
-        }
-        
-        try {
-            txStatus = txMgr.getTransaction(txDef);
-
-            Domain retrivedDomain = domainDAO.get(domain.getName());
+            //Domain retrivedDomain = domainDAO.get(domain.getName());
 
             //assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
             //        retrivedDomain.getRegistryUrl() == null);
-
-            txMgr.commit(txStatus);
+            txManager.commit(txStatus);
         } catch (Exception e) {
-            txMgr.rollback(txStatus);
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
             throw e;
         } finally {
             processDAO.close();

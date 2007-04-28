@@ -27,6 +27,7 @@ public class JbpmTest {
         );
         
 
+
         ProcessInstance processInstance = new ProcessInstance(processDefinition);
 
         Token token = processInstance.getRootToken();

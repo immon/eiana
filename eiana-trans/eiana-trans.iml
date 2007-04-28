@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/test/conf" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/confirmation" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/dao" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test/etc/processes" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/hibernate" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/jbpm" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/manager" isTestSource="true" />

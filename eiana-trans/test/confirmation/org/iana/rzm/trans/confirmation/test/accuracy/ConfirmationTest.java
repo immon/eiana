@@ -1,21 +1,18 @@
 package org.iana.rzm.trans.confirmation.test.accuracy;
 
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.trans.TestTransactionManager;
 import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.graph.exe.Token;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -25,52 +22,44 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(sequential = true, groups = {"excluded", "confirmation", "eiana-trans"})
+@Test(sequential = true, groups = {"confirmation", "eiana-trans"})
 public class ConfirmationTest {
-    private ApplicationContext appCtx;
-    private TransactionManager transMgr;
+    private PlatformTransactionManager txManager;
+    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
+    private TestTransactionManager transactionManager;
     private ProcessDAO processDAO;
-    private DomainDAO domainDAO;
-    private PlatformTransactionManager txMgr;
-    private TransactionDefinition txDef = new DefaultTransactionDefinition();
-    private UserDAO userDAO;
+    private DomainManager domainManager;
+    private UserManager userManager;
     private Set<RZMUser> users = new HashSet<RZMUser>();
     private Set<String> domains = new HashSet<String>();
-    private Set<Long> processes = new HashSet<Long>();
+    private Long transactionId;
 
     @BeforeClass
     public void init() throws Exception {
-        appCtx = SpringTransApplicationContext.getInstance().getContext();
-        transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
+        ApplicationContext appCtx = SpringTransApplicationContext.getInstance().getContext();
+        txManager = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        userDAO = (UserDAO) appCtx.getBean("userDAO");
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        transactionManager = (TestTransactionManager) appCtx.getBean("testTransactionManagerBean");
+        domainManager = (DomainManager) appCtx.getBean("domainManager");
+        userManager = (UserManager) appCtx.getBean("userManager");
         try {
-            users.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
-            users.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
-            users.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
-
-            for (RZMUser user : users)
-                userDAO.create(user);
-
-            processDAO.deploy(DefinedTestProcess.getDefinition());
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
+            processDAO.deploy(ConfirmationTestProcess.getDefinition());
         } finally {
             processDAO.close();
         }
+
+        users.add(UserManagementTestUtil.createUser("admin1", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        users.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
+        users.add(UserManagementTestUtil.createUser("admin3", new AdminRole(AdminRole.AdminType.IANA)));
+
+        for (RZMUser user : users)
+            userManager.create(user);
     }
 
     private Transaction createTransaction(String suffix) throws CloneNotSupportedException {
@@ -98,82 +87,48 @@ public class ConfirmationTest {
         users.addAll(systemUsers);
 
         for (RZMUser user : systemUsers)
-            userDAO.create(user);
-
-        Address address = new Address();
-        address.setTextAddress("ta" + suffix);
-        address.setCountryCode("US");
-
-        Contact supportingOrg = new Contact("supporg" + suffix);
-        supportingOrg.addEmail("oldemail" + suffix + "@post.org");
-        supportingOrg.addPhoneNumber("oldnum" + suffix);
-
-        List<String> emails = new ArrayList<String>();
-        emails.add("newemail" + suffix + "@post.org");
-        Contact clonedSupportingOrg = (Contact) supportingOrg.clone();
-        clonedSupportingOrg.setEmails(emails);
-        List<String> phones = new ArrayList<String>();
-        phones.add("newphone" + suffix);
-        clonedSupportingOrg.setPhoneNumbers(phones);
+            userManager.create(user);
 
         Domain domain = new Domain("conftestdomain" + suffix);
-        domains.add("conftestdomain" + suffix);
-        // domain.setWhoisServer("oldwhoisserver");
-        domain.setRegistryUrl("http://www.oldregistryurl" + suffix + ".org");
-        domain.setSupportingOrg(supportingOrg);
-        domain.addTechContact(new Contact("aaa" + suffix));
-        domainDAO.create(domain);
-
-        Domain clonedDomain = (Domain) domain.clone();
-        clonedDomain.setWhoisServer("newwhoisserver" + suffix);
-        clonedDomain.setRegistryUrl(null);
-        clonedDomain.setSupportingOrg(clonedSupportingOrg);
-        Contact newContact = new Contact("aaa" + suffix);
-        newContact.addEmail("nocontactnewemial" + suffix + "@post.org");
-        //clonedDomain.addTechContact(newContact);
-        clonedDomain.setTechContacts(new ArrayList<Contact>());
-
-        return transMgr.createDomainModificationTransaction(clonedDomain);
+        domainManager.create(domain);
+        domains.add(domain.getName());
+        return transactionManager.createConfirmationTestTransaction(domain);
     }
 
     @Test
     public void testContactConfirmations() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
             Transaction transaction = createTransaction("contact");
-            ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
-            processes.add(processInstance.getId());
+            transactionId = transaction.getTransactionID();
+            assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
 
-            //Token token = processInstance.getRootToken();
-            //token.signal();
+            transaction.accept(userManager.get("user-sys1contact"));
+            assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
 
-            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
-
-            transaction.accept(userDAO.get("user-sys1contact"));
-
-            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
-
-            transaction.accept(userDAO.get("user-sys4contact"));
-
-            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
+            transaction.accept(userManager.get("user-sys4contact"));
+            assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
 
             RZMUser anotherUser = UserManagementTestUtil.createUser("sys7contact",
                     UserManagementTestUtil.createSystemRole("conftestdomaincontact", true, true,
                             SystemRole.SystemType.AC));
             users.add(anotherUser);
-            userDAO.create(anotherUser);
+            userManager.create(anotherUser);
 
-            transaction.accept(userDAO.get("user-sys2contact"));
+            transaction.accept(userManager.get("user-sys2contact"));
+            assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
 
-            assert "PENDING_CONTACT_CONFIRMATION".equals(processInstance.getRootToken().getNode().getName());
-
-            transaction.accept(userDAO.get("user-sys7contact"));
-
-            assert "PENDING_IMPACTED_PARTIES".equals(processInstance.getRootToken().getNode().getName());
-
-            txMgr.commit(txStatus);
+            transaction.accept(userManager.get("user-sys7contact"));
+            assert TransactionState.Name.PENDING_IANA_CONFIRMATION.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
+            txManager.commit(txStatus);
         } catch (Exception e) {
-            txMgr.rollback(txStatus);
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
             throw e;
         } finally {
             processDAO.close();
@@ -182,29 +137,19 @@ public class ConfirmationTest {
 
     @Test
     public void testAdminConfirmations() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transaction = createTransaction("admin");
-            ProcessInstance processInstance = processDAO.getProcessInstance(transaction.getTransactionID());
-            processes.add(processInstance.getId());
-
-            Token token = processInstance.getRootToken();
-            assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
-            assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
-            assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
-            token.signal("normal");
-
-            assert "PENDING_EXT_APPROVAL".equals(processInstance.getRootToken().getNode().getName()) : "unexpected state: " + token.getNode().getName();
-
-            transaction.accept(userDAO.get("user-admin2"));
-
-            assert "PENDING_USDOC_APPROVAL".equals(processInstance.getRootToken().getNode().getName()) : "unexpected state: " + token.getNode().getName();
-
-            txMgr.commit(txStatus);
+            Transaction transaction = transactionManager.getTransaction(transactionId);
+            assert transaction != null;
+            assert TransactionState.Name.PENDING_IANA_CONFIRMATION.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
+            transaction.accept(userManager.get("user-admin2"));
+            assert TransactionState.Name.COMPLETED.equals(transaction.getState().getName())
+                    : "unexpected state: " + transaction.getState().getName();
+            txManager.commit(txStatus);
         } catch (Exception e) {
-            txMgr.rollback(txStatus);
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
             throw e;
         } finally {
             processDAO.close();
@@ -213,43 +158,17 @@ public class ConfirmationTest {
 
     @AfterClass
     public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            for (Long id : processes) {
-                ProcessInstance pi = processDAO.getProcessInstance(id);
-                if (pi != null) processDAO.delete(pi);
-            }
-            txMgr.commit(txStatus);
+            transactionManager.deleteTransaction(transactionId);
+            for (RZMUser user : users)
+                userManager.delete(user);
+            for (String name : domains)
+                domainManager.delete(name);
+            txManager.commit(txStatus);
         } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        } finally {
-            processDAO.close();
-        }
-
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            for (RZMUser user : users) {
-                user = userDAO.get(user.getObjId());
-                if (user != null) userDAO.delete(user);
-            }
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        } finally {
-            processDAO.close();
-        }
-
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            for (String name : domains) {
-                Domain domain = domainDAO.get(name);
-                if (domain != null) domainDAO.delete(domain);
-            }
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
             throw e;
         } finally {
             processDAO.close();

@@ -93,6 +93,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     }
 
     public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria)  throws AccessDeniedException, InfrastructureException {
+        //todo: only this user's domains
         isUserInRole();
         return delegate.findTransactions(criteria);
     }
