@@ -64,7 +64,9 @@
     <state name="PENDING_IANA_CONFIRMATION">
         <event type='node-enter'>
             <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
-                <role>IANA</role>
+                <roles>
+                    <element>IANA</element>
+                </roles>
             </action>
         </event>
         <timer name="3d-time-out" duedate='3 days' transition='alert' ></timer>
@@ -80,7 +82,9 @@
     <state name="PENDING_EXT_APPROVAL">
         <event type='node-enter'>
             <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
-                <role>IANA</role>
+                <roles>
+                    <element>IANA</element>
+                </roles>
             </action>
         </event>
         <timer name="30d-time-out" duedate='30 days' transition='alert' ></timer>
@@ -94,7 +98,9 @@
     <state name="PENDING_USDOC_APPROVAL">
         <event type='node-enter'>
             <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
-                <role>USDoC</role>
+                <roles>
+                    <element>USDoC</element>
+                </roles>
             </action>
         </event>
         <timer name="5d-time-out" duedate='5 days' ></timer>

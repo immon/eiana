@@ -231,6 +231,12 @@
         <constructor-arg ref="domainManager" />
     </bean>
 
+    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
+        <property name="processDAO">
+            <ref bean="processDAO"/>
+        </property>
+    </bean>
+
     <bean id="transactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
@@ -245,6 +251,11 @@
         </property>
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="postInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
         </property>
     </bean>
 
