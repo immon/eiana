@@ -1,43 +1,39 @@
 package org.iana.rzm.system.accuracy;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.HostVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.MD5Password;
-import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.domain.*;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.HostVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.system.conf.SpringSystemApplicationContext;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.MD5Password;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.dao.UserDAO;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: piotrt
  */
 
-@Test(sequential = true, groups ={"excluded", "facade-system", "NameServerChangeTransactionTest"})
+@Test(sequential = true, groups = {"facade-system", "NameServerChangeTransactionTest"})
 public class NameServerChangeTransactionTest {
     private SystemTransactionService gsts;
     private UserDAO userDAO;
