@@ -37,6 +37,10 @@ public abstract class Role implements TrackedObject {
         return objId;
     }
 
+    public void setObjId(Long objId) {
+        this.objId = objId;    
+    }
+
     public abstract boolean isAdmin();
     
     public abstract Type getType();

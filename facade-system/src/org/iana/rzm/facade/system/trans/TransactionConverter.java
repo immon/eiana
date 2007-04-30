@@ -2,9 +2,6 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.change.*;
-import org.iana.rzm.facade.system.domain.SimpleDomainVO;
-import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.objectdiff.*;
 
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.Map;
  *
  * @author Patrycja Wegrzynowicz
  */
-class TransactionConverter {
+public class TransactionConverter {
 
     public static SimpleTransactionVO toSimpleTransactionVO(final Transaction trans) {
         if (trans == null) return null;

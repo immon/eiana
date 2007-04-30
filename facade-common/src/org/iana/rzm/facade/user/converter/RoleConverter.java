@@ -18,10 +18,10 @@ import java.util.Map;
  *
  * @author Marcin Zajaczkowski
  */
-class RoleConverter {
+public class RoleConverter {
 
-    static Map<SystemRole.SystemType, SystemRoleVO.SystemType> systemRolesMap = new HashMap<SystemRole.SystemType, SystemRoleVO.SystemType>();
-    static Map<AdminRole.AdminType, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminRole.AdminType, AdminRoleVO.AdminType>();
+    private static Map<SystemRole.SystemType, SystemRoleVO.SystemType> systemRolesMap = new HashMap<SystemRole.SystemType, SystemRoleVO.SystemType>();
+    private static Map<AdminRole.AdminType, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminRole.AdminType, AdminRoleVO.AdminType>();
 
     static Map<SystemRoleVO.SystemType, SystemRole.SystemType> systemRolesVOMap = new HashMap<SystemRoleVO.SystemType, SystemRole.SystemType>();
     static Map<AdminRoleVO.AdminType, AdminRole.AdminType> adminRolesVOMap = new HashMap<AdminRoleVO.AdminType, AdminRole.AdminType>();
@@ -44,18 +44,18 @@ class RoleConverter {
         adminRolesVOMap.put(AdminRoleVO.AdminType.ZONE_PUBLISHER, AdminRole.AdminType.ZONE_PUBLISHER);
     }
 
-    static RoleVO convertRole(Role role) {
+    public static RoleVO convertRole(Role role) {
 
         return role.isAdmin() ? convertAdminRole((AdminRole) role)
                 : convertSystemRole((SystemRole) role);
     }
 
-    static Role convertRole(RoleVO roleVO) {
+    public static Role convertRole(RoleVO roleVO) {
         return roleVO.isAdmin() ? convertAdminRole((AdminRoleVO) roleVO)
                 : convertSystemRole((SystemRoleVO) roleVO);
     }
 
-    static RoleVO convertSystemRole(SystemRole systemRole) {
+    private static RoleVO convertSystemRole(SystemRole systemRole) {
 
         CheckTool.checkNull(systemRole.getType(), "system role");
 
@@ -69,10 +69,12 @@ class RoleConverter {
         systemRoleVO.setAcceptFrom(systemRole.isAcceptFrom());
         systemRoleVO.setMustAccept(systemRole.isMustAccept());
 
+        systemRoleVO.setObjId(systemRole.getObjId());
+
         return systemRoleVO;
     }
 
-    static Role convertSystemRole(SystemRoleVO systemRoleVO) {
+    private static Role convertSystemRole(SystemRoleVO systemRoleVO) {
         CheckTool.checkNull(systemRoleVO.getType(), "system roleVO");
 
         SystemRole systemRole = new SystemRole();
@@ -85,10 +87,12 @@ class RoleConverter {
         systemRole.setAcceptFrom(systemRoleVO.isAcceptFrom());
         systemRole.setMustAccept(systemRoleVO.isMustAccept());
 
+        systemRole.setObjId(systemRoleVO.getObjId());
+
         return systemRole;
     }
 
-    static RoleVO convertAdminRole(AdminRole adminRole) {
+    private static RoleVO convertAdminRole(AdminRole adminRole) {
 
         CheckTool.checkNull(adminRole.getType(), "admin role");
 
@@ -98,10 +102,12 @@ class RoleConverter {
         CheckTool.checkNull(adminRoleVOType, "Unknown admin role type: " + adminRole.getType().toString());
         adminRoleVO.setType(adminRoleVOType);
 
+        adminRoleVO.setObjId(adminRole.getObjId());
+
         return adminRoleVO;
     }
 
-    static Role convertAdminRole(AdminRoleVO adminRoleVO) {
+    private static Role convertAdminRole(AdminRoleVO adminRoleVO) {
         CheckTool.checkNull(adminRoleVO.getType(), "admin roleVO");
 
         AdminRole adminRole = new AdminRole();
@@ -109,6 +115,8 @@ class RoleConverter {
         AdminRole.Type adminRoleType = adminRolesVOMap.get(adminRoleVO.getType());
         CheckTool.checkNull(adminRoleType, "Unknown admin roleVO type: " + adminRoleVO.getType().toString());
         adminRole.setType(adminRoleType);
+
+        adminRole.setObjId(adminRoleVO.getObjId());
 
         return adminRole;
     }

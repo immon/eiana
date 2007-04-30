@@ -41,19 +41,15 @@ public class GuardedAdminUserServiceBean extends AbstractRZMStatefulService impl
         isUserInRole();
         CheckTool.checkEmpty(userName, "user name");
         RZMUser retUser = this.userManager.get(userName);
-        if (retUser == null)
-            return null;
-        else
-            return UserConverter.convert(retUser);
+        CheckTool.checkNull(retUser, "no such user: " + userName);
+        return UserConverter.convert(retUser);
     }
 
     public UserVO getUser(long id) {
         isUserInRole();
         RZMUser retUser = this.userManager.get(id);
-        if (retUser == null)
-            return null;
-        else
-            return UserConverter.convert(retUser);
+        CheckTool.checkNull(retUser, "no such user: " + id);
+        return UserConverter.convert(retUser);
     }
 
     public void createUser(UserVO userVO) {
@@ -79,7 +75,7 @@ public class GuardedAdminUserServiceBean extends AbstractRZMStatefulService impl
     public void deleteUser(long id) {
         isUserInRole();
         RZMUser retUser = this.userManager.get(id);
-        CheckTool.checkNull(retUser, "retrived user in deleteUser");
+        CheckTool.checkNull(retUser, "no such user: " + id);
         this.userManager.delete(retUser);
     }
 

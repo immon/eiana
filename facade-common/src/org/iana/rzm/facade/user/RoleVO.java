@@ -9,13 +9,21 @@ public class RoleVO {
     public interface Type {}
 
     private Type type;
-
+    private Long objId;
 
     public RoleVO() {
     }
 
     public RoleVO(Type type) {
         this.type = type;
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     public Type getType() {

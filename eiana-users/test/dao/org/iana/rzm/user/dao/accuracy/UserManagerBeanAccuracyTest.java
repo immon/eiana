@@ -2,7 +2,6 @@ package org.iana.rzm.user.dao.accuracy;
 
 import org.iana.rzm.user.*;
 import org.iana.rzm.user.conf.SpringUsersApplicationContext;
-import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,9 +21,8 @@ import java.util.Set;
  */
 @Test (sequential=true, groups = {"UserManagerBean", "dao", "eiana-users", "user"})
 public class UserManagerBeanAccuracyTest {
-    UserManager manager;
+    UserManager userManager;
     Long        userId;
-    UserDAO dao;
     private PlatformTransactionManager txMgr;
     private TransactionDefinition txDef = new DefaultTransactionDefinition();
     Set<RZMUser> usersMap;
@@ -32,8 +30,7 @@ public class UserManagerBeanAccuracyTest {
     @BeforeClass
     public void init() {
         ApplicationContext ctx = SpringUsersApplicationContext.getInstance().getContext();
-        manager = (UserManager) ctx.getBean("userManager");
-        dao = (UserDAO) ctx.getBean("userDAO");
+        userManager = (UserManager) ctx.getBean("userManager");
         txMgr = (PlatformTransactionManager) ctx.getBean("transactionManager");
     }
 
@@ -41,9 +38,9 @@ public class UserManagerBeanAccuracyTest {
     public void testCreateUser() {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         RZMUser userCreated = UserManagementTestUtil.createUser("ivan123", UserManagementTestUtil.createSystemRole("Test", true, true, SystemRole.SystemType.AC));
-        manager.create(userCreated);
+        userManager.create(userCreated);
         userId = userCreated.getObjId();
-        RZMUser userRetrieved = manager.get(userId);
+        RZMUser userRetrieved = userManager.get(userId);
         assert userRetrieved.getFirstName().equals("fnivan123");
         assert userRetrieved.getLastName().equals("lnivan123");
         assert userRetrieved.getLoginName().equals("user-ivan123");
@@ -54,7 +51,7 @@ public class UserManagerBeanAccuracyTest {
     public void testGetUserById() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            RZMUser userRetrieved = manager.get(userId);
+            RZMUser userRetrieved = userManager.get(userId);
             assert userRetrieved != null;
             assert userRetrieved.getFirstName().equals("fnivan123");
             assert userRetrieved.getLastName().equals("lnivan123");
@@ -70,7 +67,7 @@ public class UserManagerBeanAccuracyTest {
     public void testGetUserByName() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            RZMUser userRetrieved = manager.get("user-ivan123");
+            RZMUser userRetrieved = userManager.get("user-ivan123");
             assert userRetrieved != null;
             assert userRetrieved.getFirstName().equals("fnivan123");
             assert userRetrieved.getLastName().equals("lnivan123");
@@ -96,25 +93,25 @@ public class UserManagerBeanAccuracyTest {
             usersMap.add(UserManagementTestUtil.createUser("admin2", new AdminRole(AdminRole.AdminType.IANA)));
 
             for(RZMUser user : usersMap)
-                dao.create(user);
+                userManager.create(user);
 
-            List<RZMUser> result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
+            List<RZMUser> result = userManager.findUsersInSystemRole("aaa", SystemRole.SystemType.AC, true, true);
             assert result.size() == 1;
             RZMUser user = result.iterator().next();
             assert "user-sys1".equals(user.getLoginName());
 
-            result = manager.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, false);
+            result = userManager.findUsersInSystemRole("aaa", SystemRole.SystemType.TC, true, false);
             assert result.size() == 2;
             Set<String> loginNames = new HashSet<String>();
             for (RZMUser u : result) loginNames.add(u.getLoginName());
             assert loginNames.contains("user-sys3") && loginNames.contains("user-sys4");
 
-            result = manager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
+            result = userManager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
             assert result.size() == 1;
             user = result.iterator().next();
             assert "user-admin1".equals(user.getLoginName());
 
-            result = manager.findUsersInAdminRole(AdminRole.AdminType.IANA);
+            result = userManager.findUsersInAdminRole(AdminRole.AdminType.IANA);
             assert result.size() == 1;
             user = result.iterator().next();
             assert "user-admin2".equals(user.getLoginName());
@@ -130,13 +127,10 @@ public class UserManagerBeanAccuracyTest {
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            for(RZMUser user : usersMap) {
-                user = dao.get(user.getObjId());
-                if (user != null) dao.delete(user);
-            }
-            RZMUser user = dao.get("user-ivan123");
-            assert user != null;
-            dao.delete(user);
+            for(RZMUser user : usersMap)
+               userManager.delete(user);
+            
+            userManager.delete("user-ivan123");
             txMgr.commit(txStatus);
         } catch (Exception e) {
             txMgr.rollback(txStatus);

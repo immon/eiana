@@ -40,6 +40,7 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction createDomainCreationTransaction(Domain domain) {
+        //todo
         return null;
     }
 

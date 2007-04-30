@@ -6,6 +6,55 @@
 
     <!-- facade services configuration -->
 
+    <bean id="GuardedAdminTransactionServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.admin.AdminTransactionService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedAdminTransactionServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="postInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="GuardedAdminTransactionServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean">
+        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="1" ref="transactionManagerBean" />
+    </bean>
+
+    <bean id="GuardedAdminRoleServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.admin.AdminRoleService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedAdminRoleServiceTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="GuardedAdminRoleServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean">
+        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="1" ref="roleManager" />
+    </bean>
+
     <bean id="GuardedAdminUserServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
         <property name="proxyInterfaces">
             <list>
