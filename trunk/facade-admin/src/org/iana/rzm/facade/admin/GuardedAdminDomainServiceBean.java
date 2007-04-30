@@ -46,19 +46,15 @@ public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService im
         isUserInRole();
         CheckTool.checkEmpty(domainName, "domain name");
         Domain retrivedDomain = domainManager.get(domainName);
-        if (retrivedDomain == null)
-            return null;
-        else
-            return ToVOConverter.toDomainVO(retrivedDomain);
+        CheckTool.checkNull(retrivedDomain, "no such domain: " + domainName);
+        return ToVOConverter.toDomainVO(retrivedDomain);
     }
 
     public DomainVO getDomain(long id) {
         isUserInRole();
         Domain retrivedDomain = domainManager.get(id);
-        if (retrivedDomain == null)
-            return null;
-        else
-            return ToVOConverter.toDomainVO(retrivedDomain);
+        CheckTool.checkNull(retrivedDomain, "no such domain: " + id);
+        return ToVOConverter.toDomainVO(retrivedDomain);
     }
 
     public void createDomain(DomainVO domain) {
@@ -79,14 +75,14 @@ public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService im
         isUserInRole();
         CheckTool.checkEmpty(domainName, "doamain Name");
         Domain retrivedDomain = domainManager.get(domainName);
-        CheckTool.checkNull(retrivedDomain, "retrived domain in deleteDomain");
+        CheckTool.checkNull(retrivedDomain, "no such domain");
         domainManager.delete(retrivedDomain);
     }
 
     public void deleteDomain(long id) {
         isUserInRole();
         Domain retrivedDomain = domainManager.get(id);
-        CheckTool.checkNull(retrivedDomain, "retrived domain in deleteDomain");
+        CheckTool.checkNull(retrivedDomain, "no such domain: " + id);
         domainManager.delete(retrivedDomain);
     }
 

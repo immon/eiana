@@ -64,8 +64,6 @@ public class UserDAOTest {
         RZMUser userRetrieved = dao.get(crObjId);
         assert userRetrieved != null;
         dao.delete(userRetrieved);
-        userRetrieved = dao.get(crObjId);
-        assert userRetrieved == null;
     }
 
     @Test

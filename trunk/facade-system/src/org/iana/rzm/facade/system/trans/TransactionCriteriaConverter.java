@@ -5,7 +5,7 @@ import org.iana.rzm.trans.TransactionCriteria;
 /**
  * @author Jakub Laszkiewicz
  */
-class TransactionCriteriaConverter {
+public class TransactionCriteriaConverter {
     public static TransactionCriteria convert(TransactionCriteriaVO criteria) {
         TransactionCriteria result = new TransactionCriteria();
         result.addAllCreators(criteria.getCreators());

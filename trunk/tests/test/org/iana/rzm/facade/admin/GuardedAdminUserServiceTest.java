@@ -55,7 +55,7 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(expectedExceptions = {AccessDeniedException.class})
-    public void testCreateUserByWrongUser() {
+    public void testFacadeCreateUserByWrongUser() {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
             gAdminUserServ.setUser(testAuthUser);
@@ -67,8 +67,8 @@ public class GuardedAdminUserServiceTest {
         }
     }
 
-    @Test(dependsOnMethods = {"testCreateUserByWrongUser"})
-    public void testCreateUser() {
+    @Test(dependsOnMethods = {"testFacadeCreateUserByWrongUser"})
+    public void testFacadeCreateUser() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
 
@@ -82,17 +82,17 @@ public class GuardedAdminUserServiceTest {
         gAdminUserServ.close();
     }
 
-    @Test(dependsOnMethods = {"testCreateUser"})
-    public void testFindUser() {
+    @Test(dependsOnMethods = {"testFacadeCreateUser"})
+    public void testFacadeFindUser() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
         List<UserVO> retUsersVO = gAdminUserServ.findUsers();
-        assert retUsersVO.size() == 3;
+        assert !retUsersVO.isEmpty();
         gAdminUserServ.close();
     }
 
-    @Test(dependsOnMethods = {"testFindUser"})
-    public void testUpdateUser() {
+    @Test(dependsOnMethods = {"testFacadeFindUser"})
+    public void testFacadeUpdateUser() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
         UserVO userVO = gAdminUserServ.getUser(USER_NAME);
@@ -106,24 +106,19 @@ public class GuardedAdminUserServiceTest {
         gAdminUserServ.close();
     }
 
-    @Test(dependsOnMethods = {"testUpdateUser"})
-    public void testDeleteUser() {
+    @Test(dependsOnMethods = {"testFacadeUpdateUser"})
+    public void testFacadeDeleteUser() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
+
         UserVO retUserVO = gAdminUserServ.getUser(USER_NAME);
         assert USER_NAME.equals(retUserVO.getUserName());
         gAdminUserServ.deleteUser(USER_NAME);
-
-        retUserVO = gAdminUserServ.getUser(USER_NAME);
-        assert retUserVO == null;
 
         gAdminUserServ.createUser(createTestUser(USER_NAME));
         retUserVO = gAdminUserServ.getUser(USER_NAME);
         assert USER_NAME.equals(retUserVO.getUserName());
         gAdminUserServ.deleteUser(retUserVO.getObjId());
-
-        retUserVO = gAdminUserServ.getUser(USER_NAME);
-        assert retUserVO == null;
         
         gAdminUserServ.close();
     }

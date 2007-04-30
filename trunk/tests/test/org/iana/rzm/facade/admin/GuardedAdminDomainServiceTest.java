@@ -58,7 +58,7 @@ public class GuardedAdminDomainServiceTest {
     }
 
     @Test
-    public void testCreateDomain() {
+    public void testFacadeCreateDomain() {
 
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
@@ -84,8 +84,8 @@ public class GuardedAdminDomainServiceTest {
     }
 
     @Test (expectedExceptions = {AccessDeniedException.class},
-            dependsOnMethods = {"testCreateDomain"})
-    public void testCreateDomainByWrongUser() {
+            dependsOnMethods = {"testFacadeCreateDomain"})
+    public void testFacadeCreateDomainByWrongUser() {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
             gAdminServ.setUser(testAuthUser);
@@ -97,8 +97,8 @@ public class GuardedAdminDomainServiceTest {
         }
     }
 
-    @Test (dependsOnMethods = {"testCreateDomainByWrongUser"})
-    public void testUpdateDomain() {
+    @Test (dependsOnMethods = {"testFacadeCreateDomainByWrongUser"})
+    public void testFacadeUpdateDomain() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
 
@@ -117,18 +117,14 @@ public class GuardedAdminDomainServiceTest {
         gAdminServ.close();
     }
 
-    @Test (dependsOnMethods = {"testUpdateDomain"})
-    public void testDeleteDomain() {
+    @Test (dependsOnMethods = {"testFacadeUpdateDomain"})
+    public void testFacadeDeleteDomain() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
         gAdminServ.deleteDomain(domainId);
-        DomainVO retDomainVO = gAdminServ.getDomain(DOMAIN_NAME);
-        assert retDomainVO == null;
-
+        
         gAdminServ.createDomain(createDomainVO(DOMAIN_NAME));
         gAdminServ.deleteDomain(DOMAIN_NAME);
-        retDomainVO = gAdminServ.getDomain(DOMAIN_NAME);
-        assert retDomainVO == null;
 
         gAdminServ.close();
     }
