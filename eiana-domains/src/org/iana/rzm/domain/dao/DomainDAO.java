@@ -1,6 +1,8 @@
 package org.iana.rzm.domain.dao;
 
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainCriteria;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -19,6 +21,8 @@ public interface DomainDAO {
     public void update(Domain domain);
 
     public void delete(Domain domain);
+
+    public List<Domain> find(Criterion criterion);
 
     public List<Domain> findAll();
 }

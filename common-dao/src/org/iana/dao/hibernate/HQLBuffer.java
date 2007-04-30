@@ -16,8 +16,8 @@ class HQLBuffer {
         return buf.toString();
     }
 
-    public List<Object> getParams() {
-        return params;
+    public Object[] getParams() {
+        return params.toArray();
     }
 
     public HQLBuffer op(String op, String fieldName, Object value) {

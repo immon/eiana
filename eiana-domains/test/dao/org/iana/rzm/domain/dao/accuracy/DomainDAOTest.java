@@ -5,9 +5,11 @@ import org.testng.annotations.BeforeClass;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.conf.SpringDomainsApplicationContext;
+import org.iana.criteria.Equal;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -37,22 +39,14 @@ public class DomainDAOTest {
     }
 
     @Test(dependsOnMethods = {"testDomainUpdate"})
+    public void testDomainFindByCrit() {
+        List<Domain> domains = dao.find(new Equal("name", "dao.org"));
+        int i=0;
+    }
+
+    @Test(dependsOnMethods = {"testDomainFindByCrit"})
     public void testDelete() throws Exception {
         dao.delete(dao.get("dao.org"));
     }
 
-//    public static void main(String[] args) {
-//        InputStream resource = new DomainDAOTest().getClass().getClassLoader().getResourceAsStream("spring.xml");
-//        BufferedReader in = new BufferedReader(new InputStreamReader(resource));
-//        String line;
-//        try {
-//            while ((line = in.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("resource = " + resource);
-//        ClassPathXmlApplicationContext context  = new ClassPathXmlApplicationContext("spring.xml");
-//    }
 }
