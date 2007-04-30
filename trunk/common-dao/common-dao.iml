@@ -44,6 +44,7 @@
     <orderEntry type="library" name="dom4j" level="project" />
     <orderEntry type="library" name="mysql" level="project" />
     <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>
