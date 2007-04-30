@@ -2,6 +2,7 @@ package org.iana.rzm.facade.admin;
 
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -24,6 +25,6 @@ public interface AdminUserService extends RZMStatefulService {
 
     public List<UserVO> findUsers();
 
-    public List<UserVO> findUsers(UserCriteria criteria);
+    public List<UserVO> findUsers(Criterion criteria);
    
 }

@@ -10,6 +10,7 @@ import org.iana.rzm.user.*;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService im
         return domainVOList;
     }
 
-    public List<DomainVO> findDomains(DomainCriteria criteria) {
+    public List<DomainVO> findDomains(Criterion criteria) {
         isUserInRole();
         //todo
         return null;

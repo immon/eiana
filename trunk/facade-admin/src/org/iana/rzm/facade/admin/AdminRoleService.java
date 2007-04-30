@@ -3,6 +3,7 @@ package org.iana.rzm.facade.admin;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.common.RZMStatefulService;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface AdminRoleService extends RZMStatefulService {
 
     public List<RoleVO> findRoles();
 
-    public List<RoleVO> findRoles(RoleCriteria criteria);
+    public List<RoleVO> findRoles(Criterion criteria);
 }

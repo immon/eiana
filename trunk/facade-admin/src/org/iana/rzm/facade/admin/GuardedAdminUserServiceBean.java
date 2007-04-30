@@ -9,6 +9,7 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.criteria.Criterion;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -87,7 +88,7 @@ public class GuardedAdminUserServiceBean extends AbstractRZMStatefulService impl
         return usersVO;
     }
 
-    public List<UserVO> findUsers(UserCriteria criteria) {
+    public List<UserVO> findUsers(Criterion criteria) {
         isUserInRole();
         // todo
         return null;
