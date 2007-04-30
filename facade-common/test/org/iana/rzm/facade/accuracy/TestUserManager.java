@@ -63,6 +63,10 @@ public class TestUserManager implements UserManager {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
+    public RZMUser findUserByEmail(String email) {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
     public static String ADMIN_LOGIN_VALID = "adminLogin";
     public static String ADMIN_PASSWORD_VALID = "adminPassword";
     public static String ADMIN_FIRST_NAME_VALID = "adminFirstName";

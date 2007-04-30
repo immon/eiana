@@ -30,5 +30,7 @@ public interface UserDAO {
 
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
 
+    public RZMUser findUserByEmail(String email);
+
     public List<RZMUser> findAll();
 }

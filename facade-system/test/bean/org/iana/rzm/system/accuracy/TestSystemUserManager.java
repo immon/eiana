@@ -50,6 +50,10 @@ public class TestSystemUserManager implements UserManager {
         throw new IllegalStateException("Not implemented yet.");
     }
 
+    public RZMUser findUserByEmail(String email) {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
     private RZMUser createSystemUser() {
         RZMUser userCreated = new RZMUser();
         userCreated.setFirstName("Geordi");

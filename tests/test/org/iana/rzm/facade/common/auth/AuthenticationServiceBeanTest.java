@@ -1,22 +1,16 @@
 package org.iana.rzm.facade.common.auth;
 
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.accuracy.TestUserManager;
-import org.iana.rzm.facade.accuracy.TestSecurIDService;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.facade.accuracy.TestSecurIDService;
+import org.iana.rzm.facade.accuracy.TestUserManager;
+import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.Role;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * @author Marcin Zajaczkowski
@@ -183,6 +177,22 @@ public class AuthenticationServiceBeanTest {
         assert authenticatedUser.isInvalidated();
     }
 
+    @Test
+    public void testAuthenticateByMail() throws AuthenticationFailedException, AuthenticationRequiredException {
+        MailAuth mailAuth = new MailAuth(ADMIN_EMAIL);
+
+        AuthenticatedUser authenticatedUser = authService.authenticate(mailAuth);
+
+        assert authenticatedUser != null;
+        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+    }
+
+    @Test (expectedExceptions = AuthenticationFailedException.class)
+    public void testAuthenticateByMailFails() throws AuthenticationFailedException, AuthenticationRequiredException {
+        MailAuth mailAuth = new MailAuth("bad" + ADMIN_EMAIL);
+        authService.authenticate(mailAuth);
+    }
+
     @AfterClass
     public void cleanUp() {
         userManager.delete(testAdminUser);
@@ -198,6 +208,7 @@ public class AuthenticationServiceBeanTest {
     public static String ADMIN_PASSWORD_VALID = "adminPassword";
     public static String ADMIN_FIRST_NAME_VALID = "adminFirstName";
     public static String ADMIN_LAST_NAME_VALID = "adminLastName";
+    public static String ADMIN_EMAIL = "admin@no-mail.org";
 
     private RZMUser createTestAdminUser() {
 
@@ -209,6 +220,7 @@ public class AuthenticationServiceBeanTest {
         adminUser.setPassword(ADMIN_PASSWORD_VALID);
         adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         adminUser.setSecurID(false);
+        adminUser.setEmail(ADMIN_EMAIL);
 
         return adminUser;
     }

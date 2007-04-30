@@ -1,26 +1,24 @@
 package org.iana.rzm.trans;
 
+import org.iana.notifications.Notification;
+import org.iana.notifications.NotificationManager;
+import org.iana.notifications.TextContent;
+import org.iana.rzm.trans.conf.DefinedReSenderProcess;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
+import org.jbpm.JbpmConfiguration;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.exe.Token;
+import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.SpringTransApplicationContext;
-import org.iana.rzm.trans.conf.DefinedReSenderProcess;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.Notification;
-import org.iana.notifications.TextContent;
-import org.iana.notifications.template.TemplateContactConfirmation;
-import org.jbpm.scheduler.impl.SchedulerThread;
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.graph.exe.Token;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
@@ -52,7 +50,11 @@ public class NotificationsReSenderTest {
         userManagerBean = (UserManager) appCtx.getBean("userManager");
         notificationManagerBean = (NotificationManager) appCtx.getBean("NotificationManagerBean");
 
-        processDAO.deploy(DefinedReSenderProcess.getDefinition());
+        try {
+            processDAO.deploy(DefinedReSenderProcess.getDefinition());
+        } finally {
+            processDAO.close();
+        }
 
         user = new RZMUser();
         user.setLoginName("reSenderUserTest");
@@ -72,27 +74,45 @@ public class NotificationsReSenderTest {
     }
 
     @Test
-    public void testReSender() {
-        TransactionStatus txState =  txMgr.getTransaction(txDef);
-        ProcessInstance pi = processDAO.newProcessInstance("notifications resender");
-        testProcessInstanceId = pi.getId();
-        Token token = pi.getRootToken();
-        token.signal();
-        assert token.getNode().getName().equals("TRY_SEND");
-        txMgr.commit(txState);
+    public void testReSender() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            ProcessInstance pi = processDAO.newProcessInstance("notifications resender");
+            testProcessInstanceId = pi.getId();
+            Token token = pi.getRootToken();
+            token.signal();
+            assert token.getNode().getName().equals("TRY_SEND");
+
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            if (!txStatus.isCompleted())
+                txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 
     @Test (dependsOnMethods = {"testReSender"})
-    public void testCleanUp() {
-        TransactionStatus txState =  txMgr.getTransaction(txDef);
-        ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);
-        processDAO.delete(pi);
-        List<Notification> notifList = notificationManagerBean.findUnSentNotifications(40L);
-        assert notifList.size() == 1;
-        assert notifList.get(0).getSentFailures() == 1;
-        userManagerBean.delete(user);
-        notifList = notificationManagerBean.findUnSentNotifications(40L);
-        assert notifList.isEmpty();
-        txMgr.commit(txState);
+    public void testCleanUp() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);
+            processDAO.delete(pi);
+            List<Notification> notifList = notificationManagerBean.findUnSentNotifications(40L);
+            assert notifList.size() == 1;
+            assert notifList.get(0).getSentFailures() == 1;
+            userManagerBean.delete(user);
+            notifList = notificationManagerBean.findUnSentNotifications(40L);
+            assert notifList.isEmpty();
+
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            if (!txStatus.isCompleted())
+                txMgr.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
     }
 }

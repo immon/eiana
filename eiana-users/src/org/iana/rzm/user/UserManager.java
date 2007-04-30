@@ -30,4 +30,6 @@ public interface UserManager {
                                                boolean acceptFrom, boolean mustAccept);
 
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
+
+    public RZMUser findUserByEmail(String email);
 }

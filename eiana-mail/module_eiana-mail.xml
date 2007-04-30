@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-mail" default="compile.module.eiana-mail">
+  <dirname property="module.eiana-mail.basedir" file="${ant.file.module_eiana-mail}"/>
+  
+  <property name="module.jdk.home.eiana-mail" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-mail" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-mail" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.eiana-mail" value="${compiler.args}"/>
+  
+  <property name="eiana-mail.output.dir" value="${module.eiana-mail.basedir}/../build/classes/production/eiana-mail"/>
+  <property name="eiana-mail.testoutput.dir" value="${module.eiana-mail.basedir}/../build/classes/test/eiana-mail"/>
+  
+  <path id="eiana-mail.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-mail.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-mail}"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.jbpm.classpath"/>
+    <pathelement location="${common-mail.output.dir}"/>
+    <pathelement location="${common-mail.testoutput.dir}"/>
+    <path refid="library.mail.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <pathelement location="${facade-common.output.dir}"/>
+    <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${facade-system.output.dir}"/>
+    <pathelement location="${facade-system.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.spring.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-mail">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-mail">
+    <patternset refid="excluded.from.module.eiana-mail"/>
+  </patternset>
+  
+  <path id="eiana-mail.module.sourcepath">
+    <dirset dir="${module.eiana-mail.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="eiana-mail.module.test.sourcepath">
+    <dirset dir="${module.eiana-mail.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-mail" depends="compile.module.eiana-mail.production,compile.module.eiana-mail.tests" description="Compile module eiana-mail"/>
+  
+  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util" description="Compile module eiana-mail; production classes">
+    <mkdir dir="${eiana-mail.output.dir}"/>
+    <javac destdir="${eiana-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-mail}/javac">
+      <compilerarg line="${compiler.args.eiana-mail}"/>
+      <bootclasspath refid="eiana-mail.module.bootclasspath"/>
+      <classpath refid="eiana-mail.module.classpath"/>
+      <src refid="eiana-mail.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-mail"/>
+    </javac>
+    
+    <copy todir="${eiana-mail.output.dir}">
+      <fileset dir="${module.eiana-mail.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-mail.tests" depends="compile.module.eiana-mail.production" description="compile module eiana-mail; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-mail.testoutput.dir}"/>
+    <javac destdir="${eiana-mail.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-mail}/javac">
+      <compilerarg line="${compiler.args.eiana-mail}"/>
+      <classpath refid="eiana-mail.module.classpath"/>
+      <classpath location="${eiana-mail.output.dir}"/>
+      <src refid="eiana-mail.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-mail"/>
+    </javac>
+    
+    <copy todir="${eiana-mail.testoutput.dir}">
+      <fileset dir="${module.eiana-mail.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.eiana-mail" description="cleanup module">
+    <delete dir="${eiana-mail.output.dir}"/>
+    <delete dir="${eiana-mail.testoutput.dir}"/>
+  </target>
+</project>

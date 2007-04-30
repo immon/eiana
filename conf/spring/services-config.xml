@@ -74,6 +74,7 @@
             <map>
                 <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
                 <entry key="org.iana.rzm.facade.auth.SecurIDAuth" value-ref="securIDAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.MailAuth" value-ref="mailAuthenticator"/>
             </map>
         </constructor-arg>
     </bean>
@@ -94,6 +95,12 @@
     </bean>
 
     <bean id="securID" class="org.iana.rzm.facade.accuracy.TestSecurIDService"/>
+
+    <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+    </bean>
 
     <!-- system domain service -->
 
@@ -419,4 +426,31 @@
         </property>
     </bean>
 
+    <!-- mails processing configuration -->
+
+    <bean id="mailReceiver" class="org.iana.mail.pop3.Pop3MailReceiver">
+        <constructor-arg index="0" value="host"/>
+        <constructor-arg index="1" value="user"/>
+        <constructor-arg index="2" value="password"/>
+    </bean>
+
+    <bean id="mailParser" class="org.iana.rzm.mail.parser.MailParserImpl"/>
+
+    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean" scope="session">
+        <constructor-arg index="0" ref="mailReceiver"/>
+        <constructor-arg index="1" ref="mailParser"/>
+        <constructor-arg index="2" ref="authenticationServiceBean"/>
+        <constructor-arg index="3" ref="GuardedSystemTransactionService"/>
+    </bean>
+
+    <!-- fake mails processing configuration -->
+
+    <bean id="fakeMailReceiver" class="org.iana.rzm.mail.test.FakeMailReceiver"/>
+
+    <bean id="fakeMailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean" scope="session">
+        <constructor-arg index="0" ref="fakeMailReceiver"/>
+        <constructor-arg index="1" ref="mailParser"/>
+        <constructor-arg index="2" ref="authenticationServiceBean"/>
+        <constructor-arg index="3" ref="GuardedSystemTransactionService"/>
+    </bean>
 </beans>
