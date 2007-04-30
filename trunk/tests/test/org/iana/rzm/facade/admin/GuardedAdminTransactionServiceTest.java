@@ -113,7 +113,6 @@ public class GuardedAdminTransactionServiceTest {
         transactionID = transactionVO.getTransactionID();
 
         transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-
         assert transactionVO.getDomainName().equals(DOMAIN_NAME);
         assert transactionVO.getName().equals(PROCESS_NAME);
 
@@ -121,15 +120,24 @@ public class GuardedAdminTransactionServiceTest {
         names.add(DOMAIN_NAME);
         transactionVOs = gAdminTransactionServ.findTransactions(names);
         assert transactionVOs.size() == 1;
+        transactionVO = transactionVOs.iterator().next();
+        assert transactionVO.getDomainName().equals(DOMAIN_NAME);
+        assert transactionVO.getName().equals(PROCESS_NAME);
 
 //        transactionVOs = gAdminTransactionServ.findAll();
 //        assert transactionVOs.size() == 1;
 
         transactionVOs = gAdminTransactionServ.findTransactions(UserConverter.convert(domainUser));
         assert transactionVOs.size() == 1;
+        transactionVO = transactionVOs.iterator().next();
+        assert transactionVO.getDomainName().equals(DOMAIN_NAME);
+        assert transactionVO.getName().equals(PROCESS_NAME);
 
         transactionVOs = gAdminTransactionServ.findTransactions(UserConverter.convert(domainUser), DOMAIN_NAME);
         assert transactionVOs.size() == 1;
+        transactionVO = transactionVOs.iterator().next();
+        assert transactionVO.getDomainName().equals(DOMAIN_NAME);
+        assert transactionVO.getName().equals(PROCESS_NAME);
 
         gAdminTransactionServ.deleteTransaction(transactionVOs.iterator().next());
 
