@@ -2,16 +2,20 @@ package org.iana.rzm.domain.dao;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainCriteria;
+import org.iana.dao.hibernate.HibernateDAO;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class HibernateDomainDAO extends HibernateDaoSupport implements DomainDAO {
+public class HibernateDomainDAO extends HibernateDAO<Domain> implements DomainDAO {
 
-    public Domain get(final long id) {
-        return (Domain) getHibernateTemplate().get(Domain.class, id);
+
+    public HibernateDomainDAO() {
+        super(Domain.class);
     }
 
     public Domain get(String name) {
@@ -24,18 +28,6 @@ public class HibernateDomainDAO extends HibernateDaoSupport implements DomainDAO
         Domain ret = (list.size() < 1) ? null : list.get(0);
         System.out.println("retrieved = " + ((ret == null) ? null : ret.getName()));
         return ret;
-    }
-
-    public void create(final Domain domain) {
-        getHibernateTemplate().save(domain);
-    }
-
-    public void update(final Domain domain) {
-        getHibernateTemplate().merge(domain);
-    }
-    
-    public void delete(Domain domain) {
-        getHibernateTemplate().delete(domain);
     }
 
     public List<Domain> findAll() {
