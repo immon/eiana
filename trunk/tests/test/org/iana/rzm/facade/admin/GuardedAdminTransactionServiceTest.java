@@ -124,8 +124,11 @@ public class GuardedAdminTransactionServiceTest {
         assert transactionVO.getDomainName().equals(DOMAIN_NAME);
         assert transactionVO.getName().equals(PROCESS_NAME);
 
-//        transactionVOs = gAdminTransactionServ.findAll();
-//        assert transactionVOs.size() == 1;
+        transactionVOs = gAdminTransactionServ.findAll();
+        assert transactionVOs.size() == 1;
+        transactionVO = transactionVOs.iterator().next();
+        assert transactionVO.getDomainName().equals(DOMAIN_NAME);
+        assert transactionVO.getName().equals(PROCESS_NAME);
 
         transactionVOs = gAdminTransactionServ.findTransactions(UserConverter.convert(domainUser));
         assert transactionVOs.size() == 1;

@@ -56,7 +56,10 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public List<Transaction> findAll() {
-        return null;
+        List<ProcessInstance> processInstances = processDAO.findAll();
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
+        return result;
     }
 
     public List<Transaction> find(TransactionCriteria criteria) {
