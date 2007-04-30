@@ -2,13 +2,9 @@ package org.iana.dao.hibernate;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.iana.criteria.Criterion;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.HibernateException;
 
-import javax.swing.*;
 import java.util.List;
-import java.util.Collection;
+
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -44,12 +40,6 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
     public List<T> find(Criterion criteria) {
         HQLBuffer hql = HQLGenerator.from(clazz, criteria);
 
-        Session session = getSession();        
-        Query query = session.createQuery(hql.getHQL());
-        int idx = 0;
-        for (Object parameter : hql.getParams()) {
-            query.setParameter(idx++, parameter);
-        }
-        return query.list();
+        return getHibernateTemplate().find(hql.getHQL(), hql.getParams());
     }
 }

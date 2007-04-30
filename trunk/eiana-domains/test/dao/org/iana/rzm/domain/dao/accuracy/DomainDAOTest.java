@@ -6,9 +6,7 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.conf.SpringDomainsApplicationContext;
 import org.iana.criteria.Equal;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.*;
 import java.util.List;
 
 /**
@@ -40,8 +38,9 @@ public class DomainDAOTest {
 
     @Test(dependsOnMethods = {"testDomainUpdate"})
     public void testDomainFindByCrit() {
-        List<Domain> domains = dao.find(new Equal("name", "dao.org"));
-        int i=0;
+        List<Domain> domains = dao.find(new Equal("name.name", "dao.org"));
+        assert domains.size() == 1;
+        assert domains.iterator().next().getName().equals("dao.org");
     }
 
     @Test(dependsOnMethods = {"testDomainFindByCrit"})
