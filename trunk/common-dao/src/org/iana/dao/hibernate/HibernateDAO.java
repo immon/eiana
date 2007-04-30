@@ -44,16 +44,12 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
     public List<T> find(Criterion criteria) {
         HQLBuffer hql = HQLGenerator.from(clazz, criteria);
 
-        Session session = getSession();
-        Query queryObject = session.createQuery(hql.getHQL());
-        Object[] values = hql.getParams();
-        if (values != null) {
-            for (int i = 0; i < values.length; i++) {
-                queryObject.setParameter(i, values[i]);
-            }
+        Session session = getSession();        
+        Query query = session.createQuery(hql.getHQL());
+        int idx = 0;
+        for (Object parameter : hql.getParams()) {
+            query.setParameter(idx++, parameter);
         }
-        return queryObject.list();
-			
-//        return getHibernateTemplate().find(hql.getHQL(), hql.getParams());
+        return query.list();
     }
 }
