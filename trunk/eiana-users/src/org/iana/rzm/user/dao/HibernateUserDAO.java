@@ -80,6 +80,17 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
         return (List<RZMUser>) getHibernateTemplate().find(query, roleType);
     }
 
+    public RZMUser findUserByEmail(String email) {
+        String query = "select user " +
+                "from " +
+                "    RZMUser as user " +
+                "where " +
+                "    user.email = ? ";
+        //todo: additional conditions, ie. admin role type?
+        List result = getHibernateTemplate().find(query, email);
+        return (RZMUser) (result.isEmpty() ? null : result.iterator().next());
+    }
+
     public List<RZMUser> findAll() {
         String query = "from RZMUser";
         return (List<RZMUser>) getHibernateTemplate().find(query);

@@ -70,4 +70,8 @@ public class UserManagerBean implements UserManager {
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
         return dao.findUsersInAdminRole(roleType);
     }
+
+    public RZMUser findUserByEmail(String email) {
+        return dao.findUserByEmail(email);
+    }
 }

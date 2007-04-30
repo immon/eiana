@@ -262,12 +262,14 @@
       <module fileurl="file://$PROJECT_DIR$/build.iml" filepath="$PROJECT_DIR$/build.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-criteria/common-criteria.iml" filepath="$PROJECT_DIR$/../common-criteria/common-criteria.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-dao/common-dao.iml" filepath="$PROJECT_DIR$/../common-dao/common-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../common-mail/common-mail.iml" filepath="$PROJECT_DIR$/../common-mail/common-mail.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-objectdiff/common-objectdiff.iml" filepath="$PROJECT_DIR$/../common-objectdiff/common-objectdiff.iml" />
       <module fileurl="file://$PROJECT_DIR$/../conf/conf.iml" filepath="$PROJECT_DIR$/../conf/conf.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-dns/eiana-dns.iml" filepath="$PROJECT_DIR$/../eiana-dns/eiana-dns.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-domains/eiana-domains.iml" filepath="$PROJECT_DIR$/../eiana-domains/eiana-domains.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-init/eiana-init.iml" filepath="$PROJECT_DIR$/../eiana-init/eiana-init.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-logs/eiana-logs.iml" filepath="$PROJECT_DIR$/../eiana-logs/eiana-logs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../eiana-mail/eiana-mail.iml" filepath="$PROJECT_DIR$/../eiana-mail/eiana-mail.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-notifications/eiana-notifications.iml" filepath="$PROJECT_DIR$/../eiana-notifications/eiana-notifications.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-trans/eiana-trans.iml" filepath="$PROJECT_DIR$/../eiana-trans/eiana-trans.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-users/eiana-users.iml" filepath="$PROJECT_DIR$/../eiana-users/eiana-users.iml" />
@@ -364,9 +366,7 @@
         <root url="jar://$PROJECT_DIR$/../lib/jbpm/jbpm-identity-3.1.4.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://$PROJECT_DIR$/../../../../java/jbpm-3.1.4/src/java.jbpm" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="jdom">
       <CLASSES>
@@ -419,6 +419,14 @@
     <library name="javaee">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/../lib/javaee/javaee.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="mail">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/mail/activation.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/mail/mail.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
