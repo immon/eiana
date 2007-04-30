@@ -296,6 +296,12 @@
             <fileset dir="../integration-securid/src">          <include name="**/*.java" /></fileset>
             <!--tests-->
             <fileset dir="../tests/test">                       <include name="**/*.java" /></fileset>
+             <!--common-mail-->
+             <fileset dir="../common-mail/src">                <include name="**/*.java" /></fileset>
+             <fileset dir="../common-mail/test">                <include name="**/*.java" /></fileset>
+             <!--eiana-mail-->
+             <fileset dir="../eiana-mail/src">                <include name="**/*.java" /></fileset>
+             <fileset dir="../eiana-mail/test">                <include name="**/*.java" /></fileset>
 
         </cobertura-report>
     </target>
