@@ -43,6 +43,10 @@ public class Transaction implements TrackedObject {
         return ((TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA)).getTrackData();
     }
 
+    public Long getObjId() {
+        return getTransactionID();
+    }
+
     public Long getTransactionID() {
         return pi.getId();
     }
