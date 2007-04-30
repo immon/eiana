@@ -9,6 +9,7 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RoleManager;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.criteria.Criterion;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -76,7 +77,7 @@ public class GuardedAdminRoleServiceBean extends AbstractRZMStatefulService impl
         return rolesVO;
     }
 
-    public List<RoleVO> findRoles(RoleCriteria criteria) {
+    public List<RoleVO> findRoles(Criterion criteria) {
 //        todo
         return null;
     }

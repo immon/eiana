@@ -18,6 +18,7 @@
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntry type="module" module-name="eiana-trans" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

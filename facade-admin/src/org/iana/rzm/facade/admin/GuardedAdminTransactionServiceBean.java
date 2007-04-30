@@ -20,6 +20,7 @@ import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 import java.util.Set;
@@ -137,8 +138,13 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         deleteTransaction(transactionVO.getTransactionID());
     }
 
-    public void deleteTransaction(Long transactionId) throws NoSuchTransactionException {
+    public void deleteTransaction(long transactionId) throws NoSuchTransactionException {
         isUserInRole();
         transactionManager.deleteTransaction(transactionId);
+    }
+
+    public List<TransactionVO> findTransactions(Criterion criteria) {
+        // todo
+        return null;
     }
 }
