@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * @author Patrycja Wegrzynowicz
  */
 @Entity
-class Code {
+public class Code {
     @Basic
     private String code;
     @CollectionOfElements

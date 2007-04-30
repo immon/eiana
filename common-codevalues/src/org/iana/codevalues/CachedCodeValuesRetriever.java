@@ -6,6 +6,8 @@ import pl.nask.cache.NameNotFoundException;
 import java.util.List;
 
 /**
+ * The implementation of <code>CodeValuesRetriever</code> that caches retrieved values.
+ *
  * @author Patrycja Wegrzynowicz
  */
 class CachedCodeValuesRetriever implements CodeValuesRetriever {
