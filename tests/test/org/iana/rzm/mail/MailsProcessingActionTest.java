@@ -33,7 +33,7 @@ import java.util.Set;
  *
  * @author Jakub Laszkiewicz
  */
-@Test (groups = {"exldued"})
+@Test (groups = {"excluded"})
 public class MailsProcessingActionTest {
     private PlatformTransactionManager txManager;
     private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
