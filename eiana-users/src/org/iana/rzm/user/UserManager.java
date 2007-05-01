@@ -1,5 +1,7 @@
 package org.iana.rzm.user;
 
+import org.iana.criteria.Criterion;
+
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public interface UserManager {
 
     public List<RZMUser> findAll();
 
-    public List<RZMUser> find(UserCriteria criteria);
+    public List<RZMUser> find(Criterion criteria);
 
     public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
                                                boolean acceptFrom, boolean mustAccept);

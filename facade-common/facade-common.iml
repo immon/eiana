@@ -18,6 +18,7 @@
     <orderEntry type="module" module-name="integration-securid" />
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

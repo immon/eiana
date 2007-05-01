@@ -2,6 +2,7 @@ package org.iana.rzm.system.stress;
 
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.*;
+import org.iana.criteria.Criterion;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -89,5 +90,7 @@ public class TestSystemUserManagerStress implements UserManager {
     public void delete(String loginName) {
         throw new IllegalStateException("Not implemented yet.");
     }
+
     public void update(RZMUser user) {}
+    public List<RZMUser> find(Criterion criteria) {return null;}
 }

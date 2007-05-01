@@ -3,7 +3,7 @@ package org.iana.rzm.user.dao;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.iana.dao.hibernate.HibernateDAO;
 
 import java.util.List;
 
@@ -20,15 +20,15 @@ import java.util.List;
  *         <p/>
  *         class abstract HibernateDAO<T> extends HibernateDaoSupport implements DataAccessObject<T> {}
  */
-public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
+public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
 
-    public RZMUser get(long id) {
-        return (RZMUser) getHibernateTemplate().get(RZMUser.class, id);
+    public HibernateUserDAO() {
+        super(RZMUser.class);
     }
 
     public RZMUser get(String loginName) {
         System.out.println("name = " + loginName);
-        List<RZMUser> list = getHibernateTemplate().find("from RZMUser u where u.loginName = ?", loginName);
+        List<RZMUser> list = (List<RZMUser>) getHibernateTemplate().find("from RZMUser u where u.loginName = ?", loginName);
         // todo bug in spring or hibernate
         // todo iterate returns object but all values are set to null
         //Iterator<Domain> it = getHibernateTemplate().iterate("from Domain d where d.name.name = ?", name);
@@ -36,19 +36,6 @@ public class HibernateUserDAO extends HibernateDaoSupport implements UserDAO {
         RZMUser ret = (list.size() < 1) ? null : list.get(0);
         System.out.println("retrieved = " + ((ret == null) ? null : ret.getLoginName()));
         return ret;
-    }
-
-
-    public void create(RZMUser user) {
-        getHibernateTemplate().save(user);
-    }
-
-    public void update(RZMUser user) {
-        getHibernateTemplate().update(user);
-    }
-
-    public void delete(RZMUser user) {
-        getHibernateTemplate().delete(user);
     }
 
     public List<RZMUser> findUsersInSystemRole(String roleName, SystemRole.SystemType roleType,

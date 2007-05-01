@@ -1,6 +1,7 @@
 package org.iana.rzm.domain;
 
 import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class DomainManagerBean implements DomainManager {
         return dao.findAll();
     }
 
-    public List<Domain> find(DomainCriteria criteria) {
-        return null;
+    public List<Domain> find(Criterion criteria) {
+        return dao.find(criteria);
     }
 }

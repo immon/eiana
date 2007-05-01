@@ -15,9 +15,13 @@ import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Or;
 import org.springframework.context.ApplicationContext;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author: Piotr Tkaczyk
@@ -33,6 +37,7 @@ public class GuardedAdminDomainServiceTest {
     long domainId;
 
     final static String DOMAIN_NAME = "gadmindomain.org";
+    final static String SECOND_DOMAIN = "gadminsecong.org";
 
     @BeforeClass
     public void init() {
@@ -79,12 +84,44 @@ public class GuardedAdminDomainServiceTest {
         assert domVOList.size() == 1;
         assert DOMAIN_NAME.equals(domVOList.iterator().next().getName());
 
+        gAdminServ.createDomain(createDomainVO(SECOND_DOMAIN));
+
         gAdminServ.close();
 
     }
 
+    @Test (dependsOnMethods = {"testFacadeCreateDomain"})
+    public void testFacadeFindDomainByCriteria() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminServ.setUser(testAuthUser);
+
+        List<DomainVO> retDomainVOs = gAdminServ.findDomains(new Equal("name.name", DOMAIN_NAME));
+        assert retDomainVOs.size() == 1;
+        assert DOMAIN_NAME.equals(retDomainVOs.iterator().next().getName());
+
+        List<Criterion> criterias = new ArrayList<Criterion>();
+        criterias.add(new Equal("name.name", DOMAIN_NAME));
+        criterias.add(new Equal("name.name", SECOND_DOMAIN));
+        
+        retDomainVOs = gAdminServ.findDomains(new Or(criterias));
+        assert retDomainVOs.size() == 2;
+
+        List<String> names = new ArrayList<String>();
+        names.add(DOMAIN_NAME);
+        names.add(SECOND_DOMAIN);
+
+        List<String> retNames = new ArrayList<String>();
+        for (DomainVO domainVO : retDomainVOs)
+            retNames.add(domainVO.getName());
+
+        assert names.equals(retNames);
+        
+
+        gAdminServ.close();
+    }
+
     @Test (expectedExceptions = {AccessDeniedException.class},
-            dependsOnMethods = {"testFacadeCreateDomain"})
+            dependsOnMethods = {"testFacadeFindDomainByCriteria"})
     public void testFacadeCreateDomainByWrongUser() {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
@@ -121,10 +158,10 @@ public class GuardedAdminDomainServiceTest {
     public void testFacadeDeleteDomain() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
-        gAdminServ.deleteDomain(domainId);
+
+        gAdminServ.deleteDomain(domainId); //first domain
         
-        gAdminServ.createDomain(createDomainVO(DOMAIN_NAME));
-        gAdminServ.deleteDomain(DOMAIN_NAME);
+        gAdminServ.deleteDomain(SECOND_DOMAIN); //second domain
 
         gAdminServ.close();
     }

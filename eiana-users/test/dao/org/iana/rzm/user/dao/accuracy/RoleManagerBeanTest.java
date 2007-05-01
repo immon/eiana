@@ -27,9 +27,9 @@ public class RoleManagerBeanTest {
     @Test
     public void testCreateRole() {
         firstRole = new SystemRole(SystemRole.SystemType.AC, "roleac", false, false);
-        roleManager.createRole(firstRole);
+        roleManager.create(firstRole);
 
-        Role retRole = roleManager.getRole(firstRole.getObjId());
+        Role retRole = roleManager.get(firstRole.getObjId());
         assert retRole != null;
         assert retRole instanceof SystemRole;
         assert retRole.getType().equals(SystemRole.SystemType.AC);
@@ -38,23 +38,23 @@ public class RoleManagerBeanTest {
         assert !((SystemRole)retRole).isNotify();
 
         secondRole = new AdminRole(AdminRole.AdminType.IANA);
-        roleManager.createRole(secondRole);
+        roleManager.create(secondRole);
 
-        retRole = roleManager.getRole(secondRole.getObjId());
+        retRole = roleManager.get(secondRole.getObjId());
         assert retRole != null;
         assert retRole.getType().equals(AdminRole.AdminType.IANA);
     }
 
     @Test (dependsOnMethods = {"testCreateRole"})
     public void testUpdateRole() {
-        SystemRole systemRole = (SystemRole) roleManager.getRole(firstRole.getObjId());
+        SystemRole systemRole = (SystemRole) roleManager.get(firstRole.getObjId());
         systemRole.setMustAccept(true);
         systemRole.setAcceptFrom(true);
         systemRole.setNotify(true);
         systemRole.setType(SystemRole.SystemType.TC);
-        roleManager.updateRole(systemRole);
+        roleManager.update(systemRole);
 
-        Role retRole = roleManager.getRole(firstRole.getObjId());
+        Role retRole = roleManager.get(firstRole.getObjId());
         assert retRole != null;
         assert retRole instanceof SystemRole;
         assert retRole.getType().equals(SystemRole.SystemType.TC);
@@ -63,17 +63,17 @@ public class RoleManagerBeanTest {
         assert ((SystemRole) retRole).isNotify();
         assert ((SystemRole) retRole).isAcceptFrom();
 
-        AdminRole adminRole = (AdminRole) roleManager.getRole(secondRole.getObjId());
+        AdminRole adminRole = (AdminRole) roleManager.get(secondRole.getObjId());
         adminRole.setType(AdminRole.AdminType.GOV_OVERSIGHT);
-        roleManager.updateRole(adminRole);
+        roleManager.update(adminRole);
 
-        adminRole = (AdminRole) roleManager.getRole(secondRole.getObjId());
+        adminRole = (AdminRole) roleManager.get(secondRole.getObjId());
         assert adminRole.getType().equals(AdminRole.AdminType.GOV_OVERSIGHT);
     }
 
     @AfterClass
     public void cleanUp() {
-        roleManager.deleteRole(firstRole);
-        roleManager.deleteRole(secondRole);
+        roleManager.delete(firstRole);
+        roleManager.delete(secondRole);
     }
 }

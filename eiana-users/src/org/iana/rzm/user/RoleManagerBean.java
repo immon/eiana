@@ -2,6 +2,7 @@ package org.iana.rzm.user;
 
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.user.dao.RoleDAO;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -17,27 +18,27 @@ public class RoleManagerBean implements RoleManager {
         this.roleDAO = roleDAO;
     }
 
-    public Role getRole(long id) {
-        return roleDAO.getRole(id);
+    public Role get(long id) {
+        return roleDAO.get(id);
     }
 
-    public void createRole(Role role) {
-        roleDAO.createRole(role);
+    public void create(Role role) {
+        roleDAO.create(role);
     }
 
-    public void updateRole(Role role) {
-        roleDAO.updateRole(role);
+    public void update(Role role) {
+        roleDAO.update(role);
     }
 
-    public void deleteRole(Role role) {
-        roleDAO.deleteRole(role);
+    public void delete(Role role) {
+        roleDAO.delete(role);
     }
 
-    public List<Role> findRoles() {
-        return roleDAO.findRoles();
+    public List<Role> findAll() {
+        return roleDAO.findAll();
     }
 
-    public List<Role> findRoles(RoleCriteria criteria) {
-        return roleDAO.findRoles(criteria);
+    public List<Role> find(Criterion criteria) {
+        return roleDAO.find(criteria);
     }
 }

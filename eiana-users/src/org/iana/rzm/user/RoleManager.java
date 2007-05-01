@@ -1,5 +1,6 @@
 package org.iana.rzm.user;
 
+import org.iana.criteria.Criterion;
 import java.util.List;
 
 /**
@@ -7,16 +8,16 @@ import java.util.List;
  */
 public interface RoleManager {
 
-    public Role getRole(long id);
+    public Role get(long id);
 
-    public void createRole(Role role);
+    public void create(Role role);
 
-    public void updateRole(Role role);
+    public void update(Role role);
 
-    public void deleteRole(Role role);
+    public void delete(Role role);
 
-    public List<Role> findRoles();
+    public List<Role> findAll();
 
-    public List<Role> findRoles(RoleCriteria criteria);
+    public List<Role> find(Criterion criteria);
 
 }

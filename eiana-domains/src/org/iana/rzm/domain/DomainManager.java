@@ -1,5 +1,7 @@
 package org.iana.rzm.domain;
 
+import org.iana.criteria.Criterion;
+
 import java.util.List;
 
 /**
@@ -26,5 +28,5 @@ public interface DomainManager {
 
     public List<Domain> findAll();
 
-    public List<Domain> find(DomainCriteria criteria);
+    public List<Domain> find(Criterion criteria);
 }

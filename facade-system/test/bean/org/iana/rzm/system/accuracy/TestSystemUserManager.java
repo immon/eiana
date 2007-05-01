@@ -6,6 +6,7 @@ package org.iana.rzm.system.accuracy;
 
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.*;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -93,7 +94,8 @@ public class TestSystemUserManager implements UserManager {
 
     public void delete(String loginName) {
         throw new IllegalStateException("Not implemented yet.");
-    }
-    public void update(RZMUser user) {}
+    }                                     
 
+    public void update(RZMUser user) {}
+    public List<RZMUser> find(Criterion criteria) {return null;}
 }

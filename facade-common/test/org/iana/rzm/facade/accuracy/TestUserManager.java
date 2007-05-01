@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.accuracy;
 
 import org.iana.rzm.user.*;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -132,4 +133,5 @@ public class TestUserManager implements UserManager {
     }
 
     public void update(RZMUser user) {}
+    public List<RZMUser> find(Criterion criteria) {return null;}
 }

@@ -90,7 +90,11 @@ public class GuardedAdminUserServiceBean extends AbstractRZMStatefulService impl
 
     public List<UserVO> findUsers(Criterion criteria) {
         isUserInRole();
-        // todo
-        return null;
+        CheckTool.checkNull(criteria, "criteria");
+        List<UserVO> userVOs = new ArrayList<UserVO>();
+        for (RZMUser user : this.userManager.find(criteria))
+            userVOs.add(UserConverter.convert(user));
+
+        return userVOs;
     }
 }
