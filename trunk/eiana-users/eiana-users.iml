@@ -22,6 +22,8 @@
     <orderEntry type="library" name="dom4j" level="project" />
     <orderEntry type="library" name="mysql" level="project" />
     <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="module" module-name="common-dao" />
     <orderEntryProperties />
   </component>
 </module>

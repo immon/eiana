@@ -34,6 +34,7 @@
     <orderEntry type="library" name="jbpm" level="project" />
     <orderEntry type="module" module-name="common-mail" />
     <orderEntry type="module" module-name="eiana-mail" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

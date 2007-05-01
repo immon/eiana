@@ -13,8 +13,13 @@ import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Not;
+import org.iana.criteria.And;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author: Piotr Tkaczyk
@@ -107,6 +112,22 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testFacadeUpdateUser"})
+    public void testFacadeFindUserByCriteria() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+
+        List<Criterion> criteria = new ArrayList<Criterion>();
+        criteria.add(new Equal("email", "email@some.com"));
+        criteria.add(new Not(new Equal("loginName", "gauswronguser")));
+
+        List<UserVO> userVOs = gAdminUserServ.findUsers(new And(criteria));
+        assert userVOs.size() == 1;
+        assert userVOs.iterator().next().getUserName().equals("gausadminuser");
+
+        gAdminUserServ.close();
+    }
+
+    @Test(dependsOnMethods = {"testFacadeFindUserByCriteria"})
     public void testFacadeDeleteUser() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);

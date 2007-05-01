@@ -97,8 +97,11 @@ public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService im
 
     public List<DomainVO> findDomains(Criterion criteria) {
         isUserInRole();
-        //todo
-        return null;
+        CheckTool.checkNull(criteria, "criteria");
+        List<DomainVO> domainVOs = new ArrayList<DomainVO>();
+        for (Domain domain : domainManager.find(criteria))
+            domainVOs.add(ToVOConverter.toDomainVO(domain));
+        return domainVOs;
     }
 
     public void setUser(AuthenticatedUser user) {

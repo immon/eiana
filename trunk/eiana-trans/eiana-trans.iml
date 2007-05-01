@@ -48,6 +48,7 @@
     <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntry type="module" module-name="common-objectdiff" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

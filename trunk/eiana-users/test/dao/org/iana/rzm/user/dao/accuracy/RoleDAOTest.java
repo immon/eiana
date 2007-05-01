@@ -27,9 +27,9 @@ public class RoleDAOTest {
     @Test
     public void testCreateRole() {
         firstRole = new SystemRole(SystemRole.SystemType.AC, "roleac", false, false);
-        roleDAO.createRole(firstRole);
+        roleDAO.create(firstRole);
 
-        Role retRole = roleDAO.getRole(firstRole.getObjId());
+        Role retRole = roleDAO.get(firstRole.getObjId());
         assert retRole != null;
         assert retRole instanceof SystemRole;
         assert retRole.getType().equals(SystemRole.SystemType.AC);
@@ -38,23 +38,23 @@ public class RoleDAOTest {
         assert !((SystemRole)retRole).isNotify();
 
         secondRole = new AdminRole(AdminRole.AdminType.IANA);
-        roleDAO.createRole(secondRole);
+        roleDAO.create(secondRole);
 
-        retRole = roleDAO.getRole(secondRole.getObjId());
+        retRole = roleDAO.get(secondRole.getObjId());
         assert retRole != null;
         assert retRole.getType().equals(AdminRole.AdminType.IANA);
     }
 
     @Test (dependsOnMethods = {"testCreateRole"})
     public void testUpdateRole() {
-        SystemRole systemRole = (SystemRole) roleDAO.getRole(firstRole.getObjId());
+        SystemRole systemRole = (SystemRole) roleDAO.get(firstRole.getObjId());
         systemRole.setMustAccept(true);
         systemRole.setAcceptFrom(true);
         systemRole.setNotify(true);
         systemRole.setType(SystemRole.SystemType.TC);
-        roleDAO.updateRole(systemRole);
+        roleDAO.update(systemRole);
 
-        Role retRole = roleDAO.getRole(firstRole.getObjId());
+        Role retRole = roleDAO.get(firstRole.getObjId());
         assert retRole != null;
         assert retRole instanceof SystemRole;
         assert retRole.getType().equals(SystemRole.SystemType.TC);
@@ -63,17 +63,17 @@ public class RoleDAOTest {
         assert ((SystemRole) retRole).isNotify();
         assert ((SystemRole) retRole).isAcceptFrom();
 
-        AdminRole adminRole = (AdminRole) roleDAO.getRole(secondRole.getObjId());
+        AdminRole adminRole = (AdminRole) roleDAO.get(secondRole.getObjId());
         adminRole.setType(AdminRole.AdminType.GOV_OVERSIGHT);
-        roleDAO.updateRole(adminRole);
+        roleDAO.update(adminRole);
 
-        adminRole = (AdminRole) roleDAO.getRole(secondRole.getObjId());
+        adminRole = (AdminRole) roleDAO.get(secondRole.getObjId());
         assert adminRole.getType().equals(AdminRole.AdminType.GOV_OVERSIGHT);
     }
 
     @AfterClass
     public void cleanUp() {
-        roleDAO.deleteRole(firstRole);
-        roleDAO.deleteRole(secondRole);
+        roleDAO.delete(firstRole);
+        roleDAO.delete(secondRole);
     }
 }

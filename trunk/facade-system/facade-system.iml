@@ -23,6 +23,7 @@
     <orderEntry type="library" name="jbpm" level="project" />
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="module" module-name="common-objectdiff" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

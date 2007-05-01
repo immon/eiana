@@ -3,6 +3,7 @@ package org.iana.rzm.user.dao;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -33,4 +34,6 @@ public interface UserDAO {
     public RZMUser findUserByEmail(String email);
 
     public List<RZMUser> findAll();
+
+    public List<RZMUser> find(Criterion criteria);
 }

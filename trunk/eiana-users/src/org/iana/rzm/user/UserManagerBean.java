@@ -2,6 +2,7 @@ package org.iana.rzm.user;
 
 import org.iana.notifications.dao.NotificationDAO;
 import org.iana.rzm.user.dao.UserDAO;
+import org.iana.criteria.Criterion;
 
 import java.util.List;
 
@@ -58,8 +59,8 @@ public class UserManagerBean implements UserManager {
         return dao.findAll();
     }
 
-    public List<RZMUser> find(UserCriteria criteria) {
-        return null;
+    public List<RZMUser> find(Criterion criteria) {
+        return dao.find(criteria);
     }
 
     public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,

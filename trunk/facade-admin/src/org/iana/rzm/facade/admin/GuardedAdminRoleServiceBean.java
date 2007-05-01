@@ -42,7 +42,7 @@ public class GuardedAdminRoleServiceBean extends AbstractRZMStatefulService impl
 
     public RoleVO getRole(long id) {
         isUserInRole();
-        Role retRole = this.roleManager.getRole(id);
+        Role retRole = this.roleManager.get(id);
         CheckTool.checkNull(retRole, "no such role: " + id);
         return RoleConverter.convertRole(retRole);
     }
@@ -51,7 +51,7 @@ public class GuardedAdminRoleServiceBean extends AbstractRZMStatefulService impl
         isUserInRole();
         CheckTool.checkNull(roleVO, "roleVO");
         Role newRole = RoleConverter.convertRole(roleVO);
-        this.roleManager.createRole(newRole);
+        this.roleManager.create(newRole);
         return newRole.getObjId();
     }
 
@@ -59,26 +59,31 @@ public class GuardedAdminRoleServiceBean extends AbstractRZMStatefulService impl
         isUserInRole();
         CheckTool.checkNull(roleVO, "roleVO");
         Role updateRole = RoleConverter.convertRole(roleVO);
-        this.roleManager.updateRole(updateRole);
+        this.roleManager.update(updateRole);
     }
 
     public void deleteRole(long id) {
         isUserInRole();
-        Role retRole = this.roleManager.getRole(id);
+        Role retRole = this.roleManager.get(id);
         CheckTool.checkNull(retRole, "no such role: " + id);
-        this.roleManager.deleteRole(retRole);
+        this.roleManager.delete(retRole);
     }
 
     public List<RoleVO> findRoles() {
         isUserInRole();
         List<RoleVO> rolesVO = new ArrayList<RoleVO>();
-        for (Role role : this.roleManager.findRoles())
+        for (Role role : this.roleManager.findAll())
             rolesVO.add(RoleConverter.convertRole(role));
         return rolesVO;
     }
 
     public List<RoleVO> findRoles(Criterion criteria) {
-//        todo
-        return null;
+        isUserInRole();
+        CheckTool.checkNull(criteria, "criteria");
+        List<RoleVO> roleVOs = new ArrayList<RoleVO>();
+        for (Role role : this.roleManager.find(criteria))
+            roleVOs.add(RoleConverter.convertRole(role));
+
+        return roleVOs;
     }
 }

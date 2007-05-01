@@ -13,6 +13,7 @@ import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.user.converter.RoleConverter;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.criteria.Equal;
 
 import java.util.List;
 
@@ -120,6 +121,18 @@ public class GuardedAdminRoleServiceTest {
     }
 
     @Test (dependsOnMethods = {"testFacadeFindRole"})
+    public void testFacadeFindRoleByCriteria() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminRoleServ.setUser(testAuthUser);
+
+        List<RoleVO> roleVOs = gAdminRoleServ.findRoles(new Equal("objId", roleId));
+        assert roleVOs.size() == 1;
+        assert roleVOs.iterator().next().getType().equals(SystemRoleVO.SystemType.TC);
+
+        gAdminRoleServ.close();
+    }
+
+    @Test (dependsOnMethods = {"testFacadeFindRoleByCriteria"})
     public void testFacadeDeleteRole() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminRoleServ.setUser(testAuthUser);
