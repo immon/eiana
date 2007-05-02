@@ -5,10 +5,10 @@ import org.jbpm.graph.exe.ExecutionContext;
 import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.trans.confirmation.RoleConfirmation;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.SystemRole;
 import org.iana.notifications.Addressee;
-import org.iana.notifications.dao.NotificationDAO;
-import org.iana.notifications.dao.HibernateNotificationDAO;
 
 import java.util.*;
 
@@ -23,26 +23,54 @@ public class ProcessStateNotifier implements ActionHandler {
     protected NotificationTemplate notificationTemplate;
     protected String               notification;
     protected NotificationManager  notificationManagerBean;
-    
+
     public void execute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
+        sendNotifications(getNotifications());
     }
 
-    protected void fillDataFromContext(ExecutionContext executionContext) throws NotificationException {
+    private void fillDataFromContext(ExecutionContext executionContext) throws NotificationException {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
         notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
     }
 
-    protected void sendContactNotification(RZMUser user, Object template) throws Exception {
-        Notification notification = notificationTemplate.getNotificationInstance(template);
-        notification.addAddressee(user);
+    private void sendNotifications(List<Notification> notifications) throws Exception {
+        for (Notification notification: notifications)
+            sendNotification(notification);
+    }
+
+    private void sendNotification(Notification notification) throws Exception {
         try {
-            notificationSender.send(notification.getAddressee(), notification.getContent());
+            if (!notification.getAddressee().isEmpty())
+                notificationSender.send(notification.getAddressee(), notification.getContent());
         } catch(NotificationException e) {
             notification.incSentFailures();
-            notificationManagerBean .create(notification);
+            notificationManagerBean.create(notification);
         }
+    }
+
+    public List<Notification> getNotifications() {
+        List<Notification> notifications = new ArrayList<Notification>();
+
+        String domainName = td.getCurrentDomain().getName();
+        Set<Addressee> users = new HashSet<Addressee>();
+
+        users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
+        users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.TC, domainName, true, false)).getUsersAbleToAccept());
+        users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.SO, domainName, true, false)).getUsersAbleToAccept());
+
+        users.addAll(new RoleConfirmation(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)).getUsersAbleToAccept());
+        users.addAll(new RoleConfirmation(new AdminRole(AdminRole.AdminType.IANA)).getUsersAbleToAccept());
+        users.addAll(new RoleConfirmation(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER)).getUsersAbleToAccept());
+
+        TemplateContent templateContent = new TemplateContent(notification, new HashMap<String,String>());
+        Notification notification = new Notification();
+        notification.setContent(templateContent);
+        notification.setAddressee(users);
+        notifications.add(notification);
+
+        return notifications ;
     }
 }

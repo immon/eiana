@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iana:templates xmlns:iana="todo">
+<iana:templates xmlns:iana="todo">   <!--todo-->
+
+    <!-- test templates-->
     <iana:template>
         <iana:type>SAMPLE_TEMPLATE1</iana:type>
         <iana:subject>Warning</iana:subject>
@@ -19,16 +21,72 @@
     </iana:template>
 
 
+    <!--iana templates-->
+
     <iana:template>
         <iana:type>contact-confirmation</iana:type>
         <iana:subject>Domain modification</iana:subject>
-        <iana:content>You are in role %roleName% for %domainName% and you %mustAccept% accept modifications.</iana:content>
+        <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.</iana:content>
     </iana:template>
 
     <iana:template>
         <iana:type>contact-confirmation-remainder</iana:type>
         <iana:subject>Domain modification</iana:subject>
-        <iana:content>You are in role %roleName% for %domainName% and you %mustAccept% accept modifications. You have only %period% days left. </iana:content>
+        <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have only {period} days left. </iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>impacted_parties-confirmation</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>impacted_parties-confirmation-remainder</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have only {period} days left. </iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>zone-insertion-alert</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Zone Insertion Alert for {domainName}. Only {period} days left.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>zone-publication-alert</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Zone Publication Alert for {domainName}. Only {period} days left.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>completed</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Completed.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>rejected</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Rejected.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>withdrawn</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Withdrawn.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>admin-closed</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Admin Closed.</iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>exception</iana:type>
+        <iana:subject>Domain modification</iana:subject>
+        <iana:content>Exception.</iana:content>
     </iana:template>
 
 </iana:templates>

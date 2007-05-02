@@ -3,14 +3,14 @@ package org.iana.rzm.trans;
 import org.iana.rzm.domain.Address;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.jbpm.JbpmConfiguration;
@@ -24,9 +24,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.iana.notifications.dao.NotificationDAO;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.Notification;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -76,6 +73,10 @@ public class DomainModificationWorkflowTest {
                 UserManagementTestUtil.createSystemRole("testdomain.org", true, false, SystemRole.SystemType.TC)));
         createUser(UserManagementTestUtil.createUser("UDsys6",
                 UserManagementTestUtil.createSystemRole("testdomain.org", false, false, SystemRole.SystemType.TC)));
+
+        createUser(UserManagementTestUtil.createUser("UDAdm1Gov", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT)));
+        createUser(UserManagementTestUtil.createUser("UDAdm1Iana", new AdminRole(AdminRole.AdminType.IANA)));
+        createUser(UserManagementTestUtil.createUser("UDAdm1ZonePub", new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER)));
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
 
@@ -132,13 +133,17 @@ public class DomainModificationWorkflowTest {
         domain.addTechContact(new Contact("aaaaaa"));
         domainDAO.create(domain);
 
-        Domain clonedDomain = (Domain) domain.clone();
+        Host nameServer = new Host("newnameserver");
+        nameServer.addIPAddress("192.168.0.1");
+
+        Domain clonedDomain = domain.clone();
         clonedDomain.setWhoisServer("newwhoisserver");
         clonedDomain.setRegistryUrl(null);
         clonedDomain.setSupportingOrg(clonedSupportingOrg);
         Contact newContact = new Contact("aaaaaa");
         newContact.addEmail("noContact-new-emial@post.org");
         //clonedDomain.addTechContact(newContact);
+        clonedDomain.addNameServer(nameServer);
         clonedDomain.setTechContacts(new ArrayList<Contact>());
         
         Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
@@ -146,12 +151,15 @@ public class DomainModificationWorkflowTest {
         ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
         testProcessInstanceId = pi.getId();
 
+//        Thread.sleep(2001L);
+//        schedulerThread.executeTimers();
+
         Token token = pi.getRootToken();
         token.signal();
         assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES");
 
-        Thread.sleep(2001L);
-        schedulerThread.executeTimers();
+//        Thread.sleep(2001L);
+//        schedulerThread.executeTimers();
 
         token.signal("accept");
         assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION");
@@ -160,14 +168,26 @@ public class DomainModificationWorkflowTest {
         token.signal("accept");
         assert token.getNode().getName().equals("PENDING_USDOC_APPROVAL");
         token.signal("accept");
+        assert token.getNode().getName().equals("PENDING_ZONE_INSERTION");
 
+//        Thread.sleep(2001L);
+//        schedulerThread.executeTimers();
+
+        token.signal("accept");
+        assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION");
+
+//        Thread.sleep(2001L);
+//        schedulerThread.executeTimers();
+
+        token.signal("accept");
+        assert token.getNode().getName().equals("COMPLETED");
 
         processDAO.close();
         txMgr.commit(txStatus);
 
         txStatus = txMgr.getTransaction(txDef);
 
-        Domain retrivedDomain = domainDAO.get(domain.getName());
+//        Domain retrivedDomain = domainDAO.get(domain.getName());
 
 //        assert (retrivedDomain.getWhoisServer().equals("newwhoisserver") &&
 //                retrivedDomain.getRegistryUrl() == null);

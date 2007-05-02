@@ -5,10 +5,11 @@ import org.iana.notifications.Notification;
 import java.util.*;
 
 /**
- * @author Patrycja Wegrzynowicz
- * @author Piotr    Tkaczyk
+ * @author: Piotr Tkaczyk
  */
-public class ImpactedPartiesNotifier extends ProcessStateNotifier {
+public class ImpactedPartiesConfirmationRemainder extends ProcessStateNotifier {
+
+    protected String period;
 
     public List<Notification> getNotifications() {
 

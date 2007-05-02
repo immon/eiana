@@ -19,6 +19,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class NotificationsReSenderTest {
     }
 
     @Test (dependsOnMethods = {"testReSender"})
-    public void testCleanUp() throws Exception {
+    public void testNotificatioUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);
@@ -102,9 +103,6 @@ public class NotificationsReSenderTest {
             List<Notification> notifList = notificationManagerBean.findUnSentNotifications(40L);
             assert notifList.size() == 1;
             assert notifList.get(0).getSentFailures() == 1;
-            userManagerBean.delete(user);
-            notifList = notificationManagerBean.findUnSentNotifications(40L);
-            assert notifList.isEmpty();
 
             txMgr.commit(txStatus);
         } catch (Exception e) {
@@ -114,5 +112,10 @@ public class NotificationsReSenderTest {
         } finally {
             processDAO.close();
         }
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        userManagerBean.delete(user);
     }
 }

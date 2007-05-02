@@ -34,6 +34,7 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
     }
 
     public void setUserManager(UserManager userManager) {
+        CheckTool.checkNull(userManager, "user manager");
         this.userManager = userManager;
     }
 

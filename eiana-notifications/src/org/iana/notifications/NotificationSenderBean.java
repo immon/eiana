@@ -55,7 +55,12 @@ public class NotificationSenderBean implements NotificationSender {
     public void send(Addressee addressee, Content content) throws NotificationException {
         CheckTool.checkNull(addressee, "null addressee param");
         CheckTool.checkNull(content, "null notification content");
-        sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", content.getSubject(), content.getBody());
+        if (content instanceof TemplateContent) {
+            TemplateContentConverter tcc = new TemplateContentConverter();
+            sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", tcc.createSubject((TemplateContent)content), tcc.createBody((TemplateContent)content));
+        }
+        else
+            sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", content.getSubject(), content.getBody());
     }
 
     public void send(Collection<Addressee> addressees, Content content) throws NotificationException {
@@ -68,7 +73,11 @@ public class NotificationSenderBean implements NotificationSender {
             address.append("<");address.append(add.getEmail()); address.append(">");
             if (i.hasNext()) address.append(",");
         }
-        sendMail(address.toString(), content.getSubject(), content.getBody());
+        if (content instanceof TemplateContent) {
+            TemplateContentConverter tcc = new TemplateContentConverter();
+            sendMail(address.toString(), tcc.createSubject((TemplateContent)content), tcc.createBody((TemplateContent)content));
+        } else
+         sendMail(address.toString(), content.getSubject(), content.getBody());
     }
 
     private void sendMail(String address, String subject, String body) throws NotificationException {
