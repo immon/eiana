@@ -6,7 +6,7 @@
 
     <!-- facade services configuration -->
 
-    <bean id="GuardedAdminTransactionServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+     <bean id="GuardedAdminTransactionServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminTransactionService</value>
@@ -28,12 +28,13 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminTransactionServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean">
+    <bean id="GuardedAdminTransactionServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean" scope="session">
         <constructor-arg index="0" ref="userManager" />
         <constructor-arg index="1" ref="transactionManagerBean" />
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminRoleServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+    <bean id="GuardedAdminRoleServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminRoleService</value>
@@ -50,12 +51,13 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminRoleServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean">
+    <bean id="GuardedAdminRoleServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean" scope="session">
         <constructor-arg index="0" ref="userManager" />
         <constructor-arg index="1" ref="roleManager" />
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminUserServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+    <bean id="GuardedAdminUserServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminUserService</value>
@@ -72,11 +74,12 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminUserServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean">
+    <bean id="GuardedAdminUserServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean" scope="session">
         <constructor-arg index="0" ref="userManager" />
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminDomainServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+    <bean id="GuardedAdminDomainServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminDomainService</value>
@@ -93,9 +96,10 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminDomainServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean">
+    <bean id="GuardedAdminDomainServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean" scope="session">
         <constructor-arg index="0" ref="userManager" />
         <constructor-arg index="1" ref="domainManager" />
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
     <!-- authentication service -->
@@ -154,7 +158,7 @@
     <!-- system domain service -->
 
     <bean id="GuardedSystemDomainService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
@@ -171,9 +175,10 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
+    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService" scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="SystemDomainServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
@@ -188,7 +193,7 @@
     </bean>
 
     <bean id="GuardedSystemTransactionService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" scope="session">
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
@@ -213,9 +218,10 @@
     <!-- transaction service -->
 
     <bean id="GuardedSystemTransactionServiceTarget"
-          class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
+          class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService" scope="session">
         <constructor-arg ref="userManager"/>
         <constructor-arg ref="SystemTransactionServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
     <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.SystemTransactionServiceBean">

@@ -2,8 +2,9 @@ package org.iana.rzm.common;
 
 import org.iana.rzm.common.exceptions.InvalidNameException;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Basic;
+import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Locale;
  * @author Jakub Laszkiewicz
  */
 @Embeddable
-public class Name implements Cloneable{
+public class Name implements Cloneable, Serializable {
 
     @Basic
     private String name;

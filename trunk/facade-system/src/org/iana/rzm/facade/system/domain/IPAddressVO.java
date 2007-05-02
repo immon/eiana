@@ -1,5 +1,8 @@
 package org.iana.rzm.facade.system.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import java.io.Serializable;
 
 /**
@@ -26,5 +29,13 @@ public class IPAddressVO implements Serializable {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public boolean equals(Object object) {
+        return EqualsBuilder.reflectionEquals(this, object);
+    }
+
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

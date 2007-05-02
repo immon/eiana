@@ -1,11 +1,13 @@
 package org.iana.rzm.facade.system.domain;
 
-import org.iana.rzm.facade.common.Trackable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.rzm.facade.common.Trackable;
 
-import java.util.Set;
-import java.sql.Timestamp;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -81,5 +83,13 @@ public class HostVO implements Trackable, Serializable {
 
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
+    }
+
+    public boolean equals(Object object) {
+        return EqualsBuilder.reflectionEquals(this, object);
+    }
+
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

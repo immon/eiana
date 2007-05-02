@@ -1,11 +1,13 @@
 package org.iana.rzm.facade.system.trans;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class ChangeVO {
+public class ChangeVO implements Serializable {
 
-    public enum Type { ADDITION, REMOVAL, UPDATE }
+    public enum Type { ADDITION, REMOVAL, UPDATE } 
 
     private String fieldName;
     private Type type;
@@ -15,7 +17,7 @@ public class ChangeVO {
         return fieldName;
     }
 
-    void setFieldName(String fieldName) {
+    public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -23,7 +25,7 @@ public class ChangeVO {
         return type;
     }
 
-    void setType(Type type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
@@ -31,7 +33,7 @@ public class ChangeVO {
         return value;
     }
 
-    void setValue(ValueVO value) {
+    public void setValue(ValueVO value) {
         this.value = value;
     }
 
