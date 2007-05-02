@@ -4,6 +4,7 @@ import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 
 import javax.persistence.Basic;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -12,7 +13,7 @@ import java.util.Locale;
  * @author Jakub Laszkiewicz
  */
 @Embeddable
-public class CountryCode implements Cloneable {
+public class CountryCode implements Cloneable, Serializable {
     @Basic
     private String countryCode;
 

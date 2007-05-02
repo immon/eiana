@@ -99,6 +99,9 @@
         <path location="${lib.dir}/javaee/javaee.jar"/>
         <path location="${lib.dir}/log4j/log4j-1.2.14.jar"/>
         <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
+        <path location="${lib.dir}/xml-parsers/xercesImpl.jar"/>
+        <path location="${lib.dir}/xml-parsers/xmlParserAPIs.jar"/>
+        <path location="${lib.dir}/xml-parsers/xml-apis.jar"/>
         <path location="${eiana-users.output.dir}"/>
         <path location="${eiana-util.output.dir}"/>
         <path location="${eiana-init.output.dir}"/>

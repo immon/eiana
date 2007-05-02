@@ -5,13 +5,14 @@ import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import javax.persistence.Basic;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * @author Jakub Laszkiewicz
  */
 @Embeddable
-public class EmailAddress implements Cloneable {
+public class EmailAddress implements Cloneable, Serializable {
     @Basic
     private String email;
 

@@ -24,6 +24,7 @@
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="module" module-name="common-objectdiff" />
     <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="library" name="apache-commons" level="project" />
     <orderEntryProperties />
   </component>
 </module>

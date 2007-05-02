@@ -1,12 +1,13 @@
 package org.iana.rzm.facade.system.trans;
 
-import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class TransactionActionVO {
+public class TransactionActionVO implements Serializable {
 
     public static final String MODIFY_CONTACT = "modify contact";
     public static final String MODIFY_REGISTRATION_URL = "modify registration url";

@@ -1,8 +1,9 @@
 package org.iana.rzm.facade.common;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class TrackDataVO implements Trackable {
+public class TrackDataVO implements Trackable, Serializable {
 
     private Timestamp created;
     private Timestamp modified;

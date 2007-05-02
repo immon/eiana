@@ -36,6 +36,51 @@
 <#macro messageText code, text>${springMacroRequestContext.getMessage(code, text)}</#macro>
 
 <#--
+ * messageArgs
+ *
+ * Macro to translate a message code with arguments into a message.
+ -->
+<#macro messageArgs code, args>${springMacroRequestContext.getMessage(code, args)}</#macro>
+
+<#--
+ * messageArgsText
+ *
+ * Macro to translate a message code with arguments into a message,
+ * using the given default text if no message found.
+ -->
+<#macro messageArgsText code, args, text>${springMacroRequestContext.getMessage(code, args, text)}</#macro>
+
+<#--
+ * theme
+ *
+ * Macro to translate a theme message code into a message.
+ -->
+<#macro theme code>${springMacroRequestContext.getThemeMessage(code)}</#macro>
+
+<#--
+ * themeText
+ *
+ * Macro to translate a theme message code into a message,
+ * using the given default text if no message found.
+ -->
+<#macro themeText code, text>${springMacroRequestContext.getThemeMessage(code, text)}</#macro>
+
+<#--
+ * themeArgs
+ *
+ * Macro to translate a theme message code with arguments into a message.
+ -->
+<#macro themeArgs code, args>${springMacroRequestContext.getThemeMessage(code, args)}</#macro>
+
+<#--
+ * themeArgsText
+ *
+ * Macro to translate a theme message code with arguments into a message,
+ * using the given default text if no message found.
+ -->
+<#macro themeArgsText code, args, text>${springMacroRequestContext.getThemeMessage(code, args, text)}</#macro>
+
+<#--
  * url
  *
  * Takes a relative URL and makes it absolute from the server root by
@@ -75,7 +120,7 @@
         <#assign status = springMacroRequestContext.getBindStatus(path)>
     </#if>
     <#-- assign a temporary value, forcing a string representation for any
-    kind of variable.  This temp value is only used in this macro lib -->
+    kind of variable. This temp value is only used in this macro lib -->
     <#if status.value?exists && status.value?is_boolean>
         <#assign stringStatusValue=status.value?string>
     <#else>
@@ -92,7 +137,7 @@
 <#macro bindEscaped path, htmlEscape>
     <#assign status = springMacroRequestContext.getBindStatus(path, htmlEscape)>
     <#-- assign a temporary value, forcing a string representation for any
-    kind of variable.  This temp value is only used in this macro lib -->
+    kind of variable. This temp value is only used in this macro lib -->
     <#if status.value?exists && status.value?is_boolean>
         <#assign stringStatusValue=status.value?string>
     <#else>
@@ -110,25 +155,24 @@
  * @param attributes any additional attributes for the element (such as class
  *    or CSS styles or size
  -->
-<#macro formInput path attributes="" fieldType="text" >
+<#macro formInput path attributes="" fieldType="text">
     <@bind path/>
-    <input type="${fieldType}" id="${status.expression}" name="${status.expression}" value="<#if fieldType!="password">${stringStatusValue}</#if>" ${attributes}
-    <@closeTag/>
+    <input type="${fieldType}" id="${status.expression}" name="${status.expression}" value="<#if fieldType!="password">${stringStatusValue}</#if>" ${attributes}<@closeTag/>
 </#macro>
 
 <#--
  * formPasswordInput
  *
  * Display a form input field of type 'password' and bind it to an attribute
- * of a command or bean.  No value will ever be displayed.  This functionality
+ * of a command or bean. No value will ever be displayed. This functionality
  * can also be obtained by calling the formInput macro with a 'type' parameter
- * of 'password'
+ * of 'password'.
  *
  * @param path the name of the field to bind to
  * @param attributes any additional attributes for the element (such as class
  *    or CSS styles or size
  -->
-<#macro formPasswordInput path attributes="" >
+<#macro formPasswordInput path attributes="">
     <@formInput path, attributes, "password"/>
 </#macro>
 
@@ -136,14 +180,14 @@
  * formHiddenInput
  *
  * Generate a form input field of type 'hidden' and bind it to an attribute
- * of a command or bean.  This functionality can also be obtained by calling
- * the formInput macro with a 'type' parameter of 'hidden'
+ * of a command or bean. This functionality can also be obtained by calling
+ * the formInput macro with a 'type' parameter of 'hidden'.
  *
  * @param path the name of the field to bind to
  * @param attributes any additional attributes for the element (such as class
  *    or CSS styles or size
  -->
-<#macro formHiddenInput path attributes="" >
+<#macro formHiddenInput path attributes="">
     <@formInput path, attributes, "hidden"/>
 </#macro>
 
@@ -156,9 +200,9 @@
  * @param attributes any additional attributes for the element (such as class
  *    or CSS styles or size
  -->
-<#macro formTextarea path attributes="" >
+<#macro formTextarea path attributes="">
     <@bind path/>
-    <textarea id="${status.expression}" name="${status.expression}" ${attributes}>${stringStatusValue?html}</textarea>
+    <textarea id="${status.expression}" name="${status.expression}" ${attributes}>${stringStatusValue}</textarea>
 </#macro>
 
 <#--
@@ -197,7 +241,7 @@
     <select multiple="multiple" id="${status.expression}" name="${status.expression}" ${attributes}>
         <#list options?keys as value>
         <#assign isSelected = contains(status.value?default([""]), value)>
-        <option value="${value?html}" <#if isSelected>selected="selected"</#if>>${options[value]?html}</option>
+        <option value="${value?html}"<#if isSelected> selected="selected"</#if>>${options[value]?html}</option>
         </#list>
     </select>
 </#macro>
@@ -210,7 +254,7 @@
  * @param path the name of the field to bind to
  * @param options a map (value=label) of all the available options
  * @param separator the html tag or other character list that should be used to
- *    separate each option.  Typically '&nbsp;' or '<br>'
+ *    separate each option. Typically '&nbsp;' or '<br>'
  * @param attributes any additional attributes for the element (such as class
  *    or CSS styles or size
 -->
@@ -218,9 +262,7 @@
     <@bind path/>
     <#list options?keys as value>
     <#assign id="${status.expression}${value_index}">
-    <input type="radio" id="${id}" name="${status.expression}" value="${value?html}"
-        <#if stringStatusValue == value>checked="checked"</#if> ${attributes}
-    <@closeTag/>
+    <input type="radio" id="${id}" name="${status.expression}" value="${value?html}"<#if stringStatusValue == value> checked="checked"</#if> ${attributes}<@closeTag/>
     <label for="${id}">${options[value]?html}</label>${separator}
     </#list>
 </#macro>
@@ -233,7 +275,7 @@
  * @param path the name of the field to bind to
  * @param options a map (value=label) of all the available options
  * @param separator the html tag or other character list that should be used to
- *    separate each option.  Typically '&nbsp;' or '<br>'
+ *    separate each option. Typically '&nbsp;' or '<br>'
  * @param attributes any additional attributes for the element (such as class
  *    or CSS styles or size
 -->
@@ -242,11 +284,10 @@
     <#list options?keys as value>
     <#assign id="${status.expression}${value_index}">
     <#assign isSelected = contains(status.value?default([""]), value)>
-    <input type="checkbox" id="${id}" name="${status.expression}" value="${value?html}"
-        <#if isSelected>checked="checked"</#if> ${attributes}
-    <@closeTag/>
+    <input type="checkbox" id="${id}" name="${status.expression}" value="${value?html}"<#if isSelected> checked="checked"</#if> ${attributes}<@closeTag/>
     <label for="${id}">${options[value]?html}</label>${separator}
     </#list>
+    <input type="hidden" name="_${status.expression}" value="on"/>
 </#macro>
 
 <#--
@@ -258,7 +299,7 @@
  * @param separator the html tag or other character list that should be used to
  *    separate each option. Typically '<br>'.
  * @param classOrStyle either the name of a CSS class element (which is defined in
- *    the template or an external CSS file) or an inline style.  If the value passed in here
+ *    the template or an external CSS file) or an inline style. If the value passed in here
  *    contains a colon (:) then a 'style=' attribute will be used, else a 'class=' attribute
  *    will be used.
 -->
