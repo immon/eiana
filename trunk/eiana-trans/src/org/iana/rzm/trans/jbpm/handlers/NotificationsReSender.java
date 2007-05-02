@@ -10,7 +10,7 @@ import org.iana.notifications.exception.NotificationException;
 import java.util.List;
 
 /**
- * @author: piotrt
+ * @author: Piotr Tkaczyk
  */
 public class NotificationsReSender implements ActionHandler {
 
