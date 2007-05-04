@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-dns" value="${compiler.args}"/>
   
-  <property name="eiana-dns.output.dir" value="${module.eiana-dns.basedir}/../classes/production/eiana-dns"/>
-  <property name="eiana-dns.testoutput.dir" value="${module.eiana-dns.basedir}/../classes/test/eiana-dns"/>
+  <property name="eiana-dns.output.dir" value="${module.eiana-dns.basedir}/../build/classes/production/eiana-dns"/>
+  <property name="eiana-dns.testoutput.dir" value="${module.eiana-dns.basedir}/../build/classes/test/eiana-dns"/>
   
   <path id="eiana-dns.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->

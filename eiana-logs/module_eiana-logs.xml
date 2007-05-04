@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-logs" value="${compiler.args}"/>
   
-  <property name="eiana-logs.output.dir" value="${module.eiana-logs.basedir}/../classes/production/eiana-logs"/>
-  <property name="eiana-logs.testoutput.dir" value="${module.eiana-logs.basedir}/../classes/test/eiana-logs"/>
+  <property name="eiana-logs.output.dir" value="${module.eiana-logs.basedir}/../build/classes/production/eiana-logs"/>
+  <property name="eiana-logs.testoutput.dir" value="${module.eiana-logs.basedir}/../build/classes/test/eiana-logs"/>
   
   <path id="eiana-logs.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -14,6 +14,13 @@
   
   <path id="eiana-logs.module.classpath">
     <path refid="library.javaee.classpath"/>
+    <path refid="library.cobertura.classpath"/>
+    <pathelement location="${common-objectdiff.output.dir}"/>
+    <pathelement location="${common-objectdiff.testoutput.dir}"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
   </path>
   
   
@@ -34,7 +41,7 @@
   
   <target name="compile.module.eiana-logs" depends="compile.module.eiana-logs.production,compile.module.eiana-logs.tests" description="Compile module eiana-logs"/>
   
-  <target name="compile.module.eiana-logs.production" description="Compile module eiana-logs; production classes">
+  <target name="compile.module.eiana-logs.production" depends="compile.module.common-objectdiff,compile.module.eiana-users,compile.module.eiana-util" description="Compile module eiana-logs; production classes">
     <mkdir dir="${eiana-logs.output.dir}"/>
     <javac destdir="${eiana-logs.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-logs}"/>

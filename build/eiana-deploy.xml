@@ -7,6 +7,7 @@
     <property environment="env"/>
 
     <property name="lib.dir" location="../lib"/>
+    <property name="conf.dir" location="../conf"/>
     <property name="output.dir" value="dist"/>
     <property name="jar.output.dir" value="${output.dir}/jar"/>
     <property name="war.output.dir" value="${output.dir}/war"/>
@@ -89,35 +90,42 @@
     <!-- database initialization -->
 
     <path id="inittools.classpath">
-        <fileset dir="${lib.dir}/hibernate">
+        <fileset dir="${jar.output.dir}">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${lib.dir}/apache-commons">
             <include name="**/*.jar"/>
         </fileset>
-        <path location="${lib.dir}/dom4j/dom4j-1.6.1.jar"/>
-        <path location="${lib.dir}/javaee/javaee.jar"/>
-        <path location="${lib.dir}/log4j/log4j-1.2.14.jar"/>
-        <path location="${lib.dir}/mysql/mysql-connector-java-5.0.4-bin.jar"/>
-        <path location="${lib.dir}/xml-parsers/xercesImpl.jar"/>
-        <path location="${lib.dir}/xml-parsers/xmlParserAPIs.jar"/>
-        <path location="${lib.dir}/xml-parsers/xml-apis.jar"/>
-        <path location="${eiana-users.output.dir}"/>
-        <path location="${eiana-util.output.dir}"/>
-        <path location="${eiana-init.output.dir}"/>
-        <path location="${tests}"/>
-        <path location="${tests}/hibernate"/>
-        <path location="${eiana-domains.output.dir}"/>
-        <path location="${eiana-trans.output.dir}"/>
-        <path location="${eiana-notifications.output.dir}"/>
-        <path location="${tests.testoutput.dir}"/>
-        <fileset dir="${lib.dir}">
+        <fileset dir="${lib.dir}/nask-commons">
             <include name="**/*.jar"/>
         </fileset>
+        <fileset dir="${lib.dir}/log4j">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/xerces">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/dom4j">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/testng">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/mysql">
+            <include name="**/*.jar"/>
+        </fileset>
+        <path location="${eiana-init.output.dir}"/>
+        <path refid="eiana-init.module.classpath"/>
     </path>
 
-    <target name="database.init.test" depends="database.create.test, all.compile">
+    <target name="database.init.test" depends="database.create.test, all.jar">
         <java classname="org.iana.rzm.init.ant.InitDatabaseTask">
+            <classpath refid="inittools.classpath"/>
+        </java>
+    </target>
+
+    <target name="jbpm.init" depends="all.jar">
+        <java classname="org.iana.rzm.init.ant.ProcessDeployment">
             <classpath refid="inittools.classpath"/>
         </java>
     </target>
@@ -135,6 +143,21 @@
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
         <mkdir dir="${jar.output.dir}"/>
 
+        <jar destfile="${jar.output.dir}/common-codevalues.jar">
+            <fileset dir="${common-codevalues.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/common-criteria.jar">
+            <fileset dir="${common-criteria.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/common-dao.jar">
+            <fileset dir="${common-dao.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/common-mail.jar">
+            <fileset dir="${common-mail.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/common-objectdiff.jar">
+            <fileset dir="${common-objectdiff.output.dir}"/>
+        </jar>
         <jar destfile="${jar.output.dir}/eiana-dns.jar">
             <fileset dir="${eiana-dns.output.dir}"/>
         </jar>
@@ -143,6 +166,9 @@
         </jar>
         <jar destfile="${jar.output.dir}/eiana-logs.jar">
             <fileset dir="${eiana-logs.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-mail.jar">
+            <fileset dir="${eiana-notifications.output.dir}"/>
         </jar>
         <jar destfile="${jar.output.dir}/eiana-notifications.jar">
             <fileset dir="${eiana-notifications.output.dir}"/>

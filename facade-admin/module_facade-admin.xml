@@ -5,8 +5,8 @@
   
   <property name="compiler.args.facade-admin" value="${compiler.args}"/>
   
-  <property name="facade-admin.output.dir" value="${module.facade-admin.basedir}/../classes/production/facade-admin"/>
-  <property name="facade-admin.testoutput.dir" value="${module.facade-admin.basedir}/../classes/test/facade-admin"/>
+  <property name="facade-admin.output.dir" value="${module.facade-admin.basedir}/../build/classes/production/facade-admin"/>
+  <property name="facade-admin.testoutput.dir" value="${module.facade-admin.basedir}/../build/classes/test/facade-admin"/>
   
   <path id="facade-admin.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -16,7 +16,22 @@
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
-    <path refid="library.util.classpath"/>
+    <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${facade-system.output.dir}"/>
+    <pathelement location="${facade-system.testoutput.dir}"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <pathelement location="${eiana-domains.output.dir}"/>
+    <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.hibernate.classpath"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${eiana-trans.output.dir}"/>
+    <pathelement location="${eiana-trans.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
   </path>
   
   
@@ -37,7 +52,7 @@
   
   <target name="compile.module.facade-admin" depends="compile.module.facade-admin.production,compile.module.facade-admin.tests" description="Compile module facade-admin"/>
   
-  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common" description="Compile module facade-admin; production classes">
+  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.eiana-users,compile.module.eiana-domains,compile.module.eiana-util,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.common-criteria" description="Compile module facade-admin; production classes">
     <mkdir dir="${facade-admin.output.dir}"/>
     <javac destdir="${facade-admin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-admin}"/>

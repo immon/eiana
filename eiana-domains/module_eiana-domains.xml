@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
   
-  <property name="eiana-domains.output.dir" value="${module.eiana-domains.basedir}/../classes/production/eiana-domains"/>
-  <property name="eiana-domains.testoutput.dir" value="${module.eiana-domains.basedir}/../classes/test/eiana-domains"/>
+  <property name="eiana-domains.output.dir" value="${module.eiana-domains.basedir}/../build/classes/production/eiana-domains"/>
+  <property name="eiana-domains.testoutput.dir" value="${module.eiana-domains.basedir}/../build/classes/test/eiana-domains"/>
   
   <path id="eiana-domains.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -23,6 +23,10 @@
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.dom4j.classpath"/>
     <path refid="library.mysql.classpath"/>
+    <pathelement location="${common-dao.output.dir}"/>
+    <pathelement location="${common-dao.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
   </path>
   
   
@@ -51,7 +55,7 @@
   
   <target name="compile.module.eiana-domains" depends="compile.module.eiana-domains.production,compile.module.eiana-domains.tests" description="Compile module eiana-domains"/>
   
-  <target name="compile.module.eiana-domains.production" depends="compile.module.eiana-util" description="Compile module eiana-domains; production classes">
+  <target name="compile.module.eiana-domains.production" depends="compile.module.eiana-util,compile.module.common-dao,compile.module.common-criteria" description="Compile module eiana-domains; production classes">
     <mkdir dir="${eiana-domains.output.dir}"/>
     <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-domains}"/>

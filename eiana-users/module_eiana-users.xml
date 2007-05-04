@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-users" value="${compiler.args}"/>
   
-  <property name="eiana-users.output.dir" value="${module.eiana-users.basedir}/../classes/production/eiana-users"/>
-  <property name="eiana-users.testoutput.dir" value="${module.eiana-users.basedir}/../classes/test/eiana-users"/>
+  <property name="eiana-users.output.dir" value="${module.eiana-users.basedir}/../build/classes/production/eiana-users"/>
+  <property name="eiana-users.testoutput.dir" value="${module.eiana-users.basedir}/../build/classes/test/eiana-users"/>
   
   <path id="eiana-users.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -25,6 +25,10 @@
     <path refid="library.mysql.classpath"/>
     <pathelement location="${eiana-notifications.output.dir}"/>
     <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <pathelement location="${common-dao.output.dir}"/>
+    <pathelement location="${common-dao.testoutput.dir}"/>
   </path>
   
   
@@ -53,7 +57,7 @@
   
   <target name="compile.module.eiana-users" depends="compile.module.eiana-users.production,compile.module.eiana-users.tests" description="Compile module eiana-users"/>
   
-  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util,compile.module.eiana-notifications" description="Compile module eiana-users; production classes">
+  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util,compile.module.eiana-notifications,compile.module.common-criteria,compile.module.common-dao" description="Compile module eiana-users; production classes">
     <mkdir dir="${eiana-users.output.dir}"/>
     <javac destdir="${eiana-users.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-users}"/>
