@@ -9,7 +9,7 @@ import org.iana.objectdiff.ObjectConfiguration;
  */
 public class DomainDiffConfiguration extends DiffConfiguration {
 
-    private DomainDiffConfiguration() {
+    public DomainDiffConfiguration(HostManager hostManager) {
 
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
             "supportingOrg", "adminContacts", "techContacts", "whoisServer", "registryUrl", "nameServers"
@@ -17,7 +17,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
         domainConfig.addFieldClass("supportingOrg", Contact.class);
         domainConfig.addFieldClass("adminContacts", Contact.class);
         domainConfig.addFieldClass("techContacts", Contact.class);
-        domainConfig.addFieldClass("nameServers", Host.class);
+        domainConfig.addFieldInstantiator("nameServers", new HostInstantiator(hostManager));
         addObjectConfiguration(Domain.class, domainConfig);
 
         ObjectConfiguration contactConfig = new ObjectConfiguration(new String[]{
@@ -42,11 +42,5 @@ public class DomainDiffConfiguration extends DiffConfiguration {
         }, "address");
         addObjectConfiguration(IPv4Address.class, ipAddressConfig);
         addObjectConfiguration(IPv6Address.class, ipAddressConfig);
-    }
-
-    private static DiffConfiguration instance = new DomainDiffConfiguration();
-
-    public static DiffConfiguration getInstance() {
-        return instance;
     }
 }

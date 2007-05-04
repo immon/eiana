@@ -1,19 +1,13 @@
 package org.iana.rzm.facade.admin;
 
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
-import org.iana.rzm.facade.system.trans.TransactionVO;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.TransactionConverter;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaConverter;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionCriteria;
+import org.iana.rzm.trans.*;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.UserManager;
@@ -65,14 +59,17 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         return null;
     }
 
-    public TransactionVO createDomainModificationTransaction(DomainVO domainVO) {
+    public TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException {
         isUserInRole();
-        CheckTool.checkNull(domainVO, "domainVO");
-        Domain domain = FromVOConverter.toDomain(domainVO);
-        Transaction createdTransaction =
-                transactionManager.createDomainModificationTransaction(domain);
-        CheckTool.checkNull(createdTransaction, "created modification transaction");
-        return TransactionConverter.toTransactionVO(createdTransaction);
+        try {
+            CheckTool.checkNull(domainVO, "domainVO");
+            Domain domain = FromVOConverter.toDomain(domainVO);
+            Transaction createdTransaction = transactionManager.createDomainModificationTransaction(domain);
+            CheckTool.checkNull(createdTransaction, "created modification transaction");
+            return TransactionConverter.toTransactionVO(createdTransaction);
+        } catch (NoModificationException e) {
+            throw new NoDomainModificationException(domainVO.getName());
+        }
     }
 
     public List<TransactionVO> findAll() {

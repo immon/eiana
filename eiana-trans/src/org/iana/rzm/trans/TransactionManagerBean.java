@@ -2,6 +2,7 @@ package org.iana.rzm.trans;
 
 import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.change.DomainDiffConfiguration;
@@ -25,11 +26,13 @@ public class TransactionManagerBean implements TransactionManager {
     private ProcessDAO processDAO;
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
+    private DiffConfiguration diffConfiguration;
 
-    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService) {
+    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService, DiffConfiguration diff) {
         this.processDAO = processDAO;
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
+        this.diffConfiguration = diff;
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
@@ -40,15 +43,16 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction createDomainCreationTransaction(Domain domain) {
-        //todo
-        return null;
+        throw new UnsupportedOperationException();
     }
 
-    public Transaction createDomainModificationTransaction(Domain domain) {
+    public Transaction createDomainModificationTransaction(Domain domain) throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
-        td.setDomainChange((ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, DomainDiffConfiguration.getInstance()));
+        ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, diffConfiguration);
+        if (domainChange == null) throw new NoModificationException(domain.getName());
+        td.setDomainChange(domainChange);
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();

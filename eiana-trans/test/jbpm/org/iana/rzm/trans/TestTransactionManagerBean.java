@@ -4,6 +4,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.ticketing.TicketingService;
+import org.iana.objectdiff.DiffConfiguration;
 import org.jbpm.graph.exe.ProcessInstance;
 
 /**
@@ -17,8 +18,8 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
 
-    public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService) {
-        super(processDAO, domainDAO, ticketingService);
+    public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService, DiffConfiguration diffConfig) {
+        super(processDAO, domainDAO, ticketingService, diffConfig);
         this.processDAO = processDAO;
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;

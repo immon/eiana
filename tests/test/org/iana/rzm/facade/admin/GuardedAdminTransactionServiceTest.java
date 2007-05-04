@@ -87,7 +87,7 @@ public class GuardedAdminTransactionServiceTest {
     }
 
     @Test (expectedExceptions = {AccessDeniedException.class})
-    public void testCreateTransactionByWrongUser() {
+    public void testCreateTransactionByWrongUser() throws Exception {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
             gAdminTransactionServ.setUser(testAuthUser);

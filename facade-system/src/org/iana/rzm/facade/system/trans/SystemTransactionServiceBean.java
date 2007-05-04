@@ -9,19 +9,17 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
-import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.user.UserManager;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.ChangeDetector;
+import org.iana.objectdiff.DiffConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.rmi.NoSuchObjectException;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -30,14 +28,17 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
 
     private TransactionManager transactionManager;
     private DomainManager domainManager;
+    private DiffConfiguration diffConfiguration;
 
 
-    public SystemTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager) {
+    public SystemTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, DiffConfiguration diffConfiguration) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
+        CheckTool.checkNull(diffConfiguration, "diff configuration");
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
+        this.diffConfiguration = diffConfiguration;
     }
 
     public TransactionVO getTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -61,16 +62,20 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         throw new UnsupportedOperationException();
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
         CheckTool.checkNull(domain, "domain");
         if (domainManager.get(domain.getName()) == null) throw new NoObjectFoundException(domain.getName(), "domain");
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
         return createTransaction(modifiedDomain);
     }
 
-    private TransactionVO createTransaction(Domain modifiedDomain) {
-        Transaction trans = transactionManager.createDomainModificationTransaction(modifiedDomain);
-        return TransactionConverter.toTransactionVO(trans);
+    private TransactionVO createTransaction(Domain modifiedDomain) throws NoDomainModificationException {
+        try {
+            Transaction trans = transactionManager.createDomainModificationTransaction(modifiedDomain);
+            return TransactionConverter.toTransactionVO(trans);
+        } catch (NoModificationException e) {
+            throw new NoDomainModificationException(modifiedDomain.getName());
+        }
     }
 
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -133,13 +138,13 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
 
         TransactionActionsVO ret = new TransactionActionsVO();
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
-        ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, DomainDiffConfiguration.getInstance());
+        ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, diffConfiguration);
         List<TransactionActionVO> actions = TransactionConverter.toTransactionActionVO(change);
         ret.setActions(actions);
         return ret;
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
         CheckTool.checkNull(domain, "null domain");
 
         Domain currentDomain = domainManager.get(domain.getName());

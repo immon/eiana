@@ -63,6 +63,39 @@
         <constructor-arg ref="domainDAO" />
     </bean>
 
+    <bean id="hostManager" class="org.iana.rzm.domain.HostManagerBean">
+        <constructor-arg ref="hostDAO" />
+    </bean>
+
+    <bean id="hostDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.domain.dao.HostDAO</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="hostDAOTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="hostDAOTarget" class="org.iana.rzm.domain.dao.HibernateHostDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="diffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
+        <constructor-arg>
+            <ref bean="hostManager"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="userManagerGSDomainS" class="org.iana.rzm.system.accuracy.TestSystemUserManager"/>
 
 
@@ -229,6 +262,7 @@
         <constructor-arg ref="userManager" />
         <constructor-arg ref="transactionManagerBean" />
         <constructor-arg ref="domainManager" />
+        <constructor-arg ref="diffConfig"/>
     </bean>
 
     <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
@@ -270,6 +304,9 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="faketicket"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="diffConfig"/>
         </constructor-arg>
     </bean>
 

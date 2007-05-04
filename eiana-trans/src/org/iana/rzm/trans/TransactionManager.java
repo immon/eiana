@@ -38,7 +38,7 @@ public interface TransactionManager {
      * @param domain a domain to be created by the end of the transaction
      * @return the new domain creation transaction
      */
-    Transaction createDomainModificationTransaction(Domain domain);
+    Transaction createDomainModificationTransaction(Domain domain) throws NoModificationException;
 
     List<Transaction> findAll();
 

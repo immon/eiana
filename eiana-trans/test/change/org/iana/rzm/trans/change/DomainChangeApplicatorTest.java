@@ -3,6 +3,7 @@ package org.iana.rzm.trans.change;
 import org.iana.objectdiff.*;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.testng.annotations.Test;
 
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.Map;
 @Test(groups = {"change", "eiana-trans"})
 public class DomainChangeApplicatorTest {
 
-    DiffConfiguration config = DomainDiffConfiguration.getInstance();
+    private DiffConfiguration config = (DiffConfiguration) SpringTransApplicationContext.getInstance().getContext().getBean("diffConfig");
 
     @Test
     public void testRegistryUrlApplication() {

@@ -6,7 +6,6 @@ import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.system.domain.DomainVO;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException when no domain found with the specified name.
      * @throws InfrastructureException
      */
-    TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,InfrastructureException;
 
     /**
      * Creates the transaction splitting the transactions based on the splitNameServerChange flag.
@@ -63,7 +62,7 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException when no domain found with the specified name.
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
-    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException;
 
     /**
      * Accepts a transaction identified by this id on behalf of the user. Note that this service is stateful and the user must be set prior any method call.

@@ -5,6 +5,7 @@ import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Test(groups = {"change", "eiana-trans"})
 public class DomainChangeDetectorTest {
 
-    private DiffConfiguration config = DomainDiffConfiguration.getInstance();
+    private DiffConfiguration config = (DiffConfiguration) SpringTransApplicationContext.getInstance().getContext().getBean("diffConfig");
 
     @Test
     public void testDomainNoChange() {
