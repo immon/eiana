@@ -124,7 +124,7 @@
         </java>
     </target>
 
-    <target name="jbpm.init" depends="all.jar">
+    <target name="jbpm.init" depends="database.create.test, all.jar">
         <java classname="org.iana.rzm.init.ant.ProcessDeployment">
             <classpath refid="inittools.classpath"/>
         </java>
