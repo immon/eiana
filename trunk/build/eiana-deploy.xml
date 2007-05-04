@@ -118,7 +118,7 @@
         <path refid="eiana-init.module.classpath"/>
     </path>
 
-    <target name="database.init.test" depends="database.create.test, all.jar">
+    <target name="database.init.test" depends="database.create.test, all.jar, jbpm.init">
         <java classname="org.iana.rzm.init.ant.InitDatabaseTask">
             <classpath refid="inittools.classpath"/>
         </java>
