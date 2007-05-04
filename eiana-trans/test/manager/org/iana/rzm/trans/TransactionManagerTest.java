@@ -105,21 +105,26 @@ public class TransactionManagerTest {
         Domain domain1 = new Domain("tmtestdomain1");
         domainManager.create(domain1);
 
-        Transaction tr = createTransaction(1L, domain1);
+
+        Domain domain1Cloned = domain1.clone();
+        domain1Cloned.setRegistryUrl("http://www.registry.url.new");
+        Transaction tr = createTransaction(1L, domain1Cloned);
         domain1TransIds.add(tr.getTransactionID());
-        tr = createTransaction(2L, domain1);
+        tr = createTransaction(2L, domain1Cloned);
         domain1TransIds.add(tr.getTransactionID());
-        tr = createTransaction(3L, domain1);
+        tr = createTransaction(3L, domain1Cloned);
         domain1TransIds.add(tr.getTransactionID());
 
         Domain domain2 = new Domain("tmtestdomain2");
         domainManager.create(domain2);
 
-        tr = createTransaction(11L, domain2);
+        Domain domain2Cloned = domain2.clone();
+        domain2Cloned.setRegistryUrl("http://www.registry.url.new");
+        tr = createTransaction(11L, domain2Cloned);
         domain2TransIds.add(tr.getTransactionID());
-        tr = createTransaction(12L, domain2);
+        tr = createTransaction(12L, domain2Cloned);
         domain2TransIds.add(tr.getTransactionID());
-        tr = createTransaction(13L, domain2);
+        tr = createTransaction(13L, domain2Cloned);
         domain2TransIds.add(tr.getTransactionID());
 
         userManager.create(UserManagementTestUtil.createUser("sys1tm",

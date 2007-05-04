@@ -28,7 +28,6 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test
 public class MailsProcessorTest {
     private PlatformTransactionManager txManager;
     private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
@@ -75,7 +74,6 @@ public class MailsProcessorTest {
         }
     }
 
-    @Test
     public void testProcessConfirmationMail() throws Exception {
         TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
