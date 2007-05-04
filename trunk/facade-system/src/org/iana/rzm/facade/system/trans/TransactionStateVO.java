@@ -1,7 +1,6 @@
 package org.iana.rzm.facade.system.trans;
 
 import java.sql.Timestamp;
-import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -24,7 +23,7 @@ public class TransactionStateVO {
         COMPLETED,
         WITHDRAWN,
         REJECTED,
-        ADMIN_CLOSE,
+        ADMIN_CLOSED,
         EXCEPTION
     }
 

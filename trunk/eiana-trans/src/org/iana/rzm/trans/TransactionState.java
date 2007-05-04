@@ -27,7 +27,7 @@ public class TransactionState {
         COMPLETED,
         WITHDRAWN,
         REJECTED,
-        ADMIN_CLOSE,
+        ADMIN_CLOSED,
         EXCEPTION
     }
 

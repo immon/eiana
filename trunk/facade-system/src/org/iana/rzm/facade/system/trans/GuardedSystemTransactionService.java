@@ -4,15 +4,11 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.IANARole;
-import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.*;
 
 import java.util.List;
 import java.util.Set;
@@ -29,7 +25,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     private static Set<Role> allowedRoles = new HashSet<Role>();
 
     static {
-        allowedRoles.add(new IANARole());
+        allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.AC));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.TC));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.SO));
