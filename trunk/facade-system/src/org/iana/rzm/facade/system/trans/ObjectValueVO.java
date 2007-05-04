@@ -45,4 +45,25 @@ public class ObjectValueVO extends ValueVO {
         if (this.changes == null) this.changes = new ArrayList<ChangeVO>();
         this.changes.addAll(changes);
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ObjectValueVO that = (ObjectValueVO) o;
+
+        if (id != that.id) return false;
+        if (changes != null ? !changes.equals(that.changes) : that.changes != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (changes != null ? changes.hashCode() : 0);
+        return result;
+    }
 }

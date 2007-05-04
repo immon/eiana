@@ -26,4 +26,24 @@ public class StringValueVO extends ValueVO {
     public String getNewValue() {
         return newValue;
     }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StringValueVO that = (StringValueVO) o;
+
+        if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
+        if (oldValue != null ? !oldValue.equals(that.oldValue) : that.oldValue != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (oldValue != null ? oldValue.hashCode() : 0);
+        result = 31 * result + (newValue != null ? newValue.hashCode() : 0);
+        return result;
+    }
 }

@@ -101,7 +101,7 @@ public class TransactionManagerTest {
         }
     }
 
-    private void createTestTransactionsAndUsers() throws InvalidNameException {
+    private void createTestTransactionsAndUsers() throws InvalidNameException, NoModificationException {
         Domain domain1 = new Domain("tmtestdomain1");
         domainManager.create(domain1);
 
@@ -130,7 +130,7 @@ public class TransactionManagerTest {
                         SystemRole.SystemType.AC)));
     }
 
-    private Transaction createTransaction(final Long ticketId, final Domain domain) {
+    private Transaction createTransaction(final Long ticketId, final Domain domain) throws NoModificationException {
         Transaction transaction = transactionManager.createDomainModificationTransaction(domain);
         transaction.setTicketID(ticketId);
         return transaction;

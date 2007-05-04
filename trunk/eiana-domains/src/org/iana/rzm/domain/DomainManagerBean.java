@@ -1,6 +1,7 @@
 package org.iana.rzm.domain;
 
 import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class DomainManagerBean implements DomainManager {
     private DomainDAO dao;
 
     public DomainManagerBean(DomainDAO dao) {
+        CheckTool.checkNull(dao, "domain dao");
         this.dao = dao;
     }
 

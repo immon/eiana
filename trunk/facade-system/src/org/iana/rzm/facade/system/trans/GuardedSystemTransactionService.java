@@ -58,7 +58,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         delegate.performTransactionTechnicalCheck(domain);
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
         isUserInRole();
         return delegate.createTransaction(domain);
     }
@@ -68,7 +68,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         return delegate.detectTransactionActions(domain);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
         isUserInRole();
         return delegate.createTransactions(domain, splitNameServerChange);
     }

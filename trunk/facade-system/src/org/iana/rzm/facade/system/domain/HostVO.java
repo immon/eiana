@@ -20,7 +20,14 @@ public class HostVO implements Trackable, Serializable {
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
-    
+
+    public HostVO() {
+    }
+
+    public HostVO(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
