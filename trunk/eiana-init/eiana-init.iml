@@ -17,6 +17,31 @@
     <orderEntry type="module" module-name="eiana-util" />
     <orderEntry type="library" name="cobertura" level="project" />
     <orderEntry type="module" module-name="tests" />
+    <orderEntry type="module" module-name="eiana-trans" />
+    <orderEntry type="library" name="jbpm" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="module" module-name="eiana-mail" />
+    <orderEntry type="module" module-name="facade-admin" />
+    <orderEntry type="module" module-name="facade-common" />
+    <orderEntry type="module" module-name="facade-system" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../conf/hibernate" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../conf/spring" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

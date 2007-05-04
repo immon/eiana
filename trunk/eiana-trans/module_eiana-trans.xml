@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-trans" value="${compiler.args}"/>
   
-  <property name="eiana-trans.output.dir" value="${module.eiana-trans.basedir}/../classes/production/eiana-trans"/>
-  <property name="eiana-trans.testoutput.dir" value="${module.eiana-trans.basedir}/../classes/test/eiana-trans"/>
+  <property name="eiana-trans.output.dir" value="${module.eiana-trans.basedir}/../build/classes/production/eiana-trans"/>
+  <property name="eiana-trans.testoutput.dir" value="${module.eiana-trans.basedir}/../build/classes/test/eiana-trans"/>
   
   <path id="eiana-trans.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -29,9 +29,13 @@
     <path refid="library.apache-commons.classpath"/>
     <pathelement location="${eiana-users.output.dir}"/>
     <pathelement location="${eiana-users.testoutput.dir}"/>
-    <path refid="library.util.classpath"/>
     <pathelement location="${eiana-notifications.output.dir}"/>
     <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${common-objectdiff.output.dir}"/>
+    <pathelement location="${common-objectdiff.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
   </path>
   
   
@@ -45,6 +49,7 @@
   
   <path id="eiana-trans.module.sourcepath">
     <dirset dir="${module.eiana-trans.basedir}">
+      <include name="etc/processes"/>
       <include name="src"/>
     </dirset>
   </path>
@@ -55,6 +60,7 @@
       <include name="test/conf"/>
       <include name="test/confirmation"/>
       <include name="test/dao"/>
+      <include name="test/etc/processes"/>
       <include name="test/hibernate"/>
       <include name="test/jbpm"/>
       <include name="test/manager"/>
@@ -64,7 +70,7 @@
   
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
   
-  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications" description="Compile module eiana-trans; production classes">
+  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria" description="Compile module eiana-trans; production classes">
     <mkdir dir="${eiana-trans.output.dir}"/>
     <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-trans}"/>
@@ -75,6 +81,10 @@
     </javac>
     
     <copy todir="${eiana-trans.output.dir}">
+      <fileset dir="${module.eiana-trans.basedir}/etc/processes">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.eiana-trans.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
@@ -106,6 +116,10 @@
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-trans.basedir}/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/etc/processes">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

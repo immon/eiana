@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class NotificationsReSender implements ActionHandler {
 
-    private   NotificationManager notificationManagerBean;
-    private   NotificationSender  notificationSender;
-    protected int                 maxSendNbr;
+    private NotificationManager notificationManagerBean;
+    private NotificationSender notificationSender;
+    protected int maxSendNbr;
 
     public void execute(ExecutionContext executionContext) throws Exception {
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
@@ -27,7 +27,7 @@ public class NotificationsReSender implements ActionHandler {
             try {
                 notificationSender.send(notification.getAddressee(), notification.getContent());
                 notificationManagerBean.delete(notification);
-            } catch(NotificationException e) {
+            } catch (NotificationException e) {
                 notification.incSentFailures();
                 notificationManagerBean.update(notification);
             }

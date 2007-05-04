@@ -5,8 +5,8 @@
   
   <property name="compiler.args.integration-securid" value="${compiler.args}"/>
   
-  <property name="integration-securid.output.dir" value="${module.integration-securid.basedir}/../classes/production/integration-securid"/>
-  <property name="integration-securid.testoutput.dir" value="${module.integration-securid.basedir}/../classes/test/integration-securid"/>
+  <property name="integration-securid.output.dir" value="${module.integration-securid.basedir}/../build/classes/production/integration-securid"/>
+  <property name="integration-securid.testoutput.dir" value="${module.integration-securid.basedir}/../build/classes/test/integration-securid"/>
   
   <path id="integration-securid.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->

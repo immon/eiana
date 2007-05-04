@@ -5,8 +5,8 @@
   
   <property name="compiler.args.facade-system" value="${compiler.args}"/>
   
-  <property name="facade-system.output.dir" value="${module.facade-system.basedir}/../classes/production/facade-system"/>
-  <property name="facade-system.testoutput.dir" value="${module.facade-system.basedir}/../classes/test/facade-system"/>
+  <property name="facade-system.output.dir" value="${module.facade-system.basedir}/../build/classes/production/facade-system"/>
+  <property name="facade-system.testoutput.dir" value="${module.facade-system.basedir}/../build/classes/test/facade-system"/>
   
   <path id="facade-system.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -30,6 +30,11 @@
     <pathelement location="${eiana-notifications.testoutput.dir}"/>
     <path refid="library.jbpm.classpath"/>
     <path refid="library.hibernate.classpath"/>
+    <pathelement location="${common-objectdiff.output.dir}"/>
+    <pathelement location="${common-objectdiff.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <path refid="library.apache-commons.classpath"/>
   </path>
   
   
@@ -57,7 +62,7 @@
   
   <target name="compile.module.facade-system" depends="compile.module.facade-system.production,compile.module.facade-system.tests" description="Compile module facade-system"/>
   
-  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans,compile.module.eiana-notifications" description="Compile module facade-system; production classes">
+  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria" description="Compile module facade-system; production classes">
     <mkdir dir="${facade-system.output.dir}"/>
     <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-system}"/>

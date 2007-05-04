@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-util" value="${compiler.args}"/>
   
-  <property name="eiana-util.output.dir" value="${module.eiana-util.basedir}/../classes/production/eiana-util"/>
-  <property name="eiana-util.testoutput.dir" value="${module.eiana-util.basedir}/../classes/test/eiana-util"/>
+  <property name="eiana-util.output.dir" value="${module.eiana-util.basedir}/../build/classes/production/eiana-util"/>
+  <property name="eiana-util.testoutput.dir" value="${module.eiana-util.basedir}/../build/classes/test/eiana-util"/>
   
   <path id="eiana-util.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->

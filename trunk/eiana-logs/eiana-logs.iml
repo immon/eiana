@@ -10,6 +10,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="library" name="cobertura" level="project" />
+    <orderEntry type="module" module-name="common-objectdiff" />
+    <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="module" module-name="eiana-util" />
     <orderEntryProperties />
   </component>
 </module>

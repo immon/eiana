@@ -147,7 +147,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="securID" class="org.iana.rzm.facade.accuracy.TestSecurIDService"/>
+    <bean id="securID" class="org.iana.securid.MockSecurIDService"/>
 
     <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
         <constructor-arg>
@@ -312,7 +312,7 @@
         </property>
     </bean>
 
-    <bean id="faketicket" class="org.iana.rzm.trans.FakeTicketingService"/>
+    <bean id="faketicket" class="org.iana.ticketing.MockTicketingService"/>
 
     <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
@@ -328,7 +328,7 @@
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="configLocation">
-            <value>classpath:hibernate.cfg.xml</value>
+            <value>classpath:eiana-hibernate.cfg.xml</value>
         </property>
     </bean>
 
@@ -500,6 +500,7 @@
 
     <!-- fake mails processing configuration -->
 
+<!--
     <bean id="fakeMailReceiver" class="org.iana.rzm.mail.test.FakeMailReceiver"/>
 
     <bean id="fakeMailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean" scope="session">
@@ -508,4 +509,5 @@
         <constructor-arg index="2" ref="authenticationServiceBean"/>
         <constructor-arg index="3" ref="GuardedSystemTransactionService"/>
     </bean>
+-->
 </beans>

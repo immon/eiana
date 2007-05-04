@@ -5,8 +5,8 @@
   
   <property name="compiler.args.integration-rt" value="${compiler.args}"/>
   
-  <property name="integration-rt.output.dir" value="${module.integration-rt.basedir}/../classes/production/integration-rt"/>
-  <property name="integration-rt.testoutput.dir" value="${module.integration-rt.basedir}/../classes/test/integration-rt"/>
+  <property name="integration-rt.output.dir" value="${module.integration-rt.basedir}/../build/classes/production/integration-rt"/>
+  <property name="integration-rt.testoutput.dir" value="${module.integration-rt.basedir}/../build/classes/test/integration-rt"/>
   
   <path id="integration-rt.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->

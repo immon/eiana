@@ -5,8 +5,8 @@
   
   <property name="compiler.args.tests" value="${compiler.args}"/>
   
-  <property name="tests.output.dir" value="${module.tests.basedir}/../classes/production/tests"/>
-  <property name="tests.testoutput.dir" value="${module.tests.basedir}/../classes/test/tests"/>
+  <property name="tests.output.dir" value="${module.tests.basedir}/../build/classes/production/tests"/>
+  <property name="tests.testoutput.dir" value="${module.tests.basedir}/../build/classes/test/tests"/>
   
   <path id="tests.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -43,6 +43,13 @@
     <pathelement location="${integration-rt.testoutput.dir}"/>
     <pathelement location="${integration-securid.output.dir}"/>
     <pathelement location="${integration-securid.testoutput.dir}"/>
+    <path refid="library.jbpm.classpath"/>
+    <pathelement location="${common-mail.output.dir}"/>
+    <pathelement location="${common-mail.testoutput.dir}"/>
+    <pathelement location="${eiana-mail.output.dir}"/>
+    <pathelement location="${eiana-mail.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
   </path>
   
   
@@ -64,7 +71,7 @@
   
   <target name="compile.module.tests" depends="compile.module.tests.production,compile.module.tests.tests" description="Compile module tests"/>
   
-  <target name="compile.module.tests.production" depends="compile.module.eiana-dns,compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid" description="Compile module tests; production classes"/>
+  <target name="compile.module.tests.production" depends="compile.module.eiana-dns,compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria" description="Compile module tests; production classes"/>
   
   <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests">
     <mkdir dir="${tests.testoutput.dir}"/>

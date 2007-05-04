@@ -5,8 +5,8 @@
   
   <property name="compiler.args.eiana-notifications" value="${compiler.args}"/>
   
-  <property name="eiana-notifications.output.dir" value="${module.eiana-notifications.basedir}/../classes/production/eiana-notifications"/>
-  <property name="eiana-notifications.testoutput.dir" value="${module.eiana-notifications.basedir}/../classes/test/eiana-notifications"/>
+  <property name="eiana-notifications.output.dir" value="${module.eiana-notifications.basedir}/../build/classes/production/eiana-notifications"/>
+  <property name="eiana-notifications.testoutput.dir" value="${module.eiana-notifications.basedir}/../build/classes/test/eiana-notifications"/>
   
   <path id="eiana-notifications.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -14,15 +14,14 @@
   
   <path id="eiana-notifications.module.classpath">
     <path refid="library.javaee.classpath"/>
-    <path refid="library.util.classpath"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <path refid="library.log4j.classpath"/>
-    <path refid="library.dynaxml.classpath"/>
     <path refid="library.jdom.classpath"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.hibernate.classpath"/>
     <path refid="library.spring.classpath"/>
+    <path refid="library.nask-commons.classpath"/>
   </path>
   
   
@@ -36,6 +35,7 @@
   
   <path id="eiana-notifications.module.sourcepath">
     <dirset dir="${module.eiana-notifications.basedir}">
+      <include name="etc"/>
       <include name="src"/>
     </dirset>
   </path>
@@ -60,6 +60,10 @@
     </javac>
     
     <copy todir="${eiana-notifications.output.dir}">
+      <fileset dir="${module.eiana-notifications.basedir}/etc">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.eiana-notifications.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>

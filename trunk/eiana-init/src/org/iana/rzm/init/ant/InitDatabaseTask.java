@@ -127,7 +127,10 @@ public class InitDatabaseTask extends HibernateTask {
 
             session.save(setupDomain(domain));
         }
+
     }
+
+
 
     public static void main(String[] args) {
         InitDatabaseTask task = new InitDatabaseTask();

@@ -5,8 +5,8 @@
   
   <property name="compiler.args.common-dao" value="${compiler.args}"/>
   
-  <property name="common-dao.output.dir" value="${module.common-dao.basedir}/../classes/production/common-dao"/>
-  <property name="common-dao.testoutput.dir" value="${module.common-dao.basedir}/../classes/test/common-dao"/>
+  <property name="common-dao.output.dir" value="${module.common-dao.basedir}/../build/classes/production/common-dao"/>
+  <property name="common-dao.testoutput.dir" value="${module.common-dao.basedir}/../build/classes/test/common-dao"/>
   
   <path id="common-dao.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -16,6 +16,16 @@
     <pathelement location="${module.common-dao.basedir}/../lib/hibernate/hibernate3.jar"/>
     <pathelement location="${module.common-dao.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
     <pathelement location="${module.common-dao.basedir}/../lib/nask-commons/dynaxml.jar"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
   </path>
   
   
@@ -42,7 +52,7 @@
   
   <target name="compile.module.common-dao" depends="compile.module.common-dao.production,compile.module.common-dao.tests" description="Compile module common-dao"/>
   
-  <target name="compile.module.common-dao.production" description="Compile module common-dao; production classes">
+  <target name="compile.module.common-dao.production" depends="compile.module.common-criteria" description="Compile module common-dao; production classes">
     <mkdir dir="${common-dao.output.dir}"/>
     <javac destdir="${common-dao.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.common-dao}"/>
