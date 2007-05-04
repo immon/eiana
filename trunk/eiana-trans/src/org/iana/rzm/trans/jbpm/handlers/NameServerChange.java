@@ -18,7 +18,7 @@ public class NameServerChange implements DecisionHandler {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         if (td != null) {
             ObjectChange change = td.getDomainChange();
-            if (change.getFieldChanges().containsKey("nameServers"))
+            if ((change!=null) && (change.getFieldChanges().containsKey("nameServers")))
                 return "ns-change";
         }
         return "no-ns-change";
