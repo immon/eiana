@@ -25,6 +25,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     private static Set<Role> allowedRoles = new HashSet<Role>();
 
     static {
+        allowedRoles.add(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
         allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.AC));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.TC));
