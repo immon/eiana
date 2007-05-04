@@ -35,6 +35,7 @@
     <orderEntry type="module" module-name="common-mail" />
     <orderEntry type="module" module-name="eiana-mail" />
     <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="module" module-name="conf" />
     <orderEntryProperties />
   </component>
 </module>
