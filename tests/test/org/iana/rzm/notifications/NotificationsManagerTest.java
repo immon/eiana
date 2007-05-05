@@ -11,10 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.Notification;
-import org.iana.notifications.TemplateContent;
-import org.iana.notifications.Addressee;
+import org.iana.notifications.*;
 
 import java.util.*;
 
@@ -142,10 +139,10 @@ public class NotificationsManagerTest {
     }
 
     @Test(dependsOnMethods = {"testNotificationsDAO_Update"})
-    public void testNotificationsDAO_TempContent() throws Exception {
+    public void testNotificationsDAO_TextContent() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            TempContent tempContent = new TempContent();
+            TextContent tempContent = new TextContent();
             tempContent.setBody("temp body");
             tempContent.setSubject("temp subject");
             thirdNotification = new Notification();
