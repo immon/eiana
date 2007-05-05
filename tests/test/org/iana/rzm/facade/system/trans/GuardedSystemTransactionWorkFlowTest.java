@@ -26,7 +26,7 @@ import java.util.List;
  * @author: Piotr Tkaczyk
  */
 
-@Test(sequential = true, groups = {"excluded", "facade-system", "GuardedSystemTransactionWorkFlowTest"})
+@Test(sequential = true, groups = {"facade-system", "GuardedSystemTransactionWorkFlowTest"})
 public class GuardedSystemTransactionWorkFlowTest {
 
     ApplicationContext appCtx;
