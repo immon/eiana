@@ -8,7 +8,8 @@ import org.iana.rzm.common.TrackedObject;
  */
 public interface Logger {
 
-    void addLog(RZMUser user,
+    void addLog(String userName,
+                String sessionID,
                 String action,
                 TrackedObject object);
 }
