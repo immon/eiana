@@ -13,6 +13,10 @@ import org.jbpm.graph.exe.Token;
 import java.util.List;
 
 /**
+ * This class sets administrative roles, who need to consent upon a process proceeds to the next state.
+ * <p/>
+ * NB Specified roles are added to the existing set, when already initialized by another handler(s).
+ *
  * @author Jakub Laszkiewicz
  */
 public class RoleConfirmationCalculator implements ActionHandler {
@@ -32,13 +36,14 @@ public class RoleConfirmationCalculator implements ActionHandler {
             throw new ConfigurationException("no roles specified");
 
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
+        Token token = executionContext.getProcessInstance().getRootToken();
+        Node node = token.getNode();
+        StateConfirmations sc = (StateConfirmations) td.getStateConfirmations(node.getName());
 
-        StateConfirmations sc = new StateConfirmations();
+        if (sc == null) sc = new StateConfirmations();
         for (String role : roles)
             sc.addConfirmation(new RoleConfirmation(new AdminRole(getType(role))));
 
-        Token token = executionContext.getProcessInstance().getRootToken();
-        Node node = token.getNode();
         td.setStateConfirmations(node.getName(), sc);
     }
 }
