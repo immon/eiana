@@ -105,6 +105,11 @@
                     <element>IANA</element>
                 </roles>
             </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
         </event>
         <timer name="30d-time-out" duedate='30 days' transition='alert' ></timer>
         <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
@@ -116,6 +121,11 @@
     <state name="PENDING_USDOC_APPROVAL">
         <event type='node-enter'>
             <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                <roles>
+                    <element>USDoC</element>
+                </roles>
+            </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
                 <roles>
                     <element>USDoC</element>
                 </roles>
