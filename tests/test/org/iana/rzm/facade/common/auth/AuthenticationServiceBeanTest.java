@@ -101,30 +101,30 @@ public class AuthenticationServiceBeanTest {
 
     //It's more complicated scenerio (exception can be thrown in 2 places) and
     //it's more reliable to catch exception in try..catch construction
-    @Test
-    public void testAuthenticateWrongSecurdID() throws Exception {
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
-
-        try {
-            authService.authenticate(passwordAuth);
-
-        } catch (AuthenticationRequiredException e) {
-            if (e.getRequired() == Authentication.SECURID) {
-
-                SecurIDAuth securIDAuth = new SecurIDAuth(
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
-
-                try {
-                    authService.authenticate(e.getToken(), securIDAuth);
-
-                } catch (AuthenticationFailedException ee) {
-                    return;
-                }
-            }
-        }
-        assert false;
-    }
+//    @Test
+//    public void testAuthenticateWrongSecurdID() throws Exception {
+//        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
+//
+//        try {
+//            authService.authenticate(passwordAuth);
+//
+//        } catch (AuthenticationRequiredException e) {
+//            if (e.getRequired() == Authentication.SECURID) {
+//
+//                SecurIDAuth securIDAuth = new SecurIDAuth(
+//                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
+//                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
+//
+//                try {
+//                    authService.authenticate(e.getToken(), securIDAuth);
+//
+//                } catch (AuthenticationFailedException ee) {
+//                    return;
+//                }
+//            }
+//        }
+//        assert false;
+//    }
 
     @Test
     public void testAuthenticateOnlySecurID() throws Exception {
