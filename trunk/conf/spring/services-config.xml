@@ -269,6 +269,34 @@
         <!--Password-->
     </bean>
 
+    <bean id="logger" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.log.Logger</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="loggerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="loggerTarget" class="org.iana.rzm.log.LoggerBean">
+        <constructor-arg index="0" ref="diffConfig"/>
+        <constructor-arg index="1" ref="logDAO"/>
+    </bean>
+
+    <bean id="logDAO" class="org.iana.rzm.log.dao.HibernateLogDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>

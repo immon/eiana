@@ -17,6 +17,13 @@ public class LoggerBean implements Logger {
     private DiffConfiguration diffConfiguration;
     private LogDAO dao;
 
+    public LoggerBean(DiffConfiguration diffConfiguration, LogDAO dao) {
+        CheckTool.checkNull(diffConfiguration, "diff config");
+        CheckTool.checkNull(dao, "log dao");
+        this.diffConfiguration = diffConfiguration;
+        this.dao = dao;
+    }
+
     public void addLog(String userName, String sessionId, String action, TrackedObject object, Object[] parameters) {
         CheckTool.checkNull(object, "logged object");
         Timestamp now = now();
@@ -35,15 +42,15 @@ public class LoggerBean implements Logger {
         }
     }
 
-    public void addLog(String userName, String sessionId, String action, TrackedObject src, TrackedObject dst) {
-        CheckTool.checkNull(src, "source logged object");
-        CheckTool.checkNull(src, "destination logged object");
-        Timestamp now = now();
-        dst.setModified(now);
-        dst.setModifiedBy(userName);
-        Change change = ChangeDetector.diff(src, dst, diffConfiguration);
-        dao.create(new LogEntry(userName, sessionId, now, action, dst, change));
-    }
+//    public void addLog(String userName, String sessionId, String action, TrackedObject src, TrackedObject dst) {
+//        CheckTool.checkNull(src, "source logged object");
+//        CheckTool.checkNull(src, "destination logged object");
+//        Timestamp now = now();
+//        dst.setModified(now);
+//        dst.setModifiedBy(userName);
+//        Change change = ChangeDetector.diff(src, dst, diffConfiguration);
+//        //dao.create(new LogEntry(userName, sessionId, now, action, dst, change));
+//    }
 
     private Timestamp now() {
         return new Timestamp(System.currentTimeMillis());

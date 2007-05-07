@@ -46,7 +46,11 @@ public class TransactionManagerBean implements TransactionManager {
         throw new UnsupportedOperationException();
     }
 
-    public Transaction createDomainModificationTransaction(Domain domain) throws NoModificationException {
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain) throws NoModificationException {
+        return createTransaction(modifiedDomain);
+    }
+
+    private Transaction createTransaction(Domain domain)  throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
@@ -56,7 +60,7 @@ public class TransactionManagerBean implements TransactionManager {
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();
-        return new Transaction(pi);
+        return new Transaction(pi);        
     }
 
     public List<Transaction> findAll() {

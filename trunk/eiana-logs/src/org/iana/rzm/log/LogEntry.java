@@ -1,11 +1,11 @@
 package org.iana.rzm.log;
 
 import org.iana.objectdiff.Change;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.common.TrackedObject;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * A single log entry.
@@ -15,16 +15,21 @@ import java.sql.Timestamp;
 @Entity
 public class LogEntry {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long objId;
+
     private String userName;
     private String sessionId;
     private Timestamp timestamp;
 
     private String action;
 
-    private long objectId;
+    private Long objectId;
     private String objectClassName;
 
-    private Change difference;
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = Change.class)
+    private List<Change> differences;
 
     private LogEntry() {
     }
@@ -38,24 +43,24 @@ public class LogEntry {
         this.objectClassName = object.getClass().getName();
     }
 
-    public LogEntry(String userName, String sessionId, Timestamp timestamp, String action, TrackedObject object, Change difference) {
+    public LogEntry(String userName, String sessionId, Timestamp timestamp, String action, TrackedObject object, List<Change> difference) {
         this.userName = userName;
         this.sessionId = sessionId;
         this.timestamp = timestamp;
         this.action = action;
         this.objectId = object.getObjId();
         this.objectClassName = object.getClass().getName();
-        this.difference = difference;
+        this.differences = difference;
     }
 
-    public LogEntry(String userName, String sessionId, Timestamp timestamp, String action, long objectId, String objectClassName, Change difference) {
+    public LogEntry(String userName, String sessionId, Timestamp timestamp, String action, long objectId, String objectClassName, List<Change> difference) {
         this.userName = userName;
         this.sessionId = sessionId;
         this.timestamp = timestamp;
         this.action = action;
         this.objectId = objectId;
         this.objectClassName = objectClassName;
-        this.difference = difference;
+        this.differences = difference;
     }       
 
     public String getUserName() {
@@ -82,7 +87,7 @@ public class LogEntry {
         return objectClassName;
     }
 
-    public Change getDifference() {
-        return difference;
+    public List<Change> getDifferences() {
+        return differences;
     }
 }

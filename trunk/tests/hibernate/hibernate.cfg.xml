@@ -37,6 +37,8 @@
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
         
+        <mapping class="org.iana.rzm.log.LogEntry"/>
+
         <mapping class="org.iana.objectdiff.Change"/>
         <mapping class="org.iana.objectdiff.ObjectChange"/>
         <mapping class="org.iana.objectdiff.CollectionChange"/>
