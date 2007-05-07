@@ -61,6 +61,7 @@
 
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO" />
+        <constructor-arg ref="hostManager"/>
     </bean>
 
     <bean id="hostManager" class="org.iana.rzm.domain.HostManagerBean">
@@ -129,6 +130,7 @@
 
     <bean id="domainManagerStress" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO" />
+        <constructor-arg ref="hostManager"/>
     </bean>
 
     <bean id="userManagerStress" class="org.iana.rzm.system.stress.TestSystemUserManagerStress"/>

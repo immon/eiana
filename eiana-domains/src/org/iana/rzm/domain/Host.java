@@ -15,6 +15,7 @@ import java.sql.Timestamp;
  * This class represents a computer machine available in the net which serves as a DNS name server to one or many domain names.
  */
 @Entity
+@Table (uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Host implements TrackedObject,Cloneable {
 
     /**
