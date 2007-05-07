@@ -388,8 +388,22 @@ public class Domain implements TrackedObject, Cloneable {
         for (Contact cont : oldContacts)
             contactsList.add((Contact) cont.clone());
         return contactsList;
-
     }
 
 
+    public void setCreated(Timestamp created) {
+        trackData.setCreated(created);
+    }
+
+    public void setModified(Timestamp modified) {
+        trackData.setModified(modified);
+    }
+
+    public void setCreatedBy(String createdBy) {
+        trackData.setCreatedBy(createdBy);
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        trackData.setModifiedBy(modifiedBy);
+    }
 }

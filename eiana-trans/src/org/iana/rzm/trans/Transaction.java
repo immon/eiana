@@ -135,6 +135,22 @@ public class Transaction implements TrackedObject {
         return getTrackData().getModifiedBy();
     }
 
+    public void setCreated(Timestamp created) {
+        getTrackData().setCreated(created);
+    }
+
+    public void setModified(Timestamp modified) {
+        getTrackData().setModified(modified);
+    }
+
+    public void setCreatedBy(String userName) {
+        getTrackData().setCreatedBy(userName);
+    }
+
+    public void setModifiedBy(String userName) {
+        getTrackData().setModifiedBy(userName);
+    }
+
     public synchronized void accept(RZMUser user) throws TransactionException {
         try {
             Token token = pi.getRootToken();
@@ -173,4 +189,6 @@ public class Transaction implements TrackedObject {
         else
             throw new UserNotAuthorizedToTransit();
     }
+
+
 }

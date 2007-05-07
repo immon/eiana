@@ -6,6 +6,7 @@ import org.iana.criteria.Criterion;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -61,6 +62,10 @@ public class DomainManagerBean implements DomainManager {
 
     public List<Domain> findAll() {
         return dao.findAll();
+    }
+
+    public List<Domain> findDelegatedTo(Set<String> hostNames) {
+        return dao.findDelegatedTo(hostNames);
     }
 
     public List<Domain> find(Criterion criteria) {

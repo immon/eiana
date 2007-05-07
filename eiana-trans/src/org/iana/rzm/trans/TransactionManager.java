@@ -24,6 +24,7 @@ public interface TransactionManager {
 
     // Transaction createTransaction(List<TransactionAction> actions);
 
+    
     /**
      * Creates a new domain creation transaction.
      *
@@ -37,6 +38,7 @@ public interface TransactionManager {
      *
      * @param domain a domain to be created by the end of the transaction
      * @return the new domain creation transaction
+     * @throws NoModificationException thrown when no modification between the given domain and stored one is discovered
      */
     Transaction createDomainModificationTransaction(Domain domain) throws NoModificationException;
 

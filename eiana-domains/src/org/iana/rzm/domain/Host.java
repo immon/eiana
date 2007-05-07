@@ -191,4 +191,21 @@ public class Host implements TrackedObject,Cloneable {
         newHost.setAddresses(newSet);
         return newHost;
     }
+
+
+    public void setCreated(Timestamp created) {
+        trackData.setCreated(created);
+    }
+
+    public void setModified(Timestamp modified) {
+        trackData.setModified(modified);
+    }
+
+    public void setCreatedBy(String createdBy) {
+        trackData.setCreatedBy(createdBy);
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        trackData.setModifiedBy(modifiedBy);
+    }
 }
