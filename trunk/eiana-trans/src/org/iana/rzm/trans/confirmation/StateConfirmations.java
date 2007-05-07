@@ -42,6 +42,8 @@ public class StateConfirmations implements Confirmation {
     }
 
     public boolean isAcceptableBy(RZMUser user) {
+        if (pendingConfirmations.isEmpty() && receivedConfirmations.isEmpty())
+            return true;
         for (Confirmation conf : pendingConfirmations)
             if (conf.isAcceptableBy(user)) return true;
         return false;
@@ -57,7 +59,7 @@ public class StateConfirmations implements Confirmation {
         return isReceived();
     }
 
-    private Set<Confirmation> getUserConfirmations (RZMUser user) {
+    private Set<Confirmation> getUserConfirmations(RZMUser user) {
         Set<Confirmation> result = new HashSet<Confirmation>();
         for (Confirmation conf : pendingConfirmations)
             if (conf.isAcceptableBy(user))

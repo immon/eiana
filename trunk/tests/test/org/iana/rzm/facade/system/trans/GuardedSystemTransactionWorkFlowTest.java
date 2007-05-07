@@ -1,24 +1,27 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
+import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.user.*;
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.springframework.context.ApplicationContext;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -115,35 +118,35 @@ public class GuardedSystemTransactionWorkFlowTest {
         rejectPENDING_CONTACT_CONFIRMATION();
     }
 
-    @Test (dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
+    @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
     public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
         createTransaction(domainVONS);
         closePENDING_CONTACT_CONFIRMATION();
     }
 
-    @Test (dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
+    @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
     }
 
-    @Test (dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
+    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
     public void testREJECT_IMPACTED_PARTIES() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
-//        rejectIMPACTED_PARTIES();  todo
+        rejectIMPACTED_PARTIES();
     }
 
-    @Test (dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
+    @Test(dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
     public void testREJECT_EXT_APPROVAL() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptIMPACTED_PARTIES();
         normalIANA_CONFIRMATION();
-        //rejectEXT_APPROVAL();  todo
+        rejectEXT_APPROVAL();
     }
 
-    @Test (dependsOnMethods = {"testREJECT_EXT_APPROVAL"})
+    @Test(dependsOnMethods = {"testREJECT_EXT_APPROVAL"})
     public void testCLOSE_EXT_APPROVAL() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
@@ -152,16 +155,17 @@ public class GuardedSystemTransactionWorkFlowTest {
         closeEXT_APPROVAL();
     }
 
-    @Test (dependsOnMethods = {"testCLOSE_EXT_APPROVAL"})
+    @Test(dependsOnMethods = {"testCLOSE_EXT_APPROVAL"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptIMPACTED_PARTIES();
         normalIANA_CONFIRMATION();
-//        rejectUSDOC_APPROVAL();  todo
+        acceptEXT_APPROVAL();
+        rejectUSDOC_APPROVAL();
     }
 
-    @Test (dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
+    @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         createTransaction(domainVO);
         acceptPENDING_CONTACT_CONFIRMATION();
@@ -171,7 +175,7 @@ public class GuardedSystemTransactionWorkFlowTest {
         acceptUSDOC_APPROVALnoNSChange();
     }
 
-    @Test (dependsOnMethods = {"testWorkFlowNoNSChange"})
+    @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
     public void testWorkFlowWithNSChange() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
@@ -216,7 +220,7 @@ public class GuardedSystemTransactionWorkFlowTest {
     }
 
     private void acceptEXT_APPROVAL() throws Exception {
-        setGSTSAuthUser(userAC);
+        setGSTSAuthUser(userIANA);
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
         gsts.acceptTransaction(transaction.getTransactionID());
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL");
@@ -279,7 +283,7 @@ public class GuardedSystemTransactionWorkFlowTest {
         gsts.close();
     }
 
-    private void closePENDING_CONTACT_CONFIRMATION()  throws Exception {
+    private void closePENDING_CONTACT_CONFIRMATION() throws Exception {
         setGSTSAuthUser(userIANA);
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
         gsts.transitTransaction(transaction.getTransactionID(), "close");
@@ -287,7 +291,7 @@ public class GuardedSystemTransactionWorkFlowTest {
         gsts.close();
     }
 
-    private void acceptPENDING_CONTACT_CONFIRMATION()  throws Exception {
+    private void acceptPENDING_CONTACT_CONFIRMATION() throws Exception {
         setGSTSAuthUser(userAC);
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
         gsts.acceptTransaction(transaction.getTransactionID());
@@ -302,7 +306,7 @@ public class GuardedSystemTransactionWorkFlowTest {
 
     @AfterClass
     public void cleanUp() {
-        
+
         List<ProcessInstance> processInstances = processDAO.findAll();
         for (ProcessInstance processInstance : processInstances)
             processDAO.delete(processInstance);
