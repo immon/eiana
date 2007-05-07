@@ -57,6 +57,24 @@
         </hibernatetool>
     </target>
 
+    <target name="database.test.dropCreate" depends="all.compile" >
+        <sql 
+            driver   = "com.mysql.jdbc.Driver"
+            url      = "jdbc:mysql://localhost/"
+            userid   = "testng"
+            password = "1q2w3e">
+            <classpath>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <![CDATA[
+                DROP DATABASE IF EXISTS eianatest;
+                CREATE DATABASE IF NOT EXISTS eianatest;
+            ]]>
+        </sql>
+    </target>
+
     <!--creating test database
      To create test database instance "eianatest", you have to execute these sql commands on your mysql database.
      You can use the standard mysql account "root" with empty password ("mysql -u root -p").
@@ -66,7 +84,7 @@
 
      -->
     <target name="database.create.test"
-            depends="all.compile">
+            depends="all.compile, database.test.dropCreate">
         <hibernatetool destdir="${hibernate.test.dir}">
             <classpath>
                 <path location="${eiana-domains.output.dir}"/>
@@ -217,7 +235,7 @@
      Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
      Reports from tests are aviable in "Report" directory.
      -->
-     <target name="all.test" depends="clean,all.compile,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+     <target name="all.test" depends="clean,all.compile,database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
          <condition property="test.group.excluded" value="">
              <not><isset property="test.group.excluded"/></not>
