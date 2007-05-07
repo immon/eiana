@@ -271,6 +271,7 @@
 
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO"/>
+        <constructor-arg ref="hostManager"/>
     </bean>
 
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
