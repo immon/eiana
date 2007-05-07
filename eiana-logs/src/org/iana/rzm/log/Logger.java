@@ -11,5 +11,6 @@ public interface Logger {
     void addLog(String userName,
                 String sessionID,
                 String action,
-                TrackedObject object);
+                TrackedObject object,
+                Object[] parameters);
 }

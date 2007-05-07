@@ -14,15 +14,25 @@ import java.sql.Timestamp;
  */
 public class LoggerBean implements Logger {
 
-    DiffConfiguration diffConfiguration;
-    LogDAO dao;
+    private DiffConfiguration diffConfiguration;
+    private LogDAO dao;
 
-    public void addLog(String userName, String sessionId, String action, TrackedObject object) {
+    public void addLog(String userName, String sessionId, String action, TrackedObject object, Object[] parameters) {
         CheckTool.checkNull(object, "logged object");
         Timestamp now = now();
-        object.setCreated(now);
-        object.setCreatedBy(userName);
+        setTimestamps(object, now, userName);
         dao.create(new LogEntry(userName, sessionId, now, action, object));
+    }
+
+    private void setTimestamps(TrackedObject object, Timestamp timestamp, String userName) {
+        if (object.getCreated() == null) {
+            object.setCreated(timestamp);
+            object.setCreatedBy(userName);
+        }
+        else {
+            object.setModified(timestamp);
+            object.setModifiedBy(userName);
+        }
     }
 
     public void addLog(String userName, String sessionId, String action, TrackedObject src, TrackedObject dst) {
