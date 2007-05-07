@@ -3,21 +3,22 @@ package org.iana.rzm.trans.confirmation;
 import org.iana.rzm.user.RZMUser;
 
 import javax.persistence.*;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class ConfirmationSet extends AbstractConfirmation {
+class ConfirmationSet extends AbstractConfirmation {
     @OneToMany(cascade = CascadeType.ALL,
             targetEntity = AbstractConfirmation.class)
     @JoinTable(name = "ConfirmationSet_Confirmations",
             inverseJoinColumns = @JoinColumn(name = "ReferencedConfirmation_objId"))
     private Set<Confirmation> confirmations = new HashSet<Confirmation>();
 
-    public ConfirmationSet() {}
+    public ConfirmationSet() {
+    }
 
     public ConfirmationSet(Set<Confirmation> confirmations) {
         this.confirmations.addAll(confirmations);
@@ -29,6 +30,7 @@ public class ConfirmationSet extends AbstractConfirmation {
     }
 
     public boolean isAcceptableBy(RZMUser user) {
+        if (confirmations.isEmpty()) return true;
         for (Confirmation conf : confirmations)
             if (conf.isAcceptableBy(user)) return true;
         return false;
