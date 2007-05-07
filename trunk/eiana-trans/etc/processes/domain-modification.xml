@@ -37,6 +37,8 @@
         <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
         <transition name="accept" to="PENDING_TECH_CHECK"/>
         <transition name="reject" to="REJECTED"/>
+        <transition name="admin-accept" to="PENDING_TECH_CHECK"/>
+        <transition name="admin-reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
     </state>
 
@@ -52,6 +54,11 @@
 
     <state name="PENDING_IMPACTED_PARTIES">
         <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesCalculator"/>
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesNotifier">
                 <notification>impacted_parties-confirmation</notification>
@@ -78,6 +85,8 @@
         <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
         <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
         <transition name="reject" to="REJECTED"/>
+        <transition name="admin-accept" to="PENDING_IANA_CONFIRMATION"/>
+        <transition name="admin-reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
     </state>
 
@@ -114,12 +123,19 @@
         <timer name="30d-time-out" duedate='30 days' transition='alert'></timer>
         <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
         <transition name="reject" to="REJECTED"/>
+        <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
+        <transition name="admin-reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
         <transition name="alert" to="EXCEPTION"/>
     </state>
 
     <state name="PENDING_USDOC_APPROVAL">
         <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
             <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                 <roles>
                     <element>USDoC</element>
@@ -140,6 +156,8 @@
         <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
         <transition name="accept" to="USDOC_APPROVED"/>
         <transition name="reject" to="REJECTED"/>
+        <transition name="admin-accept" to="USDOC_APPROVED"/>
+        <transition name="admin-reject" to="REJECTED"/>
         <transition name="alert" to="EXCEPTION"/>
     </state>
 
