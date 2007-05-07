@@ -16,6 +16,7 @@ public class ImpactedPartiesCalculator implements ActionHandler {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         Token token = executionContext.getProcessInstance().getRootToken();
         Node node = token.getNode();
-        td.setStateConfirmations(node.getName(), new StateConfirmations());
+        StateConfirmations sc = (StateConfirmations) td.getStateConfirmations(node.getName());
+        if (sc == null) td.setStateConfirmations(node.getName(), new StateConfirmations());
     }
 }
