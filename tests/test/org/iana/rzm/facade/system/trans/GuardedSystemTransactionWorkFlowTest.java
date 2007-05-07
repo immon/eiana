@@ -1,16 +1,11 @@
 package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.Host;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
@@ -18,7 +13,6 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -30,19 +24,11 @@ import java.util.List;
  */
 
 @Test(sequential = true, groups = {"facade-system", "GuardedSystemTransactionWorkFlowTest"})
-public class GuardedSystemTransactionWorkFlowTest {
+public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
 
-    ApplicationContext appCtx;
-    SystemTransactionService gsts;
-
-    ProcessDAO processDAO;
-    UserManager userManager;
-    DomainManager domainManager;
     RZMUser userAC, userTC, userIANA, userUSDoC;
     DomainVO domainVONS, domainVO;
     Domain domainNS, domain;
-
-    private TransactionVO transaction;
 
     final static String DOMAIN_NAME = "gstsignaltest.org";
     final static String DOMAIN_NAMENS = "gstsignaltestns.org";
@@ -114,199 +100,88 @@ public class GuardedSystemTransactionWorkFlowTest {
 
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
-        createTransaction(domainVONS);
-        rejectPENDING_CONTACT_CONFIRMATION();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
     }
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
     public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
-        createTransaction(domainVONS);
-        closePENDING_CONTACT_CONFIRMATION();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        closePENDING_CONTACT_CONFIRMATION(userIANA, transId);
     }
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
-        createTransaction(domainVONS);
-        acceptPENDING_CONTACT_CONFIRMATION();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
     }
 
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
     public void testREJECT_IMPACTED_PARTIES() throws Exception {
-        createTransaction(domainVONS);
-        acceptPENDING_CONTACT_CONFIRMATION();
-        rejectIMPACTED_PARTIES();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        rejectIMPACTED_PARTIES(userAC, transId);
     }
 
     @Test(dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
+    public void testCLOSE_IMPACTED_PARTIES() throws Exception {
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        closeIMPACTED_PARTIES(userIANA, transId);
+    }
+
+    @Test(dependsOnMethods = {"testCLOSE_IMPACTED_PARTIES"})
     public void testREJECT_EXT_APPROVAL() throws Exception {
-        createTransaction(domainVONS);
-        acceptPENDING_CONTACT_CONFIRMATION();
-        acceptIMPACTED_PARTIES();
-        normalIANA_CONFIRMATION();
-        rejectEXT_APPROVAL();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptIMPACTED_PARTIES(userAC, transId);
+        normalIANA_CONFIRMATION(userIANA, transId);
+        rejectEXT_APPROVAL(userIANA, transId);
     }
 
     @Test(dependsOnMethods = {"testREJECT_EXT_APPROVAL"})
     public void testCLOSE_EXT_APPROVAL() throws Exception {
-        createTransaction(domainVONS);
-        acceptPENDING_CONTACT_CONFIRMATION();
-        acceptIMPACTED_PARTIES();
-        normalIANA_CONFIRMATION();
-        closeEXT_APPROVAL();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptIMPACTED_PARTIES(userAC, transId);
+        normalIANA_CONFIRMATION(userIANA, transId);
+        closeEXT_APPROVAL(userIANA, transId);
     }
 
     @Test(dependsOnMethods = {"testCLOSE_EXT_APPROVAL"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
-        createTransaction(domainVONS);
-        acceptPENDING_CONTACT_CONFIRMATION();
-        acceptIMPACTED_PARTIES();
-        normalIANA_CONFIRMATION();
-        acceptEXT_APPROVAL();
-        rejectUSDOC_APPROVAL();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptIMPACTED_PARTIES(userAC, transId);
+        normalIANA_CONFIRMATION(userIANA, transId);
+        acceptEXT_APPROVAL(userIANA, transId);
+        rejectUSDOC_APPROVAL(userUSDoC, transId);
     }
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
-        createTransaction(domainVO);
-        acceptPENDING_CONTACT_CONFIRMATION();
-        acceptIMPACTED_PARTIES();
-        normalIANA_CONFIRMATION();
-        acceptEXT_APPROVAL();
-        acceptUSDOC_APPROVALnoNSChange();
+        Long transId = createTransaction(domainVO, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptIMPACTED_PARTIES(userAC, transId);
+        normalIANA_CONFIRMATION(userIANA, transId);
+        acceptEXT_APPROVAL(userIANA, transId);
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);
     }
 
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
     public void testWorkFlowWithNSChange() throws Exception {
-        createTransaction(domainVONS);
-        acceptPENDING_CONTACT_CONFIRMATION();
-        acceptIMPACTED_PARTIES();
-        normalIANA_CONFIRMATION();
-        acceptEXT_APPROVAL();
-        acceptUSDOC_APPROVAL();
-        acceptZONE_INSERTION();
-        acceptZONE_PUBLICATION();
-    }
-
-    private void acceptZONE_PUBLICATION() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("COMPLETED");
-        gsts.close();
-    }
-
-    private void acceptZONE_INSERTION() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION");
-        gsts.close();
-    }
-
-    private void acceptUSDOC_APPROVAL() throws Exception {
-        setGSTSAuthUser(userUSDoC);
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION");
-        gsts.close();
-    }
-
-    private void acceptUSDOC_APPROVALnoNSChange() throws Exception {
-        setGSTSAuthUser(userUSDoC);
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("COMPLETED");
-        gsts.close();
-    }
-
-    private void acceptEXT_APPROVAL() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL");
-        gsts.close();
-    }
-
-    private void normalIANA_CONFIRMATION() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION");
-        gsts.transitTransaction(transaction.getTransactionID(), "normal");
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
-        gsts.close();
-    }
-
-    private void acceptIMPACTED_PARTIES() throws Exception {
-        setGSTSAuthUser(userAC);
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION");
-        gsts.close();
-    }
-
-    private void rejectPENDING_CONTACT_CONFIRMATION() throws Exception {
-        setGSTSAuthUser(userAC);
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
-        gsts.rejectTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("REJECTED");
-        gsts.close();
-    }
-
-    private void closeEXT_APPROVAL() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
-        gsts.transitTransaction(transaction.getTransactionID(), "close");
-        assert isTransactionInDesiredState("ADMIN_CLOSED");
-        gsts.close();
-    }
-
-    private void rejectEXT_APPROVAL() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
-        gsts.rejectTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("REJECTED");
-        gsts.close();
-    }
-
-    private void rejectUSDOC_APPROVAL() throws Exception {
-        setGSTSAuthUser(userUSDoC);
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL");
-        gsts.rejectTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("REJECTED");
-        gsts.close();
-    }
-
-    private void rejectIMPACTED_PARTIES() throws Exception {
-        setGSTSAuthUser(userAC);
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES");
-        gsts.rejectTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("REJECTED");
-        gsts.close();
-    }
-
-    private void closePENDING_CONTACT_CONFIRMATION() throws Exception {
-        setGSTSAuthUser(userIANA);
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
-        gsts.transitTransaction(transaction.getTransactionID(), "close");
-        assert isTransactionInDesiredState("ADMIN_CLOSED");
-        gsts.close();
-    }
-
-    private void acceptPENDING_CONTACT_CONFIRMATION() throws Exception {
-        setGSTSAuthUser(userAC);
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
-        gsts.close();
-        setGSTSAuthUser(userTC);
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
-        gsts.acceptTransaction(transaction.getTransactionID());
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES");
-        gsts.close();
+        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptIMPACTED_PARTIES(userAC, transId);
+        normalIANA_CONFIRMATION(userIANA, transId);
+        acceptEXT_APPROVAL(userIANA, transId);
+        acceptUSDOC_APPROVAL(userUSDoC, transId);
+        acceptZONE_INSERTION(userIANA, transId);
+        acceptZONE_PUBLICATION(userIANA, transId);
     }
 
     @AfterClass
     public void cleanUp() {
-
         List<ProcessInstance> processInstances = processDAO.findAll();
         for (ProcessInstance processInstance : processInstances)
             processDAO.delete(processInstance);
@@ -318,29 +193,5 @@ public class GuardedSystemTransactionWorkFlowTest {
         userManager.delete(userUSDoC);
         domainManager.delete(DOMAIN_NAME);
         domainManager.delete(DOMAIN_NAMENS);
-    }
-
-    private Domain createDomain(String name) {
-        Domain newDomain = new Domain(name);
-        newDomain.setSupportingOrg(new Contact("supportOrg"));
-        return newDomain;
-    }
-
-    private void setGSTSAuthUser(RZMUser user) {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gsts.setUser(testAuthUser);
-    }
-
-    private void createTransaction(IDomainVO domainVO) throws Exception {
-//        domainManager.delete(domain);
-//        domainManager.create(domain);
-        setGSTSAuthUser(userAC);
-        transaction = gsts.createTransaction(domainVO);
-        gsts.close();
-    }
-
-    private boolean isTransactionInDesiredState(String stateName) throws Exception {
-        TransactionVO retTransactionVO = gsts.getTransaction(transaction.getTransactionID());
-        return retTransactionVO.getState().getName().toString().equals(stateName);
     }
 }
