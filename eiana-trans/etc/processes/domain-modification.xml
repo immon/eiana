@@ -17,24 +17,24 @@
             </action>
         </event>
         <timer name="7d-time-out" duedate='7 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder" >
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
                 <period>23</period>
                 <notification>contact-confirmation-remainder</notification>
             </action>
         </timer>
         <timer name="14d-time-out" duedate='14 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder" >
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
                 <period>16</period>
                 <notification>contact-confirmation-remainder</notification>
             </action>
         </timer>
         <timer name="21d-time-out" duedate='21 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder" >
+            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
                 <period>9</period>
                 <notification>contact-confirmation-remainder</notification>
             </action>
         </timer>
-        <timer name="30d-time-out" duedate='30 days' transition='close' ></timer>
+        <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
         <transition name="accept" to="PENDING_TECH_CHECK"/>
         <transition name="reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
@@ -58,24 +58,24 @@
             </action>
         </event>
         <timer name="7d-time-out" duedate='7 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder" >
+            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder">
                 <period>23</period>
                 <notification>impacted_parties-confirmation-remainder</notification>
             </action>
         </timer>
         <timer name="14d-time-out" duedate='14 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder" >
+            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder">
                 <period>16</period>
                 <notification>impacted_parties-confirmation-remainder</notification>
             </action>
         </timer>
         <timer name="21d-time-out" duedate='21 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder" >
+            <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder">
                 <period>9</period>
                 <notification>impacted_parties-confirmation-remainder</notification>
             </action>
         </timer>
-        <timer name="30d-time-out" duedate='30 days' transition='close' ></timer>
+        <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
         <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
         <transition name="reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
@@ -89,7 +89,7 @@
                 </roles>
             </action>
         </event>
-        <timer name="3d-time-out" duedate='3 days' transition='alert' ></timer>
+        <timer name="3d-time-out" duedate='3 days' transition='alert'></timer>
         <transition name="normal" to="PENDING_EXT_APPROVAL"/>
         <transition name="alert" to="EXCEPTION"/>
         <!--
@@ -111,7 +111,7 @@
                 </roles>
             </action>
         </event>
-        <timer name="30d-time-out" duedate='30 days' transition='alert' ></timer>
+        <timer name="30d-time-out" duedate='30 days' transition='alert'></timer>
         <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
         <transition name="reject" to="REJECTED"/>
         <transition name="close" to="ADMIN_CLOSED"/>
@@ -131,13 +131,13 @@
                 </roles>
             </action>
         </event>
-        <timer name="5d-time-out" duedate='5 days' >
-            <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationRemainder" >
+        <timer name="5d-time-out" duedate='5 days'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationRemainder">
                 <period>9</period>
                 <notification>uscdoc-confirmation-remainder</notification>
             </action>
         </timer>
-        <timer name="14d-time-out" duedate='14 days' transition='alert' ></timer>
+        <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
         <transition name="accept" to="USDOC_APPROVED"/>
         <transition name="reject" to="REJECTED"/>
         <transition name="alert" to="EXCEPTION"/>
@@ -149,36 +149,56 @@
         <transition name="ns-change" to="PENDING_ZONE_INSERTION"/>
     </decision>
 
-    <state name="PENDING_ZONE_INSERTION" >
+    <state name="PENDING_ZONE_INSERTION">
         <event type="node-enter">
             <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAction">
             </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
         </event>
-        <timer name="7d-time-out" duedate="1 second" >
-            <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAlert" >
+        <timer name="7d-time-out" duedate="1 second">
+            <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAlert">
                 <period>7</period>
                 <notification>zone-insertion-alert</notification>
             </action>
         </timer>
-        <timer name="14d-time-out" duedate="14 days" transition="alert" ></timer>
-        <transition name="accept" to="PENDING_ZONE_PUBLICATION" />
-        <transition name="alert" to="EXCEPTION" />
+        <timer name="14d-time-out" duedate="14 days" transition="alert"></timer>
+        <transition name="accept" to="PENDING_ZONE_PUBLICATION"/>
+        <transition name="alert" to="EXCEPTION"/>
     </state>
 
-    <state name="PENDING_ZONE_PUBLICATION" >
+    <state name="PENDING_ZONE_PUBLICATION">
         <event type="node-enter">
             <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAction">
             </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
+                <roles>
+                    <element>IANA</element>
+                </roles>
+            </action>
         </event>
-        <timer name="3d-time-out" duedate="1 second" >
-            <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAlert" >
+        <timer name="3d-time-out" duedate="1 second">
+            <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAlert">
                 <period>4</period>
                 <notification>zone-publication-alert</notification>
             </action>
         </timer>
         <timer name="7d-time-out" duedate="7 days" transition="alert"></timer>
-        <transition name="accept" to="PENDING_DATABASE_INSERTION" />
-        <transition name="alert" to="EXCEPTION" />
+        <transition name="accept" to="PENDING_DATABASE_INSERTION"/>
+        <transition name="alert" to="EXCEPTION"/>
     </state>
 
     <node name='PENDING_DATABASE_INSERTION'>
