@@ -272,4 +272,21 @@ public class Contact implements TrackedObject,Cloneable {
             newList.add(s);
         return newList;
     }
+
+
+    public void setCreated(Timestamp created) {
+        trackData.setCreated(created);
+    }
+
+    public void setModified(Timestamp modified) {
+        trackData.setModified(modified);
+    }
+
+    public void setCreatedBy(String createdBy) {
+        trackData.setCreatedBy(createdBy);
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        trackData.setModifiedBy(modifiedBy);
+    }
 }

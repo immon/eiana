@@ -14,6 +14,8 @@
     <orderEntry type="module" module-name="eiana-users" />
     <orderEntry type="module" module-name="eiana-util" />
     <orderEntry type="module" module-name="common-dao" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

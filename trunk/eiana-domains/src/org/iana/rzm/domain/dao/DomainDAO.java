@@ -5,6 +5,7 @@ import org.iana.rzm.domain.DomainCriteria;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -23,6 +24,8 @@ public interface DomainDAO {
     public void delete(Domain domain);
 
     public List<Domain> find(Criterion criterion);
+
+    public List<Domain> findDelegatedTo(Set<String> hostNames);
 
     public List<Domain> findAll();
 }

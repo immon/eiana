@@ -3,10 +3,12 @@ package org.iana.rzm.domain.dao;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainCriteria;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.dao.hibernate.HibernateDAO;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -28,6 +30,17 @@ public class HibernateDomainDAO extends HibernateDAO<Domain> implements DomainDA
         Domain ret = (list.size() < 1) ? null : list.get(0);
         System.out.println("retrieved = " + ((ret == null) ? null : ret.getName()));
         return ret;
+    }
+
+    public List<Domain> findDelegatedTo(Set<String> hostNames) {
+        CheckTool.checkNull(hostNames, "host names");
+        StringBuffer hql = new StringBuffer(
+                "select distinct d from Domain as d inner join d.nameServers as ns where ns.name.name in ( "
+        );
+        for (String hostName : hostNames) hql.append("?,");
+        hql.deleteCharAt(hql.length()-1);
+        hql.append(")");
+        return (List<Domain>) getHibernateTemplate().find(hql.toString(), hostNames.toArray());
     }
 
     public List<Domain> findAll() {

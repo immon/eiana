@@ -3,6 +3,7 @@ package org.iana.rzm.domain;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p/>
@@ -29,4 +30,6 @@ public interface DomainManager {
     public List<Domain> findAll();
 
     public List<Domain> find(Criterion criteria);
+
+    public List<Domain> findDelegatedTo(Set<String> hostName);
 }

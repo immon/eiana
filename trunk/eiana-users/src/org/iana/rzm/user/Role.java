@@ -89,4 +89,20 @@ public abstract class Role implements TrackedObject {
     public void setTrackData(TrackData trackData) {
         this.trackData = trackData;
     }
+
+    public void setCreated(Timestamp created) {
+        trackData.setCreated(created);
+    }
+
+    public void setModified(Timestamp modified) {
+        trackData.setModified(modified);
+    }
+
+    public void setCreatedBy(String createdBy) {
+        trackData.setCreatedBy(createdBy);
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        trackData.setModifiedBy(modifiedBy);
+    }
 }
