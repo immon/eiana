@@ -43,7 +43,7 @@
                 <path location="${eiana-util.output.dir}"/>
                 <path location="${eiana-users.output.dir}"/>
                 <path location="${eiana-trans.output.dir}"/>
-                <path location="${eiana-log.output.dir}"/>
+                <path location="${eiana-logs.output.dir}"/>
                 <path location="${eiana-notifications.output.dir}"/>
                 <path location="${tests.testoutput.dir}"/>
                 <path location="${common-objectdiff.output.dir}"/>
@@ -92,7 +92,7 @@
                 <path location="${eiana-util.output.dir}"/>
                 <path location="${eiana-users.output.dir}"/>
                 <path location="${eiana-trans.output.dir}"/>
-                <path location="${eiana-log.output.dir}"/>
+                <path location="${eiana-logs.output.dir}"/>
                 <path location="${eiana-notifications.output.dir}"/>
                 <path location="${tests.testoutput.dir}"/>
                 <path location="${common-objectdiff.output.dir}"/>
