@@ -24,7 +24,7 @@ public interface TransactionManager {
 
     // Transaction createTransaction(List<TransactionAction> actions);
 
-    
+
     /**
      * Creates a new domain creation transaction.
      *
