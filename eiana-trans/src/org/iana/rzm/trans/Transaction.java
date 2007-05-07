@@ -1,5 +1,6 @@
 package org.iana.rzm.trans;
 
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
@@ -9,7 +10,6 @@ import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.user.RZMUser;
-import org.iana.objectdiff.ObjectChange;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -83,7 +83,7 @@ public class Transaction implements TrackedObject {
         TransactionState ts = new TransactionState();
         Token token = pi.getRootToken();
         Node node = token.getNode();
-            if (node != null) {
+        if (node != null) {
             ts.setName(node.getName());
             ts.setStart(token.getStart());
             if (token.getEnd() != null)
@@ -112,7 +112,7 @@ public class Transaction implements TrackedObject {
         Timestamp result = new Timestamp(pi.getEnd().getTime());
         // when process instance is persisted in db, nanos are missing
         result.setNanos(0);
-        return result; 
+        return result;
     }
 
     public void setEnd(Timestamp end) {
@@ -140,10 +140,9 @@ public class Transaction implements TrackedObject {
             Token token = pi.getRootToken();
             Node node = token.getNode();
             Confirmation confirmation = getTransactionData().getStateConfirmations(node.getName());
-            if (confirmation != null) {
-                if (!confirmation.accept(user))
-                    return;
-            }
+            if (confirmation == null) throw new UserConfirmationNotExpected();
+            if (!confirmation.accept(user))
+                return;
             pi.signal(StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
@@ -156,12 +155,11 @@ public class Transaction implements TrackedObject {
         Token token = pi.getRootToken();
         Node node = token.getNode();
         Confirmation confirmation = getTransactionData().getStateConfirmations(node.getName());
-        if (confirmation != null) {
-            if (confirmation.isAcceptableBy(user))
-                pi.signal(StateTransition.REJECT);
-            else
-                throw new UserConfirmationNotExpected();
-        }
+        if (confirmation == null) throw new UserConfirmationNotExpected();
+        if (confirmation.isAcceptableBy(user))
+            pi.signal(StateTransition.REJECT);
+        else
+            throw new UserConfirmationNotExpected();
     }
 
     public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
