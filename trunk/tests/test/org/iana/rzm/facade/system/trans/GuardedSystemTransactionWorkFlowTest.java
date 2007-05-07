@@ -109,32 +109,59 @@ public class GuardedSystemTransactionWorkFlowTest {
 
     }
 
-//    @Test
-//    public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
-//        createTransaction(domainVONS);
-//        rejectPENDING_CONTACT_CONFIRMATION();
-//    }
-//
-//    @Test
-//    public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
-//        createTransaction(domainVONS);
-//        closePENDING_CONTACT_CONFIRMATION();
-//    }
-//
-//    @Test
-//    public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
-//        createTransaction(domainVONS);
-//        acceptPENDING_CONTACT_CONFIRMATION();
-//    }
-
-//    @Test
-//    public void testREJECT_IMPACTED_PARTIES() throws Exception {
-//        createTransaction(domainVONS);
-//        acceptPENDING_CONTACT_CONFIRMATION();
-//        rejectIMPACTED_PARTIES();
-//    }
-
     @Test
+    public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
+        createTransaction(domainVONS);
+        rejectPENDING_CONTACT_CONFIRMATION();
+    }
+
+    @Test (dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
+    public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
+        createTransaction(domainVONS);
+        closePENDING_CONTACT_CONFIRMATION();
+    }
+
+    @Test (dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
+    public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
+        createTransaction(domainVONS);
+        acceptPENDING_CONTACT_CONFIRMATION();
+    }
+
+    @Test (dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
+    public void testREJECT_IMPACTED_PARTIES() throws Exception {
+        createTransaction(domainVONS);
+        acceptPENDING_CONTACT_CONFIRMATION();
+//        rejectIMPACTED_PARTIES();  todo
+    }
+
+    @Test (dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
+    public void testREJECT_EXT_APPROVAL() throws Exception {
+        createTransaction(domainVONS);
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptIMPACTED_PARTIES();
+        normalIANA_CONFIRMATION();
+        //rejectEXT_APPROVAL();  todo
+    }
+
+    @Test (dependsOnMethods = {"testREJECT_EXT_APPROVAL"})
+    public void testCLOSE_EXT_APPROVAL() throws Exception {
+        createTransaction(domainVONS);
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptIMPACTED_PARTIES();
+        normalIANA_CONFIRMATION();
+        closeEXT_APPROVAL();
+    }
+
+    @Test (dependsOnMethods = {"testCLOSE_EXT_APPROVAL"})
+    public void testREJECT_USDOC_APPROVAL() throws Exception {
+        createTransaction(domainVONS);
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptIMPACTED_PARTIES();
+        normalIANA_CONFIRMATION();
+//        rejectUSDOC_APPROVAL();  todo
+    }
+
+    @Test (dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         createTransaction(domainVO);
         acceptPENDING_CONTACT_CONFIRMATION();
@@ -144,7 +171,7 @@ public class GuardedSystemTransactionWorkFlowTest {
         acceptUSDOC_APPROVALnoNSChange();
     }
 
-    @Test
+    @Test (dependsOnMethods = {"testWorkFlowNoNSChange"})
     public void testWorkFlowWithNSChange() throws Exception {
         createTransaction(domainVONS);
         acceptPENDING_CONTACT_CONFIRMATION();
@@ -212,17 +239,41 @@ public class GuardedSystemTransactionWorkFlowTest {
         gsts.close();
     }
 
-    private void rejectIMPACTED_PARTIES() throws Exception {
+    private void rejectPENDING_CONTACT_CONFIRMATION() throws Exception {
         setGSTSAuthUser(userAC);
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES");
+        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
         gsts.rejectTransaction(transaction.getTransactionID());
         assert isTransactionInDesiredState("REJECTED");
         gsts.close();
     }
 
-    private void rejectPENDING_CONTACT_CONFIRMATION() throws Exception {
+    private void closeEXT_APPROVAL() throws Exception {
+        setGSTSAuthUser(userIANA);
+        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
+        gsts.transitTransaction(transaction.getTransactionID(), "close");
+        assert isTransactionInDesiredState("ADMIN_CLOSED");
+        gsts.close();
+    }
+
+    private void rejectEXT_APPROVAL() throws Exception {
+        setGSTSAuthUser(userIANA);
+        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL");
+        gsts.rejectTransaction(transaction.getTransactionID());
+        assert isTransactionInDesiredState("REJECTED");
+        gsts.close();
+    }
+
+    private void rejectUSDOC_APPROVAL() throws Exception {
+        setGSTSAuthUser(userUSDoC);
+        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL");
+        gsts.rejectTransaction(transaction.getTransactionID());
+        assert isTransactionInDesiredState("REJECTED");
+        gsts.close();
+    }
+
+    private void rejectIMPACTED_PARTIES() throws Exception {
         setGSTSAuthUser(userAC);
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION");
+        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES");
         gsts.rejectTransaction(transaction.getTransactionID());
         assert isTransactionInDesiredState("REJECTED");
         gsts.close();
