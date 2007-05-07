@@ -17,7 +17,6 @@ public interface TrackedObject {
 
     String getModifiedBy();
 
-/*
     void setCreated(Timestamp created);
 
     void setModified(Timestamp modified);
@@ -25,5 +24,4 @@ public interface TrackedObject {
     void setCreatedBy(String userName);
 
     void setModifiedBy(String userName);
-*/
 }
