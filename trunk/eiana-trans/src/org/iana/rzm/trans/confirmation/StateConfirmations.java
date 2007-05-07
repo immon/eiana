@@ -50,12 +50,15 @@ public class StateConfirmations implements Confirmation {
     }
 
     public boolean accept(RZMUser user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
-        Set<Confirmation> userConfs = getUserConfirmations(user);
-        for (Confirmation conf : userConfs)
-            if (conf.accept(user)) {
-                pendingConfirmations.remove(conf);
-                receivedConfirmations.add(conf);
-            }
+        if (!pendingConfirmations.isEmpty() || !receivedConfirmations.isEmpty()) {
+            Set<Confirmation> userConfs = getUserConfirmations(user);
+            if (userConfs.isEmpty()) throw new NotAcceptableByUser(user.getLoginName());
+            for (Confirmation conf : userConfs)
+                if (conf.accept(user)) {
+                    pendingConfirmations.remove(conf);
+                    receivedConfirmations.add(conf);
+                }
+        }
         return isReceived();
     }
 
