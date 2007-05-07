@@ -23,13 +23,16 @@ import java.util.HashSet;
 public class GuardedSystemTransactionService extends AbstractRZMStatefulService implements SystemTransactionService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();
+    private static Set<Role> allowedCreateTransactionRoles = new HashSet<Role>();
 
     static {
+        allowedCreateTransactionRoles.add(new AdminRole(AdminRole.AdminType.IANA));
+        allowedCreateTransactionRoles.add(new SystemRole(SystemRole.SystemType.AC));
+        allowedCreateTransactionRoles.add(new SystemRole(SystemRole.SystemType.TC));
+        allowedCreateTransactionRoles.add(new SystemRole(SystemRole.SystemType.SO));
+
+        allowedRoles.addAll(allowedCreateTransactionRoles);
         allowedRoles.add(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
-        allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
-        allowedRoles.add(new SystemRole(SystemRole.SystemType.AC));
-        allowedRoles.add(new SystemRole(SystemRole.SystemType.TC));
-        allowedRoles.add(new SystemRole(SystemRole.SystemType.SO));
     }
 
     private SystemTransactionService delegate;
@@ -42,6 +45,10 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
 
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
+    }
+
+    private void isUserInCreateTransactionRole() {
+        isUserInRole(allowedCreateTransactionRoles);
     }
 
     public TransactionVO getTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -60,7 +67,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     }
 
     public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
-        isUserInRole();
+        isUserInCreateTransactionRole();
         return delegate.createTransaction(domain);
     }
 
@@ -70,7 +77,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
-        isUserInRole();
+        isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 

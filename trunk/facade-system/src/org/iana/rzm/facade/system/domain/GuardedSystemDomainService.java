@@ -22,7 +22,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
     private static Set<Role> allowedRoles = new HashSet<Role>();
 
     static {
-        allowedRoles.add(new IANARole());
+        allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.AC));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.TC));
         allowedRoles.add(new SystemRole(SystemRole.SystemType.SO));
