@@ -62,6 +62,7 @@
         <mapping class="org.iana.notifications.Content" />
         <mapping class="org.iana.notifications.Addressee" />
         <mapping class="org.iana.notifications.Notification" />
+        <mapping class="org.iana.notifications.EmailAddressee" />
         <mapping class="org.iana.notifications.TemplateContent" />
         <mapping class="org.iana.notifications.TextContent" />
 

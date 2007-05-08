@@ -52,7 +52,7 @@
                 </fileset>
             </classpath>
             <annotationconfiguration
-                    configurationfile="${hibernate.dir}/hibernate.cfg.xml">
+                    configurationfile="${hibernate.dir}/eiana-hibernate.cfg.xml">
             </annotationconfiguration>
             <hbm2ddl export="true" create="true" outputfilename="eiana-ddl.sql"/>
         </hibernatetool>

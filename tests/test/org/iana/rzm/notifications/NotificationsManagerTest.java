@@ -30,7 +30,8 @@ public class NotificationsManagerTest {
     private Notification notification, secondNotification, thirdNotification;
     private Long         notificationId;
     private Long         secondUserId;
-    private List<Long> notificationIds = new ArrayList<Long>();
+    private List<Long>   notificationIds = new ArrayList<Long>();
+    private Long         emailAdderesseId;
 
     @BeforeClass
     public void init() {
@@ -168,6 +169,42 @@ public class NotificationsManagerTest {
         }
     }
 
+    @Test(dependsOnMethods = {"testNotificationsDAO_TextContent"})
+    public void testNotificationsDAO_EmailAddresse() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            TextContent tempContent = new TextContent();
+            tempContent.setBody("temp body");
+            tempContent.setSubject("temp subject");
+            thirdNotification = new Notification();
+            thirdNotification.setContent(tempContent);
+
+            EmailAddressee emailAddressee = new EmailAddressee("some@emial.com", "someusername");
+            emailAddressee.setEmail("some@emial.com");
+            emailAddressee.setName("someusername");
+            thirdNotification.addAddressee(emailAddressee);
+            thirdNotification.setSent(false);
+            notificationManager.create(thirdNotification);
+            emailAdderesseId = thirdNotification.getObjId();
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
+        txStatus = txMgr.getTransaction(txDef);
+        try {
+            Notification retrivedNotification = notificationManager.get(thirdNotification.getObjId());
+            assert retrivedNotification.getContent().getBody().equals("temp body");
+            assert retrivedNotification.getContent().getSubject().equals("temp subject");
+            assert retrivedNotification.getAddressee().iterator().next().getEmail().equals("some@emial.com");
+            assert retrivedNotification.getAddressee().iterator().next().getName().equals("someusername");
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
+    }
+
     @AfterClass
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
@@ -183,6 +220,7 @@ public class NotificationsManagerTest {
         try {
             notificationManager.deleteUserNotifications(secondUser);
             userManager.delete(secondUser);
+            notificationManager.delete(notificationManager.get(emailAdderesseId));
             txMgr.commit(txStatus);
         } catch (Exception e) {
             if (!txStatus.isCompleted())
