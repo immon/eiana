@@ -14,6 +14,8 @@ public class EmailAddressee extends Addressee {
     @Basic
     private String name;
 
+    private EmailAddressee() {}
+
     public EmailAddressee(String email, String name) {
         this.email = email;
         this.name = name;
