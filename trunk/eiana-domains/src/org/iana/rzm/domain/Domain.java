@@ -9,14 +9,8 @@ import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.*;
 import java.sql.Timestamp;
-import java.io.ObjectOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -268,7 +262,7 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public void setState(State state) {
-        CheckTool.checkNull(status, "state");
+        CheckTool.checkNull(state, "state");
         this.state = state;
     }
 
