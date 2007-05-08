@@ -86,44 +86,44 @@ public class IPAddressValidator {
 
     public static IPAddressValidator getInstance() { return instance; }
 
-    public static void main(String[] args) throws Exception {
-        IPAddressValidator v = IPAddressValidator.getInstance();
-        String[] good_addresses =  {"fe80:0000:0000:0000:1322:33FF:FE44:5566",
-                                    "2001:0000:0:fd:123:ffff:0:0",
-                                    "2001:0db8:0000:0000:0000::1428:57ab",
-                                    "2001:0db8:0:0:0:0:1428:57ab",
-                                    "2001:0db8:0:0::1428:57ab",
-                                    "2001:0db8::1428:57ab",
-                                    "2001:db8::1428:57ab",
-                                    "f::",
-                                    "::f",
-                                    "::f:128",
-                                    "::1.2.255.254",
-                                    "::ffff:0:0",
-                                    "::ffff:0:1.2.3.4",
-                                    "1:2:3:4:5:6:1.2.3.4"};
-        List<String> goodAddresses = Arrays.asList(good_addresses);
-        for (String good : goodAddresses) {
-            v.validateIPv6(good);
-        }
-
-
-        String[] invalid_addresses =   {":::",
-                                        ":f:",
-                                        "2001::0000:0:fd:123:ffff::0:0",
-                                        "1:2:3:4:5:1.2.3.4",
-                                        "2001:0000:0:::123:0",
-                                        "1:2:3:4:5:6:7:1.2.3.4"};
-        List<String> invalidAddresses = Arrays.asList(invalid_addresses);
-        int errorCounter = 0;
-        for (String invalid : invalidAddresses) {
-            try {
-                v.validateIPv6(invalid);
-            } catch (Exception e) {
-                errorCounter++;
-            }
-        }
-        if (errorCounter != invalidAddresses.size())
-            System.out.print("Error. Probably good address in invalid addresses list."); 
-    }
+//    public static void main(String[] args) throws Exception {
+//        IPAddressValidator v = IPAddressValidator.getInstance();
+//        String[] good_addresses =  {"fe80:0000:0000:0000:1322:33FF:FE44:5566",
+//                                    "2001:0000:0:fd:123:ffff:0:0",
+//                                    "2001:0db8:0000:0000:0000::1428:57ab",
+//                                    "2001:0db8:0:0:0:0:1428:57ab",
+//                                    "2001:0db8:0:0::1428:57ab",
+//                                    "2001:0db8::1428:57ab",
+//                                    "2001:db8::1428:57ab",
+//                                    "f::",
+//                                    "::f",
+//                                    "::f:128",
+//                                    "::1.2.255.254",
+//                                    "::ffff:0:0",
+//                                    "::ffff:0:1.2.3.4",
+//                                    "1:2:3:4:5:6:1.2.3.4"};
+//        List<String> goodAddresses = Arrays.asList(good_addresses);
+//        for (String good : goodAddresses) {
+//            v.validateIPv6(good);
+//        }
+//
+//
+//        String[] invalid_addresses =   {":::",
+//                                        ":f:",
+//                                        "2001::0000:0:fd:123:ffff::0:0",
+//                                        "1:2:3:4:5:1.2.3.4",
+//                                        "2001:0000:0:::123:0",
+//                                        "1:2:3:4:5:6:7:1.2.3.4"};
+//        List<String> invalidAddresses = Arrays.asList(invalid_addresses);
+//        int errorCounter = 0;
+//        for (String invalid : invalidAddresses) {
+//            try {
+//                v.validateIPv6(invalid);
+//            } catch (Exception e) {
+//                errorCounter++;
+//            }
+//        }
+//        if (errorCounter != invalidAddresses.size())
+//            System.out.print("Error. Probably good address in invalid addresses list.");
+//    }
 }

@@ -1,6 +1,8 @@
 package org.iana.notifications;
 
 import org.testng.annotations.Test;
+import org.iana.notifications.exception.NotificationException;
+import org.iana.notifications.exception.TemplateNotSupportedException;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -33,5 +35,17 @@ public class TemplateContentConverterTest {
         assert tcc.createSubject(templateContent).equals("Sample subject some sample text");
         assert tcc.createBody(templateContent).equals("Sample text some sample text, Null -- and date " + convertedDate + ".");
 
+    }
+
+    @Test (expectedExceptions = {TemplateNotSupportedException.class})
+    public void testWrongTemplate() throws NotificationException {
+        try {
+            TemplateContent templateContent = new TemplateContent("WRONG_TEMPLATE_NAME");
+            TemplateContentConverter tcc = new TemplateContentConverter();
+            tcc.createSubject(templateContent);
+            tcc.createBody(templateContent);
+        } catch (TemplateNotSupportedException e) {
+            throw new TemplateNotSupportedException();
+        }
     }
 }
