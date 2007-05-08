@@ -74,7 +74,8 @@ public class Host implements TrackedObject,Cloneable {
 
     final public void setAddresses(Collection<IPAddress> addresses) {
         this.addresses.clear();
-        if (addresses != null) this.addresses.addAll(addresses);
+        CheckTool.checkCollectionNull(addresses, "addresses");
+        CheckTool.addAllNoDup(this.addresses, addresses);
     }
 
     final public void addIPv4Address(IPv4Address addr) {
