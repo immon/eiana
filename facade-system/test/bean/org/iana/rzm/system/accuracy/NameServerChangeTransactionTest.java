@@ -10,6 +10,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.HostVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.IPAddressVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
@@ -28,6 +29,8 @@ import org.testng.annotations.Test;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author: piotrt
@@ -65,7 +68,13 @@ public class NameServerChangeTransactionTest {
     @Test
     public void testNameServersChange() throws InfrastructureException, NoDomainModificationException, NoObjectFoundException {
         List<HostVO> ns = domain.getNameServers();
-        ns.add(new HostVO("new.host.name"));
+        HostVO newHostVO = new HostVO("new.host.name");
+        IPAddressVO ipAddressVO = new IPAddressVO();
+        ipAddressVO.setAddress("200.32.46.35");
+        Set<IPAddressVO> setIPAddressVOs = new HashSet<IPAddressVO>();
+        setIPAddressVOs.add(ipAddressVO);
+        newHostVO.setAddresses(setIPAddressVOs);
+        ns.add(newHostVO);
         domain.setNameServers(ns);
 
         transaction = gsts.createTransaction(domain);
