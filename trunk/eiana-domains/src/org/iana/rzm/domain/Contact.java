@@ -92,7 +92,7 @@ public class Contact implements TrackedObject,Cloneable {
     }
 
     final public void setAddresses(Collection<Address> addresses) {
-        CheckTool.checkCollectionNull(phoneNumbers, "addresses");
+        CheckTool.checkCollectionNull(addresses, "addresses");
         this.addresses.clear();
         this.addresses.addAll(addresses);
         renumberAddresses();
