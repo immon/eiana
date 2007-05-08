@@ -7,4 +7,8 @@ public class InvalidNameException extends RuntimeException {
     public InvalidNameException(String name) {
         this.name = name;
     }
+
+    public String getName() {
+        return this.name;
+    }
 }

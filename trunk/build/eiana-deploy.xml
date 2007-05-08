@@ -255,6 +255,11 @@
          <cobertura-instrument>
             <fileset dir="${basedir}/classes">
                 <include name="**/*.class"/>
+                <exclude name="production/eiana-init/**/*.class" />
+                <exclude name="test/eiana-domains/org/iana/rzm/domain/hibernate/test/stress/**/*.class" />
+                <exclude name="test/eiana-trans/org/iana/rzm/trans/hibernate/test/**/*.class" />
+                <exclude name="test/eiana-users/org/iana/rzm/user/hibernate/test/stress/**/*.class" />
+                <exclude name="test/facade-system/org/iana/rzm/system/stress/**/*.class" />
             </fileset>
          </cobertura-instrument>
 
@@ -309,6 +314,7 @@
             <fileset dir="../eiana-domains/test/conf">          <include name="**/*.java" /></fileset>
             <fileset dir="../eiana-domains/test/dao">           <include name="**/*.java" /></fileset>
             <fileset dir="../eiana-domains/test/hibernate">     <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-domains/test/failure">       <include name="**/*.java" /></fileset>
             <!--eiana-logs-->
             <fileset dir="../eiana-logs/src">                   <include name="**/*.java" /></fileset>
             <!--eiana-notifications-->
