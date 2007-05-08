@@ -7,16 +7,23 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.ContactVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.Contact;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author: Piotr Tkaczyk
@@ -25,8 +32,10 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system", "ParallelGuardedSystemTransactionWorkFlowTest"})
 public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
 
+    PlatformTransactionManager txMgr;
+    TransactionDefinition txDef = new DefaultTransactionDefinition();
     RZMUser userAC, userTC, userIANA, userUSDoC;
-    DomainVO firstModification, secondModification;
+    IDomainVO firstModificationVO, secondModificationVO;
     Domain domain;
 
     final static String DOMAIN_NAME = "gstsignaltest.org";
@@ -37,6 +46,7 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         appCtx = SpringApplicationContext.getInstance().getContext();
         userManager = (UserManager) appCtx.getBean("userManager");
         gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
 
@@ -78,11 +88,11 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
         domain.setRegistryUrl("newregurl.org");
 
-        firstModification = ToVOConverter.toDomainVO(domain);
+        firstModificationVO = ToVOConverter.toDomainVO(domain);
 
         domain.setWhoisServer("newwhoisserver.com");
 
-        secondModification = ToVOConverter.toDomainVO(domain);
+        secondModificationVO = ToVOConverter.toDomainVO(domain);
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
@@ -90,18 +100,18 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
     }
 
     @Test
-    public void testParallelRun() throws Exception {
-        Long transId = createTransaction(firstModification, userAC).getTransactionID();     //1.1
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                        //1.2
-        Long secTransId = createTransaction(secondModification, userAC).getTransactionID(); //2.1
-        acceptIMPACTED_PARTIES(userAC, transId);                                            //1.3
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                     //2.2
-        normalIANA_CONFIRMATION(userIANA, transId);                                         //1.4
-        acceptIMPACTED_PARTIES(userAC, secTransId);                                         //2.3
-        normalIANA_CONFIRMATION(userIANA, secTransId);                                      //2.4
-        acceptEXT_APPROVAL(userIANA, transId);                                              //1.5
-        acceptEXT_APPROVAL(userIANA, secTransId);                                           //2.5
-        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                 //1.6
+    public void testParallelRun1() throws Exception {
+        Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
+        Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
+        acceptIMPACTED_PARTIES(userAC, transId);                                              //1.3
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                       //2.2
+        normalIANA_CONFIRMATION(userIANA, transId);                                           //1.4
+        acceptIMPACTED_PARTIES(userAC, secTransId);                                           //2.3
+        normalIANA_CONFIRMATION(userIANA, secTransId);                                        //2.4
+        acceptEXT_APPROVAL(userIANA, transId);                                                //1.5
+        acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.6
 
         Domain retDomain = domainManager.get(DOMAIN_NAME);
         assert retDomain != null;
@@ -114,6 +124,56 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         assert retDomain != null;
         assert "newregurl.org".equals(retDomain.getRegistryUrl());
         assert "newwhoisserver.com".equals(retDomain.getWhoisServer());
+    }
+
+    @Test (dependsOnMethods = {"testParallelRun1"})
+    public void testParallelRun2() throws Exception {
+
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        Domain retDomain = domainManager.get(DOMAIN_NAME);
+        firstModificationVO = ToVOConverter.toDomainVO(retDomain);
+        secondModificationVO = ToVOConverter.toDomainVO(retDomain);
+        txMgr.commit(txStatus);
+
+        ContactVO firstContactVO = ToVOConverter.toContactVO(new Contact("firstTechContact"));
+        ContactVO secondContactVO = ToVOConverter.toContactVO(new Contact("secondTechContact"));
+
+        List<ContactVO> techContactVOs = firstModificationVO.getTechContacts();
+        techContactVOs.add(firstContactVO);
+        firstModificationVO.setTechContacts(techContactVOs);
+
+        techContactVOs = secondModificationVO.getTechContacts();
+        techContactVOs.add(secondContactVO);
+        secondModificationVO.setTechContacts(techContactVOs);
+
+        Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
+        Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
+        acceptIMPACTED_PARTIES(userAC, transId);                                              //1.3
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                       //2.2
+        normalIANA_CONFIRMATION(userIANA, transId);                                           //1.4
+        acceptIMPACTED_PARTIES(userAC, secTransId);                                           //2.3
+        normalIANA_CONFIRMATION(userIANA, secTransId);                                        //2.4
+        acceptEXT_APPROVAL(userIANA, transId);                                                //1.5
+        acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.6
+
+        txStatus = txMgr.getTransaction(txDef);
+        retDomain = domainManager.get(DOMAIN_NAME);
+        assert retDomain != null;
+        List<Contact> contactsList = new ArrayList<Contact>();
+        contactsList.add(new Contact("firstTechContact"));
+        assert contactsList.equals(retDomain.getTechContacts());
+        txMgr.commit(txStatus);
+
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, secTransId);                                //2.6
+
+        txStatus = txMgr.getTransaction(txDef);
+        retDomain = domainManager.get(DOMAIN_NAME);
+        assert retDomain != null;
+        contactsList.add(new Contact("secondTechContact"));
+        assert contactsList.equals(retDomain.getTechContacts());
+        txMgr.commit(txStatus);
     }
 
     @AfterClass
