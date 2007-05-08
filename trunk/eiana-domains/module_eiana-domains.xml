@@ -2,6 +2,9 @@
 <project name="module_eiana-domains" default="compile.module.eiana-domains">
   <dirname property="module.eiana-domains.basedir" file="${ant.file.module_eiana-domains}"/>
   
+  <property name="module.jdk.home.eiana-domains" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-domains" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-domains" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="eiana-domains.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-domains}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
@@ -48,6 +52,7 @@
     <dirset dir="${module.eiana-domains.basedir}">
       <include name="test/conf"/>
       <include name="test/dao"/>
+      <include name="test/failure"/>
       <include name="test/hibernate"/>
     </dirset>
   </path>
@@ -57,7 +62,7 @@
   
   <target name="compile.module.eiana-domains.production" depends="compile.module.eiana-util,compile.module.common-dao,compile.module.common-criteria" description="Compile module eiana-domains; production classes">
     <mkdir dir="${eiana-domains.output.dir}"/>
-    <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-domains}/javac">
       <compilerarg line="${compiler.args.eiana-domains}"/>
       <bootclasspath refid="eiana-domains.module.bootclasspath"/>
       <classpath refid="eiana-domains.module.classpath"/>
@@ -75,7 +80,7 @@
   
   <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production" description="compile module eiana-domains; test classes" unless="skip.tests">
     <mkdir dir="${eiana-domains.testoutput.dir}"/>
-    <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-domains}/javac">
       <compilerarg line="${compiler.args.eiana-domains}"/>
       <classpath refid="eiana-domains.module.classpath"/>
       <classpath location="${eiana-domains.output.dir}"/>
@@ -89,6 +94,10 @@
         <type type="file"/>
       </fileset>
       <fileset dir="${module.eiana-domains.basedir}/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/test/failure">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
