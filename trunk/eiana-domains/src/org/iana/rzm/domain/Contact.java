@@ -171,7 +171,7 @@ public class Contact implements TrackedObject,Cloneable {
     }
 
     final public boolean removeEmail(String email) {
-        return this.emails.remove(email);
+        return this.emails.remove(new EmailAddress(email));
     }
 
     final public boolean isRole() {
