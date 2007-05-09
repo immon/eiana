@@ -567,7 +567,7 @@
 
     <bean id="userManagerTarget" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg index="0" ref="userDAO"/>
-        <constructor-arg index="1" ref="notificationDAO"/>
+        <constructor-arg index="1" ref="NotificationManagerBean"/>
     </bean>
 
     <bean id="userDAO" class="org.iana.rzm.user.dao.HibernateUserDAO">

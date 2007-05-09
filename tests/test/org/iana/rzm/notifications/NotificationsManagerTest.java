@@ -218,7 +218,7 @@ public class NotificationsManagerTest {
         }
         txStatus = txMgr.getTransaction(txDef);
         try {
-            notificationManager.deleteUserNotifications(secondUser);
+            notificationManager.deleteNotificationsByAddresse(secondUser);
             userManager.delete(secondUser);
             notificationManager.delete(notificationManager.get(emailAdderesseId));
             txMgr.commit(txStatus);

@@ -13,5 +13,5 @@ public interface NotificationManager {
     public void               delete(Notification notification);
     public List<Notification> findUserNotifications(Addressee addressee);
     public List<Notification> findUnSentNotifications(long maxSentFailures);
-    public void               deleteUserNotifications(Addressee addressee);
+    public void               deleteNotificationsByAddresse(Addressee addressee);
 }

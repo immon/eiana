@@ -284,7 +284,7 @@
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg ref="userDAO" />
-        <constructor-arg ref="notifDAO" />
+        <constructor-arg ref="NotificationManagerBean" />
     </bean>
 
     <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -331,6 +331,27 @@
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
+    </bean>
+
+    <bean id="NoificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.notifications.NotificationManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="notificationManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="notificationManagerTarget" class="org.iana.notifications.NotificationManagerBean">
+        <constructor-arg ref="notifDAOTarget" />
     </bean>
 
 </beans>
