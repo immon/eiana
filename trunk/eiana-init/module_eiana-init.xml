@@ -2,6 +2,9 @@
 <project name="module_eiana-init" default="compile.module.eiana-init">
   <dirname property="module.eiana-init.basedir" file="${ant.file.module_eiana-init}"/>
   
+  <property name="module.jdk.home.eiana-init" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-init" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-init" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-init" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="eiana-init.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-init}"/>
     <path refid="library.ant.classpath"/>
     <path refid="library.hibernate.classpath"/>
     <pathelement location="${eiana-domains.output.dir}"/>
@@ -63,7 +67,7 @@
   
   <target name="compile.module.eiana-init.production" depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system" description="Compile module eiana-init; production classes">
     <mkdir dir="${eiana-init.output.dir}"/>
-    <javac destdir="${eiana-init.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-init.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-init}/javac">
       <compilerarg line="${compiler.args.eiana-init}"/>
       <bootclasspath refid="eiana-init.module.bootclasspath"/>
       <classpath refid="eiana-init.module.classpath"/>
