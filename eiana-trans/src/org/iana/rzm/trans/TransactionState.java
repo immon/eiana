@@ -1,5 +1,9 @@
 package org.iana.rzm.trans;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Basic;
+import javax.persistence.Transient;
+import javax.persistence.Enumerated;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
@@ -9,6 +13,7 @@ import java.util.Set;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
+@Embeddable
 public class TransactionState {
 
     public static enum Name {
@@ -31,10 +36,15 @@ public class TransactionState {
         EXCEPTION
     }
 
+    @Transient
     private Long objId;
+    @Enumerated(javax.persistence.EnumType.STRING)
     private Name name;
+    @Basic
     private Timestamp start;
+    @Basic
     private Timestamp end;
+    @Transient
     private Set<StateTransition> availableTransitions;
 
     public Long getObjId() {

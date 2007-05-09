@@ -50,6 +50,15 @@
     <orderEntry type="module" module-name="common-objectdiff" />
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="common-dao" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/spring/spring-aspects.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

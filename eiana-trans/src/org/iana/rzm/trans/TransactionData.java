@@ -1,17 +1,19 @@
 package org.iana.rzm.trans;
 
 import org.hibernate.annotations.MapKeyManyToMany;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
-import org.iana.rzm.common.TrackData;
-import org.iana.objectdiff.ObjectChange;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jakub Laszkiewicz
@@ -38,7 +40,10 @@ public class TransactionData {
             inverseJoinColumns = @JoinColumn(name = "transitionConfirmations_objId"))
     @MapKeyManyToMany
     private Map<String, TransitionConfirmations> transitionConfirmations = new HashMap<String, TransitionConfirmations>();
-
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "TransactionData_transactionStateLog",
+            inverseJoinColumns = @JoinColumn(name = "transactionStateLog_objId"))
+    private List<TransactionStateLogEntry> stateLog = new ArrayList<TransactionStateLogEntry>();
     @Embedded
     protected TrackData trackData = new TrackData();
 
@@ -93,6 +98,14 @@ public class TransactionData {
             this.transitionConfirmations.put(stateName, tc);
         }
         tc.addConfirmation(transitionName, confirmation);
+    }
+
+    public List<TransactionStateLogEntry> getStateLog() {
+        return stateLog;
+    }
+
+    public void addStateLogEntry(TransactionStateLogEntry entry) {
+        stateLog.add(entry);
     }
 
     public Timestamp getCreated() {

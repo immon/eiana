@@ -15,6 +15,8 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.springframework.context.ApplicationContext;
 
+import java.util.List;
+
 /**
  * @author: Piotr Tkaczyk
  */
@@ -197,5 +199,21 @@ abstract class CommonGuardedSystemTransaction {
     private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
         TransactionVO retTransactionVO = gsts.getTransaction(transId);
         return retTransactionVO.getState().getName().toString().equals(stateName);
+    }
+
+    protected void checkStateLog(RZMUser user, Long transId, String [][] usersStates) throws Exception {
+        setGSTSAuthUser(user);
+        TransactionVO trans = gsts.getTransaction(transId);
+        List<TransactionStateLogEntryVO> log = trans.getStateLog();
+        assert log != null;
+        assert log.size() == usersStates.length;
+        int i = 0;
+        for (TransactionStateLogEntryVO entry : log) {
+            assert usersStates[i][0].equals(entry.getUserName()) :
+                    "unexpected user in log entry: " + i + ", " + usersStates[i][0];
+            assert usersStates[i][1].equals(entry.getState().getName().toString()) :
+                    "unexpected state in log entry: " + i + ", " + usersStates[i][1];
+            i++;
+        }
     }
 }

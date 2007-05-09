@@ -42,6 +42,7 @@
     <pathelement location="${common-criteria.testoutput.dir}"/>
     <pathelement location="${common-dao.output.dir}"/>
     <pathelement location="${common-dao.testoutput.dir}"/>
+    <pathelement location="${module.eiana-trans.basedir}/../lib/spring/spring-aspects.jar"/>
   </path>
   
   
