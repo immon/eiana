@@ -2,6 +2,7 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.TransactionStateLogEntry;
 import org.iana.objectdiff.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class TransactionConverter {
         ret.setDomainActions(toTransactionActionVO(trans.getDomainChange()));
 
         ret.setState(toStateVO(trans.getState()));
+        ret.setStateLog(toTransactionStateLogEntryVOList(trans.getStateLog()));
         ret.setStart(trans.getStart());
         ret.setEnd(trans.getEnd());
 
@@ -184,5 +186,19 @@ public class TransactionConverter {
         List<TransactionVO> result = new ArrayList<TransactionVO>();
         for (Transaction transaction : transactionList) result.add(toTransactionVO(transaction));
         return result;
+    }
+
+    public static TransactionStateLogEntryVO toTransactionStateLogEntryVO(TransactionStateLogEntry stateLogEntry) {
+        TransactionStateLogEntryVO result = new TransactionStateLogEntryVO();
+        result.setState(toStateVO(stateLogEntry.getState()));
+        result.setUserName(stateLogEntry.getUserName());
+        return result;
+    }
+
+    public static List<TransactionStateLogEntryVO> toTransactionStateLogEntryVOList(List<TransactionStateLogEntry> stateLog) {
+        List<TransactionStateLogEntryVO> stateLogVO = new ArrayList<TransactionStateLogEntryVO>();
+        for (TransactionStateLogEntry entry : stateLog)
+            stateLogVO.add(toTransactionStateLogEntryVO(entry));
+        return stateLogVO;
     }
 }

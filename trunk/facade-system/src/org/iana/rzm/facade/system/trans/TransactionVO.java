@@ -17,6 +17,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private String domainName;
     private List<TransactionActionVO> domainActions;
     private TransactionStateVO state;
+    private List<TransactionStateLogEntryVO> stateLog;
     private Timestamp start;
     private Timestamp end;
 
@@ -66,6 +67,14 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public void setState(TransactionStateVO state) {
         this.state = state;
+    }
+
+    public List<TransactionStateLogEntryVO> getStateLog() {
+        return stateLog;
+    }
+
+    public void setStateLog(List<TransactionStateLogEntryVO> stateLog) {
+        this.stateLog = stateLog;
     }
 
     public Timestamp getStart() {
