@@ -77,7 +77,7 @@ public class NameServerChangeTransactionTest {
         ns.add(newHostVO);
         domain.setNameServers(ns);
 
-        transaction = gsts.createTransaction(domain);
+        transaction = gsts.createTransactions(domain, false).get(0);
         transactionIds.add(transaction.getTransactionID());
         assert transaction != null;
 
@@ -124,7 +124,7 @@ public class NameServerChangeTransactionTest {
         user = userDAO.get(userTc.getObjId());
         if (user != null) userDAO.delete(user);
 
-        Domain dom = domainDAO.get(domain.getObjId());
+        Domain dom = domainDAO.get(domain.getName());
         domainDAO.delete(dom);
     }
 

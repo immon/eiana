@@ -17,6 +17,12 @@ public class TransactionActionVO implements Serializable {
     private String name;
     private List<ChangeVO> change;
 
+    public TransactionActionVO() {
+    }
+
+    public TransactionActionVO(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;

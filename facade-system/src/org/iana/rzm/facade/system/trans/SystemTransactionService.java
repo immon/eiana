@@ -42,18 +42,10 @@ public interface SystemTransactionService extends RZMStatefulService {
     void performTransactionTechnicalCheck(IDomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
 
     /**
-     * Creates a single transaction for all the changes applied to the domain.
-     *
-     * @param domain the modified domain.
-     * @return the created transaction.
-     * @throws AccessDeniedException
-     * @throws NoObjectFoundException when no domain found with the specified name.
-     * @throws InfrastructureException
-     */
-    TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,InfrastructureException;
-
-    /**
      * Creates the transaction splitting the transactions based on the splitNameServerChange flag.
+     *
+     * Note that the transaction may be splitted regardless of split name server changes flag when there is a need
+     * to split it in case of parties impacted by the name server change.
      *
      * @param domain the modified domain.
      * @param splitNameServerChange the flag indicating that the transaction is to be splitted if the name servers are modified.

@@ -66,11 +66,6 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         delegate.performTransactionTechnicalCheck(domain);
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
-        isUserInCreateTransactionRole();
-        return delegate.createTransaction(domain);
-    }
-
     public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
         return delegate.detectTransactionActions(domain);

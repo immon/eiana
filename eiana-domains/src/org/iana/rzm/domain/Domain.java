@@ -181,6 +181,27 @@ public class Domain implements TrackedObject, Cloneable {
         host.incDelegations();
     }
 
+    final public Host getNameServer(String hostName) {
+        CheckTool.checkNull(hostName, "hostName");
+        for (Iterator<Host> i = nameServers.iterator(); i.hasNext();) {
+            Host host = i.next();
+            if (hostName.equals(host.getName())) {
+                host.decDelegations();
+                i.remove();
+                return host;
+            }
+        }
+        return null;
+    }
+
+    final public void setNameServer(Host host) {
+        CheckTool.checkNull(host, "host");
+        Host found = getNameServer(host.getName());
+        if (found != null) {
+            found.setAddresses(host.getAddresses());
+        }
+    }
+
     final public boolean removeNameServer(Host host) {
         if (host != null) {
             return removeNameServer(host.getName());
