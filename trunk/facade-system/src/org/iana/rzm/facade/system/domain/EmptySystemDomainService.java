@@ -40,4 +40,8 @@ public class EmptySystemDomainService implements SystemDomainService {
 
     public void close() {
     }
+
+    public AuthenticatedUser getUser() {
+        return null;
+    }
 }

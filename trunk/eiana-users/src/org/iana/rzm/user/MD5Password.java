@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class MD5Password extends AbstractPassword {
+public class MD5Password extends AbstractPassword implements Cloneable {
 
     /**
      * An MD5 encoded password.
@@ -79,5 +79,12 @@ public class MD5Password extends AbstractPassword {
 
     public int hashCode() {
         return (password != null ? password.hashCode() : 0);
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        MD5Password md5Password = (MD5Password) super.clone();
+        md5Password.setObjId(getObjId());
+        md5Password.setPassword(password);
+        return md5Password;
     }
 }

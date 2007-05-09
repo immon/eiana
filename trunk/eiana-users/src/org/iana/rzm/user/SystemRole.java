@@ -21,7 +21,7 @@ import javax.persistence.Enumerated;
  * @author Marcin Zajaczkowski
  */
 @Entity
-public class SystemRole extends Role {
+public class SystemRole extends Role implements Cloneable {
     public enum SystemType implements Role.Type {
         AC, // Administrative Contact
         TC, // Technical Contact
@@ -129,5 +129,16 @@ public class SystemRole extends Role {
         result = 31 * result + (acceptFrom ? 1 : 0);
         result = 31 * result + (mustAccept ? 1 : 0);
         return result;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        SystemRole systemRole = (SystemRole) super.clone();
+        systemRole.acceptFrom = acceptFrom;
+        systemRole.mustAccept = mustAccept;
+        if (name != null)
+            systemRole.name = (Name) name.clone();
+        systemRole.notify = notify;
+        systemRole.type = type;
+        return systemRole;
     }
 }

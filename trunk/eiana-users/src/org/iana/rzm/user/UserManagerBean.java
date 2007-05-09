@@ -29,6 +29,16 @@ public class UserManagerBean implements UserManager {
         return dao.get(name);
     }
 
+    public RZMUser getCloned(long id) throws CloneNotSupportedException {
+        RZMUser user = dao.get(id);
+        return (RZMUser) (user == null ? null : user.clone());
+    }
+
+    public RZMUser getCloned(String loginName) throws CloneNotSupportedException {
+        RZMUser user = dao.get(loginName);
+        return (RZMUser) (user == null ? null : user.clone());
+    }
+
     public RZMUser get(long id) {
         return dao.get(id);
     }

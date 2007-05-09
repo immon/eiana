@@ -4,7 +4,6 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -77,7 +76,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            transaction.accept(getUser());
+            transaction.accept(getRZMUser());
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -92,7 +91,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            transaction.reject(getUser());
+            transaction.reject(getRZMUser());
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -107,7 +106,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            transaction.transit(getUser(), transitionName);
+            transaction.transit(getRZMUser(), transitionName);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -177,10 +176,12 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
             return ret;
         } catch (NoModificationException e) {
             throw new NoDomainModificationException(domain.getName());
+        } catch (CloneNotSupportedException e) {
+            throw new InfrastructureException(e);
         }
     }
 
-    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions) throws NoModificationException {
+    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions) throws NoModificationException, CloneNotSupportedException {
         Domain md = currentDomain.clone();
         for (TransactionActionVO action : actions) {
             if (TransactionActionVO.MODIFY_CONTACT.equals(action.getName())) {

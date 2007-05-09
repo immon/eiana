@@ -88,15 +88,15 @@ public class TrackData implements Cloneable {
 
 
     public Object clone() throws CloneNotSupportedException {
-         TrackData td = (TrackData) super.clone();
-         if(td.getCreated()!=null)
-         td.setCreated(new Timestamp(td.getCreated().getTime()));
-         if(td.getCreatedBy()!=null)
-         td.setCreatedBy(new String(td.getCreatedBy()));
-            if(td.getModified()!=null)
-         td.setModified(new Timestamp(td.getModified().getTime()));
-        if(td.getModifiedBy()!=null)
-         td.setModifiedBy(new String(td.getModifiedBy()));
-         return td; 
+        TrackData td = (TrackData) super.clone();
+        if (td.getCreated() != null)
+            td.setCreated(new Timestamp(td.getCreated().getTime()));
+        if (td.getCreatedBy() != null)
+            td.setCreatedBy(td.getCreatedBy());
+        if (td.getModified() != null)
+            td.setModified(new Timestamp(td.getModified().getTime()));
+        if (td.getModifiedBy() != null)
+            td.setModifiedBy(td.getModifiedBy());
+        return td;
     }
 }

@@ -16,7 +16,7 @@ import javax.persistence.Entity;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public class AdminRole extends Role {
+public class AdminRole extends Role implements Cloneable {
     public enum AdminType implements Role.Type {
         IANA,
         GOV_OVERSIGHT,
@@ -49,5 +49,11 @@ public class AdminRole extends Role {
 
     public boolean equals(Object object) {
         return object instanceof AdminRole && super.equals(object);
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        AdminRole adminRole = (AdminRole) super.clone();
+        adminRole.type = type;
+        return adminRole;
     }
 }

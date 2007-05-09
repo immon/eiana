@@ -101,7 +101,7 @@ public class TransactionManagerTest {
         }
     }
 
-    private void createTestTransactionsAndUsers() throws InvalidNameException, NoModificationException {
+    private void createTestTransactionsAndUsers() throws InvalidNameException, NoModificationException, CloneNotSupportedException {
         Domain domain1 = new Domain("tmtestdomain1");
         domainManager.create(domain1);
 

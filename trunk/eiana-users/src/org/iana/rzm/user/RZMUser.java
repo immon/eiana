@@ -19,7 +19,7 @@ import java.util.*;
  */
 
 @Entity
-public class RZMUser extends Addressee implements TrackedObject {
+public class RZMUser extends Addressee implements TrackedObject, Cloneable {
 
     @Basic
     private String firstName;
@@ -251,5 +251,28 @@ public class RZMUser extends Addressee implements TrackedObject {
 
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        RZMUser user = (RZMUser) super.clone();
+
+        user.trackData = (TrackData) (trackData == null ? new TrackData() : trackData.clone());
+        user.email = email;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.loginName = loginName;
+        user.organization = organization;
+        user.password = password == null ? null : (Password) password.clone();
+
+        List<Role> clonedRoles = new ArrayList<Role>();
+        if (roles != null) {
+            for (Role role : roles)
+                clonedRoles.add((Role) role.clone());
+        }
+        user.setRoles(clonedRoles);
+
+        user.setSecurID(securID);
+
+        return user;
     }
 }

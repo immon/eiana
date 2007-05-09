@@ -48,8 +48,10 @@ public class LogEntry {
         this.sessionId = sessionId;
         this.timestamp = timestamp;
         this.action = action;
-        this.objectId = object.getObjId();
-        this.objectClassName = object.getClass().getName();
+        if (object != null) {
+            this.objectId = object.getObjId();
+            this.objectClassName = object.getClass().getName();
+        }
         this.differences = difference;
     }
 

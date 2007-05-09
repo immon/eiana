@@ -7,7 +7,7 @@ package org.iana.rzm.user;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface Password {
+public interface Password extends Cloneable {
 
     /**
      * Sets a new password.
@@ -23,4 +23,6 @@ public interface Password {
      * @return true if the given plain-text password matches this one, false otherwise
      */
     public boolean isValid(String password);
+
+    public Object clone() throws CloneNotSupportedException;
 }

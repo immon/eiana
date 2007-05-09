@@ -6,7 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Entity;
 
 @Entity
-public class GovRole extends Role {
+public class GovRole extends Role implements Cloneable {
 
     public enum GovType implements Role.Type {
         GOV_OVERSIGHT
@@ -28,5 +28,9 @@ public class GovRole extends Role {
 
     public boolean equals(Object object) {
         return object instanceof GovRole && super.equals(object);
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

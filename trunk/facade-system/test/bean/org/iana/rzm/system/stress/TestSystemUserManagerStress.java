@@ -34,6 +34,14 @@ public class TestSystemUserManagerStress implements UserManager {
         }
     }
 
+    public RZMUser getCloned(long id) throws CloneNotSupportedException {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
+    public RZMUser getCloned(String loginName) throws CloneNotSupportedException {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
     public void create(RZMUser user) {
         throw new IllegalStateException("Not implemented yet.");
     }

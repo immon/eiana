@@ -19,4 +19,8 @@ public abstract class AbstractPassword implements Password {
     public void setObjId(Long objId) {
         this.objId = objId;
     }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

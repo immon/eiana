@@ -19,6 +19,10 @@ public interface DomainManager {
 
     public Domain get(long id);
 
+    public Domain getCloned(String name) throws CloneNotSupportedException;
+
+    public Domain getCloned(long id) throws CloneNotSupportedException;
+
     public void create(Domain domain);
 
     public void update(Domain domain);

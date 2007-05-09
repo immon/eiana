@@ -8,7 +8,7 @@ import javax.persistence.Entity;
  * @author Patrycja Wegrzynowicz
  */
 @Entity
-public class IANARole extends Role {
+public class IANARole extends Role implements Cloneable {
 
     public enum IANAType implements Role.Type {
         IANA
@@ -26,5 +26,9 @@ public class IANARole extends Role {
         CheckTool.checkNull(type, "type");
         if (!(type instanceof IANAType))
             throw new IllegalArgumentException("type");
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

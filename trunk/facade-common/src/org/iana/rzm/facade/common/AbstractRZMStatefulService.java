@@ -46,13 +46,13 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         this.user = null;
     }
 
-    protected RZMUser getUser() {
+    protected RZMUser getRZMUser() {
         return userManager.get(user.getObjId());
     }
 
     protected Set<String> getRoleDomainNames() {
         Set<String> ret = new HashSet<String>();
-        RZMUser rzmUser = getUser();
+        RZMUser rzmUser = getRZMUser();
         for (Role role : rzmUser.getRoles()) {
             if (role instanceof SystemRole) {
                 ret.add(((SystemRole) role).getName());
@@ -63,13 +63,13 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
 
     protected void isUserInRole(Role role) throws AccessDeniedException {
         if (user == null) throw new AccessDeniedException("no authenticated user");
-        RZMUser rzmUser = getUser();
+        RZMUser rzmUser = getRZMUser();
         if (!rzmUser.isInRole(role, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + role);            
     }
 
     protected void isUserInRole(Set<Role> roles) throws AccessDeniedException {
         if (user == null) throw new AccessDeniedException("no authenticated user");
-        RZMUser rzmUser = getUser();
+        RZMUser rzmUser = getRZMUser();
         if (!rzmUser.isInAnyRole(roles, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + roles);
     }
 
@@ -82,5 +82,9 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
             }
             return o1.getType().toString().compareTo(o2.getType().toString());
         }
+    }
+
+    public AuthenticatedUser getUser() {
+        return user;
     }
 }

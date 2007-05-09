@@ -179,17 +179,17 @@ public class Host implements TrackedObject,Cloneable {
     }
 
     protected Object clone() throws CloneNotSupportedException {
-        Host host = (Host) super.clone();    //To change body of overridden methods use File | Settings | File Templates.
-        Host newHost = new Host(host.getName());
-        host.setTrackData((TrackData) host.getTrackData().clone());
-        Set<IPAddress> oldSet = host.getAddresses();
-        Set<IPAddress> newSet = new HashSet<IPAddress>();
-        for (IPAddress ip : oldSet) {
-            try {
-                newSet.add(IPAddress.createIPAddress(ip.getAddress()));
-            } catch (InvalidIPAddressException ignored) {}
+        Host newHost = (Host) super.clone();
+        newHost.objId = objId;
+        newHost.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
+
+        Set<IPAddress> newAddresses = new HashSet<IPAddress>();
+        if (addresses != null) {
+            for (IPAddress ip : addresses)
+                newAddresses.add(IPAddress.createIPAddress(ip.getAddress()));
         }
-        newHost.setAddresses(newSet);
+        newHost.addresses = newAddresses;
+        
         return newHost;
     }
 

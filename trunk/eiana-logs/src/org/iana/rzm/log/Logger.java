@@ -1,6 +1,5 @@
 package org.iana.rzm.log;
 
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.common.TrackedObject;
 
 /**
@@ -13,4 +12,15 @@ public interface Logger {
                 String action,
                 TrackedObject object,
                 Object[] parameters);
+
+    void addLog(String userName,
+                String sessionID,
+                String action,
+                TrackedObject object);
+
+    void addLog(String userName,
+                String sessionID,
+                String action,
+                TrackedObject object,
+                TrackedObject oldObject);
 }
