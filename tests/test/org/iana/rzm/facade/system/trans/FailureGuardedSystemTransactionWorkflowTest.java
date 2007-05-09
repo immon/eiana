@@ -35,11 +35,7 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
 
     @BeforeClass
     public void init() {
-        appCtx = SpringApplicationContext.getInstance().getContext();
-        userManager = (UserManager) appCtx.getBean("userManager");
-        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
+        super.init();
 
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
