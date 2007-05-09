@@ -9,7 +9,10 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
+import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.conf.SpringApplicationContext;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -25,8 +28,17 @@ abstract class CommonGuardedSystemTransaction {
     protected DomainManager domainManager;
 
     protected SystemTransactionService gsts;
+    protected SystemDomainService gsds;
 
-
+    protected void init() {
+        appCtx = SpringApplicationContext.getInstance().getContext();
+        userManager = (UserManager) appCtx.getBean("userManager");
+        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        gsds = (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
+        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
+        domainManager = (DomainManager) appCtx.getBean("domainManager");
+    }
+   
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);     //iana
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
@@ -158,9 +170,19 @@ abstract class CommonGuardedSystemTransaction {
         return newDomain;
     }
 
-    private void setGSTSAuthUser(RZMUser user) {
+    protected void setGSTSAuthUser(RZMUser user) {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gsts.setUser(testAuthUser);
+    }
+
+    protected IDomainVO getDomain(String domainName, RZMUser user) throws Exception {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        try {
+            gsds.setUser(testAuthUser);
+            return gsds.getDomain(domainName);
+        } finally {
+            gsds.close();
+        }
     }
 
     protected TransactionVO createTransaction(IDomainVO domainVO, RZMUser user) throws Exception {
