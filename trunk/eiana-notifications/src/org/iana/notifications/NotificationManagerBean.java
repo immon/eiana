@@ -3,6 +3,8 @@ package org.iana.notifications;
 import org.iana.notifications.dao.NotificationDAO;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Piotr Tkaczyk
@@ -40,7 +42,19 @@ public class NotificationManagerBean implements NotificationManager {
         return notificationDAO.findUnSentNotifications(maxSentFailures);
     }
     
-    public void deleteUserNotifications(Addressee addressee) {
-        notificationDAO.deleteUserNotifications(addressee);
+    public void deleteNotificationsByAddresse(Addressee addressee) {
+        List<Notification> notifications = findUserNotifications(addressee);
+        for(Notification notif : notifications) {
+            Set<Addressee> newAddressee = new HashSet<Addressee>();
+            for(Addressee addr : notif.getAddressee()) {
+                if (!addr.getObjId().equals(addressee.getObjId()))
+                    newAddressee.add(addr);
+            }
+            notif.setAddressee(newAddressee);
+            if (newAddressee.isEmpty())
+                delete(notif);
+            else
+                update(notif);
+        }
     }
 }

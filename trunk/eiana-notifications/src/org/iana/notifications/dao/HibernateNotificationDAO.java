@@ -30,22 +30,6 @@ public class HibernateNotificationDAO extends HibernateDaoSupport implements Not
         getHibernateTemplate().delete(notification);
     }
 
-    public void deleteUserNotifications(Addressee addressee) {
-        List<Notification> notifications = findUserNotifications(addressee);
-        for(Notification notif : notifications) {
-            Set<Addressee> newAddressee = new HashSet<Addressee>();
-            for(Addressee addr : notif.getAddressee()) {
-                if (!addr.getObjId().equals(addressee.getObjId()))
-                    newAddressee.add(addr);
-            }
-            notif.setAddressee(newAddressee);
-            if (newAddressee.isEmpty())
-                delete(notif);
-            else
-                getHibernateTemplate().update(notif);
-        }
-    }
-
     public List<Notification> findUserNotifications(Addressee addressee) {
         String query = " select notif " +
                 " from " +
