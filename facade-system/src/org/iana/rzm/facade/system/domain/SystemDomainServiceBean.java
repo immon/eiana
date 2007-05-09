@@ -7,6 +7,7 @@ package org.iana.rzm.facade.system.domain;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.DomainVO;
@@ -19,22 +20,20 @@ import org.iana.rzm.user.*;
 
 import java.util.*;
 
-public class SystemDomainServiceBean implements SystemDomainService {
+public class SystemDomainServiceBean extends AbstractRZMStatefulService implements SystemDomainService {
 
     private DomainManager domainManager;
-    private UserManager userManager;
-    private AuthenticatedUser user;
 
     public SystemDomainServiceBean(DomainManager domainManager, UserManager userManager) {
+        super(userManager);
         this.domainManager = domainManager;
-        this.userManager = userManager;
     }
 
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         Domain domain = domainManager.get(id);
         if (domain == null) throw new NoObjectFoundException(id, "domain");
         DomainVO domainVO = ToVOConverter.toDomainVO(domain);
-        RZMUser user = userManager.get(this.user.getUserName());
+        RZMUser user = getRZMUser();
         domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
         return domainVO;
     }
@@ -43,19 +42,19 @@ public class SystemDomainServiceBean implements SystemDomainService {
         Domain domain = domainManager.get(name);
         if (domain == null) throw new NoObjectFoundException(name, "domain");
         DomainVO domainVO = ToVOConverter.toDomainVO(domain);
-        RZMUser user = userManager.get(this.user.getUserName());
+        RZMUser user = getRZMUser();
         domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
         return domainVO;
     }
 
     public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {
-        if (user != null) throw new AccessDeniedException("null authenticated user");
+        if (user == null) throw new AccessDeniedException("null authenticated user");
         return findUserDomains(user.getUserName());
     }
 
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         List<SimpleDomainVO> list = new ArrayList<SimpleDomainVO>();
-        RZMUser user = userManager.get(userName);
+        RZMUser user = getRZMUser();
 
         Set<String> roleNames = new HashSet<String>();
         for (Role role : user.getRoles())
@@ -77,14 +76,6 @@ public class SystemDomainServiceBean implements SystemDomainService {
         }
 
         return list;
-    }
-
-    public void setUser(AuthenticatedUser user) {
-        this.user = user;
-    }
-
-    public void close() {
-        //todo
     }
 
     private Set<RoleVO.Type> getRoleTypeByDomainName(RZMUser user, String domainName) {

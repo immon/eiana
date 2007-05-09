@@ -15,7 +15,7 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Entity
-public abstract class Role implements TrackedObject {
+public abstract class Role implements TrackedObject, Cloneable {
 
     public interface Type {}
 
@@ -104,5 +104,12 @@ public abstract class Role implements TrackedObject {
 
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
+    }
+
+    protected Object clone() throws CloneNotSupportedException {
+        Role role = (Role) super.clone();
+        role.objId = objId;
+        role.trackData = (TrackData) (trackData == null ? new TrackData() : trackData.clone());
+        return role; 
     }
 }

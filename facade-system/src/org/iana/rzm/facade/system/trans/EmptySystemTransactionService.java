@@ -24,6 +24,10 @@ public class EmptySystemTransactionService implements SystemTransactionService {
 
     }
 
+    public AuthenticatedUser getUser() {
+        return null;
+    }
+
     public TransactionVO getTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         return null;
     }

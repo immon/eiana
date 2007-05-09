@@ -25,4 +25,6 @@ public interface RZMStatefulService {
      * <p>Note that the service may be closed implicitely when the user is invalidated.</p>
      */
     public void close();
+
+    public AuthenticatedUser getUser();
 }

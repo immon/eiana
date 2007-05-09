@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Addressee {
+public abstract class Addressee implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,9 @@ public abstract class Addressee {
     public abstract String getEmail();
     public abstract String getName();
 
-    
-
-    
+    protected Object clone() throws CloneNotSupportedException {
+        Addressee addressee = (Addressee) super.clone();
+        addressee.objId = objId;
+        return addressee;
+    }
 }

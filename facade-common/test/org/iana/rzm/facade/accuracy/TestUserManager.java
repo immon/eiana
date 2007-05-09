@@ -44,6 +44,14 @@ public class TestUserManager implements UserManager {
         }
     }
 
+    public RZMUser getCloned(long id) throws CloneNotSupportedException {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
+    public RZMUser getCloned(String loginName) throws CloneNotSupportedException {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
     public void create(RZMUser user) {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }

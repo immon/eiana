@@ -16,6 +16,10 @@ public interface UserManager {
 
     public RZMUser get(String loginName);
 
+    public RZMUser getCloned(long id) throws CloneNotSupportedException;
+
+    public RZMUser getCloned(String loginName) throws CloneNotSupportedException;
+
     public void create(RZMUser user);
 
     public void delete(RZMUser user);

@@ -365,7 +365,41 @@ public class Domain implements TrackedObject, Cloneable {
         this.trackData = trackData;
     }
 
-    public Domain clone() {
+    public Domain clone() throws CloneNotSupportedException {
+        Domain newDomain = (Domain) super.clone();
+
+        if (name != null)
+            newDomain.name = (Name) name.clone();
+
+        List<Host> newHosts = new ArrayList<Host>();
+        if (nameServers != null) {
+            for (Host host : nameServers)
+                newHosts.add((Host) host.clone());
+        }
+        newDomain.nameServers = newHosts;
+
+        newDomain.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
+        newDomain.adminContacts = copyListOfContacts(adminContacts);
+        newDomain.techContacts = copyListOfContacts(techContacts);
+        if (supportingOrg != null)
+            newDomain.supportingOrg = (Contact) supportingOrg.clone();
+        if (whoisServer != null)
+            newDomain.whoisServer = (Name) whoisServer.clone();
+        newDomain.registryUrl = registryUrl;
+
+        Set<Breakpoint> newBreakpoints = new HashSet<Breakpoint>();
+        if (breakpoints != null) {
+            for (Breakpoint breakpoint : breakpoints)
+                newBreakpoints.add(breakpoint);
+        }
+        newDomain.breakpoints = newBreakpoints;
+
+        newDomain.specialInstructions = specialInstructions;
+        newDomain.state = state;
+        newDomain.status = status;
+        newDomain.objId = objId;
+        return newDomain;
+        /*
         Domain domain = null;
         try {
             domain = (Domain) super.clone();
@@ -396,12 +430,15 @@ public class Domain implements TrackedObject, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new UnsupportedOperationException(e);
         }
+        */
     }
 
     private List<Contact> copyListOfContacts(List<Contact> oldContacts) throws CloneNotSupportedException {
         List<Contact> contactsList = new ArrayList<Contact>();
-        for (Contact cont : oldContacts)
-            contactsList.add((Contact) cont.clone());
+        if (oldContacts != null) {
+            for (Contact cont : oldContacts)
+                contactsList.add((Contact) cont.clone());
+        }
         return contactsList;
     }
 

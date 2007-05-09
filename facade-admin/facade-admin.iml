@@ -19,6 +19,8 @@
     <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntry type="module" module-name="eiana-trans" />
     <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="module" module-name="eiana-logs" />
     <orderEntryProperties />
   </component>
 </module>

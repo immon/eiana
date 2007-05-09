@@ -46,7 +46,9 @@ public class EmailAddress implements Cloneable, Serializable {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        EmailAddress emailAddress = (EmailAddress) super.clone();
+        emailAddress.email = email;
+        return emailAddress;
     }
 
     private static String EMAIL_PATTERN = "[a-z0-9]+([_\\.\\-][a-z0-9]+)*@([a-z0-9]+([\\.\\-][a-z0-9]+)*)+\\.[a-z]{2,}";

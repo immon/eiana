@@ -66,7 +66,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
         CheckTool.checkEmpty(userName, "user name");
-        RZMUser user = getUser();
+        RZMUser user = getRZMUser();
         if (user.isAdmin() || user.getLoginName().equals(userName))
             return delegate.findUserDomains(userName);
         else
@@ -80,7 +80,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
     }
 
     private boolean isInRole(String domainName) {
-        RZMUser rzmUser = getUser();
+        RZMUser rzmUser = getRZMUser();
         if (rzmUser.isAdmin()) {
             return true;
         } else {

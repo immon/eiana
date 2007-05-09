@@ -272,23 +272,37 @@ public class Contact implements TrackedObject,Cloneable {
 
 
     public Object clone() throws CloneNotSupportedException {
-        Contact contact = new Contact();
-        contact.setName(name);
-        contact.setRole(isRole());
-        contact.setTrackData((TrackData) trackData.clone());
-        for(Address addr : addresses)
-            contact.addAddress((Address) addr.clone());
-        contact.setPhoneNumbers(listOfStringCopy(phoneNumbers));
-        contact.setFaxNumbers(listOfStringCopy(faxNumbers));
-        for (EmailAddress email : emails)
-            contact.emails.add((EmailAddress) email.clone());
+        Contact contact = (Contact) super.clone();
+        contact.name = name;
+        contact.role = role;
+        contact.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
+
+        List<Address> newAddresses = new ArrayList<Address>();
+        if (addresses != null) {
+            for(Address addr : addresses)
+                newAddresses.add((Address) addr.clone());
+        }
+        contact.addresses = newAddresses;
+
+        contact.phoneNumbers = listOfStringCopy(phoneNumbers);
+        contact.faxNumbers = listOfStringCopy(faxNumbers);
+
+        List<EmailAddress> newEmails = new ArrayList<EmailAddress>();
+        if (emails != null) {
+            for (EmailAddress email : emails)
+                newEmails.add((EmailAddress) email.clone());
+        }
+        contact.emails = newEmails;
+
         return contact;
     }
 
     private List<String> listOfStringCopy(List<String> oldStringCollection){
         List<String> newList = new ArrayList<String>();
-        for(String s : oldStringCollection)
-            newList.add(s);
+        if (oldStringCollection != null) {
+            for(String s : oldStringCollection)
+                newList.add(s);
+        }
         return newList;
     }
 

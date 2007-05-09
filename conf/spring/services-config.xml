@@ -21,7 +21,7 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
-        <property name="postInterceptors">
+        <property name="preInterceptors">
             <list>
                 <ref bean="jbpmInterceptor"/>
             </list>
@@ -57,6 +57,15 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
+    <bean id="userLoggerInterceptor" class="org.iana.rzm.facade.admin.UserLoggerInterceptor">
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+        <property name="userManager">
+            <ref bean="userManager"/>
+        </property>
+    </bean>
+
     <bean id="GuardedAdminUserServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
@@ -72,11 +81,25 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
+        <property name="preInterceptors">
+            <list>
+                <ref bean="userLoggerInterceptor"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="GuardedAdminUserServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean" scope="session">
         <constructor-arg index="0" ref="userManager" />
         <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="domainLoggerInterceptor" class="org.iana.rzm.facade.admin.DomainLoggerInterceptor">
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+        <property name="domainManager">
+            <ref bean="domainManager"/>
+        </property>
     </bean>
 
     <bean id="GuardedAdminDomainServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -93,6 +116,11 @@
         </property>
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="preInterceptors">
+            <list>
+                <ref bean="domainLoggerInterceptor"/>
+            </list>
         </property>
     </bean>
 
@@ -192,6 +220,12 @@
         </property>
     </bean>
 
+    <bean id="transactionLoggerInterceptor" class="org.iana.rzm.facade.system.trans.TransactionLoggerInterceptor">
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
     <bean id="GuardedSystemTransactionService"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
@@ -208,9 +242,14 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
-        <property name="postInterceptors">
+        <property name="preInterceptors">
             <list>
                 <ref bean="jbpmInterceptor"/>
+            </list>
+        </property>
+        <property name="postInterceptors">
+            <list>
+                <ref bean="transactionLoggerInterceptor"/>
             </list>
         </property>
     </bean>
@@ -297,9 +336,26 @@
         </property>
     </bean>
 
-    <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
+    <bean id="domainManagerTarget" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>
+    </bean>
+
+    <bean id="domainManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.domain.DomainManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="domainManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
     </bean>
 
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">

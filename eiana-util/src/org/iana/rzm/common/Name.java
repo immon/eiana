@@ -53,6 +53,8 @@ public class Name implements Cloneable, Serializable {
 
 
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        Name newName = (Name) super.clone();
+        newName.name = name;
+        return newName;
     }
 }
