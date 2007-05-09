@@ -8,32 +8,36 @@ import java.util.Collections;
 import java.util.Collection;
 
 /**
- * Represents a set of transaction actions - a difference between modified domain and current domain.
+ * Represents a set of transaction groups - a difference between modified domain and current domain.
+ * The transaction groups are grouped to show whether they may be combined or not into a single transaction request.
  *
  * @author Patrycja Wegrzynowicz
  */
 public class TransactionActionsVO {
 
-    private List<TransactionActionVO> actions = new ArrayList<TransactionActionVO>();
-    private boolean nameServerAction = false;
+    private List<TransactionActionGroupVO> groups = new ArrayList<TransactionActionGroupVO>();
+    private int nameServerActions = 0;
     private boolean otherAction = false;
 
-    public void addAction(TransactionActionVO action) {
-        CheckTool.checkNull(action, "null transaction action");
-        actions.add(action);
-        if (!nameServerAction) nameServerAction = TransactionActionVO.MODIFY_NAME_SERVERS.equals(action.getName());
-        if (!otherAction) otherAction = !TransactionActionVO.MODIFY_NAME_SERVERS.equals(action.getName());
+    public void addGroup(TransactionActionGroupVO group) {
+        CheckTool.checkNull(group, "null transaction group");
+        groups.add(group);
+        nameServerActions += group.getNameServerActions();
+        if (!otherAction) otherAction = !group.containsOtherAction();
     }
 
-    public void setActions(Collection<TransactionActionVO> actions) {
-        CheckTool.checkNull(actions, "null transaction actions");
-        for (TransactionActionVO action : actions) {
-            addAction(action);
+    public void setGroups(Collection<TransactionActionGroupVO> groups) {
+        for (TransactionActionGroupVO group : groups) {
+            addGroup(group);
         }
     }
 
+    public int getNameServerActions() {
+        return nameServerActions;
+    }
+
     public boolean containsNameServerAction() {
-        return nameServerAction;
+        return nameServerActions > 0;
     }
 
     public boolean containsOtherAction() {
@@ -41,6 +45,14 @@ public class TransactionActionsVO {
     }
 
     public List<TransactionActionVO> getActions() {
-        return Collections.unmodifiableList(actions);
+        List<TransactionActionVO> ret = new ArrayList<TransactionActionVO>();
+        for (TransactionActionGroupVO group : groups) {
+            ret.addAll(group.getActions());
+        }
+        return ret;
+    }
+
+    public List<TransactionActionGroupVO> getGroups() {
+        return Collections.unmodifiableList(groups);
     }
 }

@@ -167,7 +167,7 @@ abstract class CommonGuardedSystemTransaction {
 //        domainManager.delete(domain);
 //        domainManager.create(domain);
         setGSTSAuthUser(user);  //userAC
-        TransactionVO transaction = gsts.createTransaction(domainVO);
+        TransactionVO transaction = gsts.createTransactions(domainVO, false).get(0);
         gsts.close();
         return transaction;
     }

@@ -74,7 +74,7 @@ public class GuardedSystemTransactionServiceTest {
     public void testCreateTransaction() throws Exception {
         gsts.setUser(userAc);
         domain.setRegistryUrl("http://www.registry.url");
-        transaction = gsts.createTransaction(domain);
+        transaction = gsts.createTransactions(domain, false).get(0);
         transactionIds.add(transaction.getTransactionID());
         assert transaction != null;
 
@@ -84,7 +84,7 @@ public class GuardedSystemTransactionServiceTest {
 
         gsts.setUser(userAc1);
         domain1.setRegistryUrl("http://www.registry.url");
-        transaction1 = gsts.createTransaction(domain1);
+        transaction1 = gsts.createTransactions(domain1, false).get(0);
         transactionIds.add(transaction1.getTransactionID());
         assert transaction1 != null;
 
@@ -138,7 +138,7 @@ public class GuardedSystemTransactionServiceTest {
     @Test(dependsOnMethods = "testTransitTransaction")
     public void testRejectTransaction() throws Exception {
         domain.setRegistryUrl("http://www.registry.url.new");
-        TransactionVO transactionToReject = gsts.createTransaction(domain);
+        TransactionVO transactionToReject = gsts.createTransactions(domain, false).get(0);
         transactionIds.add(transactionToReject.getTransactionID());
         gsts.setUser(userTc);
         gsts.rejectTransaction(transactionToReject.getTransactionID());

@@ -13,13 +13,9 @@ import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
 import org.iana.rzm.user.UserManager;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.ChangeDetector;
-import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -136,7 +132,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         return ret;
     }
 
-   public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         CheckTool.checkNull(domain, "null domain");
 
         Domain currentDomain = domainManager.get(domain.getName());
@@ -146,32 +142,157 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
         ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, diffConfiguration);
         List<TransactionActionVO> actions = TransactionConverter.toTransactionActionVO(change);
-        ret.setActions(actions);
+        ret.setGroups(createTransactionGroups(domain.getName(), actions));
+
         return ret;
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
         CheckTool.checkNull(domain, "null domain");
 
-        Domain currentDomain = domainManager.get(domain.getName());
-        if (currentDomain == null) throw new NoObjectFoundException(domain.getName(), "domain");
+        try {
+            Domain currentDomain = domainManager.get(domain.getName());
+            if (currentDomain == null) throw new NoObjectFoundException(domain.getName(), "domain");
 
-        List<TransactionVO> ret = new ArrayList<TransactionVO>();
-        TransactionActionsVO actions = detectTransactionActions(domain);
-
-        if (actions.containsNameServerAction() && actions.containsOtherAction() && splitNameServerChange) {
-            // no name server change
             Domain modifiedDomain = FromVOConverter.toDomain(domain);
-            List<Host> nameServers = modifiedDomain.getNameServers();
-            modifiedDomain.setNameServers(currentDomain.getNameServers());
-            ret.add(createTransaction(modifiedDomain));
 
-            // only name server change
-            Domain modifiedNsDomain = currentDomain.clone();
-            modifiedNsDomain.setNameServers(nameServers);
-            ret.add(createTransaction(modifiedDomain));
-        } else {
-            ret.add(createTransaction(domain));
+            List<TransactionVO> ret = new ArrayList<TransactionVO>();
+            TransactionActionsVO actions = detectTransactionActions(domain);
+
+            for (TransactionActionGroupVO group : actions.getGroups()) {
+                if (group.isSplittable() &&
+                        group.containsNameServerAction() &&
+                        group.containsOtherAction() &&
+                        splitNameServerChange) {
+                    List<TransactionActionVO> tactions = new ArrayList<TransactionActionVO>();
+                    for (TransactionActionVO action : group.getActions()) {
+                        tactions.add(action);
+                        ret.add(createTransaction(currentDomain, modifiedDomain, tactions));
+                        tactions.clear();
+                    }
+                } else {
+                    ret.add(createTransaction(currentDomain, modifiedDomain, group.getActions()));
+                }
+            }
+            return ret;
+        } catch (NoModificationException e) {
+            throw new NoDomainModificationException(domain.getName());
+        }
+    }
+
+    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions) throws NoModificationException {
+        Domain md = currentDomain.clone();
+        for (TransactionActionVO action : actions) {
+            if (TransactionActionVO.MODIFY_CONTACT.equals(action.getName())) {
+                md.setSupportingOrg(modifiedDomain.getSupportingOrg());
+                md.setTechContacts(modifiedDomain.getTechContacts());
+                md.setAdminContacts(modifiedDomain.getAdminContacts());
+            } else if (TransactionActionVO.MODIFY_REGISTRATION_URL.equals(action.getName())) {
+                md.setRegistryUrl(modifiedDomain.getRegistryUrl());
+            } else if (TransactionActionVO.MODIFY_WHOIS_SERVER.equals(action.getName())) {
+                md.setWhoisServer(modifiedDomain.getWhoisServer());
+            } else if (TransactionActionVO.MODIFY_NAME_SERVERS.equals(action.getName())) {
+                for (ChangeVO vo : action.getChange()) {
+                    ObjectValueVO val = (ObjectValueVO) vo.getValue();
+                    if (ChangeVO.Type.ADDITION.equals(vo.getType())) {
+                        md.addNameServer(modifiedDomain.getNameServer(val.getName()));
+                    } else if (ChangeVO.Type.REMOVAL.equals(vo.getType())) {
+                        md.removeNameServer(val.getName());
+                    } else if (ChangeVO.Type.UPDATE.equals(vo.getType())) {
+                        {
+                            md.setNameServer(modifiedDomain.getNameServer(val.getName()));
+                        }
+                    }
+                }
+            }
+        }
+        return TransactionConverter.toTransactionVO(transactionManager.createDomainModificationTransaction(md));
+    }
+
+    private List<TransactionActionGroupVO> createTransactionGroups(String domainName, List<TransactionActionVO> actions) {
+        List<TransactionActionGroupVO> ret = new ArrayList<TransactionActionGroupVO>();
+        TransactionActionGroupVO splittableGroup = new TransactionActionGroupVO(true);
+
+        for (TransactionActionVO action : actions) {
+            if (TransactionActionVO.MODIFY_NAME_SERVERS.equals(action.getName())) {
+                ret.addAll(splitNameServerAction(domainName, action, splittableGroup));
+            } else {
+                splittableGroup.addAction(action);
+            }
+        }
+        if (!splittableGroup.isEmpty()) ret.add(splittableGroup);
+
+        return ret;
+    }
+
+    private List<TransactionActionGroupVO> splitNameServerAction(String domainName, TransactionActionVO action, TransactionActionGroupVO group) {
+        List<ChangeVO> changes = action.getChange();
+        Map<String, ChangeVO> hostToChanges = new HashMap<String, ChangeVO>();
+        Map<String, Set<String>> hostToDomains = new HashMap<String, Set<String>>();
+        for (ChangeVO change : changes) {
+            if ("nameServers".equals(change.getFieldName())) {
+                ObjectValueVO value = (ObjectValueVO) change.getValue();
+                String hostName = value.getName();
+                if (change.getType() == ChangeVO.Type.ADDITION ||
+                        change.getType() == ChangeVO.Type.UPDATE) {
+                    Set<String> domainNames = findDelegatedTo(hostName);
+                    domainNames.remove(domainName);
+                    if (!domainNames.isEmpty()) {
+                        hostToDomains.put(hostName, domainNames);
+                    }
+                }
+                hostToChanges.put(hostName, change);
+            }
+        }
+
+        List<TransactionActionGroupVO> ret = new ArrayList<TransactionActionGroupVO>();
+        List<Set<String>> hostGroups = findHostGroups(hostToDomains);
+        for (Set<String> hostGroup : hostGroups) {
+            TransactionActionVO groupAction = new TransactionActionVO(action.getName());
+            for (String hostName : hostGroup) {
+                groupAction.addChange(hostToChanges.get(hostName));
+                hostToChanges.remove(hostName);
+            }
+            ret.add(new TransactionActionGroupVO(groupAction));
+        }
+        if (!hostToChanges.isEmpty()) {
+            TransactionActionVO groupAction = new TransactionActionVO(action.getName());
+            groupAction.setChange(new ArrayList<ChangeVO>(hostToChanges.values()));
+            group.addAction(groupAction);
         }
         return ret;
-    }}
+    }
+
+    private Set<String> findDelegatedTo(String hostName) {
+        Set<String> hostNames = new HashSet<String>();
+        hostNames.add(hostName);
+        List<Domain> domains = domainManager.findDelegatedTo(hostNames);
+        Set<String> domainNames = new HashSet<String>();
+        for (Domain domain : domains) {
+            domainNames.add(domain.getName());
+        }
+        return domainNames;
+    }
+
+    private List<Set<String>> findHostGroups(Map<String, Set<String>> hostToDomains) {
+        List<Set<String>> ret = new ArrayList<Set<String>>();
+        Set<String> hostNames = new HashSet<String>(hostToDomains.keySet());
+        for (String hostName : hostToDomains.keySet()) {
+            Set<String> hostGroup = new HashSet<String>();
+            hostGroup.add(hostName);
+            hostNames.remove(hostName);
+
+            Set<String> domainNames = hostToDomains.get(hostName);
+            for (String otherHostName : hostNames) {
+                Set<String> otherDomainNames = hostToDomains.get(otherHostName);
+                if (domainNames.equals(otherDomainNames)) {
+                    hostGroup.add(otherHostName);
+                }
+            }
+
+            hostNames.removeAll(hostGroup);
+            ret.add(hostGroup);
+        }
+        return ret;
+    }
+}
