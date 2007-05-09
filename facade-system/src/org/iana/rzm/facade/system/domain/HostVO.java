@@ -8,6 +8,7 @@ import org.iana.rzm.facade.common.Trackable;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -15,7 +16,7 @@ import java.util.Set;
 public class HostVO implements Trackable, Serializable {
 
     private String name;
-    private Set<IPAddressVO> addresses;
+    private Set<IPAddressVO> addresses = new HashSet<IPAddressVO>();
     private boolean shared;
 
     private Long objId;
@@ -41,6 +42,7 @@ public class HostVO implements Trackable, Serializable {
     }
 
     public void setAddresses(Set<IPAddressVO> addresses) {
+        if (addresses == null) addresses = new HashSet<IPAddressVO>();
         this.addresses = addresses;
     }
 
