@@ -64,7 +64,8 @@ public class TransactionConverter {
                 actions.add(action);
             }
 
-            if (fieldChanges.containsKey("adminContacts") || fieldChanges.containsKey("techContacts")) {
+            if (fieldChanges.containsKey("adminContacts") || fieldChanges.containsKey("techContacts") ||
+                    fieldChanges.containsKey("supportingOrg")) {
                 TransactionActionVO action = new TransactionActionVO();
                 action.setName(TransactionActionVO.MODIFY_CONTACT);
                 if (fieldChanges.containsKey("adminContacts")) {
@@ -75,6 +76,11 @@ public class TransactionConverter {
                 if (fieldChanges.containsKey("techContacts")) {
                     CollectionChange techChange = (CollectionChange) fieldChanges.get("techContacts");
                     action.addChange(toChangeVO("techContacts", techChange));
+                    actions.add(action);
+                }
+                if (fieldChanges.containsKey("supportingOrg")) {
+                    ObjectChange supportingOrgChange = (ObjectChange) fieldChanges.get("supportingOrg");
+                    action.addChange(toChangeVO("supportingOrg", supportingOrgChange));
                     actions.add(action);
                 }
             }
