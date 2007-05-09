@@ -8,7 +8,6 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 
 import java.util.Set;
@@ -105,10 +104,11 @@ public class ToVOConverterTest {
 
     @Test (dependsOnMethods = {"testAddressConversion"})
     public void testContactConversion() {
-        fromContact = new Contact("contact1", fromAddress, "112-123-124", "212-223-542", "email@free.com", true);
+        fromContact = new Contact("contact1", "some_org", fromAddress, "112-123-124", "212-223-542", "email@free.com", true);
 
         toContactVO = ToVOConverter.toContactVO(fromContact);
         assert toContactVO.getName().equals(fromContact.getName());
+        assert toContactVO.getOrganization().equals(fromContact.getOrganization());
         assert toContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
         assert toContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
         assert toContactVO.getEmails().equals(fromContact.getEmails());

@@ -22,6 +22,8 @@ public class Contact implements TrackedObject,Cloneable {
 
     @Basic
     private String name;
+    @Basic
+    private String organization;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Contact_Addresses",
             inverseJoinColumns = @JoinColumn(name = "Address_objId"))
@@ -50,20 +52,29 @@ public class Contact implements TrackedObject,Cloneable {
     }
 
     public Contact(String name) {
-        this(name, ADDR_EMPTY_LIST, STRING_EMPTY_LIST, STRING_EMPTY_LIST, STRING_EMPTY_LIST, false);
+        this(name, "", ADDR_EMPTY_LIST, STRING_EMPTY_LIST, STRING_EMPTY_LIST, STRING_EMPTY_LIST, false);
+    }
+
+    public Contact(String name, String organization) {
+        this(name, organization, ADDR_EMPTY_LIST, STRING_EMPTY_LIST, STRING_EMPTY_LIST, STRING_EMPTY_LIST, false);
     }
 
     public Contact(String name, Address address, String phoneNumber, String faxNumber, String email, boolean role) {
-        this(name, Arrays.asList(address), Arrays.asList(phoneNumber), Arrays.asList(faxNumber), Arrays.asList(email), role);
+        this(name, "", Arrays.asList(address), Arrays.asList(phoneNumber), Arrays.asList(faxNumber), Arrays.asList(email), role);
     }
 
-    public Contact(String name, List<Address> addresses, List<String> phoneNumbers, List<String> faxNumbers, List<String> emails, boolean role) {
+    public Contact(String name, String organization, Address address, String phoneNumber, String faxNumber, String email, boolean role) {
+        this(name, organization, Arrays.asList(address), Arrays.asList(phoneNumber), Arrays.asList(faxNumber), Arrays.asList(email), role);
+    }
+
+    public Contact(String name, String organization, List<Address> addresses, List<String> phoneNumbers, List<String> faxNumbers, List<String> emails, boolean role) {
         this.addresses = new ArrayList<Address>();
         this.phoneNumbers = new ArrayList<String>();
         this.faxNumbers = new ArrayList<String>();
         this.emails = new ArrayList<EmailAddress>();
         
         setName(name);
+        setOrganization(organization);
         setAddresses(addresses);
         setPhoneNumbers(phoneNumbers);
         setFaxNumbers(faxNumbers);
@@ -85,6 +96,14 @@ public class Contact implements TrackedObject,Cloneable {
 
     final public void setName(String name) {
         this.name = name;
+    }
+
+    final public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    final public String getOrganization() {
+        return organization;
     }
 
     final public List<Address> getAddresses() {

@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class ContactVO implements Trackable, Serializable {
 
     private String name;
+    private String organization;
     private List<AddressVO> addresses;
     private List<String> phoneNumbers;
     private List<String> faxNumbers;
@@ -30,6 +31,14 @@ public class ContactVO implements Trackable, Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
     public List<AddressVO> getAddresses() {

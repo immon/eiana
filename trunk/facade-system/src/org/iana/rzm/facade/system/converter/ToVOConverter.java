@@ -244,6 +244,7 @@ public class ToVOConverter {
         toContactVO.setEmails(toStringList(fromContact.getEmails()));
         toContactVO.setFaxNumbers(toStringList(fromContact.getFaxNumbers()));
         toContactVO.setName(fromContact.getName());
+        toContactVO.setOrganization(fromContact.getOrganization());
         toContactVO.setPhoneNumbers(toStringList(fromContact.getPhoneNumbers()));
         toContactVO.setRole(fromContact.isRole());
 
