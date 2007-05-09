@@ -36,6 +36,7 @@
     <orderEntry type="module" module-name="eiana-mail" />
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="conf" />
+    <orderEntry type="library" name="dnsjava" level="project" />
     <orderEntryProperties />
   </component>
 </module>
