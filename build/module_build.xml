@@ -2,6 +2,9 @@
 <project name="module_build" default="compile.module.build">
   <dirname property="module.build.basedir" file="${ant.file.module_build}"/>
   
+  <property name="module.jdk.home.build" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.build" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.build" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.build" value="${compiler.args}"/>
   
@@ -12,7 +15,9 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="build.module.classpath"/>
+  <path id="build.module.classpath">
+    <path refid="${module.jdk.classpath.build}"/>
+  </path>
   
   
   <patternset id="excluded.from.module.build">
