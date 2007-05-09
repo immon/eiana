@@ -219,6 +219,7 @@ public class FromVOConverter {
         tContact.setEmails(fContactVO.getEmails());
         tContact.setFaxNumbers(fContactVO.getFaxNumbers());
         tContact.setName(fContactVO.getName());
+        tContact.setOrganization(fContactVO.getOrganization());
         tContact.setPhoneNumbers(fContactVO.getPhoneNumbers());
         tContact.setRole(fContactVO.isRole());
 

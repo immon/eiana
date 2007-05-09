@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
-import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
@@ -71,6 +70,7 @@ public class FromVOConverterAccuracyTest {
 
     private boolean assertContact(Contact contact) {
         assert contact.getName().equals("newContact");
+        assert contact.getOrganization().equals("some_org");
 
         List<Address> addressList = contact.getAddresses();
         assert addressList.size() == 1;
@@ -96,6 +96,7 @@ public class FromVOConverterAccuracyTest {
     public void testContactConversion() {
         contactVO = new ContactVO();
         contactVO.setName("newContact");
+        contactVO.setOrganization("some_org");
         contactVO.setAddresses(addressVOList);
 
         eMailList.add("public@mail.com");
