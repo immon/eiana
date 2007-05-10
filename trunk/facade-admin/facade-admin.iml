@@ -21,6 +21,7 @@
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="module" module-name="eiana-logs" />
+    <orderEntry type="library" name="cobertura" level="project" />
     <orderEntryProperties />
   </component>
 </module>

@@ -2,9 +2,6 @@
 <project name="module_common-dao" default="compile.module.common-dao">
   <dirname property="module.common-dao.basedir" file="${ant.file.module_common-dao}"/>
   
-  <property name="module.jdk.home.common-dao" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.common-dao" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.common-dao" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.common-dao" value="${compiler.args}"/>
   
@@ -16,7 +13,6 @@
   </path>
   
   <path id="common-dao.module.classpath">
-    <path refid="${module.jdk.classpath.common-dao}"/>
     <pathelement location="${module.common-dao.basedir}/../lib/hibernate/hibernate3.jar"/>
     <pathelement location="${module.common-dao.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
     <pathelement location="${module.common-dao.basedir}/../lib/nask-commons/dynaxml.jar"/>
@@ -58,7 +54,7 @@
   
   <target name="compile.module.common-dao.production" depends="compile.module.common-criteria" description="Compile module common-dao; production classes">
     <mkdir dir="${common-dao.output.dir}"/>
-    <javac destdir="${common-dao.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.common-dao}/javac">
+    <javac destdir="${common-dao.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.common-dao}"/>
       <bootclasspath refid="common-dao.module.bootclasspath"/>
       <classpath refid="common-dao.module.classpath"/>
@@ -76,7 +72,7 @@
   
   <target name="compile.module.common-dao.tests" depends="compile.module.common-dao.production" description="compile module common-dao; test classes" unless="skip.tests">
     <mkdir dir="${common-dao.testoutput.dir}"/>
-    <javac destdir="${common-dao.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.common-dao}/javac">
+    <javac destdir="${common-dao.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.common-dao}"/>
       <classpath refid="common-dao.module.classpath"/>
       <classpath location="${common-dao.output.dir}"/>

@@ -17,6 +17,8 @@ public interface HostDAO {
 
     public Host get(String name);
 
+    public void delete(Host host);
+
     public List<Host> find(Criterion criterion);
 
     public List<Host> findAll();

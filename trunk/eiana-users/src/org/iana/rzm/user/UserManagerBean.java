@@ -63,7 +63,8 @@ public class UserManagerBean implements UserManager {
     }
 
     public void delete(String loginName) {
-        delete(get(loginName));
+        RZMUser user = get(loginName);
+        if (user != null) delete(user);
     }
 
     public List<RZMUser> findAll() {

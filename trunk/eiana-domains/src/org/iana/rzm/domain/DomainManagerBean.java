@@ -42,32 +42,43 @@ public class DomainManagerBean implements DomainManager {
     }
 
     public void create(Domain domain) {
+        updateNameServers(domain);
         dao.create(domain);
     }
 
-    public void update(Domain domain) {
+    private void updateNameServers(Domain domain) {
         List<Host> newHosts = new ArrayList<Host>();
-
-        for (Host host : domain.getNameServers())
-            if (host.getObjId() == null) {
-                Host existing = hostManager.get(host.getName());
-                if (existing != null) {
-                    for (IPAddress ip : host.getAddresses())
-                        existing.addIPAddress(ip);
-                    newHosts.add(existing);
-                } else newHosts.add(host);
-            } else newHosts.add(host);
-
+        for (Host host : domain.getNameServers()) {
+            Host found = hostManager.get(host.getName());
+            if (found == null) {
+                host.setDelegations(0);
+                newHosts.add(host);
+            } else {
+                found.setAddresses(host.getAddresses());
+                newHosts.add(found);
+            }
+        }
         domain.setNameServers(newHosts);
+    }
+
+    public void update(Domain domain) {
+        updateNameServers(domain);
         dao.update(domain);
     }
 
     public void delete(Domain domain) {
+        CheckTool.checkNull(domain, "domain");
+        List<Host> hosts = new ArrayList<Host>(domain.getNameServers());
+        for (Host host : hosts) {
+            domain.removeNameServer(host);
+            if (!host.isNameServer()) hostManager.delete(host);
+        }
         dao.delete(domain);
     }
 
     public void delete(String name) {
-        delete(get(name));
+        Domain domain = get(name);
+        if (domain != null) delete(domain);
     }
 
     public List<Domain> findAll() {

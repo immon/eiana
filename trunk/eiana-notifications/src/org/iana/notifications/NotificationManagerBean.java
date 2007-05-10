@@ -9,7 +9,6 @@ import java.util.HashSet;
 /**
  * @author Piotr Tkaczyk
  */
-
 public class NotificationManagerBean implements NotificationManager {
     private NotificationDAO notificationDAO;
 

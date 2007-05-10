@@ -55,8 +55,7 @@ public class Domain implements TrackedObject, Cloneable {
     @JoinTable(name = "Domain_TechContacts",
             inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
     private List<Contact> techContacts;
-    @OneToMany(cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Domain_NameServers",
             inverseJoinColumns = @JoinColumn(name = "Host_objId"))
     private List<Host> nameServers;
@@ -171,6 +170,13 @@ public class Domain implements TrackedObject, Cloneable {
         this.nameServers.clear();
         for (Host host : nameServers) {
             addNameServer(host);
+        }
+    }
+
+    final public void removeNameServers() {
+        List<Host> nss = new ArrayList<Host>(nameServers);
+        for (Host ns : nss) {
+            removeNameServer(ns);
         }
     }
 

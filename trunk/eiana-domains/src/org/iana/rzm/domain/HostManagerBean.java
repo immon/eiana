@@ -26,6 +26,16 @@ public class HostManagerBean implements HostManager {
         return dao.get(id);
     }
 
+    public void delete(String name) {
+        Host host = get(name);
+        if (host != null) dao.delete(host);
+    }
+
+    public void delete(Host host) {
+        CheckTool.checkNull(host, "null host");
+        dao.delete(host);
+    }
+
     public List<Host> findAll() {
         return dao.findAll();
     }
