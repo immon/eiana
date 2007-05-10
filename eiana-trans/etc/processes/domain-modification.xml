@@ -182,7 +182,7 @@
                 </roles>
             </action>
         </event>
-        <timer name="7d-time-out" duedate="1 second">
+        <timer name="7d-time-out" duedate="7 days">
             <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAlert">
                 <period>7</period>
                 <notification>zone-insertion-alert</notification>
@@ -208,7 +208,7 @@
                 </roles>
             </action>
         </event>
-        <timer name="3d-time-out" duedate="1 second">
+        <timer name="3d-time-out" duedate="3 days">
             <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAlert">
                 <period>4</period>
                 <notification>zone-publication-alert</notification>
