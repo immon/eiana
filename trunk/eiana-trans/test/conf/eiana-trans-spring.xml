@@ -41,9 +41,26 @@
         <constructor-arg value=""/> <!--Password-->
     </bean>
 
-    <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
-        <constructor-arg ref="domainDAO" />
+    <bean id="domainManagerTarget" class="org.iana.rzm.domain.DomainManagerBean">
+        <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>
+    </bean>
+
+    <bean id="domainManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.domain.DomainManager</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="domainManagerTarget"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
     </bean>
 
     <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
