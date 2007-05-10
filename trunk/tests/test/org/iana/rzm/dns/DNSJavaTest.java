@@ -1,23 +1,19 @@
 package org.iana.rzm.dns;
 
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterTest;
 import org.xbill.DNS.*;
-
-import java.net.InetAddress;
-import java.util.List;
-import java.util.Iterator;
-import java.io.IOException;
 
 /**
  * @author: Piotr Tkaczyk
  */
 
-@Test(sequential = true, groups = {"dns", "DNSJavaTest"})
+@Test(sequential = true, groups = {"stress", "dns", "DNSJavaTest"})
 public class DNSJavaTest {
 
     @Test
     public void testDNS() throws Exception {
+
+        //network connnection required
 
         String TLD = "org.";
 

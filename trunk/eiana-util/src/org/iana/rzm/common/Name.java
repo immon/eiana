@@ -1,6 +1,7 @@
 package org.iana.rzm.common;
 
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.common.validators.NameValidator;
 
 import javax.persistence.Basic;
 import javax.persistence.Embeddable;
@@ -45,10 +46,9 @@ public class Name implements Cloneable, Serializable {
         return (name != null ? name.hashCode() : 0);
     }
 
-    private static String DOMAIN_PATTERN = "([a-z0-9\\-]+\\.)*[a-z0-9\\-]+";
-
+    
     private void isValidName(String name) throws InvalidNameException {
-        if (name != null && !name.matches(DOMAIN_PATTERN)) throw new InvalidNameException(name);
+        NameValidator.validateName(name);
     }
 
 
