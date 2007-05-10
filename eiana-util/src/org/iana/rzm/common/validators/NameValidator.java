@@ -4,7 +4,6 @@ import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -20,13 +19,10 @@ public class NameValidator {
         if (name.length() > 254) throw new InvalidNameException(name, "name to long");
 
         List<String> pieces = Arrays.asList(name.split("\\."));
-        for (Iterator iterator = pieces.iterator(); iterator.hasNext();) {
-            String piece = (String) iterator.next();
+        for (String piece : pieces) {
             if (piece.length() > 63) throw new InvalidNameException(name, "label to long");
-            if (iterator.hasNext()) {
-                if (piece.length() == 0) throw new InvalidNameException(name, "null label");
-                if (!Character.isLetter(piece.charAt(0))) throw new InvalidNameException(name, "label must start with a letter");
-            }
+            if (piece.length() == 0) throw new InvalidNameException(name, "null label");
+            if (!Character.isLetter(piece.charAt(0))) throw new InvalidNameException(name, "label must start with a letter");
         }
     }
 }
