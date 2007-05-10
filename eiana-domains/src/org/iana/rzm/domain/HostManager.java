@@ -17,6 +17,10 @@ public interface HostManager {
 
     public Host get(long id);
 
+    public void delete(String name);
+
+    public void delete(Host host);
+
     public List<Host> findAll();
 
     public List<Host> find(Criterion criteria);

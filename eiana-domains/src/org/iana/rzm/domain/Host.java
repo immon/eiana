@@ -118,6 +118,10 @@ public class Host implements TrackedObject,Cloneable {
         return numDelegations > 1;
     }
 
+    final public boolean isNameServer() {
+        return numDelegations > 0;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -208,5 +212,9 @@ public class Host implements TrackedObject,Cloneable {
 
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
+    }
+
+    void setDelegations(int num) {
+        this.numDelegations = num;
     }
 }

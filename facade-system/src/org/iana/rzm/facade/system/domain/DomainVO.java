@@ -52,7 +52,7 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
 
     public void setNameServers(List<HostVO> nameServers) {
         this.nameServers = nameServers;
-    }
+    }       
 
     public String getRegistryUrl() {
         return registryUrl;
