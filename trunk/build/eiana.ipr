@@ -38,6 +38,7 @@
       <entry name="?*.html" />
       <entry name="?*.dtd" />
       <entry name="?*.tld" />
+      <entry name="?*.asc" />
     </wildcardResourcePatterns>
   </component>
   <component name="DataSourceManagerImpl" />
@@ -265,6 +266,7 @@
       <module fileurl="file://$PROJECT_DIR$/../common-dao/common-dao.iml" filepath="$PROJECT_DIR$/../common-dao/common-dao.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-mail/common-mail.iml" filepath="$PROJECT_DIR$/../common-mail/common-mail.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-objectdiff/common-objectdiff.iml" filepath="$PROJECT_DIR$/../common-objectdiff/common-objectdiff.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../common-pgp/common-pgp.iml" filepath="$PROJECT_DIR$/../common-pgp/common-pgp.iml" />
       <module fileurl="file://$PROJECT_DIR$/../conf/conf.iml" filepath="$PROJECT_DIR$/../conf/conf.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-dns/eiana-dns.iml" filepath="$PROJECT_DIR$/../eiana-dns/eiana-dns.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-domains/eiana-domains.iml" filepath="$PROJECT_DIR$/../eiana-domains/eiana-domains.iml" />
@@ -444,6 +446,18 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+    </library>
+    <library name="cryptix">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/cryptix/cryptix-jce-provider.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/cryptix/cryptix-message-api.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/cryptix/cryptix-openpgp-provider.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/cryptix/cryptix-pki-api.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/../lib/cryptix/cryptix-src.zip!/" />
+      </SOURCES>
     </library>
   </component>
   <component name="uidesigner-configuration">
