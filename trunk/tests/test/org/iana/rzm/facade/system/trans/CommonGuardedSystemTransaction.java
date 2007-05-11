@@ -1,8 +1,6 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.*;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
@@ -13,6 +11,8 @@ import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.List;
@@ -191,9 +191,10 @@ abstract class CommonGuardedSystemTransaction {
 //        domainManager.delete(domain);
 //        domainManager.create(domain);
         setGSTSAuthUser(user);  //userAC
-        TransactionVO transaction = gsts.createTransactions(domainVO, false).get(0);
+        List<TransactionVO> transaction = gsts.createTransactions(domainVO, false);
+
         gsts.close();
-        return transaction;
+        return transaction.iterator().next();
     }
 
     private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
@@ -215,5 +216,19 @@ abstract class CommonGuardedSystemTransaction {
                     "unexpected state in log entry: " + i + ", " + usersStates[i][1];
             i++;
         }
+    }
+
+    protected Host setupFirstHost(String prefix) throws InvalidIPAddressException, InvalidNameException {
+        Host host = new Host(prefix + ".ns1.some.org");
+        host.addIPAddress(IPAddress.createIPv4Address("11.2.3.4"));
+        host.addIPAddress(IPAddress.createIPv6Address("1234:5678::90AB"));
+        return host;
+    }
+
+    protected Host setupSecondHost(String prefix) throws InvalidIPAddressException, InvalidNameException {
+        Host host = new Host(prefix + ".ns2.some.org");
+        host.addIPAddress(IPAddress.createIPv4Address("21.2.3.5"));
+        host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));
+        return host;
     }
 }

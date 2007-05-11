@@ -287,10 +287,17 @@ public class GuardedSystemTransactionServiceTest {
         return contact;
     }
 
-    private Host setupHost(Host host) throws InvalidIPAddressException, InvalidNameException {
-        host.setName(host.getName());
+    private Host setupFirstHost() throws InvalidIPAddressException, InvalidNameException {
+        Host host = new Host("ns1.some.org");
         host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
         host.addIPAddress(IPAddress.createIPv6Address("1234:5678::90AB"));
+        return host;
+    }
+
+    private Host setupSecondHost() throws InvalidIPAddressException, InvalidNameException {
+        Host host = new Host("ns2.some.org");
+        host.addIPAddress(IPAddress.createIPv4Address("21.2.3.5"));
+        host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));
         return host;
     }
 
@@ -303,8 +310,8 @@ public class GuardedSystemTransactionServiceTest {
         domain.setSupportingOrg(setupContact(new Contact(), "supporting-org", name, "US"));
         domain.setWhoisServer("whois." + name);
         domain.addAdminContact(setupContact(new Contact(), "admin", name, "US"));
-        domain.addNameServer(setupHost(new Host("ns1." + name)));
-        domain.addNameServer(setupHost(new Host("ns2." + name)));
+        domain.addNameServer(setupFirstHost());
+        domain.addNameServer(setupSecondHost());
         domain.addTechContact(setupContact(new Contact(), "tech", name, "US"));
         return domain;
     }
