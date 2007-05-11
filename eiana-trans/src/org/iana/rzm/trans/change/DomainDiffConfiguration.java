@@ -21,7 +21,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
         addObjectConfiguration(Domain.class, domainConfig);
 
         ObjectConfiguration contactConfig = new ObjectConfiguration(new String[]{
-            "name", "addresses", "phoneNumbers", "faxNumbers", "emails", "role"
+            "name", "organization", "addresses", "phoneNumbers", "faxNumbers", "emails", "role"
         }, "name");
         contactConfig.addFieldClass("addresses", Address.class);
         addObjectConfiguration(Contact.class, contactConfig);
