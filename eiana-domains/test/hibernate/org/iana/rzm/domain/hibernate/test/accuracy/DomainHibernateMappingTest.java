@@ -29,7 +29,6 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         o.setName("changed-iana.org");
         o.setRegistryUrl("http://changed-registry.com");
         o.setSpecialInstructions("changed special instructions");
-        o.setState(Domain.State.OPERATIONS_PENDING);
         o.setStatus(Domain.Status.ACTIVE);
         // commented-out since it requires session.merge to be used in a new approach (this new approach avoids leaving trash contacts after update).
         // o.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true, "US"));

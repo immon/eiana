@@ -14,6 +14,7 @@ public interface ProcessDAO {
     public ProcessInstance newProcessInstance(final String name);
     public ProcessInstance newProcessInstanceForUpdate(final String name);
     public List<ProcessInstance> findAll(); 
+    public List<ProcessInstance> findOpenProcessInstances(final String domainName);
     public List<ProcessInstance> findAllProcessInstances(final String domainName);
     public List<ProcessInstance> findAllProcessInstances(final RZMUser user);
     public List<ProcessInstance> findAllProcessInstances(final RZMUser user, final String domainName);

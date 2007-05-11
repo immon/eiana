@@ -21,7 +21,6 @@ public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
         domain.setName("changed-" + domain.getName());
         domain.setRegistryUrl("http://changed-registry.com");
         domain.setSpecialInstructions("changed special instructions");
-        domain.setState(Domain.State.OPERATIONS_PENDING);
         domain.setStatus(Domain.Status.ACTIVE);
         domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true, "US"));
         domain.setWhoisServer("changed.whoid.server");

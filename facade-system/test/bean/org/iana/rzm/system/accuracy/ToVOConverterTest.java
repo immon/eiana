@@ -126,7 +126,7 @@ public class ToVOConverterTest {
 
         fromDomain.setRegistryUrl("http://tmp.something.org:80/someFile");
         fromDomain.setSpecialInstructions("Super Secret Special Instruction Alpha One");
-        fromDomain.setState(Domain.State.NO_ACTIVITY);
+//        fromDomain.setState(Domain.State.NO_ACTIVITY);
         fromDomain.setStatus(Domain.Status.ACTIVE);
         fromDomain.setSupportingOrg(fromContact);
         fromDomain.setWhoisServer("WhoIs");

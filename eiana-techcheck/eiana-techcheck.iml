@@ -11,6 +11,7 @@
     <orderEntry type="module" module-name="eiana-domains" />
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="library" name="cobertura" level="project" />
     <orderEntryProperties />
   </component>
 </module>

@@ -46,6 +46,10 @@ public interface TransactionManager {
 
     List<Transaction> find(TransactionCriteria criteria);
 
+    public List<Transaction> findOpenTransactions(String domainName);
+
+    public List<Transaction> findOpenTransactions(Set<String> domainNames);
+
     public List<Transaction> findTransactions(String domainName);
 
     public List<Transaction> findTransactions(Set<String> domainNames);

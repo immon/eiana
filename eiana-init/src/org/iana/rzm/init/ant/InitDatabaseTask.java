@@ -43,7 +43,7 @@ public class InitDatabaseTask extends HibernateTask {
         Domain domain = new Domain(name);
         domain.setRegistryUrl("http://www.registry." + name);
         domain.setSpecialInstructions(name + " special instructions");
-        domain.setState(Domain.State.NO_ACTIVITY);
+//        domain.setState(Domain.State.NO_ACTIVITY);
         domain.setStatus(Domain.Status.ACTIVE);
         domain.setSupportingOrg(setupContact(new Contact(), "supporting-org", name, "US"));
         domain.setWhoisServer("whois." + name);

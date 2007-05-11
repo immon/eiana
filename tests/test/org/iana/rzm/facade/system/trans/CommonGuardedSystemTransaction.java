@@ -21,7 +21,7 @@ import java.util.List;
  * @author: Piotr Tkaczyk
  */
 
-abstract class CommonGuardedSystemTransaction {
+public abstract class CommonGuardedSystemTransaction {
 
     protected ApplicationContext appCtx;
 

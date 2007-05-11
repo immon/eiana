@@ -17,6 +17,7 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.user.*;
+import org.iana.rzm.trans.TransactionManager;
 
 import java.util.*;
 
