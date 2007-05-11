@@ -69,7 +69,7 @@ public class Host implements TrackedObject,Cloneable {
     }
 
     final public Set<IPAddress> getAddresses() {
-        return Collections.unmodifiableSet(this.addresses);
+        return Collections.unmodifiableSet(new HashSet<IPAddress>(addresses));
     }
 
     final public void setAddresses(Collection<IPAddress> addresses) {

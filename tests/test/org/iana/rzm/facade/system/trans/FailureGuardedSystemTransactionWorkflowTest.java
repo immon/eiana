@@ -12,9 +12,13 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.IPAddress;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
@@ -79,6 +83,8 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
 
 
         domain = createDomain(DOMAIN_NAME);
+        domain.addNameServer(setupFirstHost("pr1"));
+        domain.addNameServer(setupSecondHost("pr2"));
         domainManager.create(domain);
 
         domain.setRegistryUrl("newregurl.org");

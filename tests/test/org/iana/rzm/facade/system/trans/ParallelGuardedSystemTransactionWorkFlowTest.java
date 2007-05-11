@@ -84,6 +84,8 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
         domain = createDomain(DOMAIN_NAME);
         domain.setWhoisServer("oldwhoisserver.org");
+        domain.addNameServer(setupFirstHost("pr1"));
+        domain.addNameServer(setupSecondHost("pr2"));
         domainManager.create(domain);
 
         domain.setRegistryUrl("newregurl.org");

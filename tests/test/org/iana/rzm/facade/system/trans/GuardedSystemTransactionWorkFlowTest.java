@@ -77,6 +77,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         userManager.create(userUSDoC);
 
         domain = createDomain(DOMAIN_NAME);
+        domain.addNameServer(setupFirstHost("pr1"));
+        domain.addNameServer(setupSecondHost("pr2"));
         domainManager.create(domain);
 
         domain.setRegistryUrl("newregurl.org");
@@ -85,10 +87,15 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
 
         domainNS = createDomain(DOMAIN_NAMENS);
+        domain.addNameServer(setupFirstHost("pr3"));
+        domain.addNameServer(setupSecondHost("pr4"));
         domainManager.create(domainNS);
 
-        Host nameServer = new Host("gstsnewnameserver");
-        nameServer.addIPAddress("192.168.0.1");
+        Host nameServer = new Host("ns1.gstsnewnameserver");
+        nameServer.addIPAddress("81.50.50.10");
+        domainNS.addNameServer(nameServer);
+        nameServer = new Host("ns2.gstsnewnameserver");
+        nameServer.addIPAddress("82.50.50.10");
         domainNS.addNameServer(nameServer);
 
         domainVONS = ToVOConverter.toDomainVO(domainNS);

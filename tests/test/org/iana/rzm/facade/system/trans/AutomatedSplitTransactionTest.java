@@ -10,6 +10,7 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.HostVO;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
@@ -54,6 +55,9 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         domain4.addNameServer(new Host("impactedhost-2"));
         domain4.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain4);
+
+        processDAO.deploy(DefinedTestProcess.getDefinition());
+        processDAO.close();
     }
 
     @Test

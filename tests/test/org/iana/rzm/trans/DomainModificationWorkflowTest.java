@@ -133,9 +133,6 @@ public class DomainModificationWorkflowTest {
         domain.addTechContact(new Contact("aaaaaa"));
         domainDAO.create(domain);
 
-        Host nameServer = new Host("newnameserver");
-        nameServer.addIPAddress("192.168.0.1");
-
         Domain clonedDomain = domain.clone();
         clonedDomain.setWhoisServer("newwhoisserver");
         clonedDomain.setRegistryUrl(null);
@@ -143,7 +140,13 @@ public class DomainModificationWorkflowTest {
         Contact newContact = new Contact("aaaaaa");
         newContact.addEmail("noContact-new-emial@post.org");
         //clonedDomain.addTechContact(newContact);
+        Host nameServer = new Host("newnameserver1.org");
+        nameServer.addIPAddress("81.50.50.10");
         clonedDomain.addNameServer(nameServer);
+        nameServer = new Host("newnameserver2.org");
+        nameServer.addIPAddress("82.50.50.10");
+        clonedDomain.addNameServer(nameServer);
+
         clonedDomain.setTechContacts(new ArrayList<Contact>());
         
         Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);

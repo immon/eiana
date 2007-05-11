@@ -9,6 +9,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
@@ -34,6 +35,9 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
         Domain domain = new Domain("usersplittest");
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
+
+        processDAO.deploy(DefinedTestProcess.getDefinition());
+        processDAO.close();
     }
 
     @Test

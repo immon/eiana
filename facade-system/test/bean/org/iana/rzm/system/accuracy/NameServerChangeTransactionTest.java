@@ -157,10 +157,17 @@ public class NameServerChangeTransactionTest {
         return contact;
     }
 
-    private Host setupHost(Host host) throws InvalidIPAddressException, InvalidNameException {
+    private Host setupFirstHost(Host host) throws InvalidIPAddressException, InvalidNameException {
         host.setName(host.getName());
-        host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
+        host.addIPAddress(IPAddress.createIPv4Address("81.50.50.10"));
         host.addIPAddress(IPAddress.createIPv6Address("1234:5678::90AB"));
+        return host;
+    }
+
+    private Host setupSecondHost(Host host) throws InvalidIPAddressException, InvalidNameException {
+        host.setName(host.getName());
+        host.addIPAddress(IPAddress.createIPv4Address("82.52.50.10"));
+        host.addIPAddress(IPAddress.createIPv6Address("2234:5678::90AB"));
         return host;
     }
 
@@ -173,8 +180,8 @@ public class NameServerChangeTransactionTest {
         domain.setSupportingOrg(setupContact(new Contact(), "supporting-org", name, "US"));
         domain.setWhoisServer("whois." + name);
         domain.addAdminContact(setupContact(new Contact(), "admin", name, "US"));
-        domain.addNameServer(setupHost(new Host("ns1." + name)));
-        domain.addNameServer(setupHost(new Host("ns2." + name)));
+        domain.addNameServer(setupFirstHost(new Host("ns1." + name)));
+        domain.addNameServer(setupSecondHost(new Host("ns2." + name)));
         domain.addTechContact(setupContact(new Contact(), "tech", name, "US"));
         return domain;
     }

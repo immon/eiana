@@ -16,15 +16,15 @@ import java.io.Serializable;
 public class SystemUserHibernateMappingTest extends HibernateMappingUnitTest<RZMUser> {
     protected RZMUser create() throws Exception {
         RZMUser systemUser = HibernateMappingTestUtil.setupUser(new RZMUser(), "created", true);
-        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "first", true));
-        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "second", true));
+        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "st1.org", true));
+        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "nd2.org", true));
         return systemUser;
     }
 
     protected RZMUser change(RZMUser o) throws Exception {
         RZMUser systemUser = HibernateMappingTestUtil.setupUser(o, "changed", false);
         systemUser.removeRole(systemUser.getRoles().iterator().next());
-        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "third", true));
+        systemUser.addRole(HibernateMappingTestUtil.setupRole(new SystemRole(), "rd3.org", true));
         return systemUser;
     }
 
