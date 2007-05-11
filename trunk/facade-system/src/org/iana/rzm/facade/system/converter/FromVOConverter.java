@@ -64,7 +64,7 @@ public class FromVOConverter {
             tDomain.setNameServers(toHostList(fDomainVO.getNameServers()));
             tDomain.setRegistryUrl(fDomainVO.getRegistryUrl());
             tDomain.setSpecialInstructions(fDomainVO.getSpecialInstructions());
-            tDomain.setState(toState(fDomainVO.getState()));
+//            tDomain.setState(toState(fDomainVO.getState()));
             tDomain.setStatus(toStatus(fDomainVO.getStatus()));
             tDomain.setSupportingOrg(toContact(fDomainVO.getSupportingOrg()));
             tDomain.setTechContacts(toContactList(fDomainVO.getTechContacts()));

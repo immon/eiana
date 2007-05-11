@@ -2,6 +2,7 @@ package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Formula;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
@@ -73,8 +74,20 @@ public class Domain implements TrackedObject, Cloneable {
     private String specialInstructions;
     @Enumerated
     private Status status;
-    @Enumerated
+
     private State state;
+    @Formula("(select count(*)\n" +
+            "from JBPM_PROCESSINSTANCE processins0_, \n" +
+            "JBPM_VARIABLEINSTANCE hibernatel1_, \n" +
+            "TransactionData transactio2_ \n" +
+            "inner join Domain domain3_ on transactio2_.currentDomain_objId=domain3_.objId \n" +
+            "where hibernatel1_.CLASS_='H' \n" +
+            "and hibernatel1_.LONGIDCLASS_='org.iana.rzm.trans.TransactionData' \n" +
+            "and hibernatel1_.LONGVALUE_=transactio2_.objId \n" +
+            "and processins0_.ID_=hibernatel1_.PROCESSINSTANCE_ \n" +
+            "and domain3_.name=name \n" +
+            "and (processins0_.END_ is null))")
+    private int processes;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
@@ -285,12 +298,7 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public State getState() {
-        return state;
-    }
-
-    final public void setState(State state) {
-        CheckTool.checkNull(state, "state");
-        this.state = state;
+        return processes > 0 ? State.OPERATIONS_PENDING : State.NO_ACTIVITY;
     }
 
     public boolean equals(Object o) {

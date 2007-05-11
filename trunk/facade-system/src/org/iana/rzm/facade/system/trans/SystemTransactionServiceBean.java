@@ -47,7 +47,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     public List<TransactionVO> findOpenTransactions() throws AccessDeniedException, InfrastructureException {
         List<TransactionVO> ret = new ArrayList<TransactionVO>();
         Set<String> domainNames = getRoleDomainNames();
-        for (Transaction trans : transactionManager.findTransactions(domainNames)) {
+        for (Transaction trans : transactionManager.findOpenTransactions(domainNames)) {
             ret.add(TransactionConverter.toTransactionVO(trans));
         }
         return ret;

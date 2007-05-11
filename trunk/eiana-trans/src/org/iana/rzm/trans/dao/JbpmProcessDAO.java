@@ -54,7 +54,24 @@ public class JbpmProcessDAO implements ProcessDAO {
                         "where hli.value.class = 'org.iana.rzm.trans.TransactionData' " +
                         "   and hli.value.id = td.objId " +
                         "   and pi = hli.processInstance " +
-                        "   and domain.name.name = :name"
+                        "   and domain.name.name = :name "
+        );
+        query.setString("name", domainName);
+        return query.list();
+    }
+
+    public List<ProcessInstance> findOpenProcessInstances(final String domainName) {
+        Query query = getContext().getSession().createQuery(
+                "select pi " +
+                        "from ProcessInstance as pi, " +
+                        "HibernateLongInstance as hli, " +
+                        "TransactionData as td " +
+                        "   inner join td.currentDomain as domain " +
+                        "where hli.value.class = 'org.iana.rzm.trans.TransactionData' " +
+                        "   and hli.value.id = td.objId " +
+                        "   and pi = hli.processInstance " +
+                        "   and domain.name.name = :name " +
+                        "   and pi.end is null"
         );
         query.setString("name", domainName);
         return query.list();

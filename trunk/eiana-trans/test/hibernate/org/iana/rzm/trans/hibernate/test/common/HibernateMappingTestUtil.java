@@ -67,7 +67,6 @@ public class HibernateMappingTestUtil {
         domain.setName(prefix + domain.getName());
         domain.setRegistryUrl("http://" + prefix + "registry.pl");
         domain.setSpecialInstructions(prefix + " special instructions");
-        domain.setState(Domain.State.NO_ACTIVITY);
         domain.setStatus(Domain.Status.NEW);
         domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "supporting org", true));
         domain.setWhoisServer("whois.server.com");

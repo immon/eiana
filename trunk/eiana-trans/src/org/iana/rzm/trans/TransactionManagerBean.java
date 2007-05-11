@@ -85,6 +85,23 @@ public class TransactionManagerBean implements TransactionManager {
         return result;
     }
 
+    public List<Transaction> findOpenTransactions(String domainName) {
+        List<ProcessInstance> processInstances = processDAO.findOpenProcessInstances(domainName);
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
+        return result;
+    }
+
+    public List<Transaction> findOpenTransactions(Set<String> domainNames) {
+        List<Transaction> ret = new ArrayList<Transaction>();
+        if (domainNames != null) {
+            for (String domainName : domainNames) {
+                ret.addAll(findOpenTransactions(domainName));
+            }
+        }
+        return ret;
+    }
+
     public List<Transaction> findTransactions(Set<String> domainNames) {
         List<Transaction> ret = new ArrayList<Transaction>();
         if (domainNames != null) {

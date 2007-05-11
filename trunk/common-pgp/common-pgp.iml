@@ -11,6 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="cryptix" level="project" />
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
+    <orderEntry type="library" name="cobertura" level="project" />
     <orderEntryProperties />
   </component>
 </module>
