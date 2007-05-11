@@ -23,6 +23,7 @@ public class NameValidator {
             if (piece.length() > 63) throw new InvalidNameException(name, "label to long");
             if (piece.length() == 0) throw new InvalidNameException(name, "null label");
             if (!Character.isLetter(piece.charAt(0))) throw new InvalidNameException(name, "label must start with a letter");
+            if (!Character.isLetterOrDigit(piece.charAt(piece.length()-1))) throw new InvalidNameException(name, "label must end with a letter or digit");
         }
     }
 }
