@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-techcheck" default="compile.module.eiana-techcheck">
+  <dirname property="module.eiana-techcheck.basedir" file="${ant.file.module_eiana-techcheck}"/>
+  
+  <property name="module.jdk.home.eiana-techcheck" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-techcheck" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-techcheck" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.eiana-techcheck" value="${compiler.args}"/>
+  
+  <property name="eiana-techcheck.output.dir" value="${module.eiana-techcheck.basedir}/../build/classes/production/eiana-techcheck"/>
+  <property name="eiana-techcheck.testoutput.dir" value="${module.eiana-techcheck.basedir}/../build/classes/test/eiana-techcheck"/>
+  
+  <path id="eiana-techcheck.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-techcheck.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-techcheck}"/>
+    <pathelement location="${eiana-domains.output.dir}"/>
+    <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.javaee.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-techcheck">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-techcheck">
+    <patternset refid="excluded.from.module.eiana-techcheck"/>
+  </patternset>
+  
+  <path id="eiana-techcheck.module.sourcepath">
+    <dirset dir="${module.eiana-techcheck.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-techcheck" depends="compile.module.eiana-techcheck.production,compile.module.eiana-techcheck.tests" description="Compile module eiana-techcheck"/>
+  
+  <target name="compile.module.eiana-techcheck.production" depends="compile.module.eiana-domains" description="Compile module eiana-techcheck; production classes">
+    <mkdir dir="${eiana-techcheck.output.dir}"/>
+    <javac destdir="${eiana-techcheck.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-techcheck}/javac">
+      <compilerarg line="${compiler.args.eiana-techcheck}"/>
+      <bootclasspath refid="eiana-techcheck.module.bootclasspath"/>
+      <classpath refid="eiana-techcheck.module.classpath"/>
+      <src refid="eiana-techcheck.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-techcheck"/>
+    </javac>
+    
+    <copy todir="${eiana-techcheck.output.dir}">
+      <fileset dir="${module.eiana-techcheck.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-techcheck.tests" depends="compile.module.eiana-techcheck.production" description="compile module eiana-techcheck; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.eiana-techcheck" description="cleanup module">
+    <delete dir="${eiana-techcheck.output.dir}"/>
+    <delete dir="${eiana-techcheck.testoutput.dir}"/>
+  </target>
+</project>
