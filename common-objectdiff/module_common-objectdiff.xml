@@ -48,7 +48,6 @@
   <path id="common-objectdiff.module.test.sourcepath">
     <dirset dir="${module.common-objectdiff.basedir}">
       <include name="test/conf"/>
-      <include name="test/hibernate"/>
       <include name="test/src"/>
     </dirset>
   </path>
@@ -86,10 +85,6 @@
     
     <copy todir="${common-objectdiff.testoutput.dir}">
       <fileset dir="${module.common-objectdiff.basedir}/test/conf">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.common-objectdiff.basedir}/test/hibernate">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

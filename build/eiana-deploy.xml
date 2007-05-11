@@ -157,7 +157,8 @@
              compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,
              compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
-             compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff"
+             compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
+             compile.module.common-pgp"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
@@ -352,11 +353,14 @@
             <!--tests-->
             <fileset dir="../tests/test">                       <include name="**/*.java" /></fileset>
              <!--common-mail-->
-             <fileset dir="../common-mail/src">                <include name="**/*.java" /></fileset>
+             <fileset dir="../common-mail/src">                 <include name="**/*.java" /></fileset>
              <fileset dir="../common-mail/test">                <include name="**/*.java" /></fileset>
              <!--eiana-mail-->
-             <fileset dir="../eiana-mail/src">                <include name="**/*.java" /></fileset>
-             <fileset dir="../eiana-mail/test">                <include name="**/*.java" /></fileset>
+             <fileset dir="../eiana-mail/src">                  <include name="**/*.java" /></fileset>
+             <fileset dir="../eiana-mail/test">                 <include name="**/*.java" /></fileset>
+             <!--common-pgp-->
+             <fileset dir="../common-pgp/src">                  <include name="**/*.java" /></fileset>
+             <fileset dir="../common-pgp/test">                 <include name="**/*.java" /></fileset>
 
         </cobertura-report>
     </target>

@@ -156,6 +156,7 @@
                 <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
                 <entry key="org.iana.rzm.facade.auth.SecurIDAuth" value-ref="securIDAuthenticator"/>
                 <entry key="org.iana.rzm.facade.auth.MailAuth" value-ref="mailAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.PgpMailAuth" value-ref="pgpMailAuthenticator"/>
             </map>
         </constructor-arg>
     </bean>
@@ -178,6 +179,12 @@
     <bean id="securID" class="org.iana.securid.MockSecurIDService"/>
 
     <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="pgpMailAuthenticator" class="org.iana.rzm.facade.auth.PgpMailAuthenticator">
         <constructor-arg>
             <ref bean="userManager"/>
         </constructor-arg>

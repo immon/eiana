@@ -50,6 +50,9 @@ public class RZMUser extends Addressee implements TrackedObject, Cloneable {
     @Embedded
     protected TrackData trackData = new TrackData();
 
+    @Column(length = 4096)
+    private String publicKey;
+
     public RZMUser() {
         this(null, null, null, null, null, null, false);
     }
@@ -251,6 +254,14 @@ public class RZMUser extends Addressee implements TrackedObject, Cloneable {
 
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 
     public Object clone() throws CloneNotSupportedException {
