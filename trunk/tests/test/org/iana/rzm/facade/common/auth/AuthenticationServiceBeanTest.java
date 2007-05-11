@@ -12,6 +12,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.*;
+
 /**
  * @author Marcin Zajaczkowski
  * @author Patrycja Wegrzynowicz
@@ -27,14 +29,14 @@ public class AuthenticationServiceBeanTest {
     private RZMUser testWrongPasswordUser;
 
     @BeforeClass
-    public void init() {
+    public void init() throws IOException {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
         userManager = (UserManager) appCtx.getBean("userManager");
         authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
         createTestUsers();
     }
 
-    private void createTestUsers() {
+    private void createTestUsers() throws IOException {
         testAdminUser = createTestAdminUser();
         userManager.create(testAdminUser);
 
@@ -193,6 +195,26 @@ public class AuthenticationServiceBeanTest {
         authService.authenticate(mailAuth);
     }
 
+    public static String ADMIN_SIGNED_MESSAGE_FILE_NAME = "test-message.txt.asc";
+
+    @Test
+    public void testAuthenticateByPgpMail() throws AuthenticationFailedException, AuthenticationRequiredException, IOException {
+        PgpMailAuth pgpMailAuth = new PgpMailAuth(ADMIN_EMAIL, loadFromFile(ADMIN_SIGNED_MESSAGE_FILE_NAME));
+
+        AuthenticatedUser authenticatedUser = authService.authenticate(pgpMailAuth);
+
+        assert authenticatedUser != null;
+        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+    }
+
+    public static String WRONG_SIGNED_MESSAGE_FILE_NAME = "test-message-1.txt.asc";
+
+    @Test (expectedExceptions = AuthenticationFailedException.class)
+    public void testAuthenticateByPgpMailFails() throws AuthenticationFailedException, AuthenticationRequiredException, IOException {
+        PgpMailAuth pgpMailAuth = new PgpMailAuth(ADMIN_EMAIL, loadFromFile(WRONG_SIGNED_MESSAGE_FILE_NAME));
+        authService.authenticate(pgpMailAuth);
+    }
+
     @AfterClass
     public void cleanUp() {
         userManager.delete(testAdminUser);
@@ -209,8 +231,9 @@ public class AuthenticationServiceBeanTest {
     public static String ADMIN_FIRST_NAME_VALID = "adminFirstName";
     public static String ADMIN_LAST_NAME_VALID = "adminLastName";
     public static String ADMIN_EMAIL = "admin@no-mail.org";
+    public static String ADMIN_KEY_FILE_NAME = "tester.pgp.asc";
 
-    private RZMUser createTestAdminUser() {
+    private RZMUser createTestAdminUser() throws IOException {
 
         RZMUser adminUser = new RZMUser();
         adminUser.setObjId(1L);
@@ -221,6 +244,7 @@ public class AuthenticationServiceBeanTest {
         adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         adminUser.setSecurID(false);
         adminUser.setEmail(ADMIN_EMAIL);
+        adminUser.setPublicKey(loadFromFile(ADMIN_KEY_FILE_NAME));
 
         return adminUser;
     }
@@ -246,8 +270,9 @@ public class AuthenticationServiceBeanTest {
 
     public static String WRONG_PASSWORD_LOGIN = "wrongPasswordLogin";
     public static String WRONG_PASSWORD_PASSWORD = "wrongPasswordLogin";
+    public static String WRONG_PASSWORD_KEY_FILE_NAME = "tester1.pgp.asc";
 
-    private RZMUser createTestWrongPasswordUser() {
+    private RZMUser createTestWrongPasswordUser() throws IOException {
 
         RZMUser adminUser = new RZMUser();
         adminUser.setObjId(1L);
@@ -257,7 +282,35 @@ public class AuthenticationServiceBeanTest {
         adminUser.setPassword("bad" + WRONG_PASSWORD_PASSWORD);
         adminUser.addRole(new AdminRole(AdminRole.AdminType.IANA));
         adminUser.setSecurID(false);
+        adminUser.setEmail(ADMIN_EMAIL);
+        adminUser.setPublicKey(loadFromFile(WRONG_PASSWORD_KEY_FILE_NAME));
 
         return adminUser;
+    }
+
+    private String loadFromFile(String fileName) throws IOException {
+        InputStream in = getClass().getResourceAsStream(fileName);
+        if (in == null) throw new FileNotFoundException(fileName);
+        DataInputStream dis = new DataInputStream(in);
+        StringBuffer buf;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(dis, "US-ASCII"));
+            try {
+                buf = new StringBuffer();
+                String line = reader.readLine();
+                if (line != null) {
+                    buf.append(line);
+                    while ((line = reader.readLine()) != null) {
+                        buf.append("\n");
+                        buf.append(line);
+                    }
+                }
+                return buf.toString();
+            } finally {
+                reader.close();
+            }
+        } finally {
+            dis.close();
+        }
     }
 }

@@ -24,7 +24,8 @@
         <include name="**/?*.html"/>
         <include name="**/?*.dtd"/>
         <include name="**/?*.tld"/>
-    </patternset>    
+        <include name="**/?*.asc"/>
+    </patternset>
 
     <path id="hibernatetool.classpath">
         <fileset dir="${lib.dir}/hibernate">

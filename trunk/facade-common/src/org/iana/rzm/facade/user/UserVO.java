@@ -24,6 +24,8 @@ public class UserVO implements Trackable {
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
+
+    private String publicKey;
     
     public String getUserName() {
         return userName;
@@ -152,5 +154,13 @@ public class UserVO implements Trackable {
 
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 }

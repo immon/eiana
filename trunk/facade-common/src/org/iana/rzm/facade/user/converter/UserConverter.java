@@ -58,6 +58,7 @@ public class UserConverter {
         userVO.setOrganization(user.getOrganization());
         userVO.setUserName(user.getLoginName());
         userVO.setEmail(user.getEmail());
+        userVO.setPublicKey(user.getPublicKey());
 
         return userVO;
     }
@@ -93,6 +94,7 @@ public class UserConverter {
         rzmUser.setOrganization(userVO.getOrganization());
         rzmUser.setLoginName(userVO.getUserName());
         rzmUser.setEmail(userVO.getEmail());
+        rzmUser.setPublicKey(userVO.getPublicKey());
 
         return rzmUser;
     }
