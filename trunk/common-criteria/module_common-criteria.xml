@@ -2,6 +2,9 @@
 <project name="module_common-criteria" default="compile.module.common-criteria">
   <dirname property="module.common-criteria.basedir" file="${ant.file.module_common-criteria}"/>
   
+  <property name="module.jdk.home.common-criteria" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.common-criteria" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.common-criteria" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.common-criteria" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="common-criteria.module.classpath">
+    <path refid="${module.jdk.classpath.common-criteria}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
   </path>
@@ -37,7 +41,7 @@
   
   <target name="compile.module.common-criteria.production" depends="compile.module.eiana-util" description="Compile module common-criteria; production classes">
     <mkdir dir="${common-criteria.output.dir}"/>
-    <javac destdir="${common-criteria.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${common-criteria.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.common-criteria}/javac">
       <compilerarg line="${compiler.args.common-criteria}"/>
       <bootclasspath refid="common-criteria.module.bootclasspath"/>
       <classpath refid="common-criteria.module.classpath"/>

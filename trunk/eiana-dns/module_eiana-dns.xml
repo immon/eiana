@@ -2,6 +2,9 @@
 <project name="module_eiana-dns" default="compile.module.eiana-dns">
   <dirname property="module.eiana-dns.basedir" file="${ant.file.module_eiana-dns}"/>
   
+  <property name="module.jdk.home.eiana-dns" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-dns" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-dns" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-dns" value="${compiler.args}"/>
   
@@ -12,7 +15,9 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="eiana-dns.module.classpath"/>
+  <path id="eiana-dns.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-dns}"/>
+  </path>
   
   
   <patternset id="excluded.from.module.eiana-dns">
@@ -34,7 +39,7 @@
   
   <target name="compile.module.eiana-dns.production" description="Compile module eiana-dns; production classes">
     <mkdir dir="${eiana-dns.output.dir}"/>
-    <javac destdir="${eiana-dns.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-dns.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-dns}/javac">
       <compilerarg line="${compiler.args.eiana-dns}"/>
       <bootclasspath refid="eiana-dns.module.bootclasspath"/>
       <classpath refid="eiana-dns.module.classpath"/>
