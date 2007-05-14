@@ -158,7 +158,7 @@
              compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
-             compile.module.common-pgp"
+             compile.module.common-pgp, compile.module.eiana-techcheck"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
@@ -221,6 +221,9 @@
         <jar destfile="${jar.output.dir}/config.jar">
             <fileset dir="${config.dir}/hibernate"/>
             <fileset dir="${config.dir}/spring"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-techcheck.jar">
+            <fileset dir="${eiana-techcheck.output.dir}"/>
         </jar>
     </target>
 
@@ -361,7 +364,9 @@
              <!--common-pgp-->
              <fileset dir="../common-pgp/src">                  <include name="**/*.java" /></fileset>
              <fileset dir="../common-pgp/test">                 <include name="**/*.java" /></fileset>
-
+             <!--eiana-techcheck-->
+             <fileset dir="../eiana-techcheck/src">             <include name="**/*.java" /></fileset>
+             <fileset dir="../eiana-techcheck/test">            <include name="**/*.java" /></fileset>
         </cobertura-report>
     </target>
 
