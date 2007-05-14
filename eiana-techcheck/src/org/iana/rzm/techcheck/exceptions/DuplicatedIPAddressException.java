@@ -3,7 +3,7 @@ package org.iana.rzm.techcheck.exceptions;
 /**
  * @author: Piotr Tkaczyk
  */
-public class DuplicatedIPAddressException extends DomainValidationException {
+public class DuplicatedIPAddressException extends DomainCheckException {
     String ipAddress;
 
     public DuplicatedIPAddressException(String ipAddress) {
