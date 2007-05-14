@@ -25,6 +25,7 @@
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.dnsjava.classpath"/>
   </path>
   
   

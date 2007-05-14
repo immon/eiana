@@ -43,7 +43,9 @@
     </state>
 
     <decision name="PENDING_TECH_CHECK">
-        <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckDecision"/>
+        <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckDecision">
+            <test>true</test>
+        </handler>
         <transition name="no-test" to="PENDING_IMPACTED_PARTIES"/>
         <transition name="test-ok" to="PENDING_IMPACTED_PARTIES"/>
         <!--

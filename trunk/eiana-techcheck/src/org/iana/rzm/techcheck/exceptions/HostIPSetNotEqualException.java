@@ -3,6 +3,5 @@ package org.iana.rzm.techcheck.exceptions;
 /**
  * @author: Piotr Tkaczyk
  */
-public class NotEnoughHostsException extends DomainCheckException {
-
+public class HostIPSetNotEqualException extends DomainCheckException {
 }

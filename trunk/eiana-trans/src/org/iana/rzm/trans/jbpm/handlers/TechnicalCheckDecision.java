@@ -18,9 +18,11 @@ import org.iana.objectdiff.ChangeApplicator;
  */
 public class TechnicalCheckDecision implements DecisionHandler {
 
+    boolean test;
+
     public String decide(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        if(td != null) {
+        if(td != null && !test) {
             DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
             DiffConfiguration diffConfig = (DiffConfiguration) executionContext.getJbpmContext().getObjectFactory().createObject("diffConfig");
 
