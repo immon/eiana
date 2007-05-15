@@ -46,11 +46,15 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         this.transactionManager = transactionManager;
     }
 
-    public TransactionVO getTransaction(long id) throws NoSuchTransactionException {
+    public TransactionVO getTransaction(long id) throws NoTransactionException {
         isUserInRole();
-        Transaction retTransaction = transactionManager.getTransaction(id);
-        CheckTool.checkNull(retTransaction, "no such transaction: " + id);
-        return TransactionConverter.toTransactionVO(retTransaction);
+        try {
+            Transaction retTransaction = transactionManager.getTransaction(id);
+            CheckTool.checkNull(retTransaction, "no such transaction: " + id);
+            return TransactionConverter.toTransactionVO(retTransaction);
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        }
     }
 
     public TransactionVO createDomainCreationTransaction(DomainVO domainVO) {
@@ -129,15 +133,19 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         return transactionVOs;
     }
 
-    public void deleteTransaction(TransactionVO transactionVO) throws NoSuchTransactionException {
+    public void deleteTransaction(TransactionVO transactionVO) throws NoTransactionException {
         isUserInRole();
         CheckTool.checkNull(transactionVO, "transactionVO");
         deleteTransaction(transactionVO.getTransactionID());
     }
 
-    public void deleteTransaction(long transactionId) throws NoSuchTransactionException {
+    public void deleteTransaction(long transactionId) throws NoTransactionException {
         isUserInRole();
-        transactionManager.deleteTransaction(transactionId);
+        try {
+            transactionManager.deleteTransaction(transactionId);
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        }
     }
 
     public List<TransactionVO> findTransactions(Criterion criteria) {

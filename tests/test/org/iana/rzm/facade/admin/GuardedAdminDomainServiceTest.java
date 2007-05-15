@@ -12,6 +12,7 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
@@ -70,7 +71,7 @@ public class GuardedAdminDomainServiceTest {
 
         gAdminServ.createDomain(createDomainVO(DOMAIN_NAME));
 
-        DomainVO retDomainVO = gAdminServ.getDomain(DOMAIN_NAME);
+        IDomainVO retDomainVO = gAdminServ.getDomain(DOMAIN_NAME);
 
         assert DOMAIN_NAME.equals(retDomainVO.getName());
 
@@ -80,7 +81,7 @@ public class GuardedAdminDomainServiceTest {
 
         domainId = retDomainVO.getObjId();
 
-        List<DomainVO> domVOList = gAdminServ.findDomains();
+        List<IDomainVO> domVOList = gAdminServ.findDomains();
         assert domVOList.size() == 1;
         assert DOMAIN_NAME.equals(domVOList.iterator().next().getName());
 
@@ -95,7 +96,7 @@ public class GuardedAdminDomainServiceTest {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
 
-        List<DomainVO> retDomainVOs = gAdminServ.findDomains(new Equal("name.name", DOMAIN_NAME));
+        List<IDomainVO> retDomainVOs = gAdminServ.findDomains(new Equal("name.name", DOMAIN_NAME));
         assert retDomainVOs.size() == 1;
         assert DOMAIN_NAME.equals(retDomainVOs.iterator().next().getName());
 
@@ -111,7 +112,7 @@ public class GuardedAdminDomainServiceTest {
         names.add(SECOND_DOMAIN);
 
         List<String> retNames = new ArrayList<String>();
-        for (DomainVO domainVO : retDomainVOs)
+        for (IDomainVO domainVO : retDomainVOs)
             retNames.add(domainVO.getName());
 
         assert names.equals(retNames);
@@ -135,26 +136,6 @@ public class GuardedAdminDomainServiceTest {
     }
 
     @Test (dependsOnMethods = {"testFacadeCreateDomainByWrongUser"})
-    public void testFacadeUpdateDomain() {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gAdminServ.setUser(testAuthUser);
-
-        DomainVO retDomainVO = gAdminServ.getDomain(DOMAIN_NAME);
-
-        assert DOMAIN_NAME.equals(retDomainVO.getName());
-
-        retDomainVO.setRegistryUrl("newregurl");
-        gAdminServ.updateDomain(retDomainVO);
-
-        retDomainVO = gAdminServ.getDomain(DOMAIN_NAME);
-
-        assert DOMAIN_NAME.equals(retDomainVO.getName());
-        assert "newregurl".equals(retDomainVO.getRegistryUrl());
-
-        gAdminServ.close();
-    }
-
-    @Test (dependsOnMethods = {"testFacadeUpdateDomain"})
     public void testFacadeDeleteDomain() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);

@@ -1,8 +1,7 @@
 package org.iana.rzm.facade.admin;
 
-import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.common.RZMStatefulService;
-import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
@@ -12,19 +11,19 @@ import java.util.List;
  */
 public interface AdminDomainService extends RZMStatefulService {
 
-    public DomainVO getDomain(String domainName);
+    public IDomainVO getDomain(String domainName);
 
-    public DomainVO getDomain(long id);
+    public IDomainVO getDomain(long id);
 
-    public void createDomain(DomainVO domain);
+    public void createDomain(IDomainVO domain);
 
-    public void updateDomain(DomainVO domain);
+    public void updateDomain(IDomainVO domain);
 
     public void deleteDomain(String domainName);
 
     public void deleteDomain(long id);
 
-    public List<DomainVO> findDomains();
+    public List<IDomainVO> findDomains();
 
-    public List<DomainVO> findDomains(Criterion criteira);
+    public List<IDomainVO> findDomains(Criterion criteira);
 }
