@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.admin;
 
-import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
@@ -43,29 +43,29 @@ public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService im
         this.domainManager = domainManager;
     }
 
-    public DomainVO getDomain(String domainName) {
+    public IDomainVO getDomain(String domainName) {
         isUserInRole();
         CheckTool.checkEmpty(domainName, "domain name");
         Domain retrivedDomain = domainManager.get(domainName);
         CheckTool.checkNull(retrivedDomain, "no such domain: " + domainName);
-        return ToVOConverter.toDomainVO(retrivedDomain);
+        return ToVOConverter.toSimpleDomainVO(retrivedDomain);
     }
 
-    public DomainVO getDomain(long id) {
+    public IDomainVO getDomain(long id) {
         isUserInRole();
         Domain retrivedDomain = domainManager.get(id);
         CheckTool.checkNull(retrivedDomain, "no such domain: " + id);
-        return ToVOConverter.toDomainVO(retrivedDomain);
+        return ToVOConverter.toSimpleDomainVO(retrivedDomain);
     }
 
-    public void createDomain(DomainVO domain) {
+    public void createDomain(IDomainVO domain) {
         isUserInRole();
         CheckTool.checkNull(domain, "domainVO");
         Domain newDomain = FromVOConverter.toDomain(domain);
         domainManager.create(newDomain);
     }
 
-    public void updateDomain(DomainVO domain) {
+    public void updateDomain(IDomainVO domain) {
         isUserInRole();
         CheckTool.checkNull(domain, "domainVO");
         Domain newDomain = FromVOConverter.toDomain(domain);
@@ -87,20 +87,20 @@ public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService im
         domainManager.delete(retrivedDomain);
     }
 
-    public List<DomainVO> findDomains() {
+    public List<IDomainVO> findDomains() {
         isUserInRole();
-        List<DomainVO> domainVOList = new ArrayList<DomainVO>();
+        List<IDomainVO> domainVOList = new ArrayList<IDomainVO>();
         for (Domain domian: domainManager.findAll())
-            domainVOList.add(ToVOConverter.toDomainVO(domian));
+            domainVOList.add(ToVOConverter.toSimpleDomainVO(domian));
         return domainVOList;
     }
 
-    public List<DomainVO> findDomains(Criterion criteria) {
+    public List<IDomainVO> findDomains(Criterion criteria) {
         isUserInRole();
         CheckTool.checkNull(criteria, "criteria");
-        List<DomainVO> domainVOs = new ArrayList<DomainVO>();
+        List<IDomainVO> domainVOs = new ArrayList<IDomainVO>();
         for (Domain domain : domainManager.find(criteria))
-            domainVOs.add(ToVOConverter.toDomainVO(domain));
+            domainVOs.add(ToVOConverter.toSimpleDomainVO(domain));
         return domainVOs;
     }
 

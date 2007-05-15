@@ -5,19 +5,16 @@ import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 public interface AdminTransactionService extends RZMStatefulService {
 
-    TransactionVO getTransaction(long id) throws NoSuchTransactionException;
+    TransactionVO getTransaction(long id) throws NoTransactionException;
 
     TransactionVO createDomainCreationTransaction(DomainVO domainVO);
 
@@ -29,8 +26,8 @@ public interface AdminTransactionService extends RZMStatefulService {
 
     public List<TransactionVO> findTransactions(Criterion criteria);
 
-    public void deleteTransaction(TransactionVO transaction) throws NoSuchTransactionException;
+    public void deleteTransaction(TransactionVO transaction) throws NoTransactionException;
 
-    public void deleteTransaction(long transactionId) throws NoSuchTransactionException;
+    public void deleteTransaction(long transactionId) throws NoTransactionException;
 
 }
