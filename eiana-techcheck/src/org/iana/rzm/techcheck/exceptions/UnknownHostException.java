@@ -3,9 +3,10 @@ package org.iana.rzm.techcheck.exceptions;
 /**
  * @author: Piotr Tkaczyk
  */
-public class NoAuthoritativeNameServerException extends DomainException {
+public class UnknownHostException extends DomainException {
 
-    public NoAuthoritativeNameServerException(String hostName) {
+
+    public UnknownHostException(String hostName) {
         super(hostName, "");
     }
 

@@ -3,10 +3,11 @@ package org.iana.rzm.techcheck.exceptions;
 /**
  * @author: Piotr Tkaczyk
  */
-public class NoAuthoritativeNameServerException extends DomainException {
+public class SerialNumberNotEqualException extends DomainException {
 
-    public NoAuthoritativeNameServerException(String hostName) {
-        super(hostName, "");
+
+    public SerialNumberNotEqualException(String hostName, String serial) {
+        super(hostName, serial);
     }
 
     public String getName() {
