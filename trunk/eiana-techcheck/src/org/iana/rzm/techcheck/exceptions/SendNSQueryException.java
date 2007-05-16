@@ -3,14 +3,13 @@ package org.iana.rzm.techcheck.exceptions;
 /**
  * @author: Piotr Tkaczyk
  */
-public class SendNSQueryException extends DomainCheckException {
-    Throwable cause;
+public class SendNSQueryException extends DomainException {
 
-    public SendNSQueryException(Throwable cause) {
-        this.cause = cause;
+    public SendNSQueryException(String hostName, String value) {
+        super(hostName, value);
     }
 
-    public Throwable getCause() {
-        return cause;
+    public String getName() {
+        return this.getClass().getSimpleName();
     }
 }
