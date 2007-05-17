@@ -64,6 +64,16 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
     }
 
 
+    public void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException {
+        isUserInRole();
+        try {
+            Transaction retTransaction= transactionManager.getTransaction(transactionID);
+            retTransaction.setTicketID(ticketId);
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        }
+    }
+
     public void acceptTransaction(long id) throws NoTransactionException, FacadeTransactionException {
         isUserInRole();
         try {

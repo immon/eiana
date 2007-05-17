@@ -28,6 +28,8 @@ public interface AdminTransactionService extends RZMStatefulService {
 
     List<TransactionVO> findAll();
 
+    void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException;
+
     List<TransactionVO> find(TransactionCriteriaVO criteria);
 
     public List<TransactionVO> findTransactions(Criterion criteria);
