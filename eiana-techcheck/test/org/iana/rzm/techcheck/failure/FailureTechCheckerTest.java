@@ -18,7 +18,7 @@ import java.util.Map;
 public class FailureTechCheckerTest {
 
     Domain domain;
-    Host host1, host2;
+    Host host;
 
     @Test
     public void testNotEnoughHosts() {
@@ -36,10 +36,10 @@ public class FailureTechCheckerTest {
     public void testEmptyIPAddressList() {
         try {
             domain = new Domain("org");
-            host1 = new Host("tld1.ultradns.net");
-            domain.addNameServer(host1);
-            host2 = new Host("tld2.ultradns.net");
-            domain.addNameServer(host2);
+            host = new Host("tld1.ultradns.net");
+            domain.addNameServer(host);
+            host = new Host("tld2.ultradns.net");
+            domain.addNameServer(host);
 
             TechChecker.checkDomain(domain);
         } catch (DomainCheckException e) {
@@ -61,12 +61,12 @@ public class FailureTechCheckerTest {
     @Test (dependsOnMethods = {"testEmptyIPAddressList"})
     public void testWrongHostName() {
         domain = new Domain("org");
-        host1 = new Host("tld1.ultradns.net");
-        host1.addIPv4Address("204.74.112.1");
-        domain.addNameServer(host1);
-        host2 = new Host("tld2");
-        host2.addIPv4Address("204.74.113.1");
-        domain.addNameServer(host2);
+        host = new Host("tld1.ultradns.net");
+        host.addIPv4Address("204.74.112.1");
+        domain.addNameServer(host);
+        host = new Host("tld2");
+        host.addIPv4Address("204.74.113.1");
+        domain.addNameServer(host);
         try {
             TechChecker.checkDomain(domain);
         } catch (DomainCheckException e) {
@@ -79,12 +79,12 @@ public class FailureTechCheckerTest {
     @Test (dependsOnMethods = {"testWrongHostName"})
     public void testRestrictedIPAddress() {
         domain = new Domain("org");
-        host1 = new Host("tld1.ultradns.net");
-        host1.addIPv4Address("204.74.112.1");
-        domain.addNameServer(host1);
-        host2 = new Host("tld2.ultradns.net");
-        host2.addIPv4Address("10.0.0.1");
-        domain.addNameServer(host2);
+        host = new Host("tld1.ultradns.net");
+        host.addIPv4Address("204.74.112.1");
+        domain.addNameServer(host);
+        host = new Host("tld2.ultradns.net");
+        host.addIPv4Address("10.0.0.1");
+        domain.addNameServer(host);
         try {
             TechChecker.checkDomain(domain);
         } catch (DomainCheckException e) {
@@ -97,13 +97,13 @@ public class FailureTechCheckerTest {
     @Test (dependsOnMethods = {"testRestrictedIPAddress"})
     public void testDuplicatedIPAddress() {
         domain = new Domain("org");
-        host1 = new Host("tld1.ultradns.net");
-        host1.addIPv4Address("204.74.112.1");
-        domain.addNameServer(host1);
-        host2 = new Host("tld2.ultradns.net");
-        host2.addIPv4Address("204.74.113.1");
-        host2.addIPv4Address("204.74.112.1");
-        domain.addNameServer(host2);
+        host = new Host("tld1.ultradns.net");
+        host.addIPv4Address("204.74.112.1");
+        domain.addNameServer(host);
+        host = new Host("tld2.ultradns.net");
+        host.addIPv4Address("204.74.113.1");
+        host.addIPv4Address("204.74.112.1");
+        domain.addNameServer(host);
         try {
             TechChecker.checkDomain(domain);
         } catch (DomainCheckException e) {
@@ -121,12 +121,12 @@ public class FailureTechCheckerTest {
     public void testNoAuthoritativeNS() throws DomainCheckException {
 
         domain = new Domain("org");
-        host1 = new Host("tld3.ultradns.org"); //good
-        host1.addIPAddress("199.7.66.1");
-        domain.addNameServer(host1);
-        host2 = new Host("a.gtld-servers.net"); //wrong
-        host2.addIPAddress("192.5.6.30");
-        domain.addNameServer(host2);
+        host = new Host("tld3.ultradns.org"); //good
+        host.addIPAddress("199.7.66.1");
+        domain.addNameServer(host);
+        host = new Host("a.gtld-servers.net"); //wrong
+        host.addIPAddress("192.5.6.30");
+        domain.addNameServer(host);
 
         try {
             TechChecker.checkDomain(domain);
@@ -140,19 +140,29 @@ public class FailureTechCheckerTest {
     @Test ()
     public void testHostIPSet() {
         try {
-            domain = new Domain("org");
-            host1 = new Host("tld3.ultradns.org"); //good
-            host1.addIPAddress("199.7.66.1");
-            domain.addNameServer(host1);
-            host2 = new Host("b0.org.afilias-nst.org");
-            host2.addIPAddress("2001:500:c::1");
-            domain.addNameServer(host2);
+            domain = new Domain("de");
+
+            host = new Host("f.nic.de");
+            host.addIPAddress("81.91.164.5");
+            host.addIPAddress("2001:608:6::5");
+            domain.addNameServer(host);
+
+            host = new Host("a.nic.de");
+            host.addIPAddress("193.0.7.3");
+            domain.addNameServer(host);
+
+            host = new Host("z.nic.de");
+            host.addIPAddress("194.246.96.1");
+//            host.addIPAddress("2001:628:453:4905::53");
+            domain.addNameServer(host);
+
+            TechChecker.checkDomain(domain);
 
             TechChecker.checkDomain(domain);
         } catch (DomainCheckException e) {
             List<ExceptionMessage> errors = e.getErrorsByExceptionType(HostIPSetNotEqualException.class.getSimpleName());
             assert !errors.isEmpty() && errors.size() == 1;
-            assert errors.iterator().next().getOwner().equals("b0.org.afilias-nst.org");
+            assert errors.iterator().next().getOwner().equals("z.nic.de");
         }
     }
 }
