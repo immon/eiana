@@ -179,6 +179,9 @@
         <jar destfile="${jar.output.dir}/common-objectdiff.jar">
             <fileset dir="${common-objectdiff.output.dir}"/>
         </jar>
+        <jar destfile="${jar.output.dir}/common-pgp.jar">
+            <fileset dir="${common-pgp.output.dir}"/>
+        </jar>
         <jar destfile="${jar.output.dir}/eiana-dns.jar">
             <fileset dir="${eiana-dns.output.dir}"/>
         </jar>
@@ -193,6 +196,9 @@
         </jar>
         <jar destfile="${jar.output.dir}/eiana-notifications.jar">
             <fileset dir="${eiana-notifications.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-techcheck.jar">
+            <fileset dir="${eiana-techcheck.output.dir}"/>
         </jar>
         <jar destfile="${jar.output.dir}/eiana-trans.jar">
             <fileset dir="${eiana-trans.output.dir}"/>
