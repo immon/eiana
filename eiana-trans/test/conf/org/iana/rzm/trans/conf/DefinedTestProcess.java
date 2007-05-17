@@ -10,12 +10,19 @@ import java.io.InputStreamReader;
 
 public class DefinedTestProcess {
 
-    private static final String PROCESS_DEFINITION_FILE = "domain-modification.xml";
+    public static final String PROCESS_DEFINITION_FILE = "domain-modification.xml";
+    public static final String MAILS_RECEIVER = "mails-receiver.xml";
+    public static final String NOTIFICATION_RESENDER = "notifications-resender.xml";
+
     private static ProcessDefinition pd;
     private static String processName;
 
     public static ProcessDefinition getDefinition()  {
-        InputStream inputStream = DefinedTestProcess.class.getClassLoader().getResourceAsStream(PROCESS_DEFINITION_FILE);
+        return getDefinition(PROCESS_DEFINITION_FILE);
+    }
+
+    public static ProcessDefinition getDefinition(String filename)  {
+        InputStream inputStream = DefinedTestProcess.class.getClassLoader().getResourceAsStream(filename);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         pd = ProcessDefinition.parseXmlReader(inputStreamReader);
         processName = pd.getName();

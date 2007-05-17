@@ -39,6 +39,8 @@ public class ProcessDeployment {
         ProcessDAO processDAO = (ProcessDAO) context.getBean("processDAO");
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
+            processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.MAILS_RECEIVER));
+            processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.NOTIFICATION_RESENDER));
         } finally {
             processDAO.close();
         }
