@@ -44,6 +44,7 @@ public class TechChecker {
                 checkReachabilityAndAuthority(domain, nameServer, false);  //by UDP
                 checkReachabilityAndAuthority(domain, nameServer, true);   //by TCP
                 checkNameServerCoherency(domain, nameServer);
+                checkGlueNameServerCoherency(domain, nameServer);
                 serial = checkSerialNumber(domain, nameServer, serial);
 
             } catch (DomainException e) {domainCheckException.addException(e); }
@@ -68,7 +69,7 @@ public class TechChecker {
         } catch (TextParseException e) {
             // domain name can't be wrong here
         } catch (java.net.UnknownHostException e) {
-            throw new UnknownHostException(host.getName());
+            throw new UnknownHostException(host.getName(), "host unreachable");
         } catch (IOException e) {
             throw new SendNSQueryException(host.getName(), "Time Out by " + ((byTCP)? "TCP" : "UDP"));
         }
@@ -93,7 +94,7 @@ public class TechChecker {
         } catch (TextParseException e) {
             // domain name can't be wrong here
         } catch (java.net.UnknownHostException e) {
-            throw new UnknownHostException(host.getName());
+            throw new UnknownHostException(host.getName(), "host unreachable");
         } catch (IOException e) {
             throw new SendNSQueryException(host.getName(), "Time Out");
         }
@@ -101,13 +102,15 @@ public class TechChecker {
         return retSerial;
     }
 
-    private static void checkNameServerCoherency(Domain domain, Host host) throws HostIPSetNotEqualException, UnknownHostException, SendNSQueryException {
+    private static void checkGlueNameServerCoherency(Domain domain, Host host) throws HostIPSetNotEqualException, UnknownHostException, SendNSQueryException {
         try {
             String domainName = domain.getName();
             domainName =  (domainName.endsWith("."))? domainName : domainName + ".";
             Record question = Record.newRecord(new Name(domainName), Type.SOA, DClass.IN);
             Message query = Message.newQuery(question);
             Message response = new SimpleResolver(host.getName()).send(query);
+
+            if ((response == null) || (response.getSectionArray(3) == null)) throw new UnknownHostException(host.getName());
 
             List<Record> nsRecords = Arrays.asList(response.getSectionArray(3));
             Set<IPAddress> retIpAddresses = new HashSet<IPAddress>();
@@ -121,7 +124,39 @@ public class TechChecker {
         } catch (TextParseException e) {
             // domain name can't be wrong here
         } catch (java.net.UnknownHostException e) {
-            throw new UnknownHostException(host.getName());
+            throw new UnknownHostException(host.getName(), "host unreachable");
+        } catch (IOException e) {
+            throw new SendNSQueryException(host.getName(), "Time Out");
+        }
+    }
+
+    private static void checkNameServerCoherency(Domain domain, Host host) throws NSRecordNotEqualException, UnknownHostException, SendNSQueryException {
+        try {
+            String domainName = domain.getName();
+            domainName =  (domainName.endsWith("."))? domainName : domainName + ".";
+            Record question = Record.newRecord(new Name(domainName), Type.NS, DClass.IN);
+            Message query = Message.newQuery(question);
+            Message response = new SimpleResolver(host.getName()).send(query);
+
+            if ((response == null) || (response.getSectionArray(3) == null)) throw new UnknownHostException(host.getName());
+            
+
+            List<Record> nsRecords = Arrays.asList(response.getSectionArray(3));
+            Set<String> retHostNames = new HashSet<String>();
+
+            for (Record record : nsRecords)
+                retHostNames.add(record.getName().toString());
+
+            Set<String> domainHostNames = new HashSet<String>();
+            for (Host ns : domain.getNameServers())
+                domainHostNames.add((ns.getName().endsWith("\\.")) ? ns.getName() : ns.getName() + ".");
+
+            if (!retHostNames.equals(domainHostNames)) throw new NSRecordNotEqualException(host.getName());
+
+        } catch (TextParseException e) {
+            // domain name can't be wrong here
+        } catch (java.net.UnknownHostException e) {
+            throw new UnknownHostException(host.getName(), "host unreachable");
         } catch (IOException e) {
             throw new SendNSQueryException(host.getName(), "Time Out");
         }

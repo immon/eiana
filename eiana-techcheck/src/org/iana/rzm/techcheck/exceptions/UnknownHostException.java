@@ -5,6 +5,9 @@ package org.iana.rzm.techcheck.exceptions;
  */
 public class UnknownHostException extends DomainException {
 
+    public UnknownHostException(String hostName, String message) {
+        super(hostName, message);
+    }
 
     public UnknownHostException(String hostName) {
         super(hostName, "");
