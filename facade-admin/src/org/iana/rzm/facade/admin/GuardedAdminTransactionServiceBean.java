@@ -63,6 +63,43 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         return null;
     }
 
+
+    public void acceptTransaction(long id) throws NoTransactionException, FacadeTransactionException {
+        isUserInRole();
+        try {
+            Transaction transaction = transactionManager.getTransaction(id);
+            transaction.transit(this.getRZMUser(), "admin-accept");
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        } catch (TransactionException e) {
+            throw new FacadeTransactionException(e.getMessage());
+        }
+    }
+
+    public void rejectTransaction(long id) throws NoTransactionException, FacadeTransactionException {
+        isUserInRole();
+        try {
+            Transaction transaction = transactionManager.getTransaction(id);
+            transaction.transit(this.getRZMUser(), "admin-reject");
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        } catch (TransactionException e) {
+            throw new FacadeTransactionException(e.getMessage());
+        }
+    }
+
+    public void transitTransaction(long id, String transitionName) throws NoTransactionException, FacadeTransactionException {
+        isUserInRole();
+        try {
+            Transaction transaction = transactionManager.getTransaction(id);
+            transaction.transit(getRZMUser(), transitionName);
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        } catch (TransactionException e) {
+            throw new FacadeTransactionException(e.getMessage());
+        }
+    }
+
     public TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException {
         isUserInRole();
         try {
