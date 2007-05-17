@@ -15,7 +15,7 @@ public class DNSJavaTest {
 
         //network connnection required
 
-        String TLD = "org.";
+        String TLD = "ch.";
 
         Record [] records = new Lookup(TLD, Type.SOA).run();
         assert records != null;
@@ -29,7 +29,7 @@ public class DNSJavaTest {
 
             assert nsRecords[i] instanceof NSRecord;
 
-            Record question = Record.newRecord(new Name(TLD), Type.SOA, DClass.IN);
+            Record question = Record.newRecord(new Name(TLD), Type.NS, DClass.IN);
             Message query = Message.newQuery(question);
             Message response = null;
             String nsName = nsRecords[i].rdataToString();
