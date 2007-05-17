@@ -192,6 +192,7 @@
         </timer>
         <timer name="14d-time-out" duedate="14 days" transition="alert"></timer>
         <transition name="accept" to="PENDING_ZONE_PUBLICATION"/>
+        <transition name="admin-accept" to="PENDING_ZONE_PUBLICATION"/>
         <transition name="alert" to="EXCEPTION"/>
     </state>
 
@@ -218,6 +219,7 @@
         </timer>
         <timer name="7d-time-out" duedate="7 days" transition="alert"></timer>
         <transition name="accept" to="PENDING_DATABASE_INSERTION"/>
+        <transition name="admin-accept" to="PENDING_DATABASE_INSERTION"/>
         <transition name="alert" to="EXCEPTION"/>
     </state>
 

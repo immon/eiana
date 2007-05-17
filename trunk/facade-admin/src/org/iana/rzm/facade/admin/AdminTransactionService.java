@@ -20,6 +20,12 @@ public interface AdminTransactionService extends RZMStatefulService {
 
     TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException;
 
+    void acceptTransaction(long id) throws NoTransactionException, FacadeTransactionException;
+
+    void rejectTransaction(long id) throws NoTransactionException, FacadeTransactionException;
+
+    void transitTransaction(long id, String transitionName) throws NoTransactionException, FacadeTransactionException;
+
     List<TransactionVO> findAll();
 
     List<TransactionVO> find(TransactionCriteriaVO criteria);
