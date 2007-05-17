@@ -13,7 +13,8 @@ import java.util.Set;
  * @author: Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"eiana-techcheck", "TechCheckerTest"})
+
+@Test(sequential=true, groups = {"excluded", "eiana-techcheck", "TechCheckerTest"})
 public class TechCheckerTest {
 
     Domain domain;
@@ -47,7 +48,7 @@ public class TechCheckerTest {
     }
 
     @Test
-    public void testTechCheckerCH() throws DomainCheckException {
+    public void testTechCheckerUS() throws DomainCheckException {
         try {
             domain = new Domain("us");
 
