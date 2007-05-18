@@ -4,6 +4,7 @@ import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.iana.rzm.facade.system.trans.TransactionStateVO;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.criteria.Criterion;
 
@@ -25,6 +26,10 @@ public interface AdminTransactionService extends RZMStatefulService {
     void rejectTransaction(long id) throws NoTransactionException, FacadeTransactionException;
 
     void transitTransaction(long id, String transitionName) throws NoTransactionException, FacadeTransactionException;
+
+    void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException;
+
+    void transitTransactionToState(long id, String targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException;
 
     List<TransactionVO> findAll();
 
