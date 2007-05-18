@@ -89,6 +89,7 @@
         <transition name="reject" to="REJECTED"/>
         <transition name="admin-accept" to="PENDING_IANA_CONFIRMATION"/>
         <transition name="admin-reject" to="REJECTED"/>
+        <transition name="admin-back" to="PENDING_CONTACT_CONFIRMATION" />
         <transition name="close" to="ADMIN_CLOSED"/>
     </state>
 
@@ -103,6 +104,8 @@
         <timer name="3d-time-out" duedate='3 days' transition='alert'></timer>
         <transition name="normal" to="PENDING_EXT_APPROVAL"/>
         <transition name="alert" to="EXCEPTION"/>
+        <transition name="admin-accept" to="PENDING_EXT_APPROVAL"/>
+        <transition name="admin-back" to="PENDING_IMPACTED_PARTIES" />
         <!--
                 todo: future feature
                 <transition name="redelegation" to="PENDING_EVALUATION"/>
@@ -127,6 +130,7 @@
         <transition name="reject" to="REJECTED"/>
         <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
         <transition name="admin-reject" to="REJECTED"/>
+        <transition name="admin-back" to="PENDING_IANA_CONFIRMATION" />
         <transition name="close" to="ADMIN_CLOSED"/>
         <transition name="alert" to="EXCEPTION"/>
     </state>
@@ -160,6 +164,7 @@
         <transition name="reject" to="REJECTED"/>
         <transition name="admin-accept" to="USDOC_APPROVED"/>
         <transition name="admin-reject" to="REJECTED"/>
+        <transition name="admin-back" to="PENDING_EXT_APPROVAL" />
         <transition name="alert" to="EXCEPTION"/>
     </state>
 
@@ -193,6 +198,7 @@
         <timer name="14d-time-out" duedate="14 days" transition="alert"></timer>
         <transition name="accept" to="PENDING_ZONE_PUBLICATION"/>
         <transition name="admin-accept" to="PENDING_ZONE_PUBLICATION"/>
+        <transition name="admin-back" to="PENDING_USDOC_APPROVAL" />
         <transition name="alert" to="EXCEPTION"/>
     </state>
 
@@ -220,6 +226,7 @@
         <timer name="7d-time-out" duedate="7 days" transition="alert"></timer>
         <transition name="accept" to="PENDING_DATABASE_INSERTION"/>
         <transition name="admin-accept" to="PENDING_DATABASE_INSERTION"/>
+        <transition name="admin-back" to="PENDING_ZONE_INSERTION" />
         <transition name="alert" to="EXCEPTION"/>
     </state>
 

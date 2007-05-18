@@ -16,10 +16,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.criteria.Criterion;
 
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -27,18 +24,26 @@ import java.util.ArrayList;
 public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulService implements AdminTransactionService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();
-
     static {
         allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
     }
 
-    TransactionManager transactionManager;
+    private static List<String> states = new ArrayList<String>();
+    static {
+        states.add("PENDING_CONTACT_CONFIRMATION");
+        states.add("PENDING_IMPACTED_PARTIES");
+        states.add("PENDING_IANA_CONFIRMATION");
+        states.add("PENDING_EXT_APPROVAL");
+        states.add("PENDING_USDOC_APPROVAL");
+        states.add("PENDING_ZONE_INSERTION");
+        states.add("PENDING_ZONE_PUBLICATION");
+    }
 
+    TransactionManager transactionManager;
 
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
     }
-
 
     public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager) {
         super(userManager);
@@ -63,6 +68,43 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         return null;
     }
 
+    public void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException {
+        transitTransactionToState(id, targetStateName.toString());
+    }
+
+    public void transitTransactionToState(long id, String targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException {
+        isUserInRole();
+        try {
+            if (!states.contains(targetStateName)) throw new NoSuchStateException(targetStateName);
+
+            Transaction transaction = transactionManager.getTransaction(id);
+
+            if (((targetStateName.equals("PENDING_ZONE_INSERTION")) ||
+                    (targetStateName.equals("PENDING_ZONE_PUBLICATION"))) &&
+                    !(transaction.getDomainChange().getFieldChanges().containsKey("nameServers"))) throw new StateUnreachableException(targetStateName);
+
+            String currentState = transaction.getState().getName().toString();
+
+            int currentStateIndex = states.indexOf(currentState);
+            int difference = states.indexOf(targetStateName) - currentStateIndex;
+
+            if (difference < 0) {
+                for(int i = currentStateIndex; i > (difference + currentStateIndex); i--) {
+                    transaction = transactionManager.getTransaction(id);
+                    transaction.transit(this.getRZMUser(), "admin-back");
+                }
+            } else {
+                for(int i = currentStateIndex; i < (difference + currentStateIndex); i++) {
+                    transaction = transactionManager.getTransaction(id);
+                    transaction.transit(this.getRZMUser(), "admin-accept");
+                }
+            }
+        } catch (NoSuchTransactionException e) {
+            throw new NoTransactionException(e.getId());
+        } catch (TransactionException e) {
+            throw new FacadeTransactionException(e.getMessage());
+        }
+    }
 
     public void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException {
         isUserInRole();
