@@ -2,6 +2,7 @@ package org.iana.notifications;
 
 import javax.persistence.Entity;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 
 /**
  * This class represents a simple text content containing a text-subject and a text-body.
@@ -13,7 +14,7 @@ public class TextContent extends Content {
 
     @Basic
     String subject;
-    @Basic
+    @Column (length = 4096)
     String body;
 
     public TextContent() {

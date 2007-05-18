@@ -49,12 +49,24 @@ public class ContactVO implements Trackable, Serializable {
         this.addresses = addresses;
     }
 
+    public void addAddress(AddressVO address) {
+        if (addresses == null)
+            addresses = new ArrayList<AddressVO>();
+        addresses.add(address);
+    }
+
     public List<String> getPhoneNumbers() {
         return phoneNumbers;
     }
 
     public void setPhoneNumbers(List<String> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+    }
+
+    public void addPhoneNumber(String number) {
+        if (phoneNumbers == null)
+            phoneNumbers = new ArrayList<String>();
+        phoneNumbers.add(number);
     }
 
     public List<String> getFaxNumbers() {
@@ -65,17 +77,31 @@ public class ContactVO implements Trackable, Serializable {
         this.faxNumbers = faxNumbers;
     }
 
+    public void addFaxNumber(String number) {
+        if (faxNumbers == null)
+            faxNumbers = new ArrayList<String>();
+        faxNumbers.add(number);
+    }
+
     public List<String> getEmails() {
         List<String> result = new ArrayList<String>();
-        for (EmailAddress emailAddress : emails)
-            result.add(emailAddress.getEmail());
+        if (emails != null)
+            for (EmailAddress emailAddress : emails)
+                result.add(emailAddress.getEmail());
         return result;
     }
 
     public void setEmails(List<String> emails) {
-        this.emails = new ArrayList<EmailAddress>(); 
-        for (String email : emails)
-            this.emails.add(new EmailAddress(email));
+        this.emails = new ArrayList<EmailAddress>();
+        if (emails != null)
+            for (String email : emails)
+                this.emails.add(new EmailAddress(email));
+    }
+
+    public void addEmail(String email) {
+        if (emails == null)
+            emails = new ArrayList<EmailAddress>();
+        emails.add(new EmailAddress(email));
     }
 
     public boolean isRole() {

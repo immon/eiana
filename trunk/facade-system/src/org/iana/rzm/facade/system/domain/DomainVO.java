@@ -5,6 +5,7 @@ import org.iana.rzm.common.Name;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -37,6 +38,14 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     public void setAdminContacts(List<ContactVO> adminContacts) {
         this.adminContacts = adminContacts;
     }
+
+    public void addAdminContact(ContactVO contact) {
+        if (adminContacts == null)
+            adminContacts = new ArrayList<ContactVO>();
+        adminContacts.add(contact);
+    }
+
+
 
     public List<ContactVO> getTechContacts() {
         return techContacts;

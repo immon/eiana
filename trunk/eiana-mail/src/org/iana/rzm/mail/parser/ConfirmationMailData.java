@@ -3,8 +3,7 @@ package org.iana.rzm.mail.parser;
 /**
  * @author Jakub Laszkiewicz
  */
-public class ConfirmationMailData implements MailData {
-    private String email;
+public class ConfirmationMailData extends AbstractMailData{
     private Long ticketId;
     private String stateName;
     private boolean accepted;
@@ -12,19 +11,14 @@ public class ConfirmationMailData implements MailData {
     public ConfirmationMailData() {
     }
 
-    public ConfirmationMailData(String email, Long ticketId, String stateName, boolean accepted) {
-        this.email = email;
+    public ConfirmationMailData(String originalSubject, String originalBody) {
+        super(originalSubject, originalBody);
+    }
+
+    public ConfirmationMailData(Long ticketId, String stateName, boolean accepted) {
         this.ticketId = ticketId;
         this.stateName = stateName;
         this.accepted = accepted;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Long getTicketId() {

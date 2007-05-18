@@ -16,11 +16,14 @@ public class Pop3MailReceiver implements MailReceiver {
     private String host;
     private String user;
     private String password;
+    private String subjectToken;
 
-    public Pop3MailReceiver(String host, String user, String password) {
+
+    public Pop3MailReceiver(String host, String user, String password, String subjectToken) {
         this.host = host;
         this.user = user;
         this.password = password;
+        this.subjectToken = subjectToken;
     }
 
     public List<MimeMessage> getMessages() throws MailReceiverException {
@@ -36,14 +39,24 @@ public class Pop3MailReceiver implements MailReceiver {
             }
             folder.open(Folder.READ_WRITE);
             Message[] msgs = folder.getMessages();
-            for (Message msg : msgs) {
+            for (Message msg : msgs) { 
                 msg.setFlag(Flags.Flag.DELETED, true);
-                list.add(new MimeMessage((MimeMessage) msg));
+                if (msg.getSubject().contains(subjectToken)) {
+                    msg.setSubject(removeSubjectToken(msg.getSubject()));
+                    list.add(new MimeMessage((MimeMessage) msg));
+                }
             }
             folder.close(true);
         } catch (Exception e) {
             throw new MailReceiverException("while receiving message", e);
         }
         return list;
+    }
+
+    private String removeSubjectToken(String subject) {
+        int i = subject.indexOf(subjectToken);
+        StringBuffer sb = new StringBuffer();
+        sb.append(subject.substring(0, i)).append(subject.substring(i + subjectToken.length()));
+        return sb.toString();
     }
 }

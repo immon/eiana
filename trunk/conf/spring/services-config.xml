@@ -616,27 +616,28 @@
         <constructor-arg index="0" value="host"/>
         <constructor-arg index="1" value="user"/>
         <constructor-arg index="2" value="password"/>
+        <constructor-arg index="3" value="[RZM]"/>
     </bean>
 
-    <bean id="mailParser" class="org.iana.rzm.mail.parser.MailParserImpl"/>
+    <bean id="templatesManager" class="org.iana.templates.def.parser.TemplatesManager">
+        <constructor-arg index="0" value="mail-templates.xml"/>
+    </bean>
+
+    <bean id="templatesService" class="org.iana.templates.TemplatesServiceBean">
+        <constructor-arg index="0" ref="templatesManager"/>
+    </bean>
+
+    <bean id="mailParser" class="org.iana.rzm.mail.parser.MailParserImpl">
+        <constructor-arg index="0" ref="templatesService"/>
+    </bean>
 
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean" scope="session">
-        <constructor-arg index="0" ref="mailReceiver"/>
-        <constructor-arg index="1" ref="mailParser"/>
-        <constructor-arg index="2" ref="authenticationServiceBean"/>
-        <constructor-arg index="3" ref="GuardedSystemTransactionService"/>
+        <constructor-arg index="0" ref="mailParser"/>
+        <constructor-arg index="1" ref="authenticationServiceBean"/>
+        <constructor-arg index="2" ref="GuardedSystemTransactionService"/>
+        <constructor-arg index="3" ref="GuardedSystemDomainService"/>
+        <constructor-arg index="4" ref="NotificationSenderBean"/>
+        <constructor-arg index="5" ref="NotificationManagerBean"/>
+        <constructor-arg index="6" ref="userManager"/>
     </bean>
-
-    <!-- fake mails processing configuration -->
-
-<!--
-    <bean id="fakeMailReceiver" class="org.iana.rzm.mail.test.FakeMailReceiver"/>
-
-    <bean id="fakeMailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean" scope="session">
-        <constructor-arg index="0" ref="fakeMailReceiver"/>
-        <constructor-arg index="1" ref="mailParser"/>
-        <constructor-arg index="2" ref="authenticationServiceBean"/>
-        <constructor-arg index="3" ref="GuardedSystemTransactionService"/>
-    </bean>
--->
 </beans>

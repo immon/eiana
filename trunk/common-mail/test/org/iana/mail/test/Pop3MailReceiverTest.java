@@ -27,7 +27,7 @@ public class Pop3MailReceiverTest {
 
     @Test
     public void testGetMessages() throws MailReceiverException, MessagingException, IOException {
-        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD);
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, "");
         List<MimeMessage> messages = receiver.getMessages();
         assert messages != null;
         assert messages.size() == 1;

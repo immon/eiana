@@ -46,6 +46,11 @@ public class HostVO implements Trackable, Serializable {
         this.addresses = addresses;
     }
 
+    public void addAddress(IPAddressVO address) {
+        if (addresses == null) addresses = new HashSet<IPAddressVO>();
+        addresses.add(address);
+    }
+
     public boolean isShared() {
         return shared;
     }
