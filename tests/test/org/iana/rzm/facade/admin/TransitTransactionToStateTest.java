@@ -89,13 +89,15 @@ public class TransitTransactionToStateTest {
 
     @Test (expectedExceptions = StateUnreachableException.class)
     public void testTransitTransactionToUnreachableState() throws Exception {
-        createDomainModificationProcess();
-
-        TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
-
-
-        gAdminTransactionServ.transitTransactionToState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
+        try {
+            createDomainModificationProcess();
+            TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
+            assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+            gAdminTransactionServ.transitTransactionToState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
+        } catch(StateUnreachableException e) {
+            assert e.getStateName().equals("PENDING_ZONE_PUBLICATION");
+            throw e;
+        }
     }
 
     @Test
