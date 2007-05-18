@@ -33,6 +33,7 @@
   <path id="conf.module.sourcepath">
     <dirset dir="${module.conf.basedir}">
       <include name="hibernate"/>
+      <include name="mail-interface"/>
       <include name="spring"/>
     </dirset>
   </path>
@@ -52,6 +53,10 @@
     
     <copy todir="${conf.output.dir}">
       <fileset dir="${module.conf.basedir}/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.conf.basedir}/mail-interface">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

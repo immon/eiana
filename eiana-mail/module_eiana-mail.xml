@@ -30,6 +30,15 @@
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <path refid="library.spring.classpath"/>
+    <pathelement location="${common-templates.output.dir}"/>
+    <pathelement location="${common-templates.testoutput.dir}"/>
+    <pathelement location="${common-pgp.output.dir}"/>
+    <pathelement location="${common-pgp.testoutput.dir}"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <path refid="library.log4j.classpath"/>
   </path>
   
   
@@ -49,14 +58,15 @@
   
   <path id="eiana-mail.module.test.sourcepath">
     <dirset dir="${module.eiana-mail.basedir}">
-      <include name="test"/>
+      <include name="test/etc"/>
+      <include name="test/mailparser"/>
     </dirset>
   </path>
   
   
   <target name="compile.module.eiana-mail" depends="compile.module.eiana-mail.production,compile.module.eiana-mail.tests" description="Compile module eiana-mail"/>
   
-  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util" description="Compile module eiana-mail; production classes">
+  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-templates,compile.module.common-pgp,compile.module.eiana-notifications,compile.module.eiana-users" description="Compile module eiana-mail; production classes">
     <mkdir dir="${eiana-mail.output.dir}"/>
     <javac destdir="${eiana-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-mail}/javac">
       <compilerarg line="${compiler.args.eiana-mail}"/>
@@ -85,7 +95,11 @@
     </javac>
     
     <copy todir="${eiana-mail.testoutput.dir}">
-      <fileset dir="${module.eiana-mail.basedir}/test">
+      <fileset dir="${module.eiana-mail.basedir}/test/etc">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-mail.basedir}/test/mailparser">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

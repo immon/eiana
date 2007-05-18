@@ -49,6 +49,7 @@ public class PgpMailAuthenticator implements AuthenticationService {
     }
 
     private boolean validateSignature(String message, String publicKey) throws SignatureValidatorException, UnsupportedEncodingException {
+        if (message == null || publicKey == null) return false;
         SignatureValidator validator = new CryptixSignatureValidator();
         InputStream in = new ByteArrayInputStream(message.getBytes("US-ASCII"));
         return validator.validate(in, publicKey);
