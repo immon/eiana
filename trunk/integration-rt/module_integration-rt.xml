@@ -2,6 +2,9 @@
 <project name="module_integration-rt" default="compile.module.integration-rt">
   <dirname property="module.integration-rt.basedir" file="${ant.file.module_integration-rt}"/>
   
+  <property name="module.jdk.home.integration-rt" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.integration-rt" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.integration-rt" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.integration-rt" value="${compiler.args}"/>
   
@@ -12,7 +15,9 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="integration-rt.module.classpath"/>
+  <path id="integration-rt.module.classpath">
+    <path refid="${module.jdk.classpath.integration-rt}"/>
+  </path>
   
   
   <patternset id="excluded.from.module.integration-rt">
@@ -34,7 +39,7 @@
   
   <target name="compile.module.integration-rt.production" description="Compile module integration-rt; production classes">
     <mkdir dir="${integration-rt.output.dir}"/>
-    <javac destdir="${integration-rt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${integration-rt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.integration-rt}/javac">
       <compilerarg line="${compiler.args.integration-rt}"/>
       <bootclasspath refid="integration-rt.module.bootclasspath"/>
       <classpath refid="integration-rt.module.classpath"/>
