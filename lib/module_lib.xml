@@ -2,9 +2,6 @@
 <project name="module_lib" default="compile.module.lib">
   <dirname property="module.lib.basedir" file="${ant.file.module_lib}"/>
   
-  <property name="module.jdk.home.lib" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.lib" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.lib" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.lib" value="${compiler.args}"/>
   
@@ -15,9 +12,7 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="lib.module.classpath">
-    <path refid="${module.jdk.classpath.lib}"/>
-  </path>
+  <path id="lib.module.classpath"/>
   
   
   <patternset id="excluded.from.module.lib">

@@ -275,6 +275,7 @@
       <module fileurl="file://$PROJECT_DIR$/../eiana-logs/eiana-logs.iml" filepath="$PROJECT_DIR$/../eiana-logs/eiana-logs.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-mail/eiana-mail.iml" filepath="$PROJECT_DIR$/../eiana-mail/eiana-mail.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-notifications/eiana-notifications.iml" filepath="$PROJECT_DIR$/../eiana-notifications/eiana-notifications.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../eiana-startup/eiana-startup.iml" filepath="$PROJECT_DIR$/../eiana-startup/eiana-startup.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-techcheck/eiana-techcheck.iml" filepath="$PROJECT_DIR$/../eiana-techcheck/eiana-techcheck.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-trans/eiana-trans.iml" filepath="$PROJECT_DIR$/../eiana-trans/eiana-trans.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-users/eiana-users.iml" filepath="$PROJECT_DIR$/../eiana-users/eiana-users.iml" />

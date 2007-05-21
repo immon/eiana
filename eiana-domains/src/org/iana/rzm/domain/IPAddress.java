@@ -26,7 +26,6 @@ public abstract class IPAddress {
         this.address = address;
         this.type = type;
     }
-
     final public boolean isIPv4() { return Type.IPv4 == type; }
 
     final public boolean isIPv6() { return Type.IPv6 == type; }
