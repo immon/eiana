@@ -23,7 +23,7 @@ public class TransactionActionsVO {
         CheckTool.checkNull(group, "null transaction group");
         groups.add(group);
         nameServerActions += group.getNameServerActions();
-        if (!otherAction) otherAction = !group.containsOtherAction();
+        if (!otherAction) otherAction = group.containsOtherAction();
     }
 
     public void setGroups(Collection<TransactionActionGroupVO> groups) {
