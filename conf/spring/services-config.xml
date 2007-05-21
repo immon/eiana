@@ -498,7 +498,7 @@
 
     <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory"/>
 
-    <bean id="messageSerivce" class="org.jbpm.msg.db.DbMessageService"/>
+    <bean id="message" class="org.jbpm.msg.db.DbMessageServiceFactory"/>
 
     <bean id="jbpmConfiguration"
           class="org.jbpm.JbpmConfiguration">
@@ -515,7 +515,7 @@
                     <ref local="scheduler"/>
                 </entry>
                 <entry key="message">
-                    <ref local="messageService"/>
+                    <ref local="message"/>
                 </entry>
             </map>
         </constructor-arg>
