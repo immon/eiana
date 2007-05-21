@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 @Test(sequential = true, groups = {"test", "GuardedAdminTransactionServiceTest"})
-public class GuardedAdminTransactionServiceTest {
+public class GuardedAdminTransactionServiceWorkFlowTest {
 
     ApplicationContext appCtx;
     AdminTransactionService gAdminTransactionServ;
