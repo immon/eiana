@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-public interface ProcessDAO {
+public interface ProcessDAO {           
     public ProcessInstance getProcessInstance(final long processInstanceId);
     public ProcessInstance newProcessInstance(final String name);
     public ProcessInstance newProcessInstanceForUpdate(final String name);

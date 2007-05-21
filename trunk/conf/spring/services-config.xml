@@ -522,23 +522,23 @@
     </bean>
 
     <bean id="resource.business.calendar" class="java.lang.String">
-        <constructor-arg value="org/jbpm/calendar/jbpm.business.calendar.properties"/>
+        <constructor-arg value="classpath:org/jbpm/calendar/jbpm.business.calendar.properties"/>
     </bean>
 
     <bean id="resource.default.modules" class="java.lang.String">
-        <constructor-arg value="org/jbpm/graph/def/jbpm.default.modules.properties"/>
+        <constructor-arg value="classpath:org/jbpm/graph/def/jbpm.default.modules.properties"/>
     </bean>
 
     <bean id="resource.action.types" class="java.lang.String">
-        <constructor-arg value="org/jbpm/graph/action/action.types.xml"/>
+        <constructor-arg value="classpath:org/jbpm/graph/action/action.types.xml"/>
     </bean>
 
     <bean id="resource.node.types" class="java.lang.String">
-        <constructor-arg value="org/jbpm/graph/node/node.types.xml"/>
+        <constructor-arg value="classpath:org/jbpm/graph/node/node.types.xml"/>
     </bean>
 
     <bean id="resource.converter" class="java.lang.String">
-        <constructor-arg value="org/jbpm/db/hibernate/jbpm.converter.properties"/>
+        <constructor-arg value="classpath:org/jbpm/db/hibernate/jbpm.converter.properties"/>
     </bean>
 
     <bean id="resource.varmapping" class="java.lang.String">

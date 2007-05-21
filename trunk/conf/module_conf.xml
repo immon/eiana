@@ -2,9 +2,6 @@
 <project name="module_conf" default="compile.module.conf">
   <dirname property="module.conf.basedir" file="${ant.file.module_conf}"/>
   
-  <property name="module.jdk.home.conf" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.conf" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.conf" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.conf" value="${compiler.args}"/>
   
@@ -16,7 +13,6 @@
   </path>
   
   <path id="conf.module.classpath">
-    <path refid="${module.jdk.classpath.conf}"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.javaee.classpath"/>
   </path>
@@ -43,7 +39,7 @@
   
   <target name="compile.module.conf.production" description="Compile module conf; production classes">
     <mkdir dir="${conf.output.dir}"/>
-    <javac destdir="${conf.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.conf}/javac">
+    <javac destdir="${conf.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.conf}"/>
       <bootclasspath refid="conf.module.bootclasspath"/>
       <classpath refid="conf.module.classpath"/>

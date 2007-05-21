@@ -44,8 +44,7 @@ public class Contact implements TrackedObject,Cloneable {
     private boolean role;
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
-    @Embedded
-    private TrackData trackData = new TrackData();
+     private TrackData trackData = new TrackData();
 
     public Contact() {
         this("");
