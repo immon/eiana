@@ -146,6 +146,15 @@
 
     <target name="jbpm.init" depends="database.create.test, all.jar">
         <java classname="org.iana.rzm.init.ant.ProcessDeployment">
+            <arg value="domain-modification.xml"/>
+            <classpath refid="inittools.classpath"/>
+        </java>
+        <java classname="org.iana.rzm.init.ant.ProcessDeployment">
+            <arg value="mails-receiver.xml"/>
+            <classpath refid="inittools.classpath"/>
+        </java>
+        <java classname="org.iana.rzm.init.ant.ProcessDeployment">
+            <arg value="notifications-resender.xml"/>            
             <classpath refid="inittools.classpath"/>
         </java>
     </target>
@@ -155,7 +164,7 @@
     <target name="all.compile"
             depends="init, compile.module.tests,compile.module.eiana-dns,compile.module.eiana-domains,
              compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,
-             compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,
+             compile.module.eiana-users,compile.module.eiana-startup,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
              compile.module.common-pgp, compile.module.eiana-techcheck"
@@ -181,6 +190,9 @@
         </jar>
         <jar destfile="${jar.output.dir}/common-pgp.jar">
             <fileset dir="${common-pgp.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/common-templates.jar">
+            <fileset dir="${common-templates.output.dir}"/>
         </jar>
         <jar destfile="${jar.output.dir}/eiana-dns.jar">
             <fileset dir="${eiana-dns.output.dir}"/>
