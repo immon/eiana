@@ -141,6 +141,19 @@ public class DomainChangeDetectorTest {
     }
 
     @Test
+    public void testContactOrgAndRoleModification() {
+        Contact src = createContact("contact");
+        Contact dst = createContact("contact");
+        dst.setOrganization("new.org");
+        dst.setRole(true);
+        Change change = ChangeDetector.diff(src, dst, config);
+        assert change != null && change.isModification();
+        ObjectChange objectChange = (ObjectChange) change;
+        Map<String, Change> fieldChanges = objectChange.getFieldChanges();
+        assert fieldChanges.size() == 2 && fieldChanges.get("organization").isModification() && fieldChanges.get("role").isModification();
+    }
+
+    @Test
     public void testIPAddressAddition() {
         Host src = createHost("host.test");
         Host dst = createHost("host.test");
@@ -168,6 +181,7 @@ public class DomainChangeDetectorTest {
         ret.setPhoneNumbers(createStringList(prefix+"-phone", 1));
         ret.setFaxNumbers(createStringList(prefix+"-fax", 1));
         ret.addAddress(new Address(prefix+"-ta", "CC"));
+        ret.setRole(false);
         return ret;
     }
 

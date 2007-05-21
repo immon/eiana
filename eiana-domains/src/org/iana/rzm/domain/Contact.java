@@ -197,6 +197,10 @@ public class Contact implements TrackedObject,Cloneable {
         return role;
     }
 
+    final public boolean getRole() {
+        return role;
+    }
+    
     final public void setRole(boolean role) {
         this.role = role;
     }
