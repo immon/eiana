@@ -12,9 +12,14 @@ import java.util.Date;
  * @author Jakub Laszkiewicz
  */
 public class UserManagementTestUtil {
+
     public static RZMUser createUser(String suffix, Role role) {
+        return createUser(suffix, "user-" + suffix + "@post.net", role);
+    }
+
+    public static RZMUser createUser(String suffix, String email, Role role) {
         RZMUser user = new RZMUser();
-        user.setEmail("user-" + suffix + "@post.net");
+        user.setEmail(email);
         user.setFirstName("fn" + suffix);
         user.setLastName("ln" + suffix);
         user.setLoginName("user-" + suffix);

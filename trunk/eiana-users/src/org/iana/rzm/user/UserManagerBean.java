@@ -88,6 +88,10 @@ public class UserManagerBean implements UserManager {
         return dao.findUserByEmail(email);
     }
 
+    public RZMUser findUserByEmailAndRole(String email, String domainName) {
+        return dao.findUserByEmailAndRole(email, domainName);
+    }
+
     public int count(Criterion criteria) {
         return dao.count(criteria);
     }

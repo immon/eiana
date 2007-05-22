@@ -33,6 +33,8 @@ public interface UserDAO {
 
     public RZMUser findUserByEmail(String email);
 
+    public RZMUser findUserByEmailAndRole(String email, String domainName);
+
     public List<RZMUser> findAll();
 
     public List<RZMUser> find(Criterion criteria);

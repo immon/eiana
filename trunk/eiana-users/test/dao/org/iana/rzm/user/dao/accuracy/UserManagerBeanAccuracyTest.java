@@ -123,11 +123,30 @@ public class UserManagerBeanAccuracyTest {
         }
     }
 
+    @Test
+    public void testFindUserByEmailAndRole() throws Exception {
+        TransactionStatus txStatus = txMgr.getTransaction(txDef);
+        try {
+            userManager.create(UserManagementTestUtil.createUser("s1", "email1@example.email", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
+            userManager.create(UserManagementTestUtil.createUser("s2", "email1@example.email", UserManagementTestUtil.createSystemRole("bbb", true, true, SystemRole.SystemType.AC)));
+            userManager.create(UserManagementTestUtil.createUser("s3", "email2@example.email", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.TC)));
+            userManager.create(UserManagementTestUtil.createUser("s4", "email3@example.email", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.TC)));
+
+            RZMUser sys1 = userManager.findUserByEmailAndRole("email1@example.email", "bbb");
+            assert "email1@example.email".equals(sys1.getEmail()) && "user-s2".equals(sys1.getLoginName());
+
+            txMgr.commit(txStatus);
+        } catch (Exception e) {
+            txMgr.rollback(txStatus);
+            throw e;
+        }
+    }
+
     @AfterClass
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            for(RZMUser user : usersMap)
+            for (RZMUser user : userManager.findAll())
                userManager.delete(user);
             
             userManager.delete("user-ivan123");

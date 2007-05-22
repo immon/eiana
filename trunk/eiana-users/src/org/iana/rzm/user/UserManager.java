@@ -39,6 +39,8 @@ public interface UserManager {
 
     public RZMUser findUserByEmail(String email);
 
+    public RZMUser findUserByEmailAndRole(String email, String domainName);
+
     public int count(Criterion criteria);
 
     public List<RZMUser> find(Criterion criteria, int offset, int limit);

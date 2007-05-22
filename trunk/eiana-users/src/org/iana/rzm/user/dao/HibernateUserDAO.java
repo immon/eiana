@@ -78,6 +78,19 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
         return (RZMUser) (result.isEmpty() ? null : result.iterator().next());
     }
 
+    public RZMUser findUserByEmailAndRole(String email, String domainName) {
+        String query = "select user " +
+                "from " +
+                "    RZMUser as user " +
+                "    inner join user.roles as role " +
+                "where " +
+                "    user.email = ? " +
+                "    and role.class = SystemRole " +
+                "    and role.name.name = ? ";
+        List result = getHibernateTemplate().find(query, new Object[]{email, domainName});
+        return (RZMUser) (result.isEmpty() ? null : result.iterator().next());
+    }
+
     public List<RZMUser> findAll() {
         String query = "from RZMUser";
         return (List<RZMUser>) getHibernateTemplate().find(query);
