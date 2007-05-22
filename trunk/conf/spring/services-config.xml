@@ -228,6 +228,7 @@
     </bean>
 
     <bean id="transactionLoggerInterceptor" class="org.iana.rzm.facade.system.trans.TransactionLoggerInterceptor">
+        <constructor-arg index="0" ref="transactionManagerBean"/>
         <property name="logger">
             <ref bean="logger"/>
         </property>
@@ -618,9 +619,9 @@
     <!-- mails processing configuration -->
 
     <bean id="mailReceiver" class="org.iana.mail.pop3.Pop3MailReceiver">
-        <constructor-arg index="0" value="host"/>
-        <constructor-arg index="1" value="user"/>
-        <constructor-arg index="2" value="password"/>
+        <constructor-arg index="0" value="m02.icann.org"/>
+        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="2" value="upowilgeod"/>
         <constructor-arg index="3" value="[RZM]"/>
     </bean>
 
@@ -636,7 +637,7 @@
         <constructor-arg index="0" ref="templatesService"/>
     </bean>
 
-    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean" scope="session">
+    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean">
         <constructor-arg index="0" ref="mailParser"/>
         <constructor-arg index="1" ref="authenticationServiceBean"/>
         <constructor-arg index="2" ref="GuardedSystemTransactionService"/>
