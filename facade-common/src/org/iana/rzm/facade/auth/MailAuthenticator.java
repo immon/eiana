@@ -22,7 +22,7 @@ public class MailAuthenticator implements AuthenticationService {
         CheckTool.checkNull(data, "authentication data");
 
         MailAuth mailData = (MailAuth) data;
-        RZMUser user = manager.findUserByEmail(mailData.getUserName());
+        RZMUser user = mailData.getDomainName() == null ? manager.findUserByEmail(mailData.getUserName()) : manager.findUserByEmailAndRole(mailData.getUserName(), mailData.getDomainName());
         if (user == null) {
             throw new AuthenticationFailedException(
                     MessageFormat.format("User {0} has not been found.", data.getUserName()));
