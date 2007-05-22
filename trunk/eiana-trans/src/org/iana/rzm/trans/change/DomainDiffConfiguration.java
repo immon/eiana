@@ -32,7 +32,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
         addObjectConfiguration(Address.class, addressConfig);
 
         ObjectConfiguration hostConfig = new ObjectConfiguration(new String[]{
-            "name", "addresses", "numDelegations"
+            "name", "addresses"
         }, "name");
         hostConfig.addFieldInstantiator("addresses", new IPAddressInstantiator());
         addObjectConfiguration(Host.class, hostConfig);

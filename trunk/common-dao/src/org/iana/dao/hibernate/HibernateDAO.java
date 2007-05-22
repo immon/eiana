@@ -1,11 +1,14 @@
 package org.iana.dao.hibernate;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.iana.criteria.Criterion;
+import org.hibernate.Session;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.ListIterator;
+import java.sql.SQLException;
 
 
 /**
@@ -41,24 +44,41 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
 
     public List<T> find(Criterion criteria) {
         HQLBuffer hql = HQLGenerator.from(clazz, criteria);
-
         return getHibernateTemplate().find(hql.getHQL(), hql.getParams());
     }
 
-    public int count(Criterion criteria) {
-        HQLBuffer hql = HQLGenerator.from(clazz, criteria);
-        return getHibernateTemplate().find(hql.getHQL(), hql.getParams()).size();
+    public List<T> find(final Criterion criteria, final int offset, final int limit) {
+        return getHibernateTemplate().executeFind(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                HQLBuffer hql = HQLGenerator.from(clazz, criteria);
+                Query query = session.createQuery(hql.getHQL());
+
+                int idx = 0;
+                for (Object param : hql.getParams()) {
+                    query.setParameter(idx++, param);
+                }
+
+                query.setFirstResult(offset)
+                        .setMaxResults(limit)
+                        .setFetchSize(limit);
+                return query.list();
+            }
+        });
     }
 
-    public List<T> find(Criterion criteria, int offset, int limit) {
-        HQLBuffer hql = HQLGenerator.from(clazz, criteria);
-        List<T> list = getHibernateTemplate().find(hql.getHQL(), hql.getParams());
-        List<T> retrieved = new ArrayList<T>();
-        if (list.size() > offset) {
-            for (ListIterator iterator=list.listIterator(offset); ((iterator.nextIndex() < (offset + limit)) && (iterator.hasNext()));)
-                retrieved.add((T) iterator.next());
-        }
-        
-        return retrieved;
+    public int count(final Criterion criteria) {
+        long ret = (Long) getHibernateTemplate().execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                HQLBuffer hql = HQLGenerator.from(clazz, criteria);
+                Query query = session.createQuery("select count(*) " + hql.getHQL());
+
+                int idx = 0;
+                for (Object param : hql.getParams()) {
+                    query.setParameter(idx++, param);
+                }
+                return query.uniqueResult();
+            }
+        });
+        return (int) ret;
     }
 }

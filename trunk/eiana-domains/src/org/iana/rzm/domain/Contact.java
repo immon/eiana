@@ -200,8 +200,13 @@ public class Contact implements TrackedObject,Cloneable {
     final public boolean getRole() {
         return role;
     }
+
     final public void setRole(boolean role) {
         this.role = role;
+    }
+
+    final public void setRole(String role) {
+        this.role = Boolean.valueOf(role);
     }
 
     public boolean equals(Object o) {
