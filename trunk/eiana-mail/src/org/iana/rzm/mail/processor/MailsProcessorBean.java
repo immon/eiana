@@ -86,17 +86,18 @@ public class MailsProcessorBean implements MailsProcessor {
 
     private void processConfirmation(ConfirmationMailData data, AuthenticatedUser user) {
         try {
-            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-            criteria.addTickedId(data.getTicketId());
-            List<TransactionVO> transactions = transSvc.findTransactions(criteria);
-            if (transactions.size() != 1)
+            TransactionVO trans = transSvc.getTransaction(data.getTransactionId());
+            if (trans == null) {
                 createNotification(user.getUserName(), data,
-                        "Unexpected number of transaction with ticket id = " + data.getTicketId());
-            TransactionVO trans = transactions.iterator().next();
-            if (!data.getStateName().equals(trans.getState().getName().toString()))
+                                        "Transaction id not found: " + data.getTransactionId());
+                return;
+            }
+            if (!data.getStateName().equals(trans.getState().getName().toString())) {
                 createNotification(user.getUserName(), data,
-                        "wrong transaction state = " + data.getStateName() +
-                        ", expected: " + trans.getState().getName());
+                                        "wrong transaction state = " + data.getStateName() +
+                                        ", expected: " + trans.getState().getName());
+                return;
+            }
             if (data.isAccepted())
                 transSvc.acceptTransaction(trans.getTransactionID());
             else

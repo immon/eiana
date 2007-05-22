@@ -35,6 +35,8 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier {
                 values.put("domainName", domainName);
                 values.put("mustAccept", (systemRole.isMustAccept())? "must" : "are allowed to");
                 values.put("period", period);
+                values.put("transactionId", "" + transactionId);
+                values.put("stateName", stateName);
 
                 TemplateContent templateContent = new TemplateContent(notification, values);
                 Notification notification = new Notification();

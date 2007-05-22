@@ -23,6 +23,8 @@ public class ProcessStateNotifier implements ActionHandler {
     protected NotificationTemplate notificationTemplate;
     protected String               notification;
     protected NotificationManager  notificationManagerBean;
+    protected Long transactionId;
+    protected String stateName;
 
     public void execute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
@@ -34,6 +36,8 @@ public class ProcessStateNotifier implements ActionHandler {
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
         notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
+        transactionId = executionContext.getProcessInstance().getId();
+        stateName = executionContext.getProcessInstance().getRootToken().getNode().getName();
     }
 
     private void sendNotifications(List<Notification> notifications) throws Exception {

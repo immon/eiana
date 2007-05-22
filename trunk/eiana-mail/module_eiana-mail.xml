@@ -2,6 +2,9 @@
 <project name="module_eiana-mail" default="compile.module.eiana-mail">
   <dirname property="module.eiana-mail.basedir" file="${ant.file.module_eiana-mail}"/>
   
+  <property name="module.jdk.home.eiana-mail" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-mail" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-mail" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-mail" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="eiana-mail.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-mail}"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.jbpm.classpath"/>
     <pathelement location="${common-mail.output.dir}"/>
@@ -64,7 +68,7 @@
   
   <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-templates,compile.module.common-pgp,compile.module.eiana-notifications,compile.module.eiana-users" description="Compile module eiana-mail; production classes">
     <mkdir dir="${eiana-mail.output.dir}"/>
-    <javac destdir="${eiana-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-mail}/javac">
       <compilerarg line="${compiler.args.eiana-mail}"/>
       <bootclasspath refid="eiana-mail.module.bootclasspath"/>
       <classpath refid="eiana-mail.module.classpath"/>
@@ -82,7 +86,7 @@
   
   <target name="compile.module.eiana-mail.tests" depends="compile.module.eiana-mail.production" description="compile module eiana-mail; test classes" unless="skip.tests">
     <mkdir dir="${eiana-mail.testoutput.dir}"/>
-    <javac destdir="${eiana-mail.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-mail.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-mail}/javac">
       <compilerarg line="${compiler.args.eiana-mail}"/>
       <classpath refid="eiana-mail.module.classpath"/>
       <classpath location="${eiana-mail.output.dir}"/>
