@@ -119,6 +119,9 @@
         <fileset dir="${lib.dir}/nask-commons">
             <include name="**/*.jar"/>
         </fileset>
+        <fileset dir="${lib.dir}/mail">
+            <include name="**/*.jar"/>
+        </fileset>
         <fileset dir="${lib.dir}/log4j">
             <include name="**/*.jar"/>
         </fileset>
@@ -149,11 +152,11 @@
             <arg value="domain-modification.xml"/>
             <classpath refid="inittools.classpath"/>
         </java>
-        <java classname="org.iana.rzm.init.ant.ProcessDeployment">
+        <java classname="org.iana.rzm.init.ant.ProcessCreation">
             <arg value="mails-receiver.xml"/>
             <classpath refid="inittools.classpath"/>
         </java>
-        <java classname="org.iana.rzm.init.ant.ProcessDeployment">
+        <java classname="org.iana.rzm.init.ant.ProcessCreation">
             <arg value="notifications-resender.xml"/>            
             <classpath refid="inittools.classpath"/>
         </java>
