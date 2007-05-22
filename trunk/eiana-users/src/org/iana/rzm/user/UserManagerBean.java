@@ -1,8 +1,8 @@
 package org.iana.rzm.user;
 
-import org.iana.notifications.dao.NotificationDAO;
 import org.iana.notifications.NotificationManager;
 import org.iana.rzm.user.dao.UserDAO;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
@@ -86,5 +86,15 @@ public class UserManagerBean implements UserManager {
 
     public RZMUser findUserByEmail(String email) {
         return dao.findUserByEmail(email);
+    }
+
+    public int count(Criterion criteria) {
+        return dao.count(criteria);
+    }
+
+    public List<RZMUser> find(Criterion criteria, int offset, int limit) {
+        CheckTool.checkNoNegative(offset, "offset is negative");
+        CheckTool.checkNoNegative(limit, "limit is negative");
+        return dao.find(criteria, offset, limit);
     }
 }

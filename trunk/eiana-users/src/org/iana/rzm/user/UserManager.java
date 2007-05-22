@@ -38,4 +38,8 @@ public interface UserManager {
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
 
     public RZMUser findUserByEmail(String email);
+
+    public int count(Criterion criteria);
+
+    public List<RZMUser> find(Criterion criteria, int offset, int limit);
 }

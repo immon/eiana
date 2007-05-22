@@ -26,5 +26,9 @@ public interface AdminUserService extends RZMStatefulService {
     public List<UserVO> findUsers();
 
     public List<UserVO> findUsers(Criterion criteria);
+
+    public int count(Criterion criteria);
+
+    public List<UserVO> find(Criterion criteria, int offset, int limit);
    
 }

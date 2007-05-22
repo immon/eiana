@@ -1,7 +1,6 @@
 package org.iana.rzm.domain.dao;
 
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainCriteria;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
@@ -28,4 +27,8 @@ public interface DomainDAO {
     public List<Domain> findDelegatedTo(Set<String> hostNames);
 
     public List<Domain> findAll();
+
+    public int count(Criterion criteria);
+
+    public List<Domain> find(Criterion criteria, int offset, int limit);
 }

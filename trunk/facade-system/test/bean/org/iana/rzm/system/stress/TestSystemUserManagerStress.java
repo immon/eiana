@@ -101,4 +101,12 @@ public class TestSystemUserManagerStress implements UserManager {
 
     public void update(RZMUser user) {}
     public List<RZMUser> find(Criterion criteria) {return null;}
+
+    public int count(Criterion criteria) {
+        return 0;
+    }
+
+    public List<RZMUser> find(Criterion criteria, int offset, int limit) {
+        return null;
+    }
 }

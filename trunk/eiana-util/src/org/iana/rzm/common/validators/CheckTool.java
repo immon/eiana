@@ -34,4 +34,8 @@ public class CheckTool {
     final public static <T> void addNoDup(Collection<T> dst, T object) {
         if (!dst.contains(object)) dst.add(object);
     }
+
+    final public static void checkNoNegative(long value, String field) {
+        if (value < 0) throw new IllegalArgumentException(field);
+    }
 }

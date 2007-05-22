@@ -1,7 +1,5 @@
 package org.iana.rzm.domain.dao;
 
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainCriteria;
 import org.iana.rzm.domain.Host;
 import org.iana.criteria.Criterion;
 
@@ -22,4 +20,8 @@ public interface HostDAO {
     public List<Host> find(Criterion criterion);
 
     public List<Host> findAll();
+
+    public int count(Criterion criteria);
+
+    public List<Host> find(Criterion criteria, int offset, int limit);
 }

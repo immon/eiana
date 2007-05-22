@@ -86,4 +86,20 @@ public class GuardedAdminRoleServiceBean extends AbstractRZMStatefulService impl
 
         return roleVOs;
     }
+
+    public int count(Criterion criteria) {
+        isUserInRole();
+        CheckTool.checkNull(criteria, "criteria");
+        return roleManager.count(criteria);
+    }
+
+    public List<RoleVO> find(Criterion criteria, int offset, int limit) {
+        isUserInRole();
+        CheckTool.checkNull(criteria, "criteria");
+        List<RoleVO> roleVOs = new ArrayList<RoleVO>();
+        for (Role role : this.roleManager.find(criteria, offset, limit))
+            roleVOs.add(RoleConverter.convertRole(role));
+
+        return roleVOs;
+    }
 }

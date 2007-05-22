@@ -41,4 +41,14 @@ public class RoleManagerBean implements RoleManager {
     public List<Role> find(Criterion criteria) {
         return roleDAO.find(criteria);
     }
+
+    public int count(Criterion criteria) {
+        return roleDAO.count(criteria);
+    }
+
+    public List<Role> find(Criterion criteria, int offset, int limit) {
+        CheckTool.checkNoNegative(offset, "offset is negative");
+        CheckTool.checkNoNegative(limit, "limit is negative");
+        return roleDAO.find(criteria, offset, limit);
+    }
 }

@@ -20,4 +20,7 @@ public interface RoleManager {
 
     public List<Role> find(Criterion criteria);
 
+    public int count(Criterion criteria);
+
+    public List<Role> find(Criterion criteria, int offset, int limit);
 }
