@@ -1,11 +1,12 @@
 package org.iana.rzm.facade.system.trans;
 
 import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class TransactionStateVO {
+public class TransactionStateVO implements Serializable {
 
     public static enum Name {
         PENDING_CONTACT_CONFIRMATION,
