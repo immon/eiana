@@ -120,7 +120,6 @@ public class TestUserManager implements UserManager {
     private RZMUser createTestWrongPasswordUser() {
 
         RZMUser adminUser = new RZMUser();
-        adminUser.setObjId(1L);
         adminUser.setFirstName(COMMON_FIRST_NAME);
         adminUser.setLastName(COMMON_LAST_NAME);
         adminUser.setLoginName(WRONG_PASSWORD_LOGIN);
@@ -148,6 +147,11 @@ public class TestUserManager implements UserManager {
     }
 
     public List<RZMUser> find(Criterion criteria, int offset, int limit) {
+        return null;
+    }
+
+
+    public RZMUser findUserByEmailAndRole(String email, String domainName) {
         return null;
     }
 }
