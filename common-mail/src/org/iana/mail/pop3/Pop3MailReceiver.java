@@ -42,7 +42,7 @@ public class Pop3MailReceiver implements MailReceiver {
             for (Message msg : msgs) { 
                 msg.setFlag(Flags.Flag.DELETED, true);
                 if (msg.getSubject().contains(subjectToken)) {
-                    msg.setSubject(removeSubjectToken(msg.getSubject()));
+//                    msg.setSubject(removeSubjectToken(msg.getSubject()));
                     list.add(new MimeMessage((MimeMessage) msg));
                 }
             }
