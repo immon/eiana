@@ -56,16 +56,20 @@ public class MailsProcessorBean implements MailsProcessor {
         AuthenticatedUser user = null;
         MailData mailData = null;
         try {
-            user = authSvc.authenticate(new MailAuth(from));
-            transSvc.setUser(user);
-            domSvc.setUser(user);
-//            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
             mailData = parser.parse(subject, content);
-            if (mailData instanceof ConfirmationMailData)
-                processConfirmation((ConfirmationMailData) mailData, user);
-            else if (mailData instanceof TemplateMailData)
+//            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
+            if (mailData instanceof ConfirmationMailData) {
+                ConfirmationMailData confData = (ConfirmationMailData) mailData;
+                user = authSvc.authenticate(new MailAuth(from, confData.getDomainName()));
+                transSvc.setUser(user);
+                domSvc.setUser(user);
+                processConfirmation(confData, user);
+            } else if (mailData instanceof TemplateMailData) {
+                user = authSvc.authenticate(new MailAuth(from));
+                transSvc.setUser(user);
+                domSvc.setUser(user);
                 processTemplate((TemplateMailData) mailData, user);
-            else {
+            } else {
                 createNotification(user.getUserName(), mailData,
                         "Error occured while processing your request.");
             }
