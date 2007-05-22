@@ -56,10 +56,11 @@ public class MailsProcessorBean implements MailsProcessor {
         AuthenticatedUser user = null;
         MailData mailData = null;
         try {
-            user = authSvc.authenticate(new PgpMailAuth(from, content));
+            user = authSvc.authenticate(new MailAuth(from));
             transSvc.setUser(user);
             domSvc.setUser(user);
-            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
+//            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
+            mailData = parser.parse(subject, content);
             if (mailData instanceof ConfirmationMailData)
                 processConfirmation((ConfirmationMailData) mailData, user);
             else if (mailData instanceof TemplateMailData)
@@ -68,10 +69,10 @@ public class MailsProcessorBean implements MailsProcessor {
                 createNotification(user.getUserName(), mailData,
                         "Error occured while processing your request.");
             }
-        } catch (PGPUtilsException e) {
-            createNotification(user == null ? from : user.getUserName(), mailData,
-                    "Error occured while processing your request.");
-            Logger.getLogger(getClass()).error(e);
+//        } catch (PGPUtilsException e) {
+//            createNotification(user == null ? from : user.getUserName(), mailData,
+//                    "Error occured while processing your request.");
+//            Logger.getLogger(getClass()).error(e);
         } catch (AuthenticationFailedException e) {
             createNotification(from, mailData, "Authentication failed.");
             Logger.getLogger(getClass()).error(e);
