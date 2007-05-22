@@ -39,29 +39,6 @@
     <include name="**/?*.asc"/>
   </patternset>
   
-  <!-- JDK definitions -->
-  
-  <property name="jdk.bin.1.5" value="${jdk.home.1.5}/bin"/>
-  <path id="jdk.classpath.1.5">
-    <fileset dir="${jdk.home.1.5}">
-      <include name="jre/lib/charsets.jar"/>
-      <include name="jre/lib/deploy.jar"/>
-      <include name="jre/lib/javaws.jar"/>
-      <include name="jre/lib/jce.jar"/>
-      <include name="jre/lib/jsse.jar"/>
-      <include name="jre/lib/plugin.jar"/>
-      <include name="jre/lib/rt.jar"/>
-      <include name="jre/lib/ext/dnsns.jar"/>
-      <include name="jre/lib/ext/localedata.jar"/>
-      <include name="jre/lib/ext/sunjce_provider.jar"/>
-      <include name="jre/lib/ext/sunpkcs11.jar"/>
-    </fileset>
-  </path>
-  
-  <property name="project.jdk.home" value="${jdk.home.1.5}"/>
-  <property name="project.jdk.bin" value="${jdk.bin.1.5}"/>
-  <property name="project.jdk.classpath" value="jdk.classpath.1.5"/>
-  
   
   <!-- Project Libraries -->
   
@@ -161,43 +138,43 @@
   
   <!-- Modules -->
   
-  <import file="${basedir}/../common-templates/module_common-templates.xml"/>
-  
-  <import file="${basedir}/../eiana-dns/module_eiana-dns.xml"/>
-  
   <import file="${basedir}/../eiana-util/module_eiana-util.xml"/>
   
   <import file="${basedir}/../common-criteria/module_common-criteria.xml"/>
   
   <import file="${basedir}/../common-dao/module_common-dao.xml"/>
   
-  <import file="${basedir}/../eiana-notifications/module_eiana-notifications.xml"/>
-  
-  <import file="${basedir}/../common-objectdiff/module_common-objectdiff.xml"/>
-  
-  <import file="${basedir}/../eiana-users/module_eiana-users.xml"/>
-  
-  <import file="${basedir}/../eiana-logs/module_eiana-logs.xml"/>
-  
   <import file="${basedir}/../eiana-domains/module_eiana-domains.xml"/>
   
   <import file="${basedir}/../eiana-techcheck/module_eiana-techcheck.xml"/>
   
-  <import file="${basedir}/../integration-securid/module_integration-securid.xml"/>
+  <import file="${basedir}/../eiana-notifications/module_eiana-notifications.xml"/>
+  
+  <import file="${basedir}/../eiana-users/module_eiana-users.xml"/>
+  
+  <import file="${basedir}/../common-objectdiff/module_common-objectdiff.xml"/>
+  
+  <import file="${basedir}/../eiana-logs/module_eiana-logs.xml"/>
   
   <import file="${basedir}/../common-codevalues/module_common-codevalues.xml"/>
   
-  <import file="${basedir}/../eiana-startup/module_eiana-startup.xml"/>
+  <import file="${basedir}/../integration-securid/module_integration-securid.xml"/>
   
-  <import file="${basedir}/module_build.xml"/>
+  <import file="${basedir}/../conf/module_conf.xml"/>
+  
+  <import file="${basedir}/../common-mail/module_common-mail.xml"/>
+  
+  <import file="${basedir}/../lib/module_lib.xml"/>
   
   <import file="${basedir}/../common-pgp/module_common-pgp.xml"/>
   
   <import file="${basedir}/../facade-common/module_facade-common.xml"/>
   
-  <import file="${basedir}/../common-mail/module_common-mail.xml"/>
+  <import file="${basedir}/../common-templates/module_common-templates.xml"/>
   
-  <import file="${basedir}/../lib/module_lib.xml"/>
+  <import file="${basedir}/../eiana-dns/module_eiana-dns.xml"/>
+  
+  <import file="${basedir}/../eiana-startup/module_eiana-startup.xml"/>
   
   <import file="${basedir}/../integration-rt/module_integration-rt.xml"/>
   
@@ -209,17 +186,17 @@
   
   <import file="${basedir}/../eiana-mail/module_eiana-mail.xml"/>
   
-  <import file="${basedir}/../conf/module_conf.xml"/>
-  
   <import file="${basedir}/../tests/module_tests.xml"/>
   
   <import file="${basedir}/../eiana-init/module_eiana-init.xml"/>
+  
+  <import file="${basedir}/module_build.xml"/>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.common-templates, clean.module.eiana-dns, clean.module.eiana-util, clean.module.common-criteria, clean.module.common-dao, clean.module.eiana-notifications, clean.module.common-objectdiff, clean.module.eiana-users, clean.module.eiana-logs, clean.module.eiana-domains, clean.module.eiana-techcheck, clean.module.integration-securid, clean.module.common-codevalues, clean.module.eiana-startup, clean.module.build, clean.module.common-pgp, clean.module.facade-common, clean.module.common-mail, clean.module.lib, clean.module.integration-rt, clean.module.eiana-trans, clean.module.facade-system, clean.module.facade-admin, clean.module.eiana-mail, clean.module.conf, clean.module.tests, clean.module.eiana-init" description="cleanup all"/>
+  <target name="clean" depends="clean.module.eiana-util, clean.module.common-criteria, clean.module.common-dao, clean.module.eiana-domains, clean.module.eiana-techcheck, clean.module.eiana-notifications, clean.module.eiana-users, clean.module.common-objectdiff, clean.module.eiana-logs, clean.module.common-codevalues, clean.module.integration-securid, clean.module.conf, clean.module.common-mail, clean.module.lib, clean.module.common-pgp, clean.module.facade-common, clean.module.common-templates, clean.module.eiana-dns, clean.module.eiana-startup, clean.module.integration-rt, clean.module.eiana-trans, clean.module.facade-system, clean.module.facade-admin, clean.module.eiana-mail, clean.module.tests, clean.module.eiana-init, clean.module.build" description="cleanup all"/>
   
-  <target name="all" depends="init, clean, compile.module.common-templates, compile.module.eiana-dns, compile.module.eiana-util, compile.module.common-criteria, compile.module.common-dao, compile.module.eiana-notifications, compile.module.common-objectdiff, compile.module.eiana-users, compile.module.eiana-logs, compile.module.eiana-domains, compile.module.eiana-techcheck, compile.module.integration-securid, compile.module.common-codevalues, compile.module.eiana-startup, compile.module.build, compile.module.common-pgp, compile.module.facade-common, compile.module.common-mail, compile.module.lib, compile.module.integration-rt, compile.module.eiana-trans, compile.module.facade-system, compile.module.facade-admin, compile.module.eiana-mail, compile.module.conf, compile.module.tests, compile.module.eiana-init" description="build all"/>
+  <target name="all" depends="init, clean, compile.module.eiana-util, compile.module.common-criteria, compile.module.common-dao, compile.module.eiana-domains, compile.module.eiana-techcheck, compile.module.eiana-notifications, compile.module.eiana-users, compile.module.common-objectdiff, compile.module.eiana-logs, compile.module.common-codevalues, compile.module.integration-securid, compile.module.conf, compile.module.common-mail, compile.module.lib, compile.module.common-pgp, compile.module.facade-common, compile.module.common-templates, compile.module.eiana-dns, compile.module.eiana-startup, compile.module.integration-rt, compile.module.eiana-trans, compile.module.facade-system, compile.module.facade-admin, compile.module.eiana-mail, compile.module.tests, compile.module.eiana-init, compile.module.build" description="build all"/>
 </project>
