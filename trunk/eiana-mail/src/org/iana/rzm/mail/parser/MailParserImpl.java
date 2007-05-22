@@ -32,6 +32,7 @@ public class MailParserImpl implements MailParser {
                     result.setTransactionId(Long.parseLong(elements[0].trim()));
                     result.setStateName(elements[1].trim());
                     result.setDomainName(elements[3].trim());
+                    content = content.toUpperCase();
                     if (content.contains(ACCEPT_STRING) && content.contains(DECLINE_STRING))
                         throw new MailParserException("both accept and decline are present");
                     if (!content.contains(ACCEPT_STRING) && !content.contains(DECLINE_STRING))
