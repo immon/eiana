@@ -90,6 +90,28 @@ public class GuardedAdminRoleServiceTest {
 
     }
 
+    @Test (dependsOnMethods = "testFacadeCreateRole")
+    public void testCount() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminRoleServ.setUser(testAuthUser);
+
+        assert gAdminRoleServ.count(new Equal("objId", roleId)) == 1;
+
+        gAdminRoleServ.close();
+    }
+
+    @Test (dependsOnMethods = "testCount")
+    public void testFacadeFindRoleByCriteria_Offset_Limit() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminRoleServ.setUser(testAuthUser);
+
+        List<RoleVO> roleVOs = gAdminRoleServ.find(new Equal("objId", roleId), 0, 10);
+        assert roleVOs.size() == 1;
+        assert ((SystemRoleVO)roleVOs.iterator().next()).getName().equals("newsystemrole");
+
+        gAdminRoleServ.close();
+    }
+
     @Test (dependsOnMethods = {"testFacadeCreateRole"})
     public void testFacadeUpdateRole() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();

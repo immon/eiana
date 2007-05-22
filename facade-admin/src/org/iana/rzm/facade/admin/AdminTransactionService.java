@@ -43,4 +43,8 @@ public interface AdminTransactionService extends RZMStatefulService {
 
     public void deleteTransaction(long transactionId) throws NoTransactionException;
 
+    public int count(Criterion criteria);
+
+    public List<TransactionVO> find(Criterion criteria, int offset, int limit);
+
 }

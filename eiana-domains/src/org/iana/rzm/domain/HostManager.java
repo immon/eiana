@@ -24,4 +24,8 @@ public interface HostManager {
     public List<Host> findAll();
 
     public List<Host> find(Criterion criteria);
+
+    public int count(Criterion criteria);
+
+    public List<Host> find(Criterion criteria, int offset, int limit);
 }

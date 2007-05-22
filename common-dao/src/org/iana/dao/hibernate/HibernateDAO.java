@@ -4,6 +4,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 
 /**
@@ -41,5 +43,22 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
         HQLBuffer hql = HQLGenerator.from(clazz, criteria);
 
         return getHibernateTemplate().find(hql.getHQL(), hql.getParams());
+    }
+
+    public int count(Criterion criteria) {
+        HQLBuffer hql = HQLGenerator.from(clazz, criteria);
+        return getHibernateTemplate().find(hql.getHQL(), hql.getParams()).size();
+    }
+
+    public List<T> find(Criterion criteria, int offset, int limit) {
+        HQLBuffer hql = HQLGenerator.from(clazz, criteria);
+        List<T> list = getHibernateTemplate().find(hql.getHQL(), hql.getParams());
+        List<T> retrieved = new ArrayList<T>();
+        if (list.size() > offset) {
+            for (ListIterator iterator=list.listIterator(offset); ((iterator.nextIndex() < (offset + limit)) && (iterator.hasNext()));)
+                retrieved.add((T) iterator.next());
+        }
+        
+        return retrieved;
     }
 }

@@ -88,6 +88,29 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testFacadeCreateUser"})
+    public void testCount() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+
+        assert gAdminUserServ.count(new Equal("loginName", "gausadminuser")) == 1;
+
+        gAdminUserServ.close();
+    }
+
+    @Test(dependsOnMethods = {"testCount"})
+    public void testFacadeFindUserByCriteria_Offset_Limit() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+
+        List<UserVO> retUserVOs = gAdminUserServ.find(new Equal("loginName", "gausadminuser"), 0, 5);
+        assert retUserVOs.size() == 1;
+        assert retUserVOs.iterator().next().getUserName().equals("gausadminuser");
+
+        gAdminUserServ.close();
+    }
+
+
+    @Test(dependsOnMethods = {"testFacadeCreateUser"})
     public void testFacadeFindUser() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);

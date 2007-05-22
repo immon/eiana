@@ -241,4 +241,13 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         // todo
         return null;
     }
+
+
+    public int count(Criterion criteria) {
+        return 0; //todo
+    }
+
+    public List<TransactionVO> find(Criterion criteria, int offset, int limit) {
+        return null;  //todo
+    }
 }

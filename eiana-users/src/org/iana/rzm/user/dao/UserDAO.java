@@ -36,4 +36,7 @@ public interface UserDAO {
     public List<RZMUser> findAll();
 
     public List<RZMUser> find(Criterion criteria);
+
+    public int count(Criterion criteria);
+    public List<RZMUser> find(Criterion criteria, int offset, int limit);
 }

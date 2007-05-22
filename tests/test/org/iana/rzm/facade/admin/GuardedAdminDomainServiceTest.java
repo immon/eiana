@@ -13,16 +13,19 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.criteria.Equal;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Or;
+import org.iana.criteria.Not;
 import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author: Piotr Tkaczyk
@@ -89,6 +92,38 @@ public class GuardedAdminDomainServiceTest {
 
         gAdminServ.close();
 
+    }
+
+    @Test (dependsOnMethods = {"testFacadeCreateDomain"})
+    public void testCount() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminServ.setUser(testAuthUser);
+
+        assert gAdminServ.count(new Not(new Equal("name.name", "existno.org"))) == 2;
+
+        gAdminServ.close();
+    }
+
+    @Test (dependsOnMethods = {"testCount"})
+    public void testFacadeFindDomainByCriteria_Offset_Limit() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminServ.setUser(testAuthUser);
+
+        List<IDomainVO> retDomainVOs = gAdminServ.find(new Not(new Equal("name.name", "existno.org")), 0, 1);
+        assert retDomainVOs.size() == 1;
+        assert retDomainVOs.iterator().next().getName().equals(DOMAIN_NAME);
+
+        retDomainVOs = gAdminServ.find(new Not(new Equal("name.name", "existno.org")), 1, 1);
+        assert retDomainVOs.size() == 1;
+        assert retDomainVOs.iterator().next().getName().equals(SECOND_DOMAIN);
+
+        retDomainVOs = gAdminServ.find(new Not(new Equal("name.name", "existno.org")), 0, 5);
+        assert retDomainVOs.size() == 2;
+        Iterator iterator = retDomainVOs.iterator();
+        assert ((SimpleDomainVO)iterator.next()).getName().equals(DOMAIN_NAME);
+        assert ((SimpleDomainVO)iterator.next()).getName().equals(SECOND_DOMAIN);
+
+        gAdminServ.close();
     }
 
     @Test (dependsOnMethods = {"testFacadeCreateDomain"})

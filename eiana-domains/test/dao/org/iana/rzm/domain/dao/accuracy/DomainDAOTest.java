@@ -8,10 +8,9 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.conf.SpringDomainsApplicationContext;
 import org.iana.criteria.Equal;
+import org.iana.criteria.Not;
 
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -27,6 +26,20 @@ public class DomainDAOTest {
     }
 
     @Test
+    public void testCount() throws Exception {
+        int count = dao.count(new Equal("name.name", "dao.org"));
+        assert count == 0;
+    }
+
+    @Test (dependsOnMethods = "testCount")
+    public void testFindCriteriaLimitOffset() {
+        List<Domain> retrieved = dao.find(new Equal("name.name", "dao.org"), 0, 1);
+        assert retrieved.isEmpty();
+        retrieved = dao.find(new Equal("name.name", "dao.org"), 0, 10);
+        assert retrieved.isEmpty();
+    }
+
+    @Test (dependsOnMethods = "testFindCriteriaLimitOffset")
     public void testDomainCreate() throws Exception {
         Domain domainCreated = new Domain("dao.org");
         domainCreated.addNameServer(new Host("host.dao.org"));
@@ -35,9 +48,43 @@ public class DomainDAOTest {
         assert "dao.org".equals(domainRetrieved.getName());
         domainRetrieved = dao.get(domainCreated.getName());
         assert "dao.org".equals(domainRetrieved.getName());
+
+        dao.create(new Domain("second.org"));
     }
 
-    @Test(dependsOnMethods = {"testDomainCreate"})
+    @Test (dependsOnMethods = "testDomainCreate")
+    public void testCount2() throws Exception {
+        int count = dao.count(new Not(new Equal("name.name", "exist.no")));
+        assert count == 2;
+    }
+
+    @Test (dependsOnMethods = "testCount2")
+    public void testFindCriteriaLimitOffset2() {
+        List<Domain> retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 1);
+        assert retrieved.size() == 1;
+        assert retrieved.iterator().next().getName().equals("dao.org");
+
+        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 1, 1);
+        assert retrieved.size() == 1;
+        assert retrieved.iterator().next().getName().equals("second.org");
+
+        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 2, 1);
+        assert retrieved.isEmpty();
+
+        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 2);
+        assert retrieved.size() == 2;
+        Iterator iterator = retrieved.iterator();
+        assert ((Domain)iterator.next()).getName().equals("dao.org");
+        assert ((Domain)iterator.next()).getName().equals("second.org");
+        
+        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 5);
+        assert retrieved.size() == 2;
+        iterator = retrieved.iterator();
+        assert ((Domain)iterator.next()).getName().equals("dao.org");
+        assert ((Domain)iterator.next()).getName().equals("second.org");
+    }
+
+    @Test(dependsOnMethods = {"testFindCriteriaLimitOffset2"})
     public void testDomainUpdate() throws Exception {
     }
 
@@ -60,11 +107,13 @@ public class DomainDAOTest {
     @Test(dependsOnMethods = {"testDomainDelegatedTo"})
     public void testDelete() throws Exception {
         dao.delete(dao.get("dao.org"));
-    }
+    }             
 
     @AfterClass
     public void destroy() {
         Domain domain = dao.get("dao.org");
-        if (domain != null) dao.delete(dao.get("dao.org"));        
+        if (domain != null) dao.delete(dao.get("dao.org"));
+        domain = dao.get("second.org");
+        if (domain != null) dao.delete(dao.get("second.org"));
     }
 }

@@ -26,4 +26,8 @@ public interface AdminDomainService extends RZMStatefulService {
     public List<IDomainVO> findDomains();
 
     public List<IDomainVO> findDomains(Criterion criteira);
+
+    public int count(Criterion criteria);
+
+    public List<IDomainVO> find(Criterion criteria, int offset, int limit);
 }

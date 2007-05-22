@@ -36,4 +36,8 @@ public interface DomainManager {
     public List<Domain> find(Criterion criteria);
 
     public List<Domain> findDelegatedTo(Set<String> hostName);
+
+    public int count(Criterion criteria);
+
+    public List<Domain> find(Criterion criteria, int offset, int limit);
 }

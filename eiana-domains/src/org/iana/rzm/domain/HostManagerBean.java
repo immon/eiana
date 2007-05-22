@@ -43,4 +43,14 @@ public class HostManagerBean implements HostManager {
     public List<Host> find(Criterion criteria) {
         return dao.find(criteria);
     }
+
+    public int count(Criterion criteria) {
+        return dao.count(criteria);
+    }
+
+    public List<Host> find(Criterion criteria, int offset, int limit) {
+        CheckTool.checkNoNegative(offset, "offset is negative");
+        CheckTool.checkNoNegative(limit, "limit is negative");
+        return dao.find(criteria, offset, limit);
+    }
 }
