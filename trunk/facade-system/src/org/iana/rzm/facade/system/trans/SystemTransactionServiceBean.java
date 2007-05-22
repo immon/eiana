@@ -15,6 +15,7 @@ import org.iana.rzm.user.UserManager;
 import org.iana.objectdiff.*;
 
 import java.util.*;
+import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -67,6 +68,8 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     private TransactionVO createTransaction(Domain modifiedDomain) throws NoDomainModificationException {
         try {
             Transaction trans = transactionManager.createDomainModificationTransaction(modifiedDomain);
+            trans.setCreated(now());
+            trans.setCreatedBy(user.getUserName());
             return TransactionConverter.toTransactionVO(trans);
         } catch (NoModificationException e) {
             throw new NoDomainModificationException(modifiedDomain.getName());
@@ -75,8 +78,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
 
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
-            Transaction transaction = transactionManager.getTransaction(id);
-            transaction.accept(getRZMUser());
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.accept(getRZMUser());
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -90,8 +95,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
 
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
-            Transaction transaction = transactionManager.getTransaction(id);
-            transaction.reject(getRZMUser());
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.reject(getRZMUser());
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -105,8 +112,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
 
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
-            Transaction transaction = transactionManager.getTransaction(id);
-            transaction.transit(getRZMUser(), transitionName);
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.transit(getRZMUser(), transitionName);
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -207,7 +216,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
                 }
             }
         }
-        return TransactionConverter.toTransactionVO(transactionManager.createDomainModificationTransaction(md));
+        Transaction trans = transactionManager.createDomainModificationTransaction(md);
+        trans.setCreated(now());
+        trans.setCreatedBy(user.getUserName());
+        return TransactionConverter.toTransactionVO(trans);
     }
 
     private List<TransactionActionGroupVO> createTransactionGroups(String domainName, List<TransactionActionVO> actions) {
@@ -296,4 +308,9 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         }
         return ret;
     }
+
+    private Timestamp now() {
+        return new Timestamp(System.currentTimeMillis());
+    }
+
 }
