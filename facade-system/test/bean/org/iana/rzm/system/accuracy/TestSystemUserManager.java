@@ -114,4 +114,8 @@ public class TestSystemUserManager implements UserManager {
     public List<RZMUser> find(Criterion criteria, int offset, int limit) {
         return null;
     }
+
+    public RZMUser findUserByEmailAndRole(String email, String domainName) {
+        return null;
+    }
 }
