@@ -44,6 +44,11 @@ public class TransactionConverter {
         ret.setStart(trans.getStart());
         ret.setEnd(trans.getEnd());
 
+        ret.setCreated(trans.getCreated());
+        ret.setCreatedBy(trans.getCreatedBy());
+        ret.setModified(trans.getModified());
+        ret.setModifiedBy(trans.getModifiedBy());
+
         return ret;
     }
 
