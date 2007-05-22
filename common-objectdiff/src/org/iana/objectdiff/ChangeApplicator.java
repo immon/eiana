@@ -58,9 +58,9 @@ public class ChangeApplicator {
             if (method != null) method.invoke(object, new Object[]{value});
             else throw new RuntimeException("cannot update " + field);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("cannot update " + field);
+            throw new RuntimeException("cannot update " + field, e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException("cannot update " + field);
+            throw new RuntimeException("cannot update " + field, e);
         }
     }
 
