@@ -4,7 +4,7 @@ package org.iana.rzm.mail.parser;
  * @author Jakub Laszkiewicz
  */
 public class ConfirmationMailData extends AbstractMailData{
-    private Long ticketId;
+    private Long transactionId;
     private String stateName;
     private boolean accepted;
 
@@ -16,17 +16,17 @@ public class ConfirmationMailData extends AbstractMailData{
     }
 
     public ConfirmationMailData(Long ticketId, String stateName, boolean accepted) {
-        this.ticketId = ticketId;
+        this.transactionId = ticketId;
         this.stateName = stateName;
         this.accepted = accepted;
     }
 
-    public Long getTicketId() {
-        return ticketId;
+    public Long getTransactionId() {
+        return transactionId;
     }
 
-    public void setTicketId(Long ticketId) {
-        this.ticketId = ticketId;
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
     public String getStateName() {

@@ -20,9 +20,9 @@ import java.util.Iterator;
  */
 @Test
 public class MailParserImplTest {
-    private static final Long CONFIRMATION_VALID_TICKET_ID = 123L;
+    private static final Long CONFIRMATION_VALID_TRANSACTION_ID = 123L;
     private static final String CONFIRMATION_VALID_STATE_NAME = "PENDING_CONTACT_CONFIRMATION";
-    private static final String CONFIRMATION_VALID_SUBJECT = "Re: " + CONFIRMATION_VALID_TICKET_ID + " | " + CONFIRMATION_VALID_STATE_NAME;
+    private static final String CONFIRMATION_VALID_SUBJECT = "Re: " + CONFIRMATION_VALID_TRANSACTION_ID + " | " + CONFIRMATION_VALID_STATE_NAME;
     private static final String CONFIRMATION_CONTENT_ACCEPT =
             "> declaration declaration declaration declaration\n" +
             "> declaration declaration declaration declaration\n" +
@@ -62,7 +62,7 @@ public class MailParserImplTest {
         MailData result = mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_ACCEPT);
         assert result instanceof ConfirmationMailData;
         ConfirmationMailData cmd = (ConfirmationMailData) result;
-        assert CONFIRMATION_VALID_TICKET_ID.equals(cmd.getTicketId());
+        assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
         assert CONFIRMATION_VALID_STATE_NAME.equals(cmd.getStateName());
         assert cmd.isAccepted();
     }
@@ -72,7 +72,7 @@ public class MailParserImplTest {
         MailData result = mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_DECLINE);
         assert result instanceof ConfirmationMailData;
         ConfirmationMailData cmd = (ConfirmationMailData) result;
-        assert CONFIRMATION_VALID_TICKET_ID.equals(cmd.getTicketId());
+        assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
         assert CONFIRMATION_VALID_STATE_NAME.equals(cmd.getStateName());
         assert !cmd.isAccepted();
     }

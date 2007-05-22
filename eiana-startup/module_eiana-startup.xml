@@ -2,6 +2,9 @@
 <project name="module_eiana-startup" default="compile.module.eiana-startup">
   <dirname property="module.eiana-startup.basedir" file="${ant.file.module_eiana-startup}"/>
   
+  <property name="module.jdk.home.eiana-startup" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.eiana-startup" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.eiana-startup" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.eiana-startup" value="${compiler.args}"/>
   
@@ -13,6 +16,7 @@
   </path>
   
   <path id="eiana-startup.module.classpath">
+    <path refid="${module.jdk.classpath.eiana-startup}"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.hibernate.classpath"/>
     <path refid="library.spring.classpath"/>
@@ -43,7 +47,7 @@
   
   <target name="compile.module.eiana-startup.production" description="Compile module eiana-startup; production classes">
     <mkdir dir="${eiana-startup.output.dir}"/>
-    <javac destdir="${eiana-startup.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${eiana-startup.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.eiana-startup}/javac">
       <compilerarg line="${compiler.args.eiana-startup}"/>
       <bootclasspath refid="eiana-startup.module.bootclasspath"/>
       <classpath refid="eiana-startup.module.classpath"/>

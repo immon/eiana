@@ -13,7 +13,6 @@ import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.rzm.mail.processor.MailsProcessor;
 import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.Change;
 import org.iana.objectdiff.ChangeApplicator;
 import org.iana.objectdiff.DiffConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -48,7 +47,8 @@ public class MailsProcessorTest {
 
     private static final String EMAIL_AC = "ac@no-mail.org";
     private static final String EMAIL_TC = "tc@no-mail.org";
-    private static final String EMAIL_SUBJECT = ("Re: 0 | PENDING_CONTACT_CONFIRMATION");
+    private static final String EMAIL_SUBJECT_1 = "Re: ";
+    private static final String EMAIL_SUBJECT_2 = " | PENDING_CONTACT_CONFIRMATION";
     private static final String PUBLIC_KEY_AC_FILE_NAME = "tester.pgp.asc";
     private static final String PUBLIC_KEY_TC_FILE_NAME = "tester1.pgp.asc";
     private static final String CONTENT_AC_FILE_NAME = "accept-message.txt.asc";
@@ -135,8 +135,9 @@ public class MailsProcessorTest {
             assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
 
-            mailsProcessor.process(EMAIL_AC, EMAIL_SUBJECT, loadFromFile(CONTENT_AC_FILE_NAME));
-            mailsProcessor.process(EMAIL_TC, EMAIL_SUBJECT, loadFromFile(CONTENT_TC_FILE_NAME));
+            String subject = EMAIL_SUBJECT_1 + domainTrId + EMAIL_SUBJECT_2;
+            mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
+            mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
             transaction = transactionManager.getTransaction(domainTrId);
             assert transaction != null;

@@ -25,13 +25,13 @@
 
     <iana:template>
         <iana:type>contact-confirmation</iana:type>
-        <iana:subject>Domain modification</iana:subject>
+        <iana:subject>{transactionId} | {stateName}</iana:subject>
         <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.</iana:content>
     </iana:template>
 
     <iana:template>
         <iana:type>contact-confirmation-remainder</iana:type>
-        <iana:subject>Domain modification</iana:subject>
+        <iana:subject>{transactionId} | {stateName}</iana:subject>
         <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have only {period} days left. </iana:content>
     </iana:template>
 
