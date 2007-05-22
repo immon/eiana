@@ -8,7 +8,8 @@
         <event type='node-enter'>
             <action class="org.iana.rzm.mail.MailsProcessingAction"/>
         </event>
-        <timer name="15m-time-out" duedate="15 minutes" transition="receive"></timer>
+        <!-- set to 5 minutes -->
+        <timer name="5m-time-out" duedate="5 minutes" transition="receive"></timer>
         <transition name="receive" to="RECEIVE"/>
         <transition name="end" to="END_PROCESS"/>
     </state>
