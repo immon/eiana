@@ -6,6 +6,7 @@ package org.iana.rzm.mail.parser;
 public class ConfirmationMailData extends AbstractMailData{
     private Long transactionId;
     private String stateName;
+    private String domainName;
     private boolean accepted;
 
     public ConfirmationMailData() {
@@ -35,6 +36,14 @@ public class ConfirmationMailData extends AbstractMailData{
 
     public void setStateName(String stateName) {
         this.stateName = stateName;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 
     public boolean isAccepted() {
