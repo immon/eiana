@@ -70,23 +70,26 @@ public class TransactionConverter {
                 action.addChange(toChangeVOSimple("registryUrl", simpleChange));
                 actions.add(action);
             }
-
-            if (fieldChanges.containsKey("adminContacts") || fieldChanges.containsKey("techContacts") ||
-                    fieldChanges.containsKey("supportingOrg")) {
+            if (fieldChanges.containsKey("adminContacts")) {
                 TransactionActionVO action = new TransactionActionVO();
-                action.setName(TransactionActionVO.MODIFY_CONTACT);
-                if (fieldChanges.containsKey("adminContacts")) {
-                    CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
-                    action.addChange(toChangeVO("adminContacts", adminChange));
-                }
-                if (fieldChanges.containsKey("techContacts")) {
-                    CollectionChange techChange = (CollectionChange) fieldChanges.get("techContacts");
-                    action.addChange(toChangeVO("techContacts", techChange));
-                }
-                if (fieldChanges.containsKey("supportingOrg")) {
-                    ObjectChange supportingOrgChange = (ObjectChange) fieldChanges.get("supportingOrg");
-                    action.addChange(toChangeVO("supportingOrg", supportingOrgChange));
-                }
+                action.setName(TransactionActionVO.MODIFY_AC);
+                CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
+                action.addChange(toChangeVO("adminContacts", adminChange));
+                actions.add(action);
+            }
+            if (fieldChanges.containsKey("techContacts")) {
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_TC);
+                CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
+                action.addChange(toChangeVO("techContacts", adminChange));
+                actions.add(action);
+            }
+
+            if (fieldChanges.containsKey("supportingOrg")) {
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_TC);
+                ObjectChange supportingOrgChange = (ObjectChange) fieldChanges.get("supportingOrg");
+                action.addChange(toChangeVO("supportingOrg", supportingOrgChange));
                 actions.add(action);
             }
             if (fieldChanges.containsKey("nameServers")) {
