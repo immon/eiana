@@ -47,8 +47,8 @@
         <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckDecision">
             <test>true</test>
         </handler>
-        <transition name="no-test" to="PENDING_IMPACTED_PARTIES"/>
-        <transition name="test-ok" to="PENDING_IMPACTED_PARTIES"/>
+        <transition name="no-test" to="decision-PENDING_IMPACTED_PARTIES"/>
+        <transition name="test-ok" to="decision-PENDING_IMPACTED_PARTIES"/>
         <!--
                 todo: future feature
                 <transition name="test-failed" to="PENDING_TECH_CHECK_REMEDY"/>
