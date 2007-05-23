@@ -1,10 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.domain.IPAddress;
+import org.iana.rzm.domain.*;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -228,4 +225,54 @@ public class TransactionManagerTest {
             processDAO.close();
         }
     }
+
+    /*
+    @Test
+    public void testCreateDomainCreationTransaction() throws Exception {
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+        try {
+            userManager.create(UserManagementTestUtil.createUser("sys1tm",
+                    UserManagementTestUtil.createSystemRole("createdomain", true, true,
+                            SystemRole.SystemType.AC)));
+            userManager.create(UserManagementTestUtil.createUser("sys2tm",
+                    UserManagementTestUtil.createSystemRole("createdomain", true, true,
+                            SystemRole.SystemType.TC)));
+
+            Domain domain = new Domain("createdomain");
+            domain.setSupportingOrg(createContact("createdomain-supp"));
+            domain.addTechContact(createContact("createdomain-tech"));
+            domain.addAdminContact(createContact("createdomain-admin"));
+            Host host = new Host("ns1.createdomain");
+            host.addIPAddress("4.3.2.1");
+            domain.addNameServer(host);
+            host = new Host("ns2.createdomain");
+            host.addIPAddress("4.3.2.2");
+            domain.addNameServer(host);
+            domain.setRegistryUrl("registry.createdomain");
+            domain.setWhoisServer("whois.createdomain");
+
+            Domain newDomain = new Domain(domain.getName());
+            domainManager.create(newDomain);
+
+            transactionManager.createDomainCreationTransaction(domain);
+
+            txManager.commit(txStatus);
+        } catch (Exception e) {
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
+            throw e;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    private Contact createContact(String prefix) {
+        Contact contact = new Contact(prefix, prefix + "org");
+        contact.addAddress(new Address(prefix + "addr", "US"));
+        contact.addEmail(prefix + "@no-mail.org");
+        contact.addFaxNumber("+1234567890");
+        contact.addPhoneNumber("+1234567890");
+        return contact;
+    }
+    */
 }

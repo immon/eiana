@@ -160,4 +160,27 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
     public void setState(State state) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleDomainVO that = (SimpleDomainVO) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (objId != null ? !objId.equals(that.objId) : that.objId != null) return false;
+        if (roles != null ? !roles.equals(that.roles) : that.roles != null) return false;
+        if (trackData != null ? !trackData.equals(that.trackData) : that.trackData != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        result = 31 * result + (objId != null ? objId.hashCode() : 0);
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        return result;
+    }
 }
