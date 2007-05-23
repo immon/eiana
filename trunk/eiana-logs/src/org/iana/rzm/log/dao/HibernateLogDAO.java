@@ -1,7 +1,8 @@
-package pl.nask.logs.dao;
+package org.iana.rzm.log.dao;
 
-import pl.nask.dao.hibernate.HibernateDAO;
-import pl.nask.logs.LogEntry;
+import org.iana.rzm.log.LogEntry;
+import org.iana.dao.hibernate.HibernateDAO;
+
 
 /**
  * @author Patrycja Wegrzynowicz
