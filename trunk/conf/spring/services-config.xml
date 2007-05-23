@@ -6,7 +6,8 @@
 
     <!-- facade services configuration -->
 
-     <bean id="GuardedAdminTransactionServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedAdminTransactionServiceBean"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminTransactionService</value>
@@ -28,13 +29,15 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminTransactionServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean" scope="session">
-        <constructor-arg index="0" ref="userManager" />
-        <constructor-arg index="1" ref="transactionManagerBean" />
+    <bean id="GuardedAdminTransactionServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean"
+          scope="session">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="transactionManagerBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminRoleServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedAdminRoleServiceBean"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminRoleService</value>
@@ -51,9 +54,10 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminRoleServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean" scope="session">
-        <constructor-arg index="0" ref="userManager" />
-        <constructor-arg index="1" ref="roleManager" />
+    <bean id="GuardedAdminRoleServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean"
+          scope="session">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="roleManager"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -66,7 +70,8 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminUserServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedAdminUserServiceBean"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminUserService</value>
@@ -88,8 +93,9 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminUserServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean" scope="session">
-        <constructor-arg index="0" ref="userManager" />
+    <bean id="GuardedAdminUserServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean"
+          scope="session">
+        <constructor-arg index="0" ref="userManager"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -102,7 +108,8 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminDomainServiceBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedAdminDomainServiceBean"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.admin.AdminDomainService</value>
@@ -124,9 +131,10 @@
         </property>
     </bean>
 
-    <bean id="GuardedAdminDomainServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean" scope="session">
-        <constructor-arg index="0" ref="userManager" />
-        <constructor-arg index="1" ref="domainManager" />
+    <bean id="GuardedAdminDomainServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean"
+          scope="session">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="domainManager"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -210,10 +218,47 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService" scope="session">
+    <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService"
+          scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="SystemDomainServiceBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="transSystemDomainService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="SystemDomainServiceBean"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="transSystemTransactionService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.domain.SystemTransactionService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="SystemTransactionServiceBean"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
@@ -308,11 +353,18 @@
     </bean>
 
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
-        <constructor-arg value="MailHost"/>
-        <constructor-arg value="mailer"/>
-        <constructor-arg value="fromAddress"/>
-        <constructor-arg value="username"/>
-        <constructor-arg value=""/>
+        <constructor-arg index="0" value="localhost"/>
+        <constructor-arg index="1" value="[RZM]"/>
+        <constructor-arg index="2" value="rzm-test@icann.org"/>
+        <constructor-arg index="3" value=""/>
+        <constructor-arg index="4" value=""/>
+        <!--
+                <constructor-arg value="MailHost"/>
+                <constructor-arg value="mailer"/>
+                <constructor-arg value="fromAddress"/>
+                <constructor-arg value="username"/>
+                <constructor-arg value=""/>
+        -->
         <!--Password-->
     </bean>
 
@@ -390,7 +442,7 @@
     </bean>
 
     <bean id="hostManager" class="org.iana.rzm.domain.HostManagerBean">
-        <constructor-arg ref="hostDAO" />
+        <constructor-arg ref="hostDAO"/>
     </bean>
 
     <bean id="hostDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -640,8 +692,8 @@
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean">
         <constructor-arg index="0" ref="mailParser"/>
         <constructor-arg index="1" ref="authenticationServiceBean"/>
-        <constructor-arg index="2" ref="GuardedSystemTransactionService"/>
-        <constructor-arg index="3" ref="GuardedSystemDomainService"/>
+        <constructor-arg index="2" ref="transSystemTransactionService"/>
+        <constructor-arg index="3" ref="transSystemDomainService"/>
         <constructor-arg index="4" ref="NotificationSenderBean"/>
         <constructor-arg index="5" ref="NotificationManagerBean"/>
         <constructor-arg index="6" ref="userManager"/>
