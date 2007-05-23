@@ -5,9 +5,7 @@ import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.TransactionStateLogEntry;
 import org.iana.objectdiff.*;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Converts a domain transaction business and persistent object to a domain transaction
@@ -16,6 +14,12 @@ import java.util.Map;
  * @author Patrycja Wegrzynowicz
  */
 public class TransactionConverter {
+
+    private static Map<String, List<String>> order = new HashMap<String, List<String>>();
+
+    static {
+        order.put("nameServers", Arrays.asList("name", "address"));
+    }
 
     public static SimpleTransactionVO toSimpleTransactionVO(final Transaction trans) {
         if (trans == null) return null;
@@ -168,7 +172,8 @@ public class TransactionConverter {
         ret.setType(ChangeVO.Type.valueOf(change.getType().toString()));
         ObjectValueVO value = new ObjectValueVO(0, change.getId());
         Map<String, Change> changes = change.getFieldChanges();
-        for (String fieldName : changes.keySet()) {
+        List<String> fieldNames = order.containsKey(field) ? order.get(field) : new ArrayList<String>(changes.keySet());
+        for (String fieldName : fieldNames) {
             Change fieldChange = changes.get(fieldName);
             value.addChanges(toChangeVO(fieldName, fieldChange));
         }
