@@ -89,14 +89,14 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
             int difference = states.indexOf(targetStateName) - currentStateIndex;
 
             if (difference < 0) {
-                for(int i = currentStateIndex; i > (difference + currentStateIndex); i--) {
+                for(int i = currentStateIndex; i > (difference + currentStateIndex);) {
                     transaction = transactionManager.getTransaction(id);
-                    transaction.transit(this.getRZMUser(), "admin-back");
+                    transaction.transit(this.getRZMUser(), "admin-" + states.get(--i));
                 }
             } else {
-                for(int i = currentStateIndex; i < (difference + currentStateIndex); i++) {
+                for(int i = currentStateIndex; i < (difference + currentStateIndex);) {
                     transaction = transactionManager.getTransaction(id);
-                    transaction.transit(this.getRZMUser(), "admin-accept");
+                    transaction.transit(this.getRZMUser(), "admin-" + states.get(++i));
                 }
             }
         } catch (NoSuchTransactionException e) {
