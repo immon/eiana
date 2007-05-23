@@ -193,9 +193,11 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions) throws NoModificationException, CloneNotSupportedException {
         Domain md = currentDomain.clone();
         for (TransactionActionVO action : actions) {
-            if (TransactionActionVO.MODIFY_CONTACT.equals(action.getName())) {
-                md.setSupportingOrg(modifiedDomain.getSupportingOrg());
+            if (TransactionActionVO.MODIFY_TC.equals(action.getName())) {
                 md.setTechContacts(modifiedDomain.getTechContacts());
+            } else if (TransactionActionVO.MODIFY_SO.equals(action.getName())) {
+                md.setSupportingOrg(modifiedDomain.getSupportingOrg());
+            } else if (TransactionActionVO.MODIFY_AC.equals(action.getName())) {
                 md.setAdminContacts(modifiedDomain.getAdminContacts());
             } else if (TransactionActionVO.MODIFY_REGISTRATION_URL.equals(action.getName())) {
                 md.setRegistryUrl(modifiedDomain.getRegistryUrl());
