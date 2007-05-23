@@ -1,6 +1,6 @@
-package pl.nask.logs.dao;
+package org.iana.rzm.log.dao;
 
-import pl.nask.logs.LogEntry;
+import org.iana.rzm.log.LogEntry;
 
 /**
  * @author Patrycja Wegrzynowicz
