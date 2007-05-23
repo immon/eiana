@@ -247,7 +247,7 @@
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
-                <value>org.iana.rzm.facade.system.domain.SystemTransactionService</value>
+                <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
             </list>
         </property>
         <property name="target">
