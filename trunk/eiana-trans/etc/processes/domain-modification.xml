@@ -1,3 +1,4 @@
+
 <process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
@@ -48,6 +49,18 @@
         </handler>
         <transition name="no-test" to="PENDING_IMPACTED_PARTIES"/>
         <transition name="test-ok" to="PENDING_IMPACTED_PARTIES"/>
+        <!--
+                todo: future feature
+                <transition name="test-failed" to="PENDING_TECH_CHECK_REMEDY"/>
+        -->
+    </decision>
+
+    <decision name="decision-PENDING_IMPACTED_PARTIES">
+        <handler class="org.iana.rzm.trans.jbpm.handlers.PendingImpactedPartiesDecision">
+            <test>true</test>
+        </handler>
+        <transition name="pending" to="PENDING_IMPACTED_PARTIES"/>
+        <transition name="iana" to="PENDING_IANA_CONFIRMATION"/>
         <!--
                 todo: future feature
                 <transition name="test-failed" to="PENDING_TECH_CHECK_REMEDY"/>
