@@ -70,7 +70,7 @@ public class MailsProcessorBean implements MailsProcessor {
                 domSvc.setUser(user);
                 processTemplate((TemplateMailData) mailData, user);
             } else {
-                createNotification(user.getUserName(), mailData,
+                createNotification(user.getUserName(), subject, content,
                         "Error occured while processing your request.");
             }
 //        } catch (PGPUtilsException e) {
@@ -78,13 +78,13 @@ public class MailsProcessorBean implements MailsProcessor {
 //                    "Error occured while processing your request.");
 //            Logger.getLogger(getClass()).error(e);
         } catch (AuthenticationFailedException e) {
-            createNotification(from, mailData, "Authentication failed.");
+            createNotification(from, subject, content, "Authentication failed.");
             Logger.getLogger(getClass()).error(e);
         } catch (AuthenticationRequiredException e) {
-            createNotification(from, mailData, "Authentication failed.");
+            createNotification(from, subject, content, "Authentication failed.");
             Logger.getLogger(getClass()).error(e);
         } catch (MailParserException e) {
-            createNotification(from, mailData, "Mail content parse error: \n" + e.getMessage());
+            createNotification(from, subject, content, "Mail content parse error: \n" + e.getMessage());
             Logger.getLogger(getClass()).error(e);
         }
     }
@@ -152,8 +152,12 @@ public class MailsProcessorBean implements MailsProcessor {
     }
 
     private void createNotification(String userName, MailData data, String message) {
-        Content content = new TextContent(RESPONSE_PREFIX + data.getOriginalSubject(),
-                quote(data.getOriginalBody()) + "\n" + message);
+        createNotification(userName, data.getOriginalSubject(), data.getOriginalBody(), message);
+    }
+
+    private void createNotification(String userName, String originalSubject, String originalContent, String message) {
+        Content content = new TextContent(RESPONSE_PREFIX + originalSubject,
+                quote(originalContent) + "\n" + message);
         RZMUser rzmUser = usrMgr.get(userName);
         Notification notification = new Notification();
         notification.addAddressee(rzmUser);
