@@ -22,7 +22,13 @@ import java.util.Iterator;
 public class MailParserImplTest {
     private static final Long CONFIRMATION_VALID_TRANSACTION_ID = 123L;
     private static final String CONFIRMATION_VALID_STATE_NAME = "PENDING_CONTACT_CONFIRMATION";
-    private static final String CONFIRMATION_VALID_SUBJECT = "Re: " + CONFIRMATION_VALID_TRANSACTION_ID + " | " + CONFIRMATION_VALID_STATE_NAME;
+    private static final String CONFIRMATION_SUBJECT_TOKEN = "[RZM]";
+    private static final String CONFIRMATION_VALID_DOMAIN_NAME = "confdomainname";
+    private static final String CONFIRMATION_VALID_SUBJECT = "Re: " +
+            CONFIRMATION_VALID_TRANSACTION_ID + " | " +
+            CONFIRMATION_VALID_STATE_NAME + " | " +
+            CONFIRMATION_SUBJECT_TOKEN + " | " +
+            CONFIRMATION_VALID_DOMAIN_NAME;
     private static final String CONFIRMATION_CONTENT_ACCEPT =
             "> declaration declaration declaration declaration\n" +
             "> declaration declaration declaration declaration\n" +
@@ -64,6 +70,7 @@ public class MailParserImplTest {
         ConfirmationMailData cmd = (ConfirmationMailData) result;
         assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
         assert CONFIRMATION_VALID_STATE_NAME.equals(cmd.getStateName());
+        assert CONFIRMATION_VALID_DOMAIN_NAME.equals(cmd.getDomainName());
         assert cmd.isAccepted();
     }
 
@@ -74,6 +81,7 @@ public class MailParserImplTest {
         ConfirmationMailData cmd = (ConfirmationMailData) result;
         assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
         assert CONFIRMATION_VALID_STATE_NAME.equals(cmd.getStateName());
+        assert CONFIRMATION_VALID_DOMAIN_NAME.equals(cmd.getDomainName());
         assert !cmd.isAccepted();
     }
 

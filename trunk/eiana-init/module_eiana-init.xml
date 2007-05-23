@@ -43,6 +43,7 @@
     <pathelement location="${module.eiana-init.basedir}/../conf/spring"/>
     <pathelement location="${common-pgp.output.dir}"/>
     <pathelement location="${common-pgp.testoutput.dir}"/>
+    <path refid="library.mail.classpath"/>
   </path>
   
   

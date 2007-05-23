@@ -5,8 +5,6 @@ import org.iana.notifications.Addressee;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 /**
  * @author Piotr Tkaczyk
@@ -47,5 +45,9 @@ public class HibernateNotificationDAO extends HibernateDaoSupport implements Not
                 "where notif.sent = false and "+
                 "notif.sentFailures < ?";
         return (List<Notification>) getHibernateTemplate().find(query, maxSentFailures);
+    }
+
+    public List<Notification> findAll() {
+        return getHibernateTemplate().find("from Notification");
     }
 }
