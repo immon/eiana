@@ -40,7 +40,11 @@ public class NotificationManagerBean implements NotificationManager {
     public List<Notification> findUnSentNotifications(long maxSentFailures) {
         return notificationDAO.findUnSentNotifications(maxSentFailures);
     }
-    
+
+    public List<Notification> findAll() {
+        return notificationDAO.findAll();
+    }
+
     public void deleteNotificationsByAddresse(Addressee addressee) {
         List<Notification> notifications = findUserNotifications(addressee);
         for(Notification notif : notifications) {

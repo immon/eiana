@@ -2,8 +2,6 @@ package org.iana.rzm.mail.processor;
 
 import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
-import org.iana.pgp.PGPUtils;
-import org.iana.pgp.PGPUtilsException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.auth.*;
@@ -11,7 +9,6 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.SystemTransactionService;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
 import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.mail.parser.*;
 import org.iana.rzm.user.RZMUser;
@@ -70,21 +67,21 @@ public class MailsProcessorBean implements MailsProcessor {
                 domSvc.setUser(user);
                 processTemplate((TemplateMailData) mailData, user);
             } else {
-                createNotification(user.getUserName(), subject, content,
+                createUserNotification(user.getUserName(), subject, content,
                         "Error occured while processing your request.");
             }
 //        } catch (PGPUtilsException e) {
-//            createNotification(user == null ? from : user.getUserName(), mailData,
+//            createUserNotification(user == null ? from : user.getUserName(), mailData,
 //                    "Error occured while processing your request.");
 //            Logger.getLogger(getClass()).error(e);
         } catch (AuthenticationFailedException e) {
-            createNotification(from, subject, content, "Authentication failed.");
+            createEmailNotification(from, subject, content, "Authentication failed.");
             Logger.getLogger(getClass()).error(e);
         } catch (AuthenticationRequiredException e) {
-            createNotification(from, subject, content, "Authentication failed.");
+            createEmailNotification(from, subject, content, "Authentication failed.");
             Logger.getLogger(getClass()).error(e);
         } catch (MailParserException e) {
-            createNotification(from, subject, content, "Mail content parse error: \n" + e.getMessage());
+            createEmailNotification(from, subject, content, "Mail content parse error: \n" + e.getMessage());
             Logger.getLogger(getClass()).error(e);
         }
     }
@@ -93,12 +90,12 @@ public class MailsProcessorBean implements MailsProcessor {
         try {
             TransactionVO trans = transSvc.getTransaction(data.getTransactionId());
             if (trans == null) {
-                createNotification(user.getUserName(), data,
+                createUserNotification(user.getUserName(), data,
                                         "Transaction id not found: " + data.getTransactionId());
                 return;
             }
             if (!data.getStateName().equals(trans.getState().getName().toString())) {
-                createNotification(user.getUserName(), data,
+                createUserNotification(user.getUserName(), data,
                                         "wrong transaction state = " + data.getStateName() +
                                         ", expected: " + trans.getState().getName());
                 return;
@@ -107,12 +104,12 @@ public class MailsProcessorBean implements MailsProcessor {
                 transSvc.acceptTransaction(trans.getTransactionID());
             else
                 transSvc.rejectTransaction(trans.getTransactionID());
-            createNotification(user.getUserName(), data, "Your request was successfully processed.");
+            createUserNotification(user.getUserName(), data, "Your request was successfully processed.");
         } catch (InfrastructureException e) {
-            createNotification(user.getUserName(), data, "Error occured while processing your request.");
+            createUserNotification(user.getUserName(), data, "Error occured while processing your request.");
             Logger.getLogger(getClass()).error(e);
         } catch (NoObjectFoundException e) {
-            createNotification(user.getUserName(), data, "Nonexistent ticket id.");
+            createUserNotification(user.getUserName(), data, "Nonexistent ticket id.");
             Logger.getLogger(getClass()).error(e);
         }
     }
@@ -133,34 +130,42 @@ public class MailsProcessorBean implements MailsProcessor {
             IDomainVO domain = updateDomain(data.getTemplate());
             List<TransactionVO> transactions = transSvc.createTransactions(domain, false);
             if (transactions.isEmpty())
-                createNotification(user.getUserName(), data, "Domain data are the same as in the message.");
+                createUserNotification(user.getUserName(), data, "Domain data are the same as in the message.");
             else
-                createNotification(user.getUserName(), data, createMessageTemplateProcessed(transactions));
+                createUserNotification(user.getUserName(), data, createMessageTemplateProcessed(transactions));
         } catch (InfrastructureException e) {
-            createNotification(user.getUserName(), data, "Error occured while processing your request.");
+            createUserNotification(user.getUserName(), data, "Error occured while processing your request.");
             Logger.getLogger(getClass()).error(e);
         } catch (NoObjectFoundException e) {
-            createNotification(user.getUserName(), data, "Domain name not found.");
+            createUserNotification(user.getUserName(), data, "Domain name not found.");
             Logger.getLogger(getClass()).error(e);
         } catch (MailsProcessorException e) {
-            createNotification(user.getUserName(), data, e.getMessage());
+            createUserNotification(user.getUserName(), data, e.getMessage());
             Logger.getLogger(getClass()).error(e);
         } catch (NoDomainModificationException e) {
-            createNotification(user.getUserName(), data, "Domain data are the same as in the message.");
+            createUserNotification(user.getUserName(), data, "Domain data are the same as in the message.");
             Logger.getLogger(getClass()).error(e);
         }
     }
 
-    private void createNotification(String userName, MailData data, String message) {
-        createNotification(userName, data.getOriginalSubject(), data.getOriginalBody(), message);
+    private void createUserNotification(String userName, MailData data, String message) {
+        createUserNotification(userName, data.getOriginalSubject(), data.getOriginalBody(), message);
     }
 
-    private void createNotification(String userName, String originalSubject, String originalContent, String message) {
+    private void createUserNotification(String userName, String originalSubject, String originalContent, String message) {
+        RZMUser rzmUser = usrMgr.get(userName);
+        createNotification(rzmUser, originalSubject, originalContent, message);
+    }
+    
+    private void createEmailNotification(String email, String originalSubject, String originalContent, String message) {
+        createNotification(new EmailAddressee(email, email), originalSubject, originalContent, message);
+    }
+
+    private void createNotification(Addressee addressee, String originalSubject, String originalContent, String message) {
         Content content = new TextContent(RESPONSE_PREFIX + originalSubject,
                 quote(originalContent) + "\n" + message);
-        RZMUser rzmUser = usrMgr.get(userName);
         Notification notification = new Notification();
-        notification.addAddressee(rzmUser);
+        notification.addAddressee(addressee);
         notification.setContent(content);
         try {
             notSdr.send(notification.getAddressee(), notification.getContent());

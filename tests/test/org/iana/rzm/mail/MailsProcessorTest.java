@@ -15,6 +15,8 @@ import org.iana.rzm.mail.processor.MailsProcessor;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.ChangeApplicator;
 import org.iana.objectdiff.DiffConfiguration;
+import org.iana.notifications.NotificationManager;
+import org.iana.notifications.Notification;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -44,18 +46,20 @@ public class MailsProcessorTest {
     private Set<RZMUser> users = new HashSet<RZMUser>();
     private List<String> domainNames = new ArrayList<String>();
     private Long domainTrId;
+    private NotificationManager notificationManager;
 
     private static final String EMAIL_AC = "ac@no-mail.org";
     private static final String EMAIL_TC = "tc@no-mail.org";
-    private static final String EMAIL_SUBJECT_1 = "Re: ";
-    private static final String EMAIL_SUBJECT_2 = " | PENDING_CONTACT_CONFIRMATION";
+    private static final String EMAIL_SUBJECT_PREFIX = "Re: ";
+    private static final String EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_CONTACT_CONFIRMATION | [RZM] |";
     private static final String PUBLIC_KEY_AC_FILE_NAME = "tester.pgp.asc";
     private static final String PUBLIC_KEY_TC_FILE_NAME = "tester1.pgp.asc";
     private static final String CONTENT_AC_FILE_NAME = "accept-message.txt.asc";
     private static final String CONTENT_TC_FILE_NAME = "accept-message-1.txt.asc";
     private static final String TEMPLATE_EMAIL_SUBJECT = ("Domain Modification Transaction (Unified Workflow)");
     private static final String TEMPLATE_CONTENT_AC_FILE_NAME_NO_CHANGE = "template-nochange.txt.asc";
-    private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.txt.asc";
+    //private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.txt.asc";
+    private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.not-signed.txt.asc";
 
     @BeforeClass
     public void init() throws Exception {
@@ -67,6 +71,7 @@ public class MailsProcessorTest {
         userManager = (UserManager) appCtx.getBean("userManager");
         mailsProcessor = (MailsProcessor) appCtx.getBean("mailsProcessor");
         diffConfig = (DiffConfiguration) appCtx.getBean("diffConfig");
+        notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
 
@@ -135,13 +140,17 @@ public class MailsProcessorTest {
             assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
 
-            String subject = EMAIL_SUBJECT_1 + domainTrId + EMAIL_SUBJECT_2;
+            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain";
             mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
             mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
             transaction = transactionManager.getTransaction(domainTrId);
             assert transaction != null;
+            /*
             assert TransactionState.Name.PENDING_IMPACTED_PARTIES.equals(transaction.getState().getName()) :
+                    "unexpected state: " + transaction.getState().getName();
+            */
+            assert TransactionState.Name.PENDING_IANA_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
 
             txManager.commit(txStatus);
@@ -233,6 +242,9 @@ public class MailsProcessorTest {
             userManager.delete(user);
         for (String name : domainNames)
             domainManager.delete(name);
+        List<Notification> notifList = notificationManager.findAll();
+        for (Notification notif : notifList)
+            notificationManager.delete(notif);
     }
 
     private String loadFromFile(String fileName) throws IOException {
