@@ -126,12 +126,12 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
 //
 //    }
 
-    @Test  (expectedExceptions = {AccessDeniedException.class})
-    public void testFAILURE_CLOSE_IMPACTED_PARTIES() throws Exception {
-        Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        closeIMPACTED_PARTIES(userUSDoC, transId);    
-    }
+//    @Test  (expectedExceptions = {AccessDeniedException.class})
+//    public void testFAILURE_CLOSE_IMPACTED_PARTIES() throws Exception {
+//        Long transId = createTransaction(domainVO, userAC).getTransactionID();
+//        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+//        closeIMPACTED_PARTIES(userUSDoC, transId);
+//    }                   todo
 
 
 

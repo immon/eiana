@@ -83,7 +83,7 @@ public class NameServerChangeTransactionTest {
 
         TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
         assert loadedTransaction != null;
-        assert transaction.equals(loadedTransaction);
+        assert compareTransactionVOs(transaction,  loadedTransaction);
         Host newNameServer = new Host("newNameServer");
         List<HostVO> hostVOList = new ArrayList<HostVO>();
         hostVOList.add(ToVOConverter.toHostVO(newNameServer));
@@ -189,5 +189,21 @@ public class NameServerChangeTransactionTest {
         Domain domain = setupDomain("gstsNSC");
         domainDAO.create(domain);
         return ToVOConverter.toDomainVO(domain);
+    }
+
+    private boolean compareTransactionVOs(TransactionVO first, TransactionVO second) {
+
+        if (first.getDomainActions() != null ? !first.getDomainActions().equals(second.getDomainActions()) : second.getDomainActions() != null)
+            return false;
+        if (first.getDomainName() != null ? !first.getDomainName().equals(second.getDomainName()) : second.getDomainName() != null) return false;
+        if (first.getEnd() != null ? !first.getEnd().equals(second.getEnd()) : second.getEnd() != null) return false;
+        if (first.getName() != null ? !first.getName().equals(second.getName()) : second.getName() != null) return false;
+        if (first.getStart() != null ? !first.getStart().equals(second.getStart()) : second.getStart() != null) return false;
+        if (first.getState() != null ? !first.getState().equals(second.getState()) : second.getState() != null) return false;
+        if (first.getTicketID() != null ? !first.getTicketID().equals(second.getTicketID()) : second.getTicketID() != null) return false;
+        if (first.getTransactionID() != null ? !first.getTransactionID().equals(second.getTransactionID()) : second.getTransactionID() != null)
+            return false;
+
+        return true;
     }
 }

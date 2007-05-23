@@ -162,7 +162,8 @@ public abstract class CommonGuardedSystemTransaction {
         setGSTSAuthUser(secondUser); //userTC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
         gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
+//        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId); todo
+        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
         gsts.close();
     }
 

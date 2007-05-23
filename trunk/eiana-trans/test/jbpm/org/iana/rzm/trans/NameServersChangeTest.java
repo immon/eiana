@@ -84,8 +84,8 @@ public class NameServersChangeTest {
             Token token = pi.getRootToken();
             assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
-            assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+//            assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES") : "unexpected state: " + token.getNode().getName();
+//            token.signal("accept");
             assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
             token.signal("normal");
             assert token.getNode().getName().equals("PENDING_EXT_APPROVAL") : "unexpected state: " + token.getNode().getName();

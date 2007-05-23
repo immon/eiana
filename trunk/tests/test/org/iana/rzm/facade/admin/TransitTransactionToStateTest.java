@@ -28,7 +28,7 @@ import java.util.List;
  * @author: Piotr Tkaczyk
  */
 
-@Test(sequential = true, groups = {"test", "TransitTransactionToStateTest"})
+@Test(sequential = true, groups = {"excluded", "test", "TransitTransactionToStateTest"})
 public class TransitTransactionToStateTest {
 
     ApplicationContext appCtx;

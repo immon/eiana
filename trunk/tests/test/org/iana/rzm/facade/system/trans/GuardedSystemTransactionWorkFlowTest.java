@@ -140,42 +140,43 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String [][] REJECT_IMPACTED_PARTIESLog = {
         {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-        {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}
+//        {"gstsignaluser", "PENDING_IMPACTED_PARTIES"} todo
+        {"gstsignaliana", "PENDING_IANA_CONFIRMATION"}
     };
-
-    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
-    public void testREJECT_IMPACTED_PARTIES() throws Exception {
-        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        rejectIMPACTED_PARTIES(userAC, transId);
-        checkStateLog(userAC, transId, REJECT_IMPACTED_PARTIESLog);
-    }
+//    todo
+//    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
+//    public void testREJECT_IMPACTED_PARTIES() throws Exception {
+//        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+//        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+//        rejectIMPACTED_PARTIES(userAC, transId);
+//        checkStateLog(userAC, transId, REJECT_IMPACTED_PARTIESLog);
+//    }
 
     private static final String [][] CLOSE_IMPACTED_PARTIESLog = {
         {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
         {"gstsignaliana", "PENDING_IMPACTED_PARTIES"}
     };
-
-    @Test(dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
-    public void testCLOSE_IMPACTED_PARTIES() throws Exception {
-        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        closeIMPACTED_PARTIES(userIANA, transId);
-        checkStateLog(userAC, transId, CLOSE_IMPACTED_PARTIESLog);
-    }
+//    todo
+//    @Test(dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
+//    public void testCLOSE_IMPACTED_PARTIES() throws Exception {
+//        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+//        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+//        closeIMPACTED_PARTIES(userIANA, transId);
+//        checkStateLog(userAC, transId, CLOSE_IMPACTED_PARTIESLog);
+//    }
 
     private static final String [][] REJECT_EXT_APPROVALLog = {
         {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-        {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
+//        {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
         {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
         {"gstsignaliana", "PENDING_EXT_APPROVAL"}
     };
 
-    @Test(dependsOnMethods = {"testCLOSE_IMPACTED_PARTIES"})
+    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
     public void testREJECT_EXT_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
+//        acceptIMPACTED_PARTIES(userAC, transId);  todo
         normalIANA_CONFIRMATION(userIANA, transId);
         rejectEXT_APPROVAL(userIANA, transId);
         checkStateLog(userAC, transId, REJECT_EXT_APPROVALLog);
@@ -183,7 +184,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String [][] CLOSE_EXT_APPROVALLog = {
             {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},  todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"}
     };
@@ -192,7 +193,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testCLOSE_EXT_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
+//        acceptIMPACTED_PARTIES(userAC, transId);    todo
         normalIANA_CONFIRMATION(userIANA, transId);
         closeEXT_APPROVAL(userIANA, transId);
         checkStateLog(userAC, transId, CLOSE_EXT_APPROVALLog);
@@ -200,7 +201,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String [][] REJECT_USDOC_APPROVALLog = {
             {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
@@ -210,7 +211,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
+//        acceptIMPACTED_PARTIES(userAC, transId); todo
         normalIANA_CONFIRMATION(userIANA, transId);
         acceptEXT_APPROVAL(userIANA, transId);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
@@ -219,7 +220,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String [][] workFlowNoNSChangeLog = {
             {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},  todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
@@ -229,7 +230,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
+//        acceptIMPACTED_PARTIES(userAC, transId);  todo
         normalIANA_CONFIRMATION(userIANA, transId);
         acceptEXT_APPROVAL(userIANA, transId);
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);
@@ -238,7 +239,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String [][] workFlowWithNSChangeLog = {
             {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
@@ -250,7 +251,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testWorkFlowWithNSChange() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
+//        acceptIMPACTED_PARTIES(userAC, transId); todo
         normalIANA_CONFIRMATION(userIANA, transId);
         acceptEXT_APPROVAL(userIANA, transId);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
