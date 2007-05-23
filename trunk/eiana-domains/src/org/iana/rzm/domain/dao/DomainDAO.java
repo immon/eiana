@@ -22,6 +22,8 @@ public interface DomainDAO {
 
     public void delete(Domain domain);
 
+    public void delete(String name);
+
     public List<Domain> find(Criterion criterion);
 
     public List<Domain> findDelegatedTo(Set<String> hostNames);

@@ -1,10 +1,7 @@
 package org.iana.rzm.facade.admin;
 
 import org.iana.rzm.facade.common.RZMStatefulService;
-import org.iana.rzm.facade.system.trans.TransactionVO;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.criteria.Criterion;
 
@@ -17,7 +14,7 @@ public interface AdminTransactionService extends RZMStatefulService {
 
     TransactionVO getTransaction(long id) throws NoTransactionException;
 
-    TransactionVO createDomainCreationTransaction(DomainVO domainVO);
+    TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException;
 
     TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException;
 

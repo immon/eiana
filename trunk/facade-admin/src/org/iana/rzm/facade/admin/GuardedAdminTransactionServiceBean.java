@@ -1,22 +1,26 @@
 package org.iana.rzm.facade.admin;
 
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
+import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.user.Role;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.criteria.Criterion;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.UserManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk
@@ -40,6 +44,7 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
     }
 
     TransactionManager transactionManager;
+    DomainManager domainManager;
 
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
@@ -49,6 +54,15 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         this.transactionManager = transactionManager;
+    }
+
+    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager,
+                                              DomainManager domainManager) {
+        super(userManager);
+        CheckTool.checkNull(transactionManager, "transaction manager");
+        CheckTool.checkNull(domainManager, "domain manager");
+        this.transactionManager = transactionManager;
+        this.domainManager = domainManager;
     }
 
     public TransactionVO getTransaction(long id) throws NoTransactionException {
@@ -62,10 +76,13 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
         }
     }
 
-    public TransactionVO createDomainCreationTransaction(DomainVO domainVO) {
+    public TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException {
         isUserInRole();
-        //todo
-        return null;
+        if (userManager.findUsersInSystemRole(domainVO.getName(), null, true, false).isEmpty())
+            throw new NoDomainSystemUsersException(domainVO.getName());
+        domainManager.create(new Domain(domainVO.getName()));
+        Transaction trans = transactionManager.createDomainCreationTransaction(FromVOConverter.toDomain(domainVO));
+        return TransactionConverter.toTransactionVO(trans);
     }
 
     public void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException {

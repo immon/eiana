@@ -27,4 +27,25 @@ public class AddressVO implements Serializable {
     public void setCountryCode(String countryCode) {
         this.countryCode = new CountryCode(countryCode);
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AddressVO addressVO = (AddressVO) o;
+
+        if (countryCode != null ? !countryCode.equals(addressVO.countryCode) : addressVO.countryCode != null)
+            return false;
+        if (textAddress != null ? !textAddress.equals(addressVO.textAddress) : addressVO.textAddress != null)
+            return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (textAddress != null ? textAddress.hashCode() : 0);
+        result = 31 * result + (countryCode != null ? countryCode.hashCode() : 0);
+        return result;
+    }
 }

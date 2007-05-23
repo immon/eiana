@@ -32,6 +32,10 @@ public class HibernateDomainDAO extends HibernateDAO<Domain> implements DomainDA
         return ret;
     }
 
+    public void delete(String name) {
+        delete(get(name));
+    }
+
     public List<Domain> findDelegatedTo(Set<String> hostNames) {
         CheckTool.checkNull(hostNames, "host names");
         StringBuffer hql = new StringBuffer(

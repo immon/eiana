@@ -1,11 +1,10 @@
 package org.iana.rzm.trans;
 
 import org.iana.objectdiff.ChangeDetector;
-import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.trans.change.DomainDiffConfiguration;
 import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
@@ -22,6 +21,7 @@ import java.util.Set;
 public class TransactionManagerBean implements TransactionManager {
 
     private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
+    private static final String DOMAIN_CREATION_PROCESS = "Domain Creation Transaction (Unified Workflow)";
 
     private ProcessDAO processDAO;
     private TicketingService ticketingService;
@@ -43,7 +43,15 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction createDomainCreationTransaction(Domain domain) {
-        throw new UnsupportedOperationException();
+        TransactionData td = new TransactionData();
+        td.setCurrentDomain(domainDAO.get(domain.getName()));
+        td.setTicketID(ticketingService.generateID());
+        ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(new Domain(domain.getName()), domain, diffConfiguration);
+        td.setDomainChange(domainChange);
+        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_CREATION_PROCESS);
+        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
+        pi.signal();
+        return new Transaction(pi);
     }
 
     public Transaction createDomainModificationTransaction(Domain modifiedDomain) throws NoModificationException {

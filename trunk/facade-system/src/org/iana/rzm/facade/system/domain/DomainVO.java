@@ -110,4 +110,47 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     public void setState(State state) {
         this.state = state;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DomainVO domainVO = (DomainVO) o;
+
+        if (adminContacts != null ? !adminContacts.equals(domainVO.adminContacts) : domainVO.adminContacts != null)
+            return false;
+        if (breakpoints != null ? !breakpoints.equals(domainVO.breakpoints) : domainVO.breakpoints != null)
+            return false;
+        if (nameServers != null ? !nameServers.equals(domainVO.nameServers) : domainVO.nameServers != null)
+            return false;
+        if (registryUrl != null ? !registryUrl.equals(domainVO.registryUrl) : domainVO.registryUrl != null)
+            return false;
+        if (specialInstructions != null ? !specialInstructions.equals(domainVO.specialInstructions) : domainVO.specialInstructions != null)
+            return false;
+        if (state != domainVO.state) return false;
+        if (status != domainVO.status) return false;
+        if (supportingOrg != null ? !supportingOrg.equals(domainVO.supportingOrg) : domainVO.supportingOrg != null)
+            return false;
+        if (techContacts != null ? !techContacts.equals(domainVO.techContacts) : domainVO.techContacts != null)
+            return false;
+        if (whoisServer != null ? !whoisServer.equals(domainVO.whoisServer) : domainVO.whoisServer != null)
+            return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (supportingOrg != null ? supportingOrg.hashCode() : 0);
+        result = 31 * result + (adminContacts != null ? adminContacts.hashCode() : 0);
+        result = 31 * result + (techContacts != null ? techContacts.hashCode() : 0);
+        result = 31 * result + (nameServers != null ? nameServers.hashCode() : 0);
+        result = 31 * result + (registryUrl != null ? registryUrl.hashCode() : 0);
+        result = 31 * result + (whoisServer != null ? whoisServer.hashCode() : 0);
+        result = 31 * result + (breakpoints != null ? breakpoints.hashCode() : 0);
+        result = 31 * result + (specialInstructions != null ? specialInstructions.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        return result;
+    }
 }

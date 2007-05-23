@@ -151,4 +151,39 @@ public class ContactVO implements Trackable, Serializable {
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ContactVO contactVO = (ContactVO) o;
+
+        if (role != contactVO.role) return false;
+        if (addresses != null ? !addresses.equals(contactVO.addresses) : contactVO.addresses != null) return false;
+        if (emails != null ? !emails.equals(contactVO.emails) : contactVO.emails != null) return false;
+        if (faxNumbers != null ? !faxNumbers.equals(contactVO.faxNumbers) : contactVO.faxNumbers != null) return false;
+        if (name != null ? !name.equals(contactVO.name) : contactVO.name != null) return false;
+        if (objId != null ? !objId.equals(contactVO.objId) : contactVO.objId != null) return false;
+        if (organization != null ? !organization.equals(contactVO.organization) : contactVO.organization != null)
+            return false;
+        if (phoneNumbers != null ? !phoneNumbers.equals(contactVO.phoneNumbers) : contactVO.phoneNumbers != null)
+            return false;
+        if (trackData != null ? !trackData.equals(contactVO.trackData) : contactVO.trackData != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (organization != null ? organization.hashCode() : 0);
+        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
+        result = 31 * result + (phoneNumbers != null ? phoneNumbers.hashCode() : 0);
+        result = 31 * result + (faxNumbers != null ? faxNumbers.hashCode() : 0);
+        result = 31 * result + (emails != null ? emails.hashCode() : 0);
+        result = 31 * result + (role ? 1 : 0);
+        result = 31 * result + (objId != null ? objId.hashCode() : 0);
+        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        return result;
+    }
 }
