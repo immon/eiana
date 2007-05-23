@@ -112,26 +112,26 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
     }
+//    todo
+//    @Test (dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
+//    public void testRejectIMPACTED_PARTIES() throws Exception {
+//        createDomainModificationProcess();
+//        acceptPENDING_CONTACT_CONFIRMATION();
+//        rejectPENDING_IMPACTED_PARTIES();
+//    }
+//
+//    @Test (dependsOnMethods = "testRejectIMPACTED_PARTIES")
+//    public void testAcceptIMPACTED_PARTIES() throws Exception {
+//        createDomainModificationProcess();
+//        acceptPENDING_CONTACT_CONFIRMATION();
+//        acceptPENDING_IMPACTED_PARTIES();
+//    }
 
     @Test (dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
-    public void testRejectIMPACTED_PARTIES() throws Exception {
-        createDomainModificationProcess();
-        acceptPENDING_CONTACT_CONFIRMATION();
-        rejectPENDING_IMPACTED_PARTIES();
-    }
-
-    @Test (dependsOnMethods = "testRejectIMPACTED_PARTIES")
-    public void testAcceptIMPACTED_PARTIES() throws Exception {
-        createDomainModificationProcess();
-        acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
-    }
-
-    @Test (dependsOnMethods = "testAcceptIMPACTED_PARTIES")
     public void testNormalPENDING_IANA_CONFIRMATION() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
     }
 
@@ -139,7 +139,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testRejectPENDING_EXT_APPROVAL() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         rejectPENDING_EXT_APPROVAL();
     }
@@ -148,7 +148,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testAcceptPENDING_EXT_APPROVAL() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         acceptPENDING_EXT_APPROVAL();
     }
@@ -157,7 +157,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testRejectPENDING_USDOC_APPROVAL() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         acceptPENDING_EXT_APPROVAL();
         rejectPENDING_USDOC_APPROVAL();
@@ -167,7 +167,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testAcceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
         createDomainModificationProcessNSChage();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         acceptPENDING_EXT_APPROVAL();
         acceptPENDING_USDOC_APPROVALNSCHANGE();
@@ -177,7 +177,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testAcceptPENDING_USDOC_APPROVAL() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         acceptPENDING_EXT_APPROVAL();
         acceptPENDING_USDOC_APPROVAL();
@@ -187,7 +187,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testAcceptPENDING_ZONE_INSERTION() throws Exception {
         createDomainModificationProcessNSChage();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         acceptPENDING_EXT_APPROVAL();
         acceptPENDING_USDOC_APPROVALNSCHANGE();
@@ -198,7 +198,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     public void testAcceptPENDING_ZONE_PUBLICATION() throws Exception {
         createDomainModificationProcessNSChage();
         acceptPENDING_CONTACT_CONFIRMATION();
-        acceptPENDING_IMPACTED_PARTIES();
+//        acceptPENDING_IMPACTED_PARTIES(); todo
         normalPENDING_IANA_CONFIRMATION();
         acceptPENDING_EXT_APPROVAL();
         acceptPENDING_USDOC_APPROVALNSCHANGE();
@@ -258,7 +258,8 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     private void acceptPENDING_CONTACT_CONFIRMATION() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
         gAdminTransactionServ.acceptTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
+//        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES); todo
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CONFIRMATION);
     }
 
     private void rejectPENDING_IMPACTED_PARTIES() throws Exception {

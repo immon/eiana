@@ -159,12 +159,12 @@ public class DomainModificationWorkflowTest {
 
         Token token = pi.getRootToken();
         token.signal();
-        assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES");
+//        assert token.getNode().getName().equals("PENDING_IMPACTED_PARTIES");
 
 //        Thread.sleep(2001L);
 //        schedulerThread.executeTimers();
 
-        token.signal("accept");
+//        token.signal("accept");
         assert token.getNode().getName().equals("PENDING_IANA_CONFIRMATION");
         token.signal("normal");
         assert token.getNode().getName().equals("PENDING_EXT_APPROVAL");

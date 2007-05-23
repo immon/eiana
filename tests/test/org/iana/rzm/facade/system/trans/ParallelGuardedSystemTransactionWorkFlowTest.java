@@ -106,10 +106,10 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
         Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
-        acceptIMPACTED_PARTIES(userAC, transId);                                              //1.3
+//        acceptIMPACTED_PARTIES(userAC, transId);          todo                                    //1.3
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                       //2.2
         normalIANA_CONFIRMATION(userIANA, transId);                                           //1.4
-        acceptIMPACTED_PARTIES(userAC, secTransId);                                           //2.3
+//        acceptIMPACTED_PARTIES(userAC, secTransId);     todo                                      //2.3
         normalIANA_CONFIRMATION(userIANA, secTransId);                                        //2.4
         acceptEXT_APPROVAL(userIANA, transId);                                                //1.5
         acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
@@ -151,10 +151,10 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
         Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
-        acceptIMPACTED_PARTIES(userAC, transId);                                              //1.3
+//        acceptIMPACTED_PARTIES(userAC, transId);   todo                                           //1.3
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                       //2.2
         normalIANA_CONFIRMATION(userIANA, transId);                                           //1.4
-        acceptIMPACTED_PARTIES(userAC, secTransId);                                           //2.3
+//        acceptIMPACTED_PARTIES(userAC, secTransId);  todo                                         //2.3
         normalIANA_CONFIRMATION(userIANA, secTransId);                                        //2.4
         acceptEXT_APPROVAL(userIANA, transId);                                                //1.5
         acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
