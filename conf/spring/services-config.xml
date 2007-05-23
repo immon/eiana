@@ -241,6 +241,11 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
+        <property name="preInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="transSystemTransactionService"
@@ -258,6 +263,11 @@
         </property>
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="preInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
         </property>
     </bean>
 
