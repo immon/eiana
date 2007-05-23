@@ -84,10 +84,9 @@ public class TransactionConverter {
                 action.addChange(toChangeVO("techContacts", adminChange));
                 actions.add(action);
             }
-
             if (fieldChanges.containsKey("supportingOrg")) {
                 TransactionActionVO action = new TransactionActionVO();
-                action.setName(TransactionActionVO.MODIFY_TC);
+                action.setName(TransactionActionVO.MODIFY_SO);
                 ObjectChange supportingOrgChange = (ObjectChange) fieldChanges.get("supportingOrg");
                 action.addChange(toChangeVO("supportingOrg", supportingOrgChange));
                 actions.add(action);
