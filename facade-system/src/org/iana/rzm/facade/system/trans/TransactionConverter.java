@@ -18,7 +18,7 @@ public class TransactionConverter {
     private static Map<String, List<String>> order = new HashMap<String, List<String>>();
 
     static {
-        order.put("nameServers", Arrays.asList("name", "address"));
+        order.put("nameServers", Arrays.asList("name", "addresses"));
     }
 
     public static SimpleTransactionVO toSimpleTransactionVO(final Transaction trans) {
