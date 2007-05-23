@@ -32,6 +32,10 @@ public class TransactionActionsVO {
         }
     }
 
+    public void setOtherAction(boolean otherAction) {
+        this.otherAction = otherAction;
+    }
+
     public int getNameServerActions() {
         return nameServerActions;
     }

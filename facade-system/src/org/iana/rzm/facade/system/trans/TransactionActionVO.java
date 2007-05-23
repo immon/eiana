@@ -9,7 +9,9 @@ import java.util.List;
  */
 public class TransactionActionVO implements Serializable {
 
-    public static final String MODIFY_CONTACT = "modify contact";
+    public static final String MODIFY_SO = "modify supporting organization";
+    public static final String MODIFY_AC = "modify administrative contact";
+    public static final String MODIFY_TC = "modify technical contact";
     public static final String MODIFY_REGISTRATION_URL = "modify registration url";
     public static final String MODIFY_WHOIS_SERVER = "modify whois server";
     public static final String MODIFY_NAME_SERVERS = "modify name servers";
