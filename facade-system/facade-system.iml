@@ -7,7 +7,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/bean" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/conf" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/test/hibernate" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
