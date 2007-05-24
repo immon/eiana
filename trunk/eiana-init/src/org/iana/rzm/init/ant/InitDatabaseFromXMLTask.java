@@ -49,26 +49,26 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
             String domain = domainDecorator.getDomain().getName();
             System.out.print("\n     ----- TLD: " + domain + " -----\n");
 
-//            session.save(setupSystemUser(domain + "-ac1", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.AC), domain, true, true, true)));
-//            session.save(setupSystemUser(domain + "-ac2", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.AC), domain, true, false, true)));
-//            session.save(setupSystemUser(domain + "-ac3", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.AC), domain, false, false, true)));
-//
-//            session.save(setupSystemUser(domain + "-so1", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.SO), domain, true, true, true)));
-//            session.save(setupSystemUser(domain + "-so2", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.SO), domain, true, false, true)));
-//            session.save(setupSystemUser(domain + "-so3", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.SO), domain, false, false, true)));
-//
-//            session.save(setupSystemUser(domain + "-tc1", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.TC), domain, true, true, true)));
-//            session.save(setupSystemUser(domain + "-tc2", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.TC), domain, true, false, true)));
-//            session.save(setupSystemUser(domain + "-tc3", setupSystemRole(
-//                    new SystemRole(SystemRole.SystemType.TC), domain, false, false, true)));
+            session.save(setupSystemUser(domain + "-ac1", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.AC), domain, true, true, true)));
+            session.save(setupSystemUser(domain + "-ac2", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.AC), domain, true, false, true)));
+            session.save(setupSystemUser(domain + "-ac3", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.AC), domain, false, false, true)));
+
+            session.save(setupSystemUser(domain + "-so1", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.SO), domain, true, true, true)));
+            session.save(setupSystemUser(domain + "-so2", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.SO), domain, true, false, true)));
+            session.save(setupSystemUser(domain + "-so3", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.SO), domain, false, false, true)));
+
+            session.save(setupSystemUser(domain + "-tc1", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.TC), domain, true, true, true)));
+            session.save(setupSystemUser(domain + "-tc2", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.TC), domain, true, false, true)));
+            session.save(setupSystemUser(domain + "-tc3", setupSystemRole(
+                    new SystemRole(SystemRole.SystemType.TC), domain, false, false, true)));
 
             domainManager.create(domainDecorator.getDomain());
         }
