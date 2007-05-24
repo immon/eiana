@@ -424,7 +424,6 @@
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring-aspects.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring-mock.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring.jar!/" />
-        <root url="file://$PROJECT_DIR$/../../../IPN-ROL/trunk/common/lib/xsd" />
         <root url="jar://$PROJECT_DIR$/../lib/aspectj/aspectjrt.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/aspectj/aspectjweaver.jar!/" />
       </CLASSES>

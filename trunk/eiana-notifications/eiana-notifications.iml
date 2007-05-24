@@ -7,8 +7,6 @@
       <sourceFolder url="file://$MODULE_DIR$/etc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/accuracy" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/test/conf" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/test/dao" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
