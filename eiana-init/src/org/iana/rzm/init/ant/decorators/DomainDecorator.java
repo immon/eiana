@@ -54,6 +54,12 @@ public class DomainDecorator {
     }
 
     public void setWhoisServer(String whoisServer) throws InvalidNameException {
+        if (whoisServer != null) {
+            int idx = whoisServer.lastIndexOf('/');
+            if (idx > -1) {
+                whoisServer = whoisServer.substring(idx+1);
+            }
+        }
         domain.setWhoisServer(whoisServer);
     }
 
