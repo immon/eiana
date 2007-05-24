@@ -109,7 +109,6 @@
     <pathelement location="${basedir}/../lib/spring/spring-aspects.jar"/>
     <pathelement location="${basedir}/../lib/spring/spring-mock.jar"/>
     <pathelement location="${basedir}/../lib/spring/spring.jar"/>
-    <pathelement location="${basedir}/../../../IPN-ROL/trunk/common/lib/xsd"/>
     <pathelement location="${basedir}/../lib/aspectj/aspectjrt.jar"/>
     <pathelement location="${basedir}/../lib/aspectj/aspectjweaver.jar"/>
   </path>

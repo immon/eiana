@@ -44,6 +44,11 @@ public class UserConverter {
         return userVO;
     }
 
+    public static UserVO convertSimple(RZMUser user) {
+        if (user == null) return null;
+        return convertUser(user);
+    }
+
     private static UserVO convertUser(RZMUser user) {
 
         UserVO userVO = new UserVO();

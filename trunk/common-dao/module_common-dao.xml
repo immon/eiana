@@ -13,9 +13,6 @@
   </path>
   
   <path id="common-dao.module.classpath">
-    <pathelement location="${module.common-dao.basedir}/../lib/hibernate/hibernate3.jar"/>
-    <pathelement location="${module.common-dao.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
-    <pathelement location="${module.common-dao.basedir}/../lib/nask-commons/dynaxml.jar"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.hibernate.classpath"/>
     <path refid="library.log4j.classpath"/>
@@ -26,6 +23,7 @@
     <path refid="library.spring.classpath"/>
     <pathelement location="${common-criteria.output.dir}"/>
     <pathelement location="${common-criteria.testoutput.dir}"/>
+    <path refid="library.ant.classpath"/>
   </path>
   
   

@@ -228,6 +228,7 @@ public class MailsProcessorBean implements MailsProcessor {
             if (section.isRemoved()) {
                 ContactVO key = new ContactVO();
                 key.setName(section.getRemovedElementName());
+                // todo: na liscie nieposortowanej binary search nie dziala
                 int i = Collections.binarySearch(contacts, key, contactComparator);
                 if (i < 0)
                     throw new MailsProcessorException("Contact to remove does not exist: " +
@@ -238,6 +239,7 @@ public class MailsProcessorBean implements MailsProcessor {
             if (section.isReplaced()) {
                 ContactVO key = new ContactVO();
                 key.setName(section.getReplacedElementName());
+                // todo: na liscie nieposortowanej binary search nie dziala
                 int i = Collections.binarySearch(contacts, key, contactComparator);
                 if (i < 0)
                     throw new MailsProcessorException("Contact to replace does not exist: " +
