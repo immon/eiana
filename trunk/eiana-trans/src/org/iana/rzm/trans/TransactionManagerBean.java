@@ -137,7 +137,9 @@ public class TransactionManagerBean implements TransactionManager {
     public void deleteTransaction(Transaction transaction) throws NoSuchTransactionException {
         ProcessInstance pi = processDAO.getProcessInstance(transaction.getTransactionID());
         if (pi == null) throw new NoSuchTransactionException(transaction.getTransactionID());
+        Domain domain = transaction.getCurrentDomain();
         processDAO.delete(pi);
+        if (Domain.Status.NEW.equals(domain.getStatus())) domainDAO.delete(domain);
     }
 
     public void deleteTransaction(Long transactionId) throws NoSuchTransactionException {

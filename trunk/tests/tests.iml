@@ -40,6 +40,7 @@
     <orderEntry type="module" module-name="eiana-techcheck" />
     <orderEntry type="library" name="cobertura" level="project" />
     <orderEntry type="module" module-name="common-objectdiff" />
+    <orderEntry type="module" module-name="common-codevalues" />
     <orderEntryProperties />
   </component>
 </module>
