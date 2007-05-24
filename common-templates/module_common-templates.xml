@@ -15,7 +15,7 @@
   <path id="common-templates.module.classpath">
     <path refid="library.log4j.classpath"/>
     <path refid="library.dom4j.classpath"/>
-    <pathelement location="C:/Program Files/JetBrains/IntelliJ IDEA 6.0/lib/junit-4.0.jar"/>
+    <pathelement location="${module.common-templates.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/junit-4.0.jar"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>
   </path>
   

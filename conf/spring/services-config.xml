@@ -2,7 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
     <!-- facade services configuration -->
 
@@ -709,4 +712,52 @@
         <constructor-arg index="5" ref="NotificationManagerBean"/>
         <constructor-arg index="6" ref="userManager"/>
     </bean>
+
+    <!-- code values -->
+
+    <bean id="cachedCodeValues" class="org.iana.codevalues.CachedCodeValuesRetriever">
+        <constructor-arg index="0" ref="codeValues"/>
+        <constructor-arg index="1" ref="cache"/>
+    </bean>
+
+    <bean id="codeValues" class="org.iana.codevalues.HibernateCodeValuesRetriever">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="cache" class="pl.nask.cache.PrototypeCache">
+        <constructor-arg index="0">
+            <map>
+                <entry key="cc" value-ref="timeoutEntry1"/>
+                <entry key="code1" value-ref="timeoutEntry2"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1" type="int" value="100"/> <!-- max -->
+    </bean>
+
+    <bean id="timeoutEntry1" class="pl.nask.cache.TimeOutCacheEntry">
+        <constructor-arg index="0" value="cc"/>
+        <constructor-arg index="1" type="long" value="86400000"/> <!-- 24h cache -->
+    </bean>
+
+    <bean id="timeoutEntry2" class="pl.nask.cache.TimeOutCacheEntry">
+        <constructor-arg index="0" value="code1"/>
+        <constructor-arg index="1" type="long" value="86400000"/> <!-- 24h cache -->
+    </bean>
+
+    <!--<tx:advice id="txAdvice" transaction-manager="transactionManager">-->
+      <!--<tx:attributes>-->
+        <!--<tx:method name="get*" read-only="true"/>-->
+        <!--<tx:method name="*"/>-->
+      <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+
+    <!-- ensure that the above transactional advice runs for any execution
+        of an operation defined by the CodeValues interface -->
+    <!--<aop:config>-->
+      <!--<aop:pointcut id="codeValuesOperation" expression="execution(* org.iana.codevalues.*(..))"/>-->
+      <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="codeValuesOperation"/>-->
+    <!--</aop:config>-->
+
 </beans>

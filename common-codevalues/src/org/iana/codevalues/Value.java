@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 /**
  * This class represents a single value associated with a given code. It consists
- * of unique identifier and readable name.
+ * of unique identifier and readable valueName.
  *
  * @author Patrycja Wegrzynowicz
  */
@@ -15,23 +15,26 @@ public class Value {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Basic
-    private String id;
+    private String valueId;
     @Basic
-    private String name;
+    private String valueName;
+
+    private Value() {
+    }
 
     public Value(String id, String name) {
-        if (id == null) throw new IllegalArgumentException("null id");
-        if (name == null) throw new IllegalArgumentException("null name");
+        if (id == null) throw new IllegalArgumentException("null valueId");
+        if (name == null) throw new IllegalArgumentException("null valueName");
         
-        this.id = id;
-        this.name = name;
+        this.valueId = id;
+        this.valueName = name;
     }
 
-    public String getId() {
-        return id;
+    public String getValueId() {
+        return valueId;
     }
 
-    public String getName() {
-        return name;
+    public String getValueName() {
+        return valueName;
     }
 }

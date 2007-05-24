@@ -8,11 +8,13 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"code"}))
 public class Code {
 
     @Id
@@ -26,9 +28,21 @@ public class Code {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Value> values = new ArrayList<Value>();
 
+    private Code() {
+    }
+
     public Code(String code, List<Value> values) {
+        this(null, code, values);
+    }
+
+    public Code(Long objId, String code, List<Value> values) {
+        this.objId = objId;
         this.code = code;
         this.values = values;
+    }
+
+    public Long getObjId() {
+        return objId;
     }
 
     public String getCode() {
