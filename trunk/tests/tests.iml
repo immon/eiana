@@ -41,6 +41,7 @@
     <orderEntry type="library" name="cobertura" level="project" />
     <orderEntry type="module" module-name="common-objectdiff" />
     <orderEntry type="module" module-name="common-codevalues" />
+    <orderEntry type="module" module-name="common-dao" />
     <orderEntryProperties />
   </component>
 </module>
