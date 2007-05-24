@@ -12,6 +12,7 @@
     <property name="jar.output.dir" value="${output.dir}/jar"/>
     <property name="war.output.dir" value="${output.dir}/war"/>
     <property name="config.dir" value="../conf"/>
+    <property name="config.dir" value="../conf"/>
     <property name="hibernate.dir" value="${config.dir}/hibernate"/>
     <property name="tests" value="../tests"/>
     <property name="test.report.output" location="${tests}/reports"/>
@@ -88,6 +89,7 @@
             depends="all.compile, database.test.dropCreate">
         <hibernatetool destdir="${hibernate.test.dir}">
             <classpath>
+                <path location="${common-codevalues.output.dir}"/>
                 <path location="${eiana-domains.output.dir}"/>
                 <path location="${eiana-util.output.dir}"/>
                 <path location="${eiana-users.output.dir}"/>
@@ -145,19 +147,14 @@
         <java classname="org.iana.rzm.init.ant.InitDatabaseTask">
             <classpath refid="inittools.classpath"/>
         </java>
+        <java classname="org.iana.rzm.init.ant.InitCountryCodes">
+            <classpath refid="inittools.classpath"/>
+        </java>
     </target>
 
     <target name="jbpm.init" depends="database.create.test, all.jar">
         <java classname="org.iana.rzm.init.ant.ProcessDeployment">
             <arg value="domain-modification.xml"/>
-            <classpath refid="inittools.classpath"/>
-        </java>
-        <java classname="org.iana.rzm.init.ant.ProcessCreation">
-            <arg value="mails-receiver.xml"/>
-            <classpath refid="inittools.classpath"/>
-        </java>
-        <java classname="org.iana.rzm.init.ant.ProcessCreation">
-            <arg value="notifications-resender.xml"/>            
             <classpath refid="inittools.classpath"/>
         </java>
     </target>
@@ -170,7 +167,7 @@
              compile.module.eiana-users,compile.module.eiana-startup,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
-             compile.module.common-pgp, compile.module.eiana-techcheck"
+             compile.module.common-codevalues,compile.module.common-pgp, compile.module.eiana-techcheck"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">

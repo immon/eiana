@@ -20,6 +20,8 @@
         <property name="hibernate.jdbc.batch_size">20</property>
 
         <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
+        <mapping class="org.iana.codevalues.Code"/>
+        <mapping class="org.iana.codevalues.Value"/>
 
         <mapping class="org.iana.rzm.common.Name"/>
 

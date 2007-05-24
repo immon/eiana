@@ -61,6 +61,7 @@ public class ProcessStateNotifier implements ActionHandler {
         String domainName = td.getCurrentDomain().getName();
         Set<Addressee> users = new HashSet<Addressee>();
 
+        // bug: selection: all users in any role for a given domain name!
         users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
         users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.TC, domainName, true, false)).getUsersAbleToAccept());
         users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.SO, domainName, true, false)).getUsersAbleToAccept());

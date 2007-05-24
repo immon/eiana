@@ -25,6 +25,7 @@ import java.util.List;
  * @author Jakub Laszkiewicz
  */
 public class Transaction implements TrackedObject {
+
     private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
 
     private ProcessInstance pi;

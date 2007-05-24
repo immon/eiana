@@ -24,36 +24,19 @@ public abstract class HibernateTask extends Task {
     }
 
     public final void execute() throws BuildException {
-        SessionFactory sf = null;
+        SessionFactory sf = (SessionFactory) SpringInitContext.getContext().getBean("sessionFactory");
+        Session session = sf.openSession();
         try {
-            Configuration cfg;
-            if (annotationConfiguration == null) {
-                cfg = new Configuration();
-                if (configurationFile == null)
-                    cfg.configure();
-                else
-                    cfg.configure(configurationFile);
-            } else {
-                cfg = new AnnotationConfiguration();
-                cfg.configure(annotationConfiguration);
-            }
-            sf = cfg.buildSessionFactory();
-
-            Session session = sf.openSession();
+            Transaction transaction = session.beginTransaction();
             try {
-                Transaction transaction = session.beginTransaction();
-                try {
-                    doExecute(session);
-                    transaction.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    transaction.rollback();
-                }
-            } finally {
-                session.close();
+                doExecute(session);
+                transaction.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                transaction.rollback();
             }
         } finally {
-            if (sf != null) sf.close();
+            session.close();
         }
     }
 

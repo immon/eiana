@@ -1,6 +1,6 @@
 package org.iana.codevalues;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 /**
  * This class represents a single value associated with a given code. It consists
@@ -11,12 +11,17 @@ import javax.persistence.Entity;
 @Entity
 public class Value {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long objId;
+    @Basic
     private String id;
+    @Basic
     private String name;
 
     public Value(String id, String name) {
-        if (this.id == null) throw new IllegalArgumentException("null id");
-        if (this.name == null) throw new IllegalArgumentException("null name");
+        if (id == null) throw new IllegalArgumentException("null id");
+        if (name == null) throw new IllegalArgumentException("null name");
         
         this.id = id;
         this.name = name;

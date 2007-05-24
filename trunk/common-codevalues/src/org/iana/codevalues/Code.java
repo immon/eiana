@@ -3,11 +3,9 @@ package org.iana.codevalues;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.Cascade;
 
-import javax.persistence.Entity;
-import javax.persistence.Basic;
-import javax.persistence.JoinTable;
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -16,9 +14,15 @@ import java.util.ArrayList;
  */
 @Entity
 public class Code {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long objId;
     @Basic
     private String code;
-    @CollectionOfElements
+    @OneToMany(cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinTable(name = "code_values")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Value> values = new ArrayList<Value>();
 

@@ -71,9 +71,18 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         setGSTSAuthUser(iana);
         List<TransactionVO> trans = gsts.createTransactions(domain, false);
 
+        // 1 group/trans -> impactedhost-1
+        // 2 group/trans -> impactedhost-2
+        // 3 group/trans -> notimpactedhost + registry url
         assert trans != null && trans.size() == 3;
     }
 
+    // domain1 -> not delegated
+    // domain2 -> host1
+    // domain3 -> host1
+    // domain4 -> host2
+
+    // domain1 -> host1, host2, someotherhost, registry url
     @Test
     public void testSeparatedTransaction() throws Exception {
         IDomainVO domain = getDomain("automatedsplittest", iana);
@@ -85,6 +94,10 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         setGSTSAuthUser(iana);
         List<TransactionVO> trans = gsts.createTransactions(domain, true);
 
+        // 1 group/trans -> impactedhost-1
+        // 2 group/trans -> impactedhost-2
+        // 3 group/trans -> notimpactedhost
+        // 4 group/trans -> registry url
         assert trans != null && trans.size() == 4;
     }
 

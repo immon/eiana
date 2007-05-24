@@ -20,7 +20,9 @@ public class MailsProcessingAction implements ActionHandler {
         for (MimeMessage message : messages) {
             String subject = message.getSubject();
             if (!(message.getContent() instanceof String)) {
-                throw new Exception("only text messages are supported");
+                //
+                continue;
+                // throw new Exception("only text messages are supported");
             }
             String content = (String) message.getContent();
             InternetAddress from = new InternetAddress("" + message.getFrom()[0], false);

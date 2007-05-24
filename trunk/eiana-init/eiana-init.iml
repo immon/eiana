@@ -44,6 +44,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="common-pgp" />
     <orderEntry type="library" name="mail" level="project" />
+    <orderEntry type="module" module-name="common-codevalues" />
     <orderEntryProperties />
   </component>
 </module>
