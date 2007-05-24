@@ -42,7 +42,7 @@ public class Domain implements TrackedObject, Cloneable {
 
     @Embedded
     private Name name;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "supportingOrg_objId")
     private Contact supportingOrg;
     @OneToMany(cascade = CascadeType.ALL)

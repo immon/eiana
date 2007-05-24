@@ -3,6 +3,7 @@ package org.iana.rzm.user;
 import org.iana.notifications.Addressee;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -14,8 +15,8 @@ import java.util.*;
  * </p>
  *
  * @author Patrycja Wegrzynowicz
- * @author Jakub    Laszkiewicz
- * @author Piotr    Tkaczyk
+ * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 
 @Entity
@@ -31,14 +32,13 @@ public class RZMUser extends Addressee implements TrackedObject, Cloneable {
     private String loginName;
     @Basic
     private String email;
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = AbstractPassword.class)
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = AbstractPassword.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "Password_objId")
     //@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     // todo delete orphan does not work (Hibernate bug)
     private Password password;
     @Basic
     private boolean securID;
-    // todo: securid authenticator?, pgp certificate
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "RZMUser_Roles",

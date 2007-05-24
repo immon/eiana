@@ -28,7 +28,7 @@ public class ContactDecorator {
         Address address = new Address();
 
         StringBuffer text = new StringBuffer();
-        if (address != null) text.append(address).append("<br/>");
+        if (this.address != null) text.append(this.address).append("<br/>");
         if (city != null || postCode != null) {
             if (city != null) text.append(city).append(" ");
             if (state != null) text.append(state).append(" ");
