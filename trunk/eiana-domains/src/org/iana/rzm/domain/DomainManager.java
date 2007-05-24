@@ -23,6 +23,10 @@ public interface DomainManager {
 
     public Domain getCloned(long id) throws CloneNotSupportedException;
 
+    public void updateOpenProcesses(String name, boolean inc);
+
+    public void updateThirdPartyPendingProcesses(String name, boolean inc);
+
     public void create(Domain domain);
 
     public void update(Domain domain);

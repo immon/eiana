@@ -2,7 +2,6 @@ package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Formula;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
@@ -18,7 +17,7 @@ import java.sql.Timestamp;
  * @author Jakub Laszkiewicz
  */
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "state"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "status"}))
 public class Domain implements TrackedObject, Cloneable {
 
     public static enum Breakpoint {
@@ -75,19 +74,22 @@ public class Domain implements TrackedObject, Cloneable {
     @Enumerated
     private Status status;
 
-    private State state;
-    @Formula("(select count(*)\n" +
-            "from JBPM_PROCESSINSTANCE processins0_, \n" +
-            "JBPM_VARIABLEINSTANCE hibernatel1_, \n" +
-            "TransactionData transactio2_ \n" +
-            "inner join Domain domain3_ on transactio2_.currentDomain_objId=domain3_.objId \n" +
-            "where hibernatel1_.CLASS_='H' \n" +
-            "and hibernatel1_.LONGIDCLASS_='org.iana.rzm.trans.TransactionData' \n" +
-            "and hibernatel1_.LONGVALUE_=transactio2_.objId \n" +
-            "and processins0_.ID_=hibernatel1_.PROCESSINSTANCE_ \n" +
-            "and domain3_.name=name \n" +
-            "and (processins0_.END_ is null))")
-    private int processes;
+//    private State state;
+//    @Formula("(select count(*)\n" +
+//            "from JBPM_PROCESSINSTANCE processins0_, \n" +
+//            "JBPM_VARIABLEINSTANCE hibernatel1_, \n" +
+//            "TransactionData transactio2_ \n" +
+//            "inner join Domain domain3_ on transactio2_.currentDomain_objId=domain3_.objId \n" +
+//            "where hibernatel1_.CLASS_='H' \n" +
+//            "and hibernatel1_.LONGIDCLASS_='org.iana.rzm.trans.TransactionData' \n" +
+//            "and hibernatel1_.LONGVALUE_=transactio2_.objId \n" +
+//            "and processins0_.ID_=hibernatel1_.PROCESSINSTANCE_ \n" +
+//            "and domain3_.name=name \n" +
+//            "and (processins0_.END_ is null))")
+    @Basic
+    private int openProcesses;
+    @Basic
+    private int thirdPartyPendingProcesses;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
@@ -104,7 +106,6 @@ public class Domain implements TrackedObject, Cloneable {
         this.nameServers = new ArrayList<Host>();
         this.breakpoints = new HashSet<Breakpoint>();
         this.status = Status.NEW;
-        this.state = State.NO_ACTIVITY;
     }
 
     public Long getObjId() {
@@ -298,7 +299,9 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public State getState() {
-        return processes > 0 ? State.OPERATIONS_PENDING : State.NO_ACTIVITY;
+        return openProcesses > 0 ?
+                thirdPartyPendingProcesses > 0 ? State.THIRD_PARTY_PENDING : State.OPERATIONS_PENDING
+                : State.NO_ACTIVITY;
     }
 
     public boolean equals(Object o) {
@@ -321,7 +324,6 @@ public class Domain implements TrackedObject, Cloneable {
         if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
             return false;
         //System.out.println("6: state");
-        if (state != domain.state) return false;
         //System.out.println("7: status");
         if (status != domain.status) return false;
         //System.out.println("8: so");
@@ -350,7 +352,6 @@ public class Domain implements TrackedObject, Cloneable {
         result = 31 * result + (breakpoints != null ? breakpoints.hashCode() : 0);
         result = 31 * result + (specialInstructions != null ? specialInstructions.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
     }
@@ -409,9 +410,10 @@ public class Domain implements TrackedObject, Cloneable {
         newDomain.breakpoints = newBreakpoints;
 
         newDomain.specialInstructions = specialInstructions;
-        newDomain.state = state;
         newDomain.status = status;
         newDomain.objId = objId;
+        newDomain.openProcesses = openProcesses;
+        newDomain.thirdPartyPendingProcesses = thirdPartyPendingProcesses;
         return newDomain;
         /*
         Domain domain = null;
@@ -472,4 +474,12 @@ public class Domain implements TrackedObject, Cloneable {
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
     }
+
+    public void incOpenProcesses() { ++openProcesses; }
+
+    public void decOpenProcesses() { --openProcesses; }
+
+    public void incThirdPartyPendingProcesses() { ++thirdPartyPendingProcesses; }
+
+    public void decThirdPartyPendingProcesses() { --thirdPartyPendingProcesses; }
 }
