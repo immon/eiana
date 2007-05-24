@@ -23,7 +23,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.List;
 
 /**
- * It deploys all the needed jBPM process definitions (at this moment it's only the unified workflow process definition).
+ * It deploys all the needed jBPM process definitions.
  *
  * @author Patrycja Wegrzynowicz
  */
