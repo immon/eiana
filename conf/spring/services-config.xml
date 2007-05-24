@@ -715,6 +715,10 @@
 
     <!-- code values -->
 
+    <bean id="cc" class="org.iana.rzm.facade.common.cc.CountryCodesImpl">
+        <constructor-arg index="0" ref="cachedCodeValues"/>
+    </bean>
+
     <bean id="cachedCodeValues" class="org.iana.codevalues.CachedCodeValuesRetriever">
         <constructor-arg index="0" ref="codeValues"/>
         <constructor-arg index="1" ref="cache"/>

@@ -13,6 +13,8 @@ public interface AdminFinderService<T> {
     
     public int count(Criterion criteria);
 
+    public List<T> find(Order order, int offset, int limit);
+
     public List<T> find(Criterion criteria, int offset, int limit);
 
     public List<T> find(Criterion criteria, Order order, int offset, int limit);

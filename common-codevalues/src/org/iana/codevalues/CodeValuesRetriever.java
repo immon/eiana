@@ -11,4 +11,6 @@ import java.util.List;
 public interface CodeValuesRetriever {
 
     public List<Value> getCodeValues(String code);
+
+    public String getCodeValue(String code, String id);
 }
