@@ -1,5 +1,7 @@
 package org.iana.notifications;
 
+import org.iana.notifications.exception.NotificationException;
+
 import javax.persistence.*;
 
 /**
@@ -24,6 +26,6 @@ public abstract class Content {
         return objId;
     }
 
-    public abstract String getSubject();
-    public abstract String getBody();
+    public abstract String getSubject() throws NotificationException;
+    public abstract String getBody() throws NotificationException;
 }
