@@ -111,6 +111,14 @@ class ProcessCriteriaHqlTranslator {
             parameters.put("loginName", criteria.getUserNames());
         }
 
+        if (criteria.getOpen() != null) {
+            if (criteria.getOpen().booleanValue()) {
+                wheres.add("pi.end is null");
+            } else {
+                wheres.add("pi.end is not null");
+            }
+        }
+
         StringBuffer hql = new StringBuffer("select pi from\n");
 
         Iterator<String> iFroms = froms.iterator();

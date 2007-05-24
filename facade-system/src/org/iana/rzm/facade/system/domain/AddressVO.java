@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
 public class AddressVO implements Serializable {
 
@@ -25,7 +26,7 @@ public class AddressVO implements Serializable {
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = new CountryCode(countryCode);
+        this.countryCode = countryCode != null ? new CountryCode(countryCode) : null;
     }
 
     public boolean equals(Object o) {

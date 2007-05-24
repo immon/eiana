@@ -25,7 +25,7 @@ public class Address implements Cloneable{
 
     public Address(String textAddress, String countryCode) {
         this.textAddress = textAddress;
-        this.countryCode = new CountryCode(countryCode);
+        setCountryCode(countryCode);
     }
 
     public Long getObjId() {
@@ -49,7 +49,7 @@ public class Address implements Cloneable{
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = new CountryCode(countryCode);
+        this.countryCode = countryCode != null ? new CountryCode(countryCode) : null;
     }
 
 
