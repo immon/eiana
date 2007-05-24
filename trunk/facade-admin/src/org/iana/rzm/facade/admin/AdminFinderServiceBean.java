@@ -17,6 +17,10 @@ abstract class AdminFinderServiceBean<T> extends AbstractRZMStatefulService impl
         super(userManager);
     }
 
+    public List<T> find(Order order, int offset, int limit) {
+        return find(null, order, offset, limit);
+    }
+
     public List<T> find(Criterion criteria, Order order, int offset, int limit) {
         Criterion searchCriteria = criteria;
         if (order != null) searchCriteria = new SortCriterion(criteria, order);

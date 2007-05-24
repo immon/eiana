@@ -28,4 +28,14 @@ public class HibernateCodeValuesRetriever extends HibernateDAO<Code> implements 
         List<Code> code = find(new Equal("code", codeId));
         return code != null && code.size() > 0 ? code.get(0) : null;
     }
+
+    public String getCodeValue(String codeId, String id) {
+        List<Value> values = getCodeValues(codeId);
+        if (values != null && id != null) {
+            for (Value value : values) {
+                if (id.equalsIgnoreCase(value.getValueId())) return value.getValueName();
+            }
+        }
+        return null;
+    }
 }
