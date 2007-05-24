@@ -12,8 +12,11 @@ import java.sql.SQLException;
 
 
 /**
+ * The hibernate implementation of CRUD-based data access object with a standard set of find methods.
+ *
  * @author Patrycja Wegrzynowicz
  */
+@SuppressWarnings("unchecked")
 public class HibernateDAO<T> extends HibernateDaoSupport {
 
     private Class clazz;
@@ -40,6 +43,10 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
 
     public void delete(T object) {
         getHibernateTemplate().delete(object);
+    }
+
+    public List<T> find() {
+        return find(null);
     }
 
     public List<T> find(Criterion criteria) {

@@ -1,6 +1,7 @@
 package org.iana.codevalues;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.iana.dao.hibernate.HibernateDAO;
 
 import java.util.List;
 
@@ -9,7 +10,11 @@ import java.util.List;
  * 
  * @author Patrycja Wegrzynowicz
  */
-class HibernateCodeValuesRetriever extends HibernateDaoSupport implements CodeValuesRetriever {
+public class HibernateCodeValuesRetriever extends HibernateDAO<Code> implements CodeValuesRetriever {
+
+    public HibernateCodeValuesRetriever() {
+        super(Code.class);
+    }
 
     public List<Value> getCodeValues(String code) {
         Code codeValues = (Code) getHibernateTemplate().get(Code.class, code);

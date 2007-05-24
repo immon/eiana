@@ -21,6 +21,9 @@
         <property name="hibernate.hibernate.default_batch_fetch_size">32</property>
         <property name="hibernate.jdbc.batch_size">20</property>
 
+        <mapping class="org.iana.codevalues.Code"/>
+        <mapping class="org.iana.codevalues.Value"/>
+
         <mapping class="org.iana.rzm.common.Name"/>
 
 		<mapping class="org.iana.rzm.domain.Address"/>

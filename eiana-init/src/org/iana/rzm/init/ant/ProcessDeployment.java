@@ -6,6 +6,10 @@ import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.jbpm.JbpmContextFactory;
 import org.iana.rzm.trans.jbpm.JbpmContextFactoryBean;
 import org.jbpm.JbpmConfiguration;
+import org.jbpm.JbpmContext;
+import org.jbpm.db.GraphSession;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -14,33 +18,43 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.context.ApplicationContext;
+
+import java.util.List;
 
 /**
  * It deploys all the needed jBPM process definitions (at this moment it's only the unified workflow process definition).
  *
  * @author Patrycja Wegrzynowicz
  */
+@SuppressWarnings("unchecked")
 public class ProcessDeployment {
     public static void main(String[] args) {
-        XmlWebApplicationContext context = new XmlWebApplicationContext();
-        String[] config = new String[]{"file:../conf/spring/services-config.xml"};
-        MockServletContext mockServletContext = new MockServletContext(new FileSystemResourceLoader());
-
-        context.setConfigLocations(config);
-        context.setServletContext(mockServletContext);
-        context.setServletConfig(new MockServletConfig());
-        context.refresh();
-
-        MockHttpSession session = new MockHttpSession();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-        request.setSession(session);
-
-        ProcessDAO processDAO = (ProcessDAO) context.getBean("processDAO");
+        ApplicationContext context = SpringInitContext.getContext();
+        JbpmConfiguration jbpmCfg = (JbpmConfiguration) context.getBean("jbpmConfiguration");
+        JbpmContext jbpmCtx = jbpmCfg.createJbpmContext();
         try {
-            processDAO.deploy(DefinedTestProcess.getDefinition(args[0]));
+            // delete all process instances
+            GraphSession graph = jbpmCtx.getGraphSession();
+            for (ProcessDefinition pd : (List<ProcessDefinition>) graph.findAllProcessDefinitions()) {
+                for (ProcessInstance pi : (List<ProcessInstance>) graph.findProcessInstances(pd.getId())) {
+                    graph.deleteProcessInstance(pi.getId());
+                }
+            }
+
+            // deploy new processes
+            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition());
+            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.MAILS_RECEIVER));
+            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.NOTIFICATION_RESENDER));
+
+            // run new instances
+            ProcessInstance pi = jbpmCtx.newProcessInstance("Mails Receiver");
+            pi.signal();
+
+            pi = jbpmCtx.newProcessInstance("Notifications reSender");
+            pi.signal();            
         } finally {
-            processDAO.close();
+            jbpmCtx.close();
         }
     }
 }
