@@ -65,7 +65,7 @@ public class Host implements TrackedObject,Cloneable {
     }
 
     final public void setName(String name) throws InvalidNameException {
-        this.name = new Name(name);
+        this.name = new Name(name, true);
     }
 
     final public Set<IPAddress> getAddresses() {

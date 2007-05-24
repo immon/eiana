@@ -121,6 +121,9 @@
         <fileset dir="${lib.dir}/nask-commons">
             <include name="**/*.jar"/>
         </fileset>
+        <fileset dir="${lib.dir}/jdom">
+            <include name="**/*.jar"/>
+        </fileset>
         <fileset dir="${lib.dir}/mail">
             <include name="**/*.jar"/>
         </fileset>
@@ -148,6 +151,12 @@
             <classpath refid="inittools.classpath"/>
         </java>
         <java classname="org.iana.rzm.init.ant.InitCountryCodes">
+            <classpath refid="inittools.classpath"/>
+        </java>
+    </target>
+
+    <target name="database.init.fromXML" depends="database.create.test, all.jar, jbpm.init">
+        <java classname="org.iana.rzm.init.ant.InitDatabaseFromXMLTask">
             <classpath refid="inittools.classpath"/>
         </java>
     </target>
@@ -223,6 +232,9 @@
         </jar>
         <jar destfile="${jar.output.dir}/eiana-util.jar">
             <fileset dir="${eiana-util.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/eiana-init.jar">
+            <fileset dir="${eiana-init.output.dir}"/>
         </jar>
         <jar destfile="${jar.output.dir}/facade-admin.jar">
             <fileset dir="${facade-admin.output.dir}"/>
