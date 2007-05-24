@@ -14,6 +14,10 @@ public class NameValidator {
     private static String DOMAIN_PATTERN = "([A-Za-z0-9\\-]+\\.)*[A-Za-z0-9\\-]+";
     private static String HOST_PATTERN = "([A-Za-z0-9\\-]+\\.)*[A-Za-z0-9\\-]+\\.?";
 
+    public static void validateName(String name) throws InvalidNameException {
+        validateName(name, false);
+    }
+
     public static void validateName(String name, boolean isHostName) throws InvalidNameException {
         if (isHostName) {
             if (!name.matches(HOST_PATTERN)) throw new InvalidNameException(name, "invalid character in name");
