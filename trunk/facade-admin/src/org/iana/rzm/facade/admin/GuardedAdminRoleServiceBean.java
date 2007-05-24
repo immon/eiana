@@ -19,7 +19,7 @@ import java.util.ArrayList;
 /**
  * @author: Piotr Tkaczyk
  */
-public class GuardedAdminRoleServiceBean extends AbstractRZMStatefulService implements AdminRoleService {
+public class GuardedAdminRoleServiceBean extends AdminFinderServiceBean<RoleVO> implements AdminRoleService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();
 

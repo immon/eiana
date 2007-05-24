@@ -4,6 +4,7 @@ import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.UserManager;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 /**
  * @author: Piotr Tkaczyk
  */
-public class GuardedAdminUserServiceBean extends AbstractRZMStatefulService implements AdminUserService {
+public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO> implements AdminUserService {
       private static Set<Role> allowedRoles = new HashSet<Role>();
 
     static {

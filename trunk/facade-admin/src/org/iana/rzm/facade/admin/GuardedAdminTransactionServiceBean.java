@@ -8,6 +8,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
@@ -25,7 +26,7 @@ import java.util.Set;
 /**
  * @author: Piotr Tkaczyk
  */
-public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulService implements AdminTransactionService {
+public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<TransactionVO> implements AdminTransactionService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();
     static {
@@ -255,16 +256,18 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
     }
 
     public List<TransactionVO> findTransactions(Criterion criteria) {
-        // todo
-        return null;
+        //todo
+        throw new UnsupportedOperationException();
     }
 
 
     public int count(Criterion criteria) {
-        return 0; //todo
+        //todo
+        throw new UnsupportedOperationException();
     }
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) {
-        return null;  //todo
+        //todo
+        throw new UnsupportedOperationException();
     }
 }

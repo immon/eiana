@@ -22,7 +22,7 @@ import java.util.HashSet;
  *
  */
 
-public class GuardedAdminDomainServiceBean extends AbstractRZMStatefulService implements AdminDomainService {
+public class GuardedAdminDomainServiceBean extends AdminFinderServiceBean<IDomainVO> implements AdminDomainService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();
 
