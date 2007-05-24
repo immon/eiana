@@ -58,6 +58,8 @@
     <path refid="library.cobertura.classpath"/>
     <pathelement location="${common-objectdiff.output.dir}"/>
     <pathelement location="${common-objectdiff.testoutput.dir}"/>
+    <pathelement location="${common-codevalues.output.dir}"/>
+    <pathelement location="${common-codevalues.testoutput.dir}"/>
   </path>
   
   
@@ -79,7 +81,7 @@
   
   <target name="compile.module.tests" depends="compile.module.tests.production,compile.module.tests.tests" description="Compile module tests"/>
   
-  <target name="compile.module.tests.production" depends="compile.module.eiana-dns,compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria,compile.module.conf,compile.module.eiana-techcheck,compile.module.common-objectdiff" description="Compile module tests; production classes"/>
+  <target name="compile.module.tests.production" depends="compile.module.eiana-dns,compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria,compile.module.conf,compile.module.eiana-techcheck,compile.module.common-objectdiff,compile.module.common-codevalues" description="Compile module tests; production classes"/>
   
   <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests">
     <mkdir dir="${tests.testoutput.dir}"/>

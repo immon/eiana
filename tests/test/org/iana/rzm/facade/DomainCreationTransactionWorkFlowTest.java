@@ -12,7 +12,6 @@ import org.iana.rzm.facade.system.trans.SystemTransactionService;
 import org.iana.rzm.facade.system.trans.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
@@ -22,6 +21,10 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,6 +37,9 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system", "DomainCreationTransactionWorkFlowTest"})
 public class DomainCreationTransactionWorkFlowTest {
     private final static String DOMAIN_NAME_BASE = "createtranstest";
+
+    private PlatformTransactionManager txManager;
+    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
 
     private ProcessDAO processDAO;
     private TransactionManager transactionManager;
@@ -50,12 +56,13 @@ public class DomainCreationTransactionWorkFlowTest {
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
+        txManager = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userManager = (UserManager) appCtx.getBean("userManager");
         gats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
         gsds = (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        transactionManager = (TransactionManager) appCtx.getBean("transactionManagerTarget");
+        transactionManager = (TransactionManager) appCtx.getBean("transactionManagerBean");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
 
         userAC = new RZMUser();
@@ -276,11 +283,17 @@ public class DomainCreationTransactionWorkFlowTest {
     }
 
     @AfterClass
-    public void cleanUp() throws NoSuchTransactionException {
+    public void cleanUp() throws Exception {
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
             List<Transaction> transactions = transactionManager.findAll();
             for (Transaction trans : transactions)
                 transactionManager.deleteTransaction(trans);
+            txManager.commit(txStatus);
+        } catch (Exception e) {
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
+            throw e;
         } finally {
             processDAO.close();
         }
@@ -288,8 +301,7 @@ public class DomainCreationTransactionWorkFlowTest {
         userManager.delete(userTC);
         userManager.delete(userIANA);
         userManager.delete(userUSDoC);
-        for (int i = 0; i < domainCounter; i++)
-            domainManager.delete(DOMAIN_NAME_BASE + i);
+        //domainManager.delete(DOMAIN_NAME_BASE + "8");
     }
 
     private DomainVO getNextDomain() {
