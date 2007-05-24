@@ -27,6 +27,13 @@ public class Name implements Cloneable, Serializable {
         this.name = name;
     }
 
+    public Name(String name, boolean isHost) throws InvalidNameException {
+        if (name == null) throw new NullPointerException("name is null");
+        name = name.toLowerCase(Locale.ENGLISH);
+        isValidName(name, isHost);
+        this.name = name;
+    }
+
     final public String getName() {
         return name;
     }
@@ -48,7 +55,11 @@ public class Name implements Cloneable, Serializable {
 
     
     private void isValidName(String name) throws InvalidNameException {
-        NameValidator.validateName(name);
+        NameValidator.validateName(name, false);
+    }
+
+    private void isValidName(String name, boolean isHostName) throws InvalidNameException {
+        NameValidator.validateName(name, isHostName);
     }
 
 

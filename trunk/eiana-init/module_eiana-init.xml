@@ -46,6 +46,8 @@
     <path refid="library.mail.classpath"/>
     <pathelement location="${common-codevalues.output.dir}"/>
     <pathelement location="${common-codevalues.testoutput.dir}"/>
+    <path refid="library.nask-commons.classpath"/>
+    <path refid="library.jdom.classpath"/>
   </path>
   
   
@@ -59,6 +61,7 @@
   
   <path id="eiana-init.module.sourcepath">
     <dirset dir="${module.eiana-init.basedir}">
+      <include name="etc"/>
       <include name="src"/>
     </dirset>
   </path>
@@ -77,6 +80,10 @@
     </javac>
     
     <copy todir="${eiana-init.output.dir}">
+      <fileset dir="${module.eiana-init.basedir}/etc">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.eiana-init.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
