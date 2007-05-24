@@ -44,6 +44,8 @@
     <pathelement location="${common-pgp.output.dir}"/>
     <pathelement location="${common-pgp.testoutput.dir}"/>
     <path refid="library.mail.classpath"/>
+    <pathelement location="${common-codevalues.output.dir}"/>
+    <pathelement location="${common-codevalues.testoutput.dir}"/>
   </path>
   
   
@@ -64,7 +66,7 @@
   
   <target name="compile.module.eiana-init" depends="compile.module.eiana-init.production,compile.module.eiana-init.tests" description="Compile module eiana-init"/>
   
-  <target name="compile.module.eiana-init.production" depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.common-pgp" description="Compile module eiana-init; production classes">
+  <target name="compile.module.eiana-init.production" depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.common-pgp,compile.module.common-codevalues" description="Compile module eiana-init; production classes">
     <mkdir dir="${eiana-init.output.dir}"/>
     <javac destdir="${eiana-init.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-init}"/>
