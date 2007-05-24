@@ -22,6 +22,7 @@ public class TransactionToProcessCriteriaConverter {
         result.setModifiedBefore(criteria.getModifiedBefore());
         result.setStartedAfter(criteria.getStartedAfter());
         result.setStartedBefore(criteria.getStartedBefore());
+        result.setOpen(criteria.getOpen());
         return result;
     }
 }

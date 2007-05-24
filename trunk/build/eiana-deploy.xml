@@ -146,17 +146,20 @@
         <path refid="eiana-init.module.classpath"/>
     </path>
 
-    <target name="database.init.test" depends="database.create.test, all.jar, jbpm.init">
+    <target name="database.init.test" depends="database.create.test, all.jar, jbpm.init, cc.init">
         <java classname="org.iana.rzm.init.ant.InitDatabaseTask">
-            <classpath refid="inittools.classpath"/>
-        </java>
-        <java classname="org.iana.rzm.init.ant.InitCountryCodes">
             <classpath refid="inittools.classpath"/>
         </java>
     </target>
 
-    <target name="database.init.fromXML" depends="database.create.test, all.jar, jbpm.init">
+    <target name="database.init.xml" depends="database.create.test, all.jar, jbpm.init, cc.init">
         <java classname="org.iana.rzm.init.ant.InitDatabaseFromXMLTask">
+            <classpath refid="inittools.classpath"/>
+        </java>
+    </target>
+
+    <target name="cc.init" depends="all.jar">
+        <java classname="org.iana.rzm.init.ant.InitCountryCodes">
             <classpath refid="inittools.classpath"/>
         </java>
     </target>

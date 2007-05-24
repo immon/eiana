@@ -48,6 +48,7 @@
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntry type="library" name="jdom" level="project" />
+    <orderEntry type="module" module-name="common-dao" />
     <orderEntryProperties />
   </component>
 </module>

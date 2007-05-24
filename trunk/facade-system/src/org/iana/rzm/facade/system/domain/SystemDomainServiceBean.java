@@ -18,6 +18,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.user.*;
 import org.iana.rzm.trans.TransactionManager;
+import org.iana.criteria.In;
 
 import java.util.*;
 
@@ -54,29 +55,33 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
     }
 
     public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
-        List<SimpleDomainVO> list = new ArrayList<SimpleDomainVO>();
         RZMUser user = getRZMUser();
 
-        Set<String> roleNames = new HashSet<String>();
+        Map<String, Set<RoleVO.Type>> domainNames = new HashMap<String, Set<RoleVO.Type>>();
         for (Role role : user.getRoles())
             if (!role.isAdmin()) {
                 SystemRole sr = (SystemRole) role;
-                roleNames.add(sr.getName());
+                String domainName = sr.getName();
+                Set<RoleVO.Type> roles = domainNames.get(domainName);
+                if (roles == null) {
+                    roles = new HashSet<RoleVO.Type>();
+                }
+                roles.add(ToVOConverter.toRoleTypeVO(sr.getType()));
+                domainNames.put(domainName, roles);
             }
 
-        if (roleNames.isEmpty())
-            throw new AccessDeniedException("not system user");
-
-        for (String roleName : roleNames) {
-            Domain domain = domainManager.get(roleName);
-            if (domain != null) {
-                SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
-                simpleDomainVO.setRoles(getRoleTypeByDomainName(user, simpleDomainVO.getName()));
-                list.add(simpleDomainVO);
+        List<SimpleDomainVO> ret = new ArrayList<SimpleDomainVO>();
+        if (!domainNames.isEmpty()) {
+            List<Domain> domains = domainManager.find(new In("name.name", new HashSet<Object>(domainNames.keySet())));
+            for (Domain domain : domains) {
+                if (domain != null) {
+                    SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
+                    simpleDomainVO.setRoles(domainNames.get(domain.getName()));
+                    ret.add(simpleDomainVO);
+                }
             }
         }
-
-        return list;
+        return ret;
     }
 
     private Set<RoleVO.Type> getRoleTypeByDomainName(RZMUser user, String domainName) {

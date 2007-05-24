@@ -5,10 +5,7 @@ import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.init.ant.decorators.DomainRegistryDecorator;
 import org.iana.rzm.init.ant.decorators.DomainDecorator;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.MD5Password;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.*;
 import org.hibernate.Session;
 
 import java.net.MalformedURLException;
@@ -32,6 +29,7 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
         DomainRegistryDecorator drd = (DomainRegistryDecorator) parser.fromXML(createReader("test-data.xml"), env);
         return drd.getDomains();
     }
+
     public void doExecute(Session session) throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException, DynaXMLException, FileNotFoundException, UnsupportedEncodingException {
         DomainManager domainManager = (DomainManager) SpringInitContext.getContext().getBean("domainManager");
 
@@ -51,29 +49,30 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
             String domain = domainDecorator.getDomain().getName();
             System.out.print("\n     ----- TLD: " + domain + " -----\n");
 
-            session.save(setupSystemUser(domain + "-ac1", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.AC), domain, true, true, true)));
-            session.save(setupSystemUser(domain + "-ac2", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.AC), domain, true, false, true)));
-            session.save(setupSystemUser(domain + "-ac3", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.AC), domain, false, false, true)));
-
-            session.save(setupSystemUser(domain + "-so1", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.SO), domain, true, true, true)));
-            session.save(setupSystemUser(domain + "-so2", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.SO), domain, true, false, true)));
-            session.save(setupSystemUser(domain + "-so3", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.SO), domain, false, false, true)));
-
-            session.save(setupSystemUser(domain + "-tc1", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.TC), domain, true, true, true)));
-            session.save(setupSystemUser(domain + "-tc2", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.TC), domain, true, false, true)));
-            session.save(setupSystemUser(domain + "-tc3", setupSystemRole(
-                    new SystemRole(SystemRole.SystemType.TC), domain, false, false, true)));
+//            session.save(setupSystemUser(domain + "-ac1", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.AC), domain, true, true, true)));
+//            session.save(setupSystemUser(domain + "-ac2", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.AC), domain, true, false, true)));
+//            session.save(setupSystemUser(domain + "-ac3", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.AC), domain, false, false, true)));
+//
+//            session.save(setupSystemUser(domain + "-so1", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.SO), domain, true, true, true)));
+//            session.save(setupSystemUser(domain + "-so2", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.SO), domain, true, false, true)));
+//            session.save(setupSystemUser(domain + "-so3", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.SO), domain, false, false, true)));
+//
+//            session.save(setupSystemUser(domain + "-tc1", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.TC), domain, true, true, true)));
+//            session.save(setupSystemUser(domain + "-tc2", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.TC), domain, true, false, true)));
+//            session.save(setupSystemUser(domain + "-tc3", setupSystemRole(
+//                    new SystemRole(SystemRole.SystemType.TC), domain, false, false, true)));
 
             domainManager.create(domainDecorator.getDomain());
         }
+        createUser();
     }
 
     private RZMUser setupUser(RZMUser user, String name) {
@@ -111,7 +110,7 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
 
     public static void main(String[] args) throws Exception {
         Locale.setDefault(Locale.ENGLISH);
-        
+
         InitDatabaseFromXMLTask task = new InitDatabaseFromXMLTask();
         task.setAnnotationConfiguration("hibernate.cfg.xml");
         task.execute();
@@ -129,4 +128,21 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
             throw new IllegalArgumentException("Unable to open: " + filename);
         }
     }
-}
+
+   private void createUser() {
+        DomainManager domainManager = (DomainManager) SpringInitContext.getContext().getBean("domainManager");
+        UserManager userManager = (UserManager) SpringInitContext.getContext().getBean("userManager");
+        RZMUser user = new RZMUser();
+        user.setFirstName("Simon");
+        user.setLastName("Raveh");
+        user.setEmail("simon.raveh@icann.org");
+        user.setLoginName("simon");
+        user.setPassword("simon");
+        for (Domain domain : domainManager.findAll()) {
+            String domainName = domain.getName();
+            user.addRole(new SystemRole(SystemRole.SystemType.AC, domainName, true, false));
+            user.addRole(new SystemRole(SystemRole.SystemType.TC, domainName, true, false));
+            user.addRole(new SystemRole(SystemRole.SystemType.SO, domainName, true, false));
+        }
+        userManager.create(user);
+    }}

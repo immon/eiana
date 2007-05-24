@@ -25,6 +25,7 @@ public class TransactionCriteria {
     private Date createdBefore;
     private Date modifiedAfter;
     private Date modifiedBefore;
+    private Boolean open;
 
     public Collection<String> getDomainNames() {
         return domainNames;
@@ -160,5 +161,13 @@ public class TransactionCriteria {
 
     public void setModifiedBefore(Date modifiedBefore) {
         this.modifiedBefore = modifiedBefore;
+    }
+
+    public Boolean getOpen() {
+        return open;
+    }
+
+    public void setOpen(Boolean open) {
+        this.open = open;
     }
 }
