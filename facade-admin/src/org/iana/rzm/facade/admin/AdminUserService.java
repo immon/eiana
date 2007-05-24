@@ -2,14 +2,16 @@ package org.iana.rzm.facade.admin;
 
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.criteria.Criterion;
+import org.iana.criteria.Order;
 
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface AdminUserService extends RZMStatefulService {
+public interface AdminUserService extends RZMStatefulService, AdminFinderService<UserVO> {
 
     public UserVO getUser(String userName);
 
@@ -26,9 +28,4 @@ public interface AdminUserService extends RZMStatefulService {
     public List<UserVO> findUsers();
 
     public List<UserVO> findUsers(Criterion criteria);
-
-    public int count(Criterion criteria);
-
-    public List<UserVO> find(Criterion criteria, int offset, int limit);
-   
 }

@@ -3,13 +3,14 @@ package org.iana.rzm.facade.admin;
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.criteria.Criterion;
+import org.iana.criteria.Order;
 
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface AdminDomainService extends RZMStatefulService {
+public interface AdminDomainService extends RZMStatefulService, AdminFinderService<IDomainVO> {
 
     public IDomainVO getDomain(String domainName);
 
@@ -26,8 +27,4 @@ public interface AdminDomainService extends RZMStatefulService {
     public List<IDomainVO> findDomains();
 
     public List<IDomainVO> findDomains(Criterion criteira);
-
-    public int count(Criterion criteria);
-
-    public List<IDomainVO> find(Criterion criteria, int offset, int limit);
 }

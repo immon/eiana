@@ -12,6 +12,10 @@ class HQLBuffer {
     private StringBuffer buf = new StringBuffer();
     private List<Object> params = new ArrayList<Object>();
 
+    public boolean isEmpty() {
+        return buf.toString().trim().length() > 0;
+    }
+
     public String getHQL() {
         return buf.toString();
     }
@@ -48,9 +52,21 @@ class HQLBuffer {
     }
     
     public HQLBuffer append(HQLBuffer that) {
-        this.buf.append('(').append(that.buf).append(')');
-        this.params.addAll(that.params);
-        return sp();
+        if (that != null && that.buf.length() > 0) {
+            this.buf.append('(').append(that.buf).append(')');
+            this.params.addAll(that.params);
+            return sp();
+        }
+        return this;
+    }
+
+    public HQLBuffer appendSimple(HQLBuffer that) {
+        if (that != null) {
+            this.buf.append(that.buf);
+            this.params.addAll(that.params);
+            return sp();
+        }
+        return this;
     }
 
     public HQLBuffer as(String alias) {
@@ -66,6 +82,12 @@ class HQLBuffer {
     public HQLBuffer sp() {
         buf.append(' ');
         return this;
+    }
+
+    public HQLBuffer order(String field, boolean asc) {
+        if (buf.length() > 0) buf.append(',');
+        buf.append(field).append(' ').append(asc ? "asc" : "desc");
+        return sp();
     }
 }
 

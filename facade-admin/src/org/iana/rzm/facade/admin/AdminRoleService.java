@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface AdminRoleService extends RZMStatefulService {
+public interface AdminRoleService extends RZMStatefulService, AdminFinderService<RoleVO> {
 
     public RoleVO getRole(long id);
 

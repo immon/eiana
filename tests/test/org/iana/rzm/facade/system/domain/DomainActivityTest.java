@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Tests domain 'state' attribute which says whether or not
- * there is transaction in progress for a given domain.
+ * there is a transaction in progress for a given domain.
  *
  * @author Patrycja Wegrzynowicz
  */

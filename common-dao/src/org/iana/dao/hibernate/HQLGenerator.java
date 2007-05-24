@@ -2,58 +2,65 @@ package org.iana.dao.hibernate;
 
 import org.iana.criteria.*;
 
-import java.util.List;
-
 /**
  * @author Patrycja Wegrzynowicz
  */
 public class HQLGenerator implements CriteriaVisitor {
 
-    private HQLBuffer buf = new HQLBuffer();
+    private HQLBuffer where = new HQLBuffer();
+    private HQLBuffer order = new HQLBuffer();
 
-    public static HQLBuffer from(Class clazz, Criterion where) {
+    public static HQLBuffer from(Class clazz, Criterion criteria) {
         HQLBuffer buf = new HQLBuffer();
         buf.append("from").append(clazz.getName());
-        if (where != null) buf.append("where").append(toHQL(where));
+
+        if (criteria != null) {
+            HQLGenerator gen = new HQLGenerator();
+            criteria.accept(gen);
+            if (gen.where.isEmpty()) buf.append("where").appendSimple(gen.where);
+            if (gen.order.isEmpty()) buf.append("order by").appendSimple(gen.order);
+        }
+
         return buf;
     }
 
-    public static HQLBuffer toHQL(Criterion crit) {
+    public static HQLGenerator toHQL(Criterion crit) {
         HQLGenerator gen = new HQLGenerator();
         crit.accept(gen);
-        return gen.buf;
+        return gen;
     }
 
     public void visitEqual(Equal crit) {
-        buf.op("=", crit.getFieldName(), crit.getValue());
+        where.op("=", crit.getFieldName(), crit.getValue());
     }
 
     public void visitIn(In crit) {
-        buf.in(crit.getFieldName(), crit.getValues());
+        where.in(crit.getFieldName(), crit.getValues());
     }
 
     public void visitGreater(Greater crit) {
-        buf.op(">", crit.getFieldName(), crit.getValue());
+        where.op(">", crit.getFieldName(), crit.getValue());
     }
 
     public void visitGreaterEqual(GreaterEqual crit) {
-        buf.op(">=", crit.getFieldName(), crit.getValue());
+        where.op(">=", crit.getFieldName(), crit.getValue());
     }
 
     public void visitLike(Like crit) {
-        buf.op("like", crit.getFieldName(), crit.getValue());
+        where.op("like", crit.getFieldName(), crit.getValue());
     }
 
     public void visitLower(Lower crit) {
-        buf.op("<", crit.getFieldName(), crit.getValue());
+        where.op("<", crit.getFieldName(), crit.getValue());
     }
 
     public void visitLowerEqual(LowerEqual crit) {
-        buf.op("<=", crit.getFieldName(), crit.getValue());
+        where.op("<=", crit.getFieldName(), crit.getValue());
     }
 
     public void visitNot(Not crit) {
-        buf.append("not").append(toHQL(crit.getArg()));
+        where.append("not");
+        append(toHQL(crit.getArg()));
     }
 
     public void visitAnd(And crit) {
@@ -67,13 +74,33 @@ public class HQLGenerator implements CriteriaVisitor {
     private void visitMultipleCriterion(String op, MultipleCriterion crit) {
         boolean first = true;
         for (Criterion arg : crit.getArgs()) {
-            if (!first) buf.append(op);
+            if (!first) where.append(op);
             else first = false;
-            buf.append(toHQL(arg));
+            append(toHQL(arg));
         }
     }
 
     public void visitIsNull(IsNull crit) {
-        buf.op("is null", crit.getFieldName());
+        where.op("is null", crit.getFieldName());
+    }
+
+    public void visitSort(SortCriterion sort) {
+        if (sort.getCriterion() != null) appendSimple(toHQL(sort.getCriterion()));
+        if (sort.getOrders() != null) {
+            for (Order order : sort.getOrders()) {
+                this.order.order(order.getFieldName(), order.isAscending());
+            }
+        }
+    }
+
+
+    private void append(HQLGenerator gen) {
+        this.where.append(gen.where);
+        this.order.append(gen.order);
+    }
+
+    private void appendSimple(HQLGenerator gen) {
+        this.where.appendSimple(gen.where);
+        this.order.appendSimple(gen.order);
     }
 }

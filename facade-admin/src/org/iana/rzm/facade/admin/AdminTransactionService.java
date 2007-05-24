@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface AdminTransactionService extends RZMStatefulService {
+public interface AdminTransactionService extends RZMStatefulService, AdminFinderService<TransactionVO> {
 
     TransactionVO getTransaction(long id) throws NoTransactionException;
 

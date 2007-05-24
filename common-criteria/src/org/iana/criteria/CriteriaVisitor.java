@@ -26,4 +26,6 @@ public interface CriteriaVisitor {
     public void visitOr(Or crit);
 
     public void visitIsNull(IsNull crit);
+
+    public void visitSort(SortCriterion sort);
 }
