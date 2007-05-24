@@ -16,6 +16,9 @@
             <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">
                 <notification>contact-confirmation</notification>
             </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                <start>true</start>
+            </action>
         </event>
         <timer name="7d-time-out" duedate='7 days'>
             <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
@@ -78,6 +81,14 @@
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesCalculator"/>
             <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesNotifier">
                 <notification>impacted_parties-confirmation</notification>
+            </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ThirdPartyPending">
+                <start>true</start>
+            </action>
+        </event>
+        <event type='node-leave'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ThirdPartyPending">
+                <start>false</start>
             </action>
         </event>
         <timer name="7d-time-out" duedate='7 days'>
@@ -270,6 +281,9 @@
             <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>rejected</notification>
             </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                <start>false</start>
+            </action>
         </event>
     </end-state>
 
@@ -278,6 +292,9 @@
             <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>withdrawn</notification>
             </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                <start>false</start>
+            </action>
         </event>
     </end-state>
 
@@ -285,6 +302,9 @@
         <event type='node-enter'>
             <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                 <notification>admin-closed</notification>
+            </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                <start>false</start>
             </action>
         </event>
     </end-state>

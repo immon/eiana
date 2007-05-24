@@ -102,4 +102,18 @@ public class DomainManagerBean implements DomainManager {
         CheckTool.checkNoNegative(limit, "limit is negative");
         return dao.find(criteria, offset, limit);
     }
+
+    public void updateOpenProcesses(String name, boolean inc) {
+        Domain domain = dao.get(name);
+        if (domain == null) throw new IllegalArgumentException("domain " + name + " does not exist");
+        if (inc) domain.incOpenProcesses();
+        else domain.decOpenProcesses();
+    }
+
+    public void updateThirdPartyPendingProcesses(String name, boolean inc) {
+        Domain domain = dao.get(name);
+        if (domain == null) throw new IllegalArgumentException("domain " + name + " does not exist");
+        if (inc) domain.incThirdPartyPendingProcesses();
+        else domain.decThirdPartyPendingProcesses();
+    }
 }
