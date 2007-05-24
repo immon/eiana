@@ -1,6 +1,7 @@
 package org.iana.notifications;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.iana.notifications.exception.NotificationException;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -21,6 +22,11 @@ public class TemplateContent extends Content {
     @CollectionOfElements
     @JoinTable(name="TemplateContent_values")
     private Map<String, String> values;
+
+    @Transient
+    private String subject = null;
+    @Transient
+    private String body = null;
 
     protected TemplateContent() {}
 
@@ -49,13 +55,14 @@ public class TemplateContent extends Content {
         this.values = values;
     }
 
-
-    public String getSubject() {
-        return null;
+    public String getSubject() throws NotificationException {
+        if (subject == null) subject = getContentConverter().createSubject(this);
+        return subject;
     }
 
-    public String getBody() {
-        return null;
+    public String getBody() throws NotificationException {
+        if (body == null) body = getContentConverter().createBody(this);
+        return body;
     }
 
     public boolean equals(Object o) {
@@ -68,5 +75,9 @@ public class TemplateContent extends Content {
         if (!values.equals(tc.getValues())) return false;
 
         return true;
+    }
+
+    private ContentConverter getContentConverter() {
+        return new TemplateContentConverter();
     }
 }
