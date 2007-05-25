@@ -6,10 +6,9 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.auth.Identity;
 import org.iana.notifications.AbstractAddressee;
+import org.hibernate.annotations.Cascade;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -21,9 +20,15 @@ public class ContactConfirmations extends AbstractConfirmation {
 
     @OneToMany(cascade = CascadeType.ALL,
             targetEntity = AbstractAddressee.class)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinTable(name = "received_contact_confirmations",
+            inverseJoinColumns = @JoinColumn(name = "received_objid"))
     private Set<ContactIdentity> receivedConfirmations = new HashSet<ContactIdentity>();
     @OneToMany(cascade = CascadeType.ALL,
             targetEntity = AbstractAddressee.class)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinTable(name = "outstanding_contact_confirmations",
+            inverseJoinColumns = @JoinColumn(name = "pending_objid"))
     private Set<ContactIdentity> outstandingConfirmations = new HashSet<ContactIdentity>();
 
     private ContactConfirmations() {

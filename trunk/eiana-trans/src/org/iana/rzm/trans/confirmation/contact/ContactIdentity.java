@@ -24,6 +24,9 @@ public class ContactIdentity extends AbstractAddressee implements Identity {
     @Basic
     private String token;
 
+    private ContactIdentity() {
+    }
+
     public ContactIdentity(String token) {
         this.token = token;
     }
