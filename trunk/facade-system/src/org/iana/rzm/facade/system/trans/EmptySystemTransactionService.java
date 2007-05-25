@@ -60,6 +60,14 @@ public class EmptySystemTransactionService implements SystemTransactionService {
 
     }
 
+    public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+
+    }
+
+    public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+
+    }
+
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
 
     }

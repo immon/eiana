@@ -57,12 +57,13 @@ public class MailsProcessorBean implements MailsProcessor {
 //            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
             if (mailData instanceof ConfirmationMailData) {
                 ConfirmationMailData confData = (ConfirmationMailData) mailData;
-                user = authSvc.authenticate(new MailAuth(from, confData.getDomainName()));
+                // user = authSvc.authenticate(new MailAuth(from, confData.getDomainName()));
+                // user = null;
                 transSvc.setUser(user);
                 domSvc.setUser(user);
                 processConfirmation(confData, user);
             } else if (mailData instanceof TemplateMailData) {
-                user = authSvc.authenticate(new MailAuth(from));
+                // user = authSvc.authenticate(new MailAuth(from));
                 transSvc.setUser(user);
                 domSvc.setUser(user);
                 processTemplate((TemplateMailData) mailData, user);
@@ -74,12 +75,12 @@ public class MailsProcessorBean implements MailsProcessor {
 //            createUserNotification(user == null ? from : user.getUserName(), mailData,
 //                    "Error occured while processing your request.");
 //            Logger.getLogger(getClass()).error(e);
-        } catch (AuthenticationFailedException e) {
-            createEmailNotification(from, subject, content, "Authentication failed.");
-            Logger.getLogger(getClass()).error(e);
-        } catch (AuthenticationRequiredException e) {
-            createEmailNotification(from, subject, content, "Authentication failed.");
-            Logger.getLogger(getClass()).error(e);
+//        } catch (AuthenticationFailedException e) {
+//            createEmailNotification(from, subject, content, "Authentication failed.");
+//            Logger.getLogger(getClass()).error(e);
+//        } catch (AuthenticationRequiredException e) {
+//            createEmailNotification(from, subject, content, "Authentication failed.");
+//            Logger.getLogger(getClass()).error(e);
         } catch (MailParserException e) {
             createEmailNotification(from, subject, content, "Mail content parse error: \n" + e.getMessage());
             Logger.getLogger(getClass()).error(e);
@@ -101,9 +102,9 @@ public class MailsProcessorBean implements MailsProcessor {
                 return;
             }
             if (data.isAccepted())
-                transSvc.acceptTransaction(trans.getTransactionID());
+                transSvc.acceptTransaction(trans.getTransactionID(), data.getToken());
             else
-                transSvc.rejectTransaction(trans.getTransactionID());
+                transSvc.rejectTransaction(trans.getTransactionID(), data.getToken());
             createUserNotification(user.getUserName(), data, "Your request was successfully processed.");
         } catch (InfrastructureException e) {
             createUserNotification(user.getUserName(), data, "Error occured while processing your request.");

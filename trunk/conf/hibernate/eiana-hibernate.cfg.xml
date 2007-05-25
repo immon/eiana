@@ -62,9 +62,10 @@
         <mapping class="org.iana.rzm.trans.confirmation.StateConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.TransitionConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
+        <mapping class="org.iana.rzm.trans.confirmation.contact.ContactConfirmations"/>
 
         <mapping class="org.iana.notifications.Content" />
-        <mapping class="org.iana.notifications.Addressee" />
+        <mapping class="org.iana.notifications.AbstractAddressee" />
         <mapping class="org.iana.notifications.EmailAddressee" />
         <mapping class="org.iana.notifications.Notification" />
         <mapping class="org.iana.notifications.TemplateContent" />

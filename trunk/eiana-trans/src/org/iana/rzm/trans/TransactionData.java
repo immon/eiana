@@ -7,6 +7,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -30,6 +31,8 @@ public class TransactionData {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "domainChange_objId")
     private ObjectChange domainChange;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private ContactConfirmations contactConfirmations;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "TransactionData_stateConfirmations",
             inverseJoinColumns = @JoinColumn(name = "stateConfirmations_objId"))
@@ -126,5 +129,13 @@ public class TransactionData {
 
     public TrackData getTrackData() {
         return trackData;
+    }
+
+    public ContactConfirmations getContactConfirmations() {
+        return contactConfirmations;
+    }
+
+    public void setContactConfirmations(ContactConfirmations contactConfirmations) {
+        this.contactConfirmations = contactConfirmations;
     }
 }

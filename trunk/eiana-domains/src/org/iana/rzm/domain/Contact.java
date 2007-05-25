@@ -330,4 +330,8 @@ public class Contact implements TrackedObject,Cloneable {
     public void setModifiedBy(String modifiedBy) {
         trackData.setModifiedBy(modifiedBy);
     }
+
+    public String getEmail() {
+        return emails == null || emails.size() == 0 ? null : emails.get(0).getEmail();
+    }
 }

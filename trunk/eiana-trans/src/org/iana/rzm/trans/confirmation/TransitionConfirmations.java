@@ -2,6 +2,7 @@ package org.iana.rzm.trans.confirmation;
 
 import org.hibernate.annotations.MapKeyManyToMany;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.auth.Identity;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class TransitionConfirmations {
         cs.addConfirmation(confirmation);
     }
 
-    public boolean isAcceptableBy(String transitionName, RZMUser user) {
+    public boolean isAcceptableBy(String transitionName, Identity user) {
         ConfirmationSet cs = transitionConfirmations.get(transitionName);
         return cs != null && cs.isAcceptableBy(user);
     }

@@ -25,7 +25,7 @@
 
     <iana:template>
         <iana:type>contact-confirmation</iana:type>
-        <iana:subject>{transactionId} | {stateName} | [RZM] | {domainName}</iana:subject>
+        <iana:subject>{transactionId} | {stateName} | [RZM] | {domainName} | {token}</iana:subject>
         <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.</iana:content>
     </iana:template>
 

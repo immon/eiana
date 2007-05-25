@@ -12,31 +12,37 @@
                     <element>IANA</element>
                 </roles>
             </action>
+            <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationsCalculator"/>
+            <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationNotifier">
+                <notification>contact-confirmation</notification>
+            </action>
+<!--
             <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
             <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">
                 <notification>contact-confirmation</notification>
             </action>
+-->
             <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                 <start>true</start>
             </action>
         </event>
         <timer name="7d-time-out" duedate='7 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
-                <period>23</period>
-                <notification>contact-confirmation-remainder</notification>
-            </action>
+            <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
+                <!--<period>23</period>-->
+                <!--<notification>contact-confirmation-remainder</notification>-->
+            <!--</action>-->
         </timer>
         <timer name="14d-time-out" duedate='14 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
-                <period>16</period>
-                <notification>contact-confirmation-remainder</notification>
-            </action>
+            <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
+                <!--<period>16</period>-->
+                <!--<notification>contact-confirmation-remainder</notification>-->
+            <!--</action>-->
         </timer>
         <timer name="21d-time-out" duedate='21 days'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationRemainder">
-                <period>9</period>
-                <notification>contact-confirmation-remainder</notification>
-            </action>
+            <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
+                <!--<period>9</period>-->
+                <!--<notification>contact-confirmation-remainder</notification>-->
+            <!--</action>-->
         </timer>
         <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
         <transition name="accept" to="PENDING_TECH_CHECK"/>

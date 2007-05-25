@@ -64,7 +64,7 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException when no transaction found about this id.
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
-    void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     /**
      * Rejects a transaction identified by this id on behalf of the user. Note that this service is stateful and the user must be set prior any method call.
@@ -74,6 +74,12 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException when no transaction found about this id.
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
+    void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+
+    // temporary method - not to break the tests
+
+    void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+
     void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     /**

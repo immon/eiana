@@ -1,9 +1,12 @@
 package org.iana.rzm.user;
 
+import org.iana.notifications.AbstractAddressee;
 import org.iana.notifications.Addressee;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.hibernate.annotations.Cascade;
+import org.iana.rzm.auth.Identity;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,7 +23,7 @@ import java.util.*;
  */
 
 @Entity
-public class RZMUser extends Addressee implements TrackedObject, Cloneable {
+public class RZMUser extends AbstractAddressee implements Identity, TrackedObject, Cloneable {
 
     @Basic
     private String firstName;
@@ -43,6 +46,7 @@ public class RZMUser extends Addressee implements TrackedObject, Cloneable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "RZMUser_Roles",
             inverseJoinColumns = @JoinColumn(name = "Role_objId"))
+//    @Fetch(FetchMode.SUBSELECT)
     //@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     // todo delete orphan does not work (Hibernate bug)
     private List<Role> roles;
@@ -264,26 +268,30 @@ public class RZMUser extends Addressee implements TrackedObject, Cloneable {
         this.publicKey = publicKey;
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        RZMUser user = (RZMUser) super.clone();
+    public RZMUser clone() {
+        try {
+            RZMUser user = (RZMUser) super.clone();
 
-        user.trackData = (TrackData) (trackData == null ? new TrackData() : trackData.clone());
-        user.email = email;
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.loginName = loginName;
-        user.organization = organization;
-        user.password = password == null ? null : (Password) password.clone();
+            user.trackData = (TrackData) (trackData == null ? new TrackData() : trackData.clone());
+            user.email = email;
+            user.firstName = firstName;
+            user.lastName = lastName;
+            user.loginName = loginName;
+            user.organization = organization;
+            user.password = password == null ? null : (Password) password.clone();
 
-        List<Role> clonedRoles = new ArrayList<Role>();
-        if (roles != null) {
-            for (Role role : roles)
-                clonedRoles.add((Role) role.clone());
+            List<Role> clonedRoles = new ArrayList<Role>();
+            if (roles != null) {
+                for (Role role : roles)
+                    clonedRoles.add((Role) role.clone());
+            }
+            user.setRoles(clonedRoles);
+
+            user.setSecurID(securID);
+
+            return user;
+        } catch (CloneNotSupportedException e) {
+            throw new UnsupportedOperationException(e);
         }
-        user.setRoles(clonedRoles);
-
-        user.setSecurID(securID);
-
-        return user;
     }
 }

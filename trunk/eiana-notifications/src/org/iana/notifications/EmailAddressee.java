@@ -7,7 +7,7 @@ import javax.persistence.Basic;
  * @author Piotr Tkaczyk
  */
 @Entity
-public class EmailAddressee extends Addressee {
+public class EmailAddressee extends AbstractAddressee {
 
     @Basic
     private String email;

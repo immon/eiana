@@ -27,11 +27,12 @@ public class MailParserImpl implements MailParser {
                 case 1:
                     SectionInst template = templatesService.parseTemplate(content);
                     return new TemplateMailData(clearSubject, content, template);
-                case 4:
+                case 5:
                     ConfirmationMailData result = new ConfirmationMailData(clearSubject, content);
                     result.setTransactionId(Long.parseLong(elements[0].trim()));
                     result.setStateName(elements[1].trim());
                     result.setDomainName(elements[3].trim());
+                    result.setToken(elements[4].trim());
                     content = content.toUpperCase();
                     if (content.contains(ACCEPT_STRING) && content.contains(DECLINE_STRING))
                         throw new MailParserException("both accept and decline are present");
