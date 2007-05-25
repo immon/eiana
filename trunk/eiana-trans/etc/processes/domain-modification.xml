@@ -12,7 +12,7 @@
                     <element>IANA</element>
                 </roles>
             </action>
-            <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationsCalculator"/>
+            <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationCalculator"/>
             <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationNotifier">
                 <notification>contact-confirmation</notification>
             </action>
