@@ -11,7 +11,6 @@ import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.SystemTransactionService;
 import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.mail.parser.*;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.templates.inst.ElementInst;
 import org.iana.templates.inst.FieldInst;
@@ -49,7 +48,7 @@ public class MailsProcessorBean implements MailsProcessor {
         this.usrMgr = usrMgr;
     }
 
-    public void process(String from, String subject, String content) throws MailsProcessorException {
+    public void process(String email, String subject, String content) throws MailsProcessorException {
         AuthenticatedUser user = null;
         MailData mailData = null;
         try {
@@ -57,46 +56,46 @@ public class MailsProcessorBean implements MailsProcessor {
 //            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
             if (mailData instanceof ConfirmationMailData) {
                 ConfirmationMailData confData = (ConfirmationMailData) mailData;
-                // user = authSvc.authenticate(new MailAuth(from, confData.getDomainName()));
+                // user = authSvc.authenticate(new MailAuth(email, confData.getDomainName()));
                 // user = null;
                 transSvc.setUser(user);
                 domSvc.setUser(user);
-                processConfirmation(confData, user);
+                processConfirmation(confData, email);
             } else if (mailData instanceof TemplateMailData) {
-                // user = authSvc.authenticate(new MailAuth(from));
+                // user = authSvc.authenticate(new MailAuth(email));
                 transSvc.setUser(user);
                 domSvc.setUser(user);
-                processTemplate((TemplateMailData) mailData, user);
+                processTemplate((TemplateMailData) mailData, email);
             } else {
-                createUserNotification(user.getUserName(), subject, content,
+                createEmailNotification(email, subject, content,
                         "Error occured while processing your request.");
             }
 //        } catch (PGPUtilsException e) {
-//            createUserNotification(user == null ? from : user.getUserName(), mailData,
+//            createEmailNotification(user == null ? email : email, mailData,
 //                    "Error occured while processing your request.");
 //            Logger.getLogger(getClass()).error(e);
 //        } catch (AuthenticationFailedException e) {
-//            createEmailNotification(from, subject, content, "Authentication failed.");
+//            createEmailNotification(email, subject, content, "Authentication failed.");
 //            Logger.getLogger(getClass()).error(e);
 //        } catch (AuthenticationRequiredException e) {
-//            createEmailNotification(from, subject, content, "Authentication failed.");
+//            createEmailNotification(email, subject, content, "Authentication failed.");
 //            Logger.getLogger(getClass()).error(e);
         } catch (MailParserException e) {
-            createEmailNotification(from, subject, content, "Mail content parse error: \n" + e.getMessage());
+            createEmailNotification(email, subject, content, "Mail content parse error: \n" + e.getMessage());
             Logger.getLogger(getClass()).error(e);
         }
     }
 
-    private void processConfirmation(ConfirmationMailData data, AuthenticatedUser user) {
+    private void processConfirmation(ConfirmationMailData data, String email) {
         try {
             TransactionVO trans = transSvc.getTransaction(data.getTransactionId());
             if (trans == null) {
-                createUserNotification(user.getUserName(), data,
+                createEmailNotification(email, data,
                                         "Transaction id not found: " + data.getTransactionId());
                 return;
             }
             if (!data.getStateName().equals(trans.getState().getName().toString())) {
-                createUserNotification(user.getUserName(), data,
+                createEmailNotification(email, data,
                                         "wrong transaction state = " + data.getStateName() +
                                         ", expected: " + trans.getState().getName());
                 return;
@@ -105,12 +104,12 @@ public class MailsProcessorBean implements MailsProcessor {
                 transSvc.acceptTransaction(trans.getTransactionID(), data.getToken());
             else
                 transSvc.rejectTransaction(trans.getTransactionID(), data.getToken());
-            createUserNotification(user.getUserName(), data, "Your request was successfully processed.");
+            createEmailNotification(email, data, "Your request was successfully processed.");
         } catch (InfrastructureException e) {
-            createUserNotification(user.getUserName(), data, "Error occured while processing your request.");
+            createEmailNotification(email, data, "Error occured while processing your request.");
             Logger.getLogger(getClass()).error(e);
         } catch (NoObjectFoundException e) {
-            createUserNotification(user.getUserName(), data, "Nonexistent ticket id.");
+            createEmailNotification(email, data, "Nonexistent ticket id.");
             Logger.getLogger(getClass()).error(e);
         }
     }
@@ -126,38 +125,36 @@ public class MailsProcessorBean implements MailsProcessor {
         return sb.toString();
     }
 
-    private void processTemplate(TemplateMailData data, AuthenticatedUser user) {
+    private void processTemplate(TemplateMailData data, String email) {
         try {
             IDomainVO domain = updateDomain(data.getTemplate());
             List<TransactionVO> transactions = transSvc.createTransactions(domain, false);
             if (transactions.isEmpty())
-                createUserNotification(user.getUserName(), data, "Domain data are the same as in the message.");
+                createEmailNotification(email, data, "Domain data are the same as in the message.");
             else
-                createUserNotification(user.getUserName(), data, createMessageTemplateProcessed(transactions));
+                createEmailNotification(email, data, createMessageTemplateProcessed(transactions));
         } catch (InfrastructureException e) {
-            createUserNotification(user.getUserName(), data, "Error occured while processing your request.");
+            createEmailNotification(email, data, "Error occured while processing your request.");
             Logger.getLogger(getClass()).error(e);
         } catch (NoObjectFoundException e) {
-            createUserNotification(user.getUserName(), data, "Domain name not found.");
+            createEmailNotification(email, data, "Domain name not found.");
             Logger.getLogger(getClass()).error(e);
         } catch (MailsProcessorException e) {
-            createUserNotification(user.getUserName(), data, e.getMessage());
+            createEmailNotification(email, data, e.getMessage());
             Logger.getLogger(getClass()).error(e);
         } catch (NoDomainModificationException e) {
-            createUserNotification(user.getUserName(), data, "Domain data are the same as in the message.");
+            createEmailNotification(email, data, "Domain data are the same as in the message.");
+            Logger.getLogger(getClass()).error(e);
+        } catch (Throwable e) {
+            createEmailNotification(email, data, e.getMessage());
             Logger.getLogger(getClass()).error(e);
         }
     }
 
-    private void createUserNotification(String userName, MailData data, String message) {
-        createUserNotification(userName, data.getOriginalSubject(), data.getOriginalBody(), message);
+    private void createEmailNotification(String email, MailData data, String message) {
+        createEmailNotification(email, data.getOriginalSubject(), data.getOriginalBody(), message);
     }
 
-    private void createUserNotification(String userName, String originalSubject, String originalContent, String message) {
-        RZMUser rzmUser = usrMgr.get(userName);
-        createNotification(rzmUser, originalSubject, originalContent, message);
-    }
-    
     private void createEmailNotification(String email, String originalSubject, String originalContent, String message) {
         createNotification(new EmailAddressee(email, email), originalSubject, originalContent, message);
     }
