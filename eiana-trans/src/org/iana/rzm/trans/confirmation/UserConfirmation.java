@@ -1,6 +1,7 @@
 package org.iana.rzm.trans.confirmation;
 
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.auth.Identity;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -24,11 +25,14 @@ public class UserConfirmation extends AbstractConfirmation {
         this.user = user;
     }
 
-    public boolean isAcceptableBy(RZMUser user) {
-        return this.user.equals(user);
+    public boolean isAcceptableBy(Identity user) {
+        if (user instanceof RZMUser) {
+            return this.user.equals(user);
+        }
+        return false;
     }
 
-    public boolean accept(RZMUser user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
+    public boolean accept(Identity id) throws AlreadyAcceptedByUser, NotAcceptableByUser {
         if (!isAcceptableBy(user))
             throw new NotAcceptableByUser();
         if (accepted)
@@ -41,8 +45,8 @@ public class UserConfirmation extends AbstractConfirmation {
         return accepted;
     }
 
-    public Set<RZMUser> getUsersAbleToAccept() {
-        Set<RZMUser> result = new HashSet<RZMUser>();
+    public Set<Identity> getUsersAbleToAccept() {
+        Set<Identity> result = new HashSet<Identity>();
         if (!accepted) result.add(user);
         return result;
     }

@@ -11,7 +11,9 @@ import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.auth.Identity;
 import org.iana.objectdiff.*;
 
 import java.util.*;
@@ -79,10 +81,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         }
     }
 
-    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
-            trans.accept(getRZMUser());
+            trans.accept(new ContactIdentity(token));
             trans.setModified(now());
             trans.setModifiedBy(user.getUserName());
         } catch (NoSuchTransactionException e) {
@@ -96,10 +98,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         }
     }
 
-    public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
-            trans.reject(getRZMUser());
+            trans.reject(new ContactIdentity(token));
             trans.setModified(now());
             trans.setModifiedBy(user.getUserName());
         } catch (NoSuchTransactionException e) {
@@ -318,4 +320,11 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         return new Timestamp(System.currentTimeMillis());
     }
 
+    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        acceptTransaction(id, "");
+    }
+
+    public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        rejectTransaction(id, "");
+    }
 }

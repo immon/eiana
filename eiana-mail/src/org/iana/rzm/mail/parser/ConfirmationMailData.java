@@ -8,6 +8,7 @@ public class ConfirmationMailData extends AbstractMailData{
     private String stateName;
     private String domainName;
     private boolean accepted;
+    private String token;
 
     public ConfirmationMailData() {
     }
@@ -52,5 +53,13 @@ public class ConfirmationMailData extends AbstractMailData{
 
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

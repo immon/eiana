@@ -5,11 +5,9 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
-import org.iana.rzm.trans.confirmation.Confirmation;
-import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
-import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.trans.confirmation.*;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.auth.Identity;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -37,7 +35,7 @@ public class Transaction implements TrackedObject {
             this.pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
     }
 
-    private TransactionData getTransactionData() {
+    public TransactionData getTransactionData() {
         return (TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA);
     }
 
@@ -159,19 +157,24 @@ public class Transaction implements TrackedObject {
         getTrackData().setModifiedBy(userName);
     }
 
-    private void signal(String transitionName, RZMUser user) {
+    private void signal(String transitionName, Identity user) {
         TransactionState prevState = getState();
         pi.signal(transitionName);
         TransactionState state = getState();
         prevState.setEnd(state.getStart());
-        addStateLogEntry(prevState, user.getLoginName());
+        addStateLogEntry(prevState, user.getName());
     }
 
-    public synchronized void accept(RZMUser user) throws TransactionException {
+    public synchronized void accept(Identity user) throws TransactionException {
         try {
             Token token = pi.getRootToken();
             Node node = token.getNode();
-            Confirmation confirmation = getTransactionData().getStateConfirmations(node.getName());
+            String state = node.getName();
+
+            Confirmation confirmation = "PENDING_CONTACT_CONFIRMATION".equals(state) ?
+                    getTransactionData().getContactConfirmations() :
+                    getTransactionData().getStateConfirmations(node.getName());
+
             if (confirmation == null) throw new UserConfirmationNotExpected();
             if (!confirmation.accept(user))
                 return;
@@ -183,10 +186,15 @@ public class Transaction implements TrackedObject {
         }
     }
 
-    public synchronized void reject(RZMUser user) throws TransactionException {
+    public synchronized void reject(Identity user) throws TransactionException {
         Token token = pi.getRootToken();
         Node node = token.getNode();
-        Confirmation confirmation = getTransactionData().getStateConfirmations(node.getName());
+        String state = node.getName();
+
+        Confirmation confirmation = "PENDING_CONTACT_CONFIRMATION".equals(state) ?
+                getTransactionData().getContactConfirmations() :
+                getTransactionData().getStateConfirmations(node.getName());
+
         if (confirmation == null) throw new UserConfirmationNotExpected();
         if (confirmation.isAcceptableBy(user)) {
             signal(StateTransition.REJECT, user);
@@ -194,7 +202,7 @@ public class Transaction implements TrackedObject {
             throw new UserConfirmationNotExpected();
     }
 
-    public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
+    public synchronized void transit(Identity user, String transitionName) throws TransactionException {
         if (transitionName.equals(StateTransition.ACCEPT)) accept(user);
         Token token = pi.getRootToken();
         Node node = token.getNode();
@@ -205,6 +213,5 @@ public class Transaction implements TrackedObject {
         } else
             throw new UserNotAuthorizedToTransit();
     }
-
 
 }

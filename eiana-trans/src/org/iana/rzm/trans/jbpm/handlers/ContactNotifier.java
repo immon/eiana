@@ -6,6 +6,7 @@ import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.auth.Identity;
 
 import java.util.*;
 
@@ -21,13 +22,14 @@ public class ContactNotifier extends ProcessStateNotifier {
 
         String domainName = td.getCurrentDomain().getName();
 
-        Set<RZMUser> users = new HashSet<RZMUser>();
+        Set<Identity> users = new HashSet<Identity>();
         users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
         users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.TC, domainName, true, false)).getUsersAbleToAccept());
 
         List<Notification> notifications = new ArrayList<Notification>();
 
-        for(RZMUser user : users)
+        for(Identity identity : users) {
+            RZMUser user = (RZMUser) identity;
             for (Role role : user.getRoles()) {
                 SystemRole systemRole = (SystemRole) role;
 
@@ -45,6 +47,7 @@ public class ContactNotifier extends ProcessStateNotifier {
 
                 notifications.add(notification);
             }
+        }
         return notifications;
     }
 }

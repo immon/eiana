@@ -39,7 +39,7 @@ public class TransactionConverter {
         ret.setTransactionID(trans.getTransactionID());
         ret.setTicketID(trans.getTicketID());
         ret.setName(trans.getName());
-        ret.setDomainName(trans.getCurrentDomain().getName());
+        if (trans.getCurrentDomain() != null) ret.setDomainName(trans.getCurrentDomain().getName());
 
         ret.setDomainActions(toTransactionActionVO(trans.getDomainChange()));
 

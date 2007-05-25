@@ -76,14 +76,14 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 
-    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
-        delegate.acceptTransaction(id);
+        delegate.acceptTransaction(id, token);
     }
 
-    public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
-        delegate.rejectTransaction(id);
+        delegate.rejectTransaction(id, token);
     }
 
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -105,5 +105,15 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     public void close() {
         super.close();
         delegate.close();
+    }
+
+    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        isUserInRole();
+        delegate.acceptTransaction(id);
+    }
+
+    public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        isUserInRole();
+        delegate.rejectTransaction(id);
     }
 }

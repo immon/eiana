@@ -1,6 +1,7 @@
 package org.iana.rzm.trans.confirmation;
 
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.auth.Identity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -41,16 +42,20 @@ public class StateConfirmations implements Confirmation {
         this.objId = objId;
     }
 
-    public boolean isAcceptableBy(RZMUser user) {
-        if (pendingConfirmations.isEmpty() && receivedConfirmations.isEmpty())
-            return true;
-        for (Confirmation conf : pendingConfirmations)
-            if (conf.isAcceptableBy(user)) return true;
+    public boolean isAcceptableBy(Identity uid) {
+        if (uid instanceof RZMUser) {
+            if (pendingConfirmations.isEmpty() && receivedConfirmations.isEmpty())
+                return true;
+            RZMUser user = (RZMUser) uid;
+            for (Confirmation conf : pendingConfirmations)
+                if (conf.isAcceptableBy(user)) return true;
+        }
         return false;
     }
 
-    public boolean accept(RZMUser user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
+    public boolean accept(Identity uid) throws AlreadyAcceptedByUser, NotAcceptableByUser {
         if (!pendingConfirmations.isEmpty() || !receivedConfirmations.isEmpty()) {
+            RZMUser user = (RZMUser) uid;
             Set<Confirmation> userConfs = getUserConfirmations(user);
             if (userConfs.isEmpty()) throw new NotAcceptableByUser(user.getLoginName());
             for (Confirmation conf : userConfs)
@@ -74,7 +79,7 @@ public class StateConfirmations implements Confirmation {
         return pendingConfirmations == null || pendingConfirmations.isEmpty();
     }
 
-    public Set<RZMUser> getUsersAbleToAccept() {
+    public Set<Identity> getUsersAbleToAccept() {
         return null;
     }
 }

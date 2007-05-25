@@ -1,8 +1,8 @@
 package org.iana.rzm.system.accuracy;
 
 import org.iana.notifications.NotificationSender;
-import org.iana.notifications.Addressee;
 import org.iana.notifications.Content;
+import org.iana.notifications.Addressee;
 import org.iana.notifications.exception.NotificationException;
 
 import java.util.Collection;

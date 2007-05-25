@@ -3,6 +3,7 @@ package org.iana.rzm.trans.confirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.auth.Identity;
 import org.jbpm.JbpmContext;
 import org.jbpm.configuration.ObjectFactory;
 
@@ -32,16 +33,21 @@ public class MandatoryRoleConfirmations extends AbstractConfirmation {
         this.type = type;
     }
 
-    public boolean isAcceptableBy(RZMUser user) {
-        return getRequiredConfirmations().contains(user);
+    public boolean isAcceptableBy(Identity user) {
+        if (user instanceof RZMUser) {
+            RZMUser uid = (RZMUser) user;
+            return getRequiredConfirmations().contains(uid);
+        }
+        return false;
     }
 
-    public boolean accept(RZMUser user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
+    public boolean accept(Identity user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
         if (!isAcceptableBy(user))
             throw new NotAcceptableByUser();
-        if (receivedConfirmations.contains(user))
+        RZMUser uid = (RZMUser) user;
+        if (receivedConfirmations.contains(uid))
             throw new AlreadyAcceptedByUser();
-        receivedConfirmations.add(user);
+        receivedConfirmations.add(uid);
         return isReceived();
     }
 
@@ -49,13 +55,13 @@ public class MandatoryRoleConfirmations extends AbstractConfirmation {
         return receivedConfirmations.containsAll(getRequiredConfirmations());
     }
 
-    public Set<RZMUser> getUsersAbleToAccept() {
+    public Set<Identity> getUsersAbleToAccept() {
         return getRequiredConfirmations();
     }
 
-    private Set<RZMUser> getRequiredConfirmations() {
+    private Set<Identity> getRequiredConfirmations() {
         ObjectFactory of = JbpmContext.getCurrentJbpmContext().getObjectFactory();
         UserManager um = (UserManager) of.createObject("userManager");
-        return new HashSet<RZMUser>(um.findUsersInSystemRole(name, type, true, true));
+        return new HashSet<Identity>(um.findUsersInSystemRole(name, type, true, true));
     }
 }

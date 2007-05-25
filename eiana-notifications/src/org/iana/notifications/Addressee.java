@@ -1,34 +1,18 @@
 package org.iana.notifications;
 
-import javax.persistence.*;
-
 /**
+ * This represents an addressee of a notification. Note that notifications
+ * are always send by email thus it an email address needs to be configured properly.
+ *
  * @author Patrycja Wegrzynowicz
- * @author Piotr    Tkaczyk
  */
+public interface Addressee extends Cloneable {
 
-@Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Addressee implements Cloneable {
+    Long getObjId();
+    
+    String getEmail();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
+    String getName();
 
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
-    }
-
-    public abstract String getEmail();
-    public abstract String getName();
-
-    protected Object clone() throws CloneNotSupportedException {
-        Addressee addressee = (Addressee) super.clone();
-        addressee.objId = objId;
-        return addressee;
-    }
+    Addressee clone();
 }

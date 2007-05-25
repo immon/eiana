@@ -1,7 +1,5 @@
 package org.iana.notifications;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
@@ -23,7 +21,7 @@ public class Notification {
     @Basic
     private String type;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = AbstractAddressee.class)
     private Set<Addressee> addressee = new HashSet<Addressee>();
 
     @OneToOne(cascade = CascadeType.ALL)

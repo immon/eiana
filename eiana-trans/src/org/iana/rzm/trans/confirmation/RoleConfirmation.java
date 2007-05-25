@@ -1,6 +1,7 @@
 package org.iana.rzm.trans.confirmation;
 
 import org.iana.rzm.user.*;
+import org.iana.rzm.auth.Identity;
 import org.jbpm.JbpmContext;
 import org.jbpm.configuration.ObjectFactory;
 
@@ -29,11 +30,15 @@ public class RoleConfirmation extends AbstractConfirmation {
         this.role = role;
     }
 
-    public boolean isAcceptableBy(RZMUser user) {
-        return user.isInRole(role, new ConfirmationRoleComparator());
+    public boolean isAcceptableBy(Identity uid) {
+        if (uid instanceof RZMUser) {
+            RZMUser user = (RZMUser) uid;
+            return user.isInRole(role, new ConfirmationRoleComparator());
+        }
+        return false;
     }
 
-    public boolean accept(RZMUser user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
+    public boolean accept(Identity user) throws AlreadyAcceptedByUser, NotAcceptableByUser {
         if (!isAcceptableBy(user))
             throw new NotAcceptableByUser();
         if (accepted)
@@ -46,15 +51,15 @@ public class RoleConfirmation extends AbstractConfirmation {
         return accepted;
     }
 
-    public Set<RZMUser> getUsersAbleToAccept() {
+    public Set<Identity> getUsersAbleToAccept() {
         ObjectFactory of = JbpmContext.getCurrentJbpmContext().getObjectFactory();
         UserManager um = (UserManager) of.createObject("userManager");
         if (role.isAdmin()) {
             AdminRole adminRole = (AdminRole) role;
-            return new HashSet<RZMUser>(um.findUsersInAdminRole(adminRole.getType()));
+            return new HashSet<Identity>(um.findUsersInAdminRole(adminRole.getType()));
         } else {
             SystemRole systemRole = (SystemRole) role;
-            return new HashSet<RZMUser>(um.findUsersInSystemRole(systemRole.getName(), systemRole.getType(), true, false));
+            return new HashSet<Identity>(um.findUsersInSystemRole(systemRole.getName(), systemRole.getType(), true, false));
         }
     }
 

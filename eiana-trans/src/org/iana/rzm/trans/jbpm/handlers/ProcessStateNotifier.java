@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class ProcessStateNotifier implements ActionHandler {
 
-    TransactionData td;
+    protected TransactionData td;
     private   NotificationSender   notificationSender;
     protected NotificationTemplate notificationTemplate;
     protected String               notification;
