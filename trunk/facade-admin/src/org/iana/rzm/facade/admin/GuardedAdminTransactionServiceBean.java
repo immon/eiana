@@ -185,10 +185,7 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
 
     public List<TransactionVO> findAll() {
         isUserInRole();
-        List<TransactionVO> transactionVOs = new ArrayList<TransactionVO>();
-        for (Transaction transaction : transactionManager.findAll())
-            transactionVOs.add(TransactionConverter.toTransactionVO(transaction));
-        return transactionVOs;
+        return find(new TransactionCriteriaVO());
     }
 
     public List<TransactionVO> find(TransactionCriteriaVO criteriaVO) {
