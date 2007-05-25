@@ -73,6 +73,10 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
             domainManager.create(domainDecorator.getDomain());
         }
         createUser();
+
+        Domain domain = domainManager.getCloned("ac");
+        System.out.println(domain.getSupportingOrg().getName());
+        System.out.println(domain.getSupportingOrg().getAddresses());
     }
 
     private RZMUser setupUser(RZMUser user, String name) {
