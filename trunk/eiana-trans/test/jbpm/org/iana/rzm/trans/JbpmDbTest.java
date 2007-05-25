@@ -8,9 +8,11 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterTest;
+
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
@@ -91,11 +93,13 @@ public class JbpmDbTest {
         }
     }
 
-    @AfterClass
+    @AfterTest
     public void cleanUp() throws Exception {
         try {
-            ProcessInstance pi = processDAO.getProcessInstance(processId);
-            if (pi != null) processDAO.delete(pi);
+            List<ProcessInstance> pis = processDAO.findAll();
+            for (ProcessInstance pi : pis) {
+                processDAO.delete(pi);
+            }
         } finally {
             processDAO.close();
         }

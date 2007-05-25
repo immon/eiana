@@ -7,15 +7,17 @@ import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterTest;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -72,26 +74,29 @@ public class TransactionManagerTest {
         }
     }
 
-    @AfterClass
+    @AfterTest
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            for (Long id : domain1TransIds)
-                transactionManager.deleteTransaction(id);
-            for (Long id : domain2TransIds)
-                transactionManager.deleteTransaction(id);
+            List<ProcessInstance> pis = processDAO.findAll();
+            for (ProcessInstance pi : pis) {
+                processDAO.delete(pi);
+            }
 
-            userManager.delete("user-sys1tm");
-            userManager.delete("user-sys2tm");
-    
-            domainManager.delete("tmtestdomain1");
-            domainManager.delete("tmtestdomain2");
-            domainManager.delete("trans-manager.org");
+            List<RZMUser> users = userManager.findAll();
+            for (RZMUser user : users) {
+                userManager.delete(user);
+            }
+
+            List<Domain> domains = domainManager.findAll();
+            for (Domain domain : domains) {
+                domainManager.delete(domain);
+            }
 
             txManager.commit(txStatus);
         } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
+//            if (!txStatus.isCompleted())
+//                txManager.rollback(txStatus);
             throw e;
         } finally {
             processDAO.close();
