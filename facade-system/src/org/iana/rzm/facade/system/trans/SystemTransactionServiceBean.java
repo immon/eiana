@@ -86,7 +86,8 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
             Transaction trans = transactionManager.getTransaction(id);
             trans.accept(new ContactIdentity(token));
             trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
+            // set to the role
+            trans.setModifiedBy(token);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -102,8 +103,9 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         try {
             Transaction trans = transactionManager.getTransaction(id);
             trans.reject(new ContactIdentity(token));
+            // set to the role
             trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
+            trans.setModifiedBy(token);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
