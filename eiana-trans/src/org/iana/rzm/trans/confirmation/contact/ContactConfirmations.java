@@ -5,6 +5,7 @@ import org.iana.rzm.trans.confirmation.AbstractConfirmation;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.auth.Identity;
+import org.iana.notifications.AbstractAddressee;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -19,10 +20,10 @@ import java.util.HashSet;
 public class ContactConfirmations extends AbstractConfirmation {
 
     @OneToMany(cascade = CascadeType.ALL,
-            targetEntity = AbstractConfirmation.class)
+            targetEntity = AbstractAddressee.class)
     private Set<ContactIdentity> receivedConfirmations = new HashSet<ContactIdentity>();
     @OneToMany(cascade = CascadeType.ALL,
-            targetEntity = AbstractConfirmation.class)
+            targetEntity = AbstractAddressee.class)
     private Set<ContactIdentity> outstandingConfirmations = new HashSet<ContactIdentity>();
 
     private ContactConfirmations() {
