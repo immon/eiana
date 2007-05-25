@@ -45,6 +45,7 @@ class ProcessCriteriaHqlTranslator {
             parameters.put("finishedBefore", criteria.getFinishedBefore());
         }
 
+/*
         if ((criteria.getDomainNames() != null && !criteria.getDomainNames().isEmpty()) ||
                 (criteria.getTicketIds() != null && !criteria.getTicketIds().isEmpty()) ||
                 criteria.getCreatedAfter() != null ||
@@ -54,13 +55,16 @@ class ProcessCriteriaHqlTranslator {
                 criteria.getModifiedBefore() != null ||
                 (criteria.getModifiers() != null && !criteria.getModifiers().isEmpty()) ||
                 (criteria.getUserNames() != null && !criteria.getUserNames().isEmpty())) {
+*/
             froms.add("HibernateLongInstance as hli");
             froms.add("TransactionData as td");
             froms.add("inner join td.currentDomain as domain");
             wheres.add("hli.value.class = 'org.iana.rzm.trans.TransactionData'");
             wheres.add("hli.value.id = td.objId");
             wheres.add("pi = hli.processInstance");
+/*
         }
+*/
 
         if (criteria.getDomainNames() != null && !criteria.getDomainNames().isEmpty()) {
             wheres.add("domain.name.name in (:domainName)");
