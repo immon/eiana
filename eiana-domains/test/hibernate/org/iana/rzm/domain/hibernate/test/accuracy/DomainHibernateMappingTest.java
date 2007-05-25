@@ -7,16 +7,14 @@ import org.iana.rzm.domain.hibernate.test.common.HibernateMappingUnitTest;
 import org.iana.rzm.domain.hibernate.test.common.HibernateMappingTestUtil;
 import org.testng.annotations.Test;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.HibernateException;
 
 import java.io.Serializable;
-import java.net.URL;
 
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-domains"})
+@Test(sequential = true, groups = {"hibernate", "eiana-domains"})
 public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain> {
 
     long domainID;

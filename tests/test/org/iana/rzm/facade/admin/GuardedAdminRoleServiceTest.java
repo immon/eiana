@@ -112,7 +112,7 @@ public class GuardedAdminRoleServiceTest {
         gAdminRoleServ.close();
     }
 
-    @Test (dependsOnMethods = {"testFacadeCreateRole"})
+    @Test (dependsOnMethods = {"testFacadeFindRoleByCriteria_Offset_Limit"})
     public void testFacadeUpdateRole() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminRoleServ.setUser(testAuthUser);
