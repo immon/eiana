@@ -39,7 +39,7 @@ public class ContactConfirmations extends AbstractConfirmation {
     }
 
     public boolean isAcceptableBy(Identity identity) {
-        return outstandingConfirmations.contains(identity) || receivedConfirmations.contains(identity);
+        return outstandingConfirmations.contains(identity);
     }
 
     public boolean accept(Identity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser {
