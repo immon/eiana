@@ -97,7 +97,6 @@ public class GuardedAdminDomainServiceBean extends AdminFinderServiceBean<IDomai
 
     public List<IDomainVO> findDomains(Criterion criteria) {
         isUserInRole();
-        CheckTool.checkNull(criteria, "criteria");
         List<IDomainVO> domainVOs = new ArrayList<IDomainVO>();
         for (Domain domain : domainManager.find(criteria))
             domainVOs.add(ToVOConverter.toSimpleDomainVO(domain));
@@ -110,13 +109,11 @@ public class GuardedAdminDomainServiceBean extends AdminFinderServiceBean<IDomai
 
     public int count(Criterion criteria) {
         isUserInRole();
-        CheckTool.checkNull(criteria, "criteria");
         return domainManager.count(criteria);
     }
 
     public List<IDomainVO> find(Criterion criteria, int offset, int limit) {
         isUserInRole();
-        CheckTool.checkNull(criteria, "criteria");
         List<IDomainVO> domainVOs = new ArrayList<IDomainVO>();
         for (Domain domain : domainManager.find(criteria, offset, limit))
             domainVOs.add(ToVOConverter.toSimpleDomainVO(domain));
