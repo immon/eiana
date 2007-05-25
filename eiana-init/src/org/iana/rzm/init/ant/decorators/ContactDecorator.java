@@ -52,6 +52,8 @@ public class ContactDecorator {
     }
 
     public void setOrganization(String organization) {
+        String name = this.contact.getName();
+        if (name == null || name.trim().length() == 0) this.contact.setName(organization);
         this.contact.setOrganization(organization);
     }
 
