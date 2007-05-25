@@ -111,19 +111,16 @@ public class MailsProcessingActionTest {
     }
 
     @AfterClass
-        public void cleanUp() throws Exception {
-        try {
-            transactionManager.deleteTransaction(domainTrId);
-        } finally {
-            processDAO.close();
-        }
-        try {
-            transactionManager.deleteTransaction(recTrId);
-        } finally {
-            processDAO.close();
-        }
-        for (RZMUser user : users)
+    public void cleanUp() throws Exception {
+        for (Transaction trans : transactionManager.findAll())
+            try {
+                transactionManager.deleteTransaction(trans);
+            } finally {
+                processDAO.close();
+            }
+        for (RZMUser user : userManager.findAll())
             userManager.delete(user);
-        domainManager.delete(domain);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 }

@@ -33,7 +33,7 @@ import java.io.*;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test
+@Test(sequential = true, groups = "excluded")
 public class MailsProcessorTest {
     private PlatformTransactionManager txManager;
     private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
@@ -231,20 +231,24 @@ public class MailsProcessorTest {
 
     @AfterClass
     public void cleanUp() throws Exception {
+        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            List<ProcessInstance> processInstances = processDAO.findAll();
-            for (ProcessInstance processInstance : processInstances)
+            for (ProcessInstance processInstance : processDAO.findAll())
                 processDAO.delete(processInstance);
+            for (RZMUser user : userManager.findAll())
+                userManager.delete(user);
+            for (Domain domain : domainManager.findAll())
+                domainManager.delete(domain.getName());
+            for (Notification notif : notificationManager.findAll())
+                notificationManager.delete(notif);
+            txManager.commit(txStatus);
+        } catch (Exception e) {
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
+            throw e;
         } finally {
             processDAO.close();
         }
-        for (RZMUser user : users)
-            userManager.delete(user);
-        for (String name : domainNames)
-            domainManager.delete(name);
-        List<Notification> notifList = notificationManager.findAll();
-        for (Notification notif : notifList)
-            notificationManager.delete(notif);
     }
 
     private String loadFromFile(String fileName) throws IOException {

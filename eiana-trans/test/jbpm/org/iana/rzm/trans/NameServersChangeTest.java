@@ -15,7 +15,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class NameServersChangeTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();

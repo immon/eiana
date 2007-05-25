@@ -16,7 +16,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class TransactionManagerTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
@@ -95,8 +95,8 @@ public class TransactionManagerTest {
 
             txManager.commit(txStatus);
         } catch (Exception e) {
-//            if (!txStatus.isCompleted())
-//                txManager.rollback(txStatus);
+            if (!txStatus.isCompleted())
+                txManager.rollback(txStatus);
             throw e;
         } finally {
             processDAO.close();

@@ -104,17 +104,14 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
     @AfterClass
     public void cleanUp() {
         try {
-            List<ProcessInstance> processInstances = processDAO.findAll();
-            for (ProcessInstance processInstance : processInstances)
-                processDAO.delete(processInstance);
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
         } finally {
             processDAO.close();
         }
-
-        domainManager.delete("automatedsplittest");
-        domainManager.delete("impacteddomain-1");
-        domainManager.delete("impacteddomain-2");
-        domainManager.delete("impacteddomain-3");
-        userManager.delete("iana");
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 }

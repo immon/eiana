@@ -19,7 +19,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -57,7 +57,7 @@ public class ProcessDAOTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();

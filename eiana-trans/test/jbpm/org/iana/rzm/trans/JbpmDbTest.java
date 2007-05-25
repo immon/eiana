@@ -10,7 +10,7 @@ import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
@@ -93,7 +93,7 @@ public class JbpmDbTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();

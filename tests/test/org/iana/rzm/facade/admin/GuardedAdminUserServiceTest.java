@@ -169,8 +169,8 @@ public class GuardedAdminUserServiceTest {
 
     @AfterClass
     public void cleanUp() {
-        userManager.delete(user);
-        userManager.delete(wrongUser);
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
     }
 
     private UserVO createTestUser(String userName) {

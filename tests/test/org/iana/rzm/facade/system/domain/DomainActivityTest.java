@@ -46,15 +46,15 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
     @AfterClass
     public void cleanUp() {
         try {
-            List<ProcessInstance> processInstances = processDAO.findAll();
-            for (ProcessInstance processInstance : processInstances)
-                processDAO.delete(processInstance);
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
         } finally {
             processDAO.close();
         }
-
-        domainManager.delete("activitytest");
-        userManager.delete("iana");
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 
     @Test

@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterClass;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -245,19 +246,16 @@ public class GuardedSystemTransactionServiceTest {
 
     @AfterClass
     public void cleanUp() throws Exception {
-        gsts.close();
-        for (Long id : transactionIds)
-            try {
-                transactionManager.deleteTransaction(id);
-            } finally {
-                processDAO.close();
-            }
-
-        for (String name : userLoginNames)
-            userManager.delete(name);
-
-        for (String name : domainNames)
-            domainManager.delete(name);
+        try {
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
+        } finally {
+            processDAO.close();
+        }
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 
     private AuthenticatedUser createUser(String name, SystemRole.SystemType roleType, String roleName) {

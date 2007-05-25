@@ -111,9 +111,7 @@ public class DomainDAOTest {
 
     @AfterClass
     public void destroy() {
-        Domain domain = dao.get("dao.org");
-        if (domain != null) dao.delete(dao.get("dao.org"));
-        domain = dao.get("second.org");
-        if (domain != null) dao.delete(dao.get("second.org"));
+        for (Domain domain : dao.findAll())
+            dao.delete(domain);
     }
 }

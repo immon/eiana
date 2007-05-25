@@ -120,8 +120,8 @@ public class GuardedSystemDomainServiceTest {
 
     @AfterClass
     public void cleanUp() {
-        domainDAO.delete(domain1);
-        domainDAO.delete(domain2);
+        for (Domain domain : domainDAO.findAll())
+            domainDAO.delete(domain);
     }
 
     private UserVO generateUser() {

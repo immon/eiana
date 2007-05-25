@@ -73,7 +73,7 @@ public class RoleManagerBeanTest {
 
     @AfterClass
     public void cleanUp() {
-        roleManager.delete(firstRole);
-        roleManager.delete(secondRole);
+        for (Role role : roleManager.findAll())
+            roleManager.delete(role);
     }
 }
