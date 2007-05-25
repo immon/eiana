@@ -9,6 +9,13 @@
 
     <!-- facade services configuration -->
 
+    <bean id="adminTransactionLoggerInterceptor" class="org.iana.rzm.facade.admin.AdminTransactionLoggerInterceptor">
+        <constructor-arg index="0" ref="transactionManagerBean"/>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
     <bean id="GuardedAdminTransactionServiceBean"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
@@ -30,13 +37,18 @@
                 <ref bean="jbpmInterceptor"/>
             </list>
         </property>
+        <property name="postInterceptors">
+            <list>
+                <ref bean="adminTransactionLoggerInterceptor"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="GuardedAdminTransactionServiceTarget" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="transactionManagerBean"/>
-        <constructor-arg index="2" ref="domainManager"/>
+        <constructor-arg index="2" ref="domainManager" />
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -286,7 +298,7 @@
         </property>
     </bean>
 
-    <bean id="transactionLoggerInterceptor" class="org.iana.rzm.facade.system.trans.TransactionLoggerInterceptor">
+    <bean id="systemTransactionLoggerInterceptor" class="org.iana.rzm.facade.system.trans.SystemTransactionLoggerInterceptor">
         <constructor-arg index="0" ref="transactionManagerBean"/>
         <property name="logger">
             <ref bean="logger"/>
@@ -316,7 +328,7 @@
         </property>
         <property name="postInterceptors">
             <list>
-                <ref bean="transactionLoggerInterceptor"/>
+                <ref bean="systemTransactionLoggerInterceptor"/>
             </list>
         </property>
     </bean>

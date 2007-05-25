@@ -1,9 +1,10 @@
-package org.iana.rzm.facade.system.trans;
+package org.iana.rzm.facade.admin;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.log.Logger;
 import org.iana.rzm.trans.TransactionManager;
 
@@ -13,17 +14,19 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-public class TransactionLoggerInterceptor implements MethodInterceptor {
-    private static final String creationMethodsArray[] = {"createTransactions"};
+public class AdminTransactionLoggerInterceptor implements MethodInterceptor {
+    private static final String creationMethodsArray[] = {
+            "createDomainCreationTransaction", "createDomainModificationTransaction"};
     private static final String changeMethodsArray[] = {
-            "acceptTransaction", "rejectTransaction", "transitTransaction"};
+            "acceptTransaction", "rejectTransaction", "transitTransaction",
+            "transitTransactionToState", "setTransactionTicketId", "deleteTransaction"};
     private static final List<String> creationMethods = Arrays.asList(creationMethodsArray);
     private static final List<String> changeMethods = Arrays.asList(changeMethodsArray);
 
     private TransactionManager transactionManager;
     private Logger logger;
 
-    public TransactionLoggerInterceptor(TransactionManager transactionManager) {
+    public AdminTransactionLoggerInterceptor(TransactionManager transactionManager) {
         CheckTool.checkNull(transactionManager, "transaction manager");
         this.transactionManager = transactionManager;
     }
@@ -33,7 +36,7 @@ public class TransactionLoggerInterceptor implements MethodInterceptor {
     }
 
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        SystemTransactionService service = (SystemTransactionService) methodInvocation.getThis();
+        AdminTransactionService service = (AdminTransactionService) methodInvocation.getThis();
         if (creationMethods.contains(methodInvocation.getMethod().getName()))
             return logObjectCreation(methodInvocation, service, "sessionId");
         else if (changeMethods.contains(methodInvocation.getMethod().getName()))
@@ -42,20 +45,18 @@ public class TransactionLoggerInterceptor implements MethodInterceptor {
             return methodInvocation.proceed();
     }
 
-    private Object logObjectCreation(MethodInvocation methodInvocation, SystemTransactionService service,
+    private Object logObjectCreation(MethodInvocation methodInvocation, AdminTransactionService service,
                                      String sessionId) throws Throwable {
         Object result = methodInvocation.proceed();
-        List<TransactionVO> trans = (List<TransactionVO>) result;
-        for (TransactionVO tran : trans) {
-            long transactionId = tran.getTransactionID();
-            TrackedObject trackedObject = transactionManager.getTransaction(transactionId);
-            logger.addLog(service.getUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
-                    trackedObject, methodInvocation.getArguments());
-        }
+        TransactionVO trans = (TransactionVO) result;
+        long transactionId = trans.getTransactionID();
+        TrackedObject trackedObject = transactionManager.getTransaction(transactionId);
+        logger.addLog(service.getUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
+                trackedObject, methodInvocation.getArguments());
         return result;
     }
 
-    private Object logObjectChange(MethodInvocation methodInvocation, SystemTransactionService service,
+    private Object logObjectChange(MethodInvocation methodInvocation, AdminTransactionService service,
                                    String sessionId) throws Throwable {
         Long transactionId = (Long) methodInvocation.getArguments()[0];
         TrackedObject oldObject = transactionManager.getTransaction(transactionId);
