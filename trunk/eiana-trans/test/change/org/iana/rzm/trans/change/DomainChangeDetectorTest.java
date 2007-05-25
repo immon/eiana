@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -175,7 +176,9 @@ public class DomainChangeDetectorTest {
     }
 
     final static Contact createContact(String prefix) {
+        Random generator = new Random();
         Contact ret = new Contact();
+        ret.setObjId(generator.nextLong());
         ret.setName(prefix + "-name");
         ret.setEmails(createStringList(prefix+"-email@post.org", 1));
         ret.setPhoneNumbers(createStringList(prefix+"-phone", 1));
