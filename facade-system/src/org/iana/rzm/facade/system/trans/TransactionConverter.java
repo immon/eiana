@@ -84,7 +84,7 @@ public class TransactionConverter {
             if (fieldChanges.containsKey("techContacts")) {
                 TransactionActionVO action = new TransactionActionVO();
                 action.setName(TransactionActionVO.MODIFY_TC);
-                CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
+                CollectionChange adminChange = (CollectionChange) fieldChanges.get("techContacts");
                 action.addChange(toChangeVO("techContacts", adminChange));
                 actions.add(action);
             }
