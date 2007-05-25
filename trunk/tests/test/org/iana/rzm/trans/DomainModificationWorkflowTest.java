@@ -35,7 +35,7 @@ import java.util.Set;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"tests", "jbpm", "UpdateDomain"})
+@Test(sequential=true, groups = {"test", "jbpm", "UpdateDomain"})
 public class DomainModificationWorkflowTest {
     ApplicationContext appCtx;
     TransactionManager transMgr;

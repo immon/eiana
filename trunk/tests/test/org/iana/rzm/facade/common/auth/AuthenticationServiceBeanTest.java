@@ -18,7 +18,7 @@ import java.io.*;
  * @author Marcin Zajaczkowski
  * @author Patrycja Wegrzynowicz
  */
-@Test(sequential = true, groups = {"tests", "authenticationManager"})
+@Test(sequential = true, groups = {"test", "authenticationManager"})
 public class AuthenticationServiceBeanTest {
 
     private UserManager userManager;

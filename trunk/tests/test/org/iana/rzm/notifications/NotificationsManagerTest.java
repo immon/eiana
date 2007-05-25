@@ -19,7 +19,7 @@ import java.util.*;
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"tests", "notificationManager"})
+@Test(sequential=true, groups = {"test", "notificationManager"})
 public class NotificationsManagerTest {
     private PlatformTransactionManager txMgr;
     private UserManager                userManager;

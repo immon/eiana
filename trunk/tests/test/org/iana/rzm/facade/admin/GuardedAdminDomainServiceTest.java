@@ -105,12 +105,13 @@ public class GuardedAdminDomainServiceTest {
     }
 
     @Test (dependsOnMethods = {"testCount"})
-    public void testFacadeFindDomainByCriteria_Offset_Limit() {
+    public void testFacadeFindDomainByCriteria_Offset_Limit() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
 
         List<IDomainVO> retDomainVOs = gAdminServ.find(new Not(new Equal("name.name", "existno.org")), 0, 1);
-        assert retDomainVOs.size() == 1;
+
+        assert retDomainVOs.size() == 1 : "################# " + retDomainVOs.size();
         assert retDomainVOs.iterator().next().getName().equals(DOMAIN_NAME);
 
         retDomainVOs = gAdminServ.find(new Not(new Equal("name.name", "existno.org")), 1, 1);
@@ -126,7 +127,7 @@ public class GuardedAdminDomainServiceTest {
         gAdminServ.close();
     }
 
-    @Test (dependsOnMethods = {"testFacadeCreateDomain"})
+    @Test (dependsOnMethods = {"testFacadeFindDomainByCriteria_Offset_Limit"})
     public void testFacadeFindDomainByCriteria() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
