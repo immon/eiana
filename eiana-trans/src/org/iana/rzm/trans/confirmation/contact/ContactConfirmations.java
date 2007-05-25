@@ -25,6 +25,9 @@ public class ContactConfirmations extends AbstractConfirmation {
             targetEntity = AbstractConfirmation.class)
     private Set<ContactIdentity> outstandingConfirmations = new HashSet<ContactIdentity>();
 
+    private ContactConfirmations() {
+    }
+
     public ContactConfirmations(Set<ContactIdentity> confirmations) {
         this.outstandingConfirmations.addAll(confirmations);
     }
