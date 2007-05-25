@@ -3,22 +3,21 @@ package org.iana.rzm.trans;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.jbpm.JbpmConfiguration;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterTest;
+
+import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
@@ -31,7 +30,6 @@ public class NameServersChangeTest {
     private TransactionManager transMgr;
     private ProcessDAO processDAO;
     private DomainManager domainManager;
-    private Long testProcessInstanceId;
 
     @BeforeClass
     public void init() throws Exception {
@@ -48,10 +46,13 @@ public class NameServersChangeTest {
         }
     }
 
-    @AfterClass
+    @AfterTest
     public void cleanUp() throws Exception {
         try {
-            transMgr.deleteTransaction(testProcessInstanceId);
+            List<ProcessInstance> pis = processDAO.findAll();
+            for (ProcessInstance pi : pis) {
+                processDAO.delete(pi);
+            }
         } finally {
             processDAO.close();
         }
@@ -79,7 +80,7 @@ public class NameServersChangeTest {
             Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
 
             ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
-            testProcessInstanceId = pi.getId();
+
 
             Token token = pi.getRootToken();
             assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();

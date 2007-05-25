@@ -15,12 +15,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterTest;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
@@ -283,15 +286,23 @@ public class TransactionTest {
         }
     }
 
-    @AfterClass
+    @AfterTest
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            for (Long id : processes)
-                transactionManager.deleteTransaction(id);
-            for (String name : users)
-                userManager.delete(name);
-            domainManager.delete(domain.getName());
+            List<ProcessInstance> pis = processDAO.findAll();
+            for (ProcessInstance pi : pis) {
+                processDAO.delete(pi);
+            }
+            List<RZMUser> users = userManager.findAll();
+            for (RZMUser user : users) {
+                userManager.delete(user);
+            }
+            List<Domain> domains = domainManager.findAll();
+            for (Domain domain : domains) {
+                domainManager.delete(domain);
+            }
+
             txManager.commit(txStatus);
         } catch (Exception e) {
             if (!txStatus.isCompleted())

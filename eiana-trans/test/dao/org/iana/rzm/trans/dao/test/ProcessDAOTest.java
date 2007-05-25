@@ -19,7 +19,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -57,35 +57,31 @@ public class ProcessDAOTest {
         }
     }
 
-    @AfterClass
+    @AfterTest
     public void cleanUp() throws Exception {
         try {
-            for (Long pid : domain1ProcIds) {
-                ProcessInstance pi = processDAO.getProcessInstance(pid);
-                if (pi != null) processDAO.delete(pi);
-            }
-            for (Long pid : domain2ProcIds) {
-                ProcessInstance pi = processDAO.getProcessInstance(pid);
-                if (pi != null) processDAO.delete(pi);
+            List<ProcessInstance> pis = processDAO.findAll();
+            for (ProcessInstance pi : pis) {
+                processDAO.delete(pi);
             }
         } finally {
             processDAO.close();
         }
 
         try {
-            RZMUser user = userDAO.get("user-posys1");
-            if (user != null) userDAO.delete(user);
-            user = userDAO.get("user-posys2");
-            if (user != null) userDAO.delete(user);
+            List<RZMUser> users = userDAO.findAll();
+            for (RZMUser user : users) {
+                userDAO.delete(user);
+            }
         } finally {
             processDAO.close();
         }
 
         try {
-            Domain domain = domainDAO.get("potestdomain1");
-            if (domain!= null) domainDAO.delete(domain);
-            domain = domainDAO.get("potestdomain2");
-            if (domain!= null) domainDAO.delete(domain);
+            List<Domain> domains = domainDAO.findAll();
+            for (Domain domain : domains) {
+                domainDAO.delete(domain);
+            }
         } finally {
             processDAO.close();
         }
