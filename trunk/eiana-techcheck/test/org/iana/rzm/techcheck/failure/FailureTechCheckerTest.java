@@ -153,12 +153,11 @@ public class FailureTechCheckerTest {
 
             host = new Host("z.nic.de");
             host.addIPAddress("194.246.96.1");
-//            host.addIPAddress("2001:628:453:4905::53");
+//            host.addIPAddress("2001:628:453:4905::53");  //wrong
             domain.addNameServer(host);
 
             TechChecker.checkDomain(domain);
 
-            TechChecker.checkDomain(domain);
         } catch (DomainCheckException e) {
             List<ExceptionMessage> errors = e.getErrorsByExceptionType(HostIPSetNotEqualException.class.getSimpleName());
             assert !errors.isEmpty() && errors.size() == 1;
