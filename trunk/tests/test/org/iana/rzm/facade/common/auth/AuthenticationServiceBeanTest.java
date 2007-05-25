@@ -217,9 +217,8 @@ public class AuthenticationServiceBeanTest {
 
     @AfterClass
     public void cleanUp() {
-        userManager.delete(testAdminUser);
-        userManager.delete(testAdminUserWithSecurID);
-        userManager.delete(testWrongPasswordUser);
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
     }
 
     public static String NON_EXIST_LOGIN = "nonExistLogin";

@@ -113,19 +113,16 @@ public class NameServerChangeTransactionTest {
     @AfterClass
     public void cleanUp() {
         gsts.close();
-        for (Long id : transactionIds) {
-            ProcessInstance pi = processDAO.getProcessInstance(id);
-            if (pi != null) processDAO.delete(pi);
+        try {
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
+        } finally {
+            processDAO.close();
         }
-        processDAO.close();
-
-        RZMUser user = userDAO.get(userAc.getObjId());
-        if (user != null) userDAO.delete(user);
-        user = userDAO.get(userTc.getObjId());
-        if (user != null) userDAO.delete(user);
-
-        Domain dom = domainDAO.get(domain.getName());
-        domainDAO.delete(dom);
+        for (RZMUser user : userDAO.findAll())
+            userDAO.delete(user);
+        for (Domain domain : domainDAO.findAll())
+            domainDAO.delete(domain);
     }
 
     private UserVO createUser(String name, SystemRole.SystemType role) {

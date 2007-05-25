@@ -19,7 +19,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
@@ -114,7 +114,7 @@ public class NotificationsReSenderTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() {
         List<RZMUser> users = userManagerBean.findAll();
         for (RZMUser user : users) {

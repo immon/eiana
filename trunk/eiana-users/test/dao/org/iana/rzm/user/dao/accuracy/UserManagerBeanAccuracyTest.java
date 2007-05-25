@@ -148,8 +148,6 @@ public class UserManagerBeanAccuracyTest {
         try {
             for (RZMUser user : userManager.findAll())
                userManager.delete(user);
-            
-            userManager.delete("user-ivan123");
             txMgr.commit(txStatus);
         } catch (Exception e) {
             txMgr.rollback(txStatus);

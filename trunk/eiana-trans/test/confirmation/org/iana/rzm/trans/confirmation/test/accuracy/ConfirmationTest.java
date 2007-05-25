@@ -18,9 +18,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -156,15 +157,20 @@ public class ConfirmationTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            transactionManager.deleteTransaction(transactionId);
-            for (RZMUser user : users)
+            try {
+                for (ProcessInstance pi : processDAO.findAll())
+                    processDAO.delete(pi);
+            } finally {
+                processDAO.close();
+            }
+            for (RZMUser user : userManager.findAll())
                 userManager.delete(user);
-            for (String name : domains)
-                domainManager.delete(name);
+            for (Domain domain : domainManager.findAll())
+                domainManager.delete(domain);
             txManager.commit(txStatus);
         } catch (Exception e) {
             if (!txStatus.isCompleted())

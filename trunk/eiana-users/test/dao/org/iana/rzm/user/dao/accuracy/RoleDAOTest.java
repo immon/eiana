@@ -73,7 +73,7 @@ public class RoleDAOTest {
 
     @AfterClass
     public void cleanUp() {
-        roleDAO.delete(firstRole);
-        roleDAO.delete(secondRole);
+        for (Role role : roleDAO.findAll())
+            roleDAO.delete(role);
     }
 }

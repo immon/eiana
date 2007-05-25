@@ -179,14 +179,15 @@ public class TransitTransactionToStateTest {
 
     @AfterClass
     public void cleanUp() {
-
-        List<ProcessInstance> processInstances = processDAO.findAll();
-        for (ProcessInstance processInstance : processInstances)
-            processDAO.delete(processInstance);
-        processDAO.close();
-
-        domainManager.delete(DOMAIN_NAME);
-
-        userManager.delete(user);
+        try {
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
+        } finally {
+            processDAO.close();
+        }
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 }

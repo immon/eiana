@@ -28,6 +28,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
 
@@ -284,24 +285,16 @@ public class DomainCreationTransactionWorkFlowTest {
 
     @AfterClass
     public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            List<Transaction> transactions = transactionManager.findAll();
-            for (Transaction trans : transactions)
-                transactionManager.deleteTransaction(trans);
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
         } finally {
             processDAO.close();
         }
-        userManager.delete(userAC);
-        userManager.delete(userTC);
-        userManager.delete(userIANA);
-        userManager.delete(userUSDoC);
-        //domainManager.delete(DOMAIN_NAME_BASE + "8");
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 
     private DomainVO getNextDomain() {

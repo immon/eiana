@@ -10,6 +10,7 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.Transaction;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
@@ -67,14 +68,14 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
     @AfterClass
     public void cleanUp() {
         try {
-            List<ProcessInstance> processInstances = processDAO.findAll();
-            for (ProcessInstance processInstance : processInstances)
-                processDAO.delete(processInstance);
+            for (ProcessInstance pi : processDAO.findAll())
+                processDAO.delete(pi);
         } finally {
             processDAO.close();
         }
-
-        domainManager.delete("usersplittest");
-        userManager.delete("iana");
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 }

@@ -185,8 +185,8 @@ public class GuardedAdminDomainServiceTest {
 
     @AfterClass
     public void cleanUp() {
-        userManager.delete(user);
-        userManager.delete(wrongUser);
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
     }
 
     private DomainVO createDomainVO(String name) {

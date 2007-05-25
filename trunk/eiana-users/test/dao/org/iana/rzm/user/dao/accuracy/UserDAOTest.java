@@ -113,7 +113,7 @@ public class UserDAOTest {
 
     @AfterClass
     public void cleanUp() {
-        for(RZMUser user : usersMap)
+        for(RZMUser user : dao.findAll())
             dao.delete(user);
     }
 }

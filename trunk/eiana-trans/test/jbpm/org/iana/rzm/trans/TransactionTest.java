@@ -18,7 +18,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.HashSet;
@@ -286,7 +286,7 @@ public class TransactionTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {

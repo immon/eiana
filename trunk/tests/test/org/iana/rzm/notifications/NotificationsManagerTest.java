@@ -209,18 +209,10 @@ public class NotificationsManagerTest {
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
-            userManager.delete(firstUser);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txMgr.rollback(txStatus);
-            throw e;
-        }
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            notificationManager.deleteNotificationsByAddresse(secondUser);
-            userManager.delete(secondUser);
-            notificationManager.delete(notificationManager.get(emailAdderesseId));
+            for (RZMUser user : userManager.findAll())
+                userManager.delete(user);
+            for (Notification notification : notificationManager.findAll())
+                notificationManager.delete(notification);
             txMgr.commit(txStatus);
         } catch (Exception e) {
             if (!txStatus.isCompleted())
