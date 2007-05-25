@@ -90,7 +90,7 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         isUserInRole();
         List<UserVO> userVOs = new ArrayList<UserVO>();
         for (RZMUser user : this.userManager.find(criteria))
-            userVOs.add(UserConverter.convertSimple(user));
+            userVOs.add(UserConverter.convert(user));
 
         return userVOs;
     }
