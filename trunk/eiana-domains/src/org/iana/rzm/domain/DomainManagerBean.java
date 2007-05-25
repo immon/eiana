@@ -31,12 +31,12 @@ public class DomainManagerBean implements DomainManager {
         return dao.get(id);
     }
 
-    public Domain getCloned(String name) throws CloneNotSupportedException {
+    public Domain getCloned(String name) {
         Domain domain = dao.get(name);
         return domain == null ? null : domain.clone();
     }
 
-    public Domain getCloned(long id) throws CloneNotSupportedException {
+    public Domain getCloned(long id) {
         Domain domain = dao.get(id);
         return domain == null ? null : domain.clone();
     }

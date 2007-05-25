@@ -380,41 +380,45 @@ public class Domain implements TrackedObject, Cloneable {
         this.trackData = trackData;
     }
 
-    public Domain clone() throws CloneNotSupportedException {
-        Domain newDomain = (Domain) super.clone();
+    public Domain clone() {
+        try {
+            Domain newDomain = (Domain) super.clone();
 
-        if (name != null)
-            newDomain.name = (Name) name.clone();
+            if (name != null)
+                newDomain.name = (Name) name.clone();
 
-        List<Host> newHosts = new ArrayList<Host>();
-        if (nameServers != null) {
-            for (Host host : nameServers)
-                newHosts.add((Host) host.clone());
+            List<Host> newHosts = new ArrayList<Host>();
+            if (nameServers != null) {
+                for (Host host : nameServers)
+                    newHosts.add((Host) host.clone());
+            }
+            newDomain.nameServers = newHosts;
+
+            newDomain.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
+            newDomain.adminContacts = copyListOfContacts(adminContacts);
+            newDomain.techContacts = copyListOfContacts(techContacts);
+            if (supportingOrg != null)
+                newDomain.supportingOrg = (Contact) supportingOrg.clone();
+            if (whoisServer != null)
+                newDomain.whoisServer = (Name) whoisServer.clone();
+            newDomain.registryUrl = registryUrl;
+
+            Set<Breakpoint> newBreakpoints = new HashSet<Breakpoint>();
+            if (breakpoints != null) {
+                for (Breakpoint breakpoint : breakpoints)
+                    newBreakpoints.add(breakpoint);
+            }
+            newDomain.breakpoints = newBreakpoints;
+
+            newDomain.specialInstructions = specialInstructions;
+            newDomain.status = status;
+            newDomain.objId = objId;
+            newDomain.openProcesses = openProcesses;
+            newDomain.thirdPartyPendingProcesses = thirdPartyPendingProcesses;
+            return newDomain;
+        } catch (CloneNotSupportedException e) {
+            throw new UnsupportedOperationException(e);
         }
-        newDomain.nameServers = newHosts;
-
-        newDomain.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
-        newDomain.adminContacts = copyListOfContacts(adminContacts);
-        newDomain.techContacts = copyListOfContacts(techContacts);
-        if (supportingOrg != null)
-            newDomain.supportingOrg = (Contact) supportingOrg.clone();
-        if (whoisServer != null)
-            newDomain.whoisServer = (Name) whoisServer.clone();
-        newDomain.registryUrl = registryUrl;
-
-        Set<Breakpoint> newBreakpoints = new HashSet<Breakpoint>();
-        if (breakpoints != null) {
-            for (Breakpoint breakpoint : breakpoints)
-                newBreakpoints.add(breakpoint);
-        }
-        newDomain.breakpoints = newBreakpoints;
-
-        newDomain.specialInstructions = specialInstructions;
-        newDomain.status = status;
-        newDomain.objId = objId;
-        newDomain.openProcesses = openProcesses;
-        newDomain.thirdPartyPendingProcesses = thirdPartyPendingProcesses;
-        return newDomain;
         /*
         Domain domain = null;
         try {

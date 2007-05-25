@@ -19,9 +19,9 @@ public interface DomainManager {
 
     public Domain get(long id);
 
-    public Domain getCloned(String name) throws CloneNotSupportedException;
+    public Domain getCloned(String name);
 
-    public Domain getCloned(long id) throws CloneNotSupportedException;
+    public Domain getCloned(long id);
 
     public void updateOpenProcesses(String name, boolean inc);
 
