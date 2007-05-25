@@ -8,6 +8,10 @@ public class Order {
     private String fieldName;
     private boolean ascending;
 
+    public Order(String fieldName) {
+        this(fieldName, true);    
+    }
+
     public Order(String fieldName, boolean ascending) {
         this.fieldName = fieldName;
         this.ascending = ascending;
