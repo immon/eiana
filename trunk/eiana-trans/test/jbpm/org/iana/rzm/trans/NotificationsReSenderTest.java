@@ -114,7 +114,7 @@ public class NotificationsReSenderTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         List<RZMUser> users = userManagerBean.findAll();
         for (RZMUser user : users) {

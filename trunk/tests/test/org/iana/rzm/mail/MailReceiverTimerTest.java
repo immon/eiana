@@ -57,7 +57,7 @@ public class MailReceiverTimerTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         try {
             List<ProcessInstance> processInstances = processDAO.findAll();

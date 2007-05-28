@@ -57,7 +57,7 @@ public class ProcessDAOTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();

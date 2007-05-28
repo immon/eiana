@@ -177,7 +177,7 @@ public class TransitTransactionToStateTest {
         return newDomain;
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

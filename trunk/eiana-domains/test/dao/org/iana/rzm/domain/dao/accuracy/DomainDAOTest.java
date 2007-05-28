@@ -109,7 +109,7 @@ public class DomainDAOTest {
         dao.delete(dao.get("dao.org"));
     }             
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void destroy() {
         for (Domain domain : dao.findAll())
             dao.delete(domain);

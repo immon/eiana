@@ -178,7 +178,7 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         txMgr.commit(txStatus);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

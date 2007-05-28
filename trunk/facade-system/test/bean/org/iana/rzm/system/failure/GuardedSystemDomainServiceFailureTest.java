@@ -115,7 +115,7 @@ public class GuardedSystemDomainServiceFailureTest {
         DomainVO domainVO = (DomainVO) gsds.getDomain(-1);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for (Domain domain : domainDAO.findAll())
             domainDAO.delete(domain);

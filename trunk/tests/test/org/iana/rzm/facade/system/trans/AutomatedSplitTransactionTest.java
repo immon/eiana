@@ -101,7 +101,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         assert trans != null && trans.size() == 4;
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

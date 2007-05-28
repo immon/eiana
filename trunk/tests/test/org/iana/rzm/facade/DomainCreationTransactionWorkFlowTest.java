@@ -283,7 +283,7 @@ public class DomainCreationTransactionWorkFlowTest {
         createTransaction(getNextDomain(), userIANA);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         try {
             for (ProcessInstance pi : processDAO.findAll())

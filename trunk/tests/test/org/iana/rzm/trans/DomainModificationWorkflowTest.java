@@ -84,7 +84,7 @@ public class DomainModificationWorkflowTest {
         txMgr.commit(txStatus);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         for (String name : userNames)

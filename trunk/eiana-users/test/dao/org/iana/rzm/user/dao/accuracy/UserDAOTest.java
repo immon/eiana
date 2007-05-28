@@ -111,7 +111,7 @@ public class UserDAOTest {
         assert "user-DAOadmin2".equals(user.getLoginName());
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for(RZMUser user : dao.findAll())
             dao.delete(user);

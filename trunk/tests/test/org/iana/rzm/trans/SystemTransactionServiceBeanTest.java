@@ -76,7 +76,7 @@ public class SystemTransactionServiceBeanTest {
         Assert.assertNotNull(list);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         RZMUser user = userManager.get(USER_NAME);
         userManager.delete(user);

@@ -65,7 +65,7 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
         assert trans != null && trans.size() == 2;
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

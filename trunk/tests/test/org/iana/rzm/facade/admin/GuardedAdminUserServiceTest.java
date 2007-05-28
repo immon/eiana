@@ -167,7 +167,7 @@ public class GuardedAdminUserServiceTest {
         gAdminUserServ.close();
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

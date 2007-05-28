@@ -71,7 +71,7 @@ public class RoleManagerBeanTest {
         assert adminRole.getType().equals(AdminRole.AdminType.GOV_OVERSIGHT);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for (Role role : roleManager.findAll())
             roleManager.delete(role);

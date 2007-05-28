@@ -53,7 +53,7 @@ public class CodeValuesRetrieverTest {
         assert cachedValues.size() == 1;
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanup() {
         for (String codeId : new String[]{"code1", "code2"}) {
             Code code = findByCode(codeId);

@@ -215,7 +215,7 @@ public class AuthenticationServiceBeanTest {
         authService.authenticate(pgpMailAuth);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

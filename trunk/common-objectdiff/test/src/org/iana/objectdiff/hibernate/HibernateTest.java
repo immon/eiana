@@ -25,7 +25,7 @@ abstract public class HibernateTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void destroy() {
         if (tx != null) {
             try {
