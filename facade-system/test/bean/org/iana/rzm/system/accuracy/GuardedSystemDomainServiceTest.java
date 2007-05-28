@@ -118,7 +118,7 @@ public class GuardedSystemDomainServiceTest {
         assert domainNames.equals(retrivedNames);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for (Domain domain : domainDAO.findAll())
             domainDAO.delete(domain);

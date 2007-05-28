@@ -110,7 +110,7 @@ public class MailsProcessingActionTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         for (Transaction trans : transactionManager.findAll())
             try {

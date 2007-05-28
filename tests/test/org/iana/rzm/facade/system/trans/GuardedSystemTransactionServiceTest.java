@@ -244,7 +244,7 @@ public class GuardedSystemTransactionServiceTest {
         assert found.size() == 0;
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         try {
             for (ProcessInstance pi : processDAO.findAll())

@@ -260,7 +260,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, workFlowWithNSChangeLog);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

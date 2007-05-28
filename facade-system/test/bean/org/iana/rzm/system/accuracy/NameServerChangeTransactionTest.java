@@ -110,7 +110,7 @@ public class NameServerChangeTransactionTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         gsts.close();
         try {

@@ -92,7 +92,7 @@ public class GuardedSystemDomainServiceStressTest {
         return user;
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         for (Domain domain : domainDAO.findAll())
             domainDAO.delete(domain);

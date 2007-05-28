@@ -142,7 +142,7 @@ public class UserManagerBeanAccuracyTest {
         }
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {

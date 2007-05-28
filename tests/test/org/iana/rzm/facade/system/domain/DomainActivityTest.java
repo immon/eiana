@@ -43,7 +43,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         processDAO.close();
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())
