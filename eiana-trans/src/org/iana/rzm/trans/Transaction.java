@@ -6,7 +6,6 @@ import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.*;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.auth.Identity;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
@@ -214,4 +213,10 @@ public class Transaction implements TrackedObject {
             throw new UserNotAuthorizedToTransit();
     }
 
+    public synchronized void transitTo(String stateName) throws TransactionException {
+        Token token = pi.getRootToken();
+        Node destinationNode = pi.getProcessDefinition().getNode(stateName);
+        if (destinationNode == null) throw new TransactionException("no such state: " + stateName);
+        token.setNode(destinationNode);
+    }
 }

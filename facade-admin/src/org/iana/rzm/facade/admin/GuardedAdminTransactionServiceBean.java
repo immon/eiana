@@ -5,10 +5,8 @@ import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
@@ -31,17 +29,6 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     private static Set<Role> allowedRoles = new HashSet<Role>();
     static {
         allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
-    }
-
-    private static List<String> states = new ArrayList<String>();
-    static {
-        states.add("PENDING_CONTACT_CONFIRMATION");
-        states.add("PENDING_IMPACTED_PARTIES");
-        states.add("PENDING_IANA_CONFIRMATION");
-        states.add("PENDING_EXT_APPROVAL");
-        states.add("PENDING_USDOC_APPROVAL");
-        states.add("PENDING_ZONE_INSERTION");
-        states.add("PENDING_ZONE_PUBLICATION");
     }
 
     TransactionManager transactionManager;
@@ -93,30 +80,9 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     public void transitTransactionToState(long id, String targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException {
         isUserInRole();
         try {
-            if (!states.contains(targetStateName)) throw new NoSuchStateException(targetStateName);
-
-            Transaction transaction = transactionManager.getTransaction(id);
-
-            if (((targetStateName.equals("PENDING_ZONE_INSERTION")) ||
-                    (targetStateName.equals("PENDING_ZONE_PUBLICATION"))) &&
-                    !(transaction.getDomainChange().getFieldChanges().containsKey("nameServers"))) throw new StateUnreachableException(targetStateName);
-
-            String currentState = transaction.getState().getName().toString();
-
-            int currentStateIndex = states.indexOf(currentState);
-            int difference = states.indexOf(targetStateName) - currentStateIndex;
-
-            if (difference < 0) {
-                for(int i = currentStateIndex; i > (difference + currentStateIndex);) {
-                    transaction = transactionManager.getTransaction(id);
-                    transaction.transit(this.getRZMUser(), "admin-" + states.get(--i));
-                }
-            } else {
-                for(int i = currentStateIndex; i < (difference + currentStateIndex);) {
-                    transaction = transactionManager.getTransaction(id);
-                    transaction.transit(this.getRZMUser(), "admin-" + states.get(++i));
-                }
-            }
+            Transaction transaction = transactionManager.getTransaction(id); 
+            transaction.transitTo(targetStateName);
+            
         } catch (NoSuchTransactionException e) {
             throw new NoTransactionException(e.getId());
         } catch (TransactionException e) {
