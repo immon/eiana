@@ -22,8 +22,6 @@ import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.jbpm.graph.exe.ProcessInstance;
 
-import java.util.List;
-
 /**
  * @author: Piotr Tkaczyk
  */
@@ -70,7 +68,7 @@ public class TransitTransactionToStateTest {
 
     }
 
-    @Test (expectedExceptions = NoSuchStateException.class)
+    @Test (expectedExceptions = FacadeTransactionException.class)
     public void testTransitTransactionToWrongState() throws Exception {
 
         try {
@@ -81,21 +79,8 @@ public class TransitTransactionToStateTest {
 
             gAdminTransactionServ.transitTransactionToState(transactionID, "WRONG_STATE");
 
-        } catch (NoSuchStateException e) {
-            assert e.getStateName().equals("WRONG_STATE");
-            throw e;
-        }
-    }
-
-    @Test (expectedExceptions = StateUnreachableException.class)
-    public void testTransitTransactionToUnreachableState() throws Exception {
-        try {
-            createDomainModificationProcess();
-            TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-            assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
-            gAdminTransactionServ.transitTransactionToState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
-        } catch(StateUnreachableException e) {
-            assert e.getStateName().equals("PENDING_ZONE_PUBLICATION");
+        } catch (FacadeTransactionException e) {
+            assert e.getMessage().equals("no such state: WRONG_STATE");
             throw e;
         }
     }
