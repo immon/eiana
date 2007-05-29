@@ -8,6 +8,7 @@ import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 import org.iana.notifications.Notification;
 import org.iana.notifications.TemplateContent;
+import org.iana.notifications.EmailAddressee;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ContactConfirmationNotifier extends ProcessStateNotifier {
 
             TemplateContent templateContent = new TemplateContent(notification, values);
             Notification notification = new Notification();
-            notification.addAddressee(contact);
+            notification.addAddressee(new EmailAddressee(contact.getEmail(), contact.getName()));
             notification.setContent(templateContent);
 
             ret.add(notification);
