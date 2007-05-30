@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+    	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    	<title>IANA  Root Zone Maintenance</title>
+	    <link rel="stylesheet" type="text/css" media="screen" href="../../css/master.css" />
+    </head>
+    <span jwcid="$content$">
+        <span jwcid="shell">
+            <body jwcid="@Body">
+                <div id="main">
+                    <div id="header" class="no-navigation">
+                        <div style="float: left;">
+                            <p><span jwcid="@Image" image="asset:background" style="margin: 45px 0 0 0;">
+                                    <img src="../../images/iana-logo.png" alt="IANA" style="margin: 45px 0 0 0;" />
+                                </span>
+                            </p>
+                        </div>
+                       <div class="links" align="right" style="clear: both;">
+                            <span jwcid="loggedIn">
+					            <span jwcid="loggedInTitle"/>
+						        <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:logout">Logout</a>
+						        &nbsp;|&nbsp;
+    						    <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:changePassword">Change Password</a>
+	    					    &nbsp;|&nbsp;
+		    				    <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:homePage">Home</a>
+                                &nbsp;|&nbsp;
+                                <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:userAccess">Users Access</a>
+			    		    </span>
+                        </div>
+                    </div>
+                    <span jwcid="@RenderBody"/>
+                </div>
+                <span jwcid="ib@contrib:InspectorButton" disabled="ognl:isDebugDisabled"/>
+            </body>
+        </span>
+   </span>
+</html>

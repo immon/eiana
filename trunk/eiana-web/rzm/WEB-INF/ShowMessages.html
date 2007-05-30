@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/master.css"/>
+    </head>
+    <body jwcid="$content$">
+        <span jwcid="@If" condition="ognl:page.warningMessage">
+            <div style="margin: 10px 0 10px 0; padding: 10px; display: block;" class="warningMessageBox">
+                <strong>
+                    <span jwcid="@Insert" value="ognl:page.warningMessage" class="warningMessage">
+                        --- Warning message ---
+                    </span>
+                </strong>
+            </div>
+        </span>
+        <span jwcid="@If" condition="ognl:page.infoMessage">
+            <div style="margin: 10px 0 10px 0; padding: 10px; display: block;" class="infoMessageBox">
+                <strong>
+                    <span jwcid="@Insert" value="ognl:page.infoMessage" class="infoMessage">
+                        --- Info message ---
+                    </span>
+                </strong>
+            </div>
+        </span>
+    </body>
+</html>

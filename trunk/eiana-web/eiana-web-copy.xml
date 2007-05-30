@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_eiana-web">
+
+    <dirname property="module.eiana-web.basedir" file="${ant.file.module_eiana-web}"/>
+
+    <target name="copyBeforeRun">
+        <copy file="../conf/spring/services-config.xml"
+              todir="${module.eiana-web.basedir}/rzm/WEB-INF/" overwrite="true"/>
+
+        <!--<copy file="../conf/hibernate/log4j.properties"-->
+              <!--todir="${module.eiana-web.basedir}/classes/log4j.properties"/>        -->
+    </target>
+
+</project>
