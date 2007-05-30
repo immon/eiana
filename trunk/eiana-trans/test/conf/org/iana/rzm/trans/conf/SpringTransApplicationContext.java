@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SpringTransApplicationContext {
+    public static final String CONFIG_FILE_NAME = "eiana-trans-spring.xml";
 
     private static SpringTransApplicationContext instance;
     private ApplicationContext appCtx;
@@ -22,7 +23,7 @@ public class SpringTransApplicationContext {
 
     public ApplicationContext getContext() {
         if(appCtx == null)
-            appCtx = new ClassPathXmlApplicationContext("eiana-trans-spring.xml");
+            appCtx = new ClassPathXmlApplicationContext(CONFIG_FILE_NAME);
         return appCtx;
     }
 }
