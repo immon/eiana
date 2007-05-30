@@ -1,7 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.facade.common.TrackDataVO;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -33,7 +33,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
         return ticketID;
     }
 
-    void setTicketID(Long ticketID) {
+    public void setTicketID(Long ticketID) {
         this.ticketID = ticketID;
     }
 
