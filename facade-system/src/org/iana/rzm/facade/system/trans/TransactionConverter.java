@@ -3,6 +3,9 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.TransactionStateLogEntry;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.auth.Identity;
 import org.iana.objectdiff.*;
 
 import java.util.*;
@@ -52,6 +55,8 @@ public class TransactionConverter {
         ret.setCreatedBy(trans.getCreatedBy());
         ret.setModified(trans.getModified());
         ret.setModifiedBy(trans.getModifiedBy());
+
+        ret.setTokens(getTokens(trans));
 
         return ret;
     }
@@ -210,5 +215,17 @@ public class TransactionConverter {
         for (TransactionStateLogEntry entry : stateLog)
             stateLogVO.add(toTransactionStateLogEntryVO(entry));
         return stateLogVO;
+    }
+
+    private static List<String> getTokens(Transaction transaction) {
+        List<String> result = new ArrayList<String>();
+        ContactConfirmations cc = transaction.getTransactionData().getContactConfirmations();
+        if (cc != null)
+            for (Identity identity : cc.getUsersAbleToAccept())
+                if (identity instanceof ContactIdentity) {
+                    ContactIdentity contactIdentity = (ContactIdentity) identity;
+                    result.add(contactIdentity.getToken());
+                }
+        return result;
     }
 }

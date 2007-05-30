@@ -323,10 +323,36 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     }
 
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        acceptTransaction(id, "");
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.accept(getRZMUser());
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (UserAlreadyAccepted e) {
+            // do nothing
+        } catch (UserConfirmationNotExpected e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        rejectTransaction(id, "");
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.reject(getRZMUser());
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (UserAlreadyAccepted e) {
+            // do nothing
+        } catch (UserConfirmationNotExpected e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
     }
 }

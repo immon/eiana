@@ -20,6 +20,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private List<TransactionStateLogEntryVO> stateLog;
     private Timestamp start;
     private Timestamp end;
+    private List<String> tokens;
 
     public Long getTransactionID() {
         return transactionID;
@@ -129,5 +130,13 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public Long getObjId() {
         return transactionID;
+    }
+
+    List<String> getTokens() {
+        return tokens;
+    }
+
+    void setTokens(List<String> tokens) {
+        this.tokens = tokens;
     }
 }
