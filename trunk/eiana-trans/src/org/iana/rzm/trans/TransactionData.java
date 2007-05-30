@@ -8,8 +8,6 @@ import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.auth.Identity;
-import org.iana.rzm.auth.AbstractIdentity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
