@@ -12,23 +12,17 @@ import org.iana.rzm.facade.system.trans.SystemTransactionService;
 import org.iana.rzm.facade.system.trans.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
 
@@ -39,11 +33,7 @@ import java.util.List;
 public class DomainCreationTransactionWorkFlowTest {
     private final static String DOMAIN_NAME_BASE = "createtranstest";
 
-    private PlatformTransactionManager txManager;
-    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
-
     private ProcessDAO processDAO;
-    private TransactionManager transactionManager;
     private UserManager userManager;
     private DomainManager domainManager;
 
@@ -57,13 +47,11 @@ public class DomainCreationTransactionWorkFlowTest {
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        txManager = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userManager = (UserManager) appCtx.getBean("userManager");
         gats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
         gsds = (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        transactionManager = (TransactionManager) appCtx.getBean("transactionManagerBean");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
 
         userAC = new RZMUser();
@@ -139,7 +127,7 @@ public class DomainCreationTransactionWorkFlowTest {
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
-    public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
+    public void testACCEPT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
@@ -150,7 +138,7 @@ public class DomainCreationTransactionWorkFlowTest {
             {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}
     };
 
-    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
+    @Test(dependsOnMethods = {"testACCEPT_CONTACT_CONFIRMATION"})
     public void testREJECT_IMPACTED_PARTIES() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);

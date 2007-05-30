@@ -10,6 +10,7 @@ public class TransactionStateVO implements Serializable {
 
     public static enum Name {
         PENDING_CONTACT_CONFIRMATION,
+        DECISION_PENDING_IMPACTED_PARTIES,
         PENDING_IMPACTED_PARTIES,
         PENDING_IANA_CONFIRMATION,
         PENDING_EVALUATION,
@@ -19,6 +20,7 @@ public class TransactionStateVO implements Serializable {
         PENDING_USDOC_APPROVAL,
         PENDING_IANA_CHECK,
         PENDING_DATABASE_INSERTION,
+        USDOC_APPROVED,
         PENDING_ZONE_INSERTION,
         PENDING_ZONE_PUBLICATION,
         COMPLETED,

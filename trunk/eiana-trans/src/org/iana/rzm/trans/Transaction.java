@@ -1,12 +1,16 @@
 package org.iana.rzm.trans;
 
 import org.iana.objectdiff.ObjectChange;
+import org.iana.rzm.auth.Identity;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.confirmation.*;
-import org.iana.rzm.auth.Identity;
+import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
+import org.iana.rzm.trans.confirmation.Confirmation;
+import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
+import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -97,10 +101,6 @@ public class Transaction implements TrackedObject {
         return getTransactionData().getStateLog();
     }
 
-    private void addStateLogEntry(TransactionState state, String userName) {
-        getTransactionData().addStateLogEntry(new TransactionStateLogEntry(state, userName));
-    }
-
     public Timestamp getStart() {
         Timestamp result = new Timestamp(pi.getStart().getTime());
         // when process instance is persisted in db, nanos are missing
@@ -156,14 +156,6 @@ public class Transaction implements TrackedObject {
         getTrackData().setModifiedBy(userName);
     }
 
-    private void signal(String transitionName, Identity user) {
-        TransactionState prevState = getState();
-        pi.signal(transitionName);
-        TransactionState state = getState();
-        prevState.setEnd(state.getStart());
-        addStateLogEntry(prevState, user.getName());
-    }
-
     public synchronized void accept(Identity user) throws TransactionException {
         try {
             Token token = pi.getRootToken();
@@ -177,7 +169,9 @@ public class Transaction implements TrackedObject {
             if (confirmation == null) throw new UserConfirmationNotExpected();
             if (!confirmation.accept(user))
                 return;
-            signal(StateTransition.ACCEPT, user);
+            if (user instanceof RZMUser)
+                getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+            pi.signal(StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
         } catch (NotAcceptableByUser e) {
@@ -196,7 +190,9 @@ public class Transaction implements TrackedObject {
 
         if (confirmation == null) throw new UserConfirmationNotExpected();
         if (confirmation.isAcceptableBy(user)) {
-            signal(StateTransition.REJECT, user);
+            if (user instanceof RZMUser)
+                getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+            pi.signal(StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
     }
@@ -208,15 +204,19 @@ public class Transaction implements TrackedObject {
         TransitionConfirmations tc = getTransactionData().getTransitionConfirmations(node.getName());
         if (tc == null) throw new UserNotAuthorizedToTransit();
         if (tc.isAcceptableBy(transitionName, user)) {
-            signal(transitionName, user);
+            if (user instanceof RZMUser)
+                getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+            pi.signal(transitionName);
         } else
             throw new UserNotAuthorizedToTransit();
     }
 
-    public synchronized void transitTo(String stateName) throws TransactionException {
+    public synchronized void transitTo(Identity user, String stateName) throws TransactionException {
         Token token = pi.getRootToken();
         Node destinationNode = pi.getProcessDefinition().getNode(stateName);
         if (destinationNode == null) throw new TransactionException("no such state: " + stateName);
+        if (user instanceof RZMUser)
+            getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
         token.setNode(destinationNode);
     }
 }

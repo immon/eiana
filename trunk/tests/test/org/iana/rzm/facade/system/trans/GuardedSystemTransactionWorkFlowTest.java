@@ -1,23 +1,17 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
@@ -35,13 +29,6 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     @BeforeClass
     public void init() {
-
-        appCtx = SpringApplicationContext.getInstance().getContext();
-        userManager = (UserManager) appCtx.getBean("userManager");
-        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
-
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
         userAC.setFirstName("ACuser");
@@ -105,8 +92,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     }
 
-    private static final String [][] REJECT_CONTACT_CONFIRMATIONLog = {
-        {"gstsignaluser", "PENDING_CONTACT_CONFIRMATION"}
+    private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
@@ -116,8 +103,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
     }
 
-    private static final String [][] CLOSE_CONTACT_CONFIRMATIONLog = {
-        {"gstsignaliana", "PENDING_CONTACT_CONFIRMATION"}
+    private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
@@ -127,8 +114,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, CLOSE_CONTACT_CONFIRMATIONLog);
     }
 
-    private static final String [][] ACCEPT_CONTAC_CONFIRMATIONLog = {
-        {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"}
+    private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
@@ -138,10 +127,12 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
-    private static final String [][] REJECT_IMPACTED_PARTIESLog = {
-        {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//        {"gstsignaluser", "PENDING_IMPACTED_PARTIES"} todo
-        {"gstsignaliana", "PENDING_IANA_CONFIRMATION"}
+    private static final String[][] REJECT_IMPACTED_PARTIESLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+//        {"gstsignaluser", "PENDING_IMPACTED_PARTIES", todo
+            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"}
     };
 //    todo
 //    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
@@ -152,9 +143,11 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //        checkStateLog(userAC, transId, REJECT_IMPACTED_PARTIESLog);
 //    }
 
-    private static final String [][] CLOSE_IMPACTED_PARTIESLog = {
-        {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-        {"gstsignaliana", "PENDING_IMPACTED_PARTIES"}
+    private static final String[][] CLOSE_IMPACTED_PARTIESLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+            {"gstsignaliana", "PENDING_IMPACTED_PARTIES"}
     };
 //    todo
 //    @Test(dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
@@ -165,11 +158,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //        checkStateLog(userAC, transId, CLOSE_IMPACTED_PARTIESLog);
 //    }
 
-    private static final String [][] REJECT_EXT_APPROVALLog = {
-        {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//        {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
-        {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-        {"gstsignaliana", "PENDING_EXT_APPROVAL"}
+    private static final String[][] REJECT_EXT_APPROVALLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+//        {"gstsignaluser", "PENDING_IMPACTED_PARTIES", todo
+            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
+            {"gstsignaliana", "PENDING_EXT_APPROVAL"}
     };
 
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
@@ -182,9 +177,11 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, REJECT_EXT_APPROVALLog);
     }
 
-    private static final String [][] CLOSE_EXT_APPROVALLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},  todo
+    private static final String[][] CLOSE_EXT_APPROVALLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES",  todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"}
     };
@@ -199,9 +196,11 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, CLOSE_EXT_APPROVALLog);
     }
 
-    private static final String [][] REJECT_USDOC_APPROVALLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
+    private static final String[][] REJECT_USDOC_APPROVALLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES", todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
@@ -218,12 +217,16 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, REJECT_USDOC_APPROVALLog);
     }
 
-    private static final String [][] workFlowNoNSChangeLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},  todo
+    private static final String[][] workFlowNoNSChangeLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES",  todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"},
-            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
+            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
+            {"SYSTEM", "USDOC_APPROVED"},
+            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
@@ -237,14 +240,18 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, workFlowNoNSChangeLog);
     }
 
-    private static final String [][] workFlowWithNSChangeLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
+    private static final String[][] workFlowWithNSChangeLog = {
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "DECISION_PENDING_IMPACTED_PARTIES"},
+//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES", todo
             {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
             {"gstsignaliana", "PENDING_EXT_APPROVAL"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
+            {"SYSTEM", "USDOC_APPROVED"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
+            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
@@ -260,7 +267,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userAC, transId, workFlowWithNSChangeLog);
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

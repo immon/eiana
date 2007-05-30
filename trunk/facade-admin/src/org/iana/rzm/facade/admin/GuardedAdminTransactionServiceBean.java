@@ -81,7 +81,7 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         isUserInRole();
         try {
             Transaction transaction = transactionManager.getTransaction(id); 
-            transaction.transitTo(targetStateName);
+            transaction.transitTo(getRZMUser(), targetStateName);
             
         } catch (NoSuchTransactionException e) {
             throw new NoTransactionException(e.getId());

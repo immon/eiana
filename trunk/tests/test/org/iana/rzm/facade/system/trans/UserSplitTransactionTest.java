@@ -10,11 +10,9 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.Transaction;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
-import java.util.Arrays;
 
 /**
  * It tests a split performed on a user demand.
@@ -29,7 +27,6 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
 
     @BeforeClass
     public void init() {
-        super.init();
         iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
         iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(iana);
