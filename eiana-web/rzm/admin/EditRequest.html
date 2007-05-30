@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@AdminBorder">
+            <span jwcid="@ShowError"/>
+            <span jwcid="@ShowMessages"/>
+            <h4>Current Details </h4>
+            <span class="grey">The following request data is currently in the IANA database: </span>
+            <span jwcid="requestSummary">
+                <div class="mainBox" style="margin-bottom: 40px;">
+                    <table width="95%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
+                        <tr>
+                            <td height="20" valign="top"><strong>Reference</strong></td>
+                            <td height="20" valign="top"><strong>Domain</strong></td>
+                            <td height="20" valign="top"><strong>Lodged</strong></td>
+                            <td height="20" valign="top"><strong>Created By</strong></td>
+                            <td height="20" valign="top" ><strong>Current Status </strong></td>
+                            <td height="20" valign="top" ><strong>Last Change </strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"><img src="../../images/spacer.png" width="1" height="10"></td>
+                        </tr>
+                        <tr>
+                            <td>111</td>
+                            <td>.US</td>
+                            <td>9 Sep, 2006</td>
+                            <td>Admin</td>
+                            <td>Pending Contact Comfirmation</td>
+                            <td>6 Jan, 2007</td>
+                        </tr>
+                    </table>
+                </div>
+            </span>
+            <h4>New Details </h4>
+            <div class="mainBox" style="margin: 20px 0 0 0;">
+                <span jwcid="@GrayContainer">
+                    <form name="editRequest" jwcid="editRequest">
+                        <input jwcid="@Hidden" value="ognl:page.tokenSynchronizer.token"/>
+                        <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
+                            <tr>
+                                <td width="29%" valign="top" class="label green"><span jwcid="@FieldLabel" field="component:rt">RT Number</span></td>
+                                <td width="71%" align="right" valign="top"><input jwcid="rt" type="text" name="rt" class="field" onkeypress="return submitOnEnter(event);"/>
+                            </tr>
+                            <tr>
+                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:states">State</span></td>
+                                <td align="right" valign="top"><span jwcid="states" class="field" onkeypress="return submitOnEnter(event);"></span></tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <div class="buttonStyle" style="float: right;">
+			                            <b class="left"></b>
+                                        <b class="right" style="width: 130px;">
+                                            <a href="#" jwcid="save"  class="button" style="padding-left: 13px;">Save Changes &gt;</a>
+                                        </b>
+                                    </div>
+                                    <div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+					                    <b class="leftBlue"></b>
+					                    <b class="right" style="width: 130px;">
+                                            <a href="#" jwcid="cancel"  class="buttonBlue" style="padding-left: 8px;"> &lt; Revert Changes </a>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </span>
+            </div>
+        </body>
+    </span>
+</html>
