@@ -8,6 +8,8 @@ import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.auth.Identity;
+import org.iana.rzm.auth.AbstractIdentity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -49,6 +51,8 @@ public class TransactionData {
     private List<TransactionStateLogEntry> stateLog = new ArrayList<TransactionStateLogEntry>();
     @Embedded
     protected TrackData trackData = new TrackData();
+    @Basic
+    private String identityName;
 
     public Long getObjId() {
         return objId;
@@ -137,5 +141,13 @@ public class TransactionData {
 
     public void setContactConfirmations(ContactConfirmations contactConfirmations) {
         this.contactConfirmations = contactConfirmations;
+    }
+
+    public String getIdentityName() {
+        return identityName;
+    }
+
+    public void setIdentityName(String identityName) {
+        this.identityName = identityName;
     }
 }

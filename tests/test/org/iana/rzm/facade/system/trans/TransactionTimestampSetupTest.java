@@ -6,7 +6,6 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.HostVO;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterClass;
@@ -24,7 +23,6 @@ public class TransactionTimestampSetupTest extends CommonGuardedSystemTransactio
 
     @BeforeClass
     public void init() {
-        super.init();
         iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
         iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(iana);

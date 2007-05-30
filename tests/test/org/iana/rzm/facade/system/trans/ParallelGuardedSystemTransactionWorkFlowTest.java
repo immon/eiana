@@ -1,29 +1,20 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.ContactVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -32,8 +23,6 @@ import java.util.ArrayList;
 @Test(sequential = true, groups = {"facade-system", "ParallelGuardedSystemTransactionWorkFlowTest"})
 public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
 
-    PlatformTransactionManager txMgr;
-    TransactionDefinition txDef = new DefaultTransactionDefinition();
     RZMUser userAC, userTC, userIANA, userUSDoC;
     IDomainVO firstModificationVO, secondModificationVO;
     Domain domain;
@@ -42,14 +31,6 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
     @BeforeClass
     public void init() {
-
-        appCtx = SpringApplicationContext.getInstance().getContext();
-        userManager = (UserManager) appCtx.getBean("userManager");
-        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
-
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
         userAC.setFirstName("ACuser");
@@ -130,12 +111,8 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
     @Test (dependsOnMethods = {"testParallelRun1"})
     public void testParallelRun2() throws Exception {
-
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        Domain retDomain = domainManager.get(DOMAIN_NAME);
-        firstModificationVO = ToVOConverter.toDomainVO(retDomain);
-        secondModificationVO = ToVOConverter.toDomainVO(retDomain);
-        txMgr.commit(txStatus);
+        firstModificationVO = getDomain(DOMAIN_NAME, userAC);
+        secondModificationVO = getDomain(DOMAIN_NAME, userAC);
 
         ContactVO firstContactVO = ToVOConverter.toContactVO(new Contact("firstTechContact"));
         ContactVO secondContactVO = ToVOConverter.toContactVO(new Contact("secondTechContact"));
@@ -160,22 +137,27 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.6
 
-        txStatus = txMgr.getTransaction(txDef);
-        retDomain = domainManager.get(DOMAIN_NAME);
+        IDomainVO retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
-        List<Contact> contactsList = new ArrayList<Contact>();
-        contactsList.add(new Contact("firstTechContact"));
-        assert contactsList.equals(retDomain.getTechContacts());
-        txMgr.commit(txStatus);
+        Set<ContactVO> retContacts = new TreeSet<ContactVO>(contactVOComparator);
+        retContacts.addAll(retDomain.getTechContacts());
+        assert retContacts.size() == 2;
+        Iterator<ContactVO> retContactsIterator = retContacts.iterator();
+        assert "firstTechContact".equals(retContactsIterator.next().getName());
+        assert "tech".equals(retContactsIterator.next().getName());
 
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, secTransId);                                //2.6
 
-        txStatus = txMgr.getTransaction(txDef);
-        retDomain = domainManager.get(DOMAIN_NAME);
+        retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
-        contactsList.add(new Contact("secondTechContact"));
-        assert contactsList.equals(retDomain.getTechContacts());
-        txMgr.commit(txStatus);
+        retContacts = new TreeSet<ContactVO>(contactVOComparator);
+        retContacts.addAll(retDomain.getTechContacts());
+        assert retContacts.size() == 3;
+        retContactsIterator = retContacts.iterator();
+        assert "firstTechContact".equals(retContactsIterator.next().getName());
+        assert "secondTechContact".equals(retContactsIterator.next().getName());
+        assert "tech".equals(retContactsIterator.next().getName());
+
     }
 
     @AfterClass (alwaysRun = true)
@@ -190,5 +172,14 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())
             domainManager.delete(domain.getName());
+    }
+
+    private static final ContactVOComparator contactVOComparator = new ContactVOComparator();
+
+    static class ContactVOComparator implements Comparator<ContactVO> {
+        public int compare(ContactVO o1, ContactVO o2) {
+            if (o1 == null) return -1;
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 }

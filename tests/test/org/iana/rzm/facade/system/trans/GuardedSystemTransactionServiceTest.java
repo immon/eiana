@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -47,9 +48,6 @@ public class GuardedSystemTransactionServiceTest {
     private ProcessDAO processDAO;
     private TransactionVO transaction, transaction1;
     private AuthenticatedUser userAc, userTc, userAc1;
-    private List<String> userLoginNames = new ArrayList<String>();
-    private List<Long> transactionIds = new ArrayList<Long>();
-    private List<String> domainNames = new ArrayList<String>();
 
     @BeforeClass
     public void init() throws Exception {
@@ -76,7 +74,6 @@ public class GuardedSystemTransactionServiceTest {
         gsts.setUser(userAc);
         domain.setRegistryUrl("http://www.registry.url");
         transaction = gsts.createTransactions(domain, false).get(0);
-        transactionIds.add(transaction.getTransactionID());
         assert transaction != null;
 
         TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
@@ -87,7 +84,6 @@ public class GuardedSystemTransactionServiceTest {
         gsts.setUser(userAc1);
         domain1.setRegistryUrl("http://www.registry.url");
         transaction1 = gsts.createTransactions(domain1, false).get(0);
-        transactionIds.add(transaction1.getTransactionID());
         assert transaction1 != null;
 
         loadedTransaction = gsts.getTransaction(transaction1.getTransactionID());
@@ -116,15 +112,22 @@ public class GuardedSystemTransactionServiceTest {
     @Test(dependsOnMethods = "testPerformTransactionTechnicalCheck")
     public void testAcceptTransaction() throws Exception {
         gsts.setUser(userAc);
-        gsts.acceptTransaction(transaction.getTransactionID());
+
+        transaction = gsts.getTransaction(transaction.getTransactionID());
+        List<String> tokens = transaction.getTokens();
+        assert tokens.size() == 2;
+        Iterator<String> tokenIterator = tokens.iterator();
+
+        gsts.acceptTransaction(transaction.getTransactionID(), tokenIterator.next());
         transaction = gsts.getTransaction(transaction.getTransactionID());
         assert transaction != null;
         assert transaction.getState() != null;
         assert transaction.getState().getName() != null;
         assert "PENDING_CONTACT_CONFIRMATION".equals(transaction.getState().getName().toString());
-        
+
         gsts.setUser(userTc);
-        gsts.acceptTransaction(transaction.getTransactionID());
+
+        gsts.acceptTransaction(transaction.getTransactionID(), tokenIterator.next());
         transaction = gsts.getTransaction(transaction.getTransactionID());
         assert transaction != null;
         assert transaction.getState() != null;
@@ -144,9 +147,10 @@ public class GuardedSystemTransactionServiceTest {
     public void testRejectTransaction() throws Exception {
         domain.setRegistryUrl("http://www.registry.url.new");
         TransactionVO transactionToReject = gsts.createTransactions(domain, false).get(0);
-        transactionIds.add(transactionToReject.getTransactionID());
         gsts.setUser(userTc);
-        gsts.rejectTransaction(transactionToReject.getTransactionID());
+        List<String> tokens = transactionToReject.getTokens();
+        assert tokens.size() > 0;
+        gsts.rejectTransaction(transactionToReject.getTransactionID(), tokens.iterator().next());
         transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
         assert transactionToReject != null;
         assert transactionToReject.getState() != null;
@@ -269,7 +273,6 @@ public class GuardedSystemTransactionServiceTest {
         user.setSecurID(false);
         user.addRole(new SystemRole(roleType, roleName, true, false));
         userManager.create(user);
-        userLoginNames.add(user.getLoginName());
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user));
         return testAuthUser.getAuthUser();
     }
@@ -321,7 +324,6 @@ public class GuardedSystemTransactionServiceTest {
     private IDomainVO createDomain(String name) throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
         Domain domain = setupDomain(name);
         domainManager.create(domain);
-        domainNames.add(name);
         return ToVOConverter.toDomainVO(domain);
     }
 

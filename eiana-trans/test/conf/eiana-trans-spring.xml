@@ -147,7 +147,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="testTransactionManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="testTransactionManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.trans.TestTransactionManager</value>

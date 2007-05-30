@@ -13,8 +13,6 @@ import org.iana.rzm.domain.Host;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.jbpm.graph.exe.ProcessInstance;
 
-import java.util.List;
-
 /**
  * Tests domain 'state' attribute which says whether or not
  * there is a transaction in progress for a given domain.
@@ -29,7 +27,6 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
 
     @BeforeClass
     public void init() {
-        super.init();
         iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
         iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(iana);

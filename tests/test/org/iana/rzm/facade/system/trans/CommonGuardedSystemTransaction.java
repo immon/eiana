@@ -1,20 +1,22 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.domain.*;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.notifications.NotificationManager;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.trans.TransactionManager;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,25 +24,19 @@ import java.util.List;
  */
 
 public abstract class CommonGuardedSystemTransaction {
+    protected ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
+    protected ProcessDAO processDAO = (ProcessDAO) appCtx.getBean("processDAO");
+    protected UserManager userManager = (UserManager) appCtx.getBean("userManager");
+    protected DomainManager domainManager = (DomainManager) appCtx.getBean("domainManager");
+    protected NotificationManager notificationManagerBean =
+            (NotificationManager) appCtx.getBean("NotificationManagerBean");
+    protected TransactionManager transactionManagerBean =
+            (TransactionManager) appCtx.getBean("transactionManagerBean");
+    protected SystemTransactionService gsts =
+            (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+    protected SystemDomainService gsds =
+            (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
 
-    protected ApplicationContext appCtx;
-
-    protected ProcessDAO processDAO;
-    protected UserManager userManager;
-    protected DomainManager domainManager;
-
-    protected SystemTransactionService gsts;
-    protected SystemDomainService gsds;
-
-    protected void init() {
-        appCtx = SpringApplicationContext.getInstance().getContext();
-        userManager = (UserManager) appCtx.getBean("userManager");
-        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
-        gsds = (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
-    }
-   
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);     //iana
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
@@ -100,9 +96,22 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.rejectTransaction(transId);
+        TransactionVO trans = gsts.getTransaction(transId);
+        List<String> tokens = trans.getTokens();
+        assert tokens.size() > 0;
+        gsts.rejectTransaction(transId, tokens.iterator().next());
         assert isTransactionInDesiredState("REJECTED", transId);
         gsts.close();
+    }
+
+    protected void rejectPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser user, long transId) throws Exception {
+        setGSTSAuthUser(user); //userAC
+        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
+        try {
+            gsts.rejectTransaction(transId, "0");
+        } finally {
+            gsts.close();
+        }
     }
 
     protected void closeEXT_APPROVAL(RZMUser user, long transId) throws Exception {
@@ -155,23 +164,37 @@ public abstract class CommonGuardedSystemTransaction {
 
     protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
         setGSTSAuthUser(firstUser); //userAC
+        TransactionVO trans = gsts.getTransaction(transId);
+        List<String> tokens = trans.getTokens();
+        assert tokens.size() == 2;
+        Iterator<String> tokenIterator = tokens.iterator();
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId);
+        gsts.acceptTransaction(transId, tokenIterator.next());
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
         gsts.close();
         setGSTSAuthUser(secondUser); //userTC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId);
+        gsts.acceptTransaction(transId, tokenIterator.next());
 //        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId); todo
         assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
         gsts.close();
+    }
+
+    protected void acceptPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
+        setGSTSAuthUser(firstUser); //userAC
+        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
+        try {
+            gsts.acceptTransaction(transId, "0");
+        } finally {
+            gsts.close();
+        }
     }
 
     protected Domain createDomain(String name) {
         Domain newDomain = new Domain(name);
         newDomain.setSupportingOrg(new Contact("supportOrg"));
         newDomain.addTechContact(new Contact("tech"));
-        newDomain.addAdminContact(new Contact("tech"));
+        newDomain.addAdminContact(new Contact("admin"));
         return newDomain;
     }
 

@@ -14,7 +14,6 @@ import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * It tests an automated splitting of transaction in case of name server change
@@ -29,10 +28,6 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
 
     @BeforeClass
     public void init() {
-        super.init();
-
-        //cleanUp();
-
         iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
         iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(iana);

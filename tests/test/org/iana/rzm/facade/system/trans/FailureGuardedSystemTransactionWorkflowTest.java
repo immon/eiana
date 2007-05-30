@@ -31,7 +31,6 @@ import java.util.List;
 public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSystemTransaction{
 
     private RZMUser userAC, userACWrong, userTC, userIANA, userUSDoC;
-    private Domain domain;
     private IDomainVO domainVO;
 
     final static String DOMAIN_NAME = "gstsfailuretest.org";
@@ -39,8 +38,6 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
 
     @BeforeClass
     public void init() {
-        super.init();
-
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
         userAC.setFirstName("ACuser");
@@ -82,7 +79,7 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
         userManager.create(userACWrong);
 
 
-        domain = createDomain(DOMAIN_NAME);
+        Domain domain = createDomain(DOMAIN_NAME);
         domain.addNameServer(setupFirstHost("pr1"));
         domain.addNameServer(setupSecondHost("pr2"));
         domainManager.create(domain);
@@ -103,7 +100,7 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
     @Test (expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_REJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        rejectPENDING_CONTACT_CONFIRMATION(userACWrong, transId);
+        rejectPENDING_CONTACT_CONFIRMATIONWrongToken(userACWrong, transId);
     }
 
     @Test (expectedExceptions = {AccessDeniedException.class})
@@ -115,7 +112,7 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
     @Test (expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_ACCEPT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userACWrong, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATIONWrongToken(userACWrong, userTC, transId);
     }
 
 //    @Test (expectedExceptions = {AccessDeniedException.class})
