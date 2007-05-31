@@ -8,9 +8,14 @@
         <event type='node-leave'>
             <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateLogger">
                 <systemStates>
+                    <element>FIRST_NSLINK_CHANGE_DECISION</element>
                     <element>PENDING_TECH_CHECK</element>
-                    <element>DECISION_PENDING_IMPACTED_PARTIES</element>
-                    <element>USDOC_APPROVAL</element>
+                    <element>MODIFICATIONS_IN_CONTACT_DECISION</element>
+                    <element>NS_SHARED_GLUE_CHANGE_DECISION</element>
+                    <element>MATCHES_SI_BREAKPOINT_DECISION</element>
+                    <element>REDEL_FLAG_SET_DECISION</element>
+                    <element>SECOND_NSLINK_CHANGE_DECISION</element>
+                    <element>NS_CHANGE_DECISION</element>
                     <element>PENDING_DATABASE_INSERTION</element>
                 </systemStates>
                 <contactStates>
