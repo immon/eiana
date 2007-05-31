@@ -1,162 +1,153 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-trans" default="compile.module.eiana-trans">
-    <dirname property="module.eiana-trans.basedir" file="${ant.file.module_eiana-trans}"/>
-
-
-    <property name="compiler.args.eiana-trans" value="${compiler.args}"/>
-
-    <property name="eiana-trans.output.dir"
-              value="${module.eiana-trans.basedir}/../build/classes/production/eiana-trans"/>
-    <property name="eiana-trans.testoutput.dir"
-              value="${module.eiana-trans.basedir}/../build/classes/test/eiana-trans"/>
-
-    <path id="eiana-trans.module.bootclasspath">
-        <!-- Paths to be included in compilation bootclasspath -->
-    </path>
-
-    <path id="eiana-trans.module.classpath">
-        <pathelement location="${eiana-domains.output.dir}"/>
-        <pathelement location="${eiana-domains.testoutput.dir}"/>
-        <pathelement location="${eiana-util.output.dir}"/>
-        <pathelement location="${eiana-util.testoutput.dir}"/>
-        <path refid="library.jbpm.classpath"/>
-        <path refid="library.javaee.classpath"/>
-        <path refid="library.hibernate.classpath"/>
-        <path refid="library.spring.classpath"/>
-        <path refid="library.testng-5.5-jdk15.classpath"/>
-        <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar"/>
-        <pathelement location="${integration-rt.output.dir}"/>
-        <pathelement location="${integration-rt.testoutput.dir}"/>
-        <pathelement location="${module.eiana-trans.basedir}/../lib/spring-modules/spring-modules-jbpm31.jar"/>
-        <path refid="library.apache-commons.classpath"/>
-        <pathelement location="${eiana-users.output.dir}"/>
-        <pathelement location="${eiana-users.testoutput.dir}"/>
-        <pathelement location="${eiana-notifications.output.dir}"/>
-        <pathelement location="${eiana-notifications.testoutput.dir}"/>
-        <path refid="library.nask-commons.classpath"/>
-        <pathelement location="${common-objectdiff.output.dir}"/>
-        <pathelement location="${common-objectdiff.testoutput.dir}"/>
-        <pathelement location="${common-criteria.output.dir}"/>
-        <pathelement location="${common-criteria.testoutput.dir}"/>
-        <pathelement location="${common-dao.output.dir}"/>
-        <pathelement location="${common-dao.testoutput.dir}"/>
-        <pathelement location="${module.eiana-trans.basedir}/../lib/spring/spring-aspects.jar"/>
-        <pathelement location="${eiana-techcheck.output.dir}"/>
-        <pathelement location="${eiana-techcheck.testoutput.dir}"/>
-        <pathelement location="${common-test.output.dir}"/>
-        <pathelement location="${common-test.testoutput.dir}"/>
-        <path refid="library.junit.classpath"/>
-    </path>
-
-
-    <patternset id="excluded.from.module.eiana-trans">
-        <patternset refid="ignored.files"/>
-    </patternset>
-
-    <patternset id="excluded.from.compilation.eiana-trans">
-        <patternset refid="excluded.from.module.eiana-trans"/>
-    </patternset>
-
-    <path id="eiana-trans.module.sourcepath">
-        <dirset dir="${module.eiana-trans.basedir}">
-            <include name="etc/processes"/>
-            <include name="src"/>
-        </dirset>
-    </path>
-
-    <path id="eiana-trans.module.test.sourcepath">
-        <dirset dir="${module.eiana-trans.basedir}">
-            <include name="test/change"/>
-            <include name="test/conf"/>
-            <include name="test/confirmation"/>
-            <include name="test/dao"/>
-            <include name="test/etc/processes"/>
-            <include name="test/hibernate"/>
-            <include name="test/jbpm"/>
-            <include name="test/manager"/>
-        </dirset>
-    </path>
-
-
-    <target name="compile.module.eiana-trans"
-            depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests"
-            description="Compile module eiana-trans"/>
-
-    <target name="compile.module.eiana-trans.production"
-            depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.common-dao,compile.module.eiana-techcheck,compile.module.common-test"
-            description="Compile module eiana-trans; production classes">
-        <mkdir dir="${eiana-trans.output.dir}"/>
-        <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
-               memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.eiana-trans}"/>
-            <bootclasspath refid="eiana-trans.module.bootclasspath"/>
-            <classpath refid="eiana-trans.module.classpath"/>
-            <src refid="eiana-trans.module.sourcepath"/>
-            <patternset refid="excluded.from.compilation.eiana-trans"/>
-        </javac>
-
-        <copy todir="${eiana-trans.output.dir}">
-            <fileset dir="${module.eiana-trans.basedir}/etc/processes">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/src">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="compile.module.eiana-trans.tests" depends="compile.module.eiana-trans.production"
-            description="compile module eiana-trans; test classes" unless="skip.tests">
-        <mkdir dir="${eiana-trans.testoutput.dir}"/>
-        <javac destdir="${eiana-trans.testoutput.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.eiana-trans}"/>
-            <classpath refid="eiana-trans.module.classpath"/>
-            <classpath location="${eiana-trans.output.dir}"/>
-            <src refid="eiana-trans.module.test.sourcepath"/>
-            <patternset refid="excluded.from.compilation.eiana-trans"/>
-        </javac>
-
-        <copy todir="${eiana-trans.testoutput.dir}">
-            <fileset dir="${module.eiana-trans.basedir}/test/change">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/conf">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/confirmation">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/dao">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/etc/processes">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/hibernate">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/jbpm">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-trans.basedir}/test/manager">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="clean.module.eiana-trans" description="cleanup module">
-        <delete dir="${eiana-trans.output.dir}"/>
-        <delete dir="${eiana-trans.testoutput.dir}"/>
-    </target>
+  <dirname property="module.eiana-trans.basedir" file="${ant.file.module_eiana-trans}"/>
+  
+  
+  <property name="compiler.args.eiana-trans" value="${compiler.args}"/>
+  
+  <property name="eiana-trans.output.dir" value="${module.eiana-trans.basedir}/../build/classes/production/eiana-trans"/>
+  <property name="eiana-trans.testoutput.dir" value="${module.eiana-trans.basedir}/../build/classes/test/eiana-trans"/>
+  
+  <path id="eiana-trans.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-trans.module.classpath">
+    <pathelement location="${eiana-domains.output.dir}"/>
+    <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.jbpm.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <pathelement location="${module.eiana-trans.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar"/>
+    <pathelement location="${integration-rt.output.dir}"/>
+    <pathelement location="${integration-rt.testoutput.dir}"/>
+    <pathelement location="${module.eiana-trans.basedir}/../lib/spring-modules/spring-modules-jbpm31.jar"/>
+    <path refid="library.apache-commons.classpath"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${common-objectdiff.output.dir}"/>
+    <pathelement location="${common-objectdiff.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <pathelement location="${common-dao.output.dir}"/>
+    <pathelement location="${common-dao.testoutput.dir}"/>
+    <pathelement location="${module.eiana-trans.basedir}/../lib/spring/spring-aspects.jar"/>
+    <pathelement location="${eiana-techcheck.output.dir}"/>
+    <pathelement location="${eiana-techcheck.testoutput.dir}"/>
+    <pathelement location="${common-test.output.dir}"/>
+    <pathelement location="${common-test.testoutput.dir}"/>
+    <path refid="library.junit.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-trans">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-trans">
+    <patternset refid="excluded.from.module.eiana-trans"/>
+  </patternset>
+  
+  <path id="eiana-trans.module.sourcepath">
+    <dirset dir="${module.eiana-trans.basedir}">
+      <include name="etc/processes"/>
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="eiana-trans.module.test.sourcepath">
+    <dirset dir="${module.eiana-trans.basedir}">
+      <include name="test/change"/>
+      <include name="test/conf"/>
+      <include name="test/confirmation"/>
+      <include name="test/dao"/>
+      <include name="test/etc/processes"/>
+      <include name="test/hibernate"/>
+      <include name="test/jbpm"/>
+      <include name="test/manager"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
+  
+  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.common-dao,compile.module.eiana-techcheck,compile.module.common-test" description="Compile module eiana-trans; production classes">
+    <mkdir dir="${eiana-trans.output.dir}"/>
+    <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-trans}"/>
+      <bootclasspath refid="eiana-trans.module.bootclasspath"/>
+      <classpath refid="eiana-trans.module.classpath"/>
+      <src refid="eiana-trans.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-trans"/>
+    </javac>
+    
+    <copy todir="${eiana-trans.output.dir}">
+      <fileset dir="${module.eiana-trans.basedir}/etc/processes">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-trans.tests" depends="compile.module.eiana-trans.production" description="compile module eiana-trans; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-trans.testoutput.dir}"/>
+    <javac destdir="${eiana-trans.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-trans}"/>
+      <classpath refid="eiana-trans.module.classpath"/>
+      <classpath location="${eiana-trans.output.dir}"/>
+      <src refid="eiana-trans.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-trans"/>
+    </javac>
+    
+    <copy todir="${eiana-trans.testoutput.dir}">
+      <fileset dir="${module.eiana-trans.basedir}/test/change">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/conf">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/confirmation">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/etc/processes">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/jbpm">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-trans.basedir}/test/manager">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.eiana-trans" description="cleanup module">
+    <delete dir="${eiana-trans.output.dir}"/>
+    <delete dir="${eiana-trans.testoutput.dir}"/>
+  </target>
 </project>
