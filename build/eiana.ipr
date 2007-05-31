@@ -15,11 +15,11 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
     </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
@@ -280,6 +280,7 @@
       <module fileurl="file://$PROJECT_DIR$/../common-objectdiff/common-objectdiff.iml" filepath="$PROJECT_DIR$/../common-objectdiff/common-objectdiff.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-pgp/common-pgp.iml" filepath="$PROJECT_DIR$/../common-pgp/common-pgp.iml" />
       <module fileurl="file://$PROJECT_DIR$/../common-templates/common-templates.iml" filepath="$PROJECT_DIR$/../common-templates/common-templates.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../common-test/common-test.iml" filepath="$PROJECT_DIR$/../common-test/common-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/../conf/conf.iml" filepath="$PROJECT_DIR$/../conf/conf.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-dns/eiana-dns.iml" filepath="$PROJECT_DIR$/../eiana-dns/eiana-dns.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-domains/eiana-domains.iml" filepath="$PROJECT_DIR$/../eiana-domains/eiana-domains.iml" />
@@ -484,6 +485,13 @@
         <root url="jar://$PROJECT_DIR$/../lib/xerces/xercesImpl.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/xerces/xercesSamples.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/xerces/xml-apis.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="junit">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/junit/junit-4.3.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
