@@ -1,8 +1,7 @@
-
 <process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
-        <transition to="PENDING_CONTACT_CONFIRMATION"></transition>
+        <transition to="FIRST_NSLINK_CHANGE_DECISION"></transition>
     </start-state>
 
     <super-state name='LOGGED_STATE'>
@@ -11,7 +10,7 @@
                 <systemStates>
                     <element>PENDING_TECH_CHECK</element>
                     <element>DECISION_PENDING_IMPACTED_PARTIES</element>
-                    <element>USDOC_APPROVED</element>
+                    <element>USDOC_APPROVAL</element>
                     <element>PENDING_DATABASE_INSERTION</element>
                 </systemStates>
                 <contactStates>
@@ -19,6 +18,42 @@
                 </contactStates>
             </action>
         </event>
+
+        <decision name="FIRST_NSLINK_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.NSLinkChangeDecision"/>
+            <transition name="yes" to="PENDING_TECH_CHECK"/>
+            <transition name="no" to="PENDING_CONTACT_CONFIRMATION"/>
+        </decision>
+
+        <decision name="PENDING_TECH_CHECK">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
+                <doTest>false</doTest>
+            </handler>
+            <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
+            <transition name="error" to="PENDING_TECH_CHECK_REMEDY"/>
+        </decision>
+
+        <state name="PENDING_TECH_CHECK_REMEDY">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy"/>
+            </event>
+            <timer name="7d-time-out" duedate='7 days'>
+                <!--todo-->
+            </timer>
+            <timer name="14d-time-out" duedate='14 days'>
+                <!--todo-->
+            </timer>
+            <timer name="21d-time-out" duedate='21 days'>
+                <!--todo-->
+            </timer>
+            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
+            <transition name="do-test" to="PENDING_TECH_CHECK"/>
+            <transition name="reject" to="REJECTED"/>
+            <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="PENDING_CONTACT_CONFIRMATION"/>
+            <transition name="admin-reject" to="REJECTED"/>
+        </state>
 
         <state name="PENDING_CONTACT_CONFIRMATION">
             <event type='node-enter'>
@@ -31,64 +66,65 @@
                 <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationNotifier">
                     <notification>contact-confirmation</notification>
                 </action>
-    <!--
-                <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
-                <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">
-                    <notification>contact-confirmation</notification>
-                </action>
-    -->
+                <!--
+                            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
+                            <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">
+                                <notification>contact-confirmation</notification>
+                            </action>
+                -->
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
             </event>
             <timer name="7d-time-out" duedate='7 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
-                    <!--<period>23</period>-->
-                    <!--<notification>contact-confirmation-remainder</notification>-->
+                <!--<period>23</period>-->
+                <!--<notification>contact-confirmation-remainder</notification>-->
                 <!--</action>-->
             </timer>
             <timer name="14d-time-out" duedate='14 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
-                    <!--<period>16</period>-->
-                    <!--<notification>contact-confirmation-remainder</notification>-->
+                <!--<period>16</period>-->
+                <!--<notification>contact-confirmation-remainder</notification>-->
                 <!--</action>-->
             </timer>
             <timer name="21d-time-out" duedate='21 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
-                    <!--<period>9</period>-->
-                    <!--<notification>contact-confirmation-remainder</notification>-->
+                <!--<period>9</period>-->
+                <!--<notification>contact-confirmation-remainder</notification>-->
                 <!--</action>-->
             </timer>
             <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
-            <transition name="accept" to="PENDING_TECH_CHECK"/>
+            <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION"/>
             <transition name="reject" to="REJECTED"/>
-            <transition name="admin-accept" to="PENDING_TECH_CHECK"/>
-            <transition name="admin-reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="MODIFICATIONS_IN_CONTACT_DECISION"/>
+            <transition name="admin-reject" to="REJECTED"/>
         </state>
 
-        <decision name="PENDING_TECH_CHECK">
-            <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckDecision">
-                <test>true</test>
-            </handler>
-            <transition name="no-test" to="DECISION_PENDING_IMPACTED_PARTIES"/>
-            <transition name="test-ok" to="DECISION_PENDING_IMPACTED_PARTIES"/>
-            <!--
-                    todo: future feature
-                    <transition name="test-failed" to="PENDING_TECH_CHECK_REMEDY"/>
-            -->
+        <decision name="MODIFICATIONS_IN_CONTACT_DECISION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.ModificationsInContactDecision"/>
+            <transition name="yes" to="PENDING_SOENDORSEMENT"/>
+            <transition name="no" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
         </decision>
 
-        <decision name="DECISION_PENDING_IMPACTED_PARTIES">
-            <handler class="org.iana.rzm.trans.jbpm.handlers.PendingImpactedPartiesDecision">
-                <test>true</test>
-            </handler>
-            <transition name="pending" to="PENDING_IMPACTED_PARTIES"/>
-            <transition name="iana" to="PENDING_IANA_CONFIRMATION"/>
-            <!--
-                    todo: future feature
-                    <transition name="test-failed" to="PENDING_TECH_CHECK_REMEDY"/>
-            -->
+        <state name="PENDING_SOENDORSEMENT">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.SOEndorsement"/>
+            </event>
+            <transition name="accept" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
+            <transition name="reject" to="REJECTED"/>
+            <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
+            <transition name="admin-reject" to="REJECTED"/>
+        </state>
+
+        <decision name="NS_SHARED_GLUE_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.NSSharedGlueChangeDecision"/>
+            <transition name="yes" to="PENDING_IMPACTED_PARTIES"/>
+            <transition name="no" to="PENDING_MANUAL_REVIEW"/>
         </decision>
 
         <state name="PENDING_IMPACTED_PARTIES">
@@ -130,30 +166,36 @@
                 </action>
             </timer>
             <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
-            <transition name="accept" to="PENDING_IANA_CONFIRMATION"/>
+            <transition name="accept" to="PENDING_MANUAL_REVIEW"/>
             <transition name="reject" to="REJECTED"/>
-            <transition name="admin-accept" to="PENDING_IANA_CONFIRMATION"/>
-            <transition name="admin-reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="PENDING_MANUAL_REVIEW"/>
+            <transition name="admin-reject" to="REJECTED"/>
         </state>
 
-        <state name="PENDING_IANA_CONFIRMATION">
-            <event type='node-enter'>
+        <state name="PENDING_MANUAL_REVIEW">
+            <event type="node-enter">
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
                     </roles>
                 </action>
+                <action class="org.iana.rzm.trans.jbpm.handlers.ManualReviewAction"/>
             </event>
-            <timer name="3d-time-out" duedate='3 days' transition='alert'></timer>
-            <transition name="normal" to="PENDING_EXT_APPROVAL"/>
-            <transition name="alert" to="EXCEPTION"/>
-            <transition name="admin-accept" to="PENDING_EXT_APPROVAL"/>
-            <!--
-                    todo: future feature
-                    <transition name="redelegation" to="PENDING_EVALUATION"/>
-            -->
+            <transition name="accept" to="MATCHES_SI_BREAKPOINT_DECISION"/>
+            <transition name="reject" to="REJECTED"/>
+            <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="MATCHES_SI_BREAKPOINT_DECISION"/>
+            <transition name="admin-reject" to="REJECTED"/>
         </state>
+
+        <decision name="MATCHES_SI_BREAKPOINT_DECISION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.MatchesSIBreakpointDecision"/>
+            <transition name="yes" to="PENDING_EXT_APPROVAL"/>
+            <transition name="no" to="REDEL_FLAG_SET_DECISION"/>
+        </decision>
 
         <state name="PENDING_EXT_APPROVAL">
             <event type='node-enter'>
@@ -169,12 +211,84 @@
                 </action>
             </event>
             <timer name="30d-time-out" duedate='30 days' transition='alert'></timer>
-            <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="accept" to="REDEL_FLAG_SET_DECISION"/>
             <transition name="reject" to="REJECTED"/>
-            <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="REDEL_FLAG_SET_DECISION"/>
             <transition name="admin-reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
             <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <decision name="REDEL_FLAG_SET_DECISION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.RedelFlagSetDecision"/>
+            <transition name="yes" to="PENDING_EVALUATION"/>
+            <transition name="no" to="PENDING_IANA_CHECK"/>
+        </decision>
+
+        <state name="PENDING_EVALUATION">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.PendingEvaluation"/>
+            </event>
+            <transition name="accept" to="PENDING_IANA_CHECK"/>
+            <transition name="reject" to="REJECTED"/>
+            <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+        </state>
+
+        <state name="PENDING_IANA_CHECK">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                    <roles>
+                        <element>IANA</element>
+                    </roles>
+                </action>
+            </event>
+            <timer name="3d-time-out" duedate='3 days' transition='alert'></timer>
+            <transition name="accept" to="SECOND_NSLINK_CHANGE_DECISION"/>
+            <transition name="reject" to="REJECTED"/>
+            <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="alert" to="EXCEPTION"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="admin-reject" to="REJECTED"/>
+        </state>
+
+        <decision name="SECOND_NSLINK_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.NSLinkChangeDecision"/>
+            >
+            <transition name="yes" to="PENDING_SUPP_TECH_CHECK"/>
+            <transition name="no" to="PENDING_USDOC_APPROVAL"/>
+        </decision>
+
+        <decision name="PENDING_SUPP_TECH_CHECK">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.SuppTechnicalCheck">
+                <doTest>false</doTest>
+            </handler>
+            <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="error" to="PENDING_SUPP_TECH_CHECK_REMEDY"/>
+        </decision>
+
+        <state name="PENDING_SUPP_TECH_CHECK_REMEDY">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.SuppTechnicalCheckRemedy"/>
+            </event>
+            <timer name="7d-time-out" duedate='7 days'>
+                <!--todo-->
+            </timer>
+            <timer name="14d-time-out" duedate='14 days'>
+                <!--todo-->
+            </timer>
+            <timer name="21d-time-out" duedate='21 days'>
+                <!--todo-->
+            </timer>
+            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
+            <transition name="do-test" to="PENDING_SUPP_TECH_CHECK"/>
+            <transition name="reject" to="REJECTED"/>
+            <transition name="close" to="ADMIN_CLOSED"/>
+            <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="admin-reject" to="REJECTED"/>
         </state>
 
         <state name="PENDING_USDOC_APPROVAL">
@@ -202,17 +316,17 @@
                 </action>
             </timer>
             <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
-            <transition name="accept" to="USDOC_APPROVED"/>
+            <transition name="accept" to="NS_CHANGE_DECISION"/>
             <transition name="reject" to="REJECTED"/>
-            <transition name="admin-accept" to="USDOC_APPROVED"/>
+            <transition name="admin-accept" to="NS_CHANGE_DECISION"/>
             <transition name="admin-reject" to="REJECTED"/>
             <transition name="alert" to="EXCEPTION"/>
         </state>
 
-        <decision name="USDOC_APPROVED">
+        <decision name="NS_CHANGE_DECISION">
             <handler class="org.iana.rzm.trans.jbpm.handlers.NameServerChange"/>
-            <transition name="no-ns-change" to="PENDING_DATABASE_INSERTION"/>
             <transition name="ns-change" to="PENDING_ZONE_INSERTION"/>
+            <transition name="no-ns-change" to="PENDING_DATABASE_INSERTION"/>
         </decision>
 
         <state name="PENDING_ZONE_INSERTION">
@@ -276,6 +390,8 @@
             <transition name='complete' to='COMPLETED'>
             </transition>
         </node>
+
+        <!-- End states -->
 
         <end-state name='COMPLETED'>
             <event type='node-enter'>

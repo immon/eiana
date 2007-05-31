@@ -1,15 +1,15 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
-import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
 
@@ -18,6 +18,8 @@ import java.util.List;
  *
  * @author Patrycja Wegrzynowicz
  */
+
+@Test(sequential = true, groups = {"facade-system", "TransactionTimestampSetupTest"})
 public class TransactionTimestampSetupTest extends CommonGuardedSystemTransaction {
     RZMUser iana;
 
@@ -48,7 +50,7 @@ public class TransactionTimestampSetupTest extends CommonGuardedSystemTransactio
 
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(sequential = true, groups = {"facade-system", "DomainCreationTransactionWorkFlowTest"})
+@Test(sequential = true, groups = {"excluded", "facade-system", "DomainCreationTransactionWorkFlowTest"})
 public class DomainCreationTransactionWorkFlowTest {
     private final static String DOMAIN_NAME_BASE = "createtranstest";
 
@@ -271,7 +271,7 @@ public class DomainCreationTransactionWorkFlowTest {
         createTransaction(getNextDomain(), userIANA);
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() throws Exception {
         try {
             for (ProcessInstance pi : processDAO.findAll())

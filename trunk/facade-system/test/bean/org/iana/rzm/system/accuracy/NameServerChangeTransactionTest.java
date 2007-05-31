@@ -28,15 +28,15 @@ import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
- * @author: piotrt
+ * @author: Piotr Tkaczyk
  */
 
-@Test(sequential = true, groups = {"facade-system", "NameServerChangeTransactionTest"})
+@Test(sequential = true, groups = {"excluded", "facade-system", "NameServerChangeTransactionTest"})
 public class NameServerChangeTransactionTest {
     private SystemTransactionService gsts;
     private UserDAO userDAO;
@@ -83,7 +83,7 @@ public class NameServerChangeTransactionTest {
 
         TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
         assert loadedTransaction != null;
-        assert compareTransactionVOs(transaction,  loadedTransaction);
+        assert compareTransactionVOs(transaction, loadedTransaction);
         Host newNameServer = new Host("newNameServer");
         List<HostVO> hostVOList = new ArrayList<HostVO>();
         hostVOList.add(ToVOConverter.toHostVO(newNameServer));
@@ -93,7 +93,7 @@ public class NameServerChangeTransactionTest {
         assert transactionActionsVO.getActions().size() == 1;
         for (ChangeVO changeVO : transactionActionsVO.getActions().get(0).getChange()) {
             assert "nameServers".equals(changeVO.getFieldName());
-            ObjectValueVO valueVO = (ObjectValueVO) changeVO.getValue();
+            //ObjectValueVO valueVO = (ObjectValueVO) changeVO.getValue();
             /*ChangeVO cVO = valueVO.getChanges().get(0);
             if (cVO.getType().equals(ChangeVO.Type.REMOVAL)) {
                 assert cVO.getValue() instanceof StringValueVO;
@@ -110,7 +110,7 @@ public class NameServerChangeTransactionTest {
         }
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         gsts.close();
         try {
@@ -192,12 +192,17 @@ public class NameServerChangeTransactionTest {
 
         if (first.getDomainActions() != null ? !first.getDomainActions().equals(second.getDomainActions()) : second.getDomainActions() != null)
             return false;
-        if (first.getDomainName() != null ? !first.getDomainName().equals(second.getDomainName()) : second.getDomainName() != null) return false;
+        if (first.getDomainName() != null ? !first.getDomainName().equals(second.getDomainName()) : second.getDomainName() != null)
+            return false;
         if (first.getEnd() != null ? !first.getEnd().equals(second.getEnd()) : second.getEnd() != null) return false;
-        if (first.getName() != null ? !first.getName().equals(second.getName()) : second.getName() != null) return false;
-        if (first.getStart() != null ? !first.getStart().equals(second.getStart()) : second.getStart() != null) return false;
-        if (first.getState() != null ? !first.getState().equals(second.getState()) : second.getState() != null) return false;
-        if (first.getTicketID() != null ? !first.getTicketID().equals(second.getTicketID()) : second.getTicketID() != null) return false;
+        if (first.getName() != null ? !first.getName().equals(second.getName()) : second.getName() != null)
+            return false;
+        if (first.getStart() != null ? !first.getStart().equals(second.getStart()) : second.getStart() != null)
+            return false;
+        if (first.getState() != null ? !first.getState().equals(second.getState()) : second.getState() != null)
+            return false;
+        if (first.getTicketID() != null ? !first.getTicketID().equals(second.getTicketID()) : second.getTicketID() != null)
+            return false;
         if (first.getTransactionID() != null ? !first.getTransactionID().equals(second.getTransactionID()) : second.getTransactionID() != null)
             return false;
 

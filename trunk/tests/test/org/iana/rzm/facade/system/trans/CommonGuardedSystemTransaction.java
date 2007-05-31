@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
 import org.iana.notifications.NotificationManager;
+import org.iana.notifications.dao.EmailAddresseeDAO;
 import org.iana.rzm.common.exceptions.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.conf.SpringApplicationContext;
@@ -36,6 +37,7 @@ public abstract class CommonGuardedSystemTransaction {
             (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
     protected SystemDomainService gsds =
             (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
+    protected EmailAddresseeDAO emailAddresseeDAO = (EmailAddresseeDAO) appCtx.getBean("emailAddresseeDAO");
 
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);     //iana
@@ -77,11 +79,19 @@ public abstract class CommonGuardedSystemTransaction {
         gsts.close();
     }
 
-    protected void normalIANA_CONFIRMATION(RZMUser user, long transId) throws Exception {
+    protected void acceptMANUAL_REVIEW(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
-        gsts.transitTransaction(transId, "normal");
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
+        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
+        gsts.transitTransaction(transId, "accept");
+        assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
+        gsts.close();
+    }
+
+    protected void acceptIANA_CHECK(RZMUser user, long transId) throws Exception {
+        setGSTSAuthUser(user);  //iana
+        assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
+        gsts.transitTransaction(transId, "accept");
+        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.close();
     }
 
@@ -176,7 +186,7 @@ public abstract class CommonGuardedSystemTransaction {
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
         gsts.acceptTransaction(transId, tokenIterator.next());
 //        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId); todo
-        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
+        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
         gsts.close();
     }
 
@@ -228,7 +238,7 @@ public abstract class CommonGuardedSystemTransaction {
         return retTransactionVO.getState().getName().toString().equals(stateName);
     }
 
-    protected void checkStateLog(RZMUser user, Long transId, String [][] usersStates) throws Exception {
+    protected void checkStateLog(RZMUser user, Long transId, String[][] usersStates) throws Exception {
         setGSTSAuthUser(user);
         TransactionVO trans = gsts.getTransaction(transId);
         List<TransactionStateLogEntryVO> log = trans.getStateLog();
