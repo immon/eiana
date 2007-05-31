@@ -1,56 +1,48 @@
 package org.iana.rzm.trans;
 
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.Contact;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.TransactionTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
+import org.iana.rzm.auth.Identity;
+import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.testng.annotations.Test;
 
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
 @Test(sequential = true, groups = {"eiana-trans", "TransactionTest"})
-public class TransactionTest {
-    private PlatformTransactionManager txManager;
-    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
+public class TransactionTest extends TransactionalSpringContextTests {
+    protected ProcessDAO processDAO;
+    protected UserManager userManager;
+    protected TestTransactionManager testTransactionManager;
+    protected DomainManager domainManager;
+
     private long transactionId1, transactionId2, transactionId3;
     private long ticketId1;
-    private ProcessDAO processDAO;
-    private UserManager userManager;
-    private TestTransactionManager transactionManager;
-    private DomainManager domainManager;
     private Domain domain;
-    private Set<Long> processes = new HashSet<Long>();
-    private Set<String> users = new HashSet<String>();
 
-    @BeforeClass(dependsOnGroups = {"JbpmTest"})
-    public void init() throws Exception {
-        ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
-        txManager = (PlatformTransactionManager) ctx.getBean("transactionManager");
-        processDAO = (ProcessDAO) ctx.getBean("processDAO");
-        transactionManager = (TestTransactionManager) ctx.getBean("testTransactionManagerBean");
-        userManager = (UserManager) ctx.getBean("userManager");
-        domainManager = (DomainManager) ctx.getBean("domainManager");
+    public TransactionTest() {
+        super(SpringTransApplicationContext.CONFIG_FILE_NAME);
+    }
+
+    protected void init() throws Exception {
         try {
             processDAO.deploy(TransactionTestProcess.getDefinition());
         } finally {
@@ -61,7 +53,9 @@ public class TransactionTest {
     }
 
     private void createDomain() {
-        domain = new Domain("transtestdomain"); 
+        domain = new Domain("transtestdomain");
+        domain.addAdminContact(new Contact("admin"));
+        domain.addTechContact(new Contact("tech"));
         domainManager.create(domain);
     }
 
@@ -81,117 +75,72 @@ public class TransactionTest {
         userSet.add(UserManagementTestUtil.createUser("admin2trans", new AdminRole(AdminRole.AdminType.IANA)));
 
         for (RZMUser user : userSet) {
-            users.add(user.getLoginName());
             userManager.create(user);
         }
     }
 
     @Test
     public void testTransactionCreation() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transaction = transactionManager.createTransactionTestTransaction(domain);
+            Transaction transaction = testTransactionManager.createTransactionTestTransaction(domain);
             ticketId1 = 123L;
             transaction.setTicketID(ticketId1);
             transactionId1 = transaction.getTransactionID();
-            processes.add(transactionId1);
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
 
         Long ticketId2 = 456L;
-        txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transaction = transactionManager.createTransactionTestTransaction(domain);
+            Transaction transaction = testTransactionManager.createTransactionTestTransaction(domain);
             transaction.setTicketID(ticketId2);
             transactionId2 = transaction.getTransactionID();
-            processes.add(transactionId2);
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
 
 
         Long ticketId3 = 125L;
-        txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transaction = transactionManager.createTransactionTestTransaction(domain);
+            Transaction transaction = testTransactionManager.createTransactionTestTransaction(domain);
             transaction.setTicketID(ticketId3);
             transactionId3 = transaction.getTransactionID();
-            processes.add(transactionId3);
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
 
-        txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transFromDB = transactionManager.getTransaction(transactionId1);
+            Transaction transFromDB = testTransactionManager.getTransaction(transactionId1);
             assert (transFromDB != null && transFromDB.getTransactionID() == transactionId1
                     && transFromDB.getTicketID().equals(new Long(ticketId1)));
 
-            Transaction transFromDB2 = transactionManager.getTransaction(transactionId2);
-            assert (transFromDB != null && transFromDB2.getTransactionID() == transactionId2
+            Transaction transFromDB2 = testTransactionManager.getTransaction(transactionId2);
+            assert (transFromDB2 != null && transFromDB2.getTransactionID() == transactionId2
                     && transFromDB2.getTicketID().equals(new Long(ticketId2)));
 
-            Transaction transFromDB3 = transactionManager.getTransaction(transactionId3);
-            assert (transFromDB != null && transFromDB3.getTransactionID() == transactionId3
+            Transaction transFromDB3 = testTransactionManager.getTransaction(transactionId3);
+            assert (transFromDB3 != null && transFromDB3.getTransactionID() == transactionId3
                     && transFromDB3.getTicketID().equals(new Long(ticketId3)));
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
-        /*
-        Transaction transFromDB2 = transactionManager.getTransaction(transactionId2);
-        assert (transFromDB2 != null && transFromDB2.getTransactionID() == transactionId2 && transFromDB2.getTicketID().equals(new Long(ticketId2)));
-        */
-        //todo: lazy initialization error
     }
 
     @Test(dependsOnMethods = {"testTransactionCreation"})
     public void testTransactionUpdate() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transToUpdate = transactionManager.getTransaction(transactionId1);
+            Transaction transToUpdate = testTransactionManager.getTransaction(transactionId1);
             assert transToUpdate.getTicketID().equals(new Long(ticketId1));
             ticketId1 = 456L;
             transToUpdate.setTicketID(ticketId1);
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
 
-        txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transFromDB = transactionManager.getTransaction(transactionId1);
-            assert (transFromDB != null && transFromDB.getTransactionID() == transactionId1 && transFromDB.getTicketID().equals(new Long(ticketId1)));
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
+            Transaction transFromDB = testTransactionManager.getTransaction(transactionId1);
+            assert (transFromDB != null && transFromDB.getTransactionID() == transactionId1 &&
+                    transFromDB.getTicketID().equals(new Long(ticketId1)));
         } finally {
             processDAO.close();
         }
@@ -199,21 +148,15 @@ public class TransactionTest {
 
     @Test(dependsOnMethods = {"testTransactionUpdate"})
     public void testTransactionAccept() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction trans = transactionManager.getTransaction(transactionId1);
+            Transaction trans = testTransactionManager.getTransaction(transactionId1);
             assert trans != null;
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_CONTACT_CONFIRMATION)
                     : "unexpected state: " + trans.getState().getName();
-            trans.accept(userManager.get("user-sys1trans"));
-            trans.accept(userManager.get("user-sys2trans"));
+            for (String token : getTokens(trans))
+                trans.accept(new ContactIdentity(token));
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_IANA_CONFIRMATION)
                     : "unexpected state: " + trans.getState().getName();
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -221,20 +164,16 @@ public class TransactionTest {
 
     @Test(dependsOnMethods = {"testTransactionAccept"})
     public void testTransactionReject() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction trans = transactionManager.getTransaction(transactionId2);
+            Transaction trans = testTransactionManager.getTransaction(transactionId2);
             assert trans != null;
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_CONTACT_CONFIRMATION)
                     : "unexpected state: " + trans.getState().getName();
-            trans.reject(userManager.get("user-sys1trans"));
+            List<String> tokens = getTokens(trans);
+            assert tokens.size() > 0;
+            trans.reject(new ContactIdentity(tokens.iterator().next()));
             assert trans.getState().getName().equals(TransactionState.Name.REJECTED)
                     : "unexpected state: " + trans.getState().getName();
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -243,18 +182,12 @@ public class TransactionTest {
     @Test(dependsOnMethods = {"testTransactionReject"},
             expectedExceptions = {UserNotAuthorizedToTransit.class})
     public void testTransactionTransitionFailed() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction trans = transactionManager.getTransaction(transactionId3);
+            Transaction trans = testTransactionManager.getTransaction(transactionId3);
             assert trans != null;
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_CONTACT_CONFIRMATION)
                     : "unexpected state: " + trans.getState().getName();
             trans.transit(userManager.get("user-admin1trans"), "normal");
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -262,33 +195,25 @@ public class TransactionTest {
 
     @Test(dependsOnMethods = {"testTransactionTransitionFailed"})
     public void testTransactionTransitionSuccessful() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction trans = transactionManager.getTransaction(transactionId3);
+            Transaction trans = testTransactionManager.getTransaction(transactionId3);
 
             assert trans != null;
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_CONTACT_CONFIRMATION)
                     : "unexpected state: " + trans.getState().getName();
-            trans.accept(userManager.get("user-sys1trans"));
-            trans.accept(userManager.get("user-sys2trans"));
+            for (String token : getTokens(trans))
+                trans.accept(new ContactIdentity(token));
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_IANA_CONFIRMATION)
                     : "unexpected state: " + trans.getState().getName();
             trans.transit(userManager.get("user-admin2trans"), "normal");
             assert trans.getState().getName().equals(TransactionState.Name.COMPLETED)
                     : "unexpected state: " + trans.getState().getName();
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
 
-    @AfterClass (alwaysRun = true)
-    public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+    protected void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();
             for (ProcessInstance pi : pis) {
@@ -302,14 +227,21 @@ public class TransactionTest {
             for (Domain domain : domains) {
                 domainManager.delete(domain);
             }
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
+    }
+
+    private List<String> getTokens(Transaction transaction) {
+        List<String> result = new ArrayList<String>();
+        ContactConfirmations cc = transaction.getTransactionData().getContactConfirmations();
+        assert cc != null : "contact confirmations not found";
+        for (Identity identity : cc.getUsersAbleToAccept()) {
+            if (identity instanceof ContactIdentity) {
+                ContactIdentity contactIdentity = (ContactIdentity) identity;
+                result.add(contactIdentity.getToken());
+            }
+        }
+        return result;
     }
 }

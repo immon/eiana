@@ -6,15 +6,9 @@ import org.iana.rzm.domain.Host;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -24,50 +18,30 @@ import java.util.List;
  */
 
 @Test(sequential = true, groups = {"eiana-trans", "jbpm", "NameServersChange"})
-public class NameServersChangeTest {
-    private PlatformTransactionManager txManager;
-    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
-    private TransactionManager transMgr;
-    private ProcessDAO processDAO;
-    private DomainManager domainManager;
+public class NameServersChangeTest extends TransactionalSpringContextTests {
+    protected TransactionManager transactionManagerBean;
+    protected ProcessDAO processDAO;
+    protected DomainManager domainManager;
 
-    @BeforeClass
-    public void init() throws Exception {
-        ApplicationContext appCtx = SpringTransApplicationContext.getInstance().getContext();
-        txManager = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        transMgr = (TransactionManager) appCtx.getBean("transactionManagerBean");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
+    public NameServersChangeTest() {
+        super(SpringTransApplicationContext.CONFIG_FILE_NAME);
+    }
 
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+    protected void init() throws Exception {
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
-
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
 
-    @AfterClass(alwaysRun = true)
-    public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+    protected void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();
             for (ProcessInstance pi : pis) {
                 processDAO.delete(pi);
             }
-
             domainManager.delete("testdomain-ns.org");
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -75,7 +49,6 @@ public class NameServersChangeTest {
 
     @Test
     public void testNameServersChange() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
             Host firstNameServer = new Host("first");
             firstNameServer.addIPAddress("192.168.0.1");
@@ -90,7 +63,7 @@ public class NameServersChangeTest {
             Domain clonedDomain = domain.clone();
             clonedDomain.addNameServer(secondNameServer);
 
-            Transaction tr = transMgr.createDomainModificationTransaction(clonedDomain);
+            Transaction tr = transactionManagerBean.createDomainModificationTransaction(clonedDomain);
 
             ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
 
@@ -113,11 +86,6 @@ public class NameServersChangeTest {
 
 //            assert clonedDomain.equals(domainManager.get("testdomain-ns.org").clone());
 
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
