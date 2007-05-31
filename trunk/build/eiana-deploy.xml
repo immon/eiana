@@ -490,7 +490,6 @@
 
     <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
         <property name="test.group.excluded" value="excluded, stress"/>
-        <property name="test.group" value="facade-system, test"/>
         <antcall target="all.test"/>
     </target>
 

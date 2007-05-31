@@ -95,41 +95,51 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
-            {"gstsignaluser", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
-//        checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
+        checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
     }
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
-            {"gstsignaliana", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
     public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         closePENDING_CONTACT_CONFIRMATION(userIANA, transId);
-//        checkStateLog(userAC, transId, CLOSE_CONTACT_CONFIRMATIONLog);
+        checkStateLog(userAC, transId, CLOSE_CONTACT_CONFIRMATIONLog);
     }
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-//        checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
+        checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
-    private static final String[][] REJECT_IMPACTED_PARTIESLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"}
+    private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"}
     };
 
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
@@ -137,7 +147,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
         acceptMANUAL_REVIEW(userIANA, transId);
-//        todo checkStateLog
+        checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
     }
 
 ////    todo
@@ -195,16 +205,18 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //        closeEXT_APPROVAL(userIANA, transId);
 //        checkStateLog(userAC, transId, CLOSE_EXT_APPROVALLog);
 //    }
-//
-//    private static final String [][] REJECT_USDOC_APPROVALLog = {
-//            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-////            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
-//            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-//            {"gstsignaliana", "PENDING_EXT_APPROVAL"},
-//            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
-//    };
-
     //
+    private static final String[][] ACCEPT_IANA_CHECKLog = {
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"}
+    };
 
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
     public void testACCEPT_IANA_CHECK() throws Exception {
@@ -212,8 +224,21 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-//        checkStateLog(userAC, transId, REJECT_USDOC_APPROVALLog);
+        checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
     }
+
+    private static final String[][] REJECT_USDOC_APPROVALLog = {
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
+            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
+    };
 
     @Test(dependsOnMethods = {"testACCEPT_IANA_CHECK"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
@@ -222,18 +247,23 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
-//        checkStateLog(userAC, transId, REJECT_USDOC_APPROVALLog);
+        checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
-//
-//    private static final String [][] workFlowNoNSChangeLog = {
-//            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-////            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},  todo
-//            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-//            {"gstsignaliana", "PENDING_EXT_APPROVAL"},
-//            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
-//    };
 
-    //
+    private static final String[][] workFlowNoNSChangeLog = {
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
+            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
+            {"SYSTEM", "NS_CHANGE_DECISION"},
+            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
+    };
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
@@ -242,18 +272,25 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);
-//        checkStateLog(userAC, transId, workFlowNoNSChangeLog);
+        checkStateLog(userIANA, transId, workFlowNoNSChangeLog);
     }
 
     //
     private static final String[][] workFlowWithNSChangeLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-//            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}, todo
-            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_EXT_APPROVAL"},
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
+            {"SYSTEM", "NS_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
+            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
     //
@@ -266,7 +303,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         acceptUSDOC_APPROVAL(userUSDoC, transId);
         acceptZONE_INSERTION(userIANA, transId);
         acceptZONE_PUBLICATION(userIANA, transId);
-//        checkStateLog(userAC, transId, workFlowWithNSChangeLog);
+        checkStateLog(userIANA, transId, workFlowWithNSChangeLog);
     }
 
     @AfterClass(alwaysRun = true)
