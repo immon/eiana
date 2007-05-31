@@ -48,7 +48,7 @@
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="transactionManagerBean"/>
-        <constructor-arg index="2" ref="domainManager" />
+        <constructor-arg index="2" ref="domainManager"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -298,7 +298,8 @@
         </property>
     </bean>
 
-    <bean id="systemTransactionLoggerInterceptor" class="org.iana.rzm.facade.system.trans.SystemTransactionLoggerInterceptor">
+    <bean id="systemTransactionLoggerInterceptor"
+          class="org.iana.rzm.facade.system.trans.SystemTransactionLoggerInterceptor">
         <constructor-arg index="0" ref="transactionManagerBean"/>
         <property name="logger">
             <ref bean="logger"/>
@@ -667,6 +668,12 @@
         </property>
     </bean>
 
+    <bean id="emailAddresseeDAO" class="org.iana.notifications.dao.HibernateEmailAddresseeDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="roleManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
@@ -749,31 +756,34 @@
                 <entry key="code1" value-ref="timeoutEntry2"/>
             </map>
         </constructor-arg>
-        <constructor-arg index="1" type="int" value="100"/> <!-- max -->
+        <constructor-arg index="1" type="int" value="100"/>
+        <!-- max -->
     </bean>
 
     <bean id="timeoutEntry1" class="pl.nask.cache.TimeOutCacheEntry">
         <constructor-arg index="0" value="cc"/>
-        <constructor-arg index="1" type="long" value="86400000"/> <!-- 24h cache -->
+        <constructor-arg index="1" type="long" value="86400000"/>
+        <!-- 24h cache -->
     </bean>
 
     <bean id="timeoutEntry2" class="pl.nask.cache.TimeOutCacheEntry">
         <constructor-arg index="0" value="code1"/>
-        <constructor-arg index="1" type="long" value="86400000"/> <!-- 24h cache -->
+        <constructor-arg index="1" type="long" value="86400000"/>
+        <!-- 24h cache -->
     </bean>
 
     <!--<tx:advice id="txAdvice" transaction-manager="transactionManager">-->
-      <!--<tx:attributes>-->
-        <!--<tx:method name="get*" read-only="true"/>-->
-        <!--<tx:method name="*"/>-->
-      <!--</tx:attributes>-->
+    <!--<tx:attributes>-->
+    <!--<tx:method name="get*" read-only="true"/>-->
+    <!--<tx:method name="*"/>-->
+    <!--</tx:attributes>-->
     <!--</tx:advice>-->
 
     <!-- ensure that the above transactional advice runs for any execution
         of an operation defined by the CodeValues interface -->
     <!--<aop:config>-->
-      <!--<aop:pointcut id="codeValuesOperation" expression="execution(* org.iana.codevalues.*(..))"/>-->
-      <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="codeValuesOperation"/>-->
+    <!--<aop:pointcut id="codeValuesOperation" expression="execution(* org.iana.codevalues.*(..))"/>-->
+    <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="codeValuesOperation"/>-->
     <!--</aop:config>-->
 
 </beans>

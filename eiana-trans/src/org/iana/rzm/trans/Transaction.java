@@ -198,7 +198,7 @@ public class Transaction implements TrackedObject {
     }
 
     public synchronized void transit(Identity user, String transitionName) throws TransactionException {
-        if (transitionName.equals(StateTransition.ACCEPT)) accept(user);
+//        if (transitionName.equals(StateTransition.ACCEPT)) accept(user);
         Token token = pi.getRootToken();
         Node node = token.getNode();
         TransitionConfirmations tc = getTransactionData().getTransitionConfirmations(node.getName());

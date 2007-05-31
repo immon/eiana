@@ -40,6 +40,8 @@
     <orderEntry type="module" module-name="common-objectdiff" />
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="module" module-name="common-dao" />
+    <orderEntry type="module" module-name="common-test" />
+    <orderEntry type="library" name="junit" level="project" />
     <orderEntryProperties />
   </component>
 </module>

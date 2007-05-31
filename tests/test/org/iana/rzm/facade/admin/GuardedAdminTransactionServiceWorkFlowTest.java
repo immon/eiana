@@ -1,30 +1,29 @@
 package org.iana.rzm.facade.admin;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.springframework.context.ApplicationContext;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.trans.TransactionVO;
-import org.iana.rzm.facade.system.trans.TransactionStateVO;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.Host;
-import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.trans.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
@@ -89,7 +88,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
     }
 
-    @Test (expectedExceptions = {AccessDeniedException.class})
+    @Test(expectedExceptions = {AccessDeniedException.class})
     public void testCreateTransactionByWrongUser() throws Exception {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
@@ -107,108 +106,126 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         rejectPENDING_CONTACT_CONFIRMATION();
     }
 
-    @Test (dependsOnMethods = "testRejectCONTACT_CONFIRMATION")
+    //
+    @Test(dependsOnMethods = "testRejectCONTACT_CONFIRMATION")
     public void testAcceptCONTACT_CONFIRMATION() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
     }
-//    todo
-//    @Test (dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
-//    public void testRejectIMPACTED_PARTIES() throws Exception {
+
+////    @Test (dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
+////    public void testRejectIMPACTED_PARTIES() throws Exception {
+////        createDomainModificationProcess();
+////        acceptPENDING_CONTACT_CONFIRMATION();
+////        rejectPENDING_IMPACTED_PARTIES();
+////    }
+////
+////    @Test (dependsOnMethods = "testRejectIMPACTED_PARTIES")
+////    public void testAcceptIMPACTED_PARTIES() throws Exception {
+////        createDomainModificationProcess();
+////        acceptPENDING_CONTACT_CONFIRMATION();
+////        acceptPENDING_IMPACTED_PARTIES();
+////    }
+
+    //
+
+    @Test(dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
+    public void testRejectMANUAL_REVIEW() throws Exception {
+        createDomainModificationProcess();
+        acceptPENDING_CONTACT_CONFIRMATION();
+        rejectMANUAL_REVIEW();
+    }
+
+    @Test(dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
+    public void testAcceptMANUAL_REVIEW() throws Exception {
+        createDomainModificationProcess();
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptMANUAL_REVIEW();
+    }
+
+    @Test(dependsOnMethods = "testAcceptMANUAL_REVIEW")
+    public void testRejectPENDING_IANA_CHECK() throws Exception {
+        createDomainModificationProcess();
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptMANUAL_REVIEW();
+        rejectPENDING_IANA_CHECK();
+    }
+
+    @Test(dependsOnMethods = "testRejectPENDING_IANA_CHECK")
+    public void testAcceptPENDING_IANA_CHECK() throws Exception {
+        createDomainModificationProcess();
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
+    }
+//
+//    @Test (dependsOnMethods = "testNormalPENDING_IANA_CONFIRMATION")
+//    public void testRejectPENDING_EXT_APPROVAL() throws Exception {
 //        createDomainModificationProcess();
 //        acceptPENDING_CONTACT_CONFIRMATION();
-//        rejectPENDING_IMPACTED_PARTIES();
+////        acceptPENDING_IMPACTED_PARTIES();
+//        normalPENDING_IANA_CONFIRMATION();
+//        rejectPENDING_EXT_APPROVAL();
 //    }
 //
-//    @Test (dependsOnMethods = "testRejectIMPACTED_PARTIES")
-//    public void testAcceptIMPACTED_PARTIES() throws Exception {
+//    @Test (dependsOnMethods = "testRejectPENDING_EXT_APPROVAL")
+//    public void testAcceptPENDING_EXT_APPROVAL() throws Exception {
 //        createDomainModificationProcess();
 //        acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES();
+////        acceptPENDING_IMPACTED_PARTIES();
+//        normalPENDING_IANA_CONFIRMATION();
+//        acceptPENDING_EXT_APPROVAL();
 //    }
 
-    @Test (dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
-    public void testNormalPENDING_IANA_CONFIRMATION() throws Exception {
-        createDomainModificationProcess();
-        acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-    }
+    //
 
-    @Test (dependsOnMethods = "testNormalPENDING_IANA_CONFIRMATION")
-    public void testRejectPENDING_EXT_APPROVAL() throws Exception {
-        createDomainModificationProcess();
-        acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        rejectPENDING_EXT_APPROVAL();
-    }
-
-    @Test (dependsOnMethods = "testRejectPENDING_EXT_APPROVAL")
-    public void testAcceptPENDING_EXT_APPROVAL() throws Exception {
-        createDomainModificationProcess();
-        acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        acceptPENDING_EXT_APPROVAL();
-    }
-
-    @Test (dependsOnMethods = "testAcceptPENDING_EXT_APPROVAL")
+    @Test(dependsOnMethods = "testAcceptPENDING_IANA_CHECK")
     public void testRejectPENDING_USDOC_APPROVAL() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        acceptPENDING_EXT_APPROVAL();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
         rejectPENDING_USDOC_APPROVAL();
     }
 
-    @Test (dependsOnMethods = "testRejectPENDING_USDOC_APPROVAL")
+    @Test(dependsOnMethods = "testRejectPENDING_USDOC_APPROVAL")
     public void testAcceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
         createDomainModificationProcessNSChage();
         acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        acceptPENDING_EXT_APPROVAL();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
         acceptPENDING_USDOC_APPROVALNSCHANGE();
     }
 
-    @Test (dependsOnMethods = "testAcceptPENDING_USDOC_APPROVALNSCHANGE")
+    @Test(dependsOnMethods = "testAcceptPENDING_USDOC_APPROVALNSCHANGE")
     public void testAcceptPENDING_USDOC_APPROVAL() throws Exception {
         createDomainModificationProcess();
         acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        acceptPENDING_EXT_APPROVAL();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
         acceptPENDING_USDOC_APPROVAL();
     }
 
-    @Test (dependsOnMethods = "testAcceptPENDING_USDOC_APPROVAL")
+    @Test(dependsOnMethods = "testAcceptPENDING_USDOC_APPROVAL")
     public void testAcceptPENDING_ZONE_INSERTION() throws Exception {
         createDomainModificationProcessNSChage();
         acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        acceptPENDING_EXT_APPROVAL();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
         acceptPENDING_USDOC_APPROVALNSCHANGE();
         acceptPENDING_ZONE_INSERTION();
     }
 
-    @Test (dependsOnMethods = "testAcceptPENDING_ZONE_INSERTION")
+    @Test(dependsOnMethods = "testAcceptPENDING_ZONE_INSERTION")
     public void testAcceptPENDING_ZONE_PUBLICATION() throws Exception {
         createDomainModificationProcessNSChage();
         acceptPENDING_CONTACT_CONFIRMATION();
-//        acceptPENDING_IMPACTED_PARTIES(); todo
-        normalPENDING_IANA_CONFIRMATION();
-        acceptPENDING_EXT_APPROVAL();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
         acceptPENDING_USDOC_APPROVALNSCHANGE();
         acceptPENDING_ZONE_INSERTION();
         acceptPENDING_ZONE_PUBLICATION();
     }
-
-
-
-
 
     private void createDomainModificationProcess() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
@@ -258,8 +275,20 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     private void acceptPENDING_CONTACT_CONFIRMATION() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
         gAdminTransactionServ.acceptTransaction(transactionID);
-//        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES); todo
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CONFIRMATION);
+//        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+    }
+
+    private void rejectMANUAL_REVIEW() throws Exception {
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+        gAdminTransactionServ.rejectTransaction(transactionID);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+    }
+
+    private void acceptMANUAL_REVIEW() throws Exception {
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+        gAdminTransactionServ.acceptTransaction(transactionID);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
     }
 
     private void rejectPENDING_IMPACTED_PARTIES() throws Exception {
@@ -271,13 +300,19 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     private void acceptPENDING_IMPACTED_PARTIES() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
         gAdminTransactionServ.acceptTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CONFIRMATION);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
     }
 
-    private void normalPENDING_IANA_CONFIRMATION() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CONFIRMATION);
-        gAdminTransactionServ.transitTransaction(transactionID, "normal");
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_EXT_APPROVAL);
+    private void rejectPENDING_IANA_CHECK() throws Exception {
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        gAdminTransactionServ.rejectTransaction(transactionID);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+    }
+
+    private void acceptPENDING_IANA_CHECK() throws Exception {
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        gAdminTransactionServ.acceptTransaction(transactionID);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
     }
 
     private void rejectPENDING_EXT_APPROVAL() throws Exception {
@@ -324,7 +359,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
     private boolean isTransactionInDesiredState(Long transactionID, TransactionStateVO.Name transactionStateVOName) throws Exception {
         TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-                                                  
+
         assert transactionVO != null;
         return transactionVO.getState().getName().equals(transactionStateVOName);
     }
@@ -335,7 +370,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         return newDomain;
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())

@@ -1,38 +1,29 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.domain.DomainManager;
+import org.iana.notifications.EmailAddressee;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.domain.IPAddress;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
  */
 
 @Test(sequential = true, groups = {"facade-system", "FailureGuardedSystemTransactionWorkflowTest"})
-public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSystemTransaction{
+public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSystemTransaction {
 
-    private RZMUser userAC, userACWrong, userTC, userIANA, userUSDoC;
+    private RZMUser userAC, userACWrong, userTC, userUSDoC;
     private IDomainVO domainVO;
-
     final static String DOMAIN_NAME = "gstsfailuretest.org";
     final static String WRONG_NAME = "wrongdomainname.org";
 
@@ -53,14 +44,6 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
         userTC.setEmail("email@some.com");
         userTC.addRole(new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAME, true, true));
         userManager.create(userTC);
-
-        userIANA = new RZMUser();
-        userIANA.setLoginName("gstsignaliana");
-        userIANA.setFirstName("IANAuser");
-        userIANA.setLastName("lastName");
-        userIANA.setEmail("email@some.com");
-        userIANA.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        userManager.create(userIANA);
 
         userUSDoC = new RZMUser();
         userUSDoC.setLoginName("gstsignalusdoc");
@@ -92,24 +75,24 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
         processDAO.close();
     }
 
-    @Test (expectedExceptions = {AccessDeniedException.class})
+    @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_createTransaction() throws Exception {
         createTransaction(domainVO, userUSDoC);
     }
 
-    @Test (expectedExceptions = {AccessDeniedException.class})
+    @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_REJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
         rejectPENDING_CONTACT_CONFIRMATIONWrongToken(userACWrong, transId);
     }
 
-    @Test (expectedExceptions = {AccessDeniedException.class})
+    @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_CLOSE_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
         closePENDING_CONTACT_CONFIRMATION(userACWrong, transId);
     }
 
-    @Test (expectedExceptions = {AccessDeniedException.class})
+    @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_ACCEPT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
         acceptPENDING_CONTACT_CONFIRMATIONWrongToken(userACWrong, userTC, transId);
@@ -131,14 +114,17 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
 //    }                   todo
 
 
-
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())
                 processDAO.delete(pi);
         } finally {
             processDAO.close();
+        }
+        for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
+            notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
+            emailAddresseeDAO.delete(emailAddressee);
         }
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

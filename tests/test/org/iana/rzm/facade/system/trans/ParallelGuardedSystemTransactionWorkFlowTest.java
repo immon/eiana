@@ -1,5 +1,6 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.notifications.EmailAddressee;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
@@ -87,14 +88,12 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
         Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
-//        acceptIMPACTED_PARTIES(userAC, transId);          todo                                    //1.3
+        acceptMANUAL_REVIEW(userIANA, transId);                                               //1.3
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                       //2.2
-        normalIANA_CONFIRMATION(userIANA, transId);                                           //1.4
-//        acceptIMPACTED_PARTIES(userAC, secTransId);     todo                                      //2.3
-        normalIANA_CONFIRMATION(userIANA, secTransId);                                        //2.4
-        acceptEXT_APPROVAL(userIANA, transId);                                                //1.5
-        acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
-        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.6
+        acceptIANA_CHECK(userIANA, transId);                                                  //1.4
+        acceptMANUAL_REVIEW(userIANA, secTransId);                                            //2.3
+        acceptIANA_CHECK(userIANA, secTransId);                                               //2.4
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.5
 
         Domain retDomain = domainManager.get(DOMAIN_NAME);
         assert retDomain != null;
@@ -109,7 +108,7 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         assert "newwhoisserver.com".equals(retDomain.getWhoisServer());
     }
 
-    @Test (dependsOnMethods = {"testParallelRun1"})
+    @Test(dependsOnMethods = {"testParallelRun1"})
     public void testParallelRun2() throws Exception {
         firstModificationVO = getDomain(DOMAIN_NAME, userAC);
         secondModificationVO = getDomain(DOMAIN_NAME, userAC);
@@ -128,14 +127,12 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
         Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
-//        acceptIMPACTED_PARTIES(userAC, transId);   todo                                           //1.3
+        acceptMANUAL_REVIEW(userIANA, transId);                                               //1.3
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId);                       //2.2
-        normalIANA_CONFIRMATION(userIANA, transId);                                           //1.4
-//        acceptIMPACTED_PARTIES(userAC, secTransId);  todo                                         //2.3
-        normalIANA_CONFIRMATION(userIANA, secTransId);                                        //2.4
-        acceptEXT_APPROVAL(userIANA, transId);                                                //1.5
-        acceptEXT_APPROVAL(userIANA, secTransId);                                             //2.5
-        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.6
+        acceptIANA_CHECK(userIANA, transId);                                                  //1.4
+        acceptMANUAL_REVIEW(userIANA, secTransId);                                            //2.3
+        acceptIANA_CHECK(userIANA, secTransId);                                               //2.4
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);                                   //1.5
 
         IDomainVO retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
@@ -146,7 +143,7 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         assert "firstTechContact".equals(retContactsIterator.next().getName());
         assert "tech".equals(retContactsIterator.next().getName());
 
-        acceptUSDOC_APPROVALnoNSChange(userUSDoC, secTransId);                                //2.6
+        acceptUSDOC_APPROVALnoNSChange(userUSDoC, secTransId);                                //2.5
 
         retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
@@ -160,13 +157,17 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())
                 processDAO.delete(pi);
         } finally {
             processDAO.close();
+        }
+        for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
+            notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
+            emailAddresseeDAO.delete(emailAddressee);
         }
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

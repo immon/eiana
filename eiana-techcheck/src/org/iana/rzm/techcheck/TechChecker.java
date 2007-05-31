@@ -6,8 +6,8 @@ import org.iana.rzm.domain.IPAddress;
 import org.iana.rzm.techcheck.exceptions.*;
 import org.xbill.DNS.*;
 
-import java.util.*;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -26,12 +26,15 @@ public class TechChecker {
         long serial = -1;
         for (Host nameServer : nameServers) {
 
-            if (nameServer.getAddresses().isEmpty()) domainCheckException.addException(new EmptyIPAddressListException(nameServer.getName()));
+            if (nameServer.getAddresses().isEmpty())
+                domainCheckException.addException(new EmptyIPAddressListException(nameServer.getName()));
 
             for (IPAddress ipAddress : nameServer.getAddresses()) {
-                if (ipAddresses.contains(ipAddress)) domainCheckException.addException(new DuplicatedIPAddressException(nameServer.getName(), ipAddress.getAddress()));
+                if (ipAddresses.contains(ipAddress))
+                    domainCheckException.addException(new DuplicatedIPAddressException(nameServer.getName(), ipAddress.getAddress()));
                 try {
-                    if (ipAddress.getType().equals(IPAddress.Type.IPv4)) RestrictedIPv4Checker.check(ipAddress.getAddress());
+                    if (ipAddress.getType().equals(IPAddress.Type.IPv4))
+                        RestrictedIPv4Checker.check(ipAddress.getAddress());
                 } catch (RestrictedIPv4Exception e) {
                     domainCheckException.addException(new RestrictedIPv4Exception(nameServer.getName(), ipAddress.toString()));
                 }
@@ -47,7 +50,9 @@ public class TechChecker {
                 checkGlueNameServerCoherency(domain, nameServer);
                 serial = checkSerialNumber(domain, nameServer, serial);
 
-            } catch (DomainException e) {domainCheckException.addException(e); }
+            } catch (DomainException e) {
+                domainCheckException.addException(e);
+            }
         }
 
         if (!domainCheckException.isEmpty()) throw domainCheckException;
@@ -56,7 +61,7 @@ public class TechChecker {
     private static void checkReachabilityAndAuthority(Domain domain, Host host, boolean byTCP) throws UnknownHostException, SendNSQueryException, NoAuthoritativeNameServerException {
         try {
             String domainName = domain.getName();
-            domainName =  (domainName.endsWith("."))? domainName : domainName + ".";
+            domainName = (domainName.endsWith(".")) ? domainName : domainName + ".";
             Record question = Record.newRecord(new Name(domainName), Type.SOA, DClass.IN);
             Message query = Message.newQuery(question);
             Resolver resolver = new SimpleResolver(host.getName());
@@ -71,7 +76,7 @@ public class TechChecker {
         } catch (java.net.UnknownHostException e) {
             throw new UnknownHostException(host.getName(), "host unreachable");
         } catch (IOException e) {
-            throw new SendNSQueryException(host.getName(), "Time Out by " + ((byTCP)? "TCP" : "UDP"));
+            throw new SendNSQueryException(host.getName(), "Time Out by " + ((byTCP) ? "TCP" : "UDP"));
         }
     }
 
@@ -79,17 +84,19 @@ public class TechChecker {
         long retSerial = serial;
         try {
             String domainName = domain.getName();
-            domainName =  (domainName.endsWith("."))? domainName : domainName + ".";
+            domainName = (domainName.endsWith(".")) ? domainName : domainName + ".";
             Record question = Record.newRecord(new Name(domainName), Type.SOA, DClass.IN);
             Message query = Message.newQuery(question);
             Message response = new SimpleResolver(host.getName()).send(query);
 
             if ((response == null) || (response.getHeader() == null)) throw new UnknownHostException(host.getName());
             if ((response.getSectionArray(1) == null) || (response.getSectionArray(1)[0] == null) ||
-                    !(response.getSectionArray(1)[0] instanceof SOARecord)) throw new UnknownHostException(host.getName());
+                    !(response.getSectionArray(1)[0] instanceof SOARecord))
+                throw new UnknownHostException(host.getName());
 
-            retSerial = ((SOARecord)response.getSectionArray(1)[0]).getSerial();
-            if ((serial != -1) && (serial != retSerial)) throw new SerialNumberNotEqualException(host.getName(), String.valueOf(retSerial));
+            retSerial = ((SOARecord) response.getSectionArray(1)[0]).getSerial();
+            if ((serial != -1) && (serial != retSerial))
+                throw new SerialNumberNotEqualException(host.getName(), String.valueOf(retSerial));
 
         } catch (TextParseException e) {
             // domain name can't be wrong here
@@ -105,12 +112,13 @@ public class TechChecker {
     private static void checkGlueNameServerCoherency(Domain domain, Host host) throws HostIPSetNotEqualException, UnknownHostException, SendNSQueryException {
         try {
             String domainName = domain.getName();
-            domainName =  (domainName.endsWith("."))? domainName : domainName + ".";
+            domainName = (domainName.endsWith(".")) ? domainName : domainName + ".";
             Record question = Record.newRecord(new Name(domainName), Type.SOA, DClass.IN);
             Message query = Message.newQuery(question);
             Message response = new SimpleResolver(host.getName()).send(query);
 
-            if ((response == null) || (response.getSectionArray(3) == null)) throw new UnknownHostException(host.getName());
+            if ((response == null) || (response.getSectionArray(3) == null))
+                throw new UnknownHostException(host.getName());
 
             List<Record> nsRecords = Arrays.asList(response.getSectionArray(3));
             Set<IPAddress> retIpAddresses = new HashSet<IPAddress>();
@@ -133,13 +141,14 @@ public class TechChecker {
     private static void checkNameServerCoherency(Domain domain, Host host) throws NSRecordNotEqualException, UnknownHostException, SendNSQueryException {
         try {
             String domainName = domain.getName();
-            domainName =  (domainName.endsWith("."))? domainName : domainName + ".";
+            domainName = (domainName.endsWith(".")) ? domainName : domainName + ".";
             Record question = Record.newRecord(new Name(domainName), Type.NS, DClass.IN);
             Message query = Message.newQuery(question);
             Message response = new SimpleResolver(host.getName()).send(query);
 
-            if ((response == null) || (response.getSectionArray(3) == null)) throw new UnknownHostException(host.getName());
-            
+            if ((response == null) || (response.getSectionArray(3) == null))
+                throw new UnknownHostException(host.getName());
+
 
             List<Record> nsRecords = Arrays.asList(response.getSectionArray(3));
             Set<String> retHostNames = new HashSet<String>();
@@ -163,9 +172,9 @@ public class TechChecker {
     }
 
     private static String retrieveIPAddress(Record record, String hostName) {
-        String fullHostName = hostName + ((hostName.endsWith("."))? "" : ".");
+        String fullHostName = hostName + ((hostName.endsWith(".")) ? "" : ".");
         fullHostName = fullHostName.toLowerCase(Locale.ENGLISH);
-        if (record instanceof ARecord){
+        if (record instanceof ARecord) {
             ARecord aRecord = (ARecord) record;
             if (aRecord.getName().toString().toLowerCase(Locale.ENGLISH).equals(fullHostName)) {
                 String ipAddress = aRecord.getAddress().toString();

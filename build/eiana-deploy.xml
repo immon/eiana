@@ -16,17 +16,17 @@
     <property name="hibernate.dir" value="${config.dir}/hibernate"/>
     <property name="tests" value="../tests"/>
     <property name="test.report.output" location="${tests}/reports"/>
-    <property name="test.cobertura.output" location="${tests}/cobertura_code_coverage" />
+    <property name="test.cobertura.output" location="${tests}/cobertura_code_coverage"/>
     <property name="hibernate.test.dir" value="../tests/hibernate"/>
 
     <path id="cobertura.classpath">
         <fileset dir="${lib.dir}/cobertura">
-            <include name="cobertura.jar" />
-            <include name="lib/**/*.jar" />
+            <include name="cobertura.jar"/>
+            <include name="lib/**/*.jar"/>
         </fileset>
     </path>
 
-    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+    <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
 
     <!--creating database structure
      Before preforming "database.create" target, you have to create "eiana" database instance.
@@ -59,12 +59,12 @@
         </hibernatetool>
     </target>
 
-    <target name="database.test.dropCreate" depends="all.compile" >
-        <sql 
-            driver   = "com.mysql.jdbc.Driver"
-            url      = "jdbc:mysql://localhost/"
-            userid   = "testng"
-            password = "1q2w3e">
+    <target name="database.test.dropCreate" depends="all.compile">
+        <sql
+                driver="com.mysql.jdbc.Driver"
+                url="jdbc:mysql://localhost/"
+                userid="testng"
+                password="1q2w3e">
             <classpath>
                 <fileset dir="${lib.dir}">
                     <include name="**/*.jar"/>
@@ -271,151 +271,234 @@
         </war>
     </target>
 
-<!-- runs all test from group that is equal to property value ${test.group}
-     and excludes all tests from group that is equal toproperty value ${test.group.excluded}.
-     You can put many groups into one property, separated by spaces or commas.
-     Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
-     Reports from tests are aviable in "Report" directory.
-     -->
-     <target name="all.test" depends="clean,all.compile,database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+    <!-- runs all test from group that is equal to property value ${test.group}
+    and excludes all tests from group that is equal toproperty value ${test.group.excluded}.
+    You can put many groups into one property, separated by spaces or commas.
+    Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
+    Reports from tests are aviable in "Report" directory.
+    -->
+    <target name="all.test" depends="clean,all.compile,database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
-         <condition property="test.group.excluded" value="">
-             <not><isset property="test.group.excluded"/></not>
-         </condition>
-         <condition property="test.group" value="">
-             <not><isset property="test.group"/></not>
-         </condition>
+        <condition property="test.group.excluded" value="">
+            <not>
+                <isset property="test.group.excluded"/>
+            </not>
+        </condition>
+        <condition property="test.group" value="">
+            <not>
+                <isset property="test.group"/>
+            </not>
+        </condition>
 
-         <delete>
-             <fileset dir="${basedir}" >
-                <include name="cobertura.ser" />
+        <delete>
+            <fileset dir="${basedir}">
+                <include name="cobertura.ser"/>
             </fileset>
-         </delete>
+        </delete>
 
-         <cobertura-instrument>
+        <cobertura-instrument>
             <fileset dir="${basedir}/classes">
                 <include name="**/*.class"/>
-                <exclude name="production/eiana-init/**/*.class" />
-                <exclude name="test/eiana-domains/org/iana/rzm/domain/hibernate/test/stress/**/*.class" />
-                <exclude name="test/eiana-trans/org/iana/rzm/trans/hibernate/test/**/*.class" />
-                <exclude name="test/eiana-users/org/iana/rzm/user/hibernate/test/stress/**/*.class" />
-                <exclude name="test/facade-system/org/iana/rzm/system/stress/**/*.class" />
+                <exclude name="production/eiana-init/**/*.class"/>
+                <exclude name="test/eiana-domains/org/iana/rzm/domain/hibernate/test/stress/**/*.class"/>
+                <exclude name="test/eiana-trans/org/iana/rzm/trans/hibernate/test/**/*.class"/>
+                <exclude name="test/eiana-users/org/iana/rzm/user/hibernate/test/stress/**/*.class"/>
+                <exclude name="test/facade-system/org/iana/rzm/system/stress/**/*.class"/>
             </fileset>
-         </cobertura-instrument>
+        </cobertura-instrument>
 
-         <mkdir dir="${test.report.output}"/>
+        <mkdir dir="${test.report.output}"/>
 
-         <echo>
-             test  inluded = ${test.group}
-             test excluded = ${test.group.excluded}
-         </echo>
+        <echo>
+            test inluded = ${test.group}
+            test excluded = ${test.group.excluded}
+        </echo>
 
-         <path id="eiana.test-ng.classpath">
+        <path id="eiana.test-ng.classpath">
             <dirset dir="${basedir}/classes">
                 <include name="test/*"/>
                 <include name="production/*"/>
             </dirset>
             <fileset dir="${lib.dir}">
                 <include name="**/*jar"/>
-                <exclude name="cobertura/lib/asm-2.2.1.jar" />
+                <exclude name="cobertura/lib/asm-2.2.1.jar"/>
             </fileset>
-         </path>
+        </path>
 
-         <path id="eiana.test-ng.classpath">
+        <path id="eiana.test-ng.classpath">
             <dirset dir="${basedir}/classes">
                 <include name="test/*"/>
                 <include name="production/*"/>
             </dirset>
             <fileset dir="${lib.dir}">
                 <include name="**/*jar"/>
-                <exclude name="cobertura/lib/asm-2.2.1.jar" />
+                <exclude name="cobertura/lib/asm-2.2.1.jar"/>
             </fileset>
-         </path>
+        </path>
 
-         <testng classpathref="eiana.test-ng.classpath"
+        <testng classpathref="eiana.test-ng.classpath"
                 outputDir="${test.report.output}"
-                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}" >
-             <classfileset dir="${basedir}/classes/test" />
-             <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
-         </testng>
+                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}">
+            <classfileset dir="${basedir}/classes/test"/>
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser"/>
+        </testng>
 
-         <mkdir dir="${test.cobertura.output}"/>
-         <delete>
-            <fileset dir="${test.cobertura.output}" >
-                <include name="**/*" />
+        <mkdir dir="${test.cobertura.output}"/>
+        <delete>
+            <fileset dir="${test.cobertura.output}">
+                <include name="**/*"/>
             </fileset>
-         </delete>
+        </delete>
 
-         <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
+        <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
             <!--eiana-dns-->
-            <fileset dir="../eiana-dns/src">                    <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-dns/src">
+                <include name="**/*.java"/>
+            </fileset>
             <!--eiana-domains-->
-            <fileset dir="../eiana-domains/src">                <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-domains/test/conf">          <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-domains/test/dao">           <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-domains/test/hibernate">     <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-domains/test/failure">       <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-domains/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-domains/test/conf">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-domains/test/dao">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-domains/test/hibernate">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-domains/test/failure">
+                <include name="**/*.java"/>
+            </fileset>
             <!--eiana-logs-->
-            <fileset dir="../eiana-logs/src">                   <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-logs/src">
+                <include name="**/*.java"/>
+            </fileset>
             <!--eiana-notifications-->
-            <fileset dir="../eiana-notifications/src">          <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-notifications/test/accuracy"><include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-notifications/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-notifications/test/accuracy">
+                <include name="**/*.java"/>
+            </fileset>
             <!--eiana-trans-->
-            <fileset dir="../eiana-trans/src">                  <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/change">          <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/conf">            <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/confirmation">    <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/dao">             <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/hibernate">       <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/jbpm">            <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-trans/test/manager">         <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-trans/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/change">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/conf">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/confirmation">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/dao">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/hibernate">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/jbpm">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-trans/test/manager">
+                <include name="**/*.java"/>
+            </fileset>
             <!--eiana-users-->
-            <fileset dir="../eiana-users/src">                  <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-users/test/conf">            <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-users/test/dao">             <include name="**/*.java" /></fileset>
-            <fileset dir="../eiana-users/test/hibernate">       <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-users/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-users/test/conf">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-users/test/dao">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-users/test/hibernate">
+                <include name="**/*.java"/>
+            </fileset>
             <!--eiana-util-->
-            <fileset dir="../eiana-util/src">                   <include name="**/*.java" /></fileset>
+            <fileset dir="../eiana-util/src">
+                <include name="**/*.java"/>
+            </fileset>
             <!--facade-admin-->
-            <fileset dir="../facade-admin/src">                 <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-admin/src">
+                <include name="**/*.java"/>
+            </fileset>
             <!--facade-common-->
-            <fileset dir="../facade-common/src">                <include name="**/*.java" /></fileset>
-            <fileset dir="../facade-common/test">               <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-common/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../facade-common/test">
+                <include name="**/*.java"/>
+            </fileset>
             <!--facade-system-->
-            <fileset dir="../facade-system/src">                <include name="**/*.java" /></fileset>
-            <fileset dir="../facade-system/test/bean">          <include name="**/*.java" /></fileset>
-            <fileset dir="../facade-system/test/conf">          <include name="**/*.java" /></fileset>
+            <fileset dir="../facade-system/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../facade-system/test/bean">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../facade-system/test/conf">
+                <include name="**/*.java"/>
+            </fileset>
             <!--integration-rt-->
-            <fileset dir="../integration-rt/src">               <include name="**/*.java" /></fileset>
+            <fileset dir="../integration-rt/src">
+                <include name="**/*.java"/>
+            </fileset>
             <!--integration-securid-->
-            <fileset dir="../integration-securid/src">          <include name="**/*.java" /></fileset>
+            <fileset dir="../integration-securid/src">
+                <include name="**/*.java"/>
+            </fileset>
             <!--tests-->
-            <fileset dir="../tests/test">                       <include name="**/*.java" /></fileset>
-             <!--common-mail-->
-             <fileset dir="../common-mail/src">                 <include name="**/*.java" /></fileset>
-             <fileset dir="../common-mail/test">                <include name="**/*.java" /></fileset>
-             <!--eiana-mail-->
-             <fileset dir="../eiana-mail/src">                  <include name="**/*.java" /></fileset>
-             <fileset dir="../eiana-mail/test">                 <include name="**/*.java" /></fileset>
-             <!--common-pgp-->
-             <fileset dir="../common-pgp/src">                  <include name="**/*.java" /></fileset>
-             <fileset dir="../common-pgp/test">                 <include name="**/*.java" /></fileset>
-             <!--eiana-techcheck-->
-             <fileset dir="../eiana-techcheck/src">             <include name="**/*.java" /></fileset>
-             <fileset dir="../eiana-techcheck/test">            <include name="**/*.java" /></fileset>
+            <fileset dir="../tests/test">
+                <include name="**/*.java"/>
+            </fileset>
+            <!--common-mail-->
+            <fileset dir="../common-mail/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../common-mail/test">
+                <include name="**/*.java"/>
+            </fileset>
+            <!--eiana-mail-->
+            <fileset dir="../eiana-mail/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-mail/test">
+                <include name="**/*.java"/>
+            </fileset>
+            <!--common-pgp-->
+            <fileset dir="../common-pgp/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../common-pgp/test">
+                <include name="**/*.java"/>
+            </fileset>
+            <!--eiana-techcheck-->
+            <fileset dir="../eiana-techcheck/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../eiana-techcheck/test">
+                <include name="**/*.java"/>
+            </fileset>
         </cobertura-report>
     </target>
 
     <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
         <property name="test.group.excluded" value="excluded, stress"/>
+        <property name="test.group" value="facade-system, test"/>
         <antcall target="all.test"/>
     </target>
 
     <target name="all.test.slow" description="runs slow tests (includes slow tests e.g. stress tests)
     WARNING: Those tests can take a lot of time.
-    If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">        
+    If you are using IDEA IDE to run this task, you should be preperd for fact that it can stop responding.">
         <property name="test.group.excluded" value="excluded"/>
         <antcall target="all.test"/>
     </target>
-    
+
 </project>

@@ -1,21 +1,23 @@
 package org.iana.rzm.domain.dao.accuracy;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Not;
+import org.iana.criteria.Or;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.conf.SpringDomainsApplicationContext;
-import org.iana.criteria.Equal;
-import org.iana.criteria.Not;
+import org.iana.rzm.domain.dao.DomainDAO;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-@Test(sequential=true, groups = {"dao", "eiana-domains", "DomainDAOTest"})
+@Test(sequential = true, groups = {"dao", "eiana-domains", "DomainDAOTest"})
 public class DomainDAOTest {
 
     private DomainDAO dao;
@@ -31,7 +33,7 @@ public class DomainDAOTest {
         assert count == 0;
     }
 
-    @Test (dependsOnMethods = "testCount")
+    @Test(dependsOnMethods = "testCount")
     public void testFindCriteriaLimitOffset() {
         List<Domain> retrieved = dao.find(new Equal("name.name", "dao.org"), 0, 1);
         assert retrieved.isEmpty();
@@ -39,7 +41,7 @@ public class DomainDAOTest {
         assert retrieved.isEmpty();
     }
 
-    @Test (dependsOnMethods = "testFindCriteriaLimitOffset")
+    @Test(dependsOnMethods = "testFindCriteriaLimitOffset")
     public void testDomainCreate() throws Exception {
         Domain domainCreated = new Domain("dao.org");
         domainCreated.addNameServer(new Host("host.dao.org"));
@@ -52,13 +54,16 @@ public class DomainDAOTest {
         dao.create(new Domain("second.org"));
     }
 
-    @Test (dependsOnMethods = "testDomainCreate")
+    @Test(dependsOnMethods = "testDomainCreate")
     public void testCount2() throws Exception {
-        int count = dao.count(new Not(new Equal("name.name", "exist.no")));
+        List<Criterion> criterias = new ArrayList<Criterion>();
+        criterias.add(new Equal("name.name", "dao.org"));
+        criterias.add(new Equal("name.name", "second.org"));
+        int count = dao.count(new Or(criterias));
         assert count == 2;
     }
 
-    @Test (dependsOnMethods = "testCount2")
+    @Test(dependsOnMethods = "testCount2")
     public void testFindCriteriaLimitOffset2() {
         List<Domain> retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 1);
         assert retrieved.size() == 1;
@@ -74,14 +79,14 @@ public class DomainDAOTest {
         retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 2);
         assert retrieved.size() == 2;
         Iterator iterator = retrieved.iterator();
-        assert ((Domain)iterator.next()).getName().equals("dao.org");
-        assert ((Domain)iterator.next()).getName().equals("second.org");
-        
+        assert ((Domain) iterator.next()).getName().equals("dao.org");
+        assert ((Domain) iterator.next()).getName().equals("second.org");
+
         retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 5);
         assert retrieved.size() == 2;
         iterator = retrieved.iterator();
-        assert ((Domain)iterator.next()).getName().equals("dao.org");
-        assert ((Domain)iterator.next()).getName().equals("second.org");
+        assert ((Domain) iterator.next()).getName().equals("dao.org");
+        assert ((Domain) iterator.next()).getName().equals("second.org");
     }
 
     @Test(dependsOnMethods = {"testFindCriteriaLimitOffset2"})
@@ -107,11 +112,11 @@ public class DomainDAOTest {
     @Test(dependsOnMethods = {"testDomainDelegatedTo"})
     public void testDelete() throws Exception {
         dao.delete(dao.get("dao.org"));
-    }             
+    }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void destroy() {
         for (Domain domain : dao.findAll())
-            dao.delete(domain);
+            dao.delete(domain.getName());
     }
 }

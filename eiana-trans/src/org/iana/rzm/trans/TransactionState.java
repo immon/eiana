@@ -1,9 +1,9 @@
 package org.iana.rzm.trans;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Basic;
-import javax.persistence.Transient;
+import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
@@ -17,25 +17,34 @@ import java.util.Set;
 public class TransactionState {
 
     public static enum Name {
-        PENDING_CONTACT_CONFIRMATION,
-        DECISION_PENDING_IMPACTED_PARTIES,
-        PENDING_IMPACTED_PARTIES,
-        PENDING_IANA_CONFIRMATION,
-        PENDING_EVALUATION,
-        PENDING_EXT_APPROVAL,
+        FIRST_NSLINK_CHANGE_DECISION,
         PENDING_TECH_CHECK,
         PENDING_TECH_CHECK_REMEDY,
-        PENDING_USDOC_APPROVAL,
+        PENDING_CONTACT_CONFIRMATION,
+        MODIFICATIONS_IN_CONTACT_DECISION,
+        PENDING_SOENDORSEMENT,
+        NS_SHARED_GLUE_CHANGE_DECISION,
+        PENDING_IMPACTED_PARTIES,
+        PENDING_MANUAL_REVIEW,
+        MATCHES_SI_BREAKPOINT_DECISION,
+        PENDING_EXT_APPROVAL,
+        REDEL_FLAG_SET_DECISION,
+        PENDING_EVALUATION,
         PENDING_IANA_CHECK,
-        PENDING_DATABASE_INSERTION,
-        USDOC_APPROVED,
+        SECOND_NSLINK_CHANGE_DECISION,
+        PENDING_SUPP_TECH_CHECK,
+        PENDING_SUPP_TECH_CHECK_REMEDY,
+        PENDING_USDOC_APPROVAL,
+        NS_CHANGE_DECISION,
         PENDING_ZONE_INSERTION,
         PENDING_ZONE_PUBLICATION,
+        PENDING_DATABASE_INSERTION,
         COMPLETED,
         WITHDRAWN,
         REJECTED,
         ADMIN_CLOSED,
-        EXCEPTION
+        EXCEPTION,
+        PENDING_IANA_CONFIRMATION  //todo for back compatibility only
     }
 
     @Transient
@@ -66,11 +75,11 @@ public class TransactionState {
     }
 
     public void setName(String name) {
-        try{
-        this.name = Name.valueOf(name);
-        }catch(IllegalArgumentException e){
+        try {
+            this.name = Name.valueOf(name);
+        } catch (IllegalArgumentException e) {
             //TODO replace with log4j
-            System.out.println("Wrong state name!:"+name);
+            System.out.println("Wrong state name!:" + name);
             throw e;
         }
 
