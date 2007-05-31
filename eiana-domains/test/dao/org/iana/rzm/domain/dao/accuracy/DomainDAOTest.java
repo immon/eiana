@@ -2,7 +2,6 @@ package org.iana.rzm.domain.dao.accuracy;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
-import org.iana.criteria.Not;
 import org.iana.criteria.Or;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
@@ -65,24 +64,28 @@ public class DomainDAOTest {
 
     @Test(dependsOnMethods = "testCount2")
     public void testFindCriteriaLimitOffset2() {
-        List<Domain> retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 1);
+        List<Criterion> criterias = new ArrayList<Criterion>();
+        criterias.add(new Equal("name.name", "dao.org"));
+        criterias.add(new Equal("name.name", "second.org"));
+
+        List<Domain> retrieved = dao.find(new Or(criterias), 0, 1);
         assert retrieved.size() == 1;
         assert retrieved.iterator().next().getName().equals("dao.org");
 
-        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 1, 1);
+        retrieved = dao.find(new Or(criterias), 1, 1);
         assert retrieved.size() == 1;
         assert retrieved.iterator().next().getName().equals("second.org");
 
-        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 2, 1);
+        retrieved = dao.find(new Or(criterias), 2, 1);
         assert retrieved.isEmpty();
 
-        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 2);
+        retrieved = dao.find(new Or(criterias), 0, 2);
         assert retrieved.size() == 2;
         Iterator iterator = retrieved.iterator();
         assert ((Domain) iterator.next()).getName().equals("dao.org");
         assert ((Domain) iterator.next()).getName().equals("second.org");
 
-        retrieved = dao.find(new Not(new Equal("name.name", "exist.no")), 0, 5);
+        retrieved = dao.find(new Or(criterias), 0, 5);
         assert retrieved.size() == 2;
         iterator = retrieved.iterator();
         assert ((Domain) iterator.next()).getName().equals("dao.org");

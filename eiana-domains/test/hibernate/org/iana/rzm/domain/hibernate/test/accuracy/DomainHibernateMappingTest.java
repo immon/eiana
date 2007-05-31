@@ -1,13 +1,13 @@
 package org.iana.rzm.domain.hibernate.test.accuracy;
 
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.domain.hibernate.test.common.HibernateMappingUnitTest;
-import org.iana.rzm.domain.hibernate.test.common.HibernateMappingTestUtil;
-import org.testng.annotations.Test;
-import org.hibernate.Session;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.hibernate.test.common.HibernateMappingTestUtil;
+import org.iana.rzm.domain.hibernate.test.common.HibernateMappingUnitTest;
+import org.testng.annotations.Test;
 
 import java.io.Serializable;
 
@@ -59,7 +59,7 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         runInTransaction(new HibernateSeq() {
             public void run(Session session) throws HibernateException {
                 Domain object1 = (Domain) session.get(Domain.class, domainID);
-                assert create().equals(object1);
+                assert create().equals(object1.clone());
             }
         });
     }
@@ -79,7 +79,7 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         runInTransaction(new HibernateSeq() {
             public void run(Session session) throws HibernateException {
                 Domain object3 = (Domain) session.get(Domain.class, domainID);
-                assert change(create()).equals(object3);
+                assert change(create()).equals(object3.clone());
             }
         });
     }
