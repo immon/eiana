@@ -22,8 +22,14 @@ public class DNSIPv6AddressImplTest {
     }
 
     @Test
-    public void testNormalizationColonMiddle() {
+    public void testNormalizationColonMiddle1() {
         DNSIPv6Address addr = new DNSIPv6AddressImpl("ff::1");
         assert "ff:0:0:0:0:0:0:1".equals(addr.getAddress());
+    }
+
+    @Test
+    public void testNormalizationColonMiddle2() {
+        DNSIPv6Address addr = new DNSIPv6AddressImpl("ff::2:1");
+        assert "ff:0:0:0:0:0:2:1".equals(addr.getAddress());
     }
 }
