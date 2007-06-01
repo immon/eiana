@@ -42,11 +42,15 @@ public interface IDomainVO extends Trackable {
 
     List<ContactVO> getAdminContacts();
 
-    void setAdminContacts(List<ContactVO> adminContacts);
+    ContactVO getAdminContact();
+
+    void setAdminContact(ContactVO adminContacts);
 
     List<ContactVO> getTechContacts();
 
-    void setTechContacts(List<ContactVO> techContacts);
+    ContactVO getTechContact();
+
+    void setTechContact(ContactVO techContacts);
 
     List<HostVO> getNameServers();
 

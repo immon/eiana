@@ -31,14 +31,12 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         // commented-out since it requires session.merge to be used in a new approach (this new approach avoids leaving trash contacts after update).
         // o.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true, "US"));
         o.setWhoisServer("changed.whoid.server");
-        o.removeAdminContact(o.getAdminContacts().iterator().next());
-        o.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true, "US"));
+        o.setAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true, "US"));
         o.removeBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         o.addBreakpoint(Domain.Breakpoint.NS_CHANGE_EXT_REVIEW);
         o.removeNameServer(o.getNameServers().iterator().next());
         o.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns3." + o.getName())));
-        o.removeTechContact(o.getTechContacts().iterator().next());
-        o.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true, "US"));
+        o.setTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true, "US"));
         return o;
     }
 

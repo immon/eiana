@@ -12,7 +12,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
     public DomainDiffConfiguration(HostManager hostManager) {
 
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
-            "supportingOrg", "adminContacts", "techContacts", "whoisServer", "registryUrl", "nameServers"
+            "supportingOrg", "adminContact", "techContact", "whoisServer", "registryUrl", "nameServers"
         }, "name");
         domainConfig.addFieldClass("supportingOrg", Contact.class);
         domainConfig.addFieldClass("adminContacts", Contact.class);

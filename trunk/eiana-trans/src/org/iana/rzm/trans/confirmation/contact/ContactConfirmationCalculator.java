@@ -1,18 +1,12 @@
 package org.iana.rzm.trans.confirmation.contact;
 
 import org.jbpm.graph.def.ActionHandler;
-import org.jbpm.graph.def.Node;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.graph.exe.Token;
-import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.confirmation.StateConfirmations;
-import org.iana.rzm.trans.confirmation.MandatoryRoleConfirmations;
-import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
 
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.rmi.server.UID;
@@ -27,11 +21,12 @@ public class ContactConfirmationCalculator implements ActionHandler {
     public void execute(ExecutionContext executionContext) throws Exception {
         Transaction trans = new Transaction(executionContext.getProcessInstance());
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
-        for (Contact tc : trans.getCurrentDomain().getTechContacts()) {
-            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, tc, generateToken()));
+        Domain domain = trans.getCurrentDomain();
+        if (domain.getTechContact() != null) {
+            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, domain.getTechContact(), generateToken()));
         }
-        for (Contact ac : trans.getCurrentDomain().getAdminContacts()) {
-            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, ac, generateToken()));
+        if (domain.getAdminContact() != null) {
+            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, domain.getAdminContact(), generateToken()));
         }
         trans.getTransactionData().setContactConfirmations(new ContactConfirmations(contacts));
     }

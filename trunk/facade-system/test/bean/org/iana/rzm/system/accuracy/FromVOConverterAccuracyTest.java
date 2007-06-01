@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 
 @Test(sequential = true, groups = {"accuracy", "facade-system", "FromVOConverter"})
 public class FromVOConverterAccuracyTest {
-    List<ContactVO> contactVOList;
     AddressVO addressVO;
     List<HostVO> hostVOList;
     String email;
@@ -37,7 +36,6 @@ public class FromVOConverterAccuracyTest {
 
     @BeforeClass
     public void init() {
-        contactVOList = new ArrayList<ContactVO>();
         addressVO = new AddressVO();
         hostVOList = new ArrayList<HostVO>();
         breakpointVOSet = new HashSet<IDomainVO.Breakpoint>();
@@ -107,8 +105,6 @@ public class FromVOConverterAccuracyTest {
 
         Contact contact = FromVOConverter.toContact(contactVO);
         assert assertContact(contact);
-
-        contactVOList.add(contactVO);
     }
 
     private boolean assertBreakpointSet(Set<Domain.Breakpoint> breakpointSet) {
@@ -207,7 +203,7 @@ public class FromVOConverterAccuracyTest {
         DomainVO domainVO = new DomainVO();
         domainVO.setName("domain.org");
         domainVO.setObjId(1L);
-        domainVO.setAdminContacts(contactVOList);
+        domainVO.setAdminContact(contactVO);
         domainVO.setBreakpoints(breakpointVOSet);
         domainVO.setNameServers(hostVOList);
         domainVO.setRegistryUrl("http://somepage.com/someFile.txt");
@@ -215,7 +211,7 @@ public class FromVOConverterAccuracyTest {
         domainVO.setState(IDomainVO.State.NO_ACTIVITY);
         domainVO.setStatus(IDomainVO.Status.NEW);
         domainVO.setSupportingOrg(contactVO);
-        domainVO.setTechContacts(contactVOList);
+        domainVO.setTechContact(contactVO);
         domainVO.setWhoisServer(new Name("whois"));
 
         domainVO.setCreated(created);
@@ -227,10 +223,8 @@ public class FromVOConverterAccuracyTest {
 
         assert domain != null;
         assert domain.getObjId() == 1L;
-        List<Contact> adminContacts = domain.getAdminContacts();
-        assert adminContacts.size() == 1;
-        for (Contact contact : adminContacts)
-            assert assertContact(contact);
+        Contact adminContact = domain.getAdminContact();
+        assert assertContact(adminContact);
         Set<Domain.Breakpoint> breakpointSet = domain.getBreakpoints();
         assert assertBreakpointSet(breakpointSet);
         List<Host> hostList = domain.getNameServers();
@@ -242,10 +236,8 @@ public class FromVOConverterAccuracyTest {
         assert domain.getState().equals(Domain.State.NO_ACTIVITY);
         assert domain.getStatus().equals(Domain.Status.NEW);
         assert assertContact(domain.getSupportingOrg());
-        List<Contact> techContacts = domain.getTechContacts();
-        assert techContacts.size() == 1;
-        for (Contact contact : techContacts)
-            assert assertContact(contact);
+        Contact techContact = domain.getTechContact();
+        assert assertContact(techContact);
         assert domain.getWhoisServer().equals("whois");
 
         assert domain.getName().equals("domain.org");

@@ -313,10 +313,10 @@ public class GuardedSystemTransactionServiceTest {
         domain.setStatus(Domain.Status.ACTIVE);
         domain.setSupportingOrg(setupContact(new Contact(), "supporting-org", name, "US"));
         domain.setWhoisServer("whois." + name);
-        domain.addAdminContact(setupContact(new Contact(), "admin", name, "US"));
+        domain.setAdminContact(setupContact(new Contact(), "admin", name, "US"));
         domain.addNameServer(setupFirstHost());
         domain.addNameServer(setupSecondHost());
-        domain.addTechContact(setupContact(new Contact(), "tech", name, "US"));
+        domain.setTechContact(setupContact(new Contact(), "tech", name, "US"));
         return domain;
     }
 

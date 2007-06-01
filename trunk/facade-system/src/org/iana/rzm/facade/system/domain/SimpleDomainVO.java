@@ -93,7 +93,7 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         throw new UnsupportedOperationException();
     }
 
-    public void setAdminContacts(List<ContactVO> adminContacts) {
+    public void setAdminContact(List<ContactVO> adminContacts) {
         throw new UnsupportedOperationException();
     }
 
@@ -101,7 +101,23 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         throw new UnsupportedOperationException();
     }
 
-    public void setTechContacts(List<ContactVO> techContacts) {
+    public ContactVO getAdminContact() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setAdminContact(ContactVO adminContacts) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ContactVO getTechContact() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setTechContact(ContactVO techContacts) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setTechContact(List<ContactVO> techContacts) {
         throw new UnsupportedOperationException();
     }
 
