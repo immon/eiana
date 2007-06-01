@@ -1,4 +1,4 @@
-<process-definition name="Transaction Test">
+<process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
         <transition to="PENDING_CONTACT_CONFIRMATION"></transition>

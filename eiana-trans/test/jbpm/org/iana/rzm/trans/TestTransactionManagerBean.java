@@ -3,6 +3,8 @@ package org.iana.rzm.trans;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.conf.TransactionTestProcess;
+import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.ticketing.TicketingService;
 import org.iana.objectdiff.DiffConfiguration;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -11,9 +13,6 @@ import org.jbpm.graph.exe.ProcessInstance;
  * @author Jakub Laszkiewicz
  */
 public class TestTransactionManagerBean extends TransactionManagerBean implements TestTransactionManager {
-    private static final String TRANSACTION_TEST_PROCESS = "Transaction Test";
-    private static final String CONFIRAMTION_TEST_PROCESS = "Confirmation Test";
-
     private ProcessDAO processDAO;
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
@@ -29,7 +28,7 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
-        ProcessInstance pi = processDAO.newProcessInstance(TRANSACTION_TEST_PROCESS);
+        ProcessInstance pi = processDAO.newProcessInstance(TransactionTestProcess.getProcessName());
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();
         return new Transaction(pi);
@@ -39,7 +38,7 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
-        ProcessInstance pi = processDAO.newProcessInstance(CONFIRAMTION_TEST_PROCESS);
+        ProcessInstance pi = processDAO.newProcessInstance(ConfirmationTestProcess.getProcessName());
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();
         return new Transaction(pi);
