@@ -36,9 +36,12 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
-        ProcessInstance processInstances = processDAO.getProcessInstance(id);
-        if (processInstances == null) throw new NoSuchTransactionException(id);
-        Transaction transaction = new Transaction(processInstances);
+        ProcessInstance pi = processDAO.getProcessInstance(id);
+        if (pi == null ||
+                (!DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()) &&
+                    !DOMAIN_CREATION_PROCESS.equals(pi.getProcessDefinition().getName())))
+            throw new NoSuchTransactionException(id);
+        Transaction transaction = new Transaction(pi);
         return transaction;
     }
 
@@ -73,31 +76,23 @@ public class TransactionManagerBean implements TransactionManager {
 
     public List<Transaction> findAll() {
         List<ProcessInstance> processInstances = processDAO.findAll();
-        List<Transaction> result = new ArrayList<Transaction>();
-        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
-        return result;
+        return toTransactions(processInstances);
     }
 
     public List<Transaction> find(TransactionCriteria criteria) {
         ProcessCriteria processCriteria = TransactionToProcessCriteriaConverter.convert(criteria);
         List<ProcessInstance> processInstances = processDAO.find(processCriteria);
-        List<Transaction> result = new ArrayList<Transaction>();
-        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
-        return result;
+        return toTransactions(processInstances);
     }
 
     public List<Transaction> findTransactions(String domainName) {
         List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(domainName);
-        List<Transaction> result = new ArrayList<Transaction>();
-        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
-        return result;
+        return toTransactions(processInstances);
     }
 
     public List<Transaction> findOpenTransactions(String domainName) {
         List<ProcessInstance> processInstances = processDAO.findOpenProcessInstances(domainName);
-        List<Transaction> result = new ArrayList<Transaction>();
-        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
-        return result;
+        return toTransactions(processInstances);
     }
 
     public List<Transaction> findOpenTransactions(Set<String> domainNames) {
@@ -122,16 +117,12 @@ public class TransactionManagerBean implements TransactionManager {
 
     public List<Transaction> findTransactions(RZMUser user) {
         List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(user);
-        List<Transaction> result = new ArrayList<Transaction>();
-        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
-        return result;
+        return toTransactions(processInstances);
     }
 
     public List<Transaction> findTransactions(RZMUser user, String domainName) {
         List<ProcessInstance> processInstances = processDAO.findAllProcessInstances(user, domainName);
-        List<Transaction> result = new ArrayList<Transaction>();
-        for (ProcessInstance pi : processInstances) result.add(new Transaction(pi));
-        return result;
+        return toTransactions(processInstances);
     }
 
     public void deleteTransaction(Transaction transaction) throws NoSuchTransactionException {
@@ -146,5 +137,14 @@ public class TransactionManagerBean implements TransactionManager {
         ProcessInstance pi = processDAO.getProcessInstance(transactionId);
         if (pi == null) throw new NoSuchTransactionException(transactionId);
         processDAO.delete(pi);
+    }
+
+    private List<Transaction> toTransactions(List<ProcessInstance> processInstances) {
+        List<Transaction> result = new ArrayList<Transaction>();
+        for (ProcessInstance pi : processInstances)
+            if (DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()) ||
+                    DOMAIN_CREATION_PROCESS.equals(pi.getProcessDefinition().getName()))
+                result.add(new Transaction(pi));
+        return result;
     }
 }
