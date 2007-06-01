@@ -46,4 +46,20 @@ public abstract class DNSIPAddressImpl implements DNSIPAddress {
     public static DNSIPv6Address createIPv6Address(String addr) throws InvalidIPAddressException {
         return new DNSIPv6AddressImpl(addr);
     }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DNSIPAddressImpl that = (DNSIPAddressImpl) o;
+
+        if (address != null ? !address.equals(that.address) : that.address != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        return (address != null ? address.hashCode() : 0);
+    }
 }
