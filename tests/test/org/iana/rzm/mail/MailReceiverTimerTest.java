@@ -1,24 +1,24 @@
 package org.iana.rzm.mail;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.SpringTransApplicationContext;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.jbpm.scheduler.impl.SchedulerThread;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.graph.exe.Token;
+import org.jbpm.scheduler.impl.SchedulerThread;
 import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
+
+@Test(sequential = true, groups = "excluded")
 public class MailReceiverTimerTest {
 
     private ProcessDAO processDAO;
@@ -57,7 +57,7 @@ public class MailReceiverTimerTest {
         }
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() throws Exception {
         try {
             List<ProcessInstance> processInstances = processDAO.findAll();
