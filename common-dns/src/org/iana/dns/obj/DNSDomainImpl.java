@@ -3,10 +3,10 @@ package org.iana.dns.obj;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -30,6 +30,15 @@ public class DNSDomainImpl implements DNSDomain {
 
     public String[] getLabels() {
         return name.getLabels();
+    }
+
+    public void addNameServer(DNSHost host) {
+        nameServers.put(host.getName(), host);
+    }
+
+    public void setNameServers(Set<DNSHost> hosts) {
+        for (DNSHost host : hosts)
+            addNameServer(host);
     }
 
     public Set<DNSHost> getNameServers() {

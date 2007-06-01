@@ -3,12 +3,14 @@ package org.iana.dns.check;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Piotr    Tkaczyk
  */
 public class DNSTechnicalCheck {
 
@@ -32,10 +34,10 @@ public class DNSTechnicalCheck {
             }
 
             MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
-            checkDomain(domain, nameServers, e);
             for (DNSNameServer ns : nameServers) {
                 checkNameServer(ns, e);
             }
+            checkDomain(domain, nameServers, e);
         }
     }
 
@@ -54,7 +56,7 @@ public class DNSTechnicalCheck {
     }
 
     private void checkNameServer(DNSNameServer nameServer, MultipleDNSTechnicalCheckException error) {
-        if (!isEmpty(domainChecks)) {
+        if (!isEmpty(nameServerChecks)) {
             for (DNSNameServerTechnicalCheck check : nameServerChecks) {
                 try {
                     check.check(nameServer);
@@ -67,7 +69,7 @@ public class DNSTechnicalCheck {
         }
     }
 
-    private boolean isEmpty(List<?> list) {
-        return list != null && list.size() > 0;
+    private boolean isEmpty(Collection<?> col) {
+        return col == null || col.isEmpty();
     }
 }
