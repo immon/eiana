@@ -4,8 +4,8 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class EmptySystemTransactionService implements SystemTransactionService {
 
     }
 
-    public AuthenticatedUser getUser() {
+    public AuthenticatedUser getAuthenticatedUser() {
         return null;
     }
 
@@ -73,6 +73,10 @@ public class EmptySystemTransactionService implements SystemTransactionService {
     }
 
     public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria)  throws AccessDeniedException, InfrastructureException {
+        return null;
+    }
+
+    public UserVO getUser() {
         return null;
     }
 }

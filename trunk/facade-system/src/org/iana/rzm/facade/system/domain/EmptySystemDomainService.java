@@ -10,10 +10,10 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 
 import java.util.List;
-import java.util.Collections;
 import java.util.ArrayList;
 
 
@@ -41,7 +41,11 @@ public class EmptySystemDomainService implements SystemDomainService {
     public void close() {
     }
 
-    public AuthenticatedUser getUser() {
+    public AuthenticatedUser getAuthenticatedUser() {
+        return null;
+    }
+
+    public UserVO getUser() {
         return null;
     }
 }

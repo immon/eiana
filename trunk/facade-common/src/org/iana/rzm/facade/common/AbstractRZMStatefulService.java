@@ -2,6 +2,8 @@ package org.iana.rzm.facade.common;
 
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.RZMUser;
@@ -23,7 +25,6 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
 
     protected UserManager userManager;
     protected AuthenticatedUser user;
-
 
     protected AbstractRZMStatefulService() {
     }
@@ -84,7 +85,12 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         }
     }
 
-    public AuthenticatedUser getUser() {
+    public AuthenticatedUser getAuthenticatedUser() {
         return user;
     }
+
+    public UserVO getUser() {
+        return UserConverter.convert(getRZMUser());
+    }
+    
 }

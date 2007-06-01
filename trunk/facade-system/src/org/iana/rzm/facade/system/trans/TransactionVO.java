@@ -2,9 +2,13 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.user.SystemRole;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -23,6 +27,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private List<String> tokens;
     private boolean redelegation;
     private String submitterEmail;
+    private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
 
     public Long getTransactionID() {
         return transactionID;
@@ -156,5 +161,21 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public void setSubmitterEmail(String submitterEmail) {
         this.submitterEmail = submitterEmail;
+    }
+
+    public boolean acConfirmed() {
+        return confirmations.contains(SystemRoleVO.SystemType.AC);
+    }
+
+    public boolean tcConfirmed() {
+        return confirmations.contains(SystemRoleVO.SystemType.TC);
+    }
+
+    public boolean soConfirmed() {
+        return confirmations.contains(SystemRoleVO.SystemType.SO);
+    }
+
+    public void setConfirmations(Set<SystemRoleVO.SystemType> confirmations) {
+        this.confirmations = confirmations;
     }
 }
