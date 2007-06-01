@@ -47,22 +47,23 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
         if (addr == null) throw new IllegalArgumentException("null address");
         addr = addr.toLowerCase();
         IPAddressValidator.getInstance().validateIPv6(addr);
-        if (isCompressed(addr)) {
-            boolean start = addr.startsWith(":");
-            boolean end = addr.endsWith(":");
-            int missing = 8-colons(addr);
-            if (start || end) ++missing;
-            StringBuffer zeros = new StringBuffer(":");
-            while (missing-- > 0) zeros.append("0:");
-            if (start) zeros.deleteCharAt(0);
-            if (end) zeros.deleteCharAt(zeros.length()-1);
-            addr = addr.replaceFirst("::", zeros.toString());
-        }
-        return addr;
+        return isCompressed(addr) ? uncompress(addr) : addr;
     }
 
     private static boolean isCompressed(String addr) {
         return addr.indexOf("::") >= 0;
+    }
+
+    private static String uncompress(String addr) {
+        boolean start = addr.startsWith(":");
+        boolean end = addr.endsWith(":");
+        int missing = 8-colons(addr);
+        if (start || end) ++missing;
+        StringBuffer zeros = new StringBuffer(":");
+        while (missing-- > 0) zeros.append("0:");
+        if (start) zeros.deleteCharAt(0);
+        if (end) zeros.deleteCharAt(zeros.length()-1);
+        return addr.replaceFirst("::", zeros.toString());
     }
 
     private static String[] getParts(String addr) {
