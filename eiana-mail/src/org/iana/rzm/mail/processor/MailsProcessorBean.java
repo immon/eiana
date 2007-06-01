@@ -205,9 +205,9 @@ public class MailsProcessorBean implements MailsProcessor {
         SectionInst suppOrgSect = template.getSectionInstance(DOMAIN_SUPP_ORG_SECTION_NAME);
         domain.setSupportingOrg(toContact(suppOrgSect, domain.getSupportingOrg()));
 
-        domain.setAdminContacts(updateContacts(domain.getAdminContacts(),
+        domain.setAdminContact(updateContacts(domain.getAdminContacts(),
                 template.getListInstance(DOMAIN_ADMIN_CONTACT_SECTION_NAME)));
-        domain.setTechContacts(updateContacts(domain.getTechContacts(),
+        domain.setTechContact(updateContacts(domain.getTechContacts(),
                 template.getListInstance(DOMAIN_TECH_CONTACT_SECTION_NAME)));
         domain.setNameServers(updateHosts(domain.getNameServers(),
                 template.getListInstance(DOMAIN_NAME_SERVERS_SECTION_NAME)));
@@ -220,7 +220,7 @@ public class MailsProcessorBean implements MailsProcessor {
         return domain;
     }
 
-    private List<ContactVO> updateContacts(List<ContactVO> contacts, ListInst contactList) throws MailsProcessorException {
+    private ContactVO updateContacts(List<ContactVO> contacts, ListInst contactList) throws MailsProcessorException {
         for (ElementInst element : contactList.getList()) {
             SectionInst section = (SectionInst) element;
             if (section.isNotChanged()) continue;
@@ -247,7 +247,7 @@ public class MailsProcessorBean implements MailsProcessor {
             }
             contacts.add(toContact(section, new ContactVO()));
         }
-        return contacts;
+        return contacts.isEmpty() ? null : contacts.get(0);
     }
 
     private List<HostVO> updateHosts(List<HostVO> hosts, ListInst hostList) throws MailsProcessorException {

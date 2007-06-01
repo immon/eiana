@@ -29,23 +29,23 @@ public class DomainDecorator {
     }
 
     public void setAdminContacts(ContactDecorator contact) {
-        domain.addAdminContact(contact.getContact());
+        domain.setAdminContact(contact.getContact());
     }
 
     public void setAdminContacts(List<ContactDecorator> adminContacts) {
         for (ContactDecorator contact : adminContacts)
             if (contact != null)
-                domain.addAdminContact(contact.getContact());
+                domain.setAdminContact(contact.getContact());
     }
 
     public void setTechContacts(ContactDecorator contact) {
-        domain.addTechContact(contact.getContact());
+        domain.setTechContact(contact.getContact());
     }
 
     public void setTechContacts(List<ContactDecorator> techContacts) {
         for (ContactDecorator contact : techContacts)
             if (contact != null)
-                domain.addTechContact(contact.getContact());
+                domain.setTechContact(contact.getContact());
     }
 
     public void setRegistryUrl(String registryUrl) {

@@ -11,7 +11,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -121,12 +120,12 @@ public class DomainChangeDetectorTest {
     public void testAdminContactAddition() {
         Domain src = createDomain();
         Domain dst = createDomain();
-        dst.addAdminContact(createContact("new-ac"));
+        dst.setAdminContact(createContact("new-ac"));
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null && change.isModification();
         ObjectChange objectChange = (ObjectChange) change;
         Map<String, Change> fieldChanges = objectChange.getFieldChanges();
-        assert fieldChanges.size() == 1 && fieldChanges.get("adminContacts").isModification();
+        assert fieldChanges.size() == 1 && fieldChanges.get("adminContact").isModification();
     }
 
     @Test
@@ -168,8 +167,8 @@ public class DomainChangeDetectorTest {
     final static Domain createDomain() {
         Domain ret = new Domain("test.change");
         ret.setSupportingOrg(createContact("so"));
-        ret.addAdminContact(createContact("ac"));
-        ret.addTechContact(createContact("tc"));
+        ret.setAdminContact(createContact("ac"));
+        ret.setTechContact(createContact("tc"));
         ret.setWhoisServer("whois.server");
         ret.setRegistryUrl("registry.url");
         return ret;
@@ -177,7 +176,6 @@ public class DomainChangeDetectorTest {
 
     final static Contact createContact(String prefix) {
         Contact ret = new Contact();
-        ret.setObjId(new Long(prefix.hashCode()));
         ret.setOrganization("org");
         ret.setName(prefix + "-name");
         ret.setEmail(prefix+"-email@post.org");

@@ -8,9 +8,9 @@ import org.testng.annotations.Test;
 import java.io.Serializable;
 
 /**
+ * Test disabled - Contact is not entity any more.
  * @author Jakub Laszkiewicz
  */
-@Test(groups = {"hibernate", "eiana-domains"})
 public class ContactHibernateMappingTest extends HibernateMappingUnitTest<Contact> {
 
     protected Contact create() {
@@ -25,7 +25,6 @@ public class ContactHibernateMappingTest extends HibernateMappingUnitTest<Contac
         return o.getObjId();
     }
 
-    @Test
     public void testContact() throws Exception {
         super.test();
     }

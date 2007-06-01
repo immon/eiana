@@ -42,16 +42,24 @@ class SystemDomainVO implements IDomainVO, Serializable {
         return domain.getAdminContacts();
     }
 
-    public void setAdminContacts(List<ContactVO> adminContacts) {
-        domain.setAdminContacts(adminContacts);
+    public ContactVO getAdminContact() {
+        return domain.getAdminContact();
+    }
+
+    public void setAdminContact(ContactVO adminContacts) {
+        domain.setAdminContact(adminContacts);
     }
 
     public List<ContactVO> getTechContacts() {
         return domain.getTechContacts();
     }
 
-    public void setTechContacts(List<ContactVO> techContacts) {
-        domain.setTechContacts(techContacts);
+    public ContactVO getTechContact() {
+        return domain.getTechContact();
+    }
+
+    public void setTechContact(ContactVO techContacts) {
+        domain.setTechContact(techContacts);
     }
 
     public List<HostVO> getNameServers() {

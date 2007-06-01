@@ -79,18 +79,18 @@ public class TransactionConverter {
                 action.addChange(toChangeVOSimple("registryUrl", simpleChange));
                 actions.add(action);
             }
-            if (fieldChanges.containsKey("adminContacts")) {
+            if (fieldChanges.containsKey("adminContact")) {
                 TransactionActionVO action = new TransactionActionVO();
                 action.setName(TransactionActionVO.MODIFY_AC);
-                CollectionChange adminChange = (CollectionChange) fieldChanges.get("adminContacts");
-                action.addChange(toChangeVO("adminContacts", adminChange));
+                ObjectChange adminChange = (ObjectChange) fieldChanges.get("adminContact");
+                action.addChange(toChangeVO("adminContact", adminChange));
                 actions.add(action);
             }
-            if (fieldChanges.containsKey("techContacts")) {
+            if (fieldChanges.containsKey("techContact")) {
                 TransactionActionVO action = new TransactionActionVO();
                 action.setName(TransactionActionVO.MODIFY_TC);
-                CollectionChange adminChange = (CollectionChange) fieldChanges.get("techContacts");
-                action.addChange(toChangeVO("techContacts", adminChange));
+                ObjectChange adminChange = (ObjectChange) fieldChanges.get("techContact");
+                action.addChange(toChangeVO("techContact", adminChange));
                 actions.add(action);
             }
             if (fieldChanges.containsKey("supportingOrg")) {

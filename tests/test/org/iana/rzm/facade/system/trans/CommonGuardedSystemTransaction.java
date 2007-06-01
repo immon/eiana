@@ -203,8 +203,8 @@ public abstract class CommonGuardedSystemTransaction {
     protected Domain createDomain(String name) {
         Domain newDomain = new Domain(name);
         newDomain.setSupportingOrg(new Contact("supportOrg"));
-        newDomain.addTechContact(new Contact("tech"));
-        newDomain.addAdminContact(new Contact("admin"));
+        newDomain.setTechContact(new Contact("tech"));
+        newDomain.setAdminContact(new Contact("admin"));
         return newDomain;
     }
 

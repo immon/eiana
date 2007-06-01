@@ -1,10 +1,10 @@
 package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.Cascade;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.common.EmailAddress;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.dns.validator.InvalidDomainNameException;
 
@@ -42,19 +42,66 @@ public class Domain implements TrackedObject, Cloneable {
 
     @Embedded
     private Name name;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "supportingOrg_objId")
+    @Embedded
+    @AttributeOverrides( {
+            @AttributeOverride(name="name", column = @Column(name="so_name") ),
+            @AttributeOverride(name="organization", column = @Column(name="so_org") ),
+            @AttributeOverride(name="jobTitle", column = @Column(name="so_job_title") ),
+            @AttributeOverride(name="address.textAddress", column = @Column(name="so_address") ),
+            @AttributeOverride(name="address.countryCode.countryCode", column = @Column(name="so_cc") ),
+            @AttributeOverride(name="phoneNumber", column = @Column(name="so_phone") ),
+            @AttributeOverride(name="altPhoneNumber", column = @Column(name="so_alt_phone") ),
+            @AttributeOverride(name="faxNumber", column = @Column(name="so_fax") ),
+            @AttributeOverride(name="altFaxNumber", column = @Column(name="so_alt_fax") ),
+            @AttributeOverride(name="publicEmail.email", column = @Column(name="so_pub_email") ),
+            @AttributeOverride(name="privateEmail.email", column = @Column(name="so_priv_email") ),
+            @AttributeOverride(name="role", column = @Column(name="so_role") ),
+            @AttributeOverride(name="trackData.created", column = @Column(name="so_created") ),
+            @AttributeOverride(name="trackData.createdBy", column = @Column(name="so_createdby") ),
+            @AttributeOverride(name="trackData.modified", column = @Column(name="so_modified") ),
+            @AttributeOverride(name="trackData.modifiedBy", column = @Column(name="so_modifiedby") )
+     } )
     private Contact supportingOrg;
-    @OneToMany(cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    @JoinTable(name = "Domain_AdminContacts",
-            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
-    private List<Contact> adminContacts;
-    @OneToMany(cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    @JoinTable(name = "Domain_TechContacts",
-            inverseJoinColumns = @JoinColumn(name = "Contact_objId"))
-    private List<Contact> techContacts;
+    @Embedded
+    @AttributeOverrides( {
+            @AttributeOverride(name="name", column = @Column(name="ac_name") ),
+            @AttributeOverride(name="organization", column = @Column(name="ac_org") ),
+            @AttributeOverride(name="jobTitle", column = @Column(name="ac_job_title") ),
+            @AttributeOverride(name="address.textAddress", column = @Column(name="ac_address") ),
+            @AttributeOverride(name="address.countryCode.countryCode", column = @Column(name="ac_cc") ),
+            @AttributeOverride(name="phoneNumber", column = @Column(name="ac_phone") ),
+            @AttributeOverride(name="altPhoneNumber", column = @Column(name="ac_alt_phone") ),
+            @AttributeOverride(name="faxNumber", column = @Column(name="ac_fax") ),
+            @AttributeOverride(name="altFaxNumber", column = @Column(name="ac_alt_fax") ),
+            @AttributeOverride(name="publicEmail.email", column = @Column(name="ac_pub_email") ),
+            @AttributeOverride(name="privateEmail.email", column = @Column(name="ac_priv_email") ),
+            @AttributeOverride(name="role", column = @Column(name="ac_role") ),
+            @AttributeOverride(name="trackData.created", column = @Column(name="ac_created") ),
+            @AttributeOverride(name="trackData.createdBy", column = @Column(name="ac_createdby") ),
+            @AttributeOverride(name="trackData.modified", column = @Column(name="ac_modified") ),
+            @AttributeOverride(name="trackData.modifiedBy", column = @Column(name="ac_modifiedby") )
+     } )
+    private Contact adminContact;
+    @Embedded
+    @AttributeOverrides( {
+            @AttributeOverride(name="name", column = @Column(name="tc_name") ),
+            @AttributeOverride(name="organization", column = @Column(name="tc_org") ),
+            @AttributeOverride(name="jobTitle", column = @Column(name="tc_job_title") ),
+            @AttributeOverride(name="address.textAddress", column = @Column(name="tc_address") ),
+            @AttributeOverride(name="address.countryCode.countryCode", column = @Column(name="tc_cc") ),
+            @AttributeOverride(name="phoneNumber", column = @Column(name="tc_phone") ),
+            @AttributeOverride(name="altPhoneNumber", column = @Column(name="tc_alt_phone") ),
+            @AttributeOverride(name="faxNumber", column = @Column(name="tc_fax") ),
+            @AttributeOverride(name="altFaxNumber", column = @Column(name="tc_alt_fax") ),
+            @AttributeOverride(name="publicEmail.email", column = @Column(name="tc_pub_email") ),
+            @AttributeOverride(name="privateEmail.email", column = @Column(name="tc_priv_email") ),
+            @AttributeOverride(name="role", column = @Column(name="tc_role") ),
+            @AttributeOverride(name="trackData.created", column = @Column(name="tc_created") ),
+            @AttributeOverride(name="trackData.createdBy", column = @Column(name="tc_createdby") ),
+            @AttributeOverride(name="trackData.modified", column = @Column(name="tc_modified") ),
+            @AttributeOverride(name="trackData.modifiedBy", column = @Column(name="tc_modifiedby") )
+     } )
+    private Contact techContact;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Domain_NameServers",
             inverseJoinColumns = @JoinColumn(name = "Host_objId"))
@@ -88,8 +135,6 @@ public class Domain implements TrackedObject, Cloneable {
 
     public Domain(String name) throws InvalidDomainNameException {
         setName(name);
-        this.adminContacts = new ArrayList<Contact>();
-        this.techContacts = new ArrayList<Contact>();
         this.nameServers = new ArrayList<Host>();
         this.breakpoints = new HashSet<Breakpoint>();
         this.status = Status.NEW;
@@ -116,50 +161,35 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public void setSupportingOrg(Contact supportingOrg) {
-        CheckTool.checkNull(supportingOrg, "supportingOrg");
-        // hibernate trick; note it only works when no-null arg is required
-        if (this.supportingOrg != null) {
-            supportingOrg.setObjId(this.supportingOrg.getObjId());
-        }
         this.supportingOrg = supportingOrg;
     }
 
+    final public Contact getAdminContact() {
+        return adminContact;
+    }
+
     final public List<Contact> getAdminContacts() {
-        return Collections.unmodifiableList(adminContacts);
+        List<Contact> ret = new ArrayList<Contact>();
+        if (adminContact != null) ret.add(adminContact);
+        return ret;
     }
 
-    final public void setAdminContacts(Collection<Contact> adminContacts) {
-        CheckTool.checkCollectionNull(adminContacts, "adminContacts");
-        this.adminContacts.clear();
-        CheckTool.addAllNoDup(this.adminContacts, adminContacts);
-    }
-
-    final public void addAdminContact(Contact contact) {
-        CheckTool.checkNull(contact, "adminContact");
-        CheckTool.addNoDup(this.adminContacts, contact);
-    }
-
-    final public boolean removeAdminContact(Contact contact) {
-        return adminContacts.remove(contact);
+    final public void setAdminContact(Contact contact) {
+        this.adminContact = contact;
     }
 
     final public List<Contact> getTechContacts() {
-        return Collections.unmodifiableList(techContacts);
+        List<Contact> ret = new ArrayList<Contact>();
+        if (techContact != null) ret.add(techContact);
+        return ret;
     }
 
-    final public void setTechContacts(List<Contact> techContacts) {
-        CheckTool.checkCollectionNull(techContacts, "techContacts");
-        this.techContacts.clear();
-        CheckTool.addAllNoDup(this.techContacts, techContacts);
+    final public Contact getTechContact() {
+        return techContact;
     }
 
-    final public void addTechContact(Contact contact) {
-        CheckTool.checkNull(contact, "techContact");
-        CheckTool.addNoDup(this.techContacts, contact);
-    }
-
-    final public boolean removeTechContact(Contact contact) {
-        return techContacts.remove(contact);
+    final public void setTechContact(Contact contact) {
+        this.techContact = contact;
     }
 
     final public List<Host> getNameServers() {
@@ -297,31 +327,20 @@ public class Domain implements TrackedObject, Cloneable {
 
         Domain domain = (Domain) o;
 
-        if (adminContacts != null ? !adminContacts.equals(domain.adminContacts) : domain.adminContacts != null)
+        if (openProcesses != domain.openProcesses) return false;
+        if (thirdPartyPendingProcesses != domain.thirdPartyPendingProcesses) return false;
+        if (adminContact != null ? !adminContact.equals(domain.adminContact) : domain.adminContact != null)
             return false;
-        //System.out.println("1: breakpoints");
         if (breakpoints != null ? !breakpoints.equals(domain.breakpoints) : domain.breakpoints != null) return false;
-        //System.out.println("2: name");
         if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
-        //System.out.println("3: name servers");
         if (nameServers != null ? !nameServers.equals(domain.nameServers) : domain.nameServers != null) return false;
-        //System.out.println("4: registry url");
         if (registryUrl != null ? !registryUrl.equals(domain.registryUrl) : domain.registryUrl != null) return false;
-        //System.out.println("5: special instructions");
         if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
             return false;
-        //System.out.println("6: state");
-        //System.out.println("7: status");
         if (status != domain.status) return false;
-        //System.out.println("8: so");
         if (supportingOrg != null ? !supportingOrg.equals(domain.supportingOrg) : domain.supportingOrg != null)
             return false;
-        //System.out.println("9: tc");
-        if (techContacts != null ? !techContacts.equals(domain.techContacts) : domain.techContacts != null)
-            return false;
-        //System.out.println("10: td");
-        //if (trackData != null ? !trackData.equals(domain.trackData) : domain.trackData != null) return false;
-        //System.out.println("11: whois " + whoisServer);
+        if (techContact != null ? !techContact.equals(domain.techContact) : domain.techContact != null) return false;
         if (whoisServer != null ? !whoisServer.equals(domain.whoisServer) : domain.whoisServer != null) return false;
 
         return true;
@@ -331,15 +350,16 @@ public class Domain implements TrackedObject, Cloneable {
         int result;
         result = (name != null ? name.hashCode() : 0);
         result = 31 * result + (supportingOrg != null ? supportingOrg.hashCode() : 0);
-        result = 31 * result + (adminContacts != null ? adminContacts.hashCode() : 0);
-        result = 31 * result + (techContacts != null ? techContacts.hashCode() : 0);
+        result = 31 * result + (adminContact != null ? adminContact.hashCode() : 0);
+        result = 31 * result + (techContact != null ? techContact.hashCode() : 0);
         result = 31 * result + (nameServers != null ? nameServers.hashCode() : 0);
         result = 31 * result + (registryUrl != null ? registryUrl.hashCode() : 0);
         result = 31 * result + (whoisServer != null ? whoisServer.hashCode() : 0);
         result = 31 * result + (breakpoints != null ? breakpoints.hashCode() : 0);
         result = 31 * result + (specialInstructions != null ? specialInstructions.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
+        result = 31 * result + openProcesses;
+        result = 31 * result + thirdPartyPendingProcesses;
         return result;
     }
 
@@ -382,8 +402,10 @@ public class Domain implements TrackedObject, Cloneable {
             newDomain.nameServers = newHosts;
 
             newDomain.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
-            newDomain.adminContacts = copyListOfContacts(adminContacts);
-            newDomain.techContacts = copyListOfContacts(techContacts);
+            if (adminContact != null)
+                newDomain.adminContact = adminContact.clone();
+            if (techContact != null)
+                newDomain.techContact = techContact.clone();
             if (supportingOrg != null)
                 newDomain.supportingOrg = (Contact) supportingOrg.clone();
             if (whoisServer != null)
@@ -422,10 +444,10 @@ public class Domain implements TrackedObject, Cloneable {
                 }
                 if (domain.getTrackData() != null)
                     newDomain.setTrackData((TrackData) domain.getTrackData().clone());
-                if (domain.getAdminContacts() != null)
-                    newDomain.setAdminContacts(copyListOfContacts(domain.getAdminContacts()));
-                if (domain.getTechContacts() != null)
-                    newDomain.setTechContacts(copyListOfContacts(domain.getTechContacts()));
+                if (domain.getAdminContact() != null)
+                    newDomain.setAdminContacts(copyListOfContacts(domain.getAdminContact()));
+                if (domain.getTechContact() != null)
+                    newDomain.setTechContacts(copyListOfContacts(domain.getTechContact()));
                 if (domain.getSupportingOrg() != null)
                     newDomain.setSupportingOrg((Contact) domain.getSupportingOrg().clone());
                 if (domain.getWhoisServer() != null)

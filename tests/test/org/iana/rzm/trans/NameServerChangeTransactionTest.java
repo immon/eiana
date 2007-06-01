@@ -178,10 +178,10 @@ public class NameServerChangeTransactionTest {
         domain.setStatus(Domain.Status.ACTIVE);
         domain.setSupportingOrg(setupContact(new Contact(), "supporting-org", name, "US"));
         domain.setWhoisServer("whois." + name);
-        domain.addAdminContact(setupContact(new Contact(), "admin", name, "US"));
+        domain.setAdminContact(setupContact(new Contact(), "admin", name, "US"));
         domain.addNameServer(setupFirstHost(new Host("ns1." + name)));
         domain.addNameServer(setupSecondHost(new Host("ns2." + name)));
-        domain.addTechContact(setupContact(new Contact(), "tech", name, "US"));
+        domain.setTechContact(setupContact(new Contact(), "tech", name, "US"));
         return domain;
     }
 

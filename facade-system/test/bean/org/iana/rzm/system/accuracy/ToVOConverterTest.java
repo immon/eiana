@@ -117,11 +117,11 @@ public class ToVOConverterTest {
     @Test (dependsOnMethods = {"testContactConversion", "testHostConversion"})
     public void testDomainConversion() throws InvalidDomainNameException, NameServerAlreadyExistsException, MalformedURLException {
         fromDomain = new Domain("domain1.org");
-        fromDomain.addAdminContact(fromContact);
+        fromDomain.setAdminContact(fromContact);
         fromDomain.addBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         fromDomain.addBreakpoint(Domain.Breakpoint.ANY_CHANGE_EXT_REVIEW);
         fromDomain.addNameServer(fromHost);
-        fromDomain.addTechContact(fromContact);
+        fromDomain.setTechContact(fromContact);
 
         fromDomain.setRegistryUrl("http://tmp.something.org:80/someFile");
         fromDomain.setSpecialInstructions("Super Secret Special Instruction Alpha One");
@@ -136,18 +136,17 @@ public class ToVOConverterTest {
 
         assert fromDomain.getName().equals(toDomainVO.getName());
 
-        for(ContactVO adminContactVO : toDomainVO.getAdminContacts()) {
-            assert adminContactVO.getName().equals(fromContact.getName());
-            assert adminContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
-            assert adminContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
-            assert adminContactVO.getEmail().equals(fromContact.getEmail());
-            assert adminContactVO.isRole() == fromContact.isRole();
-        }
+        ContactVO adminContactVO  = toDomainVO.getAdminContact();
+        assert adminContactVO.getName().equals(fromContact.getName());
+        assert adminContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
+        assert adminContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
+        assert adminContactVO.getEmail().equals(fromContact.getEmail());
+        assert adminContactVO.isRole() == fromContact.isRole();
 
         assert toDomainVO.getBreakpoints().equals(ToVOConverter.toBreakpointVOSet(fromDomain.getBreakpoints()));
 
         toDomainVO.getNameServers().equals(ToVOConverter.toHostVOList(fromDomain.getNameServers()));
-        toDomainVO.getTechContacts().equals(ToVOConverter.toContactVOList(fromDomain.getTechContacts()));
+        toDomainVO.getTechContact().equals(ToVOConverter.toContactVO(fromDomain.getTechContact()));
         
         assert toDomainVO.getRegistryUrl().equals(fromDomain.getRegistryUrl());
         assert toDomainVO.getSpecialInstructions().equals(fromDomain.getSpecialInstructions());

@@ -116,13 +116,9 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         ContactVO firstContactVO = ToVOConverter.toContactVO(new Contact("firstTechContact"));
         ContactVO secondContactVO = ToVOConverter.toContactVO(new Contact("secondTechContact"));
 
-        List<ContactVO> techContactVOs = firstModificationVO.getTechContacts();
-        techContactVOs.add(firstContactVO);
-        firstModificationVO.setTechContacts(techContactVOs);
+        firstModificationVO.setTechContact(firstContactVO);
 
-        techContactVOs = secondModificationVO.getTechContacts();
-        techContactVOs.add(secondContactVO);
-        secondModificationVO.setTechContacts(techContactVOs);
+        secondModificationVO.setTechContact(secondContactVO);
 
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
@@ -137,23 +133,23 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         IDomainVO retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
         Set<ContactVO> retContacts = new TreeSet<ContactVO>(contactVOComparator);
-        retContacts.addAll(retDomain.getTechContacts());
-        assert retContacts.size() == 2;
+        retContacts.add(retDomain.getTechContact());
+        assert retContacts.size() == 1;
         Iterator<ContactVO> retContactsIterator = retContacts.iterator();
         assert "firstTechContact".equals(retContactsIterator.next().getName());
-        assert "tech".equals(retContactsIterator.next().getName());
+//        assert "tech".equals(retContactsIterator.next().getName());
 
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, secTransId);                                //2.5
 
         retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
         retContacts = new TreeSet<ContactVO>(contactVOComparator);
-        retContacts.addAll(retDomain.getTechContacts());
-        assert retContacts.size() == 3;
+        retContacts.add(retDomain.getTechContact());
+        assert retContacts.size() == 1;
         retContactsIterator = retContacts.iterator();
-        assert "firstTechContact".equals(retContactsIterator.next().getName());
+//        assert "firstTechContact".equals(retContactsIterator.next().getName());
         assert "secondTechContact".equals(retContactsIterator.next().getName());
-        assert "tech".equals(retContactsIterator.next().getName());
+//        assert "tech".equals(retContactsIterator.next().getName());
 
     }
 

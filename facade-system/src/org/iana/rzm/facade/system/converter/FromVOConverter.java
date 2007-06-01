@@ -59,7 +59,7 @@ public class FromVOConverter {
         try {
             tDomain.setName(fDomainVO.getName());
             tDomain.setObjId(fDomainVO.getObjId());
-            tDomain.setAdminContacts(toContactList(fDomainVO.getAdminContacts()));
+            tDomain.setAdminContact(toContact(fDomainVO.getAdminContact()));
             tDomain.setBreakpoints(toBreakpointSet(fDomainVO.getBreakpoints()));
             tDomain.setNameServers(toHostList(fDomainVO.getNameServers()));
             tDomain.setRegistryUrl(fDomainVO.getRegistryUrl());
@@ -67,7 +67,7 @@ public class FromVOConverter {
 //            tDomain.setState(toState(fDomainVO.getState()));
             tDomain.setStatus(toStatus(fDomainVO.getStatus()));
             tDomain.setSupportingOrg(toContact(fDomainVO.getSupportingOrg()));
-            tDomain.setTechContacts(toContactList(fDomainVO.getTechContacts()));
+            tDomain.setTechContact(toContact(fDomainVO.getTechContact()));
             if (fDomainVO.getWhoisServer() != null)
                 tDomain.setWhoisServer(fDomainVO.getWhoisServer().getName());
 
@@ -212,7 +212,6 @@ public class FromVOConverter {
         if (fContactVO == null) throw new IllegalArgumentException("null fromContactVO");
         if (tContact == null) throw new IllegalArgumentException("null toContact");
 
-        tContact.setObjId(fContactVO.getObjId());
         tContact.setName(fContactVO.getName());
         tContact.setOrganization(fContactVO.getOrganization());
         tContact.setJobTitle(fContactVO.getJobTitle());

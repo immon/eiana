@@ -8,7 +8,6 @@ import org.iana.rzm.domain.Host;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.net.URL;
 
 /**
  * @author Jakub Laszkiewicz
@@ -24,14 +23,12 @@ public class DomainUpdateHibernateTest extends HibernateOperationStressTest {
         domain.setStatus(Domain.Status.ACTIVE);
         domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), "changed supporting", true, "US"));
         domain.setWhoisServer("changed.whoid.server");
-        domain.removeAdminContact(domain.getAdminContacts().iterator().next());
-        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true, "US"));
+        domain.setAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), "admin3", true, "US"));
         domain.removeBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         domain.addBreakpoint(Domain.Breakpoint.NS_CHANGE_EXT_REVIEW);
         domain.removeNameServer(domain.getNameServers().iterator().next());
         domain.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns3." + domain.getName())));
-        domain.removeTechContact(domain.getTechContacts().iterator().next());
-        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true, "US"));
+        domain.setTechContact(HibernateMappingTestUtil.setupContact(new Contact(), "tech3", true, "US"));
         session.save(domain);
     }
 

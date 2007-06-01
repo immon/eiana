@@ -75,8 +75,8 @@ public class ConfirmationTest extends TransactionalSpringContextTests {
 
         String domainName = "conftestdomain" + suffix;
         Domain domain = new Domain(domainName);
-        domain.addAdminContact(new Contact(domainName + "-admin"));
-        domain.addTechContact(new Contact(domainName + "-tech"));
+        domain.setAdminContact(new Contact(domainName + "-admin"));
+        domain.setTechContact(new Contact(domainName + "-tech"));
         domainManager.create(domain);
         return testTransactionManager.createConfirmationTestTransaction(domain);
     }

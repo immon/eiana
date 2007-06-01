@@ -239,9 +239,8 @@ public class DomainCreationTransactionWorkFlowTest {
             setGSDSAuthUser(userAC);
             IDomainVO retrievedDomain = gsds.getDomain(domain.getName());
             assert retrievedDomain != null;
-            assert retrievedDomain.getAdminContacts() != null;
-            assert retrievedDomain.getAdminContacts().size() == 1;
-            assertEquals(domain.getAdminContacts().iterator().next(), retrievedDomain.getAdminContacts().iterator().next());
+            assert retrievedDomain.getAdminContact() != null;
+            assertEquals(domain.getAdminContact(), retrievedDomain.getAdminContact());
             assert domain.getBreakpoints() != null ? domain.getBreakpoints().equals(retrievedDomain.getBreakpoints()) :
                     retrievedDomain.getBreakpoints() == null;
             assert domain.getName() != null ? domain.getName().equals(retrievedDomain.getName()) : retrievedDomain.getName() == null;
@@ -256,9 +255,8 @@ public class DomainCreationTransactionWorkFlowTest {
             assert domain.getStatus() != null ? domain.getStatus().equals(retrievedDomain.getStatus()) : retrievedDomain.getStatus() == null;
             assert domain.getSupportingOrg() != null;
             assertEquals(domain.getSupportingOrg(), retrievedDomain.getSupportingOrg());
-            assert retrievedDomain.getTechContacts() != null;
-            assert retrievedDomain.getTechContacts().size() == 1;
-            assertEquals(domain.getTechContacts().iterator().next(), retrievedDomain.getTechContacts().iterator().next());
+            assert retrievedDomain.getTechContact() != null;
+            assertEquals(domain.getTechContact(), retrievedDomain.getTechContact());
             assert domain.getWhoisServer() != null ? domain.getWhoisServer().equals(retrievedDomain.getWhoisServer()) :
                     retrievedDomain.getWhoisServer() == null;
         } finally {
@@ -292,8 +290,8 @@ public class DomainCreationTransactionWorkFlowTest {
     private Domain createDomain(String name) {
         Domain domain = new Domain(name);
         domain.setSupportingOrg(createContact(name + "-supp"));
-        domain.addTechContact(createContact(name + "-tech"));
-        domain.addAdminContact(createContact(name + "-admin"));
+        domain.setTechContact(createContact(name + "-tech"));
+        domain.setAdminContact(createContact(name + "-admin"));
         Host host = new Host("ns1." + name);
         host.addIPAddress("4.3.2.1");
         domain.addNameServer(host);

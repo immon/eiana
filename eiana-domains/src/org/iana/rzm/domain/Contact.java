@@ -13,7 +13,7 @@ import java.util.*;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-@Entity
+@Embeddable
 public class Contact implements TrackedObject,Cloneable {
 
     final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
@@ -36,19 +36,11 @@ public class Contact implements TrackedObject,Cloneable {
     @Basic
     private String altFaxNumber;
     @Embedded
-    @AttributeOverrides( {
-                @AttributeOverride(name="email", column = @Column(name="publicEmail"))
-        } )
     private EmailAddress publicEmail;
     @Embedded
-    @AttributeOverrides( {
-                @AttributeOverride(name="email", column = @Column(name="privateEmail"))
-        } )
     private EmailAddress privateEmail;
     @Basic
     private boolean role;
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
     @Embedded
     private TrackData trackData = new TrackData();
 
@@ -74,13 +66,9 @@ public class Contact implements TrackedObject,Cloneable {
         setEmail(email);
         this.role = role;
     }
-    
-    public Long getObjId() {
-        return objId;
-    }
 
-    public void setObjId(Long objId) {
-        this.objId = objId;
+    public Long getObjId() {
+        return 0L;
     }
 
     final public String getName() {
@@ -252,7 +240,7 @@ public class Contact implements TrackedObject,Cloneable {
     }
 
 
-    public Object clone() throws CloneNotSupportedException {
+    public Contact clone() throws CloneNotSupportedException {
         Contact contact = (Contact) super.clone();
         contact.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
         contact.address = address == null ? new Address() : address.clone();

@@ -70,14 +70,14 @@ public class HibernateMappingTestUtil {
         domain.setStatus(Domain.Status.NEW);
         domain.setSupportingOrg(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "supporting org", true));
         domain.setWhoisServer("whois.server.com");
-        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin1", true));
-        domain.addAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin2", true));
+        domain.setAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin1", true));
+        domain.setAdminContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "admin2", true));
         domain.addBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         domain.addBreakpoint(Domain.Breakpoint.ANY_CHANGE_EXT_REVIEW);
         domain.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns1." + domain.getName()), prefix));
         domain.addNameServer(HibernateMappingTestUtil.setupHost(new Host("ns2." + domain.getName()), prefix));
-        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech1", true));
-        domain.addTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech2", true));
+        domain.setTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech1", true));
+        domain.setTechContact(HibernateMappingTestUtil.setupContact(new Contact(), prefix + "tech2", true));
         return domain;
     }
 

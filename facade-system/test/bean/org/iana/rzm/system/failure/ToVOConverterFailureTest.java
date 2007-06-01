@@ -92,7 +92,7 @@ public class ToVOConverterFailureTest {
         assert contactVO.getFaxNumber() == null;
         assert contactVO.getEmail() == null;
         assert contactVO.isRole() == false;
-        assert contactVO.getObjId() == null;
+        assert contactVO.getObjId() == 0L;
         assert contactVO.getCreated().equals(contact.getCreated());
         assert contactVO.getCreatedBy() == null;
         assert contactVO.getModified() == null;
@@ -108,8 +108,8 @@ public class ToVOConverterFailureTest {
 
         assert domainVO.getName().equals("domain.org");
         assert domainVO.getSupportingOrg() == null;
-        assert domainVO.getAdminContacts().isEmpty();
-        assert domainVO.getTechContacts().isEmpty();
+        assert domainVO.getAdminContact() == null;
+        assert domainVO.getTechContact() == null;
         assert domainVO.getNameServers().isEmpty();
         assert domainVO.getRegistryUrl() == null;
         assert domainVO.getWhoisServer() == null;

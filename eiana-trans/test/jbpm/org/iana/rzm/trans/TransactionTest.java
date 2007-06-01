@@ -54,8 +54,8 @@ public class TransactionTest extends TransactionalSpringContextTests {
 
     private void createDomain() {
         domain = new Domain("transtestdomain");
-        domain.addAdminContact(new Contact("admin"));
-        domain.addTechContact(new Contact("tech"));
+        domain.setAdminContact(new Contact("admin"));
+        domain.setTechContact(new Contact("tech"));
         domainManager.create(domain);
     }
 

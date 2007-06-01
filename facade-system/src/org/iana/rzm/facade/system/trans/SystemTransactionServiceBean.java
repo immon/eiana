@@ -13,7 +13,6 @@ import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.*;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.auth.Identity;
 import org.iana.objectdiff.*;
 
 import java.util.*;
@@ -201,11 +200,11 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         Domain md = currentDomain.clone();
         for (TransactionActionVO action : actions) {
             if (TransactionActionVO.MODIFY_TC.equals(action.getName())) {
-                md.setTechContacts(modifiedDomain.getTechContacts());
+                md.setTechContact(modifiedDomain.getTechContact());
             } else if (TransactionActionVO.MODIFY_SO.equals(action.getName())) {
                 md.setSupportingOrg(modifiedDomain.getSupportingOrg());
             } else if (TransactionActionVO.MODIFY_AC.equals(action.getName())) {
-                md.setAdminContacts(modifiedDomain.getAdminContacts());
+                md.setAdminContact(modifiedDomain.getAdminContact());
             } else if (TransactionActionVO.MODIFY_REGISTRATION_URL.equals(action.getName())) {
                 md.setRegistryUrl(modifiedDomain.getRegistryUrl());
             } else if (TransactionActionVO.MODIFY_WHOIS_SERVER.equals(action.getName())) {

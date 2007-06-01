@@ -59,9 +59,9 @@ public class ToVOConverter {
         toSimpleDomainVO(fromDomain, toDomainVO);
         toDomainVO.setSupportingOrg(toContactVO(fromDomain.getSupportingOrg()));
 
-        toDomainVO.setAdminContacts(toContactVOList(fromDomain.getAdminContacts()));
+        toDomainVO.setAdminContact(toContactVO(fromDomain.getAdminContact()));
 
-        toDomainVO.setTechContacts(toContactVOList(fromDomain.getTechContacts()));
+        toDomainVO.setTechContact(toContactVO(fromDomain.getTechContact()));
 
         toDomainVO.setNameServers(toHostVOList(fromDomain.getNameServers()));
 

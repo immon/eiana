@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable {
 
     private ContactVO supportingOrg;
-    private List<ContactVO> adminContacts;
-    private List<ContactVO> techContacts;
+    private ContactVO adminContact;
+    private ContactVO techContact;
     private List<HostVO> nameServers;
     private String registryUrl;
     private Name whoisServer;
@@ -32,27 +32,27 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     }
 
     public List<ContactVO> getAdminContacts() {
-        return adminContacts;
+        return null;
     }
 
-    public void setAdminContacts(List<ContactVO> adminContacts) {
-        this.adminContacts = adminContacts;
+    public ContactVO getAdminContact() {
+        return adminContact;
     }
 
-    public void addAdminContact(ContactVO contact) {
-        if (adminContacts == null)
-            adminContacts = new ArrayList<ContactVO>();
-        adminContacts.add(contact);
+    public void setAdminContact(ContactVO adminContact) {
+        this.adminContact = adminContact;
     }
-
-
 
     public List<ContactVO> getTechContacts() {
-        return techContacts;
+        return null;
     }
 
-    public void setTechContacts(List<ContactVO> techContacts) {
-        this.techContacts = techContacts;
+    public ContactVO getTechContact() {
+        return techContact;
+    }
+
+    public void setTechContact(ContactVO techContact) {
+        this.techContact = techContact;
     }
 
     public List<HostVO> getNameServers() {
@@ -117,7 +117,7 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
 
         DomainVO domainVO = (DomainVO) o;
 
-        if (adminContacts != null ? !adminContacts.equals(domainVO.adminContacts) : domainVO.adminContacts != null)
+        if (adminContact != null ? !adminContact.equals(domainVO.adminContact) : domainVO.adminContact != null)
             return false;
         if (breakpoints != null ? !breakpoints.equals(domainVO.breakpoints) : domainVO.breakpoints != null)
             return false;
@@ -131,7 +131,7 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
         if (status != domainVO.status) return false;
         if (supportingOrg != null ? !supportingOrg.equals(domainVO.supportingOrg) : domainVO.supportingOrg != null)
             return false;
-        if (techContacts != null ? !techContacts.equals(domainVO.techContacts) : domainVO.techContacts != null)
+        if (techContact != null ? !techContact.equals(domainVO.techContact) : domainVO.techContact != null)
             return false;
         if (whoisServer != null ? !whoisServer.equals(domainVO.whoisServer) : domainVO.whoisServer != null)
             return false;
@@ -142,8 +142,8 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     public int hashCode() {
         int result;
         result = (supportingOrg != null ? supportingOrg.hashCode() : 0);
-        result = 31 * result + (adminContacts != null ? adminContacts.hashCode() : 0);
-        result = 31 * result + (techContacts != null ? techContacts.hashCode() : 0);
+        result = 31 * result + (adminContact != null ? adminContact.hashCode() : 0);
+        result = 31 * result + (techContact != null ? techContact.hashCode() : 0);
         result = 31 * result + (nameServers != null ? nameServers.hashCode() : 0);
         result = 31 * result + (registryUrl != null ? registryUrl.hashCode() : 0);
         result = 31 * result + (whoisServer != null ? whoisServer.hashCode() : 0);

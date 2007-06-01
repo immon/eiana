@@ -80,14 +80,14 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             userManager.create(user);
 
             Domain domain = new Domain("mailrecdomain");
-            domain.addAdminContact(new Contact("mailrecdomain-admin"));
-            domain.addTechContact(new Contact("mailrecdomain-tech"));
+            domain.setAdminContact(new Contact("mailrecdomain-admin"));
+            domain.setTechContact(new Contact("mailrecdomain-tech"));
             domainManager.create(domain);
 
             domain = new Domain("templatedomain");
             domain.setSupportingOrg(createContact("templatedomain-supp"));
-            domain.addTechContact(createContact("templatedomain-tech"));
-            domain.addAdminContact(createContact("templatedomain-admin"));
+            domain.setTechContact(createContact("templatedomain-tech"));
+            domain.setAdminContact(createContact("templatedomain-admin"));
             Host host = new Host("ns1.templatedomain");
             host.addIPAddress("4.3.2.1");
             domain.addNameServer(host);
@@ -180,8 +180,8 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             contact.setEmail("templatedomain-tech-rep@no-mail.org");
             contact.setFaxNumber("+1122334456");
             contact.setPhoneNumber("+1122334455");
-            domain.addTechContact(contact);
-            domain.addAdminContact(createContact("templatedomain-admin"));
+            domain.setTechContact(contact);
+            domain.setAdminContact(createContact("templatedomain-admin"));
             Host host = new Host("ns11.templatedomain");
             host.addIPAddress("2.2.5.6");
             host.addIPAddress("2.2.5.7");
