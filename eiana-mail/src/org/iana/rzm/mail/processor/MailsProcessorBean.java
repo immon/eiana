@@ -21,6 +21,7 @@ import org.iana.templates.inst.SectionInst;
 import java.util.*;
 
 /**
+ * todo: adjust to a new contact structure!
  * @author Jakub Laszkiewicz
  */
 public class MailsProcessorBean implements MailsProcessor {
@@ -289,21 +290,21 @@ public class MailsProcessorBean implements MailsProcessor {
         if (contact == null) contact = new ContactVO();
         contact.setName(getFieldValue(section.getFieldInstance(CONTACT_NAME_FIELD_NAME)));
         contact.setOrganization(getFieldValue(section.getFieldInstance(CONTACT_ORGANIZATION_FIELD_NAME)));
-        contact.setAddresses(toAddressList(section.getListInstance(CONTACT_ADDRESS_SECTION_NAME),
-                contact.getAddresses()));
-        contact.setPhoneNumbers(toStringList(section.getListInstance(CONTACT_PHONE_FIELD_NAME),
-                contact.getPhoneNumbers()));
-        contact.setFaxNumbers(toStringList(section.getListInstance(CONTACT_FAX_FIELD_NAME),
-                contact.getFaxNumbers()));
-        contact.setEmails(toStringList(section.getListInstance(CONTACT_EMAIL_FIELD_NAME),
-                contact.getEmails()));
+        contact.setAddress(toAddressList(section.getListInstance(CONTACT_ADDRESS_SECTION_NAME),
+                contact.getAddress()));
+        contact.setPhoneNumber(toStringList(section.getListInstance(CONTACT_PHONE_FIELD_NAME),
+                contact.getPhoneNumber()));
+        contact.setFaxNumber(toStringList(section.getListInstance(CONTACT_FAX_FIELD_NAME),
+                contact.getFaxNumber()));
+        contact.setEmail(toStringList(section.getListInstance(CONTACT_EMAIL_FIELD_NAME),
+                contact.getEmail()));
         return contact;
     }
 
     private static final String CONTACT_ADDRESS_TEXT_FIELD_NAME = "textAddress";
     private static final String CONTACT_ADDRESS_CC_FIELD_NAME = "countryCode";
 
-    private List<AddressVO> toAddressList(ListInst list, List<AddressVO> currentAddressList) {
+    private AddressVO toAddressList(ListInst list, AddressVO currentAddressList) {
         List<AddressVO> addressList = new ArrayList<AddressVO>();
         for (ElementInst element : list.getList()) {
             SectionInst section = (SectionInst) element;
@@ -314,10 +315,10 @@ public class MailsProcessorBean implements MailsProcessor {
             address.setCountryCode(getFieldValue(section.getFieldInstance(CONTACT_ADDRESS_CC_FIELD_NAME)));
             addressList.add(address);
         }
-        return addressList;
+        return addressList.isEmpty() ? null : addressList.get(0);
     }
 
-    private List<String> toStringList(ListInst list, List<String> currentList) {
+    private String toStringList(ListInst list, String currentList) {
         List<String> resultList = new ArrayList<String>();
         for (ElementInst element : list.getList()) {
             FieldInst field = (FieldInst) element;
@@ -325,7 +326,7 @@ public class MailsProcessorBean implements MailsProcessor {
                 return currentList;
             resultList.add(getFieldValue(field));
         }
-        return resultList;
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 
     private static final String HOST_NAME_FIELD_NAME = "name";
@@ -335,7 +336,7 @@ public class MailsProcessorBean implements MailsProcessor {
         if (host == null) host = new HostVO();
         host.setName(getFieldValue(section.getFieldInstance(HOST_NAME_FIELD_NAME)));
         for (ElementInst element : section.getListInstance(HOST_IPADDRESS_FIELD_NAME).getList())
-            host.addAddress(toIpAddress((FieldInst) element));
+            host.setAddress(toIpAddress((FieldInst) element));
         return host;
     }
 

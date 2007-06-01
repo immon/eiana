@@ -28,7 +28,7 @@ public class WrongDomainCreation {
         String emailAddress = "wrong#email";
         try {
             Contact contact = new Contact();
-            contact.addEmail(emailAddress);
+            contact.setEmail(emailAddress);
         } catch (InvalidEmailException e) {
             assert e.getEmail().equals(emailAddress);
             throw e;

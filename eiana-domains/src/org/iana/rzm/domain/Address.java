@@ -8,17 +8,13 @@ import javax.persistence.*;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-@Entity
+@Embeddable
 public class Address implements Cloneable{
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long objId;
     @Basic
     private String textAddress;
     @Embedded
     private CountryCode countryCode;
-    @Basic
-    private int id;
 
     public Address() {
     }
@@ -26,14 +22,6 @@ public class Address implements Cloneable{
     public Address(String textAddress, String countryCode) {
         this.textAddress = textAddress;
         setCountryCode(countryCode);
-    }
-
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
     }
 
     public String getTextAddress() {
@@ -72,15 +60,11 @@ public class Address implements Cloneable{
         return result;
     }
 
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    protected Address clone() {
+        try {
+            return (Address) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

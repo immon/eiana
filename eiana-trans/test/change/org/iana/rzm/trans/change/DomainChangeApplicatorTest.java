@@ -47,8 +47,8 @@ public class DomainChangeApplicatorTest {
         Domain src = DomainChangeDetectorTest.createDomain();
         Domain dst = DomainChangeDetectorTest.createDomain();
         dst.getSupportingOrg().setName("new-supporting-org");
-        dst.getSupportingOrg().addPhoneNumber("new-email");
-        dst.getSupportingOrg().addEmail("new-email@post.org");
+        dst.getSupportingOrg().setPhoneNumber("new-email");
+        dst.getSupportingOrg().setEmail("new-email@post.org");
         assert !src.equals(dst);
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null;
@@ -60,7 +60,7 @@ public class DomainChangeApplicatorTest {
     public void testAdminContactsApplication() {
         Domain src = DomainChangeDetectorTest.createDomain();
         Domain dst = DomainChangeDetectorTest.createDomain();
-        dst.getAdminContacts().get(0).addFaxNumber("new-fax");
+        dst.getAdminContacts().get(0).setFaxNumber("new-fax");
         dst.addAdminContact(DomainChangeDetectorTest.createContact("new-ac"));
         assert !src.equals(dst);
         Change change = ChangeDetector.diff(src, dst, config);

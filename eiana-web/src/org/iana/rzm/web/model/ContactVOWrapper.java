@@ -207,56 +207,54 @@ public class ContactVOWrapper extends ValueObject {
     }
 
     private void setEmail(int index, String email) {
-        List<String> list = getEmails();
-        list.set(index, email);
-        vo.setEmails(list);
+//        List<String> list = getEmails();
+//        list.set(index, email);
+        vo.setEmail(email);
     }
 
     private void setPhone(int index, String phone) {
-        List<String> list = getPhoneNumbers();
-        list.set(index, phone);
-        vo.setPhoneNumbers(list);
+//        List<String> list = getPhoneNumbers();
+//        list.set(index, phone);
+        vo.setPhoneNumber(phone);
     }
 
     private void setFax(int index, String fax) {
-        List<String> list = getFaxNumbers();
-        list.set(index, fax);
-        vo.setFaxNumbers(list);
+//        List<String> list = getFaxNumbers();
+//        list.set(index, fax);
+        vo.setFaxNumber(fax);
     }
 
     private List<String> getEmails() {
-        List<String> list = vo.getEmails();
-        if (list == null) {
-            list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
+        if (vo.getEmail() != null) {
+            list.add(vo.getEmail());
         }
-
         return list;
     }
 
 
     private List<String> getPhoneNumbers() {
-        List<String> phones = vo.getPhoneNumbers();
-        if (phones == null) {
-            return new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
+        if (vo.getPhoneNumber() != null) {
+            list.add(vo.getPhoneNumber());
         }
-        return phones;
+        return list;
     }
 
     private List<String> getFaxNumbers() {
-        List<String> faxes = vo.getFaxNumbers();
-        if (faxes == null) {
-            return new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
+        if (vo.getFaxNumber() != null) {
+            list.add(vo.getFaxNumber());
         }
-        return faxes;
+        return list;
     }
 
     private List<AddressVO> getAddresses() {
-        List<AddressVO> addresses = vo.getAddresses();
-        if (addresses == null) {
-            return new ArrayList<AddressVO>();
+        List<AddressVO> list = new ArrayList<AddressVO>();
+        if (vo.getAddress() != null) {
+            list.add(vo.getAddress());
         }
-
-        return addresses;
+        return list;
     }
 
     private String getFromList(List<String> list, int index) {

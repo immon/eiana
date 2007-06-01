@@ -86,19 +86,12 @@
 
      -->
     <target name="database.create.test"
-            depends="all.compile, database.test.dropCreate">
+            depends="all.jar, database.test.dropCreate">
         <hibernatetool destdir="${hibernate.test.dir}">
             <classpath>
-                <path location="${common-codevalues.output.dir}"/>
-                <path location="${common-dns.output.dir}"/>
-                <path location="${eiana-domains.output.dir}"/>
-                <path location="${eiana-util.output.dir}"/>
-                <path location="${eiana-users.output.dir}"/>
-                <path location="${eiana-trans.output.dir}"/>
-                <path location="${eiana-logs.output.dir}"/>
-                <path location="${eiana-notifications.output.dir}"/>
-                <path location="${tests.testoutput.dir}"/>
-                <path location="${common-objectdiff.output.dir}"/>
+                <fileset dir="${jar.output.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
                 <fileset dir="${lib.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
@@ -196,6 +189,9 @@
         <jar destfile="${jar.output.dir}/common-dao.jar">
             <fileset dir="${common-dao.output.dir}"/>
         </jar>
+        <jar destfile="${jar.output.dir}/common-dns.jar">
+            <fileset dir="${common-dns.output.dir}"/>
+        </jar>
         <jar destfile="${jar.output.dir}/common-mail.jar">
             <fileset dir="${common-mail.output.dir}"/>
         </jar>
@@ -207,9 +203,6 @@
         </jar>
         <jar destfile="${jar.output.dir}/common-templates.jar">
             <fileset dir="${common-templates.output.dir}"/>
-        </jar>
-        <jar destfile="${jar.output.dir}/eiana-dns.jar">
-            <fileset dir="${eiana-dns.output.dir}"/>
         </jar>
         <jar destfile="${jar.output.dir}/eiana-domains.jar">
             <fileset dir="${eiana-domains.output.dir}"/>

@@ -51,6 +51,10 @@ public class TransactionData {
     protected TrackData trackData = new TrackData();
     @Basic
     private String identityName;
+    @Basic
+    private boolean redelegation; // contact redelegation!
+    @Basic
+    private String submitterEmail;
 
     public Long getObjId() {
         return objId;
@@ -147,5 +151,21 @@ public class TransactionData {
 
     public void setIdentityName(String identityName) {
         this.identityName = identityName;
+    }
+
+    public boolean isRedelegation() {
+        return redelegation;
+    }
+
+    public void setRedelegation(boolean redelegation) {
+        this.redelegation = redelegation;
+    }
+
+    public String getSubmitterEmail() {
+        return submitterEmail;
+    }
+
+    public void setSubmitterEmail(String submitterEmail) {
+        this.submitterEmail = submitterEmail;
     }
 }

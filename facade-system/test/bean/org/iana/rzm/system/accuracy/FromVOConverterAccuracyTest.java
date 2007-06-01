@@ -19,32 +19,29 @@ import java.net.MalformedURLException;
  * @author Piotr Tkaczyk
  */
 
-@Test (sequential=true, groups = {"accuracy", "facade-system", "FromVOConverter"})
+@Test(sequential = true, groups = {"accuracy", "facade-system", "FromVOConverter"})
 public class FromVOConverterAccuracyTest {
     List<ContactVO> contactVOList;
-    List<AddressVO> addressVOList;
-    List<HostVO>    hostVOList;
-    List<String>    eMailList;
-    List<String>    phoneList;
-    List<String>    faxList;
+    AddressVO addressVO;
+    List<HostVO> hostVOList;
+    String email;
+    String phone;
+    String fax;
     Set<IDomainVO.Breakpoint> breakpointVOSet;
     Set<IPAddressVO> ipAddressVOSet;
 
-    ContactVO       contactVO;
+    ContactVO contactVO;
 
     Timestamp created = new Timestamp(System.currentTimeMillis());
     Timestamp modified = new Timestamp(System.currentTimeMillis());
 
     @BeforeClass
     public void init() {
-        contactVOList   = new ArrayList<ContactVO>();
-        addressVOList   = new ArrayList<AddressVO>();
-        hostVOList      = new ArrayList<HostVO>();
-        eMailList       = new ArrayList<String>();
-        phoneList       = new ArrayList<String>();
-        faxList         = new ArrayList<String>();
+        contactVOList = new ArrayList<ContactVO>();
+        addressVO = new AddressVO();
+        hostVOList = new ArrayList<HostVO>();
         breakpointVOSet = new HashSet<IDomainVO.Breakpoint>();
-        ipAddressVOSet  = new HashSet<IPAddressVO>();
+        ipAddressVOSet = new HashSet<IPAddressVO>();
 
         created = new Timestamp(System.currentTimeMillis());
         modified = new Timestamp(System.currentTimeMillis());
@@ -65,25 +62,21 @@ public class FromVOConverterAccuracyTest {
         Address address = FromVOConverter.toAddress(addressVO);
         assert assertAddress(address);
 
-        addressVOList.add(addressVO);
+        this.addressVO = addressVO;
     }
 
     private boolean assertContact(Contact contact) {
         assert contact.getName().equals("newContact");
         assert contact.getOrganization().equals("some_org");
 
-        List<Address> addressList = contact.getAddresses();
-        assert addressList.size() == 1;
-        for(Address address : addressList) {
-            assertAddress(address);
-        }
+        assertAddress(contact.getAddress());
 
-        List<String> contactEMail = contact.getEmails();
-        assert contactEMail.equals(eMailList);
-        List<String> contactFax = contact.getFaxNumbers();
-        assert contactFax.equals(faxList);
-        List<String> contactPhone = contact.getPhoneNumbers();
-        assert contactPhone.equals(phoneList);
+        String contactEMail = contact.getEmail();
+        assert contactEMail.equals(email);
+        String contactFax = contact.getFaxNumber();
+        assert contactFax.equals(fax);
+        String contactPhone = contact.getPhoneNumber();
+        assert contactPhone.equals(phone);
 
         assert contact.getCreated().equals(created);
         assert contact.getCreatedBy().equals("somebody");
@@ -92,19 +85,19 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (dependsOnMethods = {"testAddressConversion"})
+    @Test(dependsOnMethods = {"testAddressConversion"})
     public void testContactConversion() {
         contactVO = new ContactVO();
         contactVO.setName("newContact");
         contactVO.setOrganization("some_org");
-        contactVO.setAddresses(addressVOList);
+        contactVO.setAddress(addressVO);
 
-        eMailList.add("public@mail.com");
-        contactVO.setEmails(eMailList);
-        faxList.add("123123123");
-        contactVO.setFaxNumbers(faxList);
-        phoneList.add("321321321");
-        contactVO.setPhoneNumbers(phoneList);
+        email = "public@mail.com";
+        contactVO.setEmail(email);
+        fax = "123123123";
+        contactVO.setFaxNumber(fax);
+        phone = "321321321";
+        contactVO.setPhoneNumber(phone);
         contactVO.setRole(false);
 
         contactVO.setCreated(created);
@@ -120,7 +113,7 @@ public class FromVOConverterAccuracyTest {
 
     private boolean assertBreakpointSet(Set<Domain.Breakpoint> breakpointSet) {
         assert breakpointSet.size() == 1;
-        for(Domain.Breakpoint breakpoint : breakpointSet)
+        for (Domain.Breakpoint breakpoint : breakpointSet)
             assert breakpoint.equals(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);
         return true;
     }
@@ -157,8 +150,8 @@ public class FromVOConverterAccuracyTest {
         assert !host.isShared();
         Set<IPAddress> ipAddressSet = host.getAddresses();
         assert ipAddressSet.size() == 1;
-        for(IPAddress ipAddress : ipAddressSet)
-            assert assertIPAddress(ipAddress);    
+        for (IPAddress ipAddress : ipAddressSet)
+            assert assertIPAddress(ipAddress);
 
         assert host.getCreated().equals(created);
         assert host.getCreatedBy().equals("somebody");
@@ -167,7 +160,7 @@ public class FromVOConverterAccuracyTest {
         return true;
     }
 
-    @Test (dependsOnMethods = {"testIPAddressConversion"})
+    @Test(dependsOnMethods = {"testIPAddressConversion"})
     public void testHostConversion() {
         HostVO hostVO = new HostVO();
         hostVO.setName("samplehost");
@@ -208,8 +201,8 @@ public class FromVOConverterAccuracyTest {
         assert status.equals(Domain.Status.NEW);
     }
 
-    @Test (dependsOnMethods = {"testContactConversion", "testBreakpointConversion", "testHostConversion",
-                                "testStateConversion",   "testStatusConversion"})
+    @Test(dependsOnMethods = {"testContactConversion", "testBreakpointConversion", "testHostConversion",
+            "testStateConversion", "testStatusConversion"})
     public void testDomainConversion() throws MalformedURLException {
         DomainVO domainVO = new DomainVO();
         domainVO.setName("domain.org");
@@ -241,7 +234,7 @@ public class FromVOConverterAccuracyTest {
         Set<Domain.Breakpoint> breakpointSet = domain.getBreakpoints();
         assert assertBreakpointSet(breakpointSet);
         List<Host> hostList = domain.getNameServers();
-        for (Host host: hostList)
+        for (Host host : hostList)
             assert assertHost(host);
 
         assert domain.getRegistryUrl().equals(domainVO.getRegistryUrl());

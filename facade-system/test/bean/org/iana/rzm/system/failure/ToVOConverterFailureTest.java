@@ -87,10 +87,10 @@ public class ToVOConverterFailureTest {
         ContactVO contactVO = ToVOConverter.toContactVO(contact);
 
         assert contactVO.getName().equals("");
-        assert contactVO.getAddresses().isEmpty();
-        assert contactVO.getPhoneNumbers().isEmpty();
-        assert contactVO.getFaxNumbers().isEmpty();
-        assert contactVO.getEmails().isEmpty();
+        assert contactVO.getAddress() == null;
+        assert contactVO.getPhoneNumber() == null;
+        assert contactVO.getFaxNumber() == null;
+        assert contactVO.getEmail() == null;
         assert contactVO.isRole() == false;
         assert contactVO.getObjId() == null;
         assert contactVO.getCreated().equals(contact.getCreated());

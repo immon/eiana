@@ -304,20 +304,20 @@ public class DomainCreationTransactionWorkFlowTest {
 
     private Contact createContact(String prefix) {
         Contact contact = new Contact(prefix, prefix + "org");
-        contact.addAddress(new Address(prefix + "addr", "US"));
-        contact.addEmail(prefix + "@no-mail.org");
-        contact.addFaxNumber("+1234567890");
-        contact.addPhoneNumber("+1234567890");
+        contact.setAddress(new Address(prefix + "addr", "US"));
+        contact.setEmail(prefix + "@no-mail.org");
+        contact.setFaxNumber("+1234567890");
+        contact.setPhoneNumber("+1234567890");
         return contact;
     }
 
     private void assertEquals(ContactVO c1, ContactVO c2) {
-        assert c1.getAddresses().equals(c2.getAddresses());
-        assert c1.getEmails().equals(c2.getEmails());
-        assert c1.getFaxNumbers().equals(c2.getFaxNumbers());
+        assert c1.getAddress().equals(c2.getAddress());
+        assert c1.getEmail().equals(c2.getEmail());
+        assert c1.getFaxNumber().equals(c2.getFaxNumber());
         assert c1.getName().equals(c2.getName());
         assert c1.getOrganization().equals(c2.getOrganization());
-        assert c1.getPhoneNumbers().equals(c2.getPhoneNumbers());
+        assert c1.getPhoneNumber().equals(c2.getPhoneNumber());
     }
 
     private void assertEquals(HostVO h1, HostVO h2) {

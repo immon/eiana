@@ -22,10 +22,10 @@ public class InitDatabaseTask extends HibernateTask {
 
     private Contact setupContact(Contact contact, String prefix, String domainName, String countryCode) {
         contact.setName(prefix + " name");
-        contact.addAddress(setupAddress(new Address(), "contact", countryCode));
-        contact.addEmail(prefix + "@no-mail." + domainName);
-        contact.addFaxNumber("+1234567890");
-        contact.addPhoneNumber("+1234567891");
+        contact.setAddress(setupAddress(new Address(), "contact", countryCode));
+        contact.setEmail(prefix + "@no-mail." + domainName);
+        contact.setFaxNumber("+1234567890");
+        contact.setPhoneNumber("+1234567891");
         return contact;
     }
 

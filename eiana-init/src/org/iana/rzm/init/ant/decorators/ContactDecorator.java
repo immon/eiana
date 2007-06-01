@@ -40,7 +40,7 @@ public class ContactDecorator {
         // warning: country is a full name - not a country code!
         // set up a correct country code
 
-        contact.addAddress(address);
+        contact.setAddress(address);
     }
 
     public Contact getContact() {
@@ -98,35 +98,35 @@ public class ContactDecorator {
     }
 
     public void setPhone(String value) {
-        contact.addPhoneNumber(value);
+        contact.setPhoneNumber(value);
     }
 
     public void setFax(String value) {
-        contact.addFaxNumber(value);
+        contact.setFaxNumber(value);
     }
 
     public void setEmail(String value) {
         if(value.contains(" or ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split(" or ")));
             for (String email : emails)
-                contact.addEmail(email.trim());
+                contact.setEmail(email.trim());
         } else
         if(value.contains("; ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split("; ")));
             for (String email : emails)
-                contact.addEmail(email.trim());
+                contact.setEmail(email.trim());
         } else
         if(value.contains(", ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split(", ")));
             for (String email : emails)
-                contact.addEmail(email.trim());
+                contact.setEmail(email.trim());
         } else
         if(value.contains("/ ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split("/ ")));
             for (String email : emails)
-                contact.addEmail(email.trim());
+                contact.setEmail(email.trim());
         } else
-            contact.addEmail(value);
+            contact.setEmail(value);
     }
 
     public void setCreated(String value) throws ParseException {
