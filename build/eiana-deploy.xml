@@ -90,6 +90,7 @@
         <hibernatetool destdir="${hibernate.test.dir}">
             <classpath>
                 <path location="${common-codevalues.output.dir}"/>
+                <path location="${common-dns.output.dir}"/>
                 <path location="${eiana-domains.output.dir}"/>
                 <path location="${eiana-util.output.dir}"/>
                 <path location="${eiana-users.output.dir}"/>
@@ -174,12 +175,13 @@
     <!-- compiling, packaging & testing targets-->
 
     <target name="all.compile"
-            depends="init, compile.module.tests,compile.module.eiana-dns,compile.module.eiana-domains,
+            depends="init, compile.module.tests,compile.module.common-dns,compile.module.eiana-domains,
              compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,
              compile.module.eiana-users,compile.module.eiana-startup,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
-             compile.module.common-codevalues,compile.module.common-pgp, compile.module.eiana-techcheck"
+             compile.module.common-codevalues,compile.module.common-pgp, compile.module.eiana-techcheck,
+             compile.module.common-test"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">

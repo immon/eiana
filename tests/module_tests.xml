@@ -19,10 +19,10 @@
     <path refid="library.apache-commons.classpath"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.mysql.classpath"/>
-    <pathelement location="${eiana-dns.output.dir}"/>
-    <pathelement location="${eiana-dns.testoutput.dir}"/>
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${eiana-logs.output.dir}"/>
     <pathelement location="${eiana-logs.testoutput.dir}"/>
     <pathelement location="${eiana-notifications.output.dir}"/>
@@ -86,7 +86,7 @@
   
   <target name="compile.module.tests" depends="compile.module.tests.production,compile.module.tests.tests" description="Compile module tests"/>
   
-  <target name="compile.module.tests.production" depends="compile.module.eiana-dns,compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria,compile.module.conf,compile.module.eiana-techcheck,compile.module.common-objectdiff,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-test" description="Compile module tests; production classes"/>
+  <target name="compile.module.tests.production" depends="compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria,compile.module.conf,compile.module.eiana-techcheck,compile.module.common-objectdiff,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-test" description="Compile module tests; production classes"/>
   
   <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests">
     <mkdir dir="${tests.testoutput.dir}"/>

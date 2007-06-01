@@ -1,223 +1,152 @@
 package org.iana.rzm.notifications;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.context.ApplicationContext;
+import org.iana.notifications.*;
+import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.notifications.*;
+import org.iana.test.spring.TransactionalSpringContextTests;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"test", "notificationManager"})
-public class NotificationsManagerTest {
-    private PlatformTransactionManager txMgr;
-    private UserManager                userManager;
-    private NotificationManager notificationManager;
-    private TransactionDefinition      txDef = new DefaultTransactionDefinition();
+@Test(sequential = true, groups = {"test", "notificationManager"})
+public class NotificationsManagerTest extends TransactionalSpringContextTests {
+    protected UserManager userManager;
+    protected NotificationManager NotificationManagerBean;
 
-    private RZMUser      firstUser, secondUser;
-    private Notification notification, secondNotification, thirdNotification;
-    private Long         notificationId;
-    private Long         secondUserId;
-    private List<Long>   notificationIds = new ArrayList<Long>();
-    private Long         emailAdderesseId;
+    private RZMUser firstUser, secondUser;
+    private Notification notification;
+    private Notification thirdNotification;
+    private Long notificationId;
 
-    @BeforeClass
-    public void init() {
-        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        userManager = (UserManager) appCtx.getBean("userManager");
-        notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
+    public NotificationsManagerTest() {
+        super(SpringApplicationContext.CONFIG_FILE_NAME);
+    }
+
+    protected void init() {
     }
 
     @Test
     public void testNotificationsDAO() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            firstUser = new RZMUser("John", "Do", "Organization", "john345", "john@do.com", "magic", false);
-            userManager.create(firstUser);
+        firstUser = new RZMUser("John", "Do", "Organization", "john345", "john@do.com", "magic", false);
+        userManager.create(firstUser);
 
-            secondUser = new RZMUser("temp","temp", "temp", "temp", "temp@temp.com", "temp", false);
-            userManager.create(secondUser);
-            secondUserId = secondUser.getObjId();
+        secondUser = new RZMUser("temp", "temp", "temp", "temp", "temp@temp.com", "temp", false);
+        userManager.create(secondUser);
 
-            Map<String, String> values = new HashMap<String, String>();
-            values.put("test", "something");
-            values.put("name", "anyName");
+        Map<String, String> values = new HashMap<String, String>();
+        values.put("test", "something");
+        values.put("name", "anyName");
 
-            TemplateContent tc = new TemplateContent("SAMPLE_TEMPLATE3", values);
+        TemplateContent tc = new TemplateContent("SAMPLE_TEMPLATE3", values);
 
-            notification = new Notification();
-            notification.addAddressee(firstUser);
-            notification.setContent(tc);
-            notification.setSent(false);
+        notification = new Notification();
+        notification.addAddressee(firstUser);
+        notification.setContent(tc);
+        notification.setSent(false);
 
-            notificationManager.create(notification);
-            notificationId = notification.getObjId();
-            notificationIds.add(notificationId);
+        NotificationManagerBean.create(notification);
+        notificationId = notification.getObjId();
 
-            Map<String, String> valuesNew = new HashMap<String, String>();
-            valuesNew.put("newKey1", "somethingNew");
-            valuesNew.put("newKey2", "anyNameNew");
+        Map<String, String> valuesNew = new HashMap<String, String>();
+        valuesNew.put("newKey1", "somethingNew");
+        valuesNew.put("newKey2", "anyNameNew");
 
-            TemplateContent tcNew = new TemplateContent("SAMPLE_TEMPLATE3", valuesNew);
-            secondNotification = new Notification();
-            secondNotification.addAddressee(firstUser);
-            secondNotification.addAddressee(secondUser);
-            secondNotification.setContent(tcNew);
-            secondNotification.setSent(false);
-            notificationManager.create(secondNotification);
-            notificationIds.add(secondNotification.getObjId());
+        TemplateContent tcNew = new TemplateContent("SAMPLE_TEMPLATE3", valuesNew);
+        Notification secondNotification = new Notification();
+        secondNotification.addAddressee(firstUser);
+        secondNotification.addAddressee(secondUser);
+        secondNotification.setContent(tcNew);
+        secondNotification.setSent(false);
+        NotificationManagerBean.create(secondNotification);
 
-            Notification retrivedNotif = notificationManager.get(notification.getObjId());
+        Notification retrivedNotif = NotificationManagerBean.get(notification.getObjId());
 
-            Set<Addressee> retrivedAddressee = retrivedNotif.getAddressee();
+        Set<Addressee> retrivedAddressee = retrivedNotif.getAddressee();
 
-            assert retrivedAddressee.size() == 1;
+        assert retrivedAddressee.size() == 1;
 
-            for(Addressee addressee : retrivedAddressee) {
-                assert addressee.getEmail().equals(firstUser.getEmail());
-                assert addressee.getName().equals(firstUser.getName());
-            }
+        for (Addressee addressee : retrivedAddressee) {
+            assert addressee.getEmail().equals(firstUser.getEmail());
+            assert addressee.getName().equals(firstUser.getName());
+        }
 
-            retrivedNotif = notificationManager.get(secondNotification.getObjId());
-            retrivedAddressee = retrivedNotif.getAddressee();
+        retrivedNotif = NotificationManagerBean.get(secondNotification.getObjId());
+        retrivedAddressee = retrivedNotif.getAddressee();
 
-            assert retrivedAddressee.size() == 2;
+        assert retrivedAddressee.size() == 2;
 
-            List<Notification> userNotifications = notificationManager.findUserNotifications(secondUser);
+        List<Notification> userNotifications = NotificationManagerBean.findUserNotifications(secondUser);
 
-            assert userNotifications.size() == 1;
+        assert userNotifications.size() == 1;
 
-            userNotifications = notificationManager.findUserNotifications(firstUser);
+        userNotifications = NotificationManagerBean.findUserNotifications(firstUser);
 
-            assert userNotifications.size() == 2;
+        assert userNotifications.size() == 2;
 
-            for(Notification notification : userNotifications) {
-                assert notification.getContent().equals(tc) || notification.getContent().equals(tcNew);
-                assert !notification.isSent();
-            }
-
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
+        for (Notification notification : userNotifications) {
+            assert notification.getContent().equals(tc) || notification.getContent().equals(tcNew);
+            assert !notification.isSent();
         }
     }
 
     @Test(dependsOnMethods = {"testNotificationsDAO"})
     public void testNotificationsDAO_Update() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            notification = notificationManager.get(notificationId);
-            notification.addAddressee(secondUser);
-            notificationManager.update(notification);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
-        try {
-            txStatus = txMgr.getTransaction(txDef);
-            notification = notificationManager.get(notificationId);
-            assert notification.getAddressee().size() == 2;
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
+        notification = NotificationManagerBean.get(notificationId);
+        notification.addAddressee(secondUser);
+        NotificationManagerBean.update(notification);
+        notification = NotificationManagerBean.get(notificationId);
+        assert notification.getAddressee().size() == 2;
     }
 
     @Test(dependsOnMethods = {"testNotificationsDAO_Update"})
     public void testNotificationsDAO_TextContent() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            TextContent tempContent = new TextContent();
-            tempContent.setBody("temp body");
-            tempContent.setSubject("temp subject");
-            thirdNotification = new Notification();
-            thirdNotification.setContent(tempContent);
-            thirdNotification.addAddressee(firstUser);
-            thirdNotification.setSent(false);
-            notificationManager.create(thirdNotification);
-            notificationIds.add(thirdNotification.getObjId());
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            Notification retrivedNotification = notificationManager.get(thirdNotification.getObjId());
-            assert retrivedNotification.getContent().getBody().equals("temp body");
-            assert retrivedNotification.getContent().getSubject().equals("temp subject");
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
+        TextContent tempContent = new TextContent();
+        tempContent.setBody("temp body");
+        tempContent.setSubject("temp subject");
+        thirdNotification = new Notification();
+        thirdNotification.setContent(tempContent);
+        thirdNotification.addAddressee(firstUser);
+        thirdNotification.setSent(false);
+        NotificationManagerBean.create(thirdNotification);
+        Notification retrivedNotification = NotificationManagerBean.get(thirdNotification.getObjId());
+        assert retrivedNotification.getContent().getBody().equals("temp body");
+        assert retrivedNotification.getContent().getSubject().equals("temp subject");
     }
 
     @Test(dependsOnMethods = {"testNotificationsDAO_TextContent"})
     public void testNotificationsDAO_EmailAddresse() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            TextContent tempContent = new TextContent();
-            tempContent.setBody("temp body");
-            tempContent.setSubject("temp subject");
-            thirdNotification = new Notification();
-            thirdNotification.setContent(tempContent);
+        TextContent tempContent = new TextContent();
+        tempContent.setBody("temp body");
+        tempContent.setSubject("temp subject");
+        thirdNotification = new Notification();
+        thirdNotification.setContent(tempContent);
 
-            EmailAddressee emailAddressee = new EmailAddressee("some@emial.com", "someusername");
-            emailAddressee.setEmail("some@emial.com");
-            emailAddressee.setName("someusername");
-            thirdNotification.addAddressee(emailAddressee);
-            thirdNotification.setSent(false);
-            notificationManager.create(thirdNotification);
-            emailAdderesseId = thirdNotification.getObjId();
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
-        txStatus = txMgr.getTransaction(txDef);
-        try {
-            Notification retrivedNotification = notificationManager.get(thirdNotification.getObjId());
-            assert retrivedNotification.getContent().getBody().equals("temp body");
-            assert retrivedNotification.getContent().getSubject().equals("temp subject");
-            assert retrivedNotification.getAddressee().iterator().next().getEmail().equals("some@emial.com");
-            assert retrivedNotification.getAddressee().iterator().next().getName().equals("someusername");
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            txMgr.rollback(txStatus);
-            throw e;
-        }
+        EmailAddressee emailAddressee = new EmailAddressee("some@emial.com", "someusername");
+        emailAddressee.setEmail("some@emial.com");
+        emailAddressee.setName("someusername");
+        thirdNotification.addAddressee(emailAddressee);
+        thirdNotification.setSent(false);
+        NotificationManagerBean.create(thirdNotification);
+        Notification retrivedNotification = NotificationManagerBean.get(thirdNotification.getObjId());
+        assert retrivedNotification.getContent().getBody().equals("temp body");
+        assert retrivedNotification.getContent().getSubject().equals("temp subject");
+        assert retrivedNotification.getAddressee().iterator().next().getEmail().equals("some@emial.com");
+        assert retrivedNotification.getAddressee().iterator().next().getName().equals("someusername");
     }
 
-    @AfterClass (alwaysRun = true)
-    public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
-        try {
-            for (RZMUser user : userManager.findAll())
-                userManager.delete(user);
-            for (Notification notification : notificationManager.findAll())
-                notificationManager.delete(notification);
-            txMgr.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txMgr.rollback(txStatus);
-            throw e;
-        }
+    protected void cleanUp() throws Exception {
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Notification notification : NotificationManagerBean.findAll())
+            NotificationManagerBean.delete(notification);
     }
 }

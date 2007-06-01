@@ -10,23 +10,17 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
 @Test
 public class SystemTransactionServiceBeanTest {
 
-    private PlatformTransactionManager txMgr;
     private UserManager userManager;
-    private TransactionDefinition txDef = new DefaultTransactionDefinition();
     private SystemTransactionService service;
     private AuthenticationService authService;
 
@@ -36,7 +30,6 @@ public class SystemTransactionServiceBeanTest {
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
         userManager = (UserManager) appCtx.getBean("userManager");
         service = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
         authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
@@ -45,10 +38,8 @@ public class SystemTransactionServiceBeanTest {
 
 
     private void createTestUsers() {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         RZMUser testUser = createTestUser();
         userManager.create(testUser);
-        txMgr.commit(txStatus);
     }
 
     private RZMUser createTestUser() {

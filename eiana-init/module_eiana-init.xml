@@ -17,6 +17,8 @@
     <path refid="library.hibernate.classpath"/>
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${eiana-users.output.dir}"/>
     <pathelement location="${eiana-users.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>

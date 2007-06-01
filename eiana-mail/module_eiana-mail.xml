@@ -35,6 +35,8 @@
     <pathelement location="${eiana-users.output.dir}"/>
     <pathelement location="${eiana-users.testoutput.dir}"/>
     <path refid="library.log4j.classpath"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
   </path>
   
   
@@ -62,7 +64,7 @@
   
   <target name="compile.module.eiana-mail" depends="compile.module.eiana-mail.production,compile.module.eiana-mail.tests" description="Compile module eiana-mail"/>
   
-  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-templates,compile.module.common-pgp,compile.module.eiana-notifications,compile.module.eiana-users" description="Compile module eiana-mail; production classes">
+  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-templates,compile.module.common-pgp,compile.module.eiana-notifications,compile.module.eiana-users,compile.module.common-dns" description="Compile module eiana-mail; production classes">
     <mkdir dir="${eiana-mail.output.dir}"/>
     <javac destdir="${eiana-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-mail}"/>

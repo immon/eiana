@@ -15,6 +15,8 @@
   <path id="eiana-techcheck.module.classpath">
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
     <path refid="library.hibernate.classpath"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.cobertura.classpath"/>
@@ -48,7 +50,7 @@
   
   <target name="compile.module.eiana-techcheck" depends="compile.module.eiana-techcheck.production,compile.module.eiana-techcheck.tests" description="Compile module eiana-techcheck"/>
   
-  <target name="compile.module.eiana-techcheck.production" depends="compile.module.eiana-domains,compile.module.eiana-util" description="Compile module eiana-techcheck; production classes">
+  <target name="compile.module.eiana-techcheck.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.common-dns" description="Compile module eiana-techcheck; production classes">
     <mkdir dir="${eiana-techcheck.output.dir}"/>
     <javac destdir="${eiana-techcheck.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-techcheck}"/>
