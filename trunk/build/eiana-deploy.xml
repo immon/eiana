@@ -480,6 +480,13 @@
             <fileset dir="../eiana-techcheck/test">
                 <include name="**/*.java"/>
             </fileset>
+            <!--common-dns-->
+            <fileset dir="../common-dns/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="../common-dns/test">
+                <include name="**/*.java"/>
+            </fileset>
         </cobertura-report>
     </target>
 
