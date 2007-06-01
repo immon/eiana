@@ -1,98 +1,90 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_common-templates" default="compile.module.common-templates">
-    <dirname property="module.common-templates.basedir" file="${ant.file.module_common-templates}"/>
-
-
-    <property name="compiler.args.common-templates" value="${compiler.args}"/>
-
-    <property name="common-templates.output.dir"
-              value="${module.common-templates.basedir}/../build/classes/production/common-templates"/>
-    <property name="common-templates.testoutput.dir"
-              value="${module.common-templates.basedir}/../build/classes/test/common-templates"/>
-
-    <path id="common-templates.module.bootclasspath">
-        <!-- Paths to be included in compilation bootclasspath -->
-    </path>
-
-    <path id="common-templates.module.classpath">
-        <path refid="library.log4j.classpath"/>
-        <path refid="library.dom4j.classpath"/>
-        <path refid="library.testng-5.5-jdk15.classpath"/>
-    </path>
-
-
-    <patternset id="excluded.from.module.common-templates">
-        <patternset refid="ignored.files"/>
-    </patternset>
-
-    <patternset id="excluded.from.compilation.common-templates">
-        <patternset refid="excluded.from.module.common-templates"/>
-    </patternset>
-
-    <path id="common-templates.module.sourcepath">
-        <dirset dir="${module.common-templates.basedir}">
-            <include name="src"/>
-        </dirset>
-    </path>
-
-    <path id="common-templates.module.test.sourcepath">
-        <dirset dir="${module.common-templates.basedir}">
-            <include name="test/etc"/>
-            <include name="test/templateservice"/>
-        </dirset>
-    </path>
-
-
-    <target name="compile.module.common-templates"
-            depends="compile.module.common-templates.production,compile.module.common-templates.tests"
-            description="Compile module common-templates"/>
-
-    <target name="compile.module.common-templates.production"
-            description="Compile module common-templates; production classes">
-        <mkdir dir="${common-templates.output.dir}"/>
-        <javac destdir="${common-templates.output.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.common-templates}"/>
-            <bootclasspath refid="common-templates.module.bootclasspath"/>
-            <classpath refid="common-templates.module.classpath"/>
-            <src refid="common-templates.module.sourcepath"/>
-            <patternset refid="excluded.from.compilation.common-templates"/>
-        </javac>
-
-        <copy todir="${common-templates.output.dir}">
-            <fileset dir="${module.common-templates.basedir}/src">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="compile.module.common-templates.tests" depends="compile.module.common-templates.production"
-            description="compile module common-templates; test classes" unless="skip.tests">
-        <mkdir dir="${common-templates.testoutput.dir}"/>
-        <javac destdir="${common-templates.testoutput.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.common-templates}"/>
-            <classpath refid="common-templates.module.classpath"/>
-            <classpath location="${common-templates.output.dir}"/>
-            <src refid="common-templates.module.test.sourcepath"/>
-            <patternset refid="excluded.from.compilation.common-templates"/>
-        </javac>
-
-        <copy todir="${common-templates.testoutput.dir}">
-            <fileset dir="${module.common-templates.basedir}/test/etc">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.common-templates.basedir}/test/templateservice">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="clean.module.common-templates" description="cleanup module">
-        <delete dir="${common-templates.output.dir}"/>
-        <delete dir="${common-templates.testoutput.dir}"/>
-    </target>
+  <dirname property="module.common-templates.basedir" file="${ant.file.module_common-templates}"/>
+  
+  
+  <property name="compiler.args.common-templates" value="${compiler.args}"/>
+  
+  <property name="common-templates.output.dir" value="${module.common-templates.basedir}/../build/classes/production/common-templates"/>
+  <property name="common-templates.testoutput.dir" value="${module.common-templates.basedir}/../build/classes/test/common-templates"/>
+  
+  <path id="common-templates.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common-templates.module.classpath">
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common-templates">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common-templates">
+    <patternset refid="excluded.from.module.common-templates"/>
+  </patternset>
+  
+  <path id="common-templates.module.sourcepath">
+    <dirset dir="${module.common-templates.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="common-templates.module.test.sourcepath">
+    <dirset dir="${module.common-templates.basedir}">
+      <include name="test/etc"/>
+      <include name="test/templateservice"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common-templates" depends="compile.module.common-templates.production,compile.module.common-templates.tests" description="Compile module common-templates"/>
+  
+  <target name="compile.module.common-templates.production" description="Compile module common-templates; production classes">
+    <mkdir dir="${common-templates.output.dir}"/>
+    <javac destdir="${common-templates.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-templates}"/>
+      <bootclasspath refid="common-templates.module.bootclasspath"/>
+      <classpath refid="common-templates.module.classpath"/>
+      <src refid="common-templates.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-templates"/>
+    </javac>
+    
+    <copy todir="${common-templates.output.dir}">
+      <fileset dir="${module.common-templates.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.common-templates.tests" depends="compile.module.common-templates.production" description="compile module common-templates; test classes" unless="skip.tests">
+    <mkdir dir="${common-templates.testoutput.dir}"/>
+    <javac destdir="${common-templates.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-templates}"/>
+      <classpath refid="common-templates.module.classpath"/>
+      <classpath location="${common-templates.output.dir}"/>
+      <src refid="common-templates.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-templates"/>
+    </javac>
+    
+    <copy todir="${common-templates.testoutput.dir}">
+      <fileset dir="${module.common-templates.basedir}/test/etc">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.common-templates.basedir}/test/templateservice">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.common-templates" description="cleanup module">
+    <delete dir="${common-templates.output.dir}"/>
+    <delete dir="${common-templates.testoutput.dir}"/>
+  </target>
 </project>

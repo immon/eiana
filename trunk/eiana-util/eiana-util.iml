@@ -10,6 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="module" module-name="common-dns" />
     <orderEntryProperties />
   </component>
 </module>

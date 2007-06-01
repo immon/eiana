@@ -1,6 +1,5 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
@@ -9,6 +8,7 @@ import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -103,7 +103,7 @@ public class TransactionManagerTest {
         }
     }
 
-    private void createTestTransactionsAndUsers() throws InvalidNameException, NoModificationException, CloneNotSupportedException {
+    private void createTestTransactionsAndUsers() throws InvalidDomainNameException, NoModificationException, CloneNotSupportedException {
         Domain domain1 = new Domain("tmtestdomain1");
         domainManager.create(domain1);
 

@@ -1,11 +1,8 @@
-package org.iana.rzm.common.validators;
-
-import org.iana.rzm.common.exceptions.InvalidIPv4AddressException;
-import org.iana.rzm.common.exceptions.InvalidIPv6AddressException;
+package org.iana.dns.validator;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -14,7 +11,7 @@ import java.util.Iterator;
 public class IPAddressValidator {
 
     public void validateIPv4(String address) throws InvalidIPv4AddressException {
-        CheckTool.checkEmpty(address, "empty ipv4 address");
+        if (address == null) throw new IllegalArgumentException("empty ipv4 address");
         List<String> pieces = Arrays.asList(address.split("\\."));
         if (pieces.size() != 4) throw new InvalidIPv4AddressException(address);
         for (String piece : pieces) {
@@ -28,7 +25,7 @@ public class IPAddressValidator {
     }
 
     public void validateIPv6(String address) throws InvalidIPv6AddressException {
-        CheckTool.checkEmpty(address, "empty ipv6 address");
+        if (address == null) throw new IllegalArgumentException("empty ipv6 address");
         try {
             int doubleColonPosition = address.indexOf("::");
             if (doubleColonPosition == -1) {

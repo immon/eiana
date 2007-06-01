@@ -1,8 +1,8 @@
 package org.iana.rzm.domain;
 
 import org.testng.annotations.Test;
-import org.iana.rzm.common.exceptions.InvalidIPv4AddressException;
-import org.iana.rzm.common.exceptions.InvalidIPv6AddressException;
+import org.iana.dns.validator.InvalidIPv4AddressException;
+import org.iana.dns.validator.InvalidIPv6AddressException;
 
 /**
  * @author: Piotr Tkaczyk

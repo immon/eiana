@@ -1,8 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -20,6 +19,7 @@ import org.iana.rzm.user.MD5Password;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
@@ -291,21 +291,21 @@ public class GuardedSystemTransactionServiceTest {
         return contact;
     }
 
-    private Host setupFirstHost() throws InvalidIPAddressException, InvalidNameException {
+    private Host setupFirstHost() throws InvalidIPAddressException, InvalidDomainNameException {
         Host host = new Host("ns1.some.org");
         host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
         host.addIPAddress(IPAddress.createIPv6Address("1234:5678::90AB"));
         return host;
     }
 
-    private Host setupSecondHost() throws InvalidIPAddressException, InvalidNameException {
+    private Host setupSecondHost() throws InvalidIPAddressException, InvalidDomainNameException {
         Host host = new Host("ns2.some.org");
         host.addIPAddress(IPAddress.createIPv4Address("21.2.3.5"));
         host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));
         return host;
     }
 
-    private Domain setupDomain(String name) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
+    private Domain setupDomain(String name) throws MalformedURLException, InvalidDomainNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
         Domain domain = new Domain(name);
         domain.setRegistryUrl("http://www.registry." + name);
         domain.setSpecialInstructions(name + " special instructions");

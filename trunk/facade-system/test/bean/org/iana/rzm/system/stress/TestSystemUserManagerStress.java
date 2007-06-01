@@ -1,6 +1,5 @@
 package org.iana.rzm.system.stress;
 
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.*;
 import org.iana.criteria.Criterion;
 import org.testng.annotations.Test;
@@ -73,20 +72,16 @@ public class TestSystemUserManagerStress implements UserManager {
         userCreated.setLoginName("testSystemStress");
         userCreated.setPassword("testSystemStress");
         userCreated.setObjId(1L);
-        try {
-            for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
-                SystemRole role = new SystemRole();
-                role.setName("stressfacadesystemiana" + i + ".org");
-                role.setType(SystemRole.SystemType.TC);
-                userCreated.addRole(role);
+        for (int i = 0; i < NUMBER_OF_DOMAINS; i++) {
+            SystemRole role = new SystemRole();
+            role.setName("stressfacadesystemiana" + i + ".org");
+            role.setType(SystemRole.SystemType.TC);
+            userCreated.addRole(role);
 
-                role = new SystemRole();
-                role.setName("stressfacadesystemiana" + i + ".org");
-                role.setType(SystemRole.SystemType.AC);
-                userCreated.addRole(role);
-            }
-        } catch (InvalidNameException e) {
-            //
+            role = new SystemRole();
+            role.setName("stressfacadesystemiana" + i + ".org");
+            role.setType(SystemRole.SystemType.AC);
+            userCreated.addRole(role);
         }
         return userCreated;
     }

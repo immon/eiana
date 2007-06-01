@@ -5,8 +5,8 @@ import org.hibernate.annotations.Cascade;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import javax.persistence.*;
 import java.util.*;
@@ -99,7 +99,7 @@ public class Domain implements TrackedObject, Cloneable {
     protected Domain() {
     }
 
-    public Domain(String name) throws InvalidNameException {
+    public Domain(String name) throws InvalidDomainNameException {
         setName(name);
         this.adminContacts = new ArrayList<Contact>();
         this.techContacts = new ArrayList<Contact>();
@@ -120,7 +120,7 @@ public class Domain implements TrackedObject, Cloneable {
         return name == null ? null : name.getName();
     }
 
-    final public void setName(String name) throws InvalidNameException {
+    final public void setName(String name) throws InvalidDomainNameException {
         this.name = new Name(name);
     }
 
@@ -255,7 +255,7 @@ public class Domain implements TrackedObject, Cloneable {
         return whoisServer == null ? null : whoisServer.getName();
     }
 
-    final public void setWhoisServer(String whoisServer) throws InvalidNameException {
+    final public void setWhoisServer(String whoisServer) throws InvalidDomainNameException {
         this.whoisServer = whoisServer == null ? null : new Name(whoisServer);
     }
 

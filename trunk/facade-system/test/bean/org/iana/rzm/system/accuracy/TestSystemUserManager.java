@@ -4,9 +4,9 @@ package org.iana.rzm.system.accuracy;
  * @author Piotr Tkaczyk
  */
 
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.*;
 import org.iana.criteria.Criterion;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public class TestSystemUserManager implements UserManager {
             role.setName("facadesystemiana1.org");
             role.setType(SystemRole.SystemType.AC);
             userCreated.addRole(role);
-        } catch (InvalidNameException e) {
+        } catch (InvalidDomainNameException e) {
             //
         }
         return userCreated;

@@ -1,6 +1,6 @@
 package org.iana.rzm.domain;
 
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.dns.validator.InvalidIPAddressException;
 
 import javax.persistence.*;
 

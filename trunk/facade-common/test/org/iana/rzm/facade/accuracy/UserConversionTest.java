@@ -10,7 +10,6 @@ import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.AdminRoleVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.TrackData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -233,7 +232,7 @@ public class UserConversionTest {
                     assert false : "unmatched role type";
     }
 
-    private SystemRole createSystemRole(SystemRole.SystemType type) throws InvalidNameException {
+    private SystemRole createSystemRole(SystemRole.SystemType type) {
 
         SystemRole role = new SystemRole();
         role.setAcceptFrom(true);

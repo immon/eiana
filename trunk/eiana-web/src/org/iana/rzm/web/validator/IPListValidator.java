@@ -1,7 +1,7 @@
 package org.iana.rzm.web.validator;
 
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.validators.IPAddressValidator;
+import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.dns.validator.IPAddressValidator;
 import org.iana.rzm.web.model.IPAddressVOWrapper;
 
 import java.util.List;

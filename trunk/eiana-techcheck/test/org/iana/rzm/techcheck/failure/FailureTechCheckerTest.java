@@ -5,6 +5,7 @@ import org.iana.rzm.techcheck.exceptions.*;
 import org.iana.rzm.techcheck.TechChecker;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
+import org.iana.rzm.techcheck.exceptions.RestrictedIPv4Exception;
 
 import java.util.List;
 import java.util.ArrayList;

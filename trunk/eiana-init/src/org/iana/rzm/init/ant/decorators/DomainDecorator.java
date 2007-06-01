@@ -1,7 +1,6 @@
 package org.iana.rzm.init.ant.decorators;
 
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import java.text.ParseException;
 import java.sql.Timestamp;
@@ -21,7 +20,7 @@ public class DomainDecorator {
         return domain;
     }
 
-    public void setName(String name) throws InvalidNameException {
+    public void setName(String name) {
         domain = new Domain(name);
     }
 
@@ -53,7 +52,7 @@ public class DomainDecorator {
         domain.setRegistryUrl(registryUrl);
     }
 
-    public void setWhoisServer(String whoisServer) throws InvalidNameException {
+    public void setWhoisServer(String whoisServer) {
         if (whoisServer != null) {
             int idx = whoisServer.lastIndexOf('/');
             if (idx > -1) {

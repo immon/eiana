@@ -17,7 +17,6 @@
     <orderEntry type="library" name="apache-commons" level="project" />
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="library" name="mysql" level="project" />
-    <orderEntry type="module" module-name="eiana-dns" />
     <orderEntry type="module" module-name="eiana-domains" />
     <orderEntry type="module" module-name="eiana-logs" />
     <orderEntry type="module" module-name="eiana-notifications" />

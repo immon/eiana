@@ -1,7 +1,7 @@
 package org.iana.rzm.domain.hibernate.test.accuracy;
 
 import org.iana.rzm.domain.IPAddress;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.hibernate.test.common.HibernateMappingUnitTest;
 import org.testng.annotations.Test;
 

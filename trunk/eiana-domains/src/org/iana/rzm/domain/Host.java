@@ -3,9 +3,9 @@ package org.iana.rzm.domain;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import javax.persistence.*;
 import java.util.*;
@@ -46,7 +46,7 @@ public class Host implements TrackedObject,Cloneable {
         this.numDelegations = 0;
     }
 
-    public Host(String name) throws InvalidNameException {
+    public Host(String name) throws InvalidDomainNameException {
         setName(name);
         this.addresses = new HashSet<IPAddress>();
         this.numDelegations = 0;
@@ -64,8 +64,8 @@ public class Host implements TrackedObject,Cloneable {
         return name == null ? null : name.getName();
     }
 
-    final public void setName(String name) throws InvalidNameException {
-        this.name = new Name(name, true);
+    final public void setName(String name) throws InvalidDomainNameException {
+        this.name = new Name(name);
     }
 
     final public Set<IPAddress> getAddresses() {

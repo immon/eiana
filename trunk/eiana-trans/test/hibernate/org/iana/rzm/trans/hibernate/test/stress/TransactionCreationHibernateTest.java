@@ -1,12 +1,12 @@
 package org.iana.rzm.trans.hibernate.test.stress;
 
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.NameServerAlreadyExistsException;
 import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.hibernate.test.common.HibernateMappingTestUtil;
 import org.iana.rzm.trans.hibernate.test.common.HibernateOperationStressTest;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Test(groups = {"hibernate", "eiana-trans", "stress", "eiana-trans-stress-create"})
 public class TransactionCreationHibernateTest extends HibernateOperationStressTest {
-    private Domain getDomain(String name) throws InvalidNameException, MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
+    private Domain getDomain(String name) throws InvalidDomainNameException, MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
         Domain domain = HibernateMappingTestUtil.setupDomain(new Domain(name));
         session.save(domain);
         return domain;

@@ -13,6 +13,7 @@ import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 

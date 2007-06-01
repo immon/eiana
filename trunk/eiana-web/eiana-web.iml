@@ -261,6 +261,7 @@
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="xerces" level="project" />
+    <orderEntry type="module" module-name="common-dns" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -286,6 +287,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
+    <containerElement type="module" name="common-dns">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
     <containerElement type="module" name="common-mail">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
@@ -300,6 +305,10 @@
     </containerElement>
     <containerElement type="module" name="common-templates">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-test">
+      <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="module" name="conf">
@@ -361,6 +370,14 @@
     <containerElement type="module" name="integration-securid">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="library" name="ant" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="apache-commons" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -522,14 +539,6 @@
       <attribute name="URI" value="/WEB-INF/lib/tapestry-spring-1.0.0.jar" />
       <url>jar://$MODULE_DIR$/../lib/tapestry/tapestry-spring-1.0.0.jar!/</url>
     </containerElement>
-    <containerElement type="library" name="ant" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib" />
-    </containerElement>
-    <containerElement type="library" name="apache-commons" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
-    </containerElement>
     <containerElement type="library" name="cobertura" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
@@ -568,6 +577,10 @@
     </containerElement>
     <containerElement type="library" name="jdom" level="project">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="junit" level="project">
+      <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="log4j" level="project">

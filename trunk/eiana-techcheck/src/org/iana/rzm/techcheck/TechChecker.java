@@ -4,6 +4,8 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.IPAddress;
 import org.iana.rzm.techcheck.exceptions.*;
+import org.iana.dns.validator.SpecialIPAddressChecker;
+import org.iana.rzm.techcheck.exceptions.RestrictedIPv4Exception;
 import org.xbill.DNS.*;
 
 import java.io.IOException;
@@ -33,8 +35,11 @@ public class TechChecker {
                 if (ipAddresses.contains(ipAddress))
                     domainCheckException.addException(new DuplicatedIPAddressException(nameServer.getName(), ipAddress.getAddress()));
                 try {
-                    if (ipAddress.getType().equals(IPAddress.Type.IPv4))
-                        RestrictedIPv4Checker.check(ipAddress.getAddress());
+                    if (ipAddress.getType().equals(IPAddress.Type.IPv4)) {
+
+                        if (SpecialIPAddressChecker.isAllocatedForSpecialUse(ipAddress.getAddress()))
+                            throw new RestrictedIPv4Exception(ipAddress.getAddress());
+                    }
                 } catch (RestrictedIPv4Exception e) {
                     domainCheckException.addException(new RestrictedIPv4Exception(nameServer.getName(), ipAddress.toString()));
                 }

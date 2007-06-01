@@ -1,10 +1,10 @@
 package org.iana.rzm.user.hibernate.test.common;
 
 import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.user.MD5Password;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import java.sql.Timestamp;
 
@@ -20,7 +20,7 @@ public class HibernateMappingTestUtil {
         return to;
     }
 
-    public static SystemRole setupRole(SystemRole role, String prefix, boolean flag) throws InvalidNameException {
+    public static SystemRole setupRole(SystemRole role, String prefix, boolean flag) throws InvalidDomainNameException {
         role.setAcceptFrom(flag);
         role.setMustAccept(!flag);
         role.setName(prefix + "-role");
