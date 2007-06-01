@@ -22,7 +22,12 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
     }
 
     protected int toInt(String s) {
-        return Integer.parseInt(s);
+        try {
+            return Integer.parseInt(s, 16);
+        } catch (NumberFormatException e) {
+            // in case of IPv6 combined with IPv4 NumberFormatException is thrown
+            return -1;
+        }
     }
 
     public Type getType() {
@@ -43,10 +48,15 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
         addr = addr.toLowerCase();
         IPAddressValidator.getInstance().validateIPv6(addr);
         if (isCompressed(addr)) {
-            String[] parts = getParts(addr);
-            String uncompressed = ":";
-            for (int i = 0; i < 8-parts.length; --i) uncompressed += "0:";
-            addr = addr.replaceFirst("::", uncompressed);
+            boolean start = addr.startsWith(":");
+            boolean end = addr.endsWith(":");
+            int missing = 8-colons(addr);
+            if (start || end) ++missing;
+            StringBuffer zeros = new StringBuffer(":");
+            while (missing-- > 0) zeros.append("0:");
+            if (start) zeros.deleteCharAt(0);
+            if (end) zeros.deleteCharAt(zeros.length()-1);
+            addr = addr.replaceFirst("::", zeros.toString());
         }
         return addr;
     }
@@ -57,5 +67,13 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
 
     private static String[] getParts(String addr) {
         return addr.split(":");
+    }
+
+    private static int colons(String addr) {
+        int ret = 0;
+        for (char c : addr.toCharArray()) {
+            if (c == ':') ++ret;
+        }
+        return ret;
     }
 }
