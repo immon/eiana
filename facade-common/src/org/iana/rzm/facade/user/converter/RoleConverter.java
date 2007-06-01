@@ -10,6 +10,8 @@ import org.iana.rzm.user.SystemRole;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * org.iana.rzm.facade.user.converter.RoleConverter
@@ -20,7 +22,7 @@ import java.util.Map;
  */
 public class RoleConverter {
 
-    private static Map<SystemRole.SystemType, SystemRoleVO.SystemType> systemRolesMap = new HashMap<SystemRole.SystemType, SystemRoleVO.SystemType>();
+    public static Map<SystemRole.SystemType, SystemRoleVO.SystemType> systemRolesMap = new HashMap<SystemRole.SystemType, SystemRoleVO.SystemType>();
     private static Map<AdminRole.AdminType, AdminRoleVO.AdminType> adminRolesMap = new HashMap<AdminRole.AdminType, AdminRoleVO.AdminType>();
 
     static Map<SystemRoleVO.SystemType, SystemRole.SystemType> systemRolesVOMap = new HashMap<SystemRoleVO.SystemType, SystemRole.SystemType>();
@@ -119,5 +121,13 @@ public class RoleConverter {
         adminRole.setObjId(adminRoleVO.getObjId());
 
         return adminRole;
+    }
+
+    public static Set<SystemRoleVO.SystemType> convertTypes(Set<SystemRole.SystemType> types) {
+        Set<SystemRoleVO.SystemType> ret = new HashSet<SystemRoleVO.SystemType>();
+        if (types != null) {
+            for (SystemRole.SystemType type : types) ret.add(systemRolesMap.get(type));
+        }
+        return ret;
     }
 }

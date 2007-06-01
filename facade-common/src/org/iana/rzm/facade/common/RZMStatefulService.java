@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.common;
 
 import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.user.UserVO;
 
 /**
  * <p>This interface represents a stateful service intented to be used in a context of an authenticated user.</p>
@@ -26,5 +27,7 @@ public interface RZMStatefulService {
      */
     public void close();
 
-    public AuthenticatedUser getUser();
+    public AuthenticatedUser getAuthenticatedUser();
+
+    public UserVO getUser();
 }

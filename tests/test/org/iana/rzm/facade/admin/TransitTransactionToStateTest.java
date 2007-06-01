@@ -74,7 +74,7 @@ public class TransitTransactionToStateTest {
 
     }
 
-    @Test(expectedExceptions = FacadeTransactionException.class)
+    @Test(expectedExceptions = StateUnreachableException.class)
     public void testTransitTransactionToWrongState() throws Exception {
 
         try {
@@ -83,7 +83,7 @@ public class TransitTransactionToStateTest {
             TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
             assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
-            gAdminTransactionServ.transitTransactionToState(transactionID, "WRONG_STATE");
+            gAdminTransactionServ.updateTransaction(transactionID, 0L, "WRONG_STATE", false);
 
         } catch (FacadeTransactionException e) {
             assert e.getMessage().equals("no such state: WRONG_STATE");
@@ -100,7 +100,7 @@ public class TransitTransactionToStateTest {
 
         for (String state : states) {
             if (!state.equals("PENDING_IANA_CONFIRMATION")) {
-                gAdminTransactionServ.transitTransactionToState(transactionID, state);
+                gAdminTransactionServ.updateTransaction(transactionID, 0L, state, false);
                 transactionVO = gAdminTransactionServ.getTransaction(transactionID);
                 assert transactionVO.getState().getName().name().equals(state);
             }

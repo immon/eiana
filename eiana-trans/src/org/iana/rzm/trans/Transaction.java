@@ -10,7 +10,9 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.def.ProcessDefinition;
@@ -19,6 +21,8 @@ import org.jbpm.graph.exe.Token;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This class represents a domain modification transaction.
@@ -219,5 +223,29 @@ public class Transaction implements TrackedObject {
         if (user instanceof RZMUser)
             getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
         token.setNode(destinationNode);
+    }
+
+    public Set<SystemRole.SystemType> getReceivedContactConfirmations() {
+        Set<SystemRole.SystemType> ret = new HashSet<SystemRole.SystemType>();
+        if (getTransactionData().getContactConfirmations() != null) {
+            ret.addAll(getTransactionData().getContactConfirmations().getContactsThatAccepted());
+        }
+        return ret;
+    }
+
+    public boolean isRedelegation() {
+        return getTransactionData().isRedelegation();
+    }
+
+    public void setRedelegation(boolean redelegation) {
+        getTransactionData().setRedelegation(redelegation);
+    }
+
+    public String getSubmitterEmail() {
+        return getTransactionData().getSubmitterEmail();
+    }
+
+    public void setSubmitterEmail(String submitterEmail) {
+        getTransactionData().setSubmitterEmail(submitterEmail);
     }
 }

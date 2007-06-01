@@ -24,9 +24,9 @@ public interface AdminTransactionService extends RZMStatefulService, AdminFinder
 
     void transitTransaction(long id, String transitionName) throws NoTransactionException, FacadeTransactionException;
 
-    void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException;
+    void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException;
 
-    void transitTransactionToState(long id, String targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException;
+    void updateTransaction(long id, Long ticketId, TransactionStateVO.Name targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException;
 
     List<TransactionVO> findAll();
 

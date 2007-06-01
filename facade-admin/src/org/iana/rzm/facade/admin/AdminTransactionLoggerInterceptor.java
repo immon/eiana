@@ -51,7 +51,7 @@ public class AdminTransactionLoggerInterceptor implements MethodInterceptor {
         TransactionVO trans = (TransactionVO) result;
         long transactionId = trans.getTransactionID();
         TrackedObject trackedObject = transactionManager.getTransaction(transactionId);
-        logger.addLog(service.getUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
+        logger.addLog(service.getAuthenticatedUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
                 trackedObject, methodInvocation.getArguments());
         return result;
     }
@@ -62,7 +62,7 @@ public class AdminTransactionLoggerInterceptor implements MethodInterceptor {
         TrackedObject oldObject = transactionManager.getTransaction(transactionId);
         Object result = methodInvocation.proceed();
         TrackedObject object = transactionManager.getTransaction(transactionId);
-        logger.addLog(service.getUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
+        logger.addLog(service.getAuthenticatedUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
                 object, oldObject);
         return result;
     }

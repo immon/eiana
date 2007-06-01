@@ -52,7 +52,7 @@ public class UserLoggerInterceptor implements MethodInterceptor {
                 result = methodInvocation.proceed();
                 object = userManager.getCloned(userId);
             }
-            logger.addLog(service.getUser().getUserName(), "sessionId", methodInvocation.getMethod().getName(),
+            logger.addLog(service.getAuthenticatedUser().getUserName(), "sessionId", methodInvocation.getMethod().getName(),
                     object, oldObject);
             return result;
         } else return methodInvocation.proceed();

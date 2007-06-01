@@ -53,7 +53,7 @@ public class DomainLoggerInterceptor implements MethodInterceptor {
                 result = methodInvocation.proceed();
                 object = domainManager.getCloned(domainId);
             }
-            logger.addLog(service.getUser().getUserName(), "sessionId", methodInvocation.getMethod().getName(),
+            logger.addLog(service.getAuthenticatedUser().getUserName(), "sessionId", methodInvocation.getMethod().getName(),
                     object, oldObject);
             return result;
         } else return methodInvocation.proceed();

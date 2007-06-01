@@ -5,6 +5,7 @@ import org.iana.rzm.trans.confirmation.AbstractConfirmation;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.auth.Identity;
+import org.iana.rzm.user.SystemRole;
 import org.iana.notifications.AbstractAddressee;
 import org.hibernate.annotations.Cascade;
 
@@ -59,4 +60,13 @@ public class ContactConfirmations extends AbstractConfirmation {
     public Set<Identity> getUsersAbleToAccept() {
         return new HashSet<Identity>(outstandingConfirmations);
     }
+
+    public Set<SystemRole.SystemType> getContactsThatAccepted() {
+        Set<SystemRole.SystemType> ret = new HashSet<SystemRole.SystemType>();
+        for (ContactIdentity id : receivedConfirmations) {
+            ret.add((SystemRole.SystemType) id.getType());
+        }
+        return ret;
+    }
+    
 }

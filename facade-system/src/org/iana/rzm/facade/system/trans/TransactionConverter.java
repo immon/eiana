@@ -6,6 +6,7 @@ import org.iana.rzm.trans.TransactionStateLogEntry;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.auth.Identity;
+import org.iana.rzm.facade.user.converter.RoleConverter;
 import org.iana.objectdiff.*;
 
 import java.util.*;
@@ -50,6 +51,9 @@ public class TransactionConverter {
         ret.setStateLog(toTransactionStateLogEntryVOList(trans.getStateLog()));
         ret.setStart(trans.getStart());
         ret.setEnd(trans.getEnd());
+        ret.setRedelegation(trans.isRedelegation());
+        ret.setSubmitterEmail(trans.getSubmitterEmail());
+        ret.setConfirmations(RoleConverter.convertTypes(trans.getReceivedContactConfirmations()));
 
         ret.setCreated(trans.getCreated());
         ret.setCreatedBy(trans.getCreatedBy());
