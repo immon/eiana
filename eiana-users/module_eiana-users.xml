@@ -31,6 +31,9 @@
     <pathelement location="${common-dao.testoutput.dir}"/>
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
+    <path refid="library.junit.classpath"/>
+    <pathelement location="${common-test.output.dir}"/>
+    <pathelement location="${common-test.testoutput.dir}"/>
   </path>
   
   
@@ -59,7 +62,7 @@
   
   <target name="compile.module.eiana-users" depends="compile.module.eiana-users.production,compile.module.eiana-users.tests" description="Compile module eiana-users"/>
   
-  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util,compile.module.eiana-notifications,compile.module.common-criteria,compile.module.common-dao,compile.module.common-dns" description="Compile module eiana-users; production classes">
+  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util,compile.module.eiana-notifications,compile.module.common-criteria,compile.module.common-dao,compile.module.common-dns,compile.module.common-test" description="Compile module eiana-users; production classes">
     <mkdir dir="${eiana-users.output.dir}"/>
     <javac destdir="${eiana-users.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-users}"/>
