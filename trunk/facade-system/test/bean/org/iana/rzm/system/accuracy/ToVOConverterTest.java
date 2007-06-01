@@ -108,9 +108,9 @@ public class ToVOConverterTest {
         toContactVO = ToVOConverter.toContactVO(fromContact);
         assert toContactVO.getName().equals(fromContact.getName());
         assert toContactVO.getOrganization().equals(fromContact.getOrganization());
-        assert toContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
-        assert toContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
-        assert toContactVO.getEmails().equals(fromContact.getEmails());
+        assert toContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
+        assert toContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
+        assert toContactVO.getEmail().equals(fromContact.getEmail());
         assert toContactVO.isRole();
     }
 
@@ -138,9 +138,9 @@ public class ToVOConverterTest {
 
         for(ContactVO adminContactVO : toDomainVO.getAdminContacts()) {
             assert adminContactVO.getName().equals(fromContact.getName());
-            assert adminContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
-            assert adminContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
-            assert adminContactVO.getEmails().equals(fromContact.getEmails());
+            assert adminContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
+            assert adminContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
+            assert adminContactVO.getEmail().equals(fromContact.getEmail());
             assert adminContactVO.isRole() == fromContact.isRole();
         }
 
@@ -159,9 +159,9 @@ public class ToVOConverterTest {
 
         ContactVO tmpContactVO = toDomainVO.getSupportingOrg();
             assert tmpContactVO.getName().equals(fromContact.getName());
-            assert tmpContactVO.getPhoneNumbers().equals(fromContact.getPhoneNumbers());
-            assert tmpContactVO.getFaxNumbers().equals(fromContact.getFaxNumbers());
-            assert tmpContactVO.getEmails().equals(fromContact.getEmails());
+            assert tmpContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
+            assert tmpContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
+            assert tmpContactVO.getEmail().equals(fromContact.getEmail());
             assert tmpContactVO.isRole() == fromContact.isRole();
 
         assert toDomainVO.getWhoisServer().getName().equals(fromDomain.getWhoisServer());

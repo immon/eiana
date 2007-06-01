@@ -36,13 +36,13 @@ public class HibernateMappingTestUtil {
     public static Contact setupContact(Contact contact, String prefix, boolean flag) {
         contact.setName(prefix + " name");
         contact.setRole(flag);
-        contact.addAddress(HibernateMappingTestUtil.setupAddress(new Address(), "contact"));
-        contact.addEmail("jakubl@nask.pl");
-        contact.addEmail("jakub.laszkiewicz@nask.pl");
-        contact.addFaxNumber("+1234567890");
-        contact.addFaxNumber("+1234567892");
-        contact.addPhoneNumber("+1234567891");
-        contact.addPhoneNumber("+1234567893");
+        contact.setAddress(HibernateMappingTestUtil.setupAddress(new Address(), "contact"));
+        contact.setEmail("jakubl@nask.pl");
+        contact.setEmail("jakub.laszkiewicz@nask.pl");
+        contact.setFaxNumber("+1234567890");
+        contact.setFaxNumber("+1234567892");
+        contact.setPhoneNumber("+1234567891");
+        contact.setPhoneNumber("+1234567893");
         return contact;
     }
 

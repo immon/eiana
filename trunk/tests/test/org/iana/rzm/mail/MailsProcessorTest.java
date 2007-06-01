@@ -104,10 +104,10 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 
     private Contact createContact(String prefix) {
         Contact contact = new Contact(prefix, prefix + "org");
-        contact.addAddress(new Address(prefix + "addr", "US"));
-        contact.addEmail(prefix + "@no-mail.org");
-        contact.addFaxNumber("+1234567890");
-        contact.addPhoneNumber("+1234567890");
+        contact.setAddress(new Address(prefix + "addr", "US"));
+        contact.setEmail(prefix + "@no-mail.org");
+        contact.setFaxNumber("+1234567890");
+        contact.setPhoneNumber("+1234567890");
         return contact;
     }
 
@@ -176,11 +176,11 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             Domain domain = new Domain("templatedomain");
             domain.setSupportingOrg(createContact("templatedomain-supp"));
             Contact contact = new Contact("templatedomain-tech-rep", "ICB Plc");
-            contact.addAddress(new Address("9 Queens Road", "US"));
-            contact.addAddress(new Address("11 Queens Road", "US"));
-            contact.addEmail("templatedomain-tech-rep@no-mail.org");
-            contact.addFaxNumber("+1122334456");
-            contact.addPhoneNumber("+1122334455");
+            contact.setAddress(new Address("9 Queens Road", "US"));
+            contact.setAddress(new Address("11 Queens Road", "US"));
+            contact.setEmail("templatedomain-tech-rep@no-mail.org");
+            contact.setFaxNumber("+1122334456");
+            contact.setPhoneNumber("+1122334455");
             domain.addTechContact(contact);
             domain.addAdminContact(createContact("templatedomain-admin"));
             Host host = new Host("ns11.templatedomain");

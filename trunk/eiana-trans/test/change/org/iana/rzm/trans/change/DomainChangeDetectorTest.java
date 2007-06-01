@@ -109,7 +109,7 @@ public class DomainChangeDetectorTest {
     public void testSupportingOrgModification() {
         Domain src = createDomain();
         Domain dst = createDomain();
-        dst.getSupportingOrg().setEmails(createStringList("new-so-email@post.org", 2));
+        dst.getSupportingOrg().setEmail("new-so-email@post.org");
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null && change.isModification();
         ObjectChange objectChange = (ObjectChange) change;
@@ -133,12 +133,12 @@ public class DomainChangeDetectorTest {
     public void testContactAddressModification() {
         Contact src = createContact("contact");
         Contact dst = createContact("contact");
-        dst.getAddresses().get(0).setTextAddress("new.ta");
+        dst.getAddress().setTextAddress("new.ta");
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null && change.isModification();
         ObjectChange objectChange = (ObjectChange) change;
         Map<String, Change> fieldChanges = objectChange.getFieldChanges();
-        assert fieldChanges.size() == 1 && fieldChanges.get("addresses").isModification();
+        assert fieldChanges.size() == 1 && fieldChanges.get("address").isModification();
     }
 
     @Test
@@ -176,14 +176,14 @@ public class DomainChangeDetectorTest {
     }
 
     final static Contact createContact(String prefix) {
-        Random generator = new Random();
         Contact ret = new Contact();
-        ret.setObjId(generator.nextLong());
+        ret.setObjId(new Long(prefix.hashCode()));
+        ret.setOrganization("org");
         ret.setName(prefix + "-name");
-        ret.setEmails(createStringList(prefix+"-email@post.org", 1));
-        ret.setPhoneNumbers(createStringList(prefix+"-phone", 1));
-        ret.setFaxNumbers(createStringList(prefix+"-fax", 1));
-        ret.addAddress(new Address(prefix+"-ta", "CC"));
+        ret.setEmail(prefix+"-email@post.org");
+        ret.setPhoneNumber(prefix+"-phone");
+        ret.setFaxNumber(prefix+"-fax");
+        ret.setAddress(new Address(prefix+"-ta", "CC"));
         ret.setRole(false);
         return ret;
     }

@@ -212,15 +212,17 @@ public class FromVOConverter {
         if (fContactVO == null) throw new IllegalArgumentException("null fromContactVO");
         if (tContact == null) throw new IllegalArgumentException("null toContact");
 
-
-        tContact.setAddresses(toAddressList(fContactVO.getAddresses()));
-
         tContact.setObjId(fContactVO.getObjId());
-        tContact.setEmails(fContactVO.getEmails());
-        tContact.setFaxNumbers(fContactVO.getFaxNumbers());
         tContact.setName(fContactVO.getName());
         tContact.setOrganization(fContactVO.getOrganization());
-        tContact.setPhoneNumbers(fContactVO.getPhoneNumbers());
+        tContact.setJobTitle(fContactVO.getJobTitle());
+        tContact.setAddress(toAddress(fContactVO.getAddress()));
+        tContact.setFaxNumber(fContactVO.getFaxNumber());
+        tContact.setAltFaxNumber(fContactVO.getAltFaxNumber());
+        tContact.setPhoneNumber(fContactVO.getPhoneNumber());
+        tContact.setAltPhoneNumber(fContactVO.getAltPhoneNumber());
+        tContact.setEmail(fContactVO.getEmail());
+        tContact.setPrivateEmail(fContactVO.getPrivateEmail());
         tContact.setRole(fContactVO.isRole());
 
         TrackData trackData = new TrackData();

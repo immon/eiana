@@ -238,14 +238,19 @@ public class ToVOConverter {
         if (toContactVO == null) throw new IllegalArgumentException("null toContactVO");
 
 
-        toContactVO.setAddresses(toAddressVOList(fromContact.getAddresses()));
+        toContactVO.setAddress(toAddressVO(fromContact.getAddress()));
 
         toContactVO.setObjId(fromContact.getObjId());
-        toContactVO.setEmails(toStringList(fromContact.getEmails()));
-        toContactVO.setFaxNumbers(toStringList(fromContact.getFaxNumbers()));
         toContactVO.setName(fromContact.getName());
         toContactVO.setOrganization(fromContact.getOrganization());
-        toContactVO.setPhoneNumbers(toStringList(fromContact.getPhoneNumbers()));
+        toContactVO.setJobTitle(fromContact.getJobTitle());
+        toContactVO.setAddress(toAddressVO(fromContact.getAddress()));
+        toContactVO.setFaxNumber(fromContact.getFaxNumber());
+        toContactVO.setAltFaxNumber(fromContact.getAltFaxNumber());
+        toContactVO.setPhoneNumber(fromContact.getPhoneNumber());
+        toContactVO.setAltPhoneNumber(fromContact.getAltPhoneNumber());
+        toContactVO.setEmail(fromContact.getEmail());
+        toContactVO.setPrivateEmail(fromContact.getPrivateEmail());
         toContactVO.setRole(fromContact.isRole());
 
         if (fromContact.getTrackData() != null) {

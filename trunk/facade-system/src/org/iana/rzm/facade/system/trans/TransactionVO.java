@@ -21,6 +21,8 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private Timestamp start;
     private Timestamp end;
     private List<String> tokens;
+    private boolean redelegation;
+    private String submitterEmail;
 
     public Long getTransactionID() {
         return transactionID;
@@ -138,5 +140,21 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     void setTokens(List<String> tokens) {
         this.tokens = tokens;
+    }
+
+    public boolean isRedelegation() {
+        return redelegation;
+    }
+
+    public void setRedelegation(boolean redelegation) {
+        this.redelegation = redelegation;
+    }
+
+    public String getSubmitterEmail() {
+        return submitterEmail;
+    }
+
+    public void setSubmitterEmail(String submitterEmail) {
+        this.submitterEmail = submitterEmail;
     }
 }

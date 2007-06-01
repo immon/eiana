@@ -3,9 +3,8 @@ package org.iana.rzm.facade.system.domain;
 import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.common.Trackable;
 import org.iana.rzm.common.EmailAddress;
+import org.iana.rzm.common.exceptions.InvalidEmailException;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.sql.Timestamp;
 import java.io.Serializable;
 
@@ -16,10 +15,14 @@ public class ContactVO implements Trackable, Serializable {
 
     private String name;
     private String organization;
-    private List<AddressVO> addresses;
-    private List<String> phoneNumbers;
-    private List<String> faxNumbers;
-    private List<EmailAddress> emails;
+    private String jobTitle;
+    private AddressVO address;
+    private String phoneNumber;
+    private String altPhoneNumber;
+    private String faxNumber;
+    private String altFaxNumber;
+    private EmailAddress publicEmail;
+    private EmailAddress privateEmail;
     private boolean role;
 
     private Long objId;
@@ -41,67 +44,76 @@ public class ContactVO implements Trackable, Serializable {
         this.organization = organization;
     }
 
-    public List<AddressVO> getAddresses() {
-        return addresses;
+    public String getJobTitle() {
+        return jobTitle;
     }
 
-    public void setAddresses(List<AddressVO> addresses) {
-        this.addresses = addresses;
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
     }
 
-    public void addAddress(AddressVO address) {
-        if (addresses == null)
-            addresses = new ArrayList<AddressVO>();
-        addresses.add(address);
+    public AddressVO getAddress() {
+        return address;
     }
 
-    public List<String> getPhoneNumbers() {
-        return phoneNumbers;
+    public void setAddress(AddressVO address) {
+        this.address = address;
     }
 
-    public void setPhoneNumbers(List<String> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void addPhoneNumber(String number) {
-        if (phoneNumbers == null)
-            phoneNumbers = new ArrayList<String>();
-        phoneNumbers.add(number);
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public List<String> getFaxNumbers() {
-        return faxNumbers;
+    public String getAltPhoneNumber() {
+        return altPhoneNumber;
     }
 
-    public void setFaxNumbers(List<String> faxNumbers) {
-        this.faxNumbers = faxNumbers;
+    public void setAltPhoneNumber(String altPhoneNumber) {
+        this.altPhoneNumber = altPhoneNumber;
     }
 
-    public void addFaxNumber(String number) {
-        if (faxNumbers == null)
-            faxNumbers = new ArrayList<String>();
-        faxNumbers.add(number);
+    public String getFaxNumber() {
+        return faxNumber;
     }
 
-    public List<String> getEmails() {
-        List<String> result = new ArrayList<String>();
-        if (emails != null)
-            for (EmailAddress emailAddress : emails)
-                result.add(emailAddress.getEmail());
-        return result;
+    public void setFaxNumber(String faxNumber) {
+        this.faxNumber = faxNumber;
     }
 
-    public void setEmails(List<String> emails) {
-        this.emails = new ArrayList<EmailAddress>();
-        if (emails != null)
-            for (String email : emails)
-                this.emails.add(new EmailAddress(email));
+    public String getAltFaxNumber() {
+        return altFaxNumber;
     }
 
-    public void addEmail(String email) {
-        if (emails == null)
-            emails = new ArrayList<EmailAddress>();
-        emails.add(new EmailAddress(email));
+    public void setAltFaxNumber(String altFaxNumber) {
+        this.altFaxNumber = altFaxNumber;
+    }
+
+    public String getPublicEmail() {
+        return getEmail(publicEmail);
+    }
+
+    public void setPublicEmail(String publicEmail) {
+        this.publicEmail = toEmail(publicEmail);
+    }
+
+    public String getPrivateEmail() {
+        return getEmail(privateEmail);
+    }
+
+    public void setPrivateEmail(String privateEmail) {
+        this.privateEmail = toEmail(privateEmail);
+    }
+
+    public String getEmail() {
+        return getPublicEmail();
+    }
+    
+    public void setEmail(String email) {
+        setPublicEmail(email);
     }
 
     public boolean isRole() {
@@ -159,14 +171,21 @@ public class ContactVO implements Trackable, Serializable {
         ContactVO contactVO = (ContactVO) o;
 
         if (role != contactVO.role) return false;
-        if (addresses != null ? !addresses.equals(contactVO.addresses) : contactVO.addresses != null) return false;
-        if (emails != null ? !emails.equals(contactVO.emails) : contactVO.emails != null) return false;
-        if (faxNumbers != null ? !faxNumbers.equals(contactVO.faxNumbers) : contactVO.faxNumbers != null) return false;
+        if (address != null ? !address.equals(contactVO.address) : contactVO.address != null) return false;
+        if (altFaxNumber != null ? !altFaxNumber.equals(contactVO.altFaxNumber) : contactVO.altFaxNumber != null)
+            return false;
+        if (altPhoneNumber != null ? !altPhoneNumber.equals(contactVO.altPhoneNumber) : contactVO.altPhoneNumber != null)
+            return false;
+        if (faxNumber != null ? !faxNumber.equals(contactVO.faxNumber) : contactVO.faxNumber != null) return false;
         if (name != null ? !name.equals(contactVO.name) : contactVO.name != null) return false;
         if (objId != null ? !objId.equals(contactVO.objId) : contactVO.objId != null) return false;
         if (organization != null ? !organization.equals(contactVO.organization) : contactVO.organization != null)
             return false;
-        if (phoneNumbers != null ? !phoneNumbers.equals(contactVO.phoneNumbers) : contactVO.phoneNumbers != null)
+        if (phoneNumber != null ? !phoneNumber.equals(contactVO.phoneNumber) : contactVO.phoneNumber != null)
+            return false;
+        if (privateEmail != null ? !privateEmail.equals(contactVO.privateEmail) : contactVO.privateEmail != null)
+            return false;
+        if (publicEmail != null ? !publicEmail.equals(contactVO.publicEmail) : contactVO.publicEmail != null)
             return false;
         if (trackData != null ? !trackData.equals(contactVO.trackData) : contactVO.trackData != null) return false;
 
@@ -177,13 +196,24 @@ public class ContactVO implements Trackable, Serializable {
         int result;
         result = (name != null ? name.hashCode() : 0);
         result = 31 * result + (organization != null ? organization.hashCode() : 0);
-        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
-        result = 31 * result + (phoneNumbers != null ? phoneNumbers.hashCode() : 0);
-        result = 31 * result + (faxNumbers != null ? faxNumbers.hashCode() : 0);
-        result = 31 * result + (emails != null ? emails.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (altPhoneNumber != null ? altPhoneNumber.hashCode() : 0);
+        result = 31 * result + (faxNumber != null ? faxNumber.hashCode() : 0);
+        result = 31 * result + (altFaxNumber != null ? altFaxNumber.hashCode() : 0);
+        result = 31 * result + (publicEmail != null ? publicEmail.hashCode() : 0);
+        result = 31 * result + (privateEmail != null ? privateEmail.hashCode() : 0);
         result = 31 * result + (role ? 1 : 0);
         result = 31 * result + (objId != null ? objId.hashCode() : 0);
         result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
+    }
+
+    private String getEmail(EmailAddress email) {
+        return email == null ? null : email.getEmail();
+    }
+
+    private EmailAddress toEmail(String email) throws InvalidEmailException {
+        return email == null ? null : new EmailAddress(email);
     }
 }
