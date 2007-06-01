@@ -50,6 +50,13 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     )
     public abstract IComponent getReviewDomainLinkComponent();
 
+    @Component(id = "userAccess", type = "DirectLink", bindings = {
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+            "listener=listener:manageUsers", "parameters={components.domains.value.domainId,components.domains.value.domainName}"
+            }
+    )
+    public abstract IComponent getUserAccessLinkComponent();
+
     @Component(id = "domainLink", type = "DirectLink", bindings = {
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
             "listener=listener:reviewDomain",
@@ -72,6 +79,9 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
 
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomainPage();
+
+    @InjectPage("user/UserAccess")
+    public abstract UserAccess   getUserAccessPage();
 
     public abstract void setUserDomains(List<UserDomain> list);
 
@@ -116,6 +126,13 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
         RequestInformation info = getRequestDetails();
         info.setRequestId(requestId);
         getRequestCycle().activate(info);
+    }
+
+    public void manageUsers(long domainId, String domainName){
+        UserAccess userAccess = getUserAccessPage();
+        userAccess.setDomainId(domainId);
+        userAccess.setDomainName(domainName);
+        getRequestCycle().activate(userAccess);
     }
 
     public IPage logout(){
