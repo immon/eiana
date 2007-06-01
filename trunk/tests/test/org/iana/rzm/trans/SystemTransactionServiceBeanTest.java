@@ -21,6 +21,7 @@ import org.testng.annotations.AfterClass;
 
 import java.util.List;
 
+@Test
 public class SystemTransactionServiceBeanTest {
 
     private PlatformTransactionManager txMgr;
@@ -64,21 +65,21 @@ public class SystemTransactionServiceBeanTest {
     }
 
     @Test
-    public void testMultipleCallToGetTransactions()throws Exception{
+    public void testMultipleCallToGetTransactions() throws Exception {
         PasswordAuth passwordAuth = new PasswordAuth("test", "test");
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
         Assert.assertNotNull(authenticatedUser);
-        Assert.assertEquals("test",authenticatedUser.getUserName());
+        Assert.assertEquals("test", authenticatedUser.getUserName());
         service.setUser(authenticatedUser);
         List<TransactionVO> list = service.findOpenTransactions();
         Assert.assertNotNull(list);
-        list  = service.findOpenTransactions();
+        list = service.findOpenTransactions();
         Assert.assertNotNull(list);
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        RZMUser user = userManager.get(USER_NAME);
-        userManager.delete(user);
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
     }
 }

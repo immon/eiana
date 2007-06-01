@@ -1,8 +1,6 @@
 package org.iana.rzm.trans;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
@@ -20,12 +18,14 @@ import org.iana.rzm.user.MD5Password;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.naming.InvalidNameException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,7 +46,7 @@ public class NameServerChangeTransactionTest {
 
 
     @BeforeClass
-    public void init() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
+    public void init() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException, InvalidNameException {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         userManager = (UserManager) appCtx.getBean("userManager");
@@ -185,7 +185,7 @@ public class NameServerChangeTransactionTest {
         return domain;
     }
 
-    private IDomainVO createDomain() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
+    private IDomainVO createDomain() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException, InvalidNameException {
         Domain domain = setupDomain("gstsNSC");
         domainManager.create(domain);
         return ToVOConverter.toDomainVO(domain);

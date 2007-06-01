@@ -1,5 +1,6 @@
 package org.iana.rzm.mail.processor;
 
+import org.apache.log4j.Logger;
 import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.Name;
@@ -16,7 +17,6 @@ import org.iana.templates.inst.ElementInst;
 import org.iana.templates.inst.FieldInst;
 import org.iana.templates.inst.ListInst;
 import org.iana.templates.inst.SectionInst;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -62,7 +62,7 @@ public class MailsProcessorBean implements MailsProcessor {
                 domSvc.setUser(user);
                 processConfirmation(confData, email);
             } else if (mailData instanceof TemplateMailData) {
-                // user = authSvc.authenticate(new MailAuth(email));
+                user = authSvc.authenticate(new MailAuth(email));
                 transSvc.setUser(user);
                 domSvc.setUser(user);
                 processTemplate((TemplateMailData) mailData, email);
@@ -74,12 +74,12 @@ public class MailsProcessorBean implements MailsProcessor {
 //            createEmailNotification(user == null ? email : email, mailData,
 //                    "Error occured while processing your request.");
 //            Logger.getLogger(getClass()).error(e);
-//        } catch (AuthenticationFailedException e) {
-//            createEmailNotification(email, subject, content, "Authentication failed.");
-//            Logger.getLogger(getClass()).error(e);
-//        } catch (AuthenticationRequiredException e) {
-//            createEmailNotification(email, subject, content, "Authentication failed.");
-//            Logger.getLogger(getClass()).error(e);
+        } catch (AuthenticationFailedException e) {
+            createEmailNotification(email, subject, content, "Authentication failed.");
+            Logger.getLogger(getClass()).error(e);
+        } catch (AuthenticationRequiredException e) {
+            createEmailNotification(email, subject, content, "Authentication failed.");
+            Logger.getLogger(getClass()).error(e);
         } catch (MailParserException e) {
             createEmailNotification(email, subject, content, "Mail content parse error: \n" + e.getMessage());
             Logger.getLogger(getClass()).error(e);
@@ -91,13 +91,13 @@ public class MailsProcessorBean implements MailsProcessor {
             TransactionVO trans = transSvc.getTransaction(data.getTransactionId());
             if (trans == null) {
                 createEmailNotification(email, data,
-                                        "Transaction id not found: " + data.getTransactionId());
+                        "Transaction id not found: " + data.getTransactionId());
                 return;
             }
             if (!data.getStateName().equals(trans.getState().getName().toString())) {
                 createEmailNotification(email, data,
-                                        "wrong transaction state = " + data.getStateName() +
-                                        ", expected: " + trans.getState().getName());
+                        "wrong transaction state = " + data.getStateName() +
+                                ", expected: " + trans.getState().getName());
                 return;
             }
             if (data.isAccepted())

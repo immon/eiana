@@ -17,6 +17,8 @@ import org.springframework.core.io.FileSystemResourceLoader;
  * @author Piotr Tkaczyk
  */
 public class SpringApplicationContext {
+    public static final String CONFIG_FILE_NAME = "file:../conf/spring/services-config.xml";
+
     private static SpringApplicationContext instance;
     private ApplicationContext appCtx;
 
@@ -32,7 +34,7 @@ public class SpringApplicationContext {
     public ApplicationContext getContext() {
         if (appCtx == null) {
             XmlWebApplicationContext context = new XmlWebApplicationContext();
-            String[] config = new String[]{"file:../conf/spring/services-config.xml"};
+            String[] config = new String[]{CONFIG_FILE_NAME};
             MockServletContext mockServletContext = new MockServletContext(new FileSystemResourceLoader());
 
             context.setConfigLocations(config);

@@ -12,15 +12,9 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
+import org.iana.test.spring.TransactionalSpringContextTests;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.sql.Timestamp;
@@ -30,25 +24,22 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true, groups = {"dao", "eiana-trans"})
-public class ProcessDAOTest {
+public class ProcessDAOTest extends TransactionalSpringContextTests {
+    protected ProcessDAO processDAO;
+    protected DomainDAO domainDAO;
+    protected UserDAO userDAO;
+
     private Date date0, date1, date2;
-    private PlatformTransactionManager txMgr;
-    private TransactionDefinition txDef = new DefaultTransactionDefinition();
-    private ProcessDAO processDAO;
-    private DomainDAO domainDAO;
     private Set<Long> domain1ProcIds = new HashSet<Long>();
     private Long domain1FirstProcId;
     private Set<Long> domain2ProcIds = new HashSet<Long>();
     private Long domain2FirstProcId;
-    private UserDAO userDAO;
 
-    @BeforeClass
-    public void init() throws Exception {
-        ApplicationContext appCtx = SpringTransApplicationContext.getInstance().getContext();
-        txMgr = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainDAO = (DomainDAO) appCtx.getBean("domainDAO");
-        userDAO = (UserDAO) appCtx.getBean("userDAO");
+    public ProcessDAOTest() {
+        super(SpringTransApplicationContext.CONFIG_FILE_NAME);
+    }
+
+    protected void init() throws Exception {
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
             generateTestData();
@@ -57,31 +48,14 @@ public class ProcessDAOTest {
         }
     }
 
-    @AfterClass (alwaysRun = true)
-    public void cleanUp() throws Exception {
+    protected void cleanUp() throws Exception {
         try {
-            List<ProcessInstance> pis = processDAO.findAll();
-            for (ProcessInstance pi : pis) {
+            for (ProcessInstance pi : processDAO.findAll())
                 processDAO.delete(pi);
-            }
-        } finally {
-            processDAO.close();
-        }
-
-        try {
-            List<RZMUser> users = userDAO.findAll();
-            for (RZMUser user : users) {
+            for (RZMUser user : userDAO.findAll())
                 userDAO.delete(user);
-            }
-        } finally {
-            processDAO.close();
-        }
-
-        try {
-            List<Domain> domains = domainDAO.findAll();
-            for (Domain domain : domains) {
+            for (Domain domain : domainDAO.findAll())
                 domainDAO.delete(domain);
-            }
         } finally {
             processDAO.close();
         }
@@ -143,7 +117,6 @@ public class ProcessDAOTest {
             td.getTrackData().setModifiedBy(ticketId + "-modifier");
             pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
             pi.signal();
-            processDAO.save(pi);
             return pi;
         } finally {
             processDAO.close();
@@ -239,27 +212,24 @@ public class ProcessDAOTest {
         }
     }
 
+    /*
     @Test(dependsOnMethods = "findProcessInstancesByUserAndDomain")
     public void testTxRollback() throws Exception {
-        TransactionStatus txStatus = txMgr.getTransaction(txDef);
         try {
             Domain domain = new Domain("potestdomain3");
             domainDAO.create(domain);
             ProcessInstance pi = createTransaction(101L, domain);
             long piId = pi.getId();
-            txMgr.rollback(txStatus);
+            // rollback
             ProcessInstance dbPi = processDAO.getProcessInstance(piId);
             assert dbPi == null;
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txMgr.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
+    */
 
-    @Test(dependsOnMethods = "testTxRollback")
+    @Test(dependsOnMethods = "findProcessInstancesByUserAndDomain")
     public void findProcessInstancesByState() throws Exception {
         try {
             ProcessCriteria criteria1 = new ProcessCriteria();
