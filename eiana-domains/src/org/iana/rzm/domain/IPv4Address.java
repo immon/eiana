@@ -1,11 +1,9 @@
 package org.iana.rzm.domain;
 
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidIPv4AddressException;
-import org.iana.rzm.common.validators.IPAddressValidator;
+import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.dns.validator.IPAddressValidator;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 /**
  * @author Patrycja Wegrzynowicz

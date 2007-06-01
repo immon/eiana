@@ -1,4 +1,4 @@
-package org.iana.rzm.common.exceptions;
+package org.iana.dns.validator;
 
 /**
  * @author Patrycja Wegrzynowicz

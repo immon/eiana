@@ -2,12 +2,12 @@ package org.iana.rzm.trans.hibernate.test.common;
 
 import org.iana.objectdiff.Change;
 import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.trans.StateTransition;
 import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.TransactionState;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
@@ -46,11 +46,11 @@ public class HibernateMappingTestUtil {
         return contact;
     }
 
-    public static Host setupHost(Host host) throws InvalidIPAddressException, InvalidNameException {
+    public static Host setupHost(Host host) throws InvalidIPAddressException, InvalidDomainNameException {
         return HibernateMappingTestUtil.setupHost(host, "");
     }
 
-    public static Host setupHost(Host host, String prefix) throws InvalidIPAddressException, InvalidNameException {
+    public static Host setupHost(Host host, String prefix) throws InvalidIPAddressException, InvalidDomainNameException {
         host.setName(prefix + host.getName());
         host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
         host.addIPAddress(IPAddress.createIPv4Address("5.6.7.8"));
@@ -59,11 +59,11 @@ public class HibernateMappingTestUtil {
         return host;
     }
 
-    public static Domain setupDomain(Domain domain) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
+    public static Domain setupDomain(Domain domain) throws MalformedURLException, InvalidDomainNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
         return HibernateMappingTestUtil.setupDomain(domain, "");
     }
 
-    public static Domain setupDomain(Domain domain, String prefix) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
+    public static Domain setupDomain(Domain domain, String prefix) throws MalformedURLException, InvalidDomainNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
         domain.setName(prefix + domain.getName());
         domain.setRegistryUrl("http://" + prefix + "registry.pl");
         domain.setSpecialInstructions(prefix + " special instructions");

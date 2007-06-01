@@ -1,7 +1,6 @@
 package org.iana.rzm.common;
 
 import org.iana.rzm.common.exceptions.InvalidEmailException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import javax.persistence.Basic;
 import javax.persistence.Embeddable;
@@ -53,7 +52,7 @@ public class EmailAddress implements Cloneable, Serializable {
 
     private static String EMAIL_PATTERN = "[a-z0-9]+([_\\.\\-][a-z0-9]+)*@([a-z0-9]+([\\.\\-][a-z0-9]+)*)+\\.[a-z]{2,}";
 
-    private void isValidEmail(String email) throws InvalidNameException {
+    private void isValidEmail(String email) throws InvalidEmailException {
         if (email != null && !email.matches(EMAIL_PATTERN)) throw new InvalidEmailException(email);
     }
 }

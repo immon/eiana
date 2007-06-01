@@ -5,7 +5,7 @@ import org.testng.annotations.BeforeClass;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.Name;
 
 import java.sql.Timestamp;

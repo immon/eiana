@@ -2,18 +2,17 @@ package org.iana.rzm.system.accuracy;
 
 import org.testng.annotations.Test;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.user.SystemRole;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import java.util.Set;
 import java.util.HashSet;
 import java.sql.Timestamp;
-import java.net.URL;
 import java.net.MalformedURLException;
 
 
@@ -59,14 +58,14 @@ public class ToVOConverterTest {
     }
 
     @Test
-    public void testRoleTypeConversion() throws InvalidIPAddressException, InvalidNameException {
+    public void testRoleTypeConversion() throws InvalidIPAddressException, InvalidDomainNameException {
         assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.AC) == SystemRoleVO.SystemType.AC;
         assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.SO) == SystemRoleVO.SystemType.SO;
         assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.TC) == SystemRoleVO.SystemType.TC;
     }
 
     @Test (dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})
-    public void testHostConversion() throws InvalidIPAddressException, InvalidNameException {
+    public void testHostConversion() throws InvalidIPAddressException, InvalidDomainNameException {
         fromHost = new Host("testHost");
 
         Set<IPAddress> ipAddresses = new HashSet<IPAddress>();
@@ -116,7 +115,7 @@ public class ToVOConverterTest {
     }
 
     @Test (dependsOnMethods = {"testContactConversion", "testHostConversion"})
-    public void testDomainConversion() throws InvalidNameException, NameServerAlreadyExistsException, MalformedURLException {
+    public void testDomainConversion() throws InvalidDomainNameException, NameServerAlreadyExistsException, MalformedURLException {
         fromDomain = new Domain("domain1.org");
         fromDomain.addAdminContact(fromContact);
         fromDomain.addBreakpoint(Domain.Breakpoint.AC_CHANGE_EXT_REVIEW);

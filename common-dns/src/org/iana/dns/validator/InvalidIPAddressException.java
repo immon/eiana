@@ -1,11 +1,11 @@
-package org.iana.rzm.common.exceptions;
+package org.iana.dns.validator;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 public class InvalidIPAddressException extends RuntimeException {
 
-    String address;
+    private String address;
 
     public InvalidIPAddressException(String address) {
         this.address = address;

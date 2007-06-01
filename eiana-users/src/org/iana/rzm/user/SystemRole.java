@@ -2,7 +2,6 @@ package org.iana.rzm.user;
 
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 
 import javax.persistence.Basic;
 import javax.persistence.Embedded;
@@ -75,7 +74,7 @@ public class SystemRole extends Role implements Cloneable {
         return name == null ? null : name.getName();
     }
 
-    final public void setName(String name) throws InvalidNameException {
+    final public void setName(String name) {
         this.name = new Name(name);
     }
 

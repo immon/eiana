@@ -1,7 +1,7 @@
 package org.iana.rzm.common;
 
-import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.common.validators.NameValidator;
+import org.iana.dns.validator.DomainNameValidator;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 import javax.persistence.Basic;
 import javax.persistence.Embeddable;
@@ -20,17 +20,10 @@ public class Name implements Cloneable, Serializable {
 
     protected Name() {}
 
-    public Name(String name) throws InvalidNameException {
+    public Name(String name) throws InvalidDomainNameException {
         if (name == null) throw new NullPointerException("name is null");
         name = name.toLowerCase(Locale.ENGLISH);
         isValidName(name);
-        this.name = name;
-    }
-
-    public Name(String name, boolean isHost) throws InvalidNameException {
-        if (name == null) throw new NullPointerException("name is null");
-        name = name.toLowerCase(Locale.ENGLISH);
-        isValidName(name, isHost);
         this.name = name;
     }
 
@@ -53,15 +46,9 @@ public class Name implements Cloneable, Serializable {
         return (name != null ? name.hashCode() : 0);
     }
 
-    
-    private void isValidName(String name) throws InvalidNameException {
-        NameValidator.validateName(name, false);
+    private void isValidName(String name) throws InvalidDomainNameException {
+        DomainNameValidator.validateName(name);
     }
-
-    private void isValidName(String name, boolean isHostName) throws InvalidNameException {
-        NameValidator.validateName(name, isHostName);
-    }
-
 
     public Object clone() throws CloneNotSupportedException {
         Name newName = (Name) super.clone();

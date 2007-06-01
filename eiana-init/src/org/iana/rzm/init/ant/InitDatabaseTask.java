@@ -1,8 +1,7 @@
 package org.iana.rzm.init.ant;
 
 import org.hibernate.Session;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.MD5Password;
@@ -30,7 +29,7 @@ public class InitDatabaseTask extends HibernateTask {
         return contact;
     }
 
-    public static Host setupHost(Host host) throws InvalidIPAddressException, InvalidNameException {
+    public static Host setupHost(Host host) throws InvalidIPAddressException {
         host.setName(host.getName());
         host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
         host.addIPAddress(IPAddress.createIPv4Address("5.6.7.8"));
@@ -39,7 +38,7 @@ public class InitDatabaseTask extends HibernateTask {
         return host;
     }
 
-    private Domain setupDomain(String name) throws MalformedURLException, InvalidNameException, InvalidIPAddressException, NameServerAlreadyExistsException {
+    private Domain setupDomain(String name) throws MalformedURLException, InvalidIPAddressException, NameServerAlreadyExistsException {
         Domain domain = new Domain(name);
         domain.setRegistryUrl("http://www.registry." + name);
         domain.setSpecialInstructions(name + " special instructions");
@@ -66,7 +65,7 @@ public class InitDatabaseTask extends HibernateTask {
     }
 
     private SystemRole setupSystemRole(SystemRole role, String name, boolean acceptFrom,
-                                       boolean mustAccept, boolean notify) throws InvalidNameException {
+                                       boolean mustAccept, boolean notify) {
         role.setName(name);
         role.setAcceptFrom(acceptFrom);
         role.setMustAccept(mustAccept);

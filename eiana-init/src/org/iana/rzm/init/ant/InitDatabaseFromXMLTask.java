@@ -1,11 +1,11 @@
 package org.iana.rzm.init.ant;
 
 import org.iana.rzm.domain.*;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.init.ant.decorators.DomainRegistryDecorator;
 import org.iana.rzm.init.ant.decorators.DomainDecorator;
 import org.iana.rzm.user.*;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.hibernate.Session;
 
 import java.net.MalformedURLException;
@@ -91,7 +91,7 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
     }
 
     private SystemRole setupSystemRole(SystemRole role, String name, boolean acceptFrom,
-                                       boolean mustAccept, boolean notify) throws InvalidNameException {
+                                       boolean mustAccept, boolean notify) throws InvalidDomainNameException {
         role.setName(name);
         role.setAcceptFrom(acceptFrom);
         role.setMustAccept(mustAccept);

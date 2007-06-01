@@ -2,8 +2,7 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.notifications.NotificationManager;
 import org.iana.notifications.dao.EmailAddresseeDAO;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
@@ -15,6 +14,7 @@ import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Iterator;
@@ -254,14 +254,14 @@ public abstract class CommonGuardedSystemTransaction {
         }
     }
 
-    protected Host setupFirstHost(String prefix) throws InvalidIPAddressException, InvalidNameException {
+    protected Host setupFirstHost(String prefix) throws InvalidIPAddressException, InvalidDomainNameException {
         Host host = new Host(prefix + ".ns1.some.org");
         host.addIPAddress(IPAddress.createIPv4Address("11.2.3.4"));
         host.addIPAddress(IPAddress.createIPv6Address("1234:5678::90AB"));
         return host;
     }
 
-    protected Host setupSecondHost(String prefix) throws InvalidIPAddressException, InvalidNameException {
+    protected Host setupSecondHost(String prefix) throws InvalidIPAddressException, InvalidDomainNameException {
         Host host = new Host(prefix + ".ns2.some.org");
         host.addIPAddress(IPAddress.createIPv4Address("21.2.3.5"));
         host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));

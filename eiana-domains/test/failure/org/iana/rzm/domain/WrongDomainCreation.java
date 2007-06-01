@@ -1,8 +1,8 @@
 package org.iana.rzm.domain;
 
 import org.testng.annotations.Test;
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.common.exceptions.InvalidEmailException;
+import org.iana.dns.validator.InvalidDomainNameException;
 
 /**
  * @author: Piotr Tkaczyk
@@ -11,13 +11,13 @@ import org.iana.rzm.common.exceptions.InvalidEmailException;
 @Test(sequential = true, groups = {"wrongDomainCreation", "eiana-domains"})
 public class WrongDomainCreation {
 
-    @Test (expectedExceptions = {InvalidNameException.class})
+    @Test (expectedExceptions = {InvalidDomainNameException.class})
     public void testWrongDomainName() throws Exception {
         Domain domain = new Domain();
         String domainName = "aa#$-()a";
         try {
             domain.setName(domainName);
-        } catch (InvalidNameException e) {
+        } catch (InvalidDomainNameException e) {
             assert e.getName().equals(domainName);
             throw e;
         }

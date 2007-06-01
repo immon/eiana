@@ -13,7 +13,7 @@ import java.util.List;
  * <p>This is a stateful domain facade service providing the basic operations on domains for the eIANA RZM end-users.</p>
  *
  * <p>Note that this service is stateful and designed to be called in a user context. Thus all the methods
- * check whether the user has been granted respective permissions. Often the permission checks are performed
+ * isAllocatedForSpecialUse whether the user has been granted respective permissions. Often the permission checks are performed
  * in a context of a given resource, like, a domain object.</p>
  *
  * @author Patrycja Wegrzynowicz

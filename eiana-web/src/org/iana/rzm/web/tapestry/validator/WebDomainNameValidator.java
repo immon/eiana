@@ -9,8 +9,8 @@ import org.apache.tapestry.form.ValidationMessages;
 import org.apache.tapestry.form.validator.Validator;
 import org.apache.tapestry.valid.ValidationConstraint;
 import org.apache.tapestry.valid.ValidatorException;
-import org.iana.rzm.common.exceptions.InvalidNameException;
-import org.iana.rzm.common.validators.NameValidator;
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.dns.validator.DomainNameValidator;
 
 public class WebDomainNameValidator implements Validator {
 
@@ -25,8 +25,8 @@ public class WebDomainNameValidator implements Validator {
             if(name.endsWith(".")){
                 name = name.substring(0, name.length() - 1);
             }
-            NameValidator.validateName(name);
-        }catch(InvalidNameException e){
+            DomainNameValidator.validateName(name);
+        }catch(InvalidDomainNameException e){
             throw new ValidatorException("Invalid Domain name " + e.getName() + " " + e.getReason());
         }
     }

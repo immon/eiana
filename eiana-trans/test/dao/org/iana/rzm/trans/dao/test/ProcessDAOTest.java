@@ -1,6 +1,5 @@
 package org.iana.rzm.trans.dao.test;
 
-import org.iana.rzm.common.exceptions.InvalidNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.TransactionData;
@@ -13,6 +12,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.TransactionStatus;
@@ -87,7 +87,7 @@ public class ProcessDAOTest {
         }
     }
 
-    private void generateTestData() throws InvalidNameException, InterruptedException {
+    private void generateTestData() throws InvalidDomainNameException, InterruptedException {
         date0 = new Date();
         Thread.sleep(5000);
 

@@ -16,6 +16,7 @@
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="module" module-name="eiana-util" />
     <orderEntry type="library" name="dnsjava" level="project" />
+    <orderEntry type="module" module-name="common-dns" />
     <orderEntryProperties />
   </component>
 </module>

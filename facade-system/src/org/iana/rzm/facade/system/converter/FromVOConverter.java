@@ -2,7 +2,7 @@ package org.iana.rzm.facade.system.converter;
 
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.exceptions.InvalidIPAddressException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.user.RoleVO;
