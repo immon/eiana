@@ -13,26 +13,44 @@ import java.util.List;
 
 public abstract class UserAccess extends UserPage implements PageBeginRenderListener {
 
-    @Component(id = "userList", type = "For", bindings = {"source=prop:userList, value=prop:userAccess"})
+    @Component(id = "userList", type = "For", bindings = {"source=prop:userList","value=prop:userAccess"})
     public abstract IComponent getUsersListComponent();
 
-    @Component(id="enabled", type="DirectLink", bindings={"renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
-            "listener=listener:enableAccess",
+    @Component(id = "userName", type = "Insert", bindings = {"value=prop:userName"})
+    public abstract IComponent getuserNameComponent();
+
+    @Component(id="roles", type="Insert", bindings = {"value=prop:roles"})
+    public abstract IComponent getRolesComponent();
+
+    @Component(id="status", type="Insert", bindings = {"value=prop:status"})
+    public abstract IComponent getStatsComponent();
+
+    @Component(id="action", type="Insert", bindings = {"value=prop:actionTitle"})
+    public abstract IComponent getActionComponent();
+
+    @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
+    public abstract IComponent getDomainNameComponent();
+
+    @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
+    public abstract IComponent getCountryNameComponent();
+
+    @Component(id="changeStatus", type="DirectLink", bindings={
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+            "listener=listener:changeAccess",
             "parameters=components.userList.value.userId"})
     public abstract IComponent getEnabledComponent();
-
-    @Component(id="disabled", type="DirectLink", bindings={"renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
-            "listener=listener:disableAccess",
-            "parameters=components.userList.value.userId"})
-    public abstract IComponent getDisabledComponent();
 
     @Persist("client:page")
     public abstract void setDomainId(long domainId);
     public abstract long getDomainId();
 
+    @Persist("client:page")
+    public abstract void setDomainName(String name);
+    public abstract String getDomainName();
 
     public abstract void setUserList(List<UserAccessValue> users);
     public abstract UserAccessValue getUserAccess();
+    public abstract void setCountryName(String countryName);
 
     public void pageBeginRender(PageEvent event){
         List<UserVOWrapper> usersForDomain = getUserServices().getUsersForDomain(getDomainId());
@@ -45,16 +63,35 @@ public abstract class UserAccess extends UserPage implements PageBeginRenderList
                     userVOWrapper.isAccessEnabled()));
         }
         setUserList(users);
+        setCountryName("(" + getUserServices().getCountryName(getDomainName()) +")" );
     }
 
-    public void disableAccess(long userId){
 
+
+    public String getStatus(){
+        return String.valueOf(getUserAccess().isEnabled());
     }
 
-    public void enableAccess(long userId){
+    public String getRoles(){
+        StringBuilder builder = new StringBuilder();
+        for (String o : getUserAccess().getRoleNames() ) {
+            builder.append(o).append("<br/>");
+        }
 
+        return builder.toString();
     }
 
+    public String getActionTitle(){
+        return getUserAccess().isEnabled() ? "Disable" : "Enable";
+    }
+
+    public String getUserName(){
+        return getUserAccess().getUserName();
+    }
+
+    public void changeAccess(long userId){
+            
+    }
 
 }
 

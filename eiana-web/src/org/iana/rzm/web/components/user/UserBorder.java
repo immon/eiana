@@ -19,12 +19,7 @@ public abstract class UserBorder extends Border {
 
     @InjectPage("user/UserHome")
     public abstract MessageProperty getHome();
-
     
-
-    public void userAccess(){
-
-    }
 
     protected MessagePropertyCallback getHomeCallback() {
         return new MessagePropertyCallback(getHome());
