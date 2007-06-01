@@ -1,52 +1,46 @@
 package org.iana.rzm.mail;
 
+import org.iana.notifications.Notification;
+import org.iana.notifications.NotificationManager;
+import org.iana.objectdiff.ChangeApplicator;
+import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.rzm.auth.Identity;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
+import org.iana.rzm.mail.processor.MailsProcessor;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.iana.rzm.mail.processor.MailsProcessor;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.ChangeApplicator;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.Notification;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.testng.annotations.Test;
 
-import java.util.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(sequential = true, groups = "excluded")
-public class MailsProcessorTest {
-    private PlatformTransactionManager txManager;
-    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
-    private TransactionManager transactionManager;
-    private ProcessDAO processDAO;
-    private UserManager userManager;
-    private DomainManager domainManager;
-    private MailsProcessor mailsProcessor;
-    DiffConfiguration diffConfig;
-    private Set<RZMUser> users = new HashSet<RZMUser>();
-    private List<String> domainNames = new ArrayList<String>();
-    private Long domainTrId;
-    private NotificationManager notificationManager;
+@Test(sequential = true)
+public class MailsProcessorTest extends TransactionalSpringContextTests {
+    protected TransactionManager transactionManagerBean;
+    protected ProcessDAO processDAO;
+    protected UserManager userManager;
+    protected DomainManager domainManager;
+    protected MailsProcessor mailsProcessor;
+    protected DiffConfiguration diffConfig;
+    protected NotificationManager NotificationManagerBean;
 
     private static final String EMAIL_AC = "ac@no-mail.org";
     private static final String EMAIL_TC = "tc@no-mail.org";
@@ -61,17 +55,11 @@ public class MailsProcessorTest {
     //private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.txt.asc";
     private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.not-signed.txt.asc";
 
-    @BeforeClass
-    public void init() throws Exception {
-        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        txManager = (PlatformTransactionManager) appCtx.getBean("transactionManager");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        transactionManager = (TransactionManager) appCtx.getBean("transactionManagerBean");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
-        userManager = (UserManager) appCtx.getBean("userManager");
-        mailsProcessor = (MailsProcessor) appCtx.getBean("mailsProcessor");
-        diffConfig = (DiffConfiguration) appCtx.getBean("diffConfig");
-        notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
+    public MailsProcessorTest() {
+        super(SpringApplicationContext.CONFIG_FILE_NAME);
+    }
+
+    protected void init() throws Exception {
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
 
@@ -79,10 +67,9 @@ public class MailsProcessorTest {
                     UserManagementTestUtil.createSystemRole("mailrecdomain", true, true,
                             SystemRole.SystemType.AC));
             user.addRole(UserManagementTestUtil.createSystemRole("templatedomain", true, true,
-                            SystemRole.SystemType.AC));
+                    SystemRole.SystemType.AC));
             user.setEmail(EMAIL_AC);
             user.setPublicKey(loadFromFile(PUBLIC_KEY_AC_FILE_NAME));
-            users.add(user);
             userManager.create(user);
 
             user = UserManagementTestUtil.createUser("sys2mailrec",
@@ -90,25 +77,18 @@ public class MailsProcessorTest {
                             SystemRole.SystemType.TC));
             user.setEmail(EMAIL_TC);
             user.setPublicKey(loadFromFile(PUBLIC_KEY_TC_FILE_NAME));
-            users.add(user);
             userManager.create(user);
 
             Domain domain = new Domain("mailrecdomain");
+            domain.addAdminContact(new Contact("mailrecdomain-admin"));
+            domain.addTechContact(new Contact("mailrecdomain-tech"));
             domainManager.create(domain);
-            domainNames.add(domain.getName());
-            Host host = new Host("ns1.mailrecdomain");
-            host.addIPAddress("1.2.3.4");
-            domain.addNameServer(host);
-            host = new Host("ns2.mailrecdomain");
-            host.addIPAddress("2.2.3.4");
-            domain.addNameServer(host);
-            domainTrId = transactionManager.createDomainModificationTransaction(domain).getTransactionID();
 
             domain = new Domain("templatedomain");
             domain.setSupportingOrg(createContact("templatedomain-supp"));
             domain.addTechContact(createContact("templatedomain-tech"));
             domain.addAdminContact(createContact("templatedomain-admin"));
-            host = new Host("ns1.templatedomain");
+            Host host = new Host("ns1.templatedomain");
             host.addIPAddress("4.3.2.1");
             domain.addNameServer(host);
             host = new Host("ns2.templatedomain");
@@ -117,7 +97,6 @@ public class MailsProcessorTest {
             domain.setRegistryUrl("registry.templatedomain");
             domain.setWhoisServer("whois.templatedomain");
             domainManager.create(domain);
-            domainNames.add(domain.getName());
         } finally {
             processDAO.close();
         }
@@ -132,64 +111,61 @@ public class MailsProcessorTest {
         return contact;
     }
 
+    @Test
     public void testProcessConfirmationMail() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            Transaction transaction = transactionManager.getTransaction(domainTrId);
+            Domain domain = domainManager.get("mailrecdomain");
+            assert domain != null;
+            domain = domain.clone();
+            Host host = new Host("ns1.mailrecdomain");
+            host.addIPAddress("1.2.3.4");
+            domain.addNameServer(host);
+            host = new Host("ns2.mailrecdomain");
+            host.addIPAddress("2.2.3.4");
+            domain.addNameServer(host);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(domain);
+            Long domainTrId = transaction.getTransactionID();
             assert transaction != null;
             assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
 
-            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain";
+            List<String> tokens = getTokens(transaction);
+            assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
+            Iterator<String> tokenIterator = tokens.iterator();
+
+            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
+            subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
-            transaction = transactionManager.getTransaction(domainTrId);
+            transaction = transactionManagerBean.getTransaction(domainTrId);
             assert transaction != null;
-            /*
-            assert TransactionState.Name.PENDING_IMPACTED_PARTIES.equals(transaction.getState().getName()) :
+            assert TransactionState.Name.PENDING_MANUAL_REVIEW.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
-            */
-            assert TransactionState.Name.PENDING_IANA_CONFIRMATION.equals(transaction.getState().getName()) :
-                    "unexpected state: " + transaction.getState().getName();
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
 
-    @Test (dependsOnMethods = "testProcessConfirmationMail")
+    @Test(dependsOnMethods = "testProcessConfirmationMail")
     public void testProcessTemplateMailNoChange() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
             mailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME_NO_CHANGE));
 
-            List<Transaction> transactions = transactionManager.findOpenTransactions("templatedomain");
+            List<Transaction> transactions = transactionManagerBean.findOpenTransactions("templatedomain");
             assert transactions != null;
             assert transactions.isEmpty() : "unexpected number of transactions found: " + transactions.size();
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
 
-    @Test (dependsOnMethods = "testProcessTemplateMailNoChange")
+    @Test(dependsOnMethods = "testProcessTemplateMailNoChange")
     public void testProcessTemplateMail() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
             mailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME));
 
-            List<Transaction> transactions = transactionManager.findOpenTransactions("templatedomain");
+            List<Transaction> transactions = transactionManagerBean.findOpenTransactions("templatedomain");
             assert transactions != null;
             assert transactions.size() == 1 : "unexpected number of transactions found: " + transactions.size();
             Transaction trans = transactions.iterator().next();
@@ -217,21 +193,13 @@ public class MailsProcessorTest {
             domain.setRegistryUrl("registry.url");
             domain.setWhoisServer("whois.url");
 
-            assert domain.equals(testDomain);
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
+            assert domain.equals(testDomain.clone());
         } finally {
             processDAO.close();
         }
     }
 
-    @AfterClass (alwaysRun = true)
-    public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+    protected void cleanUp() throws Exception {
         try {
             for (ProcessInstance processInstance : processDAO.findAll())
                 processDAO.delete(processInstance);
@@ -239,13 +207,8 @@ public class MailsProcessorTest {
                 userManager.delete(user);
             for (Domain domain : domainManager.findAll())
                 domainManager.delete(domain.getName());
-            for (Notification notif : notificationManager.findAll())
-                notificationManager.delete(notif);
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
+            for (Notification notif : NotificationManagerBean.findAll())
+                NotificationManagerBean.delete(notif);
         } finally {
             processDAO.close();
         }
@@ -275,5 +238,18 @@ public class MailsProcessorTest {
         } finally {
             dis.close();
         }
+    }
+
+    private List<String> getTokens(Transaction transaction) {
+        List<String> result = new ArrayList<String>();
+        ContactConfirmations cc = transaction.getTransactionData().getContactConfirmations();
+        assert cc != null : "contact confirmations not found";
+        for (Identity identity : cc.getUsersAbleToAccept()) {
+            if (identity instanceof ContactIdentity) {
+                ContactIdentity contactIdentity = (ContactIdentity) identity;
+                result.add(contactIdentity.getToken());
+            }
+        }
+        return result;
     }
 }

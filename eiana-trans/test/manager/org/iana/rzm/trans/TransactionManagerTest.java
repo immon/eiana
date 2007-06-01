@@ -1,23 +1,20 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.domain.*;
-import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.IPAddress;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
-import org.iana.dns.validator.InvalidDomainNameException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
+import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,25 +26,19 @@ import java.util.Set;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true, groups = {"transactionManager", "eiana-trans"})
-public class TransactionManagerTest {
-    private PlatformTransactionManager txManager;
-    private TransactionDefinition txDefinition = new DefaultTransactionDefinition();
-    private TransactionManager transactionManager;
-    private UserManager userManager;
-    private DomainManager domainManager;
-    private ProcessDAO processDAO;
+public class TransactionManagerTest extends TransactionalSpringContextTests {
+    protected TransactionManager transactionManagerBean;
+    protected UserManager userManager;
+    protected DomainManager domainManager;
+    protected ProcessDAO processDAO;
     private Set<Long> domain1TransIds = new HashSet<Long>();
     private Set<Long> domain2TransIds = new HashSet<Long>();
 
-    @BeforeClass
-    public void init() throws Exception {
-        ApplicationContext ctx = SpringTransApplicationContext.getInstance().getContext();
-        txManager = (PlatformTransactionManager) ctx.getBean("transactionManager");
-        domainManager = (DomainManager) ctx.getBean("domainManager");
-        userManager = (UserManager) ctx.getBean("userManager");
-        transactionManager = (TransactionManager) ctx.getBean("transactionManagerBean");
-        processDAO = (ProcessDAO) ctx.getBean("processDAO");
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+    public TransactionManagerTest() {
+        super(SpringTransApplicationContext.CONFIG_FILE_NAME);
+    }
+
+    protected void init() throws Exception {
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
 
@@ -63,20 +54,12 @@ public class TransactionManagerTest {
             domainManager.create(domainCreated);
 
             createTestTransactionsAndUsers();
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
 
-    @AfterClass (alwaysRun = true)
-    public void cleanUp() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
+    protected void cleanUp() throws Exception {
         try {
             List<ProcessInstance> pis = processDAO.findAll();
             for (ProcessInstance pi : pis) {
@@ -92,12 +75,6 @@ public class TransactionManagerTest {
             for (Domain domain : domains) {
                 domainManager.delete(domain);
             }
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -138,34 +115,27 @@ public class TransactionManagerTest {
     }
 
     private Transaction createTransaction(final Long ticketId, final Domain domain) throws NoModificationException {
-        Transaction transaction = transactionManager.createDomainModificationTransaction(domain);
+        Transaction transaction = transactionManagerBean.createDomainModificationTransaction(domain);
         transaction.setTicketID(ticketId);
         return transaction;
     }
 
     @Test
     public void testFindTransactionsByDomain() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            List<Transaction> dbDomain1Trans = transactionManager.findTransactions("tmtestdomain1");
+            List<Transaction> dbDomain1Trans = transactionManagerBean.findTransactions("tmtestdomain1");
 
             Set<Long> dbDomain1TransIds = new HashSet<Long>();
             for (Transaction tr : dbDomain1Trans) dbDomain1TransIds.add(tr.getTransactionID());
 
             assert domain1TransIds.equals(dbDomain1TransIds);
 
-            List<Transaction> dbDomain2Trans = transactionManager.findTransactions("tmtestdomain2");
+            List<Transaction> dbDomain2Trans = transactionManagerBean.findTransactions("tmtestdomain2");
 
             Set<Long> dbDomain2TransIds = new HashSet<Long>();
             for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
             assert domain2TransIds.equals(dbDomain2TransIds);
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -173,9 +143,8 @@ public class TransactionManagerTest {
 
     @Test(dependsOnMethods = "testFindTransactionsByDomain")
     public void testFindTransactionsByUser() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            List<Transaction> dbDomain1Trans = transactionManager.findTransactions(
+            List<Transaction> dbDomain1Trans = transactionManagerBean.findTransactions(
                     userManager.get("user-sys1tm"));
 
             Set<Long> dbDomain1TransIds = new HashSet<Long>();
@@ -183,19 +152,13 @@ public class TransactionManagerTest {
 
             assert domain1TransIds.equals(dbDomain1TransIds);
 
-            List<Transaction> dbDomain2Trans = transactionManager.findTransactions(
+            List<Transaction> dbDomain2Trans = transactionManagerBean.findTransactions(
                     userManager.get("user-sys2tm"));
 
             Set<Long> dbDomain2TransIds = new HashSet<Long>();
             for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
             assert domain2TransIds.equals(dbDomain2TransIds);
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
@@ -203,9 +166,8 @@ public class TransactionManagerTest {
 
     @Test(dependsOnMethods = "testFindTransactionsByUser")
     public void testFindTransactionsByUserAndDomain() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
         try {
-            List<Transaction> dbDomain1Trans = transactionManager.findTransactions(
+            List<Transaction> dbDomain1Trans = transactionManagerBean.findTransactions(
                     userManager.get("user-sys1tm"), "tmtestdomain1");
 
             Set<Long> dbDomain1TransIds = new HashSet<Long>();
@@ -213,71 +175,15 @@ public class TransactionManagerTest {
 
             assert domain1TransIds.equals(dbDomain1TransIds);
 
-            List<Transaction> dbDomain2Trans = transactionManager.findTransactions(
+            List<Transaction> dbDomain2Trans = transactionManagerBean.findTransactions(
                     userManager.get("user-sys2tm"), "tmtestdomain2");
 
             Set<Long> dbDomain2TransIds = new HashSet<Long>();
             for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
             assert domain2TransIds.equals(dbDomain2TransIds);
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
         } finally {
             processDAO.close();
         }
     }
-
-    /*
-    @Test
-    public void testCreateDomainCreationTransaction() throws Exception {
-        TransactionStatus txStatus = txManager.getTransaction(txDefinition);
-        try {
-            userManager.create(UserManagementTestUtil.createUser("sys1tm",
-                    UserManagementTestUtil.createSystemRole("createdomain", true, true,
-                            SystemRole.SystemType.AC)));
-            userManager.create(UserManagementTestUtil.createUser("sys2tm",
-                    UserManagementTestUtil.createSystemRole("createdomain", true, true,
-                            SystemRole.SystemType.TC)));
-
-            Domain domain = new Domain("createdomain");
-            domain.setSupportingOrg(createContact("createdomain-supp"));
-            domain.addTechContact(createContact("createdomain-tech"));
-            domain.addAdminContact(createContact("createdomain-admin"));
-            Host host = new Host("ns1.createdomain");
-            host.addIPAddress("4.3.2.1");
-            domain.addNameServer(host);
-            host = new Host("ns2.createdomain");
-            host.addIPAddress("4.3.2.2");
-            domain.addNameServer(host);
-            domain.setRegistryUrl("registry.createdomain");
-            domain.setWhoisServer("whois.createdomain");
-
-            Domain newDomain = new Domain(domain.getName());
-            domainManager.create(newDomain);
-
-            transactionManager.createDomainCreationTransaction(domain);
-
-            txManager.commit(txStatus);
-        } catch (Exception e) {
-            if (!txStatus.isCompleted())
-                txManager.rollback(txStatus);
-            throw e;
-        } finally {
-            processDAO.close();
-        }
-    }
-
-    private Contact createContact(String prefix) {
-        Contact contact = new Contact(prefix, prefix + "org");
-        contact.addAddress(new Address(prefix + "addr", "US"));
-        contact.addEmail(prefix + "@no-mail.org");
-        contact.addFaxNumber("+1234567890");
-        contact.addPhoneNumber("+1234567890");
-        return contact;
-    }
-    */
 }

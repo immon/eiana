@@ -1,10 +1,7 @@
 package org.iana.test.spring;
 
 import org.springframework.test.AbstractTransactionalSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -38,7 +35,7 @@ public abstract class TransactionalSpringContextTests extends AbstractTransactio
         try {
             cleanUp();
         } finally {
-            after();
+            super.tearDown();
         }
     }
 
