@@ -1,17 +1,17 @@
 package org.iana.rzm.mail.test;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
 import org.iana.rzm.mail.parser.*;
-import org.iana.templates.def.parser.TemplatesManager;
-import org.iana.templates.def.parser.TemplatesManagerException;
 import org.iana.templates.TemplatesService;
 import org.iana.templates.TemplatesServiceBean;
+import org.iana.templates.def.parser.TemplatesManager;
+import org.iana.templates.def.parser.TemplatesManagerException;
 import org.iana.templates.inst.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.io.DataInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
@@ -24,35 +24,37 @@ public class MailParserImplTest {
     private static final String CONFIRMATION_VALID_STATE_NAME = "PENDING_CONTACT_CONFIRMATION";
     private static final String CONFIRMATION_SUBJECT_TOKEN = "[RZM]";
     private static final String CONFIRMATION_VALID_DOMAIN_NAME = "confdomainname";
+    private static final String CONFIRMATION_TOKEN = "1a2b3e4ff5a";
     private static final String CONFIRMATION_VALID_SUBJECT = "Re: " +
             CONFIRMATION_VALID_TRANSACTION_ID + " | " +
             CONFIRMATION_VALID_STATE_NAME + " | " +
             CONFIRMATION_SUBJECT_TOKEN + " | " +
-            CONFIRMATION_VALID_DOMAIN_NAME;
+            CONFIRMATION_VALID_DOMAIN_NAME + " | " +
+            CONFIRMATION_TOKEN;
     private static final String CONFIRMATION_CONTENT_ACCEPT =
             "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "I ACCEPT\n";
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "I ACCEPT\n";
     private static final String CONFIRMATION_CONTENT_DECLINE =
             "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "I DECLINE\n";
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "I DECLINE\n";
     private static final String CONFIRMATION_CONTENT_INVALID_1 =
             "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n";
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n";
     private static final String CONFIRMATION_CONTENT_INVALID_2 =
             "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "> declaration declaration declaration declaration\n" +
-            "I ACCEPT\n" +
-            "I DECLINE\n";
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "I ACCEPT\n" +
+                    "I DECLINE\n";
 
     private MailParser mailParser;
 
@@ -87,7 +89,7 @@ public class MailParserImplTest {
 
     private static final String CONFIRMATION_MAIL_INVALID_MESSAGE_1 = "both accept and decline are missing";
 
-    @Test (expectedExceptions = MailParserException.class)
+    @Test(expectedExceptions = MailParserException.class)
     public void testParseConfirmationMailInvalid1() throws MailParserException {
         try {
             mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_INVALID_1);
@@ -99,7 +101,7 @@ public class MailParserImplTest {
 
     private static final String CONFIRMATION_MAIL_INVALID_MESSAGE_2 = "both accept and decline are present";
 
-    @Test (expectedExceptions = MailParserException.class)
+    @Test(expectedExceptions = MailParserException.class)
     public void testParseConfirmationMailInvalid2() throws MailParserException {
         try {
             mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_INVALID_2);
@@ -261,9 +263,9 @@ public class MailParserImplTest {
         assert TEMPLATE_DOMAIN_WHOIS_SERVER.equals(si.getFieldInstance(TEMPLATE_DOMAIN_WHOIS_SERVER_FIELD_NAME).getValue());
     }
 
-    private static final String TEMPLATE_MAIL_INVALID_MESSAGE = "Required element missing: [Supporting Organization]"; 
+    private static final String TEMPLATE_MAIL_INVALID_MESSAGE = "Required element missing: [Supporting Organization]";
 
-    @Test (expectedExceptions = MailParserTemplateException.class)
+    @Test(expectedExceptions = MailParserTemplateException.class)
     public void testParseTemplateMailInvalid() throws Exception {
         try {
             mailParser.parse(TEMPLATE_VALID_SUBJECT, loadFromFile(TEMPLATE_INVALID_FILE_NAME));
