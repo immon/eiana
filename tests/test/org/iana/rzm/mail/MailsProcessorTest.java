@@ -177,7 +177,6 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             domain.setSupportingOrg(createContact("templatedomain-supp"));
             Contact contact = new Contact("templatedomain-tech-rep", "ICB Plc");
             contact.setAddress(new Address("9 Queens Road", "US"));
-            contact.setAddress(new Address("11 Queens Road", "US"));
             contact.setEmail("templatedomain-tech-rep@no-mail.org");
             contact.setFaxNumber("+1122334456");
             contact.setPhoneNumber("+1122334455");

@@ -22,13 +22,13 @@ public class DomainDiffConfiguration extends DiffConfiguration {
 
         ObjectConfiguration contactConfig = new ObjectConfiguration(new String[]{
             "name", "organization", "jobTitle", "address", "phoneNumber", "faxNumber", "email", "role"
-        }, "objId");
+        }, "name");
         contactConfig.addFieldClass("address", Address.class);
         addObjectConfiguration(Contact.class, contactConfig);
 
         ObjectConfiguration addressConfig = new ObjectConfiguration(new String[]{
             "textAddress", "countryCode"
-        }, "id");
+        }, "textAddress");
         addObjectConfiguration(Address.class, addressConfig);
 
         ObjectConfiguration hostConfig = new ObjectConfiguration(new String[]{
