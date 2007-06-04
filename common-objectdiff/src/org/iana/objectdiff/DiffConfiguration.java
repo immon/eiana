@@ -29,6 +29,11 @@ public class DiffConfiguration {
         this.simpleClasses.addAll(simpleClasses);
     }
 
+    public void addSimpleClass(Class simpleClass) {
+        CheckTool.checkNull(simpleClass, "simple class");
+        this.simpleClasses.add(simpleClass);
+    }
+
     public void setObjectConfigurations(Map<Class, ObjectConfiguration> configs) {
         CheckTool.checkNull(configs, "object configs map");
         this.objectConfigs.clear();

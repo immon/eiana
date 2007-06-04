@@ -315,6 +315,11 @@ public class Domain implements TrackedObject, Cloneable {
         this.status = status;
     }
 
+    final public void setStatus(String status) {
+        CheckTool.checkNull(status, "status");
+        this.status = Status.valueOf(status);
+    }
+
     final public State getState() {
         return openProcesses > 0 ?
                 thirdPartyPendingProcesses > 0 ? State.THIRD_PARTY_PENDING : State.OPERATIONS_PENDING

@@ -71,6 +71,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         domainManager.create(domain);
 
         domain.setRegistryUrl("newregurl.org");
+        domain.getAdminContact().setEmail("admin@new-email.org");
 
         domainVO = ToVOConverter.toDomainVO(domain);
 
@@ -128,7 +129,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
@@ -145,7 +146,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
     public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
     }
@@ -221,7 +222,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
     public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
@@ -243,7 +244,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_IANA_CHECK"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
@@ -268,7 +269,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 3);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);
@@ -297,7 +298,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
     public void testWorkFlowWithNSChange() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVAL(userUSDoC, transId);

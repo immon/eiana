@@ -13,7 +13,6 @@ public class DefinedTestProcess {
     public static final String PROCESS_DEFINITION_FILE = "domain-modification.xml";
     public static final String MAILS_RECEIVER = "mails-receiver.xml";
     public static final String NOTIFICATION_RESENDER = "notifications-resender.xml";
-    public static final String DOMAIN_CREATION = "domain-creation.xml";
 
     private static ProcessDefinition pd;
     private static String processName;

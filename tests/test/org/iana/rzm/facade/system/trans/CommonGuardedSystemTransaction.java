@@ -172,20 +172,15 @@ public abstract class CommonGuardedSystemTransaction {
         gsts.close();
     }
 
-    protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
+    protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser firstUser, RZMUser secondUser, long transId, int tokenCount) throws Exception {
         setGSTSAuthUser(firstUser); //userAC
         TransactionVO trans = gsts.getTransaction(transId);
         List<String> tokens = trans.getTokens();
-        assert tokens.size() == 2;
-        Iterator<String> tokenIterator = tokens.iterator();
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId, tokenIterator.next());
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.close();
-        setGSTSAuthUser(secondUser); //userTC
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId, tokenIterator.next());
-//        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId); todo
+        assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
+        for (String token : tokens) {
+            assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
+            gsts.acceptTransaction(transId, token);
+        }
         assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
         gsts.close();
     }
@@ -203,8 +198,12 @@ public abstract class CommonGuardedSystemTransaction {
     protected Domain createDomain(String name) {
         Domain newDomain = new Domain(name);
         newDomain.setSupportingOrg(new Contact("supportOrg"));
-        newDomain.setTechContact(new Contact("tech"));
-        newDomain.setAdminContact(new Contact("admin"));
+        Contact tech = new Contact("tech");
+        tech.setEmail("tech@" + name + ".org");
+        newDomain.setTechContact(tech);
+        Contact admin = new Contact("admin");
+        admin.setEmail("admin@" + name + ".org");
+        newDomain.setAdminContact(admin);
         return newDomain;
     }
 

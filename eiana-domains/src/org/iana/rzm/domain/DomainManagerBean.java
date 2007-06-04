@@ -19,7 +19,7 @@ public class DomainManagerBean implements DomainManager {
     public DomainManagerBean(DomainDAO dao, HostManager hostManager) {
         CheckTool.checkNull(dao, "domain dao");
         this.dao = dao;
-        CheckTool.checkNull(dao, "host manager");
+        CheckTool.checkNull(hostManager, "host manager");
         this.hostManager = hostManager;
     }
 

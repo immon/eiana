@@ -21,7 +21,6 @@ import java.util.Set;
 public class TransactionManagerBean implements TransactionManager {
 
     private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
-    private static final String DOMAIN_CREATION_PROCESS = "Domain Creation Transaction (Unified Workflow)";
 
     private ProcessDAO processDAO;
     private TicketingService ticketingService;
@@ -37,9 +36,7 @@ public class TransactionManagerBean implements TransactionManager {
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
         ProcessInstance pi = processDAO.getProcessInstance(id);
-        if (pi == null ||
-                (!DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()) &&
-                    !DOMAIN_CREATION_PROCESS.equals(pi.getProcessDefinition().getName())))
+        if (pi == null || !DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
             throw new NoSuchTransactionException(id);
         Transaction transaction = new Transaction(pi);
         return transaction;
@@ -51,7 +48,7 @@ public class TransactionManagerBean implements TransactionManager {
         td.setTicketID(ticketingService.generateID());
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(new Domain(domain.getName()), domain, diffConfiguration);
         td.setDomainChange(domainChange);
-        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_CREATION_PROCESS);
+        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();
         return new Transaction(pi);
@@ -142,8 +139,7 @@ public class TransactionManagerBean implements TransactionManager {
     private List<Transaction> toTransactions(List<ProcessInstance> processInstances) {
         List<Transaction> result = new ArrayList<Transaction>();
         for (ProcessInstance pi : processInstances)
-            if (DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()) ||
-                    DOMAIN_CREATION_PROCESS.equals(pi.getProcessDefinition().getName()))
+            if (DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
                 result.add(new Transaction(pi));
         return result;
     }

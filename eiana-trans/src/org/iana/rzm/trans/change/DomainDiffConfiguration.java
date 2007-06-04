@@ -12,13 +12,14 @@ public class DomainDiffConfiguration extends DiffConfiguration {
     public DomainDiffConfiguration(HostManager hostManager) {
 
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
-            "supportingOrg", "adminContact", "techContact", "whoisServer", "registryUrl", "nameServers"
+            "supportingOrg", "adminContact", "techContact", "whoisServer", "registryUrl", "nameServers", "status"
         }, "name");
         domainConfig.addFieldClass("supportingOrg", Contact.class);
-        domainConfig.addFieldClass("adminContacts", Contact.class);
-        domainConfig.addFieldClass("techContacts", Contact.class);
+        domainConfig.addFieldClass("adminContact", Contact.class);
+        domainConfig.addFieldClass("techContact", Contact.class);
         domainConfig.addFieldInstantiator("nameServers", new HostInstantiator(hostManager));
         addObjectConfiguration(Domain.class, domainConfig);
+        addSimpleClass(Domain.Status.class);
 
         ObjectConfiguration contactConfig = new ObjectConfiguration(new String[]{
             "name", "organization", "jobTitle", "address", "phoneNumber", "faxNumber", "email", "role"
