@@ -1,4 +1,4 @@
-package org.iana.rzm.facade;
+package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
@@ -7,10 +7,6 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.facade.system.trans.NoDomainSystemUsersException;
-import org.iana.rzm.facade.system.trans.SystemTransactionService;
-import org.iana.rzm.facade.system.trans.TransactionStateLogEntryVO;
-import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -59,7 +55,7 @@ public class DomainCreationTransactionWorkFlowTest {
         userAC.setFirstName("ACuser");
         userAC.setLastName("lastName");
         userAC.setEmail("email@some.com");
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 7; i++) {
             userAC.addRole(new SystemRole(SystemRole.SystemType.AC, DOMAIN_NAME_BASE + i, true, true));
             userAC.addRole(new SystemRole(SystemRole.SystemType.AC, DOMAIN_NAME_BASE + i, true, true));
         }
@@ -70,7 +66,7 @@ public class DomainCreationTransactionWorkFlowTest {
         userTC.setFirstName("TCuser");
         userTC.setLastName("lastName");
         userTC.setEmail("email@some.com");
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 7; i++) {
             userTC.addRole(new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAME_BASE + i, true, true));
             userTC.addRole(new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAME_BASE + i, true, true));
         }
@@ -94,25 +90,26 @@ public class DomainCreationTransactionWorkFlowTest {
 
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
-            processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.DOMAIN_CREATION));
         } finally {
             processDAO.close();
         }
     }
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
-            {"gstsignaluser", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
+        rejectPENDING_CONTACT_CONFIRMATION(userIANA, transId);
         checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
     }
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
-            {"gstsignaliana", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
@@ -123,113 +120,105 @@ public class DomainCreationTransactionWorkFlowTest {
     }
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
-    public void testACCEPT_CONTACT_CONFIRMATION() throws Exception {
+    public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
-    private static final String[][] REJECT_IMPACTED_PARTIESLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"}
+    private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"}
     };
 
-    @Test(dependsOnMethods = {"testACCEPT_CONTACT_CONFIRMATION"})
-    public void testREJECT_IMPACTED_PARTIES() throws Exception {
+    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
+    public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        rejectIMPACTED_PARTIES(userAC, transId);
-        checkStateLog(userAC, transId, REJECT_IMPACTED_PARTIESLog);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptMANUAL_REVIEW(userIANA, transId);
+        checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
     }
 
-    private static final String[][] CLOSE_IMPACTED_PARTIESLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_IMPACTED_PARTIES"}
+    private static final String[][] ACCEPT_IANA_CHECKLog = {
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"}
     };
 
-    @Test(dependsOnMethods = {"testREJECT_IMPACTED_PARTIES"})
-    public void testCLOSE_IMPACTED_PARTIES() throws Exception {
+    @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
+    public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        closeIMPACTED_PARTIES(userIANA, transId);
-        checkStateLog(userAC, transId, CLOSE_IMPACTED_PARTIESLog);
-    }
-
-    private static final String[][] REJECT_EXT_APPROVALLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
-            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_EXT_APPROVAL"}
-    };
-
-    @Test(dependsOnMethods = {"testCLOSE_IMPACTED_PARTIES"})
-    public void testREJECT_EXT_APPROVAL() throws Exception {
-        Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
-        normalIANA_CONFIRMATION(userIANA, transId);
-        rejectEXT_APPROVAL(userIANA, transId);
-        checkStateLog(userAC, transId, REJECT_EXT_APPROVALLog);
-    }
-
-    private static final String[][] CLOSE_EXT_APPROVALLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
-            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_EXT_APPROVAL"}
-    };
-
-    @Test(dependsOnMethods = {"testREJECT_EXT_APPROVAL"})
-    public void testCLOSE_EXT_APPROVAL() throws Exception {
-        Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
-        normalIANA_CONFIRMATION(userIANA, transId);
-        closeEXT_APPROVAL(userIANA, transId);
-        checkStateLog(userAC, transId, CLOSE_EXT_APPROVALLog);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptMANUAL_REVIEW(userIANA, transId);
+        acceptIANA_CHECK(userIANA, transId);
+        checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
     }
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
-            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_EXT_APPROVAL"},
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
     };
 
-    @Test(dependsOnMethods = {"testCLOSE_EXT_APPROVAL"})
+    @Test(dependsOnMethods = {"testACCEPT_IANA_CHECK"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
-        normalIANA_CONFIRMATION(userIANA, transId);
-        acceptEXT_APPROVAL(userIANA, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptMANUAL_REVIEW(userIANA, transId);
+        acceptIANA_CHECK(userIANA, transId);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
-        checkStateLog(userAC, transId, REJECT_USDOC_APPROVALLog);
+        checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
 
     private static final String[][] workFlowWithNSChangeLog = {
-            {"gstsignalseconduser", "PENDING_CONTACT_CONFIRMATION"},
-            {"gstsignaluser", "PENDING_IMPACTED_PARTIES"},
-            {"gstsignaliana", "PENDING_IANA_CONFIRMATION"},
-            {"gstsignaliana", "PENDING_EXT_APPROVAL"},
+            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
+            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
+            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
+            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
+            {"SYSTEM", "NS_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
+            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testSuccessfulCreation() throws Exception {
         DomainVO domain = getNextDomain();
         Long transId = createTransaction(domain, userIANA).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);
-        acceptIMPACTED_PARTIES(userAC, transId);
-        normalIANA_CONFIRMATION(userIANA, transId);
-        acceptEXT_APPROVAL(userIANA, transId);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptMANUAL_REVIEW(userIANA, transId);
+        acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
         acceptZONE_INSERTION(userIANA, transId);
         acceptZONE_PUBLICATION(userIANA, transId);
@@ -251,7 +240,6 @@ public class DomainCreationTransactionWorkFlowTest {
                     retrievedDomain.getRegistryUrl() == null;
             assert domain.getSpecialInstructions() != null ? domain.getSpecialInstructions().equals(retrievedDomain.getSpecialInstructions()) :
                     retrievedDomain.getSpecialInstructions() == null;
-            assert domain.getState() != null ? domain.getState().equals(retrievedDomain.getState()) : retrievedDomain.getState() == null;
             assert domain.getStatus() != null ? domain.getStatus().equals(retrievedDomain.getStatus()) : retrievedDomain.getStatus() == null;
             assert domain.getSupportingOrg() != null;
             assertEquals(domain.getSupportingOrg(), retrievedDomain.getSupportingOrg());
@@ -300,12 +288,17 @@ public class DomainCreationTransactionWorkFlowTest {
         return domain;
     }
 
-    private Contact createContact(String prefix) {
-        Contact contact = new Contact(prefix, prefix + "org");
-        contact.setAddress(new Address(prefix + "addr", "US"));
-        contact.setEmail(prefix + "@no-mail.org");
-        contact.setFaxNumber("+1234567890");
-        contact.setPhoneNumber("+1234567890");
+    private Contact createContact(String name) {
+        Contact contact = new Contact(name);
+        contact.setAddress(new Address(name + "-addr", "US"));
+        contact.setAltFaxNumber("+123456780");
+        contact.setAltPhoneNumber("+123456781");
+        contact.setEmail(name + "@no-mail.org");
+        contact.setFaxNumber("+123456782");
+        contact.setJobTitle("title");
+        contact.setOrganization(name + "-org");
+        contact.setPhoneNumber("+123456783");
+        contact.setPrivateEmail(name + "@prv-no-mail.org");
         return contact;
     }
 
@@ -347,50 +340,37 @@ public class DomainCreationTransactionWorkFlowTest {
         gsts.close();
     }
 
-    private void acceptEXT_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.acceptTransaction(transId);
+    protected void acceptUSDOC_APPROVALnoNSChange(RZMUser user, long transId) throws Exception {
+        setGSTSAuthUser(user); //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.close();
-    }
-
-    private void normalIANA_CONFIRMATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
-        gsts.transitTransaction(transId, "normal");
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.close();
-    }
-
-    private void acceptIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
         gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
+        assert isTransactionInDesiredState("COMPLETED", transId);
+        gsts.close();
+    }
+
+    protected void acceptMANUAL_REVIEW(RZMUser user, long transId) throws Exception {
+        setGSTSAuthUser(user);  //iana
+        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
+        gsts.transitTransaction(transId, "accept");
+        assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
+        gsts.close();
+    }
+
+    protected void acceptIANA_CHECK(RZMUser user, long transId) throws Exception {
+        setGSTSAuthUser(user);  //iana
+        assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
+        gsts.transitTransaction(transId, "accept");
+        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.close();
     }
 
     private void rejectPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.rejectTransaction(transId);
-        assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
-    }
-
-    private void closeEXT_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.transitTransaction(transId, "close");
-        assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
-        gsts.close();
-    }
-
-    private void rejectEXT_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.rejectTransaction(transId);
+        TransactionVO trans = gsts.getTransaction(transId);
+        List<String> tokens = trans.getTokens();
+        assert tokens.size() > 0;
+        gsts.rejectTransaction(transId, tokens.iterator().next());
         assert isTransactionInDesiredState("REJECTED", transId);
         gsts.close();
     }
@@ -403,22 +383,6 @@ public class DomainCreationTransactionWorkFlowTest {
         gsts.close();
     }
 
-    private void rejectIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //userAC
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-        gsts.rejectTransaction(transId);
-        assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
-    }
-
-    private void closeIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-        gsts.transitTransaction(transId, "close");
-        assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
-        gsts.close();
-    }
-
     private void closePENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
@@ -427,16 +391,16 @@ public class DomainCreationTransactionWorkFlowTest {
         gsts.close();
     }
 
-    private void acceptPENDING_CONTACT_CONFIRMATION(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
-        setGSTSAuthUser(firstUser); //userAC
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.close();
-        setGSTSAuthUser(secondUser); //userTC
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
+    private void acceptPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId, int tokenCount) throws Exception {
+        setGSTSAuthUser(user); //userAC
+        TransactionVO trans = gsts.getTransaction(transId);
+        List<String> tokens = trans.getTokens();
+        assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
+        for (String token : tokens) {
+            assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
+            gsts.acceptTransaction(transId, token);
+        }
+        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
         gsts.close();
     }
 

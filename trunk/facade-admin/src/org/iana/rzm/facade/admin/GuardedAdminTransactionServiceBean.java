@@ -69,6 +69,7 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         if (userManager.findUsersInSystemRole(domainVO.getName(), null, true, false).isEmpty())
             throw new NoDomainSystemUsersException(domainVO.getName());
         domainManager.create(new Domain(domainVO.getName()));
+        domainVO.setStatus(DomainVO.Status.ACTIVE);
         Transaction trans = transactionManager.createDomainCreationTransaction(FromVOConverter.toDomain(domainVO));
         return TransactionConverter.toTransactionVO(trans);
     }
