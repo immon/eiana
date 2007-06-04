@@ -15,7 +15,10 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author: Piotr Tkaczyk
@@ -113,12 +116,12 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         firstModificationVO = getDomain(DOMAIN_NAME, userAC);
         secondModificationVO = getDomain(DOMAIN_NAME, userAC);
 
-        ContactVO firstContactVO = ToVOConverter.toContactVO(new Contact("firstTechContact"));
-        ContactVO secondContactVO = ToVOConverter.toContactVO(new Contact("secondTechContact"));
+        ContactVO firstContactVO = ToVOConverter.toContactVO(new Contact("TechContact"));
+        ContactVO secondContactVO = ToVOConverter.toContactVO(new Contact("AdminContact"));
 
         firstModificationVO.setTechContact(firstContactVO);
 
-        secondModificationVO.setTechContact(secondContactVO);
+        secondModificationVO.setAdminContact(secondContactVO);
 
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
         acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId);                          //1.2
@@ -136,20 +139,19 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         retContacts.add(retDomain.getTechContact());
         assert retContacts.size() == 1;
         Iterator<ContactVO> retContactsIterator = retContacts.iterator();
-        assert "firstTechContact".equals(retContactsIterator.next().getName());
-//        assert "tech".equals(retContactsIterator.next().getName());
+        assert "TechContact".equals(retContactsIterator.next().getName());
+        assert "admin".equals(retDomain.getAdminContact().getName());
 
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, secTransId);                                //2.5
 
         retDomain = getDomain(DOMAIN_NAME, userAC);
         assert retDomain != null;
         retContacts = new TreeSet<ContactVO>(contactVOComparator);
-        retContacts.add(retDomain.getTechContact());
+        retContacts.add(retDomain.getAdminContact());
         assert retContacts.size() == 1;
         retContactsIterator = retContacts.iterator();
-//        assert "firstTechContact".equals(retContactsIterator.next().getName());
-        assert "secondTechContact".equals(retContactsIterator.next().getName());
-//        assert "tech".equals(retContactsIterator.next().getName());
+        assert "AdminContact".equals(retContactsIterator.next().getName());
+
 
     }
 
