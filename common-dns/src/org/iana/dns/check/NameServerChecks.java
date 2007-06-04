@@ -19,6 +19,7 @@ public class NameServerChecks extends NameServerChecksBase {
 
     /*
      * Tests: Name Server Reachability
+     *        Name Server Response Data Size
      *        Name Server Authority
      *        Name Server Coherency
      *        Name Server Glue Coherency
@@ -26,6 +27,7 @@ public class NameServerChecks extends NameServerChecksBase {
 
     public void doCheck(DNSNameServer ns) throws DNSTechnicalCheckException {
         checkReachability(ns);
+        checkResponseDataSize(ns);
         checkAuthority(ns);
         checkNameServerGlueCoherency(ns);
     }
@@ -33,6 +35,10 @@ public class NameServerChecks extends NameServerChecksBase {
     public void checkReachability(DNSNameServer ns) throws DNSTechnicalCheckException {
         if (!ns.isReachableByUDP()) throw new UnReachableByUDPException(ns.getName());
         if (!ns.isReachableByTCP()) throw new UnReachableByTCPException(ns.getName());
+    }
+
+    public void checkResponseDataSize(DNSNameServer ns) throws DNSTechnicalCheckException {
+        //todo           
     }
 
     public void checkAuthority(DNSNameServer ns) throws DNSTechnicalCheckException {

@@ -50,7 +50,10 @@ public class DNSTechnicalCheckTest {
             DNSTechnicalCheck dnsTechnicalCheck = new DNSTechnicalCheck();
 
             List<DNSDomainTechnicalCheck> domainChecks = new ArrayList<DNSDomainTechnicalCheck>();
-            domainChecks.add(new DomainNameServersCheck());
+            domainChecks.add(new NSCountAndIPRestrictions());
+            domainChecks.add(new MinimumNetworkDiversity());
+            domainChecks.add(new NameServerCoherency());
+            domainChecks.add(new SerialNumberCoherency());
             dnsTechnicalCheck.setDomainChecks(domainChecks);
 
             List<DNSNameServerTechnicalCheck> nsChecks = new ArrayList<DNSNameServerTechnicalCheck>();

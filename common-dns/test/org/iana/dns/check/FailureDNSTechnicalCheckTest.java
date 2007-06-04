@@ -21,7 +21,10 @@ public class FailureDNSTechnicalCheckTest {
     @BeforeClass
     public void init() {
         List<DNSDomainTechnicalCheck> domainChecks = new ArrayList<DNSDomainTechnicalCheck>();
-        domainChecks.add(new DomainNameServersCheck());
+        domainChecks.add(new NSCountAndIPRestrictions());
+        domainChecks.add(new MinimumNetworkDiversity());
+        domainChecks.add(new NameServerCoherency());
+        domainChecks.add(new SerialNumberCoherency());
         dnsTechnicalCheck.setDomainChecks(domainChecks);
 
         List<DNSNameServerTechnicalCheck> nsChecks = new ArrayList<DNSNameServerTechnicalCheck>();
@@ -59,7 +62,6 @@ public class FailureDNSTechnicalCheckTest {
             dnsTechnicalCheck.check(domain);
         } catch (DNSTechnicalCheckException e) {
             MultipleDNSTechnicalCheckException error = (MultipleDNSTechnicalCheckException) e;
-            assert error.getExceptions().size() == 1;
             assert error.getExceptions().iterator().next().equals(new UnReachableByUDPException("wrong.host.de"));
             throw e;
         }
