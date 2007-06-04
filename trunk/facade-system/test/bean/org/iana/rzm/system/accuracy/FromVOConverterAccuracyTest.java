@@ -1,19 +1,20 @@
 package org.iana.rzm.system.accuracy;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.facade.system.converter.FromVOConverter;
-import org.iana.rzm.domain.*;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.Name;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.system.converter.FromVOConverter;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
 import java.net.MalformedURLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -21,6 +22,7 @@ import java.net.MalformedURLException;
 
 @Test(sequential = true, groups = {"accuracy", "facade-system", "FromVOConverter"})
 public class FromVOConverterAccuracyTest {
+    List<ContactVO> contactVOList;
     AddressVO addressVO;
     List<HostVO> hostVOList;
     String email;
@@ -36,6 +38,7 @@ public class FromVOConverterAccuracyTest {
 
     @BeforeClass
     public void init() {
+        contactVOList = new ArrayList<ContactVO>();
         addressVO = new AddressVO();
         hostVOList = new ArrayList<HostVO>();
         breakpointVOSet = new HashSet<IDomainVO.Breakpoint>();
@@ -69,12 +72,15 @@ public class FromVOConverterAccuracyTest {
 
         assertAddress(contact.getAddress());
 
-        String contactEMail = contact.getEmail();
-        assert contactEMail.equals(email);
-        String contactFax = contact.getFaxNumber();
-        assert contactFax.equals(fax);
-        String contactPhone = contact.getPhoneNumber();
-        assert contactPhone.equals(phone);
+        assert contact.getJobTitle().equals("jobtitle");
+        assert contact.getEmail().equals("public@mail.com");
+        assert contact.getPrivateEmail().equals("private@mail.com");
+        assert contact.getFaxNumber().equals("fax1");
+        assert contact.getAltFaxNumber().equals("altfax2");
+        assert contact.getPhoneNumber().equals("phone1");
+        assert contact.getAltPhoneNumber().equals("altphone2");
+        assert !contact.isRole();
+        assert !contact.getRole();
 
         assert contact.getCreated().equals(created);
         assert contact.getCreatedBy().equals("somebody");
@@ -90,12 +96,13 @@ public class FromVOConverterAccuracyTest {
         contactVO.setOrganization("some_org");
         contactVO.setAddress(addressVO);
 
-        email = "public@mail.com";
-        contactVO.setEmail(email);
-        fax = "123123123";
-        contactVO.setFaxNumber(fax);
-        phone = "321321321";
-        contactVO.setPhoneNumber(phone);
+        contactVO.setJobTitle("jobtitle");
+        contactVO.setEmail("public@mail.com");
+        contactVO.setPrivateEmail("private@mail.com");
+        contactVO.setFaxNumber("fax1");
+        contactVO.setAltFaxNumber("altfax2");
+        contactVO.setPhoneNumber("phone1");
+        contactVO.setAltPhoneNumber("altphone2");
         contactVO.setRole(false);
 
         contactVO.setCreated(created);
@@ -105,6 +112,10 @@ public class FromVOConverterAccuracyTest {
 
         Contact contact = FromVOConverter.toContact(contactVO);
         assert assertContact(contact);
+
+        contactVO.equals(ToVOConverter.toContactVO(contact));
+
+        contactVOList.add(contactVO);
     }
 
     private boolean assertBreakpointSet(Set<Domain.Breakpoint> breakpointSet) {
