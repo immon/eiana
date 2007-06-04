@@ -1,26 +1,27 @@
 package org.iana.rzm.system.accuracy;
 
-import org.testng.annotations.Test;
-import org.iana.rzm.domain.*;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.TrackData;
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.user.SystemRole;
-import org.iana.dns.validator.InvalidDomainNameException;
+import org.testng.annotations.Test;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.sql.Timestamp;
 import java.net.MalformedURLException;
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"accuracy", "facade-system", "ToVOConverter"})
+@Test(sequential = true, groups = {"accuracy", "facade-system", "ToVOConverter"})
 public class ToVOConverterTest {
     IPAddress fromIPAddress;
     IPAddressVO toIPAddressVO;
@@ -64,7 +65,7 @@ public class ToVOConverterTest {
         assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.TC) == SystemRoleVO.SystemType.TC;
     }
 
-    @Test (dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})
+    @Test(dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})
     public void testHostConversion() throws InvalidIPAddressException, InvalidDomainNameException {
         fromHost = new Host("testHost");
 
@@ -81,7 +82,7 @@ public class ToVOConverterTest {
         trackData.setModifiedBy("user2");
 
         fromHost.setTrackData(trackData);
-        
+
         toHostVO = ToVOConverter.toHostVO(fromHost);
         assert fromHost.getName().equals(toHostVO.getName());
         assert fromHost.getModified() == toHostVO.getModified();
@@ -101,20 +102,29 @@ public class ToVOConverterTest {
         assert fromAddress.getCountryCode().equals(toAddressVO.getCountryCode());
     }
 
-    @Test (dependsOnMethods = {"testAddressConversion"})
+    @Test(dependsOnMethods = {"testAddressConversion"})
     public void testContactConversion() {
-        fromContact = new Contact("contact1", "some_org", fromAddress, "112-123-124", "212-223-542", "email@free.com", true);
+        fromContact = new Contact("contact1", "some_org", fromAddress, "phone123", "fax123", "email@free.com", true);
+        fromContact.setAltFaxNumber("altfax");
+        fromContact.setAltPhoneNumber("altphone");
+        fromContact.setPrivateEmail("priv@email.com");
 
         toContactVO = ToVOConverter.toContactVO(fromContact);
+
         assert toContactVO.getName().equals(fromContact.getName());
         assert toContactVO.getOrganization().equals(fromContact.getOrganization());
         assert toContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
         assert toContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
         assert toContactVO.getEmail().equals(fromContact.getEmail());
         assert toContactVO.isRole();
+        assert toContactVO.getAltFaxNumber().equals("altfax");
+        assert toContactVO.getAltPhoneNumber().equals("altphone");
+        assert toContactVO.getPrivateEmail().equals("priv@email.com");
+
+        assert fromContact.equals(FromVOConverter.toContact(toContactVO));
     }
 
-    @Test (dependsOnMethods = {"testContactConversion", "testHostConversion"})
+    @Test(dependsOnMethods = {"testContactConversion", "testHostConversion"})
     public void testDomainConversion() throws InvalidDomainNameException, NameServerAlreadyExistsException, MalformedURLException {
         fromDomain = new Domain("domain1.org");
         fromDomain.setAdminContact(fromContact);
@@ -136,18 +146,19 @@ public class ToVOConverterTest {
 
         assert fromDomain.getName().equals(toDomainVO.getName());
 
-        ContactVO adminContactVO  = toDomainVO.getAdminContact();
+        ContactVO adminContactVO = toDomainVO.getAdminContact();
         assert adminContactVO.getName().equals(fromContact.getName());
         assert adminContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
         assert adminContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
         assert adminContactVO.getEmail().equals(fromContact.getEmail());
         assert adminContactVO.isRole() == fromContact.isRole();
 
+
         assert toDomainVO.getBreakpoints().equals(ToVOConverter.toBreakpointVOSet(fromDomain.getBreakpoints()));
 
         toDomainVO.getNameServers().equals(ToVOConverter.toHostVOList(fromDomain.getNameServers()));
         toDomainVO.getTechContact().equals(ToVOConverter.toContactVO(fromDomain.getTechContact()));
-        
+
         assert toDomainVO.getRegistryUrl().equals(fromDomain.getRegistryUrl());
         assert toDomainVO.getSpecialInstructions().equals(fromDomain.getSpecialInstructions());
         assert toDomainVO.getState() == IDomainVO.State.NO_ACTIVITY;
@@ -157,11 +168,11 @@ public class ToVOConverterTest {
         // unable to assert because TrackData class fields not equals TrackDataVO
 
         ContactVO tmpContactVO = toDomainVO.getSupportingOrg();
-            assert tmpContactVO.getName().equals(fromContact.getName());
-            assert tmpContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
-            assert tmpContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
-            assert tmpContactVO.getEmail().equals(fromContact.getEmail());
-            assert tmpContactVO.isRole() == fromContact.isRole();
+        assert tmpContactVO.getName().equals(fromContact.getName());
+        assert tmpContactVO.getPhoneNumber().equals(fromContact.getPhoneNumber());
+        assert tmpContactVO.getFaxNumber().equals(fromContact.getFaxNumber());
+        assert tmpContactVO.getEmail().equals(fromContact.getEmail());
+        assert tmpContactVO.isRole() == fromContact.isRole();
 
         assert toDomainVO.getWhoisServer().getName().equals(fromDomain.getWhoisServer());
         assert toDomainVO.getCreated().equals(fromDomain.getCreated());
