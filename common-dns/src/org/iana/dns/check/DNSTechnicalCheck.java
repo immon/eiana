@@ -34,10 +34,11 @@ public class DNSTechnicalCheck {
             }
 
             MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
+            checkDomain(domain, nameServers, e);
             for (DNSNameServer ns : nameServers) {
                 checkNameServer(ns, e);
             }
-            checkDomain(domain, nameServers, e);
+            if (!e.isEmpty()) throw e;
         }
     }
 
