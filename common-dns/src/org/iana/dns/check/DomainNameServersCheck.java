@@ -4,6 +4,7 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.exceptions.*;
 import org.iana.dns.validator.SpecialIPAddressChecker;
+import org.iana.dns.whois.WhoIsDataRetriever;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.SOARecord;
 
@@ -17,6 +18,7 @@ public class DomainNameServersCheck implements DNSDomainTechnicalCheck {
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
         checkNSSizeAndIPRestrictions(domain, nameServers);
         checkSerialNumberCoherency(domain, nameServers);
+        checkMinimumNetworkDiversity(domain, nameServers);
         checkNameServerCoherency(domain, nameServers);
     }
 
@@ -47,6 +49,33 @@ public class DomainNameServersCheck implements DNSDomainTechnicalCheck {
                 ipAddresses.addAll(nameServer.getIPAddressesAsStrings());
             }
         }
+        if (!e.isEmpty()) throw e;
+    }
+
+    /*
+     * Tests: Minimum Network Diversity
+     */
+    public void checkMinimumNetworkDiversity(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+        List<String> asNumbers = new ArrayList<String>();
+
+        MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
+        for (DNSNameServer ns : nameServers) {
+            for (DNSIPAddress ipAddress : ns.getIPAddresses()) {
+                if (ipAddress.getType().equals(DNSIPAddress.Type.IPv4)) {
+                    String asNumber = new WhoIsDataRetriever().retrieveASNumber(ipAddress.getAddress());
+
+                    if ("".equals(asNumber))
+                        e.addException(new NoASNumberException(ns.getName(), ipAddress.getAddress()));
+
+                    if (asNumbers.contains(asNumber)) {
+                        e.addException(new DuplicatedASNumberException(ns.getName(), ipAddress.getAddress()));
+                    } else {
+                        asNumbers.add(asNumber);
+                    }
+                }
+            }
+        }
+
         if (!e.isEmpty()) throw e;
     }
 
