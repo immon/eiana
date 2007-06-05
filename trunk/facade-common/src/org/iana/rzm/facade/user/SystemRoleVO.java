@@ -14,6 +14,7 @@ public class SystemRoleVO extends RoleVO {
     private boolean notify;
     private boolean acceptFrom;
     private boolean mustAccept;
+    private boolean accessToDomain;
 
 
     public SystemRoleVO() {
@@ -67,6 +68,14 @@ public class SystemRoleVO extends RoleVO {
         return false;
     }
 
+    public boolean isAccessToDomain() {
+        return accessToDomain;
+    }
+
+    public void setAccessToDomain(boolean accessToDomain) {
+        this.accessToDomain = accessToDomain;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -75,6 +84,7 @@ public class SystemRoleVO extends RoleVO {
         SystemRoleVO that = (SystemRoleVO) o;
 
         if (acceptFrom != that.acceptFrom) return false;
+        if (accessToDomain != that.accessToDomain) return false;
         if (mustAccept != that.mustAccept) return false;
         if (notify != that.notify) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -88,6 +98,7 @@ public class SystemRoleVO extends RoleVO {
         result = 31 * result + (notify ? 1 : 0);
         result = 31 * result + (acceptFrom ? 1 : 0);
         result = 31 * result + (mustAccept ? 1 : 0);
+        result = 31 * result + (accessToDomain ? 1 : 0);
         return result;
     }
 }

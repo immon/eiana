@@ -6,6 +6,7 @@ import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.SimpleDomainVO;
+import org.iana.rzm.facade.user.UserVO;
 
 import java.util.List;
 
@@ -67,4 +68,20 @@ public interface SystemDomainService extends RZMStatefulService {
      * @throws InfrastructureException when a low-level exception happened
      */
     List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException;
+
+    /**
+     * <p>Enables or disables access to the domain identified by <code>domainId</code> for the user identified by
+     * <code>userId</code>.</p>
+     * @param userId user identifier
+     * @param domainId domain identifier
+     * @param access access to be set
+     */
+    void setAccessToDomain(long userId, long domainId, boolean access);
+
+    /**
+     * <p>Returns a list of users, who have access to the domain <code>domainName</code>.</p> 
+     * @param domainName name of the domain
+     * @return the list of users, who have access to the domain <code>domainName</code>
+     */
+    List<UserVO> findDomainUsers(String domainName);
 }

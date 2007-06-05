@@ -35,6 +35,13 @@ public class EmptySystemDomainService implements SystemDomainService {
         return new ArrayList<SimpleDomainVO>();
     }
 
+    public void setAccessToDomain(long userId, long domainId, boolean access) {
+    }
+
+    public List<UserVO> findDomainUsers(String domainName) {
+        return new ArrayList<UserVO>();
+    }
+
     public void setUser(AuthenticatedUser user) {
     }
 

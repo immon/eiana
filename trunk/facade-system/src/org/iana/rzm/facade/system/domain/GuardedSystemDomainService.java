@@ -10,6 +10,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.user.*;
 
 import java.util.HashSet;
@@ -71,6 +72,16 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
             return delegate.findUserDomains(userName);
         else
             throw new AccessDeniedException("invalid user");
+    }
+
+    public void setAccessToDomain(long userId, long domainId, boolean access) {
+        isUserInRole();
+        delegate.setAccessToDomain(userId, domainId, access);
+    }
+
+    public List<UserVO> findDomainUsers(String domainName) {
+        isUserInRole();
+        return delegate.findDomainUsers(domainName);
     }
 
     public void setUser(AuthenticatedUser user) {
