@@ -4,7 +4,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.IPAddress;
 import org.iana.rzm.techcheck.exceptions.*;
-import org.iana.dns.validator.SpecialIPAddressChecker;
+//import org.iana.dns.validator.SpecialIPAddressChecker;
 import org.iana.rzm.techcheck.exceptions.RestrictedIPv4Exception;
 import org.xbill.DNS.*;
 
@@ -37,7 +37,7 @@ public class TechChecker {
                 try {
                     if (ipAddress.getType().equals(IPAddress.Type.IPv4)) {
 
-                        if (SpecialIPAddressChecker.isAllocatedForSpecialUse(ipAddress.getAddress()))
+//                        if (SpecialIPAddressChecker.isAllocatedForSpecialUse(ipAddress.getAddress()))
                             throw new RestrictedIPv4Exception(ipAddress.getAddress());
                     }
                 } catch (RestrictedIPv4Exception e) {
