@@ -43,7 +43,7 @@ public class FailureNetworkDiversityCheckTest {
             assert error.getExceptions().size() == 1;
             assert error.getExceptions().iterator().next() instanceof DuplicatedASNumberException;
             DuplicatedASNumberException asError = (DuplicatedASNumberException) error.getExceptions().iterator().next();
-            assert "AS1111".equals(asError.getASNumber());
+            assert "AS1234".equals(asError.getASNumber());
             assert asError.getHosts().size() == 3;
             assert asError.getHosts().containsAll(domain.getNameServers());
         }

@@ -173,8 +173,7 @@
              compile.module.eiana-users,compile.module.eiana-startup,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
-             compile.module.common-codevalues,compile.module.common-pgp, compile.module.eiana-techcheck,
-             compile.module.common-test"
+             compile.module.common-codevalues,compile.module.common-pgp, compile.module.common-test"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
@@ -219,9 +218,6 @@
         <jar destfile="${jar.output.dir}/eiana-startup.jar">
             <fileset dir="${eiana-startup.output.dir}"/>
         </jar>
-        <jar destfile="${jar.output.dir}/eiana-techcheck.jar">
-            <fileset dir="${eiana-techcheck.output.dir}"/>
-        </jar>
         <jar destfile="${jar.output.dir}/eiana-trans.jar">
             <fileset dir="${eiana-trans.output.dir}"/>
         </jar>
@@ -252,9 +248,6 @@
         <jar destfile="${jar.output.dir}/config.jar">
             <fileset dir="${config.dir}/hibernate"/>
             <fileset dir="${config.dir}/spring"/>
-        </jar>
-        <jar destfile="${jar.output.dir}/eiana-techcheck.jar">
-            <fileset dir="${eiana-techcheck.output.dir}"/>
         </jar>
     </target>
 
@@ -471,13 +464,6 @@
                 <include name="**/*.java"/>
             </fileset>
             <fileset dir="../common-pgp/test">
-                <include name="**/*.java"/>
-            </fileset>
-            <!--eiana-techcheck-->
-            <fileset dir="../eiana-techcheck/src">
-                <include name="**/*.java"/>
-            </fileset>
-            <fileset dir="../eiana-techcheck/test">
                 <include name="**/*.java"/>
             </fileset>
             <!--common-dns-->
