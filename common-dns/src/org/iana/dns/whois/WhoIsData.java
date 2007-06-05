@@ -16,7 +16,7 @@ class WhoIsData {
     private String updateFirst;
     private String updateLast;
     private List<String> seenAt = new ArrayList<String>();
-    private long numRisPeers;
+    private long numRisPeers = -1;
     private String source;
 
 
@@ -94,5 +94,18 @@ class WhoIsData {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public boolean isFilled() {
+        if ((route == null) || (route.equals(""))) return false;
+        if ((origin == null) || (origin.equals(""))) return false;
+        if ((descr == null) || (descr.equals(""))) return false;
+        if ((updateFirst == null) || (updateFirst.equals(""))) return false;
+        if ((updateLast == null) || (updateLast.equals(""))) return false;
+        if ((seenAt == null) || (seenAt.isEmpty())) return false;
+        if (numRisPeers == -1) return false;
+        if ((source == null) || (source.equals(""))) return false;
+
+        return true;
     }
 }

@@ -1,12 +1,9 @@
 package org.iana.dns.obj;
 
-import org.iana.dns.DNSIPv4Address;
-import org.iana.dns.DNSIPAddress;
+import static org.iana.dns.DNSIPAddress.Type.IPv6;
 import org.iana.dns.DNSIPv6Address;
-import org.iana.dns.validator.SpecialIPAddressChecker;
 import org.iana.dns.validator.IPAddressValidator;
 import org.iana.dns.validator.InvalidIPv6AddressException;
-import static org.iana.dns.DNSIPAddress.Type.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -57,12 +54,12 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
     private static String uncompress(String addr) {
         boolean start = addr.startsWith(":");
         boolean end = addr.endsWith(":");
-        int missing = 8-colons(addr);
+        int missing = 8 - colons(addr);
         if (start || end) ++missing;
         StringBuffer zeros = new StringBuffer(":");
         while (missing-- > 0) zeros.append("0:");
         if (start) zeros.deleteCharAt(0);
-        if (end) zeros.deleteCharAt(zeros.length()-1);
+        if (end) zeros.deleteCharAt(zeros.length() - 1);
         return addr.replaceFirst("::", zeros.toString());
     }
 

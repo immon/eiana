@@ -1,29 +1,13 @@
 package org.iana.dns.check.exceptions;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.DNSHost;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
-public class NotAuthoritativeNameServerException extends DNSTechnicalCheckException {
+public class NotAuthoritativeNameServerException extends NameServerTechnicalCheckException {
 
-    private String nameServer;
-
-    public NotAuthoritativeNameServerException(String nameServer) {
-        this.nameServer = nameServer;
-    }
-
-    public String getNameServer() {
-        return nameServer;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        NotAuthoritativeNameServerException e = (NotAuthoritativeNameServerException) o;
-
-        if (nameServer != null ? !nameServer.equals(e.nameServer) : e.nameServer != null) return false;
-        return true;
+    public NotAuthoritativeNameServerException(DNSHost host) {
+        super(host);
     }
 }

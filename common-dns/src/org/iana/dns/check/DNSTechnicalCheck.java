@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
- * @author Piotr    Tkaczyk
+ * @author Piotr Tkaczyk
  */
 public class DNSTechnicalCheck {
 
