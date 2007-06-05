@@ -1,30 +1,20 @@
 package org.iana.dns.check.exceptions;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSHost;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 
-public class EmptyIPAddressListException extends DNSTechnicalCheckException {
-
-    private String nameServer;
-
-    public EmptyIPAddressListException(String nameServer) {
-        this.nameServer = nameServer;
-    }
-
-    public String getNameServer() {
-        return nameServer;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        EmptyIPAddressListException e = (EmptyIPAddressListException) o;
-
-        if (nameServer != null ? !nameServer.equals(e.nameServer) : e.nameServer != null) return false;
-        return true;
+public class EmptyIPAddressListException extends DomainTechnicalCheckException {
+    /**
+     * Thrown in MinimumNameServersAndNoReservedIPsCheck when host don't have any IP's
+     *
+     * @param domain current domain
+     * @param host   current host
+     */
+    public EmptyIPAddressListException(DNSDomain domain, DNSHost host) {
+        super(domain, host);
     }
 }

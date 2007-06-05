@@ -6,29 +6,35 @@ import org.iana.dns.obj.DNSIPv4AddressImpl;
 /**
  * @author: Piotr Tkaczyk
  */
-public class SpecialIPAddressChecker {
+public class ReservedIPAddressChecker {
 
-    public static boolean isAllocatedForSpecialUse(String address) {
-        return isAllocatedForSpecialUse(new DNSIPv4AddressImpl(address));
+    public static boolean check(String address) {
+        return check(new DNSIPv4AddressImpl(address));
     }
 
-    public static boolean isAllocatedForSpecialUse(DNSIPv4Address address) {
+    public static boolean check(DNSIPv4Address address) {
         int[] octets = address.getInts();
         // 224.0.0.0/4; 240.0.0.0/4
         if (octets[0] >= 224) return true;
-        switch(octets[0]) {
+        switch (octets[0]) {
             // 0.0.0.0/8
-            case 0:   return true;
-            // 10.0.0.0/8
-            case 10:  return true;
-            // 14.0.0.0/8
-            case 14:  return true;
-            // 24.0.0.0/8
-            case 24:  return true;
-            // 39.0.0.0/8
-            case 39:  return true;
-            // 127.0.0.0/8
-            case 127: return true;
+            case 0:
+                return true;
+                // 10.0.0.0/8
+            case 10:
+                return true;
+                // 14.0.0.0/8
+            case 14:
+                return true;
+                // 24.0.0.0/8
+            case 24:
+                return true;
+                // 39.0.0.0/8
+            case 39:
+                return true;
+                // 127.0.0.0/8
+            case 127:
+                return true;
             case 128: // 128.0.0.0/16
                 if (octets[1] == 0) return true;
                 break;

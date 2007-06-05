@@ -1,29 +1,18 @@
 package org.iana.dns.check.exceptions;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.DNSHost;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
-public class NameServerIPAddressesNotEqualException extends DNSTechnicalCheckException {
+public class NameServerIPAddressesNotEqualException extends NameServerTechnicalCheckException {
 
-    private String nameServer;
-
-    public NameServerIPAddressesNotEqualException(String nameServer) {
-        this.nameServer = nameServer;
-    }
-
-    public String getNameServer() {
-        return nameServer;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        NameServerIPAddressesNotEqualException e = (NameServerIPAddressesNotEqualException) o;
-
-        if (nameServer != null ? !nameServer.equals(e.nameServer) : e.nameServer != null) return false;
-        return true;
+    /**
+     * Thrown in GlueCoherencyCheck when current ns and retrived from SOA ip's don't match
+     *
+     * @param host current host
+     */
+    public NameServerIPAddressesNotEqualException(DNSHost host) {
+        super(host);
     }
 }

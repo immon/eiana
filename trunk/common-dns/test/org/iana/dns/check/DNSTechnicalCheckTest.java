@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author: Piotr Tkaczyk
  */
-@Test(sequential = true, groups = {"stress", "common-dns", "DNSTechnicalCheckTest"})
+@Test(sequential = true, groups = {"common-dns", "DNSTechnicalCheckTest"})
 public class DNSTechnicalCheckTest {
     @Test
     public void testDNSTechnicalCheck4DE() throws DNSTechnicalCheckException {
@@ -63,14 +63,17 @@ public class DNSTechnicalCheckTest {
             DNSTechnicalCheck dnsTechnicalCheck = new DNSTechnicalCheck();
 
             List<DNSDomainTechnicalCheck> domainChecks = new ArrayList<DNSDomainTechnicalCheck>();
-            domainChecks.add(new NSCountAndIPRestrictions());
-            domainChecks.add(new MinimumNetworkDiversity());
-            domainChecks.add(new NameServerCoherency());
-            domainChecks.add(new SerialNumberCoherency());
+            domainChecks.add(new MinimumNameServersAndNoReservedIPsCheck());
+            domainChecks.add(new MinimumNetworkDiversityCheck());
+            domainChecks.add(new NameServerCoherencyCheck());
+            domainChecks.add(new SerialNumberCoherencyCheck());
             dnsTechnicalCheck.setDomainChecks(domainChecks);
 
             List<DNSNameServerTechnicalCheck> nsChecks = new ArrayList<DNSNameServerTechnicalCheck>();
-            nsChecks.add(new NameServerChecks());
+            nsChecks.add(new NameServerReachabilityCheck());
+            nsChecks.add(new NameServerAuthorityCheck());
+//            nsChecks.add(new GlueCoherencyCheck());
+//            sizeCheck
             dnsTechnicalCheck.setNameServerChecks(nsChecks);
 
             dnsTechnicalCheck.check(domain);

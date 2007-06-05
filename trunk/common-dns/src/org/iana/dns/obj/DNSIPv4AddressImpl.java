@@ -4,7 +4,7 @@ import static org.iana.dns.DNSIPAddress.Type.IPv4;
 import org.iana.dns.DNSIPv4Address;
 import org.iana.dns.validator.IPAddressValidator;
 import org.iana.dns.validator.InvalidIPv4AddressException;
-import org.iana.dns.validator.SpecialIPAddressChecker;
+import org.iana.dns.validator.ReservedIPAddressChecker;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -16,8 +16,8 @@ public class DNSIPv4AddressImpl extends DNSIPAddressImpl implements DNSIPv4Addre
         IPAddressValidator.getInstance().validateIPv4(address);
     }
 
-    public boolean isAllocatedForSpecialUse() {
-        return SpecialIPAddressChecker.isAllocatedForSpecialUse(this);
+    public boolean isReserved() {
+        return ReservedIPAddressChecker.check(this);
     }
 
     public String[] getParts() {

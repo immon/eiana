@@ -1,16 +1,19 @@
 package org.iana.dns.check.exceptions;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.DNSDomain;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 
-public class NotEnoughNameServersException extends DNSTechnicalCheckException {
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+public class NotEnoughNameServersException extends DomainTechnicalCheckException {
 
-        return true;
+    /**
+     * Thrown in MinimumNameServersAndNoReservedIPsCheck when number of name servers is lower then requested
+     *
+     * @param domain current domain
+     */
+    public NotEnoughNameServersException(DNSDomain domain) {
+        super(domain, null);
     }
 }

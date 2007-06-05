@@ -7,13 +7,16 @@ import org.iana.dns.DNSIPAddress;
 import org.xbill.DNS.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
- * @author Piotr    Tkaczyk
+ * @author Piotr Tkaczyk
  */
-public class DNSNameServer implements DNSHost {
+public class DNSNameServer {
 
     private DNSDomain domain;
     private DNSHost host;
@@ -53,11 +56,27 @@ public class DNSNameServer implements DNSHost {
     }
 
     public boolean isAuthoritative() {
-        return ((soaByUDP != null) && (soaByUDP.getHeader().getFlag(Flags.AA)));
+        return ((getSOA() != null) && (getSOA().getHeader().getFlag(Flags.AA)));
+    }
+
+    public List<Record> getAuthoritySection() {
+        return (getSOA() != null) ? Arrays.asList(getSOA().getSectionArray(2)) : new ArrayList<Record>();
+    }
+
+    public List<Record> getAdditionalSection() {
+        return (getSOA() != null) ? Arrays.asList(getSOA().getSectionArray(3)) : new ArrayList<Record>();
+    }
+
+    public long getSerialNumber() {
+        return (getSOA() != null) ? ((SOARecord) getSOA().getSectionArray(1)[0]).getSerial() : -1;
     }
 
     public DNSDomain getDomain() {
         return domain;
+    }
+
+    public DNSHost getHost() {
+        return host;
     }
 
     public String getName() {
@@ -85,6 +104,6 @@ public class DNSNameServer implements DNSHost {
     }
 
     public Message getSOA() {
-        return soaByUDP;
+        return (soaByUDP != null) ? soaByUDP : soaByTCP;
     }
 }

@@ -7,19 +7,11 @@ import org.iana.dns.DNSIPAddress;
 /**
  * @author Piotr Tkaczyk
  */
-
-public class NoASNumberException extends DomainTechnicalCheckException {
+public class ReservedIPv4Exception extends DomainTechnicalCheckException {
 
     DNSIPAddress ipAddress;
 
-    /**
-     * Thrown in MinimumNetworkDiversityCheck when there is no AS number for IP address
-     *
-     * @param domain    current domain
-     * @param host      current host
-     * @param ipAddress IP address with empty AS number
-     */
-    public NoASNumberException(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
+    public ReservedIPv4Exception(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);
         this.ipAddress = ipAddress;
     }
@@ -33,7 +25,7 @@ public class NoASNumberException extends DomainTechnicalCheckException {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        NoASNumberException that = (NoASNumberException) o;
+        ReservedIPv4Exception that = (ReservedIPv4Exception) o;
 
         if (ipAddress != null ? !ipAddress.equals(that.ipAddress) : that.ipAddress != null) return false;
 
@@ -46,3 +38,4 @@ public class NoASNumberException extends DomainTechnicalCheckException {
         return result;
     }
 }
+

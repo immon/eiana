@@ -1,36 +1,39 @@
 package org.iana.dns.check.exceptions;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSHost;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
-public class SerialNumberNotEqualException extends DNSTechnicalCheckException {
+public class SerialNumberNotEqualException extends DomainTechnicalCheckException {
 
-    private String nameServer;
-    private long serialNumber;
+    Map<Long, List<DNSHost>> serialsMap;
 
-    public SerialNumberNotEqualException(String nameServer, long serialNumber) {
-        this.nameServer = nameServer;
-        this.serialNumber = serialNumber;
+    /**
+     * Thrown in SerialNumberCoherencyCheck when there are name servers with more then one serial number
+     *
+     * @param domain     current domain
+     * @param serialsMap maps serial numbers to name servers
+     */
+    public SerialNumberNotEqualException(DNSDomain domain, Map<Long, List<DNSHost>> serialsMap) {
+        super(domain, null);
+        this.serialsMap = serialsMap;
     }
 
-    public String getNameServer() {
-        return nameServer;
+    public Map<Long, List<DNSHost>> getSerialsMap() {
+        return serialsMap;
     }
 
-    public long getSerialNumber() {
-        return serialNumber;
+    public Set<Long> getSerialNumbers() {
+        return serialsMap.keySet();
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SerialNumberNotEqualException e = (SerialNumberNotEqualException) o;
-
-        if (nameServer != null ? !nameServer.equals(e.nameServer) : e.nameServer != null) return false;
-        if (serialNumber != e.serialNumber) return false;
-        return true;
+    public List<DNSHost> getHosts(Long serialNumber) {
+        return serialsMap.get(serialNumber);
     }
 }

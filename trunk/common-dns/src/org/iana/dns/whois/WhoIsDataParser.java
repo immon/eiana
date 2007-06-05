@@ -19,19 +19,20 @@ class WhoIsDataParser {
         while ((dataLine = br.readLine()) != null) {
             if (!dataLine.startsWith("%")) {
                 if (dataLine.equals("")) {
-                    if ((whoIsData.getOrigin() != null) && (!whoIsData.getSeenAt().isEmpty()))
+                    if (whoIsData.isFilled())
                         ret.add(whoIsData);
                     whoIsData = new WhoIsData();
                 } else {
                     SplittedLine sl = new SplittedLine(dataLine, ": ");
-                    if (sl.getField().equals("route")) whoIsData.setRoute(sl.getValue());
-                    if (sl.getField().equals("origin")) whoIsData.setOrigin(sl.getValue());
-                    if (sl.getField().equals("descr")) whoIsData.setDescr(sl.getValue());
-                    if (sl.getField().equals("lastupd-frst")) whoIsData.setUpdateFirst(sl.getValue());
-                    if (sl.getField().equals("lastupd-last")) whoIsData.setUpdateLast(sl.getValue());
-                    if (sl.getField().equals("seen-at")) whoIsData.setSeenAt(sl.getValue(), ",");
-                    if (sl.getField().equals("num-rispeers")) whoIsData.setNumRisPeers(sl.getValue());
-                    if (sl.getField().equals("source")) whoIsData.setSource(sl.getValue());
+                    if ("route".equals(sl.getField())) whoIsData.setRoute(sl.getValue());
+                    if ("route6".equals(sl.getField())) whoIsData.setRoute(sl.getValue());
+                    if ("origin".equals(sl.getField())) whoIsData.setOrigin(sl.getValue());
+                    if ("descr".equals(sl.getField())) whoIsData.setDescr(sl.getValue());
+                    if ("lastupd-frst".equals(sl.getField())) whoIsData.setUpdateFirst(sl.getValue());
+                    if ("lastupd-last".equals(sl.getField())) whoIsData.setUpdateLast(sl.getValue());
+                    if ("seen-at".equals(sl.getField())) whoIsData.setSeenAt(sl.getValue(), ",");
+                    if ("num-rispeers".equals(sl.getField())) whoIsData.setNumRisPeers(sl.getValue());
+                    if ("source".equals(sl.getField())) whoIsData.setSource(sl.getValue());
                 }
             }
         }
