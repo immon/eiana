@@ -21,9 +21,9 @@ public class NameServerCoherency implements DNSDomainTechnicalCheck {
 
         for (DNSNameServer ns : nameServers) {
             if (ns.getSOA() == null) throw new UnReachableByUDPException(ns.getName());
-            List<Record> nsRecords = Arrays.asList(ns.getSOA().getSectionArray(3));
+            List<Record> nsRecords = Arrays.asList(ns.getSOA().getSectionArray(2));
             for (Record record : nsRecords)
-                retHostNames.add(record.getName().toString());
+                retHostNames.add(record.getAdditionalName().toString());
         }
 
         Set<String> domainHostNames = new HashSet<String>();
