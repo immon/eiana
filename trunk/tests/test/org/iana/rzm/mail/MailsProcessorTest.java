@@ -104,10 +104,14 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 
     private Contact createContact(String prefix) {
         Contact contact = new Contact(prefix, prefix + "org");
+        contact.setJobTitle(prefix + "-job-title");
         contact.setAddress(new Address(prefix + "addr", "US"));
-        contact.setEmail(prefix + "@no-mail.org");
+        contact.setPublicEmail(prefix + "-pub@no-mail.org");
+        contact.setPrivateEmail(prefix + "-prv@no-mail.org");
         contact.setFaxNumber("+1234567890");
-        contact.setPhoneNumber("+1234567890");
+        contact.setAltFaxNumber("+1234567891");
+        contact.setPhoneNumber("+1234567892");
+        contact.setAltPhoneNumber("+1234567893");
         return contact;
     }
 
@@ -176,10 +180,14 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             Domain domain = new Domain("templatedomain");
             domain.setSupportingOrg(createContact("templatedomain-supp"));
             Contact contact = new Contact("templatedomain-tech-rep", "ICB Plc");
+            contact.setJobTitle("templatedomain-job-title");
             contact.setAddress(new Address("9 Queens Road", "US"));
-            contact.setEmail("templatedomain-tech-rep@no-mail.org");
-            contact.setFaxNumber("+1122334456");
+            contact.setPublicEmail("templatedomain-tech-rep-prv@no-mail.org");
+            contact.setPrivateEmail("templatedomain-tech-prv@no-mail.org");
             contact.setPhoneNumber("+1122334455");
+            contact.setAltPhoneNumber("+1234567893");
+            contact.setFaxNumber("+1122335567");
+            contact.setAltFaxNumber("+1234567891");
             domain.setTechContact(contact);
             domain.setAdminContact(createContact("templatedomain-admin"));
             Host host = new Host("ns11.templatedomain");
@@ -192,7 +200,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             domain.setRegistryUrl("registry.url");
             domain.setWhoisServer("whois.url");
 
-            assert domain.equals(testDomain.clone());
+            assertEquals(domain, testDomain);
         } finally {
             processDAO.close();
         }
@@ -250,5 +258,26 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             }
         }
         return result;
+    }
+
+    private void assertEquals(Domain d1, Domain d2) {
+        assert d1.getAdminContact() != null ? d1.getAdminContact().equals(d2.getAdminContact()) :
+                d2.getAdminContact() == null;
+        assert d1.getBreakpoints() != null ? d1.getBreakpoints().equals(d2.getBreakpoints()) :
+                d2.getBreakpoints() == null;
+        assert d1.getName() != null ? d1.getName().equals(d2.getName()) : d2.getName() == null;
+        assert d1.getNameServers() != null ? d1.getNameServers().equals(d2.getNameServers()) :
+                d2.getNameServers() == null;
+        assert d1.getRegistryUrl() != null ? d1.getRegistryUrl().equals(d2.getRegistryUrl()) :
+                d2.getRegistryUrl() == null;
+        assert d1.getSpecialInstructions() != null ? d1.getSpecialInstructions().equals(d2.getSpecialInstructions()) :
+                d2.getSpecialInstructions() == null;
+        assert d1.getStatus() != null ? d1.getStatus() == d2.getStatus() : d2.getStatus() == null;
+        assert d1.getSupportingOrg() != null ? d1.getSupportingOrg().equals(d2.getSupportingOrg()) :
+                d2.getSupportingOrg() == null;
+        assert d1.getTechContact() != null ? d1.getTechContact().equals(d2.getTechContact()) :
+                d2.getTechContact() == null;
+        assert d1.getWhoisServer() != null ? d1.getWhoisServer().equals(d2.getWhoisServer()) :
+                d2.getWhoisServer() == null;
     }
 }

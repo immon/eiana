@@ -151,7 +151,7 @@ public class TemplateParserFailureTest {
         }
     }
 
-    private static final String BROKEN_FIELD_MODIFIER_MESSAGE = "Required element missing: [field value right square bracket: Email Address]";
+    private static final String BROKEN_FIELD_MODIFIER_MESSAGE = "Required element missing: [field value right square bracket: Public Email Address]";
 
     @Test(expectedExceptions = RequiredElementMissingException.class)
     public void testBrokenFieldModifier() throws Exception {
