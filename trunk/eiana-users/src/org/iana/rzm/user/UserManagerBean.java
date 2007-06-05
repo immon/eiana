@@ -77,7 +77,12 @@ public class UserManagerBean implements UserManager {
 
     public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
                                                boolean acceptFrom, boolean mustAccept) {
-        return dao.findUsersInSystemRole(name, roleType, acceptFrom, mustAccept);
+        return dao.findUsersInSystemRole(name, roleType, acceptFrom, mustAccept, false);
+    }
+
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
+                                               boolean acceptFrom, boolean mustAccept, boolean accessToDomain) {
+        return dao.findUsersInSystemRole(name, roleType, acceptFrom, mustAccept, accessToDomain);
     }
 
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {

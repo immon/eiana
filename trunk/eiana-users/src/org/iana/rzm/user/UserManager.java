@@ -35,6 +35,9 @@ public interface UserManager {
     public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
                                                boolean acceptFrom, boolean mustAccept);
 
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType,
+                                               boolean acceptFrom, boolean mustAccept, boolean accessToDomain);
+
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
 
     public RZMUser findUserByEmail(String email);

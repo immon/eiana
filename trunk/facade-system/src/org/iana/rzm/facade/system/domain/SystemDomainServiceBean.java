@@ -4,22 +4,21 @@ package org.iana.rzm.facade.system.domain;
  * @author Piotr Tkaczyk
  */
 
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.common.AbstractRZMStatefulService;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.SimpleDomainVO;
+import org.iana.criteria.In;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.user.*;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.criteria.In;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.AbstractRZMStatefulService;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 
 import java.util.*;
 
@@ -86,12 +85,23 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
     }
 
     public void setAccessToDomain(long userId, long domainId, boolean access) {
-        // todo
+        Domain domain = domainManager.get(domainId);
+        RZMUser user = userManager.get(userId);
+        for (Role role : user.getRoles()) {
+            if (role instanceof SystemRole) {
+                SystemRole systemRole = (SystemRole) role;
+                if (domain.getName().equals(systemRole.getName()))
+                    systemRole.setAccessToDomain(access);
+            }
+        }
     }
 
     public List<UserVO> findDomainUsers(String domainName) {
-        // todo
-        return null;
+        List<UserVO> result = new ArrayList<UserVO>();
+        List<RZMUser> users = userManager.findUsersInSystemRole(domainName, null, false, false, true);
+        for (RZMUser user : users)
+            result.add(UserConverter.convert(user));
+        return result;
     }
 
     private Set<RoleVO.Type> getRoleTypeByDomainName(RZMUser user, String domainName) {

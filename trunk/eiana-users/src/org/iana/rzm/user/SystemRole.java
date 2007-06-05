@@ -37,6 +37,8 @@ public class SystemRole extends Role implements Cloneable {
     private boolean mustAccept;
     @Enumerated
     private SystemType type;
+    @Basic
+    private boolean accessToDomain; 
 
     public SystemRole() {}
 
@@ -104,6 +106,14 @@ public class SystemRole extends Role implements Cloneable {
 
     final public boolean isAdmin() {
         return false;
+    }
+
+    public boolean isAccessToDomain() {
+        return accessToDomain;
+    }
+
+    public void setAccessToDomain(boolean accessToDomain) {
+        this.accessToDomain = accessToDomain;
     }
 
     public boolean equals(Object o) {
