@@ -5,8 +5,6 @@ import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.techcheck.TechChecker;
-import org.iana.rzm.techcheck.exceptions.DomainCheckException;
 import org.iana.rzm.trans.TransactionData;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.node.DecisionHandler;
@@ -34,11 +32,12 @@ public class TechnicalCheck implements DecisionHandler {
 
             if (change != null) {
                 ChangeApplicator.applyChange(retrievedDomain, change, diffConfig);
-                try {
-                    TechChecker.checkDomain(retrievedDomain);
-                } catch (DomainCheckException e) {
-                    return "error";
-                }
+//              todo
+//              try {
+//                    TechChecker.checkDomain(retrievedDomain);
+//                } catch (DomainCheckException e) {
+//                    return "error";
+//                }
             }
         }
         return "test-ok";

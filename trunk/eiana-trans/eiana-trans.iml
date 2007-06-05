@@ -59,7 +59,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="eiana-techcheck" />
     <orderEntry type="module" module-name="common-test" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntryProperties />
