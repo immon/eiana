@@ -163,4 +163,15 @@ public class UserVO implements Trackable {
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
+
+    public boolean hasAccessToDomain(String domainName) {
+        for (RoleVO role : roles) {
+            if (role instanceof SystemRoleVO) {
+                SystemRoleVO sys = (SystemRoleVO) role;
+                if (domainName.equals(sys.getName()))
+                    return true;
+            }
+        }
+        return false;
+    }
 }

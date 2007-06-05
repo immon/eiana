@@ -9,6 +9,7 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
@@ -82,6 +83,15 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
             }
         }
         return ret;
+    }
+
+    public void setAccessToDomain(long userId, long domainId, boolean access) {
+        // todo
+    }
+
+    public List<UserVO> findDomainUsers(String domainName) {
+        // todo
+        return null;
     }
 
     private Set<RoleVO.Type> getRoleTypeByDomainName(RZMUser user, String domainName) {
