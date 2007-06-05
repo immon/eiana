@@ -1,9 +1,5 @@
 package org.iana.rzm.facade.system.domain;
 
-/**
- * @author Piotr Tkaczyk
- */
-
 import org.iana.criteria.In;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.domain.Domain;
@@ -22,6 +18,10 @@ import org.iana.rzm.user.UserManager;
 
 import java.util.*;
 
+/**
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
+ */
 public class SystemDomainServiceBean extends AbstractRZMStatefulService implements SystemDomainService {
 
     private DomainManager domainManager;

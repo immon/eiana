@@ -11,6 +11,7 @@ import java.util.List;
  * org.iana.rzm.user.dao.UserDAO
  *
  * @author Marcin Zajaczkowski
+ * @author Jakub Laszkiewicz
  *
  * Q: what with exceptions? DataAccessException is a runtime exception, but maybe could be caught somewhere
  */

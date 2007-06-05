@@ -1,11 +1,9 @@
 package org.iana.rzm.facade.system.domain;
 
-import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.common.RZMStatefulService;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.SimpleDomainVO;
+import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.user.UserVO;
 
 import java.util.List;
@@ -18,6 +16,7 @@ import java.util.List;
  * in a context of a given resource, like, a domain object.</p>
  *
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
 public interface SystemDomainService extends RZMStatefulService {
 

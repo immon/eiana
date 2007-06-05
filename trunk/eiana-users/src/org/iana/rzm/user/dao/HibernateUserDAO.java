@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * org.iana.rzm.user.dao.HibernateUserDAO
  *
  * @author Marcin Zajaczkowski
+ * @author Jakub Laszkiewicz
  *         <p/>
  *         todo Generic methods (get, create, delete) need to be implemented in every specific DAO. That could be (probably) simplified.
  *         For example by something like that:
