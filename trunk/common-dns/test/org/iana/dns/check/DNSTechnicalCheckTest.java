@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author: Piotr Tkaczyk
  */
-@Test(sequential = true, groups = {"common-dns", "DNSTechnicalCheckTest"})
+@Test(sequential = true, groups = {"stress", "common-dns", "DNSTechnicalCheckTest"})
 public class DNSTechnicalCheckTest {
     @Test
     public void testDNSTechnicalCheck4DE() throws DNSTechnicalCheckException {
@@ -46,6 +46,19 @@ public class DNSTechnicalCheckTest {
             ipAddresses.add("2001:608:6::5");
             host.setIPAddressesAsStrings(ipAddresses);
             domain.addNameServer(host);
+
+            host = new DNSHostImpl("c.de.net");
+            host.addIPAddress("208.48.81.43");
+            domain.addNameServer(host);
+
+            host = new DNSHostImpl("l.de.net");
+            host.addIPAddress("217.51.137.213");
+            domain.addNameServer(host);
+
+            host = new DNSHostImpl("s.de.net");
+            host.addIPAddress("193.159.170.149");
+            domain.addNameServer(host);
+
 
             DNSTechnicalCheck dnsTechnicalCheck = new DNSTechnicalCheck();
 
