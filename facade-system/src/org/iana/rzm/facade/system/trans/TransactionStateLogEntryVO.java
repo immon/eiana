@@ -1,9 +1,11 @@
 package org.iana.rzm.facade.system.trans;
 
+import java.io.Serializable;
+
 /**
  * @author Jakub Laszkiewicz
  */
-public class TransactionStateLogEntryVO {
+public class TransactionStateLogEntryVO implements Serializable {
     private String userName;
     private TransactionStateVO state;
 
