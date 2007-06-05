@@ -1,9 +1,5 @@
 package org.iana.rzm.facade.system.domain;
 
-/**
- * @author Piotr Tkaczyk
- */
-
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -18,6 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
+ */
 public class GuardedSystemDomainService extends AbstractRZMStatefulService implements SystemDomainService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();

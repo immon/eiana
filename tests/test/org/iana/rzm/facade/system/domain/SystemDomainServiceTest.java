@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test
+@Test(sequential = true)
 public class SystemDomainServiceTest extends TransactionalSpringContextTests {
     protected SystemDomainService SystemDomainServiceBean;
     protected UserManager userManager;
