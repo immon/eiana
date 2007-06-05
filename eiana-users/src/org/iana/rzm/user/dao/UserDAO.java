@@ -27,7 +27,7 @@ public interface UserDAO {
     public void delete(RZMUser user);
 
     public List<RZMUser> findUsersInSystemRole(String roleName, SystemRole.SystemType roleType,
-                                               boolean acceptFrom, boolean mustAccept);
+                                               boolean acceptFrom, boolean mustAccept, boolean accessToDomain);
 
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType);
 

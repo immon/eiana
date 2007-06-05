@@ -57,6 +57,10 @@ public class TestSystemUserManagerStress implements UserManager {
         throw new IllegalStateException("Not implemented yet.");
     }
 
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType, boolean acceptFrom, boolean mustAccept, boolean accessToDomain) {
+        throw new IllegalStateException("Not implemented yet.");
+    }
+
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
         throw new IllegalStateException("Not implemented yet.");
     }

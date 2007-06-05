@@ -70,6 +70,7 @@ public class RoleConverter {
         systemRoleVO.setNotify(systemRole.isNotify());
         systemRoleVO.setAcceptFrom(systemRole.isAcceptFrom());
         systemRoleVO.setMustAccept(systemRole.isMustAccept());
+        systemRoleVO.setAccessToDomain(systemRole.isAccessToDomain());
 
         systemRoleVO.setObjId(systemRole.getObjId());
 
@@ -88,6 +89,7 @@ public class RoleConverter {
         systemRole.setNotify(systemRoleVO.isNotify());
         systemRole.setAcceptFrom(systemRoleVO.isAcceptFrom());
         systemRole.setMustAccept(systemRoleVO.isMustAccept());
+        systemRole.setAccessToDomain(systemRoleVO.isAccessToDomain());
 
         systemRole.setObjId(systemRoleVO.getObjId());
 

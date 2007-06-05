@@ -68,6 +68,10 @@ public class TestUserManager implements UserManager {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }
 
+    public List<RZMUser> findUsersInSystemRole(String name, SystemRole.SystemType roleType, boolean acceptFrom, boolean mustAccept, boolean accessToDomain) {
+        throw new UnsupportedOperationException("Not implemented in test class.");
+    }
+
     public List<RZMUser> findUsersInAdminRole(AdminRole.AdminType roleType) {
         throw new UnsupportedOperationException("Not implemented in test class.");
     }

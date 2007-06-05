@@ -79,23 +79,23 @@ public class UserDAOTest {
         for(RZMUser user : usersMap)
             dao.create(user);
 
-        List<RZMUser> result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.AC, true, true);
+        List<RZMUser> result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.AC, true, true, false);
         assert result.size() == 1;
         RZMUser user = result.iterator().next();
         assert "user-DAOsys1".equals(user.getLoginName());
 
-        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.TC, true, false);
+        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.TC, true, false, false);
         assert result.size() == 2;
         Set<String> loginNames = new HashSet<String>();
         for (RZMUser u : result) loginNames.add(u.getLoginName());
         assert loginNames.contains("user-DAOsys2") && loginNames.contains("user-DAOsys4");
 
-        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.SO, false, false);
+        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.SO, false, false, false);
         assert result.size() == 1;
         user = result.iterator().next();
         assert "user-DAOsys3".equals(user.getLoginName());
 
-        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.TC, true, true);
+        result = dao.findUsersInSystemRole("DAOaaa", SystemRole.SystemType.TC, true, true, false);
         assert result.size() == 1;
         user = result.iterator().next();
         assert "user-DAOsys4".equals(user.getLoginName());

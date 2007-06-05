@@ -40,7 +40,7 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
     }
 
     public List<RZMUser> findUsersInSystemRole(String roleName, SystemRole.SystemType roleType,
-                                               boolean acceptFrom, boolean mustAccept) {
+                                               boolean acceptFrom, boolean mustAccept, boolean accessToDomain) {
         List<Object> args = new ArrayList<Object>();
         args.add(roleName);
         String query = "select user " +
@@ -58,6 +58,8 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
             query += "    and role.mustAccept = true ";
         if (acceptFrom)
             query += "    and role.acceptFrom = true";
+        if (accessToDomain)
+            query += "    and role.accessToDomain = true";
         return (List<RZMUser>) getHibernateTemplate().find(query, args.toArray());
     }
 
