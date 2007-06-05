@@ -205,49 +205,22 @@ public class MailsProcessorBean implements MailsProcessor {
         SectionInst suppOrgSect = template.getSectionInstance(DOMAIN_SUPP_ORG_SECTION_NAME);
         domain.setSupportingOrg(toContact(suppOrgSect, domain.getSupportingOrg()));
 
-        domain.setAdminContact(updateContacts(domain.getAdminContacts(),
-                template.getListInstance(DOMAIN_ADMIN_CONTACT_SECTION_NAME)));
-        domain.setTechContact(updateContacts(domain.getTechContacts(),
-                template.getListInstance(DOMAIN_TECH_CONTACT_SECTION_NAME)));
+        SectionInst adminContactSect = template.getSectionInstance(DOMAIN_ADMIN_CONTACT_SECTION_NAME);
+        domain.setAdminContact(toContact(adminContactSect, domain.getAdminContact()));
+
+        SectionInst techContactSect = template.getSectionInstance(DOMAIN_TECH_CONTACT_SECTION_NAME);
+        domain.setTechContact(toContact(techContactSect, domain.getTechContact()));
+
         domain.setNameServers(updateHosts(domain.getNameServers(),
                 template.getListInstance(DOMAIN_NAME_SERVERS_SECTION_NAME)));
 
         domain.setRegistryUrl(getFieldValue(template.getFieldInstance(DOMAIN_REGISTRY_URL_FIELD_NAME),
                 domain.getRegistryUrl()));
+
         domain.setWhoisServer(new Name(getFieldValue(template.getFieldInstance(DOMAIN_WHOIS_SERVER_FIELD_NAME),
                 domain.getWhoisServer().getName())));
 
         return domain;
-    }
-
-    private ContactVO updateContacts(List<ContactVO> contacts, ListInst contactList) throws MailsProcessorException {
-        for (ElementInst element : contactList.getList()) {
-            SectionInst section = (SectionInst) element;
-            if (section.isNotChanged()) continue;
-            if (section.isRemoved()) {
-                ContactVO key = new ContactVO();
-                key.setName(section.getRemovedElementName());
-                // todo: na liscie nieposortowanej binary search nie dziala
-                int i = Collections.binarySearch(contacts, key, contactComparator);
-                if (i < 0)
-                    throw new MailsProcessorException("Contact to remove does not exist: " +
-                            key.getName());
-                contacts.remove(i);
-                continue;
-            }
-            if (section.isReplaced()) {
-                ContactVO key = new ContactVO();
-                key.setName(section.getReplacedElementName());
-                // todo: na liscie nieposortowanej binary search nie dziala
-                int i = Collections.binarySearch(contacts, key, contactComparator);
-                if (i < 0)
-                    throw new MailsProcessorException("Contact to replace does not exist: " +
-                            key.getName());
-                contacts.remove(i);
-            }
-            contacts.add(toContact(section, new ContactVO()));
-        }
-        return contacts.isEmpty() ? null : contacts.get(0);
     }
 
     private List<HostVO> updateHosts(List<HostVO> hosts, ListInst hostList) throws MailsProcessorException {
@@ -280,23 +253,34 @@ public class MailsProcessorBean implements MailsProcessor {
 
     private static final String CONTACT_NAME_FIELD_NAME = "name";
     private static final String CONTACT_ORGANIZATION_FIELD_NAME = "organization";
+    private static final String CONTACT_JOB_TITLE_FIELD_NAME = "jobTitle";
     private static final String CONTACT_ADDRESS_SECTION_NAME = "address";
-    private static final String CONTACT_PHONE_FIELD_NAME = "phone";
-    private static final String CONTACT_FAX_FIELD_NAME = "fax";
-    private static final String CONTACT_EMAIL_FIELD_NAME = "email";
+    private static final String CONTACT_PHONE_FIELD_NAME = "phoneNumber";
+    private static final String CONTACT_ALT_PHONE_FIELD_NAME = "altPhoneNumber";
+    private static final String CONTACT_FAX_FIELD_NAME = "faxNumber";
+    private static final String CONTACT_ALT_FAX_FIELD_NAME = "altFaxNumber";
+    private static final String CONTACT_PUBLIC_EMAIL_FIELD_NAME = "publicEmail";
+    private static final String CONTACT_PRIVATE_EMAIL_FIELD_NAME = "privateEmail";
 
     private ContactVO toContact(SectionInst section, ContactVO contact) {
         if (section.isNotChanged()) return contact;
         if (contact == null) contact = new ContactVO();
         contact.setName(getFieldValue(section.getFieldInstance(CONTACT_NAME_FIELD_NAME)));
         contact.setOrganization(getFieldValue(section.getFieldInstance(CONTACT_ORGANIZATION_FIELD_NAME)));
-        contact.setAddress(toAddressList(section.getListInstance(CONTACT_ADDRESS_SECTION_NAME),
+        contact.setJobTitle(getFieldValue(section.getFieldInstance(CONTACT_JOB_TITLE_FIELD_NAME)));
+        contact.setAddress(toAddress(section.getSectionInstance(CONTACT_ADDRESS_SECTION_NAME),
                 contact.getAddress()));
-        contact.setPhoneNumber(toStringList(section.getListInstance(CONTACT_PHONE_FIELD_NAME),
+        contact.setPhoneNumber(getFieldValue(section.getFieldInstance(CONTACT_PHONE_FIELD_NAME),
                 contact.getPhoneNumber()));
-        contact.setFaxNumber(toStringList(section.getListInstance(CONTACT_FAX_FIELD_NAME),
+        contact.setAltPhoneNumber(getFieldValue(section.getFieldInstance(CONTACT_ALT_PHONE_FIELD_NAME),
+                contact.getPhoneNumber()));
+        contact.setFaxNumber(getFieldValue(section.getFieldInstance(CONTACT_FAX_FIELD_NAME),
                 contact.getFaxNumber()));
-        contact.setEmail(toStringList(section.getListInstance(CONTACT_EMAIL_FIELD_NAME),
+        contact.setFaxNumber(getFieldValue(section.getFieldInstance(CONTACT_ALT_FAX_FIELD_NAME),
+                contact.getFaxNumber()));
+        contact.setPublicEmail(getFieldValue(section.getFieldInstance(CONTACT_PUBLIC_EMAIL_FIELD_NAME),
+                contact.getEmail()));
+        contact.setPrivateEmail(getFieldValue(section.getFieldInstance(CONTACT_PRIVATE_EMAIL_FIELD_NAME),
                 contact.getEmail()));
         return contact;
     }
@@ -304,29 +288,12 @@ public class MailsProcessorBean implements MailsProcessor {
     private static final String CONTACT_ADDRESS_TEXT_FIELD_NAME = "textAddress";
     private static final String CONTACT_ADDRESS_CC_FIELD_NAME = "countryCode";
 
-    private AddressVO toAddressList(ListInst list, AddressVO currentAddressList) {
-        List<AddressVO> addressList = new ArrayList<AddressVO>();
-        for (ElementInst element : list.getList()) {
-            SectionInst section = (SectionInst) element;
-            if (section.isNotChanged())
-                return currentAddressList;
-            AddressVO address = new AddressVO();
-            address.setTextAddress(getFieldValue(section.getFieldInstance(CONTACT_ADDRESS_TEXT_FIELD_NAME)));
-            address.setCountryCode(getFieldValue(section.getFieldInstance(CONTACT_ADDRESS_CC_FIELD_NAME)));
-            addressList.add(address);
-        }
-        return addressList.isEmpty() ? null : addressList.get(0);
-    }
-
-    private String toStringList(ListInst list, String currentList) {
-        List<String> resultList = new ArrayList<String>();
-        for (ElementInst element : list.getList()) {
-            FieldInst field = (FieldInst) element;
-            if (field.isNotChanged())
-                return currentList;
-            resultList.add(getFieldValue(field));
-        }
-        return resultList.isEmpty() ? null : resultList.get(0);
+    private AddressVO toAddress(SectionInst section, AddressVO address) {
+        if (section.isNotChanged()) return address;
+        if (address == null) address = new AddressVO();
+        address.setTextAddress(getFieldValue(section.getFieldInstance(CONTACT_ADDRESS_TEXT_FIELD_NAME)));
+        address.setCountryCode(getFieldValue(section.getFieldInstance(CONTACT_ADDRESS_CC_FIELD_NAME)));
+        return address;
     }
 
     private static final String HOST_NAME_FIELD_NAME = "name";
@@ -356,21 +323,6 @@ public class MailsProcessorBean implements MailsProcessor {
         if (field.isNotChanged()) return value;
         if (field.isRemoved()) return null;
         return field.getValue();
-    }
-
-    private static ContactVOComparator contactComparator = new ContactVOComparator();
-
-    static class ContactVOComparator implements Comparator {
-        public int compare(Object o1, Object o2) {
-            if (o1 == o2) return 0;
-            if (o1 == null) return -1;
-            ContactVO c1 = (ContactVO) o1;
-            ContactVO c2 = (ContactVO) o2;
-            if (c2.getName() != null)
-                return c2.getName().compareTo(c1.getName());
-            else if (c1.getName() != null) return 1;
-            else return 0;
-        }
     }
 
     private static HostVOComparator hostComparator = new HostVOComparator();

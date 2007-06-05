@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(sequential = true, groups = {"excluded", "facade-system", "DomainCreationTransactionWorkFlowTest"})
+@Test(sequential = true, groups = {"facade-system", "DomainCreationTransactionWorkFlowTest"})
 public class DomainCreationTransactionWorkFlowTest {
     private final static String DOMAIN_NAME_BASE = "createtranstest";
 

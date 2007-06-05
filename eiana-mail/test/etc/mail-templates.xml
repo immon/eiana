@@ -5,64 +5,48 @@
         <section name="supportingOrg" label="Supporting Organization">
             <field name="name" label="Name"/>
             <field name="organization" label="Organization Name"/>
-            <list>
-                <section name="address" label="Address">
-                    <field name="textAddress" label="Text Address"/>
-                    <field name="countryCode" label="Country Code"/>
-                </section>
-            </list>
-            <list>
-                <field name="phone" label="Phone Number"/>
-            </list>
-            <list>
-                <field name="fax" label="Fax Number"/>
-            </list>
-            <list>
-                <field name="email" label="Email Address"/>
-            </list>
+            <field name="jobTitle" label="Job Title"/>
+            <section name="address" label="Address">
+                <field name="textAddress" label="Text Address"/>
+                <field name="countryCode" label="Country Code"/>
+            </section>
+            <field name="phoneNumber" label="Phone Number"/>
+            <field name="altPhoneNumber" label="Alternative Phone Number"/>
+            <field name="faxNumber" label="Fax Number"/>
+            <field name="altFaxNumber" label="Alternative Fax Number"/>
+            <field name="publicEmail" label="Private Email Address"/>
+            <field name="privateEmail" label="Public Email Address"/>
         </section>
-        <list>
-            <section name="adminContact" label="Administrative Contact">
-                <field name="name" label="Name"/>
-                <field name="organization" label="Organization Name"/>
-                <list>
-                    <section name="address" label="Address">
-                        <field name="textAddress" label="Text Address"/>
-                        <field name="countryCode" label="Country Code"/>
-                    </section>
-                </list>
-                <list>
-                    <field name="phone" label="Phone Number"/>
-                </list>
-                <list>
-                    <field name="fax" label="Fax Number"/>
-                </list>
-                <list>
-                    <field name="email" label="Email Address"/>
-                </list>
+        <section name="adminContact" label="Administrative Contact">
+            <field name="name" label="Name"/>
+            <field name="organization" label="Organization Name"/>
+            <field name="jobTitle" label="Job Title"/>
+            <section name="address" label="Address">
+                <field name="textAddress" label="Text Address"/>
+                <field name="countryCode" label="Country Code"/>
             </section>
-        </list>
-        <list>
-            <section name="techContact" label="Technical Contact">
-                <field name="name" label="Name"/>
-                <field name="organization" label="Organization"/>
-                <list>
-                    <section name="address" label="Address">
-                        <field name="textAddress" label="Text Address"/>
-                        <field name="countryCode" label="Country Code"/>
-                    </section>
-                </list>
-                <list>
-                    <field name="phone" label="Phone Number"/>
-                </list>
-                <list>
-                    <field name="fax" label="Fax Number"/>
-                </list>
-                <list>
-                    <field name="email" label="Email Address"/>
-                </list>
+            <field name="phoneNumber" label="Phone Number"/>
+            <field name="altPhoneNumber" label="Alternative Phone Number"/>
+            <field name="faxNumber" label="Fax Number"/>
+            <field name="altFaxNumber" label="Alternative Fax Number"/>
+            <field name="publicEmail" label="Private Email Address"/>
+            <field name="privateEmail" label="Public Email Address"/>
+        </section>
+        <section name="techContact" label="Technical Contact">
+            <field name="name" label="Name"/>
+            <field name="organization" label="Organization Name"/>
+            <field name="jobTitle" label="Job Title"/>
+            <section name="address" label="Address">
+                <field name="textAddress" label="Text Address"/>
+                <field name="countryCode" label="Country Code"/>
             </section>
-        </list>
+            <field name="phoneNumber" label="Phone Number"/>
+            <field name="altPhoneNumber" label="Alternative Phone Number"/>
+            <field name="faxNumber" label="Fax Number"/>
+            <field name="altFaxNumber" label="Alternative Fax Number"/>
+            <field name="publicEmail" label="Private Email Address"/>
+            <field name="privateEmail" label="Public Email Address"/>
+        </section>
         <list>
             <section name="nameServer" label="Name Server">
                 <field name="name" label="Name Server Host Name"/>
