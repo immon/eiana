@@ -112,4 +112,8 @@ public abstract class Role implements TrackedObject, Cloneable {
         role.trackData = (TrackData) (trackData == null ? new TrackData() : trackData.clone());
         return role; 
     }
+
+    public boolean isEnabled() {
+        return true;
+    }
 }
