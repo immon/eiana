@@ -5,9 +5,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -17,25 +15,18 @@ import java.util.Set;
 public class TransactionState {
 
     public static enum Name {
-        FIRST_NSLINK_CHANGE_DECISION,
         PENDING_TECH_CHECK,
         PENDING_TECH_CHECK_REMEDY,
         PENDING_CONTACT_CONFIRMATION,
-        MODIFICATIONS_IN_CONTACT_DECISION,
         PENDING_SOENDORSEMENT,
-        NS_SHARED_GLUE_CHANGE_DECISION,
         PENDING_IMPACTED_PARTIES,
         PENDING_MANUAL_REVIEW,
-        MATCHES_SI_BREAKPOINT_DECISION,
         PENDING_EXT_APPROVAL,
-        REDEL_FLAG_SET_DECISION,
         PENDING_EVALUATION,
         PENDING_IANA_CHECK,
-        SECOND_NSLINK_CHANGE_DECISION,
         PENDING_SUPP_TECH_CHECK,
         PENDING_SUPP_TECH_CHECK_REMEDY,
         PENDING_USDOC_APPROVAL,
-        NS_CHANGE_DECISION,
         PENDING_ZONE_INSERTION,
         PENDING_ZONE_PUBLICATION,
         PENDING_DATABASE_INSERTION,
@@ -44,7 +35,13 @@ public class TransactionState {
         REJECTED,
         ADMIN_CLOSED,
         EXCEPTION,
-        PENDING_IANA_CONFIRMATION  //todo for back compatibility only
+        PENDING_IANA_CONFIRMATION; //todo for back compatibility only
+        public static final List<String> nameStrings = new ArrayList<String>();
+
+        static {
+            for (Name name : Name.values())
+                nameStrings.add(name.toString());
+        }
     }
 
     @Transient

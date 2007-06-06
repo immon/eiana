@@ -9,7 +9,6 @@ import org.jbpm.graph.exe.ExecutionContext;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Arrays;
 
 /**
  * @author Jakub Laszkiewicz
@@ -21,6 +20,7 @@ public class ProcessStateLogger implements ActionHandler {
     List<String> contactStates;
 
     public void execute(ExecutionContext executionContext) throws Exception {
+        if (!TransactionState.Name.nameStrings.contains(executionContext.getNode().getName())) return;
         TransactionManager transactionManager = (TransactionManager)
                 executionContext.getJbpmContext().getObjectFactory().createObject("transactionManagerBean");
         Transaction transaction = transactionManager.getTransaction(executionContext.getProcessInstance().getId());

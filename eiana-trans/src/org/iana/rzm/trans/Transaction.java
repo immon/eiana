@@ -10,19 +10,19 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
-import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
+import org.jbpm.graph.node.Decision;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * This class represents a domain modification transaction.
@@ -33,6 +33,17 @@ import java.util.HashSet;
 public class Transaction implements TrackedObject {
 
     private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
+    private static final List<String> SIGNAL_AFTER_TRANSIT = Arrays.asList(
+            "FIRST_NSLINK_CHANGE_DECISION",
+            "PENDING_TECH_CHECK",
+            "MODIFICATIONS_IN_CONTACT_DECISION",
+            "NS_SHARED_GLUE_CHANGE_DECISION",
+            "MATCHES_SI_BREAKPOINT_DECISION",
+            "REDEL_FLAG_SET_DECISION",
+            "SECOND_NSLINK_CHANGE_DECISION",
+            "PENDING_SUPP_TECH_CHECK",
+            "NS_CHANGE_DECISION"
+    );
 
     private ProcessInstance pi;
 
@@ -223,6 +234,7 @@ public class Transaction implements TrackedObject {
         if (user instanceof RZMUser)
             getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
         token.setNode(destinationNode);
+        if (SIGNAL_AFTER_TRANSIT.contains(stateName)) token.signal();
     }
 
     public Set<SystemRole.SystemType> getReceivedContactConfirmations() {
