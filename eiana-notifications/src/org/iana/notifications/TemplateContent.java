@@ -20,7 +20,8 @@ public class TemplateContent extends Content {
     private String templateName;
 
     @CollectionOfElements
-    @JoinTable(name="TemplateContent_values")
+    @JoinTable(name = "TemplateContent_values")
+    @Column(length = 4096)
     private Map<String, String> values;
 
     @Transient
@@ -28,7 +29,8 @@ public class TemplateContent extends Content {
     @Transient
     private String body = null;
 
-    protected TemplateContent() {}
+    protected TemplateContent() {
+    }
 
     public TemplateContent(String templateName) {
         this.templateName = templateName;
