@@ -48,8 +48,13 @@ public class ContactConfirmations extends AbstractConfirmation {
             throw new NotAcceptableByUser();
         if (receivedConfirmations.contains(identity))
             throw new AlreadyAcceptedByUser();
-        outstandingConfirmations.remove(identity);
-        receivedConfirmations.add((ContactIdentity) identity);
+        for (ContactIdentity id : outstandingConfirmations) {
+            if (id != null && id.equals(identity)) {
+                outstandingConfirmations.remove(id);
+                receivedConfirmations.add(id.clone());
+                break;
+            }
+        }
         return isReceived();
     }
 

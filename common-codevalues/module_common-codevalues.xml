@@ -42,6 +42,12 @@
     </dirset>
   </path>
   
+  <path id="common-codevalues.module.test.sourcepath">
+    <dirset dir="${module.common-codevalues.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.common-codevalues" depends="compile.module.common-codevalues.production,compile.module.common-codevalues.tests" description="Compile module common-codevalues"/>
   
@@ -63,7 +69,23 @@
     </copy>
   </target>
   
-  <target name="compile.module.common-codevalues.tests" depends="compile.module.common-codevalues.production" description="compile module common-codevalues; test classes" unless="skip.tests"/>
+  <target name="compile.module.common-codevalues.tests" depends="compile.module.common-codevalues.production" description="compile module common-codevalues; test classes" unless="skip.tests">
+    <mkdir dir="${common-codevalues.testoutput.dir}"/>
+    <javac destdir="${common-codevalues.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-codevalues}"/>
+      <classpath refid="common-codevalues.module.classpath"/>
+      <classpath location="${common-codevalues.output.dir}"/>
+      <src refid="common-codevalues.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-codevalues"/>
+    </javac>
+    
+    <copy todir="${common-codevalues.testoutput.dir}">
+      <fileset dir="${module.common-codevalues.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.common-codevalues" description="cleanup module">
     <delete dir="${common-codevalues.output.dir}"/>

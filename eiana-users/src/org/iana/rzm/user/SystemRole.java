@@ -38,7 +38,7 @@ public class SystemRole extends Role implements Cloneable {
     @Enumerated
     private SystemType type;
     @Basic
-    private boolean accessToDomain; 
+    private boolean accessToDomain = true;
 
     public SystemRole() {}
 
@@ -149,5 +149,9 @@ public class SystemRole extends Role implements Cloneable {
         systemRole.notify = notify;
         systemRole.type = type;
         return systemRole;
+    }
+
+    public boolean isEnabled() {
+        return isAccessToDomain();
     }
 }

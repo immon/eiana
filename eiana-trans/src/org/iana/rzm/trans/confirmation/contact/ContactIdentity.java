@@ -1,6 +1,7 @@
 package org.iana.rzm.trans.confirmation.contact;
 
 import org.iana.notifications.AbstractAddressee;
+import org.iana.notifications.Addressee;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.Role;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Patrycja Wegrzynowicz
  */
 @Entity
-public class ContactIdentity extends AbstractAddressee implements Identity {
+public class ContactIdentity extends AbstractAddressee implements Identity, Cloneable {
 
     @Enumerated
     private SystemRole.SystemType type;
@@ -71,5 +72,11 @@ public class ContactIdentity extends AbstractAddressee implements Identity {
 
     public int hashCode() {
         return (token != null ? token.hashCode() : 0);
+    }
+
+    public ContactIdentity clone() {
+        ContactIdentity ret = (ContactIdentity) super.clone();
+        ret.setObjId(null);
+        return ret;
     }
 }
