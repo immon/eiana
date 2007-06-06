@@ -16,10 +16,8 @@ import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.jbpm.graph.node.Decision;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,18 +31,6 @@ import java.util.Set;
 public class Transaction implements TrackedObject {
 
     private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
-    private static final List<String> SIGNAL_AFTER_TRANSIT = Arrays.asList(
-            "FIRST_NSLINK_CHANGE_DECISION",
-            "PENDING_TECH_CHECK",
-            "MODIFICATIONS_IN_CONTACT_DECISION",
-            "NS_SHARED_GLUE_CHANGE_DECISION",
-            "MATCHES_SI_BREAKPOINT_DECISION",
-            "REDEL_FLAG_SET_DECISION",
-            "SECOND_NSLINK_CHANGE_DECISION",
-            "PENDING_SUPP_TECH_CHECK",
-            "NS_CHANGE_DECISION"
-    );
-
     private ProcessInstance pi;
 
     public Transaction(ProcessInstance pi) {
@@ -230,11 +216,11 @@ public class Transaction implements TrackedObject {
     public synchronized void transitTo(Identity user, String stateName) throws TransactionException {
         Token token = pi.getRootToken();
         Node destinationNode = pi.getProcessDefinition().getNode(stateName);
-        if (destinationNode == null) throw new TransactionException("no such state: " + stateName);
+        if (destinationNode == null || !TransactionState.Name.nameStrings.contains(stateName)) 
+            throw new TransactionException("no such state: " + stateName);
         if (user instanceof RZMUser)
             getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
         token.setNode(destinationNode);
-        if (SIGNAL_AFTER_TRANSIT.contains(stateName)) token.signal();
     }
 
     public Set<SystemRole.SystemType> getReceivedContactConfirmations() {

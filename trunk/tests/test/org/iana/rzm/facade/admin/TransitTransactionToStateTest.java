@@ -22,9 +22,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: Piotr Tkaczyk
@@ -93,38 +91,6 @@ public class TransitTransactionToStateTest {
         }
     }
 
-    private static final Map<String, String> VALID_RESULT_STATE = new HashMap<String, String>();
-
-    static {
-        VALID_RESULT_STATE.put("FIRST_NSLINK_CHANGE_DECISION", "PENDING_CONTACT_CONFIRMATION");
-        VALID_RESULT_STATE.put("PENDING_TECH_CHECK", "PENDING_CONTACT_CONFIRMATION");
-        VALID_RESULT_STATE.put("PENDING_TECH_CHECK_REMEDY", "PENDING_TECH_CHECK_REMEDY");
-        VALID_RESULT_STATE.put("PENDING_CONTACT_CONFIRMATION", "PENDING_CONTACT_CONFIRMATION");
-        VALID_RESULT_STATE.put("MODIFICATIONS_IN_CONTACT_DECISION", "PENDING_SOENDORSEMENT");
-        VALID_RESULT_STATE.put("PENDING_SOENDORSEMENT", "PENDING_SOENDORSEMENT");
-        VALID_RESULT_STATE.put("NS_SHARED_GLUE_CHANGE_DECISION", "PENDING_IMPACTED_PARTIES");
-        VALID_RESULT_STATE.put("PENDING_IMPACTED_PARTIES", "PENDING_IMPACTED_PARTIES");
-        VALID_RESULT_STATE.put("PENDING_MANUAL_REVIEW", "PENDING_MANUAL_REVIEW");
-        VALID_RESULT_STATE.put("MATCHES_SI_BREAKPOINT_DECISION", "PENDING_EXT_APPROVAL");
-        VALID_RESULT_STATE.put("PENDING_EXT_APPROVAL", "PENDING_EXT_APPROVAL");
-        VALID_RESULT_STATE.put("REDEL_FLAG_SET_DECISION", "PENDING_EVALUATION");
-        VALID_RESULT_STATE.put("PENDING_EVALUATION", "PENDING_EVALUATION");
-        VALID_RESULT_STATE.put("PENDING_IANA_CHECK", "PENDING_IANA_CHECK");
-        VALID_RESULT_STATE.put("SECOND_NSLINK_CHANGE_DECISION", "PENDING_USDOC_APPROVAL");
-        VALID_RESULT_STATE.put("PENDING_SUPP_TECH_CHECK", "PENDING_USDOC_APPROVAL");
-        VALID_RESULT_STATE.put("PENDING_SUPP_TECH_CHECK_REMEDY", "PENDING_SUPP_TECH_CHECK_REMEDY");
-        VALID_RESULT_STATE.put("PENDING_USDOC_APPROVAL", "PENDING_USDOC_APPROVAL");
-        VALID_RESULT_STATE.put("NS_CHANGE_DECISION", "PENDING_ZONE_INSERTION");
-        VALID_RESULT_STATE.put("PENDING_ZONE_INSERTION", "PENDING_ZONE_INSERTION");
-        VALID_RESULT_STATE.put("PENDING_ZONE_PUBLICATION", "PENDING_ZONE_PUBLICATION");
-        VALID_RESULT_STATE.put("PENDING_DATABASE_INSERTION", "PENDING_DATABASE_INSERTION");
-        VALID_RESULT_STATE.put("COMPLETED", "COMPLETED");
-        VALID_RESULT_STATE.put("REJECTED", "REJECTED");
-        VALID_RESULT_STATE.put("WITHDRAWN", "WITHDRAWN");
-        VALID_RESULT_STATE.put("ADMIN_CLOSED", "ADMIN_CLOSED");
-        VALID_RESULT_STATE.put("EXCEPTION", "EXCEPTION");
-    }
-
     @Test
     public void testTransitTransactionToState() throws Exception {
         createDomainModificationProcess();
@@ -133,14 +99,12 @@ public class TransitTransactionToStateTest {
         assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
         for (String state : states) {
-            System.out.println("qqqqq State: " + state);
             if (!state.equals("PENDING_IANA_CONFIRMATION")) {
                 gAdminTransactionServ.updateTransaction(transactionID, 0L, state, false);
                 transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-                String expectedState = VALID_RESULT_STATE.get(state);
-                assert expectedState.equals(transactionVO.getState().getName().name()) :
+                assert state.equals(transactionVO.getState().getName().name()) :
                         "unexpected state: " + transactionVO.getState().getName().name() +
-                                ", expected: " + expectedState;
+                                ", expected: " + state;
             }
         }
     }
@@ -184,25 +148,18 @@ public class TransitTransactionToStateTest {
     }
 
     private static void fillStates() {
-        states.add("FIRST_NSLINK_CHANGE_DECISION");
         states.add("PENDING_TECH_CHECK");
         states.add("PENDING_TECH_CHECK_REMEDY");
         states.add("PENDING_CONTACT_CONFIRMATION");
-        states.add("MODIFICATIONS_IN_CONTACT_DECISION");
         states.add("PENDING_SOENDORSEMENT");
-        states.add("NS_SHARED_GLUE_CHANGE_DECISION");
         states.add("PENDING_IMPACTED_PARTIES");
         states.add("PENDING_MANUAL_REVIEW");
-        states.add("MATCHES_SI_BREAKPOINT_DECISION");
         states.add("PENDING_EXT_APPROVAL");
-        states.add("REDEL_FLAG_SET_DECISION");
         states.add("PENDING_EVALUATION");
         states.add("PENDING_IANA_CHECK");
-        states.add("SECOND_NSLINK_CHANGE_DECISION");
         states.add("PENDING_SUPP_TECH_CHECK");
         states.add("PENDING_SUPP_TECH_CHECK_REMEDY");
         states.add("PENDING_USDOC_APPROVAL");
-        states.add("NS_CHANGE_DECISION");
         states.add("PENDING_ZONE_INSERTION");
         states.add("PENDING_ZONE_PUBLICATION");
         states.add("PENDING_DATABASE_INSERTION");
