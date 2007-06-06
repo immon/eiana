@@ -38,10 +38,16 @@ public class SystemDomainServiceTest extends TransactionalSpringContextTests {
         createDomain(DOMAIN_NAME_2);
         for (int i = 0; i < 6; i++) {
             RZMUser user = createUser(USER_NAME_BASE + i);
-            if (i < 4)
-                user.addRole(new SystemRole(SystemRole.SystemType.AC, DOMAIN_NAME_1, true, true));
-            if (i > 1)
-                user.addRole(new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAME_2, true, true));
+            if (i < 4) {
+                SystemRole role = new SystemRole(SystemRole.SystemType.AC, DOMAIN_NAME_1, true, true);
+                role.setAccessToDomain(false);
+                user.addRole(role);
+            }
+            if (i > 1) {
+                SystemRole role = new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAME_2, true, true);
+                role.setAccessToDomain(false);
+                user.addRole(role);
+            }
         }
     }
 
