@@ -9,6 +9,8 @@ public interface ChangeFields {
 
     public static final String SO_NAME = "supportingOrg.name";
 
+    public static final String SO_JOB_TITLE = "supportingOrg.jobTitle";
+
     public static final String SO_ORG = "supportingOrg.organization";
 
     public static final String SO_ADDRESS = "supportingOrg.address.textAddress";
@@ -25,6 +27,8 @@ public interface ChangeFields {
 
     public static final String AC_NAME = "adminContact.name";
 
+    public static final String AC_JOB_TITLE = "adminContact.jobTitle";
+
     public static final String AC_ORG = "adminContact.organization";
 
     public static final String AC_ADDRESS = "adminContact.address.textAddress";
@@ -40,6 +44,8 @@ public interface ChangeFields {
     public static final String AC_ROLE = "adminContact.role";
 
     public static final String TC_NAME = "techContact.name";
+
+    public static final String TC_JOB_TITLE = "techContact.jobTitle" ;
 
     public static final String TC_ORG = "techContact.organization";
 
@@ -64,5 +70,4 @@ public interface ChangeFields {
     public static final String WHOIS = "whoisServer";
 
     public static final String REGISTRY_URL = "registryUrl";
-    
 }
