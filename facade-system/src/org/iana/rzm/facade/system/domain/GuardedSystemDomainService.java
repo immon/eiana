@@ -79,9 +79,9 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
         delegate.setAccessToDomain(userId, domainId, access);
     }
 
-    public List<UserVO> findDomainUsers(String domainName) {
+    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) {
         isUserInRole();
-        return delegate.findDomainUsers(domainName);
+        return delegate.findDomainUsers(domainName, havingAccessOnly);
     }
 
     public void setUser(AuthenticatedUser user) {

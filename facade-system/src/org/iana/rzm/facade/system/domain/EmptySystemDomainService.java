@@ -34,7 +34,7 @@ public class EmptySystemDomainService implements SystemDomainService {
     public void setAccessToDomain(long userId, long domainId, boolean access) {
     }
 
-    public List<UserVO> findDomainUsers(String domainName) {
+    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) {
         return new ArrayList<UserVO>();
     }
 
