@@ -63,7 +63,10 @@ public class WhoIsDataRetriever implements DNSWhoIsData {
         long seenAtNumber = 0;
 
         for (WhoIsData data : retrieve(IPAddress))
-            if (data.getSeenAt().size() > seenAtNumber) bestASNumber = data.getASNumber();
+            if (data.getSeenAtNumber() > seenAtNumber) {
+                bestASNumber = data.getASNumber();
+                seenAtNumber = data.getSeenAtNumber();
+            }
 
         return bestASNumber;
     }

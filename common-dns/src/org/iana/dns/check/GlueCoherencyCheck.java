@@ -14,7 +14,12 @@ import java.util.Set;
 /**
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
+ *         <p/>
+ *         (Test 7)
+ *         Checks that A and AAAA records of authoritative name servers,
+ *         and compares them to the supplied records.
  */
+
 public class GlueCoherencyCheck extends NameServerCheckBase {
     //todo diff in ip's
     void doCheck(DNSNameServer ns) throws DNSTechnicalCheckException {

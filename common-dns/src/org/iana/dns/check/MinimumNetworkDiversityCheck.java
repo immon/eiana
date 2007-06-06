@@ -15,6 +15,9 @@ import java.util.*;
 /**
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
+ *         <p/>
+ *         (Test 9)
+ *         Checks that provided IP addresses originate from at least two different autonomous systems.
  */
 public class MinimumNetworkDiversityCheck implements DNSDomainTechnicalCheck {
 

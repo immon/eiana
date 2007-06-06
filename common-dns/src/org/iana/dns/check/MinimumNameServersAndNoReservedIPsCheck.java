@@ -16,6 +16,10 @@ import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk
+ * <p/>
+ * (Test 1, 11)
+ * There must be at least two name server host with at least one IPv4 or IPv6 address,
+ * and they must not share the same IP. These IP's must not be any RFC 3330 addresses.
  */
 public class MinimumNameServersAndNoReservedIPsCheck implements DNSDomainTechnicalCheck {
 

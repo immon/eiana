@@ -6,6 +6,9 @@ import org.iana.dns.check.exceptions.NameServerUnreachableByUDPException;
 /**
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
+ *         <p/>
+ *         (Test 4)
+ *         Checks that name server is reachable by UDP and TCP.
  */
 
 public class NameServerReachabilityCheck extends NameServerCheckBase {
