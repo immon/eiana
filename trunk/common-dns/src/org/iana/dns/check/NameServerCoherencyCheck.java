@@ -10,6 +10,10 @@ import java.util.Set;
 /**
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
+ *         <p/>
+ *         (Test 6)
+ *         Checks that name servers returned by authoritative name server, and compare them to the supplied NS.
+ *         These should match.
  */
 
 public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {

@@ -9,6 +9,9 @@ import java.util.*;
 /**
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
+ *         <p/>
+ *         (Test 8)
+ *         Checks the serial numbers supplied by authoritative name servers. These should match.
  */
 public class SerialNumberCoherencyCheck implements DNSDomainTechnicalCheck {
 

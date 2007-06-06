@@ -10,6 +10,11 @@ import java.util.List;
 
 class WhoIsData {
 
+    enum Type {
+        ROUTEv4, ROUTEv6
+    }
+
+    private Type type;
     private String route;
     private String origin;
     private String descr;
@@ -19,13 +24,17 @@ class WhoIsData {
     private long numRisPeers = -1;
     private String source;
 
+    public Type getType() {
+        return type;
+    }
 
     public String getRoute() {
         return route;
     }
 
-    public void setRoute(String route) {
+    public void setRoute(String route, Type type) {
         this.route = route;
+        this.type = type;
     }
 
     public String getOrigin() {
@@ -66,6 +75,10 @@ class WhoIsData {
 
     public List<String> getSeenAt() {
         return seenAt;
+    }
+
+    public int getSeenAtNumber() {
+        return seenAt.size();
     }
 
     public void addSeenAt(String seenAt) {
