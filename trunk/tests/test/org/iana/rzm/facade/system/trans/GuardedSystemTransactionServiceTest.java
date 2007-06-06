@@ -241,7 +241,7 @@ public class GuardedSystemTransactionServiceTest {
         assert found != null;
         assert found.size() == 2;
         criteria = new TransactionCriteriaVO();
-        criteria.setStartedAfter(new Date());
+        criteria.setStartedAfter(new Date(new Date().getTime() + 1000));
         found = gsts.findTransactions(criteria);
         assert found != null;
         assert found.size() == 0;

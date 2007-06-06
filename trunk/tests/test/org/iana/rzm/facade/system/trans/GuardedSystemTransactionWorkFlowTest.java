@@ -96,7 +96,6 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
@@ -108,7 +107,6 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
@@ -120,10 +118,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
-            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
-            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"}
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
@@ -134,13 +129,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
-            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
-            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
-            {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
-            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
-            {"SYSTEM", "REDEL_FLAG_SET_DECISION"}
+            {"gstsignaliana", "PENDING_MANUAL_REVIEW"}
     };
 
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
@@ -208,15 +198,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //    }
     //
     private static final String[][] ACCEPT_IANA_CHECKLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
-            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
-            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
-            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
-            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
-            {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"}
+            {"gstsignaliana", "PENDING_IANA_CHECK"}
     };
 
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
@@ -229,15 +213,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
-            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
-            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
-            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
-            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
     };
 
@@ -252,17 +230,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] workFlowNoNSChangeLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
-            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
-            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
-            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
-            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"SYSTEM", "NS_CHANGE_DECISION"},
             {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
@@ -278,17 +249,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     //
     private static final String[][] workFlowWithNSChangeLog = {
-            {"SYSTEM", "FIRST_NSLINK_CHANGE_DECISION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
-            {"SYSTEM", "MODIFICATIONS_IN_CONTACT_DECISION"},
-            {"SYSTEM", "NS_SHARED_GLUE_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
-            {"SYSTEM", "MATCHES_SI_BREAKPOINT_DECISION"},
-            {"SYSTEM", "REDEL_FLAG_SET_DECISION"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"SYSTEM", "SECOND_NSLINK_CHANGE_DECISION"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"SYSTEM", "NS_CHANGE_DECISION"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
             {"SYSTEM", "PENDING_DATABASE_INSERTION"}
