@@ -26,6 +26,7 @@ public class ChangeBuilder {
         private static final String CONTACT_PHONE = "Contact Phone";
         private static final String CONTACT_FAX = "Contact Fax";
         private static final String CONTACT_NAME = "Contact Name";
+        private static final String CONTACT_JOB_TITLE = "Contact Job Title";
         private static final String CONTACT_ORGANISATION = "Contact Organization";
         private static final String CONTACT_ROLE = "Contact Role";
 
@@ -40,6 +41,7 @@ public class ChangeBuilder {
             add(ChangeFields.AC_PHONENUMBER, CONTACT_PHONE);
             add(ChangeFields.AC_FAXNUMBER, CONTACT_FAX);
             add(ChangeFields.AC_NAME, CONTACT_NAME);
+            add(ChangeFields.AC_JOB_TITLE, CONTACT_JOB_TITLE);
             add(ChangeFields.AC_ORG, CONTACT_ORGANISATION);
             add(ChangeFields.AC_ROLE, CONTACT_ROLE);
 
@@ -49,6 +51,7 @@ public class ChangeBuilder {
             add(ChangeFields.SO_PHONENUMBER, CONTACT_PHONE);
             add(ChangeFields.SO_FAXNUMBER, CONTACT_FAX);
             add(ChangeFields.SO_NAME, CONTACT_NAME);
+            add(ChangeFields.SO_JOB_TITLE, CONTACT_JOB_TITLE);
             add(ChangeFields.SO_ORG, CONTACT_ORGANISATION);
             add(ChangeFields.SO_ROLE, CONTACT_ROLE);
 
@@ -58,6 +61,7 @@ public class ChangeBuilder {
             add(ChangeFields.TC_PHONENUMBER, CONTACT_PHONE);
             add(ChangeFields.TC_FAXNUMBER, CONTACT_FAX);
             add(ChangeFields.TC_NAME, CONTACT_NAME);
+            add(ChangeFields.TC_JOB_TITLE, CONTACT_JOB_TITLE);
             add(ChangeFields.TC_ORG, CONTACT_ORGANISATION);
             add(ChangeFields.TC_ROLE, CONTACT_ROLE);
 
@@ -68,6 +72,8 @@ public class ChangeBuilder {
             add("nameServers", "Name Server");
 
         }
+
+
 
 
         public String getName(String value){

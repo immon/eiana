@@ -31,6 +31,10 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             "displayName=message:name-label", "value=ognl:contactAttributes.NAME", "validators=validators:required"})
     public abstract IComponent getNameComponent();
 
+    @Component(id = "jobTitle", type = "TextField", bindings = {
+            "displayName=message:job-title-label", "value=ognl:contactAttributes.JOB_TITLE"})
+    public abstract IComponent getJobTitleComponent();
+
     @Component(id = "organisation", type = "TextField", bindings = {
             "displayName=message:organisation-label", "value=ognl:contactAttributes.ORGANIZATION"})
     public abstract IComponent getOrganisationComponent();
@@ -47,13 +51,25 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             "displayName=message:email-label", "value=ognl:contactAttributes.EMAIL", "validators=validators:required, email"})
     public abstract IComponent getEmailComponent();
 
+    @Component(id = "privateEmail", type = "TextField", bindings = {
+            "displayName=message:alt-email-label", "value=ognl:contactAttributes.PRIVATE_EMAIL", "validators=validators:email"})
+    public abstract IComponent getPrivateEmailComponent();
+
     @Component(id = "phone", type = "TextField", bindings = {
             "displayName=message:phone-label", "value=ognl:contactAttributes.PHONE", "validators=validators:required"})
     public abstract IComponent getPhoneComponent();
 
+    @Component(id = "altPhone", type = "TextField", bindings = {
+            "displayName=message:alt-phone-label", "value=ognl:contactAttributes.ALT_PHONE"})
+    public abstract IComponent getAltPhoneComponent();
+
     @Component(id = "fax", type = "TextField", bindings = {
             "displayName=message:fax-label", "value=ognl:contactAttributes.FAX"})
     public abstract IComponent getFaxComponent();
+
+    @Component(id = "altFax", type = "TextField", bindings = {
+            "displayName=message:alt-fax-label", "value=ognl:contactAttributes.ALT_FAX"})
+    public abstract IComponent getAltFaxComponent();
 
     @Component(id = "role", type = "Checkbox", bindings = {
             "displayName=message:role-label", "value=prop:role"})
@@ -65,9 +81,18 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @Component(id = "save", type = "LinkSubmit")
     public abstract IComponent getSubmitComponent();
 
-    @Component(id = "cancel", type = "DirectLink", bindings = {"listener=listener:revert", 
+    @Component(id = "cancel", type = "DirectLink", bindings = {"listener=listener:revert",
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCancelComponent();
+
+    @Component(id = "privateEmailCheckbox", type = "Checkbox", bindings = {"value=prop:usePrivateEmail"})
+    public abstract IComponent getPrivateEmailCheckBoxComponent();
+
+    @Component(id = "altPhoneCheckbox", type = "Checkbox", bindings = {"value=prop:addAltPhone"})
+    public abstract IComponent getAltPhoneCheckBoxComponent();
+
+    @Component(id = "altFaxCheckbox", type = "Checkbox", bindings = {"value=prop:addAltFax"})
+    public abstract IComponent getAltFaxCheckBoxComponent();
 
     @Parameter(required = true)
     public abstract ContactAttributesEditor getEditor();
@@ -96,13 +121,34 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @InjectComponent("address")
     public abstract IFormComponent getAddressField();
 
+    @InjectComponent("privateEmail")
+    public abstract IFormComponent getPrivateEmail();
+
     public abstract boolean getRole();
+
     public abstract void setRole(boolean role);
 
-    public void pageBeginRender(PageEvent event){
+    public abstract void setUsePrivateEmail(boolean value);
+
+    public abstract boolean isUsePrivateEmail();
+
+    public abstract void setAddAltPhone(boolean value);
+    public abstract boolean isAddAltPhone();
+
+    public abstract void setAddAltFax(boolean value);
+    public abstract boolean isAddAltFax();
+
+    public void pageBeginRender(PageEvent event) {
         String role = getContactAttributes().get(ContactVOWrapper.ROLE);
-        if(!event.getRequestCycle().isRewinding()){
+        String privateEmail = getContactAttributes().get(ContactVOWrapper.PRIVATE_EMAIL);
+        String altPhone = getContactAttributes().get(ContactVOWrapper.ALT_PHONE);
+        String altFax = getContactAttributes().get(ContactVOWrapper.ALT_FAX);
+
+        if (!event.getRequestCycle().isRewinding()) {
             setRole(Boolean.valueOf(role));
+            setUsePrivateEmail(StringUtils.isNotBlank(privateEmail));
+            setAddAltPhone(StringUtils.isNotBlank(altPhone));
+            setAddAltFax(StringUtils.isNotBlank(altFax));
         }
     }
 
@@ -126,6 +172,29 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         return getEditor().getValidationDelegate();
     }
 
+    public String getPrivateEmailClass(){
+        if(isUsePrivateEmail()){
+            return "";
+        }
+
+        return "hidden";
+    }
+
+    public String getAltPhoneClass(){
+        if(isAddAltPhone()){
+            return "";
+        }
+
+        return "hidden";
+    }
+
+    public String getAltFaxClass(){
+        if(isAddAltFax()){
+            return "";
+        }
+
+        return "hidden";
+    }
 
     private void validateInput() {
         Map<String, String> contactAttributes = getContactAttributes();
@@ -135,6 +204,10 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         validateReqiredField(contactAttributes, ContactVOWrapper.PHONE, getPhoneField());
         validateReqiredField(contactAttributes, ContactVOWrapper.ADDRESS, getAddressField());
         validateReqiredField(contactAttributes, ContactVOWrapper.COUNTRY, getCountryField());
+
+        if(isUsePrivateEmail()){
+            validateReqiredField(contactAttributes, ContactVOWrapper.PRIVATE_EMAIL, getPrivateEmail());
+        }
     }
 
     private void validateReqiredField(Map attributes, String fieldName, IFormComponent field) {

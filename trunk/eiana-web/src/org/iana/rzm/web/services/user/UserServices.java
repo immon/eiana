@@ -21,4 +21,9 @@ public interface UserServices extends RzmServices {
 
     public List<UserVOWrapper>getUsersForDomain(long domainId);
 
+    public UserVOWrapper getUser();
+
+    public void acceptTransaction(long requestId, String token) throws NoObjectFoundException;
+
+    public void rejectTransaction(long requestId, String token) throws NoObjectFoundException;
 }

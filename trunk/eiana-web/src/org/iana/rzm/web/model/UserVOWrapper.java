@@ -42,14 +42,24 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         return rolesNames;
     }
 
-    private List<SystemRoleVOWrapper> getSystemRoles(){
+    public boolean isAc(){
+        return isInRole(SystemRoleVOWrapper.SystemType.AC);
+    }
+
+    public boolean isTc(){
+        return isInRole(SystemRoleVOWrapper.SystemType.TC);
+    }
+
+
+
+    public List<SystemRoleVOWrapper> getSystemRoles(){
         Set<RoleVO> roleVOs = vo.getRoles();
         List<SystemRoleVOWrapper> roles = new ArrayList<SystemRoleVOWrapper>();
         for (RoleVO roleVO : roleVOs) {
             if(roleVO.isAdmin()){
                 continue;
             }
-            roles.add(new SystemRoleVOWrapper((SystemRoleVO.Type) roleVO));
+            roles.add(new SystemRoleVOWrapper((SystemRoleVO) roleVO));
         }
         return roles;
     }
@@ -58,5 +68,16 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
     public boolean isAccessEnabled() {
         //nask_todo Nask should add this
         return true;
+    }
+
+    private boolean isInRole(SystemRoleVOWrapper.SystemType type) {
+        List<SystemRoleVOWrapper> list = getSystemRoles();
+        for (SystemRoleVOWrapper role : list) {
+            if(role.getType().equals(type)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

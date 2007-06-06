@@ -52,7 +52,14 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     public long getRtId() {
         return vo.getTicketID();
     }
-    
+
+    public boolean acConfirmed(){
+        return vo.acConfirmed();
+    }
+
+    public boolean tcConfirmed(){
+        return vo.tcConfirmed();
+    }
 
 
     public List<ActionVOWrapper> getChanges() {

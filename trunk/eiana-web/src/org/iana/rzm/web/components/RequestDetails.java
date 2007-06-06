@@ -98,7 +98,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     }
 
     public String getCountry() {
-        return getRzmServices().getCountryName(getDomainName());
+        return "(" + getRzmServices().getCountryName(getDomainName()) + ")";
     }
 
     public String getMessage() {

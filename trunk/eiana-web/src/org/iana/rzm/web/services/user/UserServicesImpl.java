@@ -48,6 +48,28 @@ public class UserServicesImpl implements UserServices {
         return new ArrayList<UserVOWrapper>();
     }
 
+    public UserVOWrapper getUser() {
+        return new UserVOWrapper(domainService.getUser());
+    }
+
+    public void acceptTransaction(long requestId, String token) throws NoObjectFoundException {
+        try {
+            transactionService.acceptTransaction(requestId, token);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public void rejectTransaction(long requestId, String token) throws NoObjectFoundException {
+        try {
+            transactionService.rejectTransaction(requestId, token);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
     public void changePassword(long userId, String newPassword) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
