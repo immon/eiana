@@ -78,7 +78,7 @@ public class NotificationSenderBean implements NotificationSender {
     private void sendMail(String address, String subject, String body) throws NotificationException {
         try {
             Mailer mailer = new SMTPMailer(EMAIL_MAILHOST, EMAIL_MAILER, EMAIL_USERNAME, EMAIL_PASSWORD);
-            logger.warn("################################################################\n" + body);
+//            logger.warn("################################################################\n" + body);
             mailer.sendMail(EMAIL_FROMADDRESS, address, subject, body);
         } catch (MailerException e) {
             logger.warn("Unable to send notification to '" + address + "'. Reason: " + e.getMessage());
