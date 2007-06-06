@@ -48,10 +48,10 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     public abstract IComponent getStatesComponent();
 
     @Component(id = "redeligation", type = "Checkbox", bindings = {
-            "displayName=literal:Redeligation", "value=prop:role"})
+            "displayName=literal:Redeligation", "value=prop:redeligation"})
     public abstract IComponent getRoleComponent();
 
-    @Component(id = "roleLabel", type = "FieldLabel", bindings = {"field=component:role"})
+    @Component(id = "redeligationLabel", type = "FieldLabel", bindings = {"field=component:redeligation"})
     public abstract IComponent getRoleLabelComponent();
 
 
@@ -70,6 +70,9 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
 
     public abstract void setState(TransactionStateVOWrapper.State state);
     public abstract TransactionStateVOWrapper.State getState();
+
+    public abstract void setRedeligation(boolean value);
+    public abstract boolean isRedeligation();
 
 
     protected Object[] getExternalParameters() {

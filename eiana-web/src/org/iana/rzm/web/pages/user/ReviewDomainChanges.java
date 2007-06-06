@@ -43,16 +43,18 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getContinueEditComponent();
 
-    @Component(id = "proceed", type = "LinkSubmit", bindings = {"listener=listener:proceed",
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    @Component(id = "proceed", type = "LinkSubmit")
     public abstract IComponent getProceedComponent();
 
     @Component(id = "div", type = "Any", bindings = {"style=prop:style"})
     public abstract IComponent getStyleComponent();
 
-    @Component(id="submitter", type="@TextField", bindings = {
+    @Component(id="form", type = "Form", bindings = {"success=listener:proceed"})
+    public abstract IComponent getFormComponent();
+
+    @Component(id="submitter", type="TextField", bindings = {
             "value=prop:submitterEmail",
-            "displayName=Email:",
+            "displayName=literal:Email",
             "validators=validators:email"})
     public abstract IComponent getSubmitterFieldComponent();
 

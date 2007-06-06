@@ -1,5 +1,6 @@
 package org.iana.rzm.web.components.user;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.iana.rzm.common.validators.CheckTool;
@@ -26,6 +27,11 @@ public abstract class Contact extends BaseComponent {
     )
     public abstract IComponent getContactNameComponent();
 
+    @Component(id = "jobTitle", type = "RzmInsert", bindings = {
+            "value=prop:jobTitle", "originalValue=prop:originalJobTitle", "modifiedStyle=literal:edited"}
+    )
+    public abstract IComponent getJobTitleComponent();
+
     @Component(id = "org", type = "RzmInsert", bindings = {
             "value=prop:organization", "originalValue=prop:originalOrg", "modifiedStyle=literal:edited"}
     )
@@ -39,13 +45,25 @@ public abstract class Contact extends BaseComponent {
             "value=prop:email", "originalValue=prop:originalEmail", "modifiedStyle=literal:edited"})
     public abstract IComponent getEmailComponent();
 
+    @Component(id = "privateEmail", type = "RzmInsert", bindings = {
+            "value=prop:privateEmail", "originalValue=prop:originalPrivateEmail", "modifiedStyle=literal:edited"})
+    public abstract IComponent getPrivateEmailComponent();
+
     @Component(id = "phone", type = "RzmInsert", bindings = {
             "value=prop:phone", "originalValue=prop:originalPhone", "modifiedStyle=literal:edited"})
     public abstract IComponent getPhoneComponent();
 
+    @Component(id = "altPhone", type = "RzmInsert", bindings = {
+            "value=prop:altPhone", "originalValue=prop:altOriginalPhone", "modifiedStyle=literal:edited"})
+    public abstract IComponent getAltPhoneComponent();
+
     @Component(id = "fax", type = "RzmInsert", bindings = {
             "value=prop:fax", "originalValue=prop:originalFax", "modifiedStyle=literal:edited"})
     public abstract IComponent getFaxComponent();
+
+    @Component(id = "altFax", type = "RzmInsert", bindings = {
+            "value=prop:altFax", "originalValue=prop:altOriginalFax", "modifiedStyle=literal:edited"})
+    public abstract IComponent getAltFaxComponent();
 
     @Component(id = "lastUpdated", type = "Insert", bindings = {"value=prop:lastUpdated"})
     public abstract IComponent getLastUpdatedComponent();
@@ -60,6 +78,18 @@ public abstract class Contact extends BaseComponent {
 
     @Component(id = "userRole", type = "Insert", bindings = {"value=prop:userRole", "raw=literal:true"})
     public abstract IComponent getUserRoleComponent();
+
+    @Component(id = "privateEmailSpan", type = "Any", bindings = {"element=literal:span", "class=prop:privateEmailStyle"})
+    public abstract IComponent getPrivateEmailSpanComponent();
+
+    @Component(id = "altPhoneSpan", type = "Any", bindings = {"element=literal:span", "class=prop:alternatePhoneSpan"})
+    public abstract IComponent getAltPhoneSpanComponent();
+
+    @Component(id = "altFaxSpan", type = "Any", bindings = {"element=literal:span", "class=prop:alternateFaxSpan"})
+    public abstract IComponent getAltFaxSpanComponent();
+
+    @Component(id = "jobTitleSpan", type = "Any", bindings = {"element=literal:span", "class=prop:jobTitleSpan"})
+    public abstract IComponent getJobTitleSpanComponent();
 
     @Asset(value = "WEB-INF/user/Contact.html")
     public abstract IAsset get$template();
@@ -112,13 +142,21 @@ public abstract class Contact extends BaseComponent {
 
     public abstract void setOrganization(String org);
 
+    public abstract void setPrivateEmail(String privateEmail);
+
+    public abstract void setAltPhone(String alternatePhone);
+
+    public abstract void setAltFax(String alternateFax);
+
+    public abstract void setJobTitle(String job);
+
     public Object[] getEditParameters() {
         String contactId = getContactAttributes().get(ContactVOWrapper.ID);
         CheckTool.checkNull(contactId, ContactVOWrapper.ID);
         Long id = Long.parseLong(contactId);
         return new Object[]{id, getType()};
     }
-                                           
+
     protected void renderComponent(IMarkupWriter writer, IRequestCycle cycle) {
 
         if (!cycle.isRewinding()) {
@@ -128,7 +166,11 @@ public abstract class Contact extends BaseComponent {
             setFax(getContactAttributes().get(ContactVOWrapper.FAX));
             setEmail(getContactAttributes().get(ContactVOWrapper.EMAIL));
             setName(getContactAttributes().get(ContactVOWrapper.NAME));
+            setJobTitle(getContactAttributes().get(ContactVOWrapper.JOB_TITLE));
             setOrganization(getContactAttributes().get(ContactVOWrapper.ORGANISATION));
+            setPrivateEmail(getContactAttributes().get(ContactVOWrapper.PRIVATE_EMAIL));
+            setAltPhone(getContactAttributes().get(ContactVOWrapper.ALT_PHONE));
+            setAltFax(getContactAttributes().get(ContactVOWrapper.ALT_FAX));
         }
 
         try {
@@ -153,6 +195,32 @@ public abstract class Contact extends BaseComponent {
     public String getAddressClass() {
         return isAddressModified() ? "edited" : "";
     }
+
+    public String getAlternateFaxSpan() {
+        String fax = getContactAttributes().get(ContactVOWrapper.ALT_FAX);
+        String originalFax = getOriginalAttributes().get(ContactVOWrapper.ALT_FAX);
+        return getAlternateStyle(fax, originalFax);
+    }
+
+    public String getAlternatePhoneSpan() {
+        String phone = getContactAttributes().get(ContactVOWrapper.ALT_PHONE);
+        String originalPhone = getOriginalAttributes().get(ContactVOWrapper.ALT_PHONE);
+        return getAlternateStyle(phone, originalPhone);
+
+    }
+
+    public String getPrivateEmailStyle() {
+        String email = getContactAttributes().get(ContactVOWrapper.PRIVATE_EMAIL);
+        String originalEmail = getOriginalAttributes().get(ContactVOWrapper.PRIVATE_EMAIL);
+        return getAlternateStyle(email, originalEmail);
+    }
+
+    public String getJobTitleSpan() {
+        String jobTitle = getContactAttributes().get(ContactVOWrapper.JOB_TITLE);
+        String originalJobTitle = getOriginalAttributes().get(ContactVOWrapper.JOB_TITLE);
+        return getAlternateStyle(jobTitle, originalJobTitle);
+    }
+
 
     public boolean isAddressModified() {
         String originalAddress = getOriginalAttributes().get(ContactVOWrapper.ADDRESS);
@@ -180,9 +248,48 @@ public abstract class Contact extends BaseComponent {
         return getOriginalAttributes().get(ContactVOWrapper.NAME);
     }
 
-    public String getOriginalOrg(){
+    public String getOriginalOrg() {
         return getOriginalAttributes().get(ContactVOWrapper.ORGANISATION);
     }
+
+    public String getAltOriginalPhone() {
+        return getOriginalAttributes().get(ContactVOWrapper.ALT_PHONE);
+    }
+
+    public String getOriginalPrivateEmail() {
+        return getOriginalAttributes().get(ContactVOWrapper.PRIVATE_EMAIL);
+    }
+
+    public String getAltOriginalFax() {
+        return getOriginalAttributes().get(ContactVOWrapper.ALT_FAX);
+    }
+
+    public String getOriginalJobTitle(){
+        return getOriginalAttributes().get(ContactVOWrapper.JOB_TITLE);        
+    }
+
+    public boolean isUsePrivateEmail() {
+        return getPrivateEmailStyle().equals("edited");
+    }
+
+    public boolean isUseAltPhone(){
+        return getAlternatePhoneSpan().equals("edited");
+    }
+
+    public boolean isUseJobTitle(){
+        return getJobTitleSpan().equals("edited");
+    }
+
+
+
+    private String getAlternateStyle(String value, String originalValue) {
+        if (StringUtils.equals(value, originalValue) && StringUtils.isBlank(value)) {
+            return "hidden";
+        }
+
+        return "edited";
+    }
+
 
     private String buildAddress(Map<String, String> attributes) {
         StringBuilder builder = new StringBuilder();

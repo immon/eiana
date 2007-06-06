@@ -37,3 +37,16 @@ function MicrosoftEventHandler_KeyDown(e) {
 
     return true;
 }
+
+function show(ele) {
+    var srcElement = document.getElementById(ele);
+    if(srcElement != null) {
+        if(srcElement.className == "hidden") {
+            srcElement.className = '';
+        }
+        else {
+            srcElement.className ='hidden';
+        }
+        return false;
+    }
+}

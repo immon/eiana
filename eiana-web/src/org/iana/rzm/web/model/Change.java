@@ -3,7 +3,7 @@ package org.iana.rzm.web.model;
 import org.apache.commons.lang.StringUtils;
 import org.iana.rzm.facade.system.trans.ChangeVO;
 
-public class Change {
+public class Change extends ValueObject {
 
     private String filedName;
     private String oldValue;

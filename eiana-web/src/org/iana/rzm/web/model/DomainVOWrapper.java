@@ -1,15 +1,11 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.ContactVO;
 import org.iana.rzm.facade.system.domain.HostVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.web.util.DateUtil;
 import org.iana.rzm.web.util.ListUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class DomainVOWrapper extends ValueObject implements PaginatedEntity {
 
@@ -74,23 +70,13 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     }
 
     public List<ContactVOWrapper> getAdminContacts() {
-        List<ContactVO> list = vo.getAdminContacts();
-        List<ContactVOWrapper> wrappers = new ArrayList<ContactVOWrapper>();
-        for (ContactVO contactVO : list) {
-            wrappers.add(new ContactVOWrapper(contactVO, SystemRoleVOWrapper.SystemType.AC));
-        }
-
-        return wrappers;
+        ContactVOWrapper wrapper = new ContactVOWrapper(vo.getAdminContact(), SystemRoleVOWrapper.SystemType.AC);
+        return Arrays.asList(wrapper);
     }
 
     public List<ContactVOWrapper> getTechnicalContacts() {
-        List<ContactVO> list = vo.getTechContacts();
-        List<ContactVOWrapper> wrappers = new ArrayList<ContactVOWrapper>();
-        for (ContactVO contactVO : list) {
-            wrappers.add(new ContactVOWrapper(contactVO, SystemRoleVOWrapper.SystemType.TC));
-        }
-
-        return wrappers;
+        ContactVOWrapper wrapper = new ContactVOWrapper(vo.getTechContact(), SystemRoleVOWrapper.SystemType.TC);
+        return Arrays.asList(wrapper);
     }
 
     public List<NameServerVOWrapper> getNameServers() {

@@ -61,7 +61,7 @@ public abstract class RzmInsert extends Insert {
             renderInformalParameters(writer, cycle);
         }
 
-        boolean hasChange = valueHsChanged(getValue(), getOriginalValue() == null ? getValue() : getOriginalValue());
+        boolean hasChange = valueHsChanged(getValue(), getOriginalValue() == null ? "" : getOriginalValue());
         if (hasChange && getModifiedStyle() != null) {
             writer.begin("span");
             writer.attribute("class", getModifiedStyle());

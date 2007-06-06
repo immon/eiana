@@ -31,7 +31,7 @@ public abstract class Border extends BaseComponent {
     @Component(type = "Insert", bindings = {"value=prop:userTitle"})
     public abstract Insert getLoggedInTitle();
 
-    @Component(type = "Conditional", id = "loggedIn", bindings = {"condition=prop:loggedIn"})
+    @Component(id = "loggedIn", type = "If",  bindings = {"condition=prop:loggedIn"})
     public abstract IComponent getloggedInCondition();
 
     @InjectObject("service:rzm.JavaScriptDelegator")
