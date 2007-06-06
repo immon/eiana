@@ -103,18 +103,30 @@ public class SystemDomainServiceTest extends TransactionalSpringContextTests {
         return users;
     }
 
-    List<String> VALID_DOMAIN_1_USER_NAMES = Arrays.asList(USER_NAME_BASE + "0", USER_NAME_BASE + "2");
-    List<String> VALID_DOMAIN_2_USER_NAMES = Arrays.asList(USER_NAME_BASE + "2", USER_NAME_BASE + "4");
+    List<String> VALID_DOMAIN_1_ACCESS_USER_NAMES = Arrays.asList(USER_NAME_BASE + "0", USER_NAME_BASE + "2");
+    List<String> VALID_DOMAIN_1_USER_NAMES = Arrays.asList(USER_NAME_BASE + "0", USER_NAME_BASE + "1",
+            USER_NAME_BASE + "2", USER_NAME_BASE + "3");
+    List<String> VALID_DOMAIN_2_ACCESS_USER_NAMES = Arrays.asList(USER_NAME_BASE + "2", USER_NAME_BASE + "4");
+    List<String> VALID_DOMAIN_2_USER_NAMES = Arrays.asList(USER_NAME_BASE + "2", USER_NAME_BASE + "3",
+            USER_NAME_BASE + "4", USER_NAME_BASE + "5");
 
     @Test(dependsOnMethods = "testSetAccessToDomain")
     public void testFindDomainUsers() {
-        List<UserVO> domain1Users = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_1);
+        List<UserVO> domain1AcessUsers = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_1, true);
+        List<String> domain1AcessUsersNames = getUserNames(domain1AcessUsers);
+        assert VALID_DOMAIN_1_ACCESS_USER_NAMES.equals(domain1AcessUsersNames) : "unexpected domain 1 users: " + domain1AcessUsersNames;
+
+        List<UserVO> domain1Users = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_1, false);
         List<String> domain1UsersNames = getUserNames(domain1Users);
         assert VALID_DOMAIN_1_USER_NAMES.equals(domain1UsersNames) : "unexpected domain 1 users: " + domain1UsersNames;
 
-        List<UserVO> domain2Users = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_2);
+        List<UserVO> domain2AccessUsers = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_2, true);
+        List<String> domain2AccessUsersNames = getUserNames(domain2AccessUsers);
+        assert VALID_DOMAIN_2_ACCESS_USER_NAMES.equals(domain2AccessUsersNames) : "unexpected domain 2 users: " + domain2AccessUsersNames;
+
+        List<UserVO> domain2Users = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_2, false);
         List<String> domain2UsersNames = getUserNames(domain2Users);
-        assert VALID_DOMAIN_2_USER_NAMES.equals(domain2UsersNames) : "unexpected domain 2 users: " + domain1UsersNames;
+        assert VALID_DOMAIN_2_USER_NAMES.equals(domain2UsersNames) : "unexpected domain 2 users: " + domain2UsersNames;
     }
 
     private List<String> getUserNames(List<UserVO> users) {

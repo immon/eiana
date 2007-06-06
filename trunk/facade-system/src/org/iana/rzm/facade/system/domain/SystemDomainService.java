@@ -78,9 +78,17 @@ public interface SystemDomainService extends RZMStatefulService {
     void setAccessToDomain(long userId, long domainId, boolean access);
 
     /**
-     * <p>Returns a list of users, who have access to the domain <code>domainName</code>.</p> 
+     * <p>Returns a list of users, who have a role for the domain <code>domainName</code>,
+     * when <code>havingAccessOnly</code> is set to <code>false</code>.
+     * Result may be narrowed to users, who have access to this domain, by setting
+     * <code>havingAccessOnly</code> to <code>true</code>.</p>
      * @param domainName name of the domain
-     * @return the list of users, who have access to the domain <code>domainName</code>
+     * @param havingAccessOnly <code>false</code> when a list of users, who has a role
+     * for the domain <code>domainName</code> has to be returned or <code>true</code>
+     * when a list of users, who have access to this domain has to be returned.
+     * @return the list of users, who have a role for the domain <code>domainName</code>,
+     * when <code>havingAccessOnly</code> is set to <code>false</code> or the list of users,
+     * who have access to this domain when <code>havingAccessOnly</code> is set to <code>true</code>.  
      */
-    List<UserVO> findDomainUsers(String domainName);
+    List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly);
 }

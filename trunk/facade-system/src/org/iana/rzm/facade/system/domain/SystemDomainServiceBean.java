@@ -96,9 +96,9 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
         }
     }
 
-    public List<UserVO> findDomainUsers(String domainName) {
+    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) {
         List<UserVO> result = new ArrayList<UserVO>();
-        List<RZMUser> users = userManager.findUsersInSystemRole(domainName, null, false, false, true);
+        List<RZMUser> users = userManager.findUsersInSystemRole(domainName, null, false, false, havingAccessOnly);
         for (RZMUser user : users)
             result.add(UserConverter.convert(user));
         return result;
