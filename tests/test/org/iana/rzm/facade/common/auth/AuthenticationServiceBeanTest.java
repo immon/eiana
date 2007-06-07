@@ -7,6 +7,7 @@ import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.SystemRole;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -45,6 +46,9 @@ public class AuthenticationServiceBeanTest {
 
         testWrongPasswordUser = createTestWrongPasswordUser();
         userManager.create(testWrongPasswordUser);
+
+        userManager.create(createTestNoActiveRole());
+        userManager.create(createTestActiveRole());
     }
 
     @Test
@@ -54,6 +58,17 @@ public class AuthenticationServiceBeanTest {
         AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
         assert authenticatedUser != null;
         assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+    }
+
+    @Test
+    public void testAuthenticateActiveRole() throws Exception {
+        AuthenticatedUser user = authService.authenticate(new PasswordAuth("user-activerole", ""));
+        assert user != null && user.getUserName().equals("user-activerole");
+    }
+
+    @Test(expectedExceptions = {AuthenticationFailedException.class})
+    public void testAuthenticateNoActiveRole() throws Exception {
+        authService.authenticate(new PasswordAuth("user-noactiverole", ""));
     }
 
     @Test(expectedExceptions = {AuthenticationFailedException.class})
@@ -189,7 +204,7 @@ public class AuthenticationServiceBeanTest {
         assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
-    @Test (expectedExceptions = AuthenticationFailedException.class)
+    @Test(expectedExceptions = AuthenticationFailedException.class)
     public void testAuthenticateByMailFails() throws AuthenticationFailedException, AuthenticationRequiredException {
         MailAuth mailAuth = new MailAuth("bad" + ADMIN_EMAIL);
         authService.authenticate(mailAuth);
@@ -209,13 +224,13 @@ public class AuthenticationServiceBeanTest {
 
     public static String WRONG_SIGNED_MESSAGE_FILE_NAME = "test-message-1.txt.asc";
 
-    @Test (expectedExceptions = AuthenticationFailedException.class)
+    @Test(expectedExceptions = AuthenticationFailedException.class)
     public void testAuthenticateByPgpMailFails() throws AuthenticationFailedException, AuthenticationRequiredException, IOException {
         PgpMailAuth pgpMailAuth = new PgpMailAuth(ADMIN_EMAIL, loadFromFile(WRONG_SIGNED_MESSAGE_FILE_NAME));
         authService.authenticate(pgpMailAuth);
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
@@ -312,4 +327,24 @@ public class AuthenticationServiceBeanTest {
             dis.close();
         }
     }
+
+    private RZMUser createTestNoActiveRole() {
+        RZMUser ret = new RZMUser();
+        ret.setLoginName("user-noactiverole");
+        SystemRole role = new SystemRole(SystemRole.SystemType.AC, "noactiverole", true, true);
+        role.setAccessToDomain(false);
+        ret.addRole(role);
+        return ret;
+    }
+
+    private RZMUser createTestActiveRole() {
+        RZMUser ret = new RZMUser();
+        ret.setLoginName("user-activerole");
+        SystemRole role = new SystemRole(SystemRole.SystemType.AC, "activerole", true, true);
+        role.setAccessToDomain(true);
+        ret.addRole(role);
+        return ret;
+    }
 }
+
+
