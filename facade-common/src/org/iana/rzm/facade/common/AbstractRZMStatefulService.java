@@ -81,8 +81,8 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
             if (o1.getClass() != o2.getClass()) {
                 return o1.getClass().getName().compareTo(o2.getClass().getName());
             }
-            int ret = o1.getType().toString().compareTo(o2.getType().toString());
-            return ret == 0 ? Boolean.valueOf(o1.isEnabled()).compareTo(o2.isEnabled()) : ret;
+            return o1.getType().toString().compareTo(o2.getType().toString());
+            //return ret == 0 ? Boolean.valueOf(o1.isEnabled()).compareTo(o2.isEnabled()) : ret;
         }
     }
 

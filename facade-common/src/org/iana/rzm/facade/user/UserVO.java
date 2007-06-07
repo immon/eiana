@@ -26,7 +26,14 @@ public class UserVO implements Trackable {
     private TrackDataVO trackData = new TrackDataVO();
 
     private String publicKey;
-    
+
+    public UserVO() {
+    }
+
+    public UserVO(String userName) {
+        this.userName = userName;
+    }
+
     public String getUserName() {
         return userName;
     }
