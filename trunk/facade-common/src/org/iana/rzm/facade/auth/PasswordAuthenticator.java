@@ -34,6 +34,9 @@ public class PasswordAuthenticator implements AuthenticationService {
         if (!user.isValidPassword(passData.getPassword())) {
             throw new AuthenticationFailedException("Password is not valid.");
         }
+        if (!user.isActive()) {
+            throw new AuthenticationFailedException("User is not active.");
+        }
         if (user.isSecurID()) {
             AuthenticationToken token = new AuthenticationToken(data.getUserName(), Authentication.PASSWORD);
             throw new AuthenticationRequiredException(token, Authentication.SECURID);
