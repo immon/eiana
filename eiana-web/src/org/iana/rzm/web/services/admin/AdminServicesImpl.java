@@ -2,10 +2,7 @@ package org.iana.rzm.web.services.admin;
 
 import org.apache.log4j.Logger;
 import org.iana.criteria.Order;
-import org.iana.rzm.facade.admin.AdminDomainService;
-import org.iana.rzm.facade.admin.AdminTransactionService;
-import org.iana.rzm.facade.admin.AdminUserService;
-import org.iana.rzm.facade.admin.NoTransactionException;
+import org.iana.rzm.facade.admin.*;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.common.cc.CountryCodes;
 import org.iana.rzm.facade.system.domain.IDomainVO;
@@ -13,6 +10,7 @@ import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
 import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.web.RzmApplicationException;
+import org.iana.rzm.web.RzmServerException;
 import org.iana.rzm.web.model.DomainVOWrapper;
 import org.iana.rzm.web.model.SystemDomainVOWrapper;
 import org.iana.rzm.web.model.TransactionVOWrapper;
@@ -67,8 +65,19 @@ public class AdminServicesImpl implements AdminServices {
         return users;
     }
 
-    public void saveTransaction(TransactionVOWrapper transaction) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException {
+
+        try {
+            transactionService.updateTransaction(transaction.getId(),
+                    transaction.getRtId(), transaction.getState().getVOName(), transaction.isRedeligation());
+        } catch (NoTransactionException e) {
+            throw new RzmServerException("Can not find Transaction with id " + e.getId());
+        } catch (FacadeTransactionException e) {
+            LOGGER.warn("NoTransactionException", e);
+            throw new RzmApplicationException(e);
+        } catch (StateUnreachableException e) {
+            throw new RzmServerException("Transaction State " + transaction.getCurrentStateAsString() + " is Unreachable ");
+        }
     }
 
     public List<TransactionVOWrapper> getOpenTransaction() throws NoObjectFoundException {
@@ -83,14 +92,12 @@ public class AdminServicesImpl implements AdminServices {
     }
 
     public TransactionVOWrapper getTransaction(long id) throws NoObjectFoundException {
-
-
         try {
             TransactionVO vo = transactionService.getTransaction(id);
             return new TransactionVOWrapper(vo);
         } catch (NoTransactionException e) {
-             LOGGER.warn("NoTransactionException", e);
-            throw new RzmApplicationException(e);
+            LOGGER.warn("NoTransactionException", e);
+            throw new NoObjectFoundException(e.getId(), "Request");
         }
 
     }
@@ -101,7 +108,11 @@ public class AdminServicesImpl implements AdminServices {
     }
 
     public String getCountryName(String domainCode) {
-        return countryCodeService.getCountryName(domainCode);
+        String code = countryCodeService.getCountryName(domainCode.toUpperCase());
+        if(code == null){
+            return "Top Level Domain";
+        }
+        return code;
     }
 
     public int getTotalTransactionCount() {

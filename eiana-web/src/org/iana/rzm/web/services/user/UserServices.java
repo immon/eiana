@@ -19,11 +19,13 @@ public interface UserServices extends RzmServices {
 
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain) throws NoObjectFoundException;
 
-    public List<UserVOWrapper>getUsersForDomain(long domainId);
+    public List<UserVOWrapper>getUsersForDomain(String domainName);
 
     public UserVOWrapper getUser();
 
     public void acceptTransaction(long requestId, String token) throws NoObjectFoundException;
 
     public void rejectTransaction(long requestId, String token) throws NoObjectFoundException;
+
+    public void setAccessToDomain(long domainId, long userId, boolean access);
 }

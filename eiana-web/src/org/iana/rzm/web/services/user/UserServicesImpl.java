@@ -9,6 +9,7 @@ import org.iana.rzm.facade.system.domain.SimpleDomainVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.web.RzmApplicationException;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.CriteriaBuilder;
@@ -43,9 +44,17 @@ public class UserServicesImpl implements UserServices {
         return code;
     }
 
-    public List<UserVOWrapper> getUsersForDomain(long domainId) {
-        //nask_todo return a list of users who has access for this domain
-        return new ArrayList<UserVOWrapper>();
+    public List<UserVOWrapper> getUsersForDomain(String domainName) {
+        List<UserVO> list = domainService.findDomainUsers(domainName, false);
+        List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
+        for (UserVO userVO : list) {
+            users.add(new UserVOWrapper(userVO));
+        }
+        return users;
+    }
+
+    public void setAccessToDomain(long domainId, long userId, boolean access) {
+        domainService.setAccessToDomain(userId, domainId,access);
     }
 
     public UserVOWrapper getUser() {

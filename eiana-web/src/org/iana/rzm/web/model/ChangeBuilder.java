@@ -23,6 +23,7 @@ public class ChangeBuilder {
         private static final String CONTACT_ADDRESS = "Contact Address";
         private static final String CONTACT_COUNTRY = "Contact Country";
         private static final String CONTACT_EMAIL = "Contact Email";
+        private static final String CONTACT_PRIVATE_EMAIL = "Contact Private Email";
         private static final String CONTACT_PHONE = "Contact Phone";
         private static final String CONTACT_FAX = "Contact Fax";
         private static final String CONTACT_NAME = "Contact Name";
@@ -38,6 +39,7 @@ public class ChangeBuilder {
             add(ChangeFields.AC_ADDRESS, CONTACT_ADDRESS);
             add(ChangeFields.AC_CC, CONTACT_COUNTRY);
             add(ChangeFields.AC_EMAIL, CONTACT_EMAIL);
+            add(ChangeFields.AC_PRIVATE_EMAIL, CONTACT_EMAIL);
             add(ChangeFields.AC_PHONENUMBER, CONTACT_PHONE);
             add(ChangeFields.AC_FAXNUMBER, CONTACT_FAX);
             add(ChangeFields.AC_NAME, CONTACT_NAME);

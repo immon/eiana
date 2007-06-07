@@ -19,8 +19,8 @@ public abstract class UserRequestDetails extends RequestDetails {
     @Component(id="proceed", type = "DirectLink", bindings = {
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
             "listener=listener:proceed",
-            "parameters=prop:requestId",
-            "disabled=prop:disableAction"})
+            "parameters=prop:requestId"
+            })
     public abstract IComponent getRequestDeclineComponent();
 
 
@@ -43,7 +43,11 @@ public abstract class UserRequestDetails extends RequestDetails {
         setUser(getUserServices().getUser());
     }
 
-    public boolean isDisableAction(){
+    public String getSpaceerColspan(){
+        return isActionEnabled() ? "6": "5";
+    }
+
+    public boolean isActionEnabled(){
         TransactionVOWrapper wrapper = getRequest();
 
         boolean result = false;
@@ -56,7 +60,7 @@ public abstract class UserRequestDetails extends RequestDetails {
             result = true;
         }
 
-        return !result;
+        return result;
     }
 
     public void proceed(long requestId){

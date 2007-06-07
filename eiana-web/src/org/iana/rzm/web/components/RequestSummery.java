@@ -27,6 +27,9 @@ public abstract class RequestSummery extends BaseComponent {
     @Component(id = "requestDomain", type = "Insert", bindings = {"value=prop:domainName"})
     public abstract IComponent getRequestDomainNameComponent();
 
+    @Component(id = "displayEditAction", type = "If", bindings = {"condition=prop:showEditLink"})
+    public abstract IComponent getDisplayEditActionComponent();
+
     @Component(id = "displayEdit", type = "If", bindings = {"condition=prop:showEditLink"})
     public abstract IComponent getDisplayEditComponent();
 

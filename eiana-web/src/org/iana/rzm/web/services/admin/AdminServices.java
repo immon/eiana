@@ -1,5 +1,6 @@
 package org.iana.rzm.web.services.admin;
 
+import org.iana.rzm.web.RzmServerException;
 import org.iana.rzm.web.model.DomainVOWrapper;
 import org.iana.rzm.web.model.TransactionVOWrapper;
 import org.iana.rzm.web.model.UserVOWrapper;
@@ -18,7 +19,7 @@ public interface AdminServices extends RzmServices {
 
     public List<DomainVOWrapper>getDomains();
     public List<UserVOWrapper> getUsers();
-    public void saveTransaction(TransactionVOWrapper transaction);
+    public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException;
     public int getDomainsCount();
     public List<DomainVOWrapper> getDomains(int offset, int length);
     public int getTotalUserCount();
