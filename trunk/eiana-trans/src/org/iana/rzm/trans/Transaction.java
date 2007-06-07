@@ -220,7 +220,7 @@ public class Transaction implements TrackedObject {
             throw new TransactionException("no such state: " + stateName);
         if (user instanceof RZMUser)
             getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
-        token.setNode(destinationNode);
+        token.signal("TRANSITION_" + stateName);
     }
 
     public Set<SystemRole.SystemType> getReceivedContactConfirmations() {
