@@ -50,83 +50,91 @@ public class DomainAccessTest {
     }
 
     public void testFindUserDomainsDefaultAccess() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user2", "")));
+        setUser("domainaccess-user2");
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 1;
     }
 
     public void testUserDefaultAccess() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user2", "")));
+        setUser("domainaccess-user2");
         UserVO user = domainService.getUser();
         assert user.hasAccessToDomain("domainaccess1");
     }
 
     public void testFindUserDomainsAllAccess() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), true);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), true);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", true);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", true);
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 2;
     }
 
     public void testUserAllAccess() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), true);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), true);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", true);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", true);
         UserVO user = domainService.getUser();
         assert user.hasAccessToDomain("domainaccess1");
         assert user.hasAccessToDomain("domainaccess2");
     }
 
     public void testFindUserDomainsAccess1() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), true);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), false);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", true);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", false);
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 1;
     }
 
     public void testUserAccess1() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), true);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), false);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", true);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", false);
         UserVO user = domainService.getUser();
         assert user.hasAccessToDomain("domainaccess1");
         assert !user.hasAccessToDomain("domainaccess2");
     }
 
     public void testFindUserDomainsAccess2() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), false);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), true);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", false);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", true);
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 1;
     }
 
     public void testUserAccess2() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), false);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), true);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", false);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", true);
         UserVO user = domainService.getUser();
         assert !user.hasAccessToDomain("domainaccess1");
         assert user.hasAccessToDomain("domainaccess2");
     }
 
     public void testFindUserDomainsNoAccess() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), false);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), false);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", false);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", false);
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 0;
     }
 
     public void testUserNoAccess() throws Exception {
-        domainService.setUser(authService.authenticate(new PasswordAuth("domainaccess-user1", "")));
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess1").getObjId(), false);
-        domainService.setAccessToDomain(userManager.get("domainaccess-user1").getObjId(), domainManager.get("domainaccess2").getObjId(), false);
+        setUser("domainaccess-user1");
+        setAccessToDomain("domainaccess-user1", "domainaccess1", false);
+        setAccessToDomain("domainaccess-user1", "domainaccess2", false);
         UserVO user = domainService.getUser();
         assert !user.hasAccessToDomain("domainaccess1");
         assert !user.hasAccessToDomain("domainaccess2");
+    }
+
+    private void setUser(String userName) throws Exception {
+        domainService.setUser(authService.authenticate(new PasswordAuth(userName, "")));
+    }
+
+    private void setAccessToDomain(String userName, String domainName, boolean access) {
+        domainService.setAccessToDomain(userManager.get(userName).getObjId(), domainManager.get(domainName).getObjId(), access);
     }
 
     @AfterClass(alwaysRun = true)
