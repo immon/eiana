@@ -100,4 +100,22 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         vo.setState(voState);
         this.state = new TransactionStateVOWrapper(vo.getState());
     }
+
+    public void setRedeligation(boolean redeligation) {
+        vo.setRedelegation(redeligation);
+    }
+
+    public boolean isRedeligation(){
+        return vo.isRedelegation();
+    }
+
+    public String getSubmitterEmail() {
+        return vo.getSubmitterEmail();
+    }
+
+    public void setSubmitterEmail(String email) {
+        vo.setSubmitterEmail(email);
+    }
+
+
 }

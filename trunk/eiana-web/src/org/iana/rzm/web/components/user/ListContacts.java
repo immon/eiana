@@ -19,7 +19,8 @@ public abstract class ListContacts extends BaseComponent {
     public abstract IComponent getContactsComponent();
 
     @Component(id="contact", type="Contact", bindings = {
-        "type=prop:type","domainId=prop:domainId","contactAttributes=prop:contact.map","listener=prop:action"})
+        "type=prop:type","domainId=prop:domainId","contactAttributes=prop:contact.map","listener=prop:action",
+            "editible=prop:editible"})
     public abstract IComponent getContactComponent();
 
      @Asset(value = "WEB-INF/user/ListContacts.html")
@@ -36,6 +37,9 @@ public abstract class ListContacts extends BaseComponent {
 
     @Parameter(required = true)
     public abstract IActionListener getAction();
+
+    @Parameter(required = false, defaultValue = "true")        
+    public abstract boolean isEditible();
 
     public abstract ContactVOWrapper getContact();
 

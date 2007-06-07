@@ -101,7 +101,7 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
 
     public void decline() {
         try {
-            getUserServices().rejectTransaction(getRequestId(), getToken());
+                getUserServices().rejectTransaction(getRequestId(), getToken());
             getRequestCycle().activate(getHome());
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e);

@@ -65,9 +65,8 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
     }
 
 
-    public boolean isAccessEnabled() {
-        //nask_todo Nask should add this
-        return true;
+    public boolean isAccessEnabled(String domainName) {
+        return vo.hasAccessToDomain(domainName);
     }
 
     private boolean isInRole(SystemRoleVOWrapper.SystemType type) {

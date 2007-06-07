@@ -31,7 +31,8 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "type=literal:Sponsoring Organization",
             "contactAttributes=prop:domain.supportingOrganization.map",
             "domainId=prop:domain.id",
-            "listener=listener:editContact"
+            "listener=listener:editContact",
+            "editible=prop:editible"
             })
     public abstract IComponent getSOContactComponent();
 
@@ -39,7 +40,8 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "type=literal:Administrative",
             "contacts=prop:domain.adminContacts",
             "domainId=prop:domain.id",
-            "action=listener:editContact"
+            "action=listener:editContact",
+            "editible=prop:editible"
             })
     public abstract IComponent getAdminContactsComponent();
 
@@ -47,14 +49,16 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "type=literal:Technical",
             "contacts=prop:domain.technicalContacts",
             "domainId=prop:domain.id",
-            "action=listener:editContact"
+            "action=listener:editContact",
+            "editible=prop:editible"
             })
     public abstract IComponent getTechContactsComponent();
 
     @Component(id = "listNameServers", type = "ListNameServers", bindings = {
             "nameServers=prop:nameServers",
             "domainId=prop:domain.id",
-            "listener=listener:editNameServerList"
+            "listener=listener:editNameServerList",
+            "editible=prop:editible"
             })
     public abstract IComponent getListNameServerComponent();
 
@@ -165,6 +169,10 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
 
     public boolean isModified() {
         return getVisitState().isDomainModified(getDomainId());
+    }
+
+    public boolean isEditible(){
+        return !getIsRequestsPending();
     }
 
     public UserHome cancelEdit(long domainId) {

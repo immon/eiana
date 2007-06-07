@@ -23,6 +23,8 @@ public interface ChangeFields {
 
     public static final String SO_EMAIL = "supportingOrg.email";
 
+    public static final String SO_PRIVATE_EMAIL = "supportingOrg.privateEmail";
+
     public static final String SO_ROLE = "supportingOrg.role";
 
     public static final String AC_NAME = "adminContact.name";
@@ -40,6 +42,8 @@ public interface ChangeFields {
     public static final String AC_FAXNUMBER = "adminContact.faxNumber";
 
     public static final String AC_EMAIL = "adminContact.email";
+
+    public static final String AC_PRIVATE_EMAIL = "adminContact.privateEmail";
 
     public static final String AC_ROLE = "adminContact.role";
 
@@ -59,6 +63,8 @@ public interface ChangeFields {
 
     public static final String TC_EMAIL = "techContact.email";
 
+    public static final String TC_PRIVATE_EMAIL = "techContact.privateEmail";
+
     public static final String TC_ROLE = "techContact.role";
 
     public static final String NS_NAME = "nameServers.name";
@@ -70,4 +76,5 @@ public interface ChangeFields {
     public static final String WHOIS = "whoisServer";
 
     public static final String REGISTRY_URL = "registryUrl";
+
 }

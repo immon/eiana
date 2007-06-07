@@ -4,11 +4,13 @@ import org.apache.tapestry.IComponent;
 import org.apache.tapestry.IExternalPage;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.RzmServerException;
 import org.iana.rzm.web.model.TransactionStateVOWrapper;
 import org.iana.rzm.web.model.TransactionVOWrapper;
 
@@ -54,6 +56,9 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     @Component(id = "redeligationLabel", type = "FieldLabel", bindings = {"field=component:redeligation"})
     public abstract IComponent getRoleLabelComponent();
 
+    @InjectPage("admin/AdminHome")
+    public abstract AdminHome getHomePage();
+
 
     @Persist("client:page")
     public abstract void setRequest(TransactionVOWrapper request);
@@ -74,6 +79,8 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     public abstract void setRedeligation(boolean value);
     public abstract boolean isRedeligation();
 
+    public abstract String getSubmitterEmail();
+    public abstract void setSubmitterEmail(String email);
 
     protected Object[] getExternalParameters() {
         return new Object[]{getRequestId()};
@@ -95,6 +102,7 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
                 setRt(request.getRtId());
                 setState(request.getState());
                 setDomainName(request.getDomainName());
+                setSubmitterEmail(request.getSubmitterEmail());
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e);
@@ -105,7 +113,13 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
         TransactionVOWrapper transaction = getRequest();
         transaction.setRt(getRt());
         transaction.setState(getState());
-        getAdminServices().saveTransaction(transaction);
+        transaction.setRedeligation(isRedeligation());
+        try {
+            getAdminServices().updateTransaction(transaction);
+            getRequestCycle().activate(getHomePage());
+        } catch (RzmServerException e) {
+            setErrorMessage(e.getMessage());
+        }
     }
 
     private static class RequestStateSelectionModel implements IPropertySelectionModel, Serializable{
