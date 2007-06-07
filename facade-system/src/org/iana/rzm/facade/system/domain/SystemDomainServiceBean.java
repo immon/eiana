@@ -61,13 +61,15 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
         for (Role role : user.getRoles())
             if (!role.isAdmin()) {
                 SystemRole sr = (SystemRole) role;
-                String domainName = sr.getName();
-                Set<RoleVO.Type> roles = domainNames.get(domainName);
-                if (roles == null) {
-                    roles = new HashSet<RoleVO.Type>();
+                if (sr.isAccessToDomain()) {
+                    String domainName = sr.getName();
+                    Set<RoleVO.Type> roles = domainNames.get(domainName);
+                    if (roles == null) {
+                        roles = new HashSet<RoleVO.Type>();
+                    }
+                    roles.add(ToVOConverter.toRoleTypeVO(sr.getType()));
+                    domainNames.put(domainName, roles);
                 }
-                roles.add(ToVOConverter.toRoleTypeVO(sr.getType()));
-                domainNames.put(domainName, roles);
             }
 
         List<SimpleDomainVO> ret = new ArrayList<SimpleDomainVO>();
@@ -110,7 +112,7 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
         for (Role role : user.getRoles())
             if (!role.isAdmin()) {
                 SystemRole sr = (SystemRole) role;
-                if (sr.getName().equals(domainName))
+                if (sr.isAccessToDomain() && sr.getName().equals(domainName))
                     roleTypeVOSet.add(ToVOConverter.toRoleTypeVO(sr.getType()));
             }
         return roleTypeVOSet;
