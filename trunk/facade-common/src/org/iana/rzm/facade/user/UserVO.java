@@ -175,7 +175,7 @@ public class UserVO implements Trackable {
         for (RoleVO role : roles) {
             if (role instanceof SystemRoleVO) {
                 SystemRoleVO sys = (SystemRoleVO) role;
-                if (domainName.equals(sys.getName()))
+                if (sys.isAccessToDomain() && domainName.equals(sys.getName()))
                     return true;
             }
         }
