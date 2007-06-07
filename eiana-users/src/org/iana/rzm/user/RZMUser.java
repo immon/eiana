@@ -294,4 +294,11 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
             throw new UnsupportedOperationException(e);
         }
     }
+
+    public boolean isActive() {
+        for (Role role : roles) {
+            if (role.isEnabled()) return true;
+        }
+        return false;
+    }
 }
