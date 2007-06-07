@@ -102,7 +102,7 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
             retTransaction.setTicketID(ticketId);
             retTransaction.setRedelegation(redelegation);
             if (targetStateName != null && !targetStateName.equals(retTransaction.getState().getName())) {
-                retTransaction.transitTo(getRZMUser(), targetStateName.toString());
+                retTransaction.transitTo(getRZMUser(), targetStateName);
             }
         } catch (NoSuchTransactionException e) {
             throw new NoTransactionException(e.getId());
