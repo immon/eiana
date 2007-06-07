@@ -17,6 +17,27 @@
             </action>
         </event>
 
+        <transition name="TRANSITION_PENDING_TECH_CHECK" to="PENDING_TECH_CHECK"/>
+        <transition name="TRANSITION_PENDING_TECH_CHECK_REMEDY" to="PENDING_TECH_CHECK_REMEDY"/>
+        <transition name="TRANSITION_PENDING_CONTACT_CONFIRMATION" to="PENDING_CONTACT_CONFIRMATION"/>
+        <transition name="TRANSITION_PENDING_SOENDORSEMENT" to="PENDING_SOENDORSEMENT"/>
+        <transition name="TRANSITION_PENDING_IMPACTED_PARTIES" to="PENDING_IMPACTED_PARTIES"/>
+        <transition name="TRANSITION_PENDING_MANUAL_REVIEW" to="PENDING_MANUAL_REVIEW"/>
+        <transition name="TRANSITION_PENDING_EXT_APPROVAL" to="PENDING_EXT_APPROVAL"/>
+        <transition name="TRANSITION_PENDING_EVALUATION" to="PENDING_EVALUATION"/>
+        <transition name="TRANSITION_PENDING_IANA_CHECK" to="PENDING_IANA_CHECK"/>
+        <transition name="TRANSITION_PENDING_SUPP_TECH_CHECK" to="PENDING_SUPP_TECH_CHECK"/>
+        <transition name="TRANSITION_PENDING_SUPP_TECH_CHECK_REMEDY" to="PENDING_SUPP_TECH_CHECK_REMEDY"/>
+        <transition name="TRANSITION_PENDING_USDOC_APPROVAL" to="PENDING_USDOC_APPROVAL"/>
+        <transition name="TRANSITION_PENDING_ZONE_INSERTION" to="PENDING_ZONE_INSERTION"/>
+        <transition name="TRANSITION_PENDING_ZONE_PUBLICATION" to="PENDING_ZONE_PUBLICATION"/>
+        <transition name="TRANSITION_PENDING_DATABASE_INSERTION" to="PENDING_DATABASE_INSERTION"/>
+        <transition name="TRANSITION_COMPLETED" to="COMPLETED"/>
+        <transition name="TRANSITION_WITHDRAWN" to="WITHDRAWN"/>
+        <transition name="TRANSITION_REJECTED" to="REJECTED"/>
+        <transition name="TRANSITION_ADMIN_CLOSED" to="ADMIN_CLOSED"/>
+        <transition name="TRANSITION_EXCEPTION" to="EXCEPTION"/>
+
         <decision name="FIRST_NSLINK_CHANGE_DECISION">
             <handler class="org.iana.rzm.trans.jbpm.handlers.NSLinkChangeDecision"/>
             <transition name="yes" to="PENDING_TECH_CHECK"/>
@@ -396,6 +417,11 @@
                     <notification>completed</notification>
                 </action>
             </event>
+            <event type='node-leave'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                    <start>true</start>
+                </action>
+            </event>
         </end-state>
 
         <end-state name='REJECTED'>
@@ -405,6 +431,11 @@
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>false</start>
+                </action>
+            </event>
+            <event type='node-leave'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                    <start>true</start>
                 </action>
             </event>
         </end-state>
@@ -418,6 +449,11 @@
                     <start>false</start>
                 </action>
             </event>
+            <event type='node-leave'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                    <start>true</start>
+                </action>
+            </event>
         </end-state>
 
         <end-state name='ADMIN_CLOSED'>
@@ -427,6 +463,11 @@
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>false</start>
+                </action>
+            </event>
+            <event type='node-leave'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                    <start>true</start>
                 </action>
             </event>
         </end-state>

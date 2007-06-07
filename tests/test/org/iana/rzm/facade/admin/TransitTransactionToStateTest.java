@@ -99,7 +99,7 @@ public class TransitTransactionToStateTest {
         assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
         for (String state : states) {
-            if (!state.equals("PENDING_IANA_CONFIRMATION")) {
+            if (!state.equals("PENDING_IANA_CONFIRMATION") && !state.equals("PENDING_TECH_CHECK") && !state.equals("PENDING_SUPP_TECH_CHECK") && !state.equals("PENDING_DATABASE_INSERTION")) {
                 gAdminTransactionServ.updateTransaction(transactionID, 0L, state, false);
                 transactionVO = gAdminTransactionServ.getTransaction(transactionID);
                 assert state.equals(transactionVO.getState().getName().name()) :

@@ -39,6 +39,7 @@ public class DomainAccessTest {
         user1.addRole(new SystemRole(SystemRole.SystemType.AC, "domainaccess1", true, true));
         user1.addRole(new SystemRole(SystemRole.SystemType.AC, "domainaccess2", true, true));
         user1.addRole(new SystemRole(SystemRole.SystemType.TC, "domainaccess2", true, true));
+        user1.addRole(new SystemRole(SystemRole.SystemType.TC, "domainaccess3", true, true));
         userManager.create(user1);
         RZMUser user2 = new RZMUser();
         user2.setLoginName("domainaccess-user2");
