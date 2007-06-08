@@ -35,7 +35,7 @@ public class HibernateMappingTestUtil {
         user.setLastName(prefix + "last name");
         user.setLoginName(prefix + "-loginname");
         user.setOrganization(prefix + " organization");
-        user.setPassword(new MD5Password(prefix + "password"));
+        user.setPassword(prefix + "password");
         user.setSecurID(flag);
         return user;
     }

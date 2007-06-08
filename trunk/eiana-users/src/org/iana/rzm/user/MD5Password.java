@@ -55,6 +55,10 @@ public class MD5Password extends AbstractPassword implements Cloneable {
         }
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     /**
      * Checks whether a given plain-text password matches this MD5 encoded password.
      *
