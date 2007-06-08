@@ -59,7 +59,7 @@ public class InitDatabaseTask extends HibernateTask {
         user.setLastName(name);
         user.setLoginName(name);
         user.setOrganization(name);
-        user.setPassword(new MD5Password(name));
+        user.setPassword(name);
         user.setSecurID(false);
         return user;
     }
@@ -80,7 +80,7 @@ public class InitDatabaseTask extends HibernateTask {
         user.setLastName(name + " last name");
         user.setLoginName(name);
         user.setOrganization(name + " organization");
-        user.setPassword(new MD5Password(name + "password"));
+        user.setPassword(name + "password");
         user.setSecurID(false);
         user.addRole(role);
         return user;

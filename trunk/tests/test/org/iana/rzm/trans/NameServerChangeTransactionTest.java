@@ -135,7 +135,7 @@ public class NameServerChangeTransactionTest {
         user.setLastName(name + "gsts last name");
         user.setLoginName(name + "gsts");
         user.setOrganization(name + "gsts organization");
-        user.setPassword(new MD5Password(name + "gsts"));
+        user.setPassword(name + "gsts");
         user.setSecurID(false);
         user.addRole(new SystemRole(role, "gsts", true, false));
         userManager.create(user);
