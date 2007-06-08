@@ -381,11 +381,11 @@
     </bean>
 
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
-        <constructor-arg index="0" value="pop.nask.waw.pl"/>
+        <constructor-arg index="0" value="localhost"/>
         <constructor-arg index="1" value="[RZM]"/>
         <constructor-arg index="2" value="rzm-test@icann.org"/>
-        <constructor-arg index="3" value="patrycjaw"/>
-        <constructor-arg index="4" value="1karotka2"/>
+        <constructor-arg index="3" value=""/>
+        <constructor-arg index="4" value=""/>
         <!--
                 <constructor-arg value="MailHost"/>
                 <constructor-arg value="mailer"/>
