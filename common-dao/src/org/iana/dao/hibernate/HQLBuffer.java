@@ -9,6 +9,7 @@ import java.util.Set;
  */
 class HQLBuffer {
 
+
     private StringBuffer buf = new StringBuffer();
     private List<Object> params = new ArrayList<Object>();
 
