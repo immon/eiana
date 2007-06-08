@@ -56,6 +56,8 @@ public interface SystemTransactionService extends RZMStatefulService {
      */
     List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException;
 
+    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException;
+
     /**
      * Accepts a transaction identified by this id on behalf of the user. Note that this service is stateful and the user must be set prior any method call.
      *

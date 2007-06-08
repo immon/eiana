@@ -76,6 +76,11 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+        isUserInCreateTransactionRole();
+        return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
+    }
+
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
         delegate.acceptTransaction(id, token);

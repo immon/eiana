@@ -55,16 +55,21 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction createDomainModificationTransaction(Domain modifiedDomain) throws NoModificationException {
-        return createTransaction(modifiedDomain);
+        return createTransaction(modifiedDomain, null);
     }
 
-    private Transaction createTransaction(Domain domain)  throws NoModificationException {
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail) throws NoModificationException {
+        return createTransaction(modifiedDomain, submitterEmail);
+    }
+
+    private Transaction createTransaction(Domain domain, String submitterEmail)  throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, diffConfiguration);
         if (domainChange == null) throw new NoModificationException(domain.getName());
         td.setDomainChange(domainChange);
+        td.setSubmitterEmail(submitterEmail);
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();

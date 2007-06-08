@@ -48,6 +48,11 @@ public class EmptySystemTransactionService implements SystemTransactionService {
         return null;
     }
 
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+        return null;
+    }
+
     public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         return null;
     }

@@ -162,6 +162,11 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+        return createTransactions(domain, splitNameServerChange, null);
+    }
+
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
         CheckTool.checkNull(domain, "null domain");
 
         try {
@@ -181,11 +186,11 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
                     List<TransactionActionVO> tactions = new ArrayList<TransactionActionVO>();
                     for (TransactionActionVO action : group.getActions()) {
                         tactions.add(action);
-                        ret.add(createTransaction(currentDomain, modifiedDomain, tactions));
+                        ret.add(createTransaction(currentDomain, modifiedDomain, tactions, submitterEmail));
                         tactions.clear();
                     }
                 } else {
-                    ret.add(createTransaction(currentDomain, modifiedDomain, group.getActions()));
+                    ret.add(createTransaction(currentDomain, modifiedDomain, group.getActions(), submitterEmail));
                 }
             }
             return ret;
@@ -196,7 +201,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         }
     }
 
-    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions) throws NoModificationException, CloneNotSupportedException {
+    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail) throws NoModificationException, CloneNotSupportedException {
         Domain md = currentDomain.clone();
         for (TransactionActionVO action : actions) {
             if (TransactionActionVO.MODIFY_TC.equals(action.getName())) {
@@ -224,7 +229,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
                 }
             }
         }
-        Transaction trans = transactionManager.createDomainModificationTransaction(md);
+        Transaction trans = transactionManager.createDomainModificationTransaction(md, submitterEmail);
         trans.setCreated(now());
         trans.setCreatedBy(user.getUserName());
         return TransactionConverter.toTransactionVO(trans);

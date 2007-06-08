@@ -42,6 +42,8 @@ public interface TransactionManager {
      */
     Transaction createDomainModificationTransaction(Domain domain) throws NoModificationException;
 
+    Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail) throws NoModificationException;
+
     List<Transaction> findAll();
 
     List<Transaction> find(TransactionCriteria criteria);
