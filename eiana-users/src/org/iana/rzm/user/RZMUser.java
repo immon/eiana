@@ -120,16 +120,12 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
         this.password.setPassword(password);
     }
 
+    public String getPassword() {
+        return this.password.getPassword();
+    }
+
     public boolean isValidPassword(String password) {
         return this.password.isValid(password);
-    }
-
-    public Password getPassword() {
-        return password;
-    }
-
-    public void setPassword(Password password) {
-        this.password = password;
     }
 
     public boolean isSecurID() {

@@ -17,6 +17,13 @@ public interface Password extends Cloneable {
     public void setPassword(String password);
 
     /**
+     * Returns a password string in a format specific to this object.
+     *
+     * @return the password string
+     */
+    public String getPassword();
+
+    /**
      * Checks whether a given plain-text password matches this one.
      *
      * @param password the plain-text password

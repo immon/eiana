@@ -64,6 +64,8 @@ public class UserConverter {
         userVO.setUserName(user.getLoginName());
         userVO.setEmail(user.getEmail());
         userVO.setPublicKey(user.getPublicKey());
+        userVO.setSecurID(user.isSecurID());
+        userVO.setPassword(user.getPassword());
 
         return userVO;
     }
@@ -100,6 +102,8 @@ public class UserConverter {
         rzmUser.setLoginName(userVO.getUserName());
         rzmUser.setEmail(userVO.getEmail());
         rzmUser.setPublicKey(userVO.getPublicKey());
+        rzmUser.setPassword(userVO.getPassword());
+        rzmUser.setSecurID(userVO.isSecurID());
 
         return rzmUser;
     }

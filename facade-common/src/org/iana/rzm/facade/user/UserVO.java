@@ -20,6 +20,8 @@ public class UserVO implements Trackable {
     private String lastName;
     private String organization;
     private String email;
+    private String password;
+    private boolean securID;
     private Set<RoleVO> roles = new HashSet<RoleVO>();
 
     private Long objId;
@@ -180,5 +182,29 @@ public class UserVO implements Trackable {
             }
         }
         return false;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSecurID() {
+        return securID;
+    }
+
+    public void setSecurID(boolean securID) {
+        this.securID = securID;
+    }
+
+    public TrackDataVO getTrackData() {
+        return trackData;
+    }
+
+    public void setTrackData(TrackDataVO trackData) {
+        this.trackData = trackData;
     }
 }
