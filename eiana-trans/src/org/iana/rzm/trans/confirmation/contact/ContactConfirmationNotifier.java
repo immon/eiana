@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Piotr Tkaczyk
  */
 public class ContactConfirmationNotifier extends ProcessStateNotifier {
 

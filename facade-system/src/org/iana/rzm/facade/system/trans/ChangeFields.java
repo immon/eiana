@@ -1,7 +1,13 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.rzm.domain.Address;
+import org.iana.rzm.common.EmailAddress;
+
+import javax.persistence.Basic;
+import javax.persistence.Embedded;
+
 /**
- * The constants that denote the names of object fields being changed.
+ * The constants denoteing the names of object fields being changed.
  *
  * @author Patrycja Wegrzynowicz
  */
@@ -19,7 +25,11 @@ public interface ChangeFields {
 
     public static final String SO_PHONENUMBER = "supportingOrg.phoneNumber";
 
+    public static final String SO_ALTPHONENUMBER = "supportingOrg.altPhoneNumber";
+
     public static final String SO_FAXNUMBER = "supportingOrg.faxNumber";
+
+    public static final String SO_ALTFAXNUMBER = "supportingOrg.altFaxNumber";
 
     public static final String SO_EMAIL = "supportingOrg.email";
 
@@ -39,7 +49,11 @@ public interface ChangeFields {
 
     public static final String AC_PHONENUMBER = "adminContact.phoneNumber";
 
+    public static final String AC_ALTPHONENUMBER = "adminContact.altPhoneNumber";
+
     public static final String AC_FAXNUMBER = "adminContact.faxNumber";
+
+    public static final String AC_ALTFAXNUMBER = "adminContact.altFaxNumber";
 
     public static final String AC_EMAIL = "adminContact.email";
 
@@ -59,7 +73,11 @@ public interface ChangeFields {
 
     public static final String TC_PHONENUMBER = "techContact.phoneNumber";
 
+    public static final String TC_ALTPHONENUMBER = "techContact.altPhoneNumber";
+
     public static final String TC_FAXNUMBER = "techContact.faxNumber";
+
+    public static final String TC_ALTFAXNUMBER = "techContact.altFaxNumber";
 
     public static final String TC_EMAIL = "techContact.email";
 

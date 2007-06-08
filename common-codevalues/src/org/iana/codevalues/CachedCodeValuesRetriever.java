@@ -24,8 +24,10 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
         CodeValuesEntry(List<Value> valueList) {
             this.valueList = valueList;
             this.valueMap = new HashMap<String, String>();
-            for (Value value : valueList) {
-                this.valueMap.put(value.getValueId(), value.getValueName());
+            if (valueList != null) {
+                for (Value value : valueList) {
+                    this.valueMap.put(value.getValueId(), value.getValueName());
+                }
             }
         }
     }
