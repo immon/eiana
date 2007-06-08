@@ -2,14 +2,17 @@ package org.iana.rzm.facade.admin;
 
 import org.iana.criteria.Criterion;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.trans.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -33,15 +36,18 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
 
     TransactionManager transactionManager;
     DomainManager domainManager;
+    SystemTransactionService transactionService;
 
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
     }
 
-    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager) {
+    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, SystemTransactionService transactionService) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
+        CheckTool.checkNull(transactionService, "transaction service");
         this.transactionManager = transactionManager;
+        this.transactionService = transactionService;
     }
 
     public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager,
@@ -168,6 +174,11 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         } catch (NoModificationException e) {
             throw new NoDomainModificationException(domainVO.getName());
         }
+    }
+
+    public List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+        isUserInRole();
+        return transactionService.createTransactions(domain, splitNameServerChange, submitterEmail);
     }
 
     public List<TransactionVO> findAll() {
