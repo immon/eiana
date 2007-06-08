@@ -268,7 +268,7 @@ public class GuardedSystemTransactionServiceTest {
         user.setLastName(name + roleName + " last name");
         user.setLoginName(name + roleName);
         user.setOrganization(name + roleName + " organization");
-        user.setPassword(new MD5Password(name + roleName));
+        user.setPassword(name + roleName);
         user.setSecurID(false);
         user.addRole(new SystemRole(roleType, roleName, true, false));
         userManager.create(user);
