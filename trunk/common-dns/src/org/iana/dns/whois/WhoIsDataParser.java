@@ -1,7 +1,7 @@
 package org.iana.dns.whois;
 
-import static org.iana.dns.whois.WhoIsData.Type.ROUTEv4;
-import static org.iana.dns.whois.WhoIsData.Type.ROUTEv6;
+import static org.iana.dns.DNSIPAddress.Type.IPv4;
+import static org.iana.dns.DNSIPAddress.Type.IPv6;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 
 class WhoIsDataParser {
@@ -27,8 +27,8 @@ class WhoIsDataParser {
                     whoIsData = new WhoIsData();
                 } else {
                     SplittedLine sl = new SplittedLine(dataLine, ": ");
-                    if ("route".equals(sl.getField())) whoIsData.setRoute(sl.getValue(), ROUTEv4);
-                    if ("route6".equals(sl.getField())) whoIsData.setRoute(sl.getValue(), ROUTEv6);
+                    if ("route".equals(sl.getField())) whoIsData.setRoute(sl.getValue(), IPv4);
+                    if ("route6".equals(sl.getField())) whoIsData.setRoute(sl.getValue(), IPv6);
                     if ("origin".equals(sl.getField())) whoIsData.setOrigin(sl.getValue());
                     if ("descr".equals(sl.getField())) whoIsData.setDescr(sl.getValue());
                     if ("lastupd-frst".equals(sl.getField())) whoIsData.setUpdateFirst(sl.getValue());

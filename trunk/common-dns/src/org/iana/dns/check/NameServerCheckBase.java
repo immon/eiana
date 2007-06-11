@@ -4,7 +4,9 @@ import org.apache.log4j.Logger;
 import org.iana.dns.check.exceptions.NameServerUnreachableException;
 
 /**
- * @author: Piotr Tkaczyk
+ * Parent class for name server technical checks.
+ *
+ * @author Piotr Tkaczyk
  */
 abstract class NameServerCheckBase implements DNSNameServerTechnicalCheck {
 

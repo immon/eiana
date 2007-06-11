@@ -1,18 +1,16 @@
 package org.iana.dns.whois;
 
+import static org.iana.dns.DNSIPAddress.Type;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 
 class WhoIsData {
-
-    enum Type {
-        ROUTEv4, ROUTEv6
-    }
 
     private Type type;
     private String route;

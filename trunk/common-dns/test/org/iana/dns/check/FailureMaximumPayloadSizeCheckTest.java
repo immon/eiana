@@ -1,6 +1,6 @@
 package org.iana.dns.check;
 
-import org.iana.dns.check.exceptions.ResponseDataSizeExceededException;
+import org.iana.dns.check.exceptions.MaximumPayloadSizeExceededException;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
 import org.testng.annotations.Test;
@@ -53,8 +53,8 @@ public class FailureMaximumPayloadSizeCheckTest {
         } catch (DNSTechnicalCheckException e) {
             MultipleDNSTechnicalCheckException error = (MultipleDNSTechnicalCheckException) e;
             assert error.getExceptions().size() == 1;
-            assert error.getExceptions().iterator().next() instanceof ResponseDataSizeExceededException;
-            ResponseDataSizeExceededException exception = (ResponseDataSizeExceededException) error.getExceptions().iterator().next();
+            assert error.getExceptions().iterator().next() instanceof MaximumPayloadSizeExceededException;
+            MaximumPayloadSizeExceededException exception = (MaximumPayloadSizeExceededException) error.getExceptions().iterator().next();
             assert 1192 == exception.getEstimatedSize();
         }
     }

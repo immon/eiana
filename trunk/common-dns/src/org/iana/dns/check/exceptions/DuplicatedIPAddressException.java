@@ -5,6 +5,8 @@ import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
 
 /**
+ * Thrown in MinimumNameServersAndNoReservedIPsCheck when IP address is duplicated.
+ *
  * @author Piotr Tkaczyk
  */
 public class DuplicatedIPAddressException extends DomainTechnicalCheckException {
@@ -12,11 +14,11 @@ public class DuplicatedIPAddressException extends DomainTechnicalCheckException 
     DNSIPAddress ipAddress;
 
     /**
-     * Thrown in MinimumNameServersAndNoReservedIPsCheck when IP address is duplicated;
+     * Creates exception from given data.
      *
-     * @param domain    - current domain
-     * @param host      - current host
-     * @param ipAddress - duplicated IP address
+     * @param domain    current domain
+     * @param host      current host
+     * @param ipAddress duplicated IP address
      */
     public DuplicatedIPAddressException(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);

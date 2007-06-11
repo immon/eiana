@@ -1,7 +1,6 @@
 package org.iana.dns.whois;
 
 import org.apache.log4j.Logger;
-import org.iana.dns.DNSWhoIsData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +11,10 @@ import java.net.Socket;
 import java.util.List;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 
-public class WhoIsDataRetriever implements DNSWhoIsData {
+public class WhoIsDataRetriever implements DNSWhoIsDataRetriever {
 
     private int defaultPort;
     private int timeout;

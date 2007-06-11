@@ -4,7 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 @Test(sequential = true, groups = {"common-dns", "WhoIsTest"})
 public class WhoIsTest {

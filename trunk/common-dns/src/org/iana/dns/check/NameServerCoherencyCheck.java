@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * (Test 6)
+ * Checks NS names returned by authoritative name server, and compare them to the supplied NS names.
+ * These should match.
+ *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
- *         <p/>
- *         (Test 6)
- *         Checks that name servers returned by authoritative name server, and compare them to the supplied NS.
- *         These should match.
  */
 
 public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
