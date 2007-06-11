@@ -66,7 +66,7 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
 
         values.put("techContact.name", "Name: ");
 
-        values.put("techContact.jobTitle" , "Job Title: ");
+        values.put("techContact.jobTitle", "Job Title: ");
 
         values.put("techContact.organization", "Organization: ");
 
@@ -90,9 +90,9 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
 
         values.put("nameServers.name", "Name: ");
 
-        values.put("nameServers.address.address", "IP address: ");
+        values.put("nameServers.addresses.address", "IP address: ");
 
-        values.put("nameServers.address.type", "Type: ");
+        values.put("nameServers.addresses.type", "Type: ");
 
         values.put("whoisServer", "WHOIS Server: ");
 
@@ -109,18 +109,6 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
         values.put("nameServers", "Name Server");
         values.put("nameServers.addresses", "IP Addresses");
 
-//        values.put("address", "IP Address:   ");
-//
-//        values.put("registryUrl", "Registry URL: ");
-//        values.put("whoisServer", "Whois Server: ");
-//
-//        values.put("jobTitle", "Job Title:    ");
-//        values.put("email", "Public Email: ");
-//        values.put("name", "Name:         ");
-//        values.put("role", "Role:         ");
-//        values.put("faxNumber", "Fax Number:   ");
-//        values.put("organization", "Organization: ");
-//        values.put("phoneNumber", "Phone Number: ");
     }
 
     protected String getChanges(TransactionData td) {
@@ -154,15 +142,15 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
             } else if (change instanceof CollectionChange) {
                 CollectionChange collChange = (CollectionChange) change;
                 if (collChange.isAddition()) {
-                    buffer.append("\n[ADDED]");
+                    buffer.append("[ADDED]");
                     for (Change c : collChange.getAdded())
                         buffer.append(pringChange(c, key));
                 } else if (collChange.isRemoval()) {
-                    buffer.append("\n[REMOVED]");
+                    buffer.append("[REMOVED]");
                     for (Change c : collChange.getRemoved())
                         buffer.append(pringChange(c, key));
                 } else {
-                    buffer.append("\n[MODIFIED]");
+                    buffer.append("[MODIFIED]");
                     for (Change c : collChange.getModified())
                         buffer.append(pringChange(c, key));
                 }
