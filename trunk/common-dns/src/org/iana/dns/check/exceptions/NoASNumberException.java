@@ -13,11 +13,11 @@ public class NoASNumberException extends DomainTechnicalCheckException {
     DNSIPAddress ipAddress;
 
     /**
-     * Thrown in MinimumNetworkDiversityCheck when there is no AS number for IP address
+     * Thrown in MinimumNetworkDiversityCheck when there is no AS number for IP address;
      *
-     * @param domain    current domain
-     * @param host      current host
-     * @param ipAddress IP address with empty AS number
+     * @param domain    - current domain
+     * @param host      - current host
+     * @param ipAddress - IP address with empty AS number
      */
     public NoASNumberException(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);

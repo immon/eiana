@@ -21,7 +21,7 @@ import java.util.Set;
  */
 
 public class GlueCoherencyCheck extends NameServerCheckBase {
-    //todo diff in ip's
+
     void doCheck(DNSNameServer ns) throws DNSTechnicalCheckException {
         Set<DNSIPAddress> retIpAddresses = new HashSet<DNSIPAddress>();
         for (Record record : ns.getAdditionalSection()) {

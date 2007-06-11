@@ -8,10 +8,9 @@ import org.iana.dns.DNSDomain;
 public class NameServerCoherencyException extends DomainTechnicalCheckException {
 
     /**
-     * Thrown in NameServerCoherencyCheck when supplied name servers names don't match names returned in SOA
-     * //todo
+     * Thrown in NameServerCoherencyCheck when supplied name servers names don't match names returned in SOA;
      *
-     * @param domain current domain
+     * @param domain - current domain
      */
     public NameServerCoherencyException(DNSDomain domain) {
         super(domain, null);

@@ -12,11 +12,11 @@ public class WhoIsIOException extends NameServerTechnicalCheckException {
     Throwable cause;
 
     /**
-     * Thrown in MinimumNetworkDiversityCheck when DNSWhoIsData service returns IOException
+     * Thrown in MinimumNetworkDiversityCheck when DNSWhoIsData service returns IOException;
      *
-     * @param host      current host
-     * @param ipAddress current host ip for with IOException was thrown
-     * @param cause     cause from IOException
+     * @param host      - current host
+     * @param ipAddress - current host ip for with IOException was thrown
+     * @param cause     - cause from IOException
      */
     public WhoIsIOException(DNSHost host, DNSIPAddress ipAddress, Throwable cause) {
         super(host);

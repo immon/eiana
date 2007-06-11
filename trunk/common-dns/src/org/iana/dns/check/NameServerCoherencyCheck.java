@@ -17,7 +17,7 @@ import java.util.Set;
  */
 
 public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
-    //todo diff in names
+
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
         Set<String> retHostNames = new HashSet<String>();
 

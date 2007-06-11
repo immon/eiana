@@ -7,7 +7,7 @@ import org.iana.dns.check.DNSTechnicalCheckException;
 /**
  * @author Piotr Tkaczyk
  *         <p/>
- *         Base exception for all checks from DNSDomainTechnicalCheck
+ *         Base exception for all checks from DNSDomainTechnicalCheck;
  */
 public class DomainTechnicalCheckException extends DNSTechnicalCheckException {
     DNSDomain domain;
