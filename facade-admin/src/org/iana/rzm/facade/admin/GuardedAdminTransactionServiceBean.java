@@ -45,18 +45,19 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, SystemTransactionService transactionService) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
-        CheckTool.checkNull(transactionService, "transaction service");
         this.transactionManager = transactionManager;
         this.transactionService = transactionService;
     }
 
     public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager,
-                                              DomainManager domainManager) {
+                                              DomainManager domainManager, SystemTransactionService transactionService) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
+        CheckTool.checkNull(transactionService, "transaction service");
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
+        this.transactionService = transactionService;
     }
 
     public TransactionVO getTransaction(long id) throws NoTransactionException {
