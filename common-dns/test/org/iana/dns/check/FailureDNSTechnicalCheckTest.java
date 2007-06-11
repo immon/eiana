@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 @Test(sequential = true, groups = {"common-dns", "FailureDNSTechnicalCheckTest"})
 public class FailureDNSTechnicalCheckTest {

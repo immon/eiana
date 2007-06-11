@@ -3,15 +3,15 @@ package org.iana.dns.check;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSIPAddress;
 import static org.iana.dns.DNSIPAddress.Type.IPv4;
-import org.iana.dns.check.exceptions.ResponseDataSizeExceededException;
+import org.iana.dns.check.exceptions.MaximumPayloadSizeExceededException;
 
 import java.util.Set;
 
 /**
+ * (Test 2)
+ * Checks that estimated response size from root server is not greater than 512 bytes.
+ *
  * @author Piotr Tkaczyk
- *         <p/>
- *         (Test 2)
- *         Checks that estimated response size from root server is not greater than 512 bytes.
  */
 public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
 
@@ -32,6 +32,6 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
                 estimatedSize += nsNameSize + ipAddressSize;
             }
         }
-        if (estimatedSize > 512) throw new ResponseDataSizeExceededException(domain, estimatedSize);
+        if (estimatedSize > 512) throw new MaximumPayloadSizeExceededException(domain, estimatedSize);
     }
 }

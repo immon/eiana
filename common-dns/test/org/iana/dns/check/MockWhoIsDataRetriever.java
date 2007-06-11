@@ -1,11 +1,11 @@
 package org.iana.dns.check;
 
-import org.iana.dns.DNSWhoIsData;
+import org.iana.dns.whois.DNSWhoIsDataRetriever;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
-class MockWhoIsDataRetriever implements DNSWhoIsData {
+class MockWhoIsDataRetriever implements DNSWhoIsDataRetriever {
 
     public String retrieveASNumber(String IPAddress) {
         return "AS1234";

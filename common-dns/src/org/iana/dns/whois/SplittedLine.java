@@ -1,7 +1,7 @@
 package org.iana.dns.whois;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 
 class SplittedLine {

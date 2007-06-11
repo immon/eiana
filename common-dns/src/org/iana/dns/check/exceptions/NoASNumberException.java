@@ -5,6 +5,8 @@ import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
 
 /**
+ * Thrown in MinimumNetworkDiversityCheck when there is no AS number for IP address.
+ *
  * @author Piotr Tkaczyk
  */
 
@@ -13,11 +15,11 @@ public class NoASNumberException extends DomainTechnicalCheckException {
     DNSIPAddress ipAddress;
 
     /**
-     * Thrown in MinimumNetworkDiversityCheck when there is no AS number for IP address;
+     * Creates exception from given data.
      *
-     * @param domain    - current domain
-     * @param host      - current host
-     * @param ipAddress - IP address with empty AS number
+     * @param domain    current domain
+     * @param host      current host
+     * @param ipAddress IP address with empty AS number
      */
     public NoASNumberException(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);

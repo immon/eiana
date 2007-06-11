@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Thrown in SerialNumberCoherencyCheck when there are name servers with more then one serial number.
+ *
  * @author Piotr Tkaczyk
  */
 public class SerialNumberNotEqualException extends DomainTechnicalCheckException {
@@ -15,10 +17,10 @@ public class SerialNumberNotEqualException extends DomainTechnicalCheckException
     Map<Long, List<DNSHost>> serialsMap;
 
     /**
-     * Thrown in SerialNumberCoherencyCheck when there are name servers with more then one serial number
+     * Creates exception from given data.
      *
-     * @param domain     - current domain
-     * @param serialsMap - maps serial numbers to name servers
+     * @param domain     current domain
+     * @param serialsMap maps serial numbers to name servers
      */
     public SerialNumberNotEqualException(DNSDomain domain, Map<Long, List<DNSHost>> serialsMap) {
         super(domain, null);

@@ -4,9 +4,9 @@ import org.iana.dns.DNSHost;
 import org.iana.dns.check.DNSTechnicalCheckException;
 
 /**
+ * Base exception for all checks from DNSNameServerTechnicalCheck.
+ *
  * @author Piotr Tkaczyk
- *         <p/>
- *         Base exception for all checks from DNSNameServerTechnicalCheck;
  */
 public class NameServerTechnicalCheckException extends DNSTechnicalCheckException {
     DNSHost host;

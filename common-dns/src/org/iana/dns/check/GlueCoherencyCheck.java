@@ -12,14 +12,14 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
+ * (Test 7)
+ * Checks A and AAAA records of authoritative name server,
+ * and compares them to the supplied name server A and AAAA records.
+ * These should match.
+ *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
- *         <p/>
- *         (Test 7)
- *         Checks that A and AAAA records of authoritative name servers,
- *         and compares them to the supplied records.
  */
-
 public class GlueCoherencyCheck extends NameServerCheckBase {
 
     void doCheck(DNSNameServer ns) throws DNSTechnicalCheckException {

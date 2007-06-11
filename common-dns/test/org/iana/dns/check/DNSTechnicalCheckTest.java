@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
-@Test(sequential = true, groups = {"common-dns", "DNSTechnicalCheckTest"})
+@Test(sequential = true, groups = {"stress", "common-dns", "DNSTechnicalCheckTest"})
 public class DNSTechnicalCheckTest {
 
     @Test

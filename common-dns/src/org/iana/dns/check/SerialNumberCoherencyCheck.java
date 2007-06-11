@@ -7,17 +7,14 @@ import org.iana.dns.check.exceptions.SerialNumberNotEqualException;
 import java.util.*;
 
 /**
+ * (Test 8)
+ * Checks the serial numbers in the SOA records supplied by the authoritative name servers.
+ * These should match.
+ *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
- *         <p/>
- *         (Test 8)
- *         Checks the serial numbers supplied by authoritative name servers. These should match.
  */
 public class SerialNumberCoherencyCheck implements DNSDomainTechnicalCheck {
-
-    /*
-    * Tests: Serial Number Coherency
-    */
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 

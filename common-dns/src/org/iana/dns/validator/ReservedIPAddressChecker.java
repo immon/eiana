@@ -4,7 +4,7 @@ import org.iana.dns.DNSIPv4Address;
 import org.iana.dns.obj.DNSIPv4AddressImpl;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
  */
 public class ReservedIPAddressChecker {
 

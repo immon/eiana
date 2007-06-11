@@ -3,31 +3,31 @@ package org.iana.dns.check;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
-import org.iana.dns.DNSWhoIsData;
 import org.iana.dns.check.exceptions.DuplicatedASNumberException;
 import org.iana.dns.check.exceptions.NoASNumberException;
 import org.iana.dns.check.exceptions.WhoIsIOException;
+import org.iana.dns.whois.DNSWhoIsDataRetriever;
 import org.iana.dns.whois.WhoIsDataRetriever;
 
 import java.io.IOException;
 import java.util.*;
 
 /**
+ * (Test 9)
+ * Checks that provided IP addresses originate from at least two different autonomous systems.
+ *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
- *         <p/>
- *         (Test 9)
- *         Checks that provided IP addresses originate from at least two different autonomous systems.
  */
 public class MinimumNetworkDiversityCheck implements DNSDomainTechnicalCheck {
 
-    DNSWhoIsData whoIs;
+    DNSWhoIsDataRetriever whoIs;
 
     public MinimumNetworkDiversityCheck() {
         whoIs = new WhoIsDataRetriever();
     }
 
-    public MinimumNetworkDiversityCheck(DNSWhoIsData whoIs) {
+    public MinimumNetworkDiversityCheck(DNSWhoIsDataRetriever whoIs) {
         this.whoIs = whoIs;
     }
 

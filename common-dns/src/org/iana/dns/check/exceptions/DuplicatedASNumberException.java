@@ -6,7 +6,9 @@ import org.iana.dns.DNSHost;
 import java.util.List;
 
 /**
- * @author: Piotr Tkaczyk
+ * Thrown in MinimumNetworkDiversityCheck when two or more name servers have the same AS number.
+ *
+ * @author Piotr Tkaczyk
  */
 public class DuplicatedASNumberException extends DomainTechnicalCheckException {
 
@@ -14,11 +16,11 @@ public class DuplicatedASNumberException extends DomainTechnicalCheckException {
     private List<DNSHost> hosts;
 
     /**
-     * Thrown when two or more name servers have the same AS numbers in MinimumNetworkDiversityCheck;
+     * Creates exception from given data.
      *
-     * @param domain   - current domain
-     * @param asNumber - duplicated AS number
-     * @param hosts    - hosts list with this asNumber
+     * @param domain   current domain
+     * @param asNumber duplicated AS number
+     * @param hosts    hosts list with this asNumber
      */
     public DuplicatedASNumberException(DNSDomain domain, String asNumber, List<DNSHost> hosts) {
         super(domain, null);
