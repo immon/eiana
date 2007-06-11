@@ -17,8 +17,8 @@ public class SerialNumberNotEqualException extends DomainTechnicalCheckException
     /**
      * Thrown in SerialNumberCoherencyCheck when there are name servers with more then one serial number
      *
-     * @param domain     current domain
-     * @param serialsMap maps serial numbers to name servers
+     * @param domain     - current domain
+     * @param serialsMap - maps serial numbers to name servers
      */
     public SerialNumberNotEqualException(DNSDomain domain, Map<Long, List<DNSHost>> serialsMap) {
         super(domain, null);

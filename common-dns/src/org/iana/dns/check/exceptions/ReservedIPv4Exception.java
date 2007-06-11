@@ -11,6 +11,14 @@ public class ReservedIPv4Exception extends DomainTechnicalCheckException {
 
     DNSIPAddress ipAddress;
 
+    /**
+     * Thrown in MinimumNameServersAndNoReservedIPsCheck when IP address is restricted according to RFC 3330;
+     *
+     * @param domain    - current domain
+     * @param host      - current host
+     * @param ipAddress - wrong IP address
+     */
+
     public ReservedIPv4Exception(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);
         this.ipAddress = ipAddress;

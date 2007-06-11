@@ -10,10 +10,10 @@ public class MaximumPayloadExceededException extends NameServerTechnicalCheckExc
     private int estimatedSize;
 
     /**
-     * Thrown in MaximumPayloadSizeCheck when estimated size exceed 512 byts
+     * Thrown in MaximumPayloadSizeCheck when estimated size exceed 512 byts;
      *
-     * @param host          current host
-     * @param estimatedSize exceeded estimated response size
+     * @param host          - current host
+     * @param estimatedSize - exceeded estimated response size
      */
     public MaximumPayloadExceededException(DNSHost host, int estimatedSize) {
         super(host);

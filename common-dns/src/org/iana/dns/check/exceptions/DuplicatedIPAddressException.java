@@ -12,11 +12,11 @@ public class DuplicatedIPAddressException extends DomainTechnicalCheckException 
     DNSIPAddress ipAddress;
 
     /**
-     * //todo
+     * Thrown in MinimumNameServersAndNoReservedIPsCheck when IP address is duplicated;
      *
      * @param domain    - current domain
-     * @param host
-     * @param ipAddress
+     * @param host      - current host
+     * @param ipAddress - duplicated IP address
      */
     public DuplicatedIPAddressException(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);

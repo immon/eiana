@@ -14,7 +14,7 @@ public class DuplicatedASNumberException extends DomainTechnicalCheckException {
     private List<DNSHost> hosts;
 
     /**
-     * Thrown when two or more name servers have the same AS numbers in MinimumNetworkDiversityCheck.
+     * Thrown when two or more name servers have the same AS numbers in MinimumNetworkDiversityCheck;
      *
      * @param domain   - current domain
      * @param asNumber - duplicated AS number

@@ -8,9 +8,9 @@ import org.iana.dns.DNSHost;
 public class NameServerUnreachableException extends NameServerTechnicalCheckException {
 
     /**
-     * Thrown in NameServerCheckBase when SOA record in unreachable
+     * Thrown in NameServerCheckBase when SOA record in unreachable;
      *
-     * @param host current host
+     * @param host - current host
      */
     public NameServerUnreachableException(DNSHost host) {
         super(host);

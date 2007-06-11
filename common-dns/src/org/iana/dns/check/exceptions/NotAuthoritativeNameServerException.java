@@ -7,6 +7,12 @@ import org.iana.dns.DNSHost;
  */
 public class NotAuthoritativeNameServerException extends NameServerTechnicalCheckException {
 
+    /**
+     * Thrown in NameServerAuthorityCheck when host is not authoritative;
+     *
+     * @param host - current host
+     */
+
     public NotAuthoritativeNameServerException(DNSHost host) {
         super(host);
     }
