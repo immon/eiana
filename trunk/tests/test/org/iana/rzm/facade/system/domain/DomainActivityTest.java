@@ -5,6 +5,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.AfterClass;
 import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
 import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.PasswordAuth;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.domain.Domain;
@@ -12,6 +14,8 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.jbpm.graph.exe.ProcessInstance;
+
+import java.util.List;
 
 /**
  * Tests domain 'state' attribute which says whether or not
@@ -33,6 +37,12 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         Domain domain = new Domain("activitytest");
         domain.addNameServer(new Host("host1.host"));
         domain.addNameServer(new Host("host2.host"));
+        domain.setSupportingOrg(new Contact("so-name"));
+        domainManager.create(domain);
+
+        domain = new Domain("activitytest2");
+        domain.addNameServer(new Host("host3.host"));
+        domain.addNameServer(new Host("host4.host"));
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
 
@@ -79,5 +89,40 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
 
         IDomainVO domain = getDomain("activitytest", iana);
         assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
+    }
+
+    @Test
+    public void testDomainNoActivityAfterCompletion() throws Exception {
+        setUser("iana");
+        IDomainVO domain = getDomain("activitytest2", iana);
+        domain.setRegistryUrl("activitytest.registry.url");
+        TransactionVO trans = gsts.createTransactions(domain, false).get(0);
+        long transactionID = trans.getObjId();
+        ats.updateTransaction(transactionID, 0L, "COMPLETED", false);
+
+        List<TransactionVO> open = gsts.findOpenTransactions();
+        assert open.size() == 0;
+
+        domain = getDomain("activitytest2", iana);
+        assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
+    }
+
+    @Test
+    public void testDomainNoActivityAfterWithdrawal() throws Exception {
+        setUser("iana");
+        IDomainVO domain = getDomain("activitytest2", iana);
+        domain.setRegistryUrl("activitytest.registry.url");
+        TransactionVO trans = gsts.createTransactions(domain, false).get(0);
+        long transactionID = trans.getObjId();
+        ats.updateTransaction(transactionID, 0L, "WITHDRAWN", false);
+
+        domain = getDomain("activitytest2", iana);
+        assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
+    }
+
+    private void setUser(String loginName) throws Exception {
+        AuthenticatedUser user = authService.authenticate(new PasswordAuth(loginName, ""));
+        ats.setUser(user);
+        gsts.setUser(user);
     }
 }
