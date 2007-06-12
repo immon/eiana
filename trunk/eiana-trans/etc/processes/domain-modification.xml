@@ -42,6 +42,11 @@
             <handler class="org.iana.rzm.trans.jbpm.handlers.NSLinkChangeDecision"/>
             <transition name="yes" to="PENDING_TECH_CHECK"/>
             <transition name="no" to="PENDING_CONTACT_CONFIRMATION"/>
+            <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                <start>true</start>
+            </action>
+            </event>
         </decision>
 
         <decision name="PENDING_TECH_CHECK">
@@ -91,9 +96,6 @@
                                 <notification>contact-confirmation</notification>
                             </action>
                 -->
-                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
-                    <start>true</start>
-                </action>
             </event>
             <timer name="7d-time-out" duedate='7 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
@@ -416,7 +418,10 @@
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>completed</notification>
                 </action>
-            </event>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                        <start>false</start>
+                    </action>
+                </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
