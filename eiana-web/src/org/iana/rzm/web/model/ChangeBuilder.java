@@ -25,11 +25,16 @@ public class ChangeBuilder {
         private static final String CONTACT_EMAIL = "Contact Email";
         private static final String CONTACT_PRIVATE_EMAIL = "Contact Private Email";
         private static final String CONTACT_PHONE = "Contact Phone";
+        private static final String CONTACT_ALT_PHONE = "Contact Alternate Phone";
         private static final String CONTACT_FAX = "Contact Fax";
+        private static final String CONTACT_ALT_FAX = "Contact Alternate Fax";
         private static final String CONTACT_NAME = "Contact Name";
         private static final String CONTACT_JOB_TITLE = "Contact Job Title";
         private static final String CONTACT_ORGANISATION = "Contact Organization";
         private static final String CONTACT_ROLE = "Contact Role";
+        private static final String IP_ADDRESS = "IP Address";
+        private static final String HOST_NAME = "Host name";
+        private static final String NAME_SERVER = "Name Server";
 
         static{
             initMap();
@@ -39,9 +44,11 @@ public class ChangeBuilder {
             add(ChangeFields.AC_ADDRESS, CONTACT_ADDRESS);
             add(ChangeFields.AC_CC, CONTACT_COUNTRY);
             add(ChangeFields.AC_EMAIL, CONTACT_EMAIL);
-            add(ChangeFields.AC_PRIVATE_EMAIL, CONTACT_EMAIL);
+            add(ChangeFields.AC_PRIVATE_EMAIL, CONTACT_PRIVATE_EMAIL);
             add(ChangeFields.AC_PHONENUMBER, CONTACT_PHONE);
+            add(ChangeFields.AC_ALTPHONENUMBER, CONTACT_ALT_PHONE);
             add(ChangeFields.AC_FAXNUMBER, CONTACT_FAX);
+            add(ChangeFields.AC_ALTFAXNUMBER, CONTACT_ALT_FAX);
             add(ChangeFields.AC_NAME, CONTACT_NAME);
             add(ChangeFields.AC_JOB_TITLE, CONTACT_JOB_TITLE);
             add(ChangeFields.AC_ORG, CONTACT_ORGANISATION);
@@ -50,8 +57,11 @@ public class ChangeBuilder {
             add(ChangeFields.SO_ADDRESS, CONTACT_ADDRESS);
             add(ChangeFields.SO_CC, CONTACT_COUNTRY);
             add(ChangeFields.SO_EMAIL, CONTACT_EMAIL);
+            add(ChangeFields.SO_PRIVATE_EMAIL, CONTACT_PRIVATE_EMAIL);
             add(ChangeFields.SO_PHONENUMBER, CONTACT_PHONE);
+            add(ChangeFields.SO_ALTPHONENUMBER, CONTACT_ALT_PHONE);
             add(ChangeFields.SO_FAXNUMBER, CONTACT_FAX);
+            add(ChangeFields.SO_ALTFAXNUMBER, CONTACT_ALT_FAX);
             add(ChangeFields.SO_NAME, CONTACT_NAME);
             add(ChangeFields.SO_JOB_TITLE, CONTACT_JOB_TITLE);
             add(ChangeFields.SO_ORG, CONTACT_ORGANISATION);
@@ -60,18 +70,19 @@ public class ChangeBuilder {
             add(ChangeFields.TC_ADDRESS, CONTACT_ADDRESS);
             add(ChangeFields.TC_CC, CONTACT_COUNTRY);
             add(ChangeFields.TC_EMAIL, CONTACT_EMAIL);
-            add(ChangeFields.TC_PHONENUMBER, CONTACT_PHONE);
-            add(ChangeFields.TC_FAXNUMBER, CONTACT_FAX);
+            add(ChangeFields.TC_PRIVATE_EMAIL, CONTACT_PRIVATE_EMAIL);
+            add(ChangeFields.TC_ALTPHONENUMBER, CONTACT_ALT_PHONE);
+            add(ChangeFields.TC_ALTFAXNUMBER, CONTACT_ALT_FAX);
             add(ChangeFields.TC_NAME, CONTACT_NAME);
             add(ChangeFields.TC_JOB_TITLE, CONTACT_JOB_TITLE);
             add(ChangeFields.TC_ORG, CONTACT_ORGANISATION);
             add(ChangeFields.TC_ROLE, CONTACT_ROLE);
 
-            add(ChangeFields.NS_IP, "IP Address");
-            add(ChangeFields.NS_NAME, "Host name");
+            add(ChangeFields.NS_IP, IP_ADDRESS);
+            add(ChangeFields.NS_NAME, HOST_NAME);
             add(ChangeFields.REGISTRY_URL, "Registry URL");
             add(ChangeFields.WHOIS, "WHOIS");
-            add("nameServers", "Name Server");
+            add("nameServers", NAME_SERVER);
 
         }
 

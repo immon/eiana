@@ -1,4 +1,4 @@
-package org.iana.rzm.web.components;
+package org.iana.rzm.web.common;
 
 import org.apache.tapestry.form.IFormComponent;
 import org.apache.tapestry.valid.IValidationDelegate;

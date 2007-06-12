@@ -1,0 +1,124 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@AdminBorder" selected="literal:USERS">
+            <span jwcid="@ShowMessages"/>
+            <span jwcid="@ShowError"/>
+            <span jwcid="@ShowValidationError"/>
+            <h4 style="margin-top: 40px;">Create User </h4>
+            <div class="mainBox" style="margin: 20px 0 0 0;">
+                <span jwcid=@GrayContainer>
+                    <span jwcid="userEditor">
+                        <form action="#" name="user">
+                            <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
+                                <tr>
+                                    <td valign="top" class="label green">User Name:</td>
+                                    <td align="right" valign="top"><input type="text" name="textfield2" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" class="label green">Password:</td>
+                                    <td align="right" valign="top"><input type="password" name="textfield22" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" class="label green">Confirm Password:</td>
+                                    <td align="right" valign="top"><input type="password" name="textfield23" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td width="29%" valign="top" class="label green">Name:</td>
+                                    <td width="71%" align="right" valign="top"><input type="text" name="textfield" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td width="29%" valign="top" class="label green">Last name:</td>
+                                    <td width="71%" align="right" valign="top"><input type="text" name="textfield" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" class="label green">Email Address:</td>
+                                    <td align="right" valign="top"><input type="text" name="textfield7" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" class="label green">Organization:</td>
+                                    <td align="right" valign="top"><input type="text" name="textfield7" class="field"></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" class="label green">PGP Key:</td>
+                                    <td align="right" valign="top"><textarea name="textfield3" rows="4" class="field"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" class="label green"><label>Use SecureId</label></td>
+                                    <td align="left" valign="top"><input type="checkbox"/></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" valign="top" class="label green">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" valign="top" class="label green">
+                                        <div class="boxContentHeader">
+                                            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="position: relative; top: -25px;">
+                                                <tr>
+                                                    <td width="51%" valign="top"><strong>Domain</strong></td>
+                                                    <td width="33%" height="20" valign="top"><strong>Role</strong></td>
+                                                    <td width="16%" height="20" align="right" valign="top"><strong>Actions</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"><img src="images/spacer.gif" width="1" height="10"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>US</td>
+                                                    <td>Tech</td>
+                                                    <td>
+                                                        <div class="buttonStyle" style="float: right;">
+                                                            <b class="leftBlue"></b>
+                                                            <b class="right"><a href="#" class="buttonBlue">Delete</a></b>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"><img src="images/spacer.gif" width="1" height="10"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" name="textfield72" style="width: 200px;"></td>
+                                                    <td>
+                                                        <label>
+                                                            <span class="field">
+                                                                <select name="select">
+                                                                    <option>Tech</option>
+                                                                    <option>Admin</option>
+                                                                    <option>SO</option>
+                                                                </select>
+                                                            </span>
+                                                        </label>
+                                                    </td>
+                                                    <td><div class="buttonStyle" style="float: right;"> <b class="left"></b> <b class="right"><a href="#" class="button">Add</a></b></div></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="50">&nbsp;</td>
+                                    <td height="50">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <div class="buttonStyle" style="float: right;">
+                                            <b class="left"></b>
+                                            <b class="right" style="width: 130px;"><a href="#" class="button" style="padding-left: 13px;">Save Changes ></a></b>
+                                        </div>
+                                        <div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+                                            <b class="leftBlue"></b>
+                                            <b class="right" style="width: 130px;"><a href="#" class="buttonBlue" style="padding-left: 8px;">< Revert Changes</a></b>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </span>
+                </span>
+            </div>            
+        </body>
+    </span>
+</html>

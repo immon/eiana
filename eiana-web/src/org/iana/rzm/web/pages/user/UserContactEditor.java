@@ -9,9 +9,9 @@ import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.AttributesEditor;
+import org.iana.rzm.web.common.ContactAttributesEditor;
 import org.iana.rzm.web.common.user.TransactionForDomainFetcher;
-import org.iana.rzm.web.components.AttributesEditor;
-import org.iana.rzm.web.components.ContactAttributesEditor;
 import org.iana.rzm.web.model.ContactVOWrapper;
 import org.iana.rzm.web.model.DomainVOWrapper;
 

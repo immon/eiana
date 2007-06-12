@@ -15,6 +15,7 @@
                     <tr>
                         <td valign="top">
                             <strong><span jwcid="type">Administrative</span></strong>
+                            <span jwcid="@If" condition="prop:role"><br/><span jwcid="@Insert" value="literal:Role Account">Role Account</span></span>
                             <span jwcid="userRole"></span>
                         </td>
                         <td valign="top"><strong><span jwcid="contactName">Chris Disspain</span></strong><br/>
@@ -34,11 +35,11 @@
                             <span jwcid="email">"ceo@auda.org.au</span><br/>
                             <span jwcid="privateEmailSpan"><span jwcid="privateEmail">"ceo@auda.org.au</span>
                                 <span jwcid=@If condition="prop:usePrivateEmail"><br/></span></span>
-                            <span jwcid="phone">+61-3-9349-4711 (v)</span><br>
-                            <span jwcid="altPhoneSpan"><span jwcid="altPhone">+61-3-9349-4711 (v)</span>
+                            <span jwcid="phone">+61-3-9349-4711 (v)</span>(v)<br>
+                            <span jwcid="altPhoneSpan"><span jwcid="altPhone">+61-3-9349-4711 (v)</span>(v)
                                 <span jwcid=@If condition="prop:useAltPhone"><br/></span></span>
-                            <span jwcid="fax">+61-9349-5711(f)</span><br>
-                            <span jwcid="altFaxSpan"><span jwcid="altFax">+61-9349-5711(f)</span></span>
+                            <span jwcid="fax">+61-9349-5711(f)</span>(f)<br>
+                            <span jwcid="altFaxSpan"><span jwcid="altFax">+61-9349-5711(f)</span>(f)</span>
                         </td>
                     </tr>
                     <tr>

@@ -1,4 +1,4 @@
-package org.iana.rzm.web.components;
+package org.iana.rzm.web.common;
 
 import java.util.Map;
 

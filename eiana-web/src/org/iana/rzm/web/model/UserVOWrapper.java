@@ -5,35 +5,96 @@ import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.web.util.DateUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UserVOWrapper extends ValueObject implements PaginatedEntity {
 
     private UserVO vo;
 
-    public UserVOWrapper(UserVO vo){
+    public UserVOWrapper() {
+        this(new UserVO());
+    }
+
+    public UserVOWrapper(UserVO vo) {
         this.vo = vo;
     }
 
-    public long getId(){
+    public UserVO getVo(){
+        return vo;
+    }
+
+    public long getId() {
         return vo.getObjId();
     }
 
-    public String getUserName(){
+    public String getUserName() {
         return vo.getUserName();
     }
 
-      public String getModified(){
+    public void setUserName(String userName) {
+        vo.setUserName(userName);
+    }
+
+    public String getFirstName() {
+        return vo.getFirstName();
+    }
+
+    public void setFirstName(String name){
+        vo.setFirstName(name);
+    }
+
+    public String getModified() {
         Date d = vo.getModified();
         return d == null ?
-                DateUtil.formatDate(vo.getCreated()):
+                DateUtil.formatDate(vo.getCreated()) :
                 DateUtil.formatDate(d);
     }
 
-    public List<String> listSystemUserRoles(){
+    public void setEmail(String email) {
+        vo.setEmail(email);
+    }
+
+    public String getEmail() {
+        return vo.getEmail();
+    }
+
+    public String getPublickey() {
+        return vo.getPublicKey();
+    }
+
+    public void setPublicKey(String key) {
+        vo.setPublicKey(key);
+    }
+
+    public boolean isUseSecureId() {
+        return vo.isSecurID();
+    }
+
+    public void setUseSecureId(boolean value) {
+        vo.setSecurID(value);
+    }
+
+    public void setPassword(String pass){
+        vo.setPassword(pass);
+    }
+    
+    public String getLastName() {
+        return vo.getLastName();
+    }
+    
+    public void setLastName(String lastName) {
+        vo.setLastName(lastName);
+    }
+
+    public String getOrganization() {
+        return vo.getOrganization();
+    }
+
+    public void setOrganization(String org) {
+        vo.setOrganization(org);
+    }
+
+    public List<String> listSystemUserRoles() {
         List<String> rolesNames = new ArrayList<String>();
         List<SystemRoleVOWrapper> list = getSystemRoles();
         for (SystemRoleVOWrapper systemRoleVOWrapper : list) {
@@ -42,21 +103,20 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         return rolesNames;
     }
 
-    public boolean isAc(){
+
+    public boolean isAc() {
         return isInRole(SystemRoleVOWrapper.SystemType.AC);
     }
 
-    public boolean isTc(){
+    public boolean isTc() {
         return isInRole(SystemRoleVOWrapper.SystemType.TC);
     }
 
-
-
-    public List<SystemRoleVOWrapper> getSystemRoles(){
+    public List<SystemRoleVOWrapper> getSystemRoles() {
         Set<RoleVO> roleVOs = vo.getRoles();
         List<SystemRoleVOWrapper> roles = new ArrayList<SystemRoleVOWrapper>();
         for (RoleVO roleVO : roleVOs) {
-            if(roleVO.isAdmin()){
+            if (roleVO.isAdmin()) {
                 continue;
             }
             roles.add(new SystemRoleVOWrapper((SystemRoleVO) roleVO));
@@ -64,15 +124,48 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         return roles;
     }
 
-
     public boolean isAccessEnabled(String domainName) {
         return vo.hasAccessToDomain(domainName);
+    }
+
+    public List<RoleUserDomain> getUserDomains() {
+        List<SystemRoleVOWrapper> list = getSystemRoles();
+        List<RoleUserDomain> result = new ArrayList<RoleUserDomain>();
+        int id = 0;
+        for (SystemRoleVOWrapper systemRoleVOWrapper : list) {
+            result.add(new RoleUserDomain(id, systemRoleVOWrapper.getDomainName(), systemRoleVOWrapper.getTypeAsString(),
+                    null, systemRoleVOWrapper.getId()));
+            id++;
+        }
+        return result;
+    }
+
+    public boolean containsRole(SystemRoleVOWrapper role) {
+        for (SystemRoleVOWrapper systemRoleVOWrapper : getSystemRoles()) {
+            if(systemRoleVOWrapper.getId() == role.getId()){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public void addRole(SystemRoleVOWrapper role) {
+        vo.addRole(role.getVo());
+    }
+
+    public void setRoles(List<SystemRoleVOWrapper> roles) {
+        vo.setRoles(new HashSet<RoleVO>());
+        for (SystemRoleVOWrapper role : roles) {
+            vo.addRole(role.getVo());
+        }
     }
 
     private boolean isInRole(SystemRoleVOWrapper.SystemType type) {
         List<SystemRoleVOWrapper> list = getSystemRoles();
         for (SystemRoleVOWrapper role : list) {
-            if(role.getType().equals(type)){
+            if (role.getType().equals(type)) {
                 return true;
             }
         }

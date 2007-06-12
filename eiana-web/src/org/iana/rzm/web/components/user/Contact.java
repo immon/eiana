@@ -196,6 +196,11 @@ public abstract class Contact extends BaseComponent {
         return isAddressModified() ? "edited" : "";
     }
 
+    public boolean isRole(){
+        String role = getContactAttributes().get(ContactVOWrapper.ROLE);
+        return Boolean.valueOf(role);
+    }
+
     public String getAlternateFaxSpan() {
         String fax = getContactAttributes().get(ContactVOWrapper.ALT_FAX);
         String originalFax = getOriginalAttributes().get(ContactVOWrapper.ALT_FAX);

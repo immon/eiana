@@ -24,4 +24,7 @@ public interface AdminServices extends RzmServices {
     public List<DomainVOWrapper> getDomains(int offset, int length);
     public int getTotalUserCount();
     public List<UserVOWrapper> getUsers(int offset, int length);
+    public UserVOWrapper getUser(long userId);
+    public void createUser(UserVOWrapper user);
+    public void updateUser(UserVOWrapper user);
 }

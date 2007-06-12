@@ -17,15 +17,6 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
     public static final String SUPPORTING_ORGANIZATION = "Sponsoring Organization";
 
 
-    public SystemRoleVOWrapper(SystemRoleVO.Type type) {
-        super(new SystemRoleVO());
-        getVo().setType(type);
-    }
-
-    public SystemRoleVOWrapper(SystemRoleVO vo) {
-        super(vo);
-    }
-
     public enum SystemType implements Type {
         AC("Administrative", ADMINISTRATIVE_CONTACT), TC("Technical", THECHNICAL_CONTACT), SO(SUPPORTING_ORGANIZATION);
 
@@ -62,6 +53,20 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
             throw new IllegalArgumentException(type);
         }
 
+        public static SystemType fromType(String type) {
+            CheckTool.checkNull(type, "Type");
+            if (type.equals(AC.displayName)) {
+                return AC;
+            } else if (type.equals(TC.displayName)) {
+                return TC;
+            } else if (type.equals(SO.displayName)) {
+                return SO;
+            }
+
+            throw new IllegalArgumentException(type);
+        }
+
+
         public static SystemType fromVOType(SystemRoleVO.Type type) {
             CheckTool.checkNull(type, "Type");
             if (type.equals(SystemRoleVO.SystemType.AC)) {
@@ -74,6 +79,40 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
 
             throw new IllegalArgumentException(type.toString());
         }
+
+        public SystemRoleVO.Type getServerType(){
+            return SystemRoleVO.SystemType.values()[ordinal()];
+        }
+    }
+
+    public SystemRoleVOWrapper(SystemRoleVO.Type type) {
+        super(new SystemRoleVO());
+        getVo().setType(type);
+    }
+
+
+    public SystemRoleVOWrapper(SystemRoleVO vo) {
+        super(vo);
+    }
+
+    protected SystemRoleVO getVo() {
+        return (SystemRoleVO) super.getVo();
+    }
+
+    public long getId() {
+        return getVo().getObjId();
+    }
+
+    public void setId(long roleId) {
+        getVo().setObjId(roleId);
+    }
+
+    public void setName(String domainName) {
+        getVo().setName(domainName);
+    }
+
+    public String getDomainName(){
+        return getVo().getName();
     }
 
     public SystemType getType() {
@@ -82,5 +121,9 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
 
     public String getTypeAsString() {
         return getType().toString();
+    }
+
+    public void setDomainAccess(boolean value) {
+        getVo().setAccessToDomain(value);
     }
 }

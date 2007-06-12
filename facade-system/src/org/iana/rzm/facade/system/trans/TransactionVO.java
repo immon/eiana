@@ -3,12 +3,11 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.facade.common.TrackDataVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.user.SystemRole;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -178,4 +177,5 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     public void setConfirmations(Set<SystemRoleVO.SystemType> confirmations) {
         this.confirmations = confirmations;
     }
+
 }

@@ -10,6 +10,7 @@ import org.apache.tapestry.annotations.Parameter;
 import org.apache.tapestry.form.IFormComponent;
 import org.apache.tapestry.valid.IValidationDelegate;
 import org.apache.tapestry.valid.ValidatorException;
+import org.iana.rzm.web.common.NameServerAttributesEditor;
 import org.iana.rzm.web.model.NameServerValue;
 import org.iana.rzm.web.tapestry.validator.WebDomainNameValidator;
 import org.iana.rzm.web.tapestry.validator.WebIPListValidator;
