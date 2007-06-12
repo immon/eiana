@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * A helper class that represents a host which is a name server for a domain. During
+ * construction DNS is queried to obtain SOA record configured for a given domain on a given name server. 
+ *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
  */

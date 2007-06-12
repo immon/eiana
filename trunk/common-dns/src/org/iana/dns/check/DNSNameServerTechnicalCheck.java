@@ -4,6 +4,9 @@ import org.iana.dns.DNSHost;
 import org.iana.dns.DNSDomain;
 
 /**
+ * It provides a uniform interface for technical checks in the context of a single
+ * name server of a given domain.
+ *
  * @author Patrycja Wegrzynowicz
  */
 public interface DNSNameServerTechnicalCheck {
