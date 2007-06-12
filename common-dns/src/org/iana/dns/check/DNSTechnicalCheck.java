@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * It performs a series of pre-configured technical checks for a given domain. These
+ * checks include domain checks (i.e. the checks conducted in a context of a domain as a whole)
+ * and name server checks (i.e. the checks conducted in a context of a single name server).
+ * All domain checks are conducted prior to name server checks. A failed check (i.e. exception thrown) does not
+ * stop processing, instead an exception thrown during processing is added to a MultipleDNSTechnicalCheckException instance. 
+ *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
  */

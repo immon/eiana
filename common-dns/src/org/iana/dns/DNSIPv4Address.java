@@ -1,7 +1,7 @@
 package org.iana.dns;
 
 /**
- * This interface represents a IPv6 address.
+ * This interface represents an IPv6 address.
  *
  * @author Patrycja Wegrzynowicz
  */

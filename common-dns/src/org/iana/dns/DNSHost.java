@@ -1,5 +1,7 @@
 package org.iana.dns;
 
+import org.iana.dns.validator.InvalidIPAddressException;
+
 import java.util.Set;
 
 /**
@@ -25,11 +27,34 @@ public interface DNSHost {
      */
     String getNameWithDot();
 
+    /**
+     * Returns a set of IP addresses configured for this host.
+     *
+     * @return a set of IP addresses configured for this host.
+     */
     Set<DNSIPAddress> getIPAddresses();
 
+    /**
+     * Returns a set of IP addresses (as plain strings) configured for this host.
+     * The strings in the returned set are valid IP addresses.
+     *
+     * @return a set of IP addresses (as plain strings) configured for this host.
+     */
     Set<String> getIPAddressesAsStrings();
 
+    /**
+     * Determines whether this host has a given IP address configured.
+     *
+     * @param addr the IP address
+     * @return true if this host has this IP address configured; false otherwise.
+     */
     boolean hasIPAddress(DNSIPAddress addr);
 
-    boolean hasIPAddress(String addr);
+    /**
+     * Determines whether this host has a given IP address configured.
+     *
+     * @param addr the IP address
+     * @return true if this host has this IP address configured; false otherwise.
+     */
+    boolean hasIPAddress(String addr) throws InvalidIPAddressException;
 }
