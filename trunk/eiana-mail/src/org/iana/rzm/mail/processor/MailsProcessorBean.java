@@ -22,6 +22,7 @@ import java.util.*;
 
 /**
  * todo: adjust to a new contact structure!
+ *
  * @author Jakub Laszkiewicz
  */
 public class MailsProcessorBean implements MailsProcessor {
@@ -276,7 +277,7 @@ public class MailsProcessorBean implements MailsProcessor {
                 contact.getPhoneNumber()));
         contact.setFaxNumber(getFieldValue(section.getFieldInstance(CONTACT_FAX_FIELD_NAME),
                 contact.getFaxNumber()));
-        contact.setFaxNumber(getFieldValue(section.getFieldInstance(CONTACT_ALT_FAX_FIELD_NAME),
+        contact.setAltFaxNumber(getFieldValue(section.getFieldInstance(CONTACT_ALT_FAX_FIELD_NAME),
                 contact.getFaxNumber()));
         contact.setPublicEmail(getFieldValue(section.getFieldInstance(CONTACT_PUBLIC_EMAIL_FIELD_NAME),
                 contact.getEmail()));
