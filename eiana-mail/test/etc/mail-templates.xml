@@ -1,5 +1,5 @@
 <templates>
-	<template name="Domain Modification Transaction (Unified Workflow)"
+    <template name="Domain Modification Transaction (Unified Workflow)"
               label="Domain Modification Transaction (Unified Workflow)">
         <field name="name" label="Domain Name"/>
         <section name="supportingOrg" label="Supporting Organization">
@@ -14,8 +14,8 @@
             <field name="altPhoneNumber" label="Alternative Phone Number"/>
             <field name="faxNumber" label="Fax Number"/>
             <field name="altFaxNumber" label="Alternative Fax Number"/>
-            <field name="publicEmail" label="Private Email Address"/>
-            <field name="privateEmail" label="Public Email Address"/>
+            <field name="privateEmail" label="Private Email Address"/>
+            <field name="publicEmail" label="Public Email Address"/>
         </section>
         <section name="adminContact" label="Administrative Contact">
             <field name="name" label="Name"/>
@@ -29,8 +29,8 @@
             <field name="altPhoneNumber" label="Alternative Phone Number"/>
             <field name="faxNumber" label="Fax Number"/>
             <field name="altFaxNumber" label="Alternative Fax Number"/>
-            <field name="publicEmail" label="Private Email Address"/>
-            <field name="privateEmail" label="Public Email Address"/>
+            <field name="privateEmail" label="Private Email Address"/>
+            <field name="publicEmail" label="Public Email Address"/>
         </section>
         <section name="techContact" label="Technical Contact">
             <field name="name" label="Name"/>
@@ -44,8 +44,8 @@
             <field name="altPhoneNumber" label="Alternative Phone Number"/>
             <field name="faxNumber" label="Fax Number"/>
             <field name="altFaxNumber" label="Alternative Fax Number"/>
-            <field name="publicEmail" label="Private Email Address"/>
-            <field name="privateEmail" label="Public Email Address"/>
+            <field name="privateEmail" label="Private Email Address"/>
+            <field name="publicEmail" label="Public Email Address"/>
         </section>
         <list>
             <section name="nameServer" label="Name Server">

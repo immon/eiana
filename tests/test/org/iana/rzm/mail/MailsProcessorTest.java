@@ -182,12 +182,12 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             Contact contact = new Contact("templatedomain-tech-rep", "ICB Plc");
             contact.setJobTitle("templatedomain-job-title");
             contact.setAddress(new Address("9 Queens Road", "US"));
-            contact.setPublicEmail("templatedomain-tech-rep-prv@no-mail.org");
-            contact.setPrivateEmail("templatedomain-tech-prv@no-mail.org");
+            contact.setPublicEmail("templatedomain-tech-rep-pub@no-mail.org");
+            contact.setPrivateEmail("templatedomain-tech-rep-prv@no-mail.org");
             contact.setPhoneNumber("+1122334455");
-            contact.setAltPhoneNumber("+1234567893");
-            contact.setFaxNumber("+1122335567");
-            contact.setAltFaxNumber("+1234567891");
+            contact.setAltPhoneNumber("+1122334456");
+            contact.setFaxNumber("+1122335566");
+            contact.setAltFaxNumber("+1122335567");
             domain.setTechContact(contact);
             domain.setAdminContact(createContact("templatedomain-admin"));
             Host host = new Host("ns11.templatedomain");
