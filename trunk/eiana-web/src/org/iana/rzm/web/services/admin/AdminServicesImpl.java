@@ -147,6 +147,18 @@ public class AdminServicesImpl implements AdminServices {
         return users;
     }
 
+    public UserVOWrapper getUser(long userId) {
+        return new UserVOWrapper(userService.getUser(userId));
+    }
+
+    public void createUser(UserVOWrapper user) {
+        userService.createUser(user.getVo());
+    }
+
+    public void updateUser(UserVOWrapper user) {
+        userService.updateUser(user.getVo());
+    }
+
     public void changePassword(long userId, String newPassword) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

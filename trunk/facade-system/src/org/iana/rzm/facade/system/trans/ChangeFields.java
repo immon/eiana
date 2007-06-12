@@ -1,13 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.common.EmailAddress;
-
-import javax.persistence.Basic;
-import javax.persistence.Embedded;
-
 /**
- * The constants denoteing the names of object fields being changed.
+ * The constants that denote the names of object fields being changed.
  *
  * @author Patrycja Wegrzynowicz
  */

@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.admin;
 
 import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -24,11 +25,21 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
             "entityQuery=prop:entityQuery",
             "usePagination=literal:true",
             "noRequestMsg=literal:There are no users.",
-            "listener=listener:viewUser"
+            "listener=listener:editUser"
             }
     )
     public abstract IComponent getListUsersComponent();
 
+    @Component(id = "newuser", type = "DirectLink", bindings = {"listener=listener:createUser",
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getnewuserComponent();
+
+
+    @InjectPage("admin/CreateUser")
+    public abstract CreateUser getCreateUserPage();
+
+    @InjectPage("admin/EditUser")
+    public abstract EditUser  getEditUserPage();
 
     public void pageBeginRender(PageEvent event) {
 
@@ -47,6 +58,16 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         PaginatedEntityQuery entityQuery = new PaginatedEntityQuery();
         entityQuery.setFetcher(new UsersFetcher(getAdminServices()));
         return entityQuery;
+    }
+
+    public void editUser(long userId){
+        EditUser editUser = getEditUserPage();
+        editUser.setUserId(userId);
+        getRequestCycle().activate(editUser);
+    }
+
+    public void createUser(){
+        getRequestCycle().activate(getCreateUserPage());
     }
 
     private static class UsersFetcher implements EntityFetcher {

@@ -11,6 +11,7 @@ import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IFormComponent;
 import org.apache.tapestry.valid.IValidationDelegate;
+import org.iana.rzm.web.common.ContactAttributesEditor;
 import org.iana.rzm.web.model.ContactVOWrapper;
 
 import java.util.Map;

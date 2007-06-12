@@ -4,6 +4,7 @@ import org.iana.rzm.facade.system.trans.TransactionActionVO;
 import org.iana.rzm.facade.system.trans.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.system.trans.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.web.util.DateUtil;
 
 import java.util.ArrayList;
@@ -59,6 +60,13 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public boolean tcConfirmed(){
         return vo.tcConfirmed();
+    }
+
+    public List<Confirmation>getConfirmations(){
+        List<Confirmation>list = new ArrayList<Confirmation>();
+        list.add(new Confirmation("TC", vo.tcConfirmed(), new SystemRoleVOWrapper(SystemRoleVO.SystemType.TC)));
+        list.add(new Confirmation("AC", vo.acConfirmed(), new SystemRoleVOWrapper(SystemRoleVO.SystemType.AC)));
+        return list;
     }
 
 
