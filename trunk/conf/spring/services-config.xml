@@ -103,7 +103,7 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
-        <property name="preInterceptors">
+        <property name="postInterceptors">
             <list>
                 <ref bean="userLoggerInterceptor"/>
             </list>
@@ -141,7 +141,7 @@
         <property name="transactionAttributeSource">
             <ref bean="transactionAttributeSource"/>
         </property>
-        <property name="preInterceptors">
+        <property name="postInterceptors">
             <list>
                 <ref bean="domainLoggerInterceptor"/>
             </list>

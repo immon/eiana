@@ -198,8 +198,8 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
     }
 
     final public void setRoles(List<Role> roles) {
-        this.roles.clear();
-        if (roles != null) this.roles.addAll(roles);
+        this.roles = new ArrayList<Role>();
+        this.roles.addAll(roles);
     }
 
     final public void addRole(Role role) {

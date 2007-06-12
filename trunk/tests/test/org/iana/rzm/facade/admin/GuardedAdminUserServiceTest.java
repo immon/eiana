@@ -1,25 +1,30 @@
 package org.iana.rzm.facade.admin;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.springframework.context.ApplicationContext;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
 import org.iana.criteria.Not;
-import org.iana.criteria.And;
+import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.AdminRoleVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author: Piotr Tkaczyk
@@ -131,6 +136,44 @@ public class GuardedAdminUserServiceTest {
         assert USER_NAME.equals(userVO.getUserName());
         assert "new@email.com".equals(userVO.getEmail());
         
+        gAdminUserServ.close();
+    }
+
+    @Test(dependsOnMethods = {"testFacadeUpdateUser"})
+    public void testFacadeUpdateUserSystemRole() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+        UserVO userVO = gAdminUserServ.getUser(USER_NAME);
+        userVO.setEmail("new@email.com");
+        Set<RoleVO> newRoles = new HashSet<RoleVO>();
+        SystemRoleVO systemRoleVO = new SystemRoleVO(SystemRoleVO.SystemType.AC);
+        systemRoleVO.setName("new-role");
+        newRoles.add(systemRoleVO);
+        userVO.setRoles(newRoles);
+        gAdminUserServ.updateUser(userVO);
+
+        userVO = gAdminUserServ.getUser(USER_NAME);
+        assert USER_NAME.equals(userVO.getUserName());
+        assert "new@email.com".equals(userVO.getEmail());
+
+        gAdminUserServ.close();
+    }
+
+    @Test(dependsOnMethods = {"testFacadeUpdateUserSystemRole"})
+    public void testFacadeUpdateUserAdminRole() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+        UserVO userVO = gAdminUserServ.getUser(USER_NAME);
+        userVO.setEmail("new@email.com");
+        Set<RoleVO> newRoles = new HashSet<RoleVO>();
+        newRoles.add(new AdminRoleVO(AdminRoleVO.AdminType.GOV_OVERSIGHT));
+        userVO.setRoles(newRoles);
+        gAdminUserServ.updateUser(userVO);
+
+        userVO = gAdminUserServ.getUser(USER_NAME);
+        assert USER_NAME.equals(userVO.getUserName());
+        assert "new@email.com".equals(userVO.getEmail());
+
         gAdminUserServ.close();
     }
 
