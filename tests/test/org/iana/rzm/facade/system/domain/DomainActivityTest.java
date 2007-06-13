@@ -1,21 +1,19 @@
 package org.iana.rzm.facade.system.domain;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Host;
+import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
+import org.iana.rzm.facade.system.trans.TransactionVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
-
-import java.util.List;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * Tests domain 'state' attribute which says whether or not
@@ -117,7 +115,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
     }
 
-    private void setUser(String loginName) throws Exception {
+    protected void setUser(String loginName) throws Exception {
         AuthenticatedUser user = authService.authenticate(new PasswordAuth(loginName, ""));
         ats.setUser(user);
         gsts.setUser(user);
