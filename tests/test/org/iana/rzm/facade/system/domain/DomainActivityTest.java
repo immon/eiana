@@ -100,9 +100,6 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         long transactionID = trans.getObjId();
         ats.updateTransaction(transactionID, 0L, "COMPLETED", false);
 
-        List<TransactionVO> open = gsts.findOpenTransactions();
-        assert open.size() == 0;
-
         domain = getDomain("activitytest2", iana);
         assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
     }
