@@ -113,7 +113,7 @@ public class UserVO implements Trackable {
     }
 
     public void setRoles(Set<RoleVO> roles) {
-        this.roles.clear();
+        this.roles = new HashSet<RoleVO>();
         if (roles != null) this.roles.addAll(roles);
     }
 

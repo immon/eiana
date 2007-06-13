@@ -73,7 +73,7 @@ public class Host implements TrackedObject,Cloneable {
     }
 
     final public void setAddresses(Collection<IPAddress> addresses) {
-        this.addresses.clear();
+        this.addresses = new HashSet<IPAddress>();
         CheckTool.checkCollectionNull(addresses, "addresses");
         CheckTool.addAllNoDup(this.addresses, addresses);
     }
