@@ -1,25 +1,27 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.notifications.NotificationManager;
 import org.iana.notifications.dao.EmailAddresseeDAO;
-import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.admin.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.auth.PasswordAuth;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.admin.AdminTransactionService;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
-import org.iana.dns.validator.InvalidDomainNameException;
 import org.springframework.context.ApplicationContext;
+import org.testng.annotations.BeforeClass;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,8 +42,16 @@ public abstract class CommonGuardedSystemTransaction {
     protected SystemDomainService gsds =
             (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
     protected EmailAddresseeDAO emailAddresseeDAO = (EmailAddresseeDAO) appCtx.getBean("emailAddresseeDAO");
+    protected RZMUser defaultIana;
     protected AdminTransactionService ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
     protected AuthenticationService authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
+
+    @BeforeClass
+    public void commonInit() {
+        defaultIana = new RZMUser("fn", "ln", "org", "default-iana", "iana@nowhere", "", false);
+        defaultIana.addRole(new AdminRole(AdminRole.AdminType.IANA));
+        userManager.create(defaultIana);
+    }
 
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);     //iana
@@ -226,6 +236,10 @@ public abstract class CommonGuardedSystemTransaction {
         }
     }
 
+    protected IDomainVO getDomain(String domainName) throws Exception {
+        return getDomain(domainName, defaultIana);
+    }
+
     protected TransactionVO createTransaction(IDomainVO domainVO, RZMUser user) throws Exception {
 //        domainManager.delete(domain);
 //        domainManager.create(domain);
@@ -234,6 +248,10 @@ public abstract class CommonGuardedSystemTransaction {
 
         gsts.close();
         return transaction.iterator().next();
+    }
+
+    protected TransactionVO createTransaction(IDomainVO domainVO) throws Exception {
+        return createTransaction(domainVO, defaultIana);        
     }
 
     private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
@@ -269,5 +287,34 @@ public abstract class CommonGuardedSystemTransaction {
         host.addIPAddress(IPAddress.createIPv4Address("21.2.3.5"));
         host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));
         return host;
+    }
+
+    protected void setUser(String loginName) throws Exception {
+        AuthenticatedUser authUser = authService.authenticate(new PasswordAuth(loginName, ""));
+        gsts.setUser(authUser);
+        gsds.setUser(authUser);
+        ats.setUser(authUser);
+    }
+
+    protected void setDefaultUser() throws Exception {
+        setUser(defaultIana.getLoginName());
+    }
+
+    protected void acceptTransaction(long transactionId, String token) throws Exception {
+        setDefaultUser();
+        try {
+            gsts.acceptTransaction(transactionId, token);
+        } finally {
+            gsts.close();
+        }
+    }
+
+    protected TransactionVO getTransaction (long transactionId) throws Exception {
+        setDefaultUser();
+        try {
+            return gsts.getTransaction(transactionId);
+        } finally {
+            gsts.close();
+        }
     }
 }
