@@ -28,6 +28,14 @@ public class ContactVO implements Trackable, Serializable {
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
 
+    public ContactVO() {
+    }
+
+    public ContactVO(String name, String publicEmail) {
+        this.name = name;
+        this.publicEmail = toEmail(publicEmail);
+    }
+
     public String getName() {
         return name;
     }

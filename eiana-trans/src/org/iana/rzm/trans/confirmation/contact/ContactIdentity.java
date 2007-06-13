@@ -24,6 +24,8 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     private String email;
     @Basic
     private String token;
+    @Basic
+    private boolean newContact;
 
     private ContactIdentity() {
     }
@@ -32,15 +34,16 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
         this.token = token;
     }
 
-    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token) {
-        this(type, contact.getName(), contact.getEmail(), token);
+    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact) {
+        this(type, contact.getName(), contact.getEmail(), token, newContact);
     }
 
-    public ContactIdentity(SystemRole.SystemType type, String name, String email, String token) {
+    public ContactIdentity(SystemRole.SystemType type, String name, String email, String token, boolean newContact) {
         this.type = type;
         this.name = name;
         this.email = email == null ? "" : email;
         this.token = token;
+        this.newContact = newContact;
     }
 
     public SystemRole.Type getType() {
@@ -57,6 +60,14 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
 
     public String getToken() {
         return token;
+    }
+
+    public boolean isNewContact() {
+        return newContact;
+    }
+
+    public void setNewContact(boolean newContact) {
+        this.newContact = newContact;
     }
 
     public boolean equals(Object o) {

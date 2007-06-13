@@ -10,6 +10,7 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
@@ -227,6 +228,22 @@ public class Transaction implements TrackedObject {
         Set<SystemRole.SystemType> ret = new HashSet<SystemRole.SystemType>();
         if (getTransactionData().getContactConfirmations() != null) {
             ret.addAll(getTransactionData().getContactConfirmations().getContactsThatAccepted());
+        }
+        return ret;
+    }
+
+    public Set<ContactIdentity> getIdentitiesThatAccepted() {
+        Set<ContactIdentity> ret = new HashSet<ContactIdentity>();
+        if (getTransactionData().getContactConfirmations() != null) {
+            ret.addAll(getTransactionData().getContactConfirmations().getIdentitiesThatAccepted());
+        }
+        return ret;
+    }
+
+    public Set<ContactIdentity> getIdentitiesSupposedToAccept() {
+        Set<ContactIdentity> ret = new HashSet<ContactIdentity>();
+        if (getTransactionData().getContactConfirmations() != null) {
+            ret.addAll(getTransactionData().getContactConfirmations().getIdentitiesSupposedToAccept());
         }
         return ret;
     }
