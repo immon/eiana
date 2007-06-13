@@ -198,7 +198,7 @@ public class Domain implements TrackedObject, Cloneable {
 
     final public void setNameServers(List<Host> nameServers) throws NameServerAlreadyExistsException {
         CheckTool.checkCollectionNull(nameServers, "nameServers");
-        this.nameServers.clear();
+        this.nameServers = new ArrayList<Host>();
         for (Host host : nameServers) {
             addNameServer(host);
         }
@@ -282,7 +282,7 @@ public class Domain implements TrackedObject, Cloneable {
 
     final public void setBreakpoints(Set<Breakpoint> breakpoints) {
         CheckTool.checkCollectionNull(breakpoints, "breakpoints");
-        this.breakpoints.clear();
+        this.breakpoints = new HashSet<Breakpoint>();
         this.breakpoints.addAll(breakpoints);
     }
 

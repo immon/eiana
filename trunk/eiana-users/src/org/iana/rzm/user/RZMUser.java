@@ -211,7 +211,7 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
     }
 
     final public void clearRoles() {
-        this.roles.clear();
+        this.roles = new ArrayList<Role>();
     }
 
     final public boolean isAdmin() {
