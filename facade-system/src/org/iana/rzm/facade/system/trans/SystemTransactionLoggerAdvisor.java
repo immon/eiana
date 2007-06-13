@@ -37,9 +37,7 @@ public class SystemTransactionLoggerAdvisor implements Ordered {
 
     public Object logObjectCreation(ProceedingJoinPoint call) throws Throwable {
         RZMStatefulService service = (RZMStatefulService) call.getThis();
-        System.out.println("*** logger - before creation: " + call.getSignature().getName());
         Object result = call.proceed();
-        System.out.println("*** logger - after creation: " + call.getSignature().getName());
         List<TransactionVO> trans = (List<TransactionVO>) result;
         for (TransactionVO tran : trans) {
             long transactionId = tran.getTransactionID();
@@ -54,9 +52,7 @@ public class SystemTransactionLoggerAdvisor implements Ordered {
         RZMStatefulService service = (RZMStatefulService) call.getThis();
         Long transactionId = (Long) call.getArgs()[0];
         TrackedObject oldObject = transactionManager.getTransaction(transactionId);
-        System.out.println("*** logger - before change: " + call.getSignature().getName());
         Object result = call.proceed();
-        System.out.println("*** logger - after change: " + call.getSignature().getName());
         TrackedObject object = transactionManager.getTransaction(transactionId);
         logger.addLog(service.getAuthenticatedUser().getUserName(), "sessionId", call.getSignature().getName(),
                 object, oldObject);

@@ -23,7 +23,6 @@ public class JbpmAdvisor implements Ordered {
     }
 
     public void close() throws Throwable {
-        System.out.println("*** jbpm advisor - close");
         processDAO.close();
     }
 }
