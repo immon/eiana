@@ -274,15 +274,15 @@ public abstract class Contact extends BaseComponent {
     }
 
     public boolean isUsePrivateEmail() {
-        return getPrivateEmailStyle().equals("edited");
+        return !getPrivateEmailStyle().equals("hidden") ;
     }
 
     public boolean isUseAltPhone(){
-        return getAlternatePhoneSpan().equals("edited");
+        return !getAlternatePhoneSpan().equals("hidden");
     }
 
     public boolean isUseJobTitle(){
-        return getJobTitleSpan().equals("edited");
+        return !getJobTitleSpan().equals("hidden");
     }
 
 
@@ -290,6 +290,10 @@ public abstract class Contact extends BaseComponent {
     private String getAlternateStyle(String value, String originalValue) {
         if (StringUtils.equals(value, originalValue) && StringUtils.isBlank(value)) {
             return "hidden";
+        }
+
+        if(StringUtils.equals(value, originalValue)){
+            return "";
         }
 
         return "edited";

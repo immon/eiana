@@ -29,7 +29,7 @@ function NetscapeEventHandler_KeyDown(e) {
 }
 
 function MicrosoftEventHandler_KeyDown(e) {
-    if (e.keyCode == 13 && e.srcElement.type != 'textarea' && e.srcElement.type != 'submit'){
+    if (e.keyCode == 13 && e.srcElement.type != 'textarea' && e.srcElement.type != 'submit') {
         e.abort = true;
         e.cancel_handlers = true;
         return false;
@@ -39,14 +39,44 @@ function MicrosoftEventHandler_KeyDown(e) {
 }
 
 function show(ele) {
-    var srcElement = document.getElementById(ele);
-    if(srcElement != null) {
-        if(srcElement.className == "hidden") {
-            srcElement.className = '';
-        }
-        else {
-            srcElement.className ='hidden';
-        }
-        return false;
+    var nav = window.Event;
+    if (nav) {
+        showHideNAV(ele);
+    } else {
+        showHideIE(ele);
+    }
+
+}
+
+
+function showHideNAV(id) {
+    var style = document.getElementById(id).style
+
+    if (style.display == "table-row") {
+        style.display = "none";
+    } else {
+        style.display = "table-row";
     }
 }
+
+
+function showHideIE(id) {
+    var style = document.getElementById(id).style
+    if (style.display == "inline") {
+        style.display = "none";
+    } else {
+        style.display = "inline";
+    }
+}
+
+function showhide(id)
+{
+    var style = document.getElementById(id).style
+    if (style.visibility == "hidden") {
+        style.visibility = "visible";
+    }
+    else {
+        style.visibility = "hidden";
+    }
+}
+

@@ -24,8 +24,8 @@ public abstract class ListRequestConfirmations extends BaseComponent {
     @Asset("images/checkbox_off.png")
     public abstract IAsset getCheckboxOff();
 
-    @Component(id="checkboxFlag", type = "Image", bindings = "source:prop:imageAsset")
-    public abstract IComponent getConfirmationFlagComponent();
+    @Component(id="checkboxImage", type = "Image", bindings = "image=prop:imageAsset")
+    public abstract IComponent getCheckboxImageComponent();
 
     @Component(id="confirmation", type="Insert", bindings = {"value=prop:confirmationContact"})
     public abstract IComponent getConfirmationComponent();

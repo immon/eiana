@@ -69,6 +69,9 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     @Component(id="approved", type="Insert", bindings = {"value=prop:stateInfo.approvedBy"})
     public abstract IComponent getApprovedComponent();
 
+    @Component(id="confirmations", type="ListRequestConfirmations", bindings = {"confirmations=prop:confirmations"})
+    public abstract IComponent getConfirmationscomponent();
+
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
 
@@ -95,6 +98,10 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
 
     public List<ActionVOWrapper> getActionlist() {
         return getRequest().getChanges();
+    }
+
+    public List<Confirmation>getConfirmations(){
+        return getRequest().getConfirmations();
     }
 
     public String getCountry() {

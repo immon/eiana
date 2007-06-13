@@ -247,8 +247,7 @@ td.divider {
     height: 24px;
 }
 
-tr.hidden td, tr.hidden th { display:none }
-
+tr.hidden  td, tr.hidden  th { display:none }
 span.hidden { display:none } 
 
 
