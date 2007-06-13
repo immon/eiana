@@ -1,13 +1,13 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.objectdiff.*;
+import org.iana.rzm.auth.Identity;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.TransactionStateLogEntry;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.auth.Identity;
 import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.objectdiff.*;
 
 import java.util.*;
 
@@ -53,7 +53,13 @@ public class TransactionConverter {
         ret.setEnd(trans.getEnd());
         ret.setRedelegation(trans.isRedelegation());
         ret.setSubmitterEmail(trans.getSubmitterEmail());
-        ret.setConfirmations(RoleConverter.convertTypes(trans.getReceivedContactConfirmations()));
+
+        Set<ContactIdentity> received = trans.getIdentitiesThatAccepted();
+        for (ContactIdentity cid : received)
+            ret.addConfirmation(new ConfirmationVO(RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact()));
+        Set<ContactIdentity> outstanding = trans.getIdentitiesSupposedToAccept();
+        for (ContactIdentity cid : outstanding)
+            ret.addConfirmation(new ConfirmationVO(RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
 
         ret.setCreated(trans.getCreated());
         ret.setCreatedBy(trans.getCreatedBy());

@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -26,7 +27,8 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private List<String> tokens;
     private boolean redelegation;
     private String submitterEmail;
-    private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
+    //private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
+    private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
 
     public Long getTransactionID() {
         return transactionID;
@@ -163,19 +165,36 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     }
 
     public boolean acConfirmed() {
-        return confirmations.contains(SystemRoleVO.SystemType.AC);
+        for (ConfirmationVO conf : confirmations)
+            if (conf.getRole() == SystemRoleVO.SystemType.AC && conf.isConfirmed())
+                return true;
+        return false;
     }
 
     public boolean tcConfirmed() {
-        return confirmations.contains(SystemRoleVO.SystemType.TC);
+        for (ConfirmationVO conf : confirmations)
+            if (conf.getRole() == SystemRoleVO.SystemType.TC && conf.isConfirmed())
+                return true;
+        return false;
     }
 
     public boolean soConfirmed() {
-        return confirmations.contains(SystemRoleVO.SystemType.SO);
+        for (ConfirmationVO conf : confirmations)
+            if (conf.getRole() == SystemRoleVO.SystemType.SO && conf.isConfirmed())
+                return true;
+        return false;
     }
 
-    public void setConfirmations(Set<SystemRoleVO.SystemType> confirmations) {
+    public Set<ConfirmationVO> getConfirmations() {
+        return confirmations;
+    }
+
+    public void setConfirmations(Set<ConfirmationVO> confirmations) {
         this.confirmations = confirmations;
     }
 
+    public void addConfirmation(ConfirmationVO confirmation) {
+        if (confirmation == null) confirmations = new HashSet<ConfirmationVO>();
+        confirmations.add(confirmation);
+    }
 }

@@ -23,10 +23,10 @@ public class ContactConfirmationCalculator implements ActionHandler {
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
         Domain domain = trans.getCurrentDomain();
         if (domain.getTechContact() != null) {
-            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, domain.getTechContact(), generateToken()));
+            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, domain.getTechContact(), generateToken(), false));
         }
         if (domain.getAdminContact() != null) {
-            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, domain.getAdminContact(), generateToken()));
+            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, domain.getAdminContact(), generateToken(), false));
         }
         ObjectChange change = trans.getTransactionData().getDomainChange();
         if (change != null && change.getFieldChanges() != null) {
@@ -35,7 +35,14 @@ public class ContactConfirmationCalculator implements ActionHandler {
                 if (contactChange.getFieldChanges().containsKey("email")) {
                     SimpleChange emailChange = (SimpleChange) contactChange.getFieldChanges().get("email");
                     String proposedEmail = emailChange.getNewValue();
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, contactChange.getId(), proposedEmail, generateToken()));
+                    String name;
+                    if (contactChange.getFieldChanges().containsKey("name")) {
+                        SimpleChange nameChange = (SimpleChange) contactChange.getFieldChanges().get("name");
+                        name = nameChange.getNewValue();
+                    } else {
+                        name = contactChange.getId();
+                    }
+                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, name, proposedEmail, generateToken(), true));
                 }
             }
             if (change.getFieldChanges().containsKey("adminContact")) {
@@ -43,7 +50,14 @@ public class ContactConfirmationCalculator implements ActionHandler {
                 if (contactChange.getFieldChanges().containsKey("email")) {
                     SimpleChange emailChange = (SimpleChange) contactChange.getFieldChanges().get("email");
                     String proposedEmail = emailChange.getNewValue();
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, contactChange.getId(), proposedEmail, generateToken()));
+                    String name;
+                    if (contactChange.getFieldChanges().containsKey("name")) {
+                        SimpleChange nameChange = (SimpleChange) contactChange.getFieldChanges().get("name");
+                        name = nameChange.getNewValue();
+                    } else {
+                        name = contactChange.getId();
+                    }
+                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, name, proposedEmail, generateToken(), true));
                 }
             }
         }

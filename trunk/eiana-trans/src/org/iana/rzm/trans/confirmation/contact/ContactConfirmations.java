@@ -66,6 +66,14 @@ public class ContactConfirmations extends AbstractConfirmation {
         return new HashSet<Identity>(outstandingConfirmations);
     }
 
+    public Set<ContactIdentity> getIdentitiesSupposedToAccept() {
+        return new HashSet<ContactIdentity>(outstandingConfirmations);
+    }
+
+    public Set<ContactIdentity> getIdentitiesThatAccepted() {
+        return new HashSet<ContactIdentity>(receivedConfirmations);
+    }
+
     public Set<SystemRole.SystemType> getContactsThatAccepted() {
         Set<SystemRole.SystemType> ret = new HashSet<SystemRole.SystemType>();
         for (ContactIdentity id : receivedConfirmations) {
