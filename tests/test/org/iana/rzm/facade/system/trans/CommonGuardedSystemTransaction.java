@@ -7,9 +7,11 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.admin.AdminTransactionService;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
@@ -38,6 +40,8 @@ public abstract class CommonGuardedSystemTransaction {
     protected SystemDomainService gsds =
             (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
     protected EmailAddresseeDAO emailAddresseeDAO = (EmailAddresseeDAO) appCtx.getBean("emailAddresseeDAO");
+    protected AdminTransactionService ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
+    protected AuthenticationService authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
 
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setGSTSAuthUser(user);     //iana
