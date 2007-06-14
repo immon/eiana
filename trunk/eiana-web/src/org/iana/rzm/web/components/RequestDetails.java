@@ -100,7 +100,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
         return getRequest().getChanges();
     }
 
-    public List<Confirmation>getConfirmations(){
+    public List<ConfirmationVOWrapper>getConfirmations(){
         return getRequest().getConfirmations();
     }
 

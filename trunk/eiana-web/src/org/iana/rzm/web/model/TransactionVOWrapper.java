@@ -1,9 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.TransactionActionVO;
-import org.iana.rzm.facade.system.trans.TransactionStateLogEntryVO;
-import org.iana.rzm.facade.system.trans.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.web.util.DateUtil;
 
@@ -62,13 +59,15 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return vo.tcConfirmed();
     }
 
-    public List<Confirmation>getConfirmations(){
-        List<Confirmation>list = new ArrayList<Confirmation>();
-        list.add(new Confirmation("TC", vo.tcConfirmed(), new SystemRoleVOWrapper(SystemRoleVO.SystemType.TC)));
-        list.add(new Confirmation("AC", vo.acConfirmed(), new SystemRoleVOWrapper(SystemRoleVO.SystemType.AC)));
+    public List<ConfirmationVOWrapper>getConfirmations(){
+        List<ConfirmationVOWrapper>list = new ArrayList<ConfirmationVOWrapper>();
+        for (ConfirmationVO confirmationVO : vo.getConfirmations()) {
+            if(!confirmationVO.getRole().equals(SystemRoleVO.SystemType.SO)){
+                list.add(new ConfirmationVOWrapper(confirmationVO));
+            }
+        }
         return list;
     }
-
 
     public List<ActionVOWrapper> getChanges() {
         List<TransactionActionVO> actions = vo.getDomainActions();

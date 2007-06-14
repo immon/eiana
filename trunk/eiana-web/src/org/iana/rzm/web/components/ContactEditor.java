@@ -1,19 +1,19 @@
 package org.iana.rzm.web.components;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.EmailValidator;
 import org.apache.tapestry.BaseComponent;
 import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.ComponentClass;
-import org.apache.tapestry.annotations.InjectComponent;
-import org.apache.tapestry.annotations.Parameter;
+import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IFormComponent;
 import org.apache.tapestry.valid.IValidationDelegate;
 import org.iana.rzm.web.common.ContactAttributesEditor;
 import org.iana.rzm.web.model.ContactVOWrapper;
+import org.iana.rzm.web.util.WebUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
@@ -21,7 +21,7 @@ import java.util.Map;
 public abstract class ContactEditor extends BaseComponent implements PageBeginRenderListener {
 
     @Component(id = "editContact", type = "Form", bindings = {
-            "clientValidationEnabled=literal:true",
+            "clientValidationEnabled=literal:false",
             "success=listener:save",
             //"cancel=listener:revert",
             "delegate=prop:validationDelegate"
@@ -53,7 +53,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IComponent getEmailComponent();
 
     @Component(id = "privateEmail", type = "TextField", bindings = {
-            "displayName=message:alt-email-label", "value=ognl:contactAttributes.PRIVATE_EMAIL", "validators=validators:email"})
+            "displayName=message:alt-email-label", "value=prop:privateEmail"})
     public abstract IComponent getPrivateEmailComponent();
 
     @Component(id = "phone", type = "TextField", bindings = {
@@ -61,7 +61,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IComponent getPhoneComponent();
 
     @Component(id = "altPhone", type = "TextField", bindings = {
-            "displayName=message:alt-phone-label", "value=ognl:contactAttributes.ALT_PHONE"})
+            "displayName=message:alt-phone-label", "value=prop:alternatePhone"})
     public abstract IComponent getAltPhoneComponent();
 
     @Component(id = "fax", type = "TextField", bindings = {
@@ -69,7 +69,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IComponent getFaxComponent();
 
     @Component(id = "altFax", type = "TextField", bindings = {
-            "displayName=message:alt-fax-label", "value=ognl:contactAttributes.ALT_FAX"})
+            "displayName=message:alt-fax-label", "value=prop:alternateFax"})
     public abstract IComponent getAltFaxComponent();
 
     @Component(id = "role", type = "Checkbox", bindings = {
@@ -94,6 +94,15 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
 
     @Component(id = "altFaxCheckbox", type = "Checkbox", bindings = {"value=prop:addAltFax"})
     public abstract IComponent getAltFaxCheckBoxComponent();
+
+    @Component(id = "phoneTR", type = "Any", bindings = {"style=prop:altPhoneClass"})
+    public abstract IComponent getAltPhoneTRComponent();
+
+    @Component(id = "faxTR", type = "Any", bindings = {"style=prop:altFaxClass"})
+    public abstract IComponent getAltFaxTRComponent();
+
+    @Component(id = "emailTR", type = "Any", bindings = {"style=prop:privateEmailClass"})
+    public abstract IComponent getPrivateEmailTRComponent();
 
     @Parameter(required = true)
     public abstract ContactAttributesEditor getEditor();
@@ -123,7 +132,13 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IFormComponent getAddressField();
 
     @InjectComponent("privateEmail")
-    public abstract IFormComponent getPrivateEmail();
+    public abstract IFormComponent getPrivateEmailField();
+
+    @InjectComponent("jobTitle")
+    public abstract IFormComponent getJobTitleField();
+
+    @InjectObject("service:tapestry.globals.HttpServletRequest")
+    public abstract HttpServletRequest getHttpRequest();
 
     public abstract boolean getRole();
 
@@ -134,23 +149,59 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract boolean isUsePrivateEmail();
 
     public abstract void setAddAltPhone(boolean value);
+
     public abstract boolean isAddAltPhone();
 
     public abstract void setAddAltFax(boolean value);
+
     public abstract boolean isAddAltFax();
+
+    public abstract String getPrivateEmail();
+
+    public abstract void setPrivateEmail(String email);
+
+    public abstract String getAlternateFax();
+
+    public abstract void setAlternateFax(String fax);
+
+    public abstract String getAlternatePhone();
+
+    public abstract void setAlternatePhone(String phone);
 
     public void pageBeginRender(PageEvent event) {
         String role = getContactAttributes().get(ContactVOWrapper.ROLE);
-        String privateEmail = getContactAttributes().get(ContactVOWrapper.PRIVATE_EMAIL);
-        String altPhone = getContactAttributes().get(ContactVOWrapper.ALT_PHONE);
-        String altFax = getContactAttributes().get(ContactVOWrapper.ALT_FAX);
 
         if (!event.getRequestCycle().isRewinding()) {
             setRole(Boolean.valueOf(role));
-            setUsePrivateEmail(StringUtils.isNotBlank(privateEmail));
-            setAddAltPhone(StringUtils.isNotBlank(altPhone));
-            setAddAltFax(StringUtils.isNotBlank(altFax));
+
+            if (StringUtils.isBlank(getPrivateEmail()) && (!isUsePrivateEmail())) {
+                setPrivateEmail(getContactAttributes().get(ContactVOWrapper.PRIVATE_EMAIL));
+                setUsePrivateEmail(StringUtils.isNotBlank(getPrivateEmail()));
+            }
+
+            if (StringUtils.isBlank(getAlternateFax()) && (!isAddAltFax())) {
+                setAlternateFax(getContactAttributes().get(ContactVOWrapper.ALT_FAX));
+                setAddAltFax(StringUtils.isNotBlank(getAlternateFax()));
+            }
+
+            if (StringUtils.isBlank(getAlternatePhone()) && (!isAddAltPhone())) {
+                setAlternatePhone(getContactAttributes().get(ContactVOWrapper.ALT_PHONE));
+                setAddAltPhone(StringUtils.isNotBlank(getAlternatePhone()));
+            }
+        } else {
+            if (!isUsePrivateEmail()) {
+                setPrivateEmail(null);
+            }
+
+            if (!isAddAltFax()) {
+                setAlternateFax(null);
+            }
+
+            if(!isAddAltPhone()){
+                setAlternatePhone(null);
+            }
         }
+
     }
 
     public void revert() {
@@ -159,13 +210,27 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
 
     public void save() {
         getEditor().preventResubmission();
+
+        Map<String, String> attributes = getContactAttributes();
+
         validateInput();
         if (getEditor().getValidationDelegate().getHasErrors()) {
             return;
         }
 
-        getContactAttributes().put(ContactVOWrapper.ROLE, String.valueOf(getRole()));
+        if (isUsePrivateEmail()) {
+            attributes.put(ContactVOWrapper.PRIVATE_EMAIL, getPrivateEmail());
+        }
 
+        if (isAddAltFax()) {
+            attributes.put(ContactVOWrapper.ALT_FAX, getAlternateFax());
+        }
+
+        if (isAddAltPhone()) {
+            attributes.put(ContactVOWrapper.ALT_PHONE, getAlternatePhone());
+        }
+
+        attributes.put(ContactVOWrapper.ROLE, String.valueOf(getRole()));
         getEditor().save(getContactAttributes());
     }
 
@@ -173,28 +238,23 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         return getEditor().getValidationDelegate();
     }
 
-    public String getPrivateEmailClass(){
-        if(isUsePrivateEmail()){
-            return "";
+    public String getDisplayStyle(boolean visible) {
+        if (visible) {
+            return WebUtil.isIEBrowser(getHttpRequest()) ? "display:inline" : "table-row";
         }
-
-        return "hidden";
+        return "display:none";
     }
 
-    public String getAltPhoneClass(){
-        if(isAddAltPhone()){
-            return "";
-        }
-
-        return "hidden";
+    public String getPrivateEmailClass() {
+        return getDisplayStyle(isUsePrivateEmail());
     }
 
-    public String getAltFaxClass(){
-        if(isAddAltFax()){
-            return "";
-        }
+    public String getAltPhoneClass() {
+        return getDisplayStyle(isAddAltPhone());
+    }
 
-        return "hidden";
+    public String getAltFaxClass() {
+        return getDisplayStyle(isAddAltFax());
     }
 
     private void validateInput() {
@@ -206,14 +266,36 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         validateReqiredField(contactAttributes, ContactVOWrapper.ADDRESS, getAddressField());
         validateReqiredField(contactAttributes, ContactVOWrapper.COUNTRY, getCountryField());
 
-        if(isUsePrivateEmail()){
-            validateReqiredField(contactAttributes, ContactVOWrapper.PRIVATE_EMAIL, getPrivateEmail());
+        if (isUsePrivateEmail()) {
+            validateEmail(getPrivateEmail(), getPrivateEmailField(), ContactVOWrapper.PRIVATE_EMAIL);
+        }
+
+        if(getRole()){
+            if(StringUtils.isBlank(contactAttributes.get(ContactVOWrapper.JOB_TITLE))){
+                getEditor().setErrorField(getJobTitleField(), "Role accounts must have a Job Title");    
+            }
+        }
+    }
+
+    private void validateEmail(String email, IFormComponent field, String fieldName) {
+        EmailValidator validator = EmailValidator.getInstance();
+
+        if(StringUtils.isBlank(email)){
+            getEditor().setErrorField(field, "Please specify value for " + fieldName);
+            return;
+        }
+
+        if(!validator.isValid(email)){
+            getEditor().setErrorField(field, "Invalid email format " + email);
         }
     }
 
     private void validateReqiredField(Map attributes, String fieldName, IFormComponent field) {
-
         String value = (String) attributes.get(fieldName);
+        validateField(value, field, fieldName);
+    }
+
+    private void validateField(String value, IFormComponent field, String fieldName) {
         if (StringUtils.isBlank(value)) {
             getEditor().setErrorField(field, "Please specify value for " + fieldName);
         }

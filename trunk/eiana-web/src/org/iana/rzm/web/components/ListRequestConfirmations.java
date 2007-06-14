@@ -6,7 +6,7 @@ import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.Asset;
 import org.apache.tapestry.annotations.Component;
 import org.apache.tapestry.annotations.Parameter;
-import org.iana.rzm.web.model.Confirmation;
+import org.iana.rzm.web.model.ConfirmationVOWrapper;
 
 import java.util.List;
 
@@ -31,9 +31,9 @@ public abstract class ListRequestConfirmations extends BaseComponent {
     public abstract IComponent getConfirmationComponent();
 
     @Parameter(required = true)
-    public abstract List<Confirmation>getConfirmations();
+    public abstract List<ConfirmationVOWrapper>getConfirmations();
 
-    public abstract Confirmation getConfirmation();
+    public abstract ConfirmationVOWrapper getConfirmation();
 
     public IAsset getImageAsset(){
         return getConfirmation().isConfirmed() ? getCheckboxOn() : getCheckboxOff();

@@ -2,10 +2,12 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.facade.user.SystemRoleVO;
 
+import java.io.Serializable;
+
 /**
  * @author Jakub Laszkiewicz
  */
-public class ConfirmationVO {
+public class ConfirmationVO implements Serializable {
     private SystemRoleVO.SystemType role;
     private boolean confirmed;
     private String contactName;
