@@ -34,9 +34,9 @@
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><label> Use Private Email</label></td>
-                    <td align="left" valign="top"><input jwcid="privateEmailCheckbox" type="checkbox" value="" onclick="show('PrivateEmail')"/></td>
+                    <td align="left" valign="top"><input jwcid="privateEmailCheckbox" type="checkbox" value="" onclick="show('PrivateEmail', this)"/></td>
                 </tr>
-                <tr id="PrivateEmail" style="display:none;">
+                <tr id="PrivateEmail" jwcid="emailTR">
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:privateEmail">Private Email:</span></td>
                     <td align="right" valign="top"><input jwcid="privateEmail" type="text"  name="privateEmail" class="field" onkeypress="return submitOnEnter(event);"/></td>
                 </tr>
@@ -46,9 +46,9 @@
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><nobr><label>Add Alternate Telephone:</label></nobr></td>
-                    <td align="left" valign="top"><input jwcid="altPhoneCheckbox" type="checkbox" value="" onclick="show('AltPhone')"/></td>
+                    <td align="left" valign="top"><input jwcid="altPhoneCheckbox" type="checkbox" value="" onclick="show('AltPhone', this)"/></td>
                 </tr>
-                <tr id="AltPhone" style="display:none;">
+                <tr id="AltPhone" jwcid="phoneTR">
                    <td valign="top" class="label green"><nobr><span jwcid="@FieldLabel" field="component:altPhone">Alternate Telephone:</span></nobr></td>
                    <td align="right" valign="top"><input jwcid="altPhone" type="text"  name="altPhone" class="field" onkeypress="return submitOnEnter(event);"/></td>
                 </tr>
@@ -58,9 +58,9 @@
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><label>Add Alternate Facsimile:</label></td>
-                    <td align="left" valign="top"><input jwcid="altFaxCheckbox" type="checkbox" value="" onclick="show('AltFax')"/></td>
+                    <td align="left" valign="top"><input jwcid="altFaxCheckbox" type="checkbox" value="" onclick="show('AltFax', this)"/></td>
                 </tr>
-                <tr id="AltFax" style="display:none;">
+                <tr id="AltFax" jwcid="faxTR">
                    <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:altFax">Alternate Facsimile:</span></td>
                    <td align="right" valign="top"><input jwcid="altFax" type="text"  name="altfax" class="field" onkeypress="return submitOnEnter(event);"/></td>
                 </tr>

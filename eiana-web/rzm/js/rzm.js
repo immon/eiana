@@ -38,35 +38,52 @@ function MicrosoftEventHandler_KeyDown(e) {
     return true;
 }
 
-function show(ele) {
+function show(ele, checkbox) {
     var nav = window.Event;
     if (nav) {
-        showHideNAV(ele);
+        showHideNAV(ele, checkbox);
     } else {
-        showHideIE(ele);
+        showHideIE(ele, checkbox);
     }
 
 }
 
 
-function showHideNAV(id) {
+function showHideNAV(id, checkbox) {
     var style = document.getElementById(id).style
 
-    if (style.display == "table-row") {
+    if (!checkbox.checked) {
         style.display = "none";
     } else {
-        style.display = "table-row";
+
+        if (style.display == "table-row") {
+            style.display = "none";
+            checkbox.checked = false;
+        } else {
+            style.display = "table-row";
+            checkbox.checked = true;
+        }
     }
 }
 
 
-function showHideIE(id) {
+function showHideIE(id, checkbox) {
+
     var style = document.getElementById(id).style
-    if (style.display == "inline") {
+
+    if (!checkbox.checked) {
         style.display = "none";
     } else {
-        style.display = "inline";
+        if (style.display == "inline") {
+            style.display = "none";
+            checkbox.checked = false;
+        } else {
+            style.display = "inline";
+            checkbox.checked = true;
+        }
     }
+
+
 }
 
 function showhide(id)
