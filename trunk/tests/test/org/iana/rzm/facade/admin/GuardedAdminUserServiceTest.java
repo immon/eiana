@@ -1,9 +1,6 @@
 package org.iana.rzm.facade.admin;
 
-import org.iana.criteria.And;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.criteria.Not;
+import org.iana.criteria.*;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
@@ -207,6 +204,19 @@ public class GuardedAdminUserServiceTest {
         assert USER_NAME.equals(retUserVO.getUserName());
         gAdminUserServ.deleteUser(retUserVO.getObjId());
         
+        gAdminUserServ.close();
+    }
+
+    @Test(dependsOnMethods = {"testFacadeDeleteUser"})
+    public void testFind() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+
+        List<UserVO> result = gAdminUserServ.find(new Order("loginName"), 0, 1);
+
+        assert result.size() == 1;
+        assert "gausadminuser".equals(result.iterator().next().getUserName());
+
         gAdminUserServ.close();
     }
 

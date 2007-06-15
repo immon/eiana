@@ -94,12 +94,6 @@
         <constructor-arg index="1" ref="userManager"/>
     </bean>
 
-    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
-        <property name="processDAO">
-            <ref bean="processDAO"/>
-        </property>
-    </bean>
-
     <!-- transaction service -->
 
     <bean id="GuardedSystemTransactionService"
@@ -303,6 +297,12 @@
     <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
         <constructor-arg index="0" ref="jbpmContextFactory"/>
     </bean>
+    <!--
+    <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO" scope="request">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+    -->
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg index="0" ref="userDAO"/>
@@ -403,8 +403,10 @@
     </bean>
 
     <aop:config>
+        <!--
         <aop:pointcut id="transactionalOperation"
                       expression="execution(* org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                                  execution(* org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
                                   execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
                                   execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..)) ||
                                   execution(* org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
@@ -420,9 +422,28 @@
                                   execution(* org.iana.rzm.trans.TransactionManagerBean.*(..)) ||
                                   execution(* org.iana.rzm.user.UserManagerBean.*(..)) ||
                                   execution(* org.iana.rzm.user.RoleManagerBean.*(..))"/>
+        -->
+        <aop:pointcut id="transactionalOperation"
+                      expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
+                                  execution(public * org.iana.notifications.NotificationManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.log.LoggerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.domain.DomainManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.domain.dao.HibernateDomainDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.domain.dao.HibernateHostDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.TransactionManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.user.RoleManagerBean.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
-                     order="2"/>
+                     order="1"/>
         <aop:aspect id="jbpmAspect" ref="jbpmAdvisor">
             <aop:pointcut id="jbpmOperation"
                           expression="execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
@@ -431,7 +452,7 @@
         </aop:aspect>
         <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
             <aop:pointcut id="loggedSystemTransactionCreation"
-                          expression="execution(public * org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.createTransactions(..))"/>
+                          expression="execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.createTransactions(..))"/>
             <aop:pointcut id="loggedSystemTransactionModification"
                           expression="execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.acceptTransaction(..)) ||
                                       execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.rejectTransaction(..)) ||
@@ -472,7 +493,7 @@
     <!-- advisors -->
 
     <bean id="jbpmAdvisor" class="org.iana.rzm.trans.jbpm.JbpmAdvisor">
-        <property name="order" value="1"/>
+        <property name="order" value="2"/>
         <property name="processDAO">
             <ref bean="processDAO"/>
         </property>
