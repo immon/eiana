@@ -55,4 +55,11 @@ public class SpringApplicationContext {
         }
         return appCtx;
     }
+
+    public ApplicationContext getConcurrentContext() {
+        if (appCtx == null) return getContext();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        return appCtx;
+    }
 }

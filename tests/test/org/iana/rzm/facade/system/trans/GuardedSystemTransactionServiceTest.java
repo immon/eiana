@@ -1,7 +1,8 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -15,11 +16,9 @@ import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.user.MD5Password;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.dns.validator.InvalidDomainNameException;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
@@ -246,6 +245,16 @@ public class GuardedSystemTransactionServiceTest {
         assert found != null;
         assert found.size() == 0;
     }
+
+    /*
+    @Test(threadPoolSize = 10, invocationCount = 600)
+    public void testSetUserSimultaneously() throws Exception {
+        System.out.println(">>>> thread id = " + Thread.currentThread().getId());
+        ApplicationContext appCtx = SpringApplicationContext.getInstance().getConcurrentContext();
+        SystemTransactionService svc = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        svc.setUser(userTc);
+    }
+    */
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() throws Exception {

@@ -16,6 +16,7 @@
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.spring.classpath"/>
     <path refid="library.junit.classpath"/>
+    <path refid="library.javaee.classpath"/>
   </path>
   
   
