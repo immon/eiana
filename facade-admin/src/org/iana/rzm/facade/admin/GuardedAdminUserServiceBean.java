@@ -58,6 +58,10 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         RZMUser newUser = UserConverter.convert(userVO);
         for (Role role : newUser.getRoles()) {
             role.setObjId(null);
+            if (role instanceof SystemRole) {
+                SystemRole systemRole = (SystemRole) role;
+                systemRole.setAccessToDomain(true);
+            }
         }
         newUser.setCreated(new Timestamp(System.currentTimeMillis()));
         newUser.setCreatedBy(getAuthenticatedUser().getUserName());
