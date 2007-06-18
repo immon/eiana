@@ -28,6 +28,12 @@ public class SimpleChangeDetectorTest {
     }
 
     @Test
+    public void testNoChangeNullEmptyString() {
+        Change change = ChangeDetector.diff(null, "", config);
+        assert change == null;
+    }
+
+    @Test
     public void testSimpleStringRemoval() {
         Change change = ChangeDetector.diff("abc", null, config);
         assert change != null;
