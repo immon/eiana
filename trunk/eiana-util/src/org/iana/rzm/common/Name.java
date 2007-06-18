@@ -23,6 +23,7 @@ public class Name implements Cloneable, Serializable {
     public Name(String name) throws InvalidDomainNameException {
         if (name == null) throw new NullPointerException("name is null");
         name = name.toLowerCase(Locale.ENGLISH);
+        if (name.endsWith(".")) name = name.substring(0, name.length()-1);
         isValidName(name);
         this.name = name;
     }
