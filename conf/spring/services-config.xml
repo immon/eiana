@@ -89,8 +89,51 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="transSystemDomainService"
+    <bean id="abstractTransSystemService" abstract="true"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="get*">readOnly,
+                    -org.iana.rzm.facade.admin.FacadeTransactionException,
+                    -org.iana.rzm.facade.admin.NoSuchStateException,
+                    -org.iana.rzm.facade.admin.NoTransactionException,
+                    -org.iana.rzm.facade.admin.StateUnreachableException,
+                    -org.iana.rzm.facade.auth.AccessDeniedException,
+                    -org.iana.rzm.facade.auth.AuthenticationException,
+                    -org.iana.rzm.facade.auth.AuthenticationFailedException,
+                    -org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                    -org.iana.rzm.facade.auth.UserInvalidatedException,
+                    -org.iana.rzm.facade.common.NoObjectFoundException,
+                    -org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                    -org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                    -org.iana.rzm.facade.system.trans.NoDomainSystemUsersException
+                </prop>
+                <prop key="*">
+                    -org.iana.rzm.facade.admin.FacadeTransactionException,
+                    -org.iana.rzm.facade.admin.NoSuchStateException,
+                    -org.iana.rzm.facade.admin.NoTransactionException,
+                    -org.iana.rzm.facade.admin.StateUnreachableException,
+                    -org.iana.rzm.facade.auth.AccessDeniedException,
+                    -org.iana.rzm.facade.auth.AuthenticationException,
+                    -org.iana.rzm.facade.auth.AuthenticationFailedException,
+                    -org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                    -org.iana.rzm.facade.auth.UserInvalidatedException,
+                    -org.iana.rzm.facade.common.NoObjectFoundException,
+                    -org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                    -org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                    -org.iana.rzm.facade.system.trans.NoDomainSystemUsersException
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transSystemDomainService" parent="abstractTransSystemService">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
@@ -99,16 +142,9 @@
         <property name="target">
             <ref bean="SystemDomainServiceBean"/>
         </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
     </bean>
 
-    <bean id="transSystemTransactionService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="transSystemTransactionService" parent="abstractTransSystemService">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
@@ -116,12 +152,6 @@
         </property>
         <property name="target">
             <ref bean="SystemTransactionServiceBean"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
         </property>
         <property name="preInterceptors">
             <list>
@@ -543,8 +573,34 @@
 
     <tx:advice id="txAdvice">
         <tx:attributes>
-            <tx:method name="get*" read-only="true"/>
-            <tx:method name="*"/>
+            <tx:method name="get*" read-only="true"
+                       rollback-for="org.iana.rzm.facade.admin.FacadeTransactionException,
+                                     org.iana.rzm.facade.admin.NoSuchStateException,
+                                     org.iana.rzm.facade.admin.NoTransactionException,
+                                     org.iana.rzm.facade.admin.StateUnreachableException,
+                                     org.iana.rzm.facade.auth.AccessDeniedException,
+                                     org.iana.rzm.facade.auth.AuthenticationException,
+                                     org.iana.rzm.facade.auth.AuthenticationFailedException,
+                                     org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                                     org.iana.rzm.facade.auth.UserInvalidatedException,
+                                     org.iana.rzm.facade.common.NoObjectFoundException,
+                                     org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                                     org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                                     org.iana.rzm.facade.system.trans.NoDomainSystemUsersException"/>
+            <tx:method name="*"
+                       rollback-for="org.iana.rzm.facade.admin.FacadeTransactionException,
+                                     org.iana.rzm.facade.admin.NoSuchStateException,
+                                     org.iana.rzm.facade.admin.NoTransactionException,
+                                     org.iana.rzm.facade.admin.StateUnreachableException,
+                                     org.iana.rzm.facade.auth.AccessDeniedException,
+                                     org.iana.rzm.facade.auth.AuthenticationException,
+                                     org.iana.rzm.facade.auth.AuthenticationFailedException,
+                                     org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                                     org.iana.rzm.facade.auth.UserInvalidatedException,
+                                     org.iana.rzm.facade.common.NoObjectFoundException,
+                                     org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                                     org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                                     org.iana.rzm.facade.system.trans.NoDomainSystemUsersException"/>
         </tx:attributes>
     </tx:advice>
 
