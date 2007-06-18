@@ -89,9 +89,71 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
+    <bean id="transSystemDomainService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="SystemDomainServiceBean"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="transSystemTransactionService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="SystemTransactionServiceBean"/>
+        </property>
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="preInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
+        </property>
+        <!--
+        <property name="postInterceptors">
+            <list>
+                <ref bean="systemTransactionLoggerInterceptor"/>
+            </list>
+        </property>
+        -->
+    </bean>
+
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
         <constructor-arg index="0" ref="domainManager"/>
         <constructor-arg index="1" ref="userManager"/>
+    </bean>
+
+    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
+        <property name="processDAO">
+            <ref bean="processDAO"/>
+        </property>
+    </bean>
+
+    <bean id="systemTransactionLoggerInterceptor"
+          class="org.iana.rzm.facade.system.trans.SystemTransactionLoggerInterceptor">
+        <constructor-arg index="0" ref="transactionManagerBean"/>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
     </bean>
 
     <!-- transaction service -->
@@ -355,8 +417,8 @@
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean">
         <constructor-arg index="0" ref="mailParser"/>
         <constructor-arg index="1" ref="authenticationServiceBean"/>
-        <constructor-arg index="2" ref="SystemTransactionServiceBean"/>
-        <constructor-arg index="3" ref="SystemDomainServiceBean"/>
+        <constructor-arg index="2" ref="transSystemTransactionService"/>
+        <constructor-arg index="3" ref="transSystemDomainService"/>
         <constructor-arg index="4" ref="NotificationSenderBean"/>
         <constructor-arg index="5" ref="NotificationManagerBean"/>
         <constructor-arg index="6" ref="userManager"/>
@@ -403,26 +465,6 @@
     </bean>
 
     <aop:config>
-        <!--
-        <aop:pointcut id="transactionalOperation"
-                      expression="execution(* org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
-                                  execution(* org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
-                                  execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
-                                  execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..)) ||
-                                  execution(* org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
-                                  execution(* org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
-                                  execution(* org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
-                                  execution(* org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
-                                  execution(* org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
-                                  execution(* org.iana.notifications.NotificationManagerBean.*(..)) ||
-                                  execution(* org.iana.rzm.log.LoggerBean.*(..)) ||
-                                  execution(* org.iana.rzm.domain.DomainManagerBean.*(..)) ||
-                                  execution(* org.iana.rzm.domain.dao.HibernateDomainDAO.*(..)) ||
-                                  execution(* org.iana.rzm.domain.dao.HibernateHostDAO.*(..)) ||
-                                  execution(* org.iana.rzm.trans.TransactionManagerBean.*(..)) ||
-                                  execution(* org.iana.rzm.user.UserManagerBean.*(..)) ||
-                                  execution(* org.iana.rzm.user.RoleManagerBean.*(..))"/>
-        -->
         <aop:pointcut id="transactionalOperation"
                       expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
