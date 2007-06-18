@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
 public class ContactConfirmationCalculator implements ActionHandler {
