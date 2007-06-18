@@ -20,6 +20,9 @@ public abstract class Border extends BaseComponent {
 
     @Asset("js/rzm.js")
     public abstract IAsset getScript();
+    
+//    @Asset("js/prototype.js")
+//    public abstract IAsset getPrototypeScript();
 
     @Asset("images/iana-logo.png")
     public abstract IAsset getBackground();

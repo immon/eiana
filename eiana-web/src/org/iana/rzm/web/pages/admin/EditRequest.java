@@ -56,6 +56,11 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     @Component(id = "redeligationLabel", type = "FieldLabel", bindings = {"field=component:redeligation"})
     public abstract IComponent getRoleLabelComponent();
 
+    @Component(id="submitter", type="TextField", bindings = {"value=prop:submitterEmail",
+            "displayName=literal:Request Submitter Email", 
+            "validators=validators:email"})
+    public abstract IComponent getSubmitterEmailComponent();
+
     @InjectPage("admin/AdminHome")
     public abstract AdminHome getHomePage();
 
@@ -105,7 +110,7 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
                 setSubmitterEmail(request.getSubmitterEmail());
             }
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
     }
 

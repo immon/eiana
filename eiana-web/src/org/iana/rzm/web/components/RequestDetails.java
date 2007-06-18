@@ -8,8 +8,10 @@ import org.apache.tapestry.annotations.InjectObject;
 import org.apache.tapestry.annotations.Parameter;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.AccessDeniedHandler;
 import org.iana.rzm.web.services.ObjectNotFoundHandler;
 import org.iana.rzm.web.services.RzmServices;
 import org.iana.rzm.web.util.CounterBean;
@@ -81,6 +83,9 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     @InjectObject("service:rzm.ObjectNotFoundHandler")
     public abstract ObjectNotFoundHandler getObjectNotFoundHandler();
 
+    @InjectObject("service:rzm.AccessDeniedHandler")
+    public abstract AccessDeniedHandler getAccessDeniedHandler();
+
     @Parameter(required = true)
     public abstract void setRequestId(long id);
     public abstract long getRequestId();
@@ -125,11 +130,15 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
             TransactionVOWrapper transaction = getRzmServices().getTransaction(getRequestId());
             setRequest(transaction);
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, getExceptionPage());
+        } catch(AccessDeniedException e){
+            getAccessDeniedHandler().handleAccessDenied( e, getExceptionPage());
         }
     }
 
     protected abstract RzmServices getRzmServices();
+
+    protected abstract String getExceptionPage();
 }
     
 

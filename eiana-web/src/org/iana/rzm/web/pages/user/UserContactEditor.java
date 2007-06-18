@@ -90,7 +90,7 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
             ContactVOWrapper contactVOWrapper = domain.getContact(Long.parseLong(sid), getContactType());
             setOriginalContact(contactVOWrapper);
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         }
     }
 

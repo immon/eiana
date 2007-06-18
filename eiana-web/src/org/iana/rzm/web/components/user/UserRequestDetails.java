@@ -8,6 +8,7 @@ import org.iana.rzm.web.components.RequestDetails;
 import org.iana.rzm.web.model.TransactionVOWrapper;
 import org.iana.rzm.web.model.UserVOWrapper;
 import org.iana.rzm.web.pages.user.RequestConfirmation;
+import org.iana.rzm.web.pages.user.UserGeneralError;
 import org.iana.rzm.web.services.user.UserServices;
 
 @ComponentClass
@@ -36,6 +37,10 @@ public abstract class UserRequestDetails extends RequestDetails {
 
     protected UserServices getRzmServices(){
         return getUserServices();
+    }
+
+    protected String getExceptionPage() {
+        return UserGeneralError.PAGE_NAME;
     }
 
     public void pageBeginRender(PageEvent event) {

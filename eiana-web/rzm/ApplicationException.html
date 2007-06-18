@@ -8,7 +8,7 @@
             <table style="{ padding-left: 4px }">
                 <tr>
                     <td>
-                        <span jwcid="@If" condition="prop:otherException">
+                        <span jwcid="@If" condition="prop:rzmApplicationException">
                             <h1>Root Zone Management application is temporarily unavailable</h1>
                             <p>The Root Zone Management application is temporarily unavailable due to
                                 system errors. You may attempt to
@@ -20,6 +20,11 @@
                             <p>Please check the URL for proper spelling and capitalization.</p>
                             <p>&nbsp;</p>
                             <p>You may attempt to <a jwcid="@ServiceLink" service="restart" href="#">restart the application</a>.
+                        </span>
+                        <span jwcid="@If" condition="prop:otherException">
+                            <div style="margin: 10px 0 10px 0; padding: 10px; display: block;" class="errorMessageBox">
+                                <strong><span jwcid="@Insert" value="prop:error">-----Error------</span></strong>
+                            </div>
                         </span>
                         <span jwcid="@If" condition="ognl:global.debugEnabled">
                             <span jwcid="@ExceptionDisplay" exceptions="ognl:exceptions"/>

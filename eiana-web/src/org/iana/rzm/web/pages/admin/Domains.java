@@ -42,7 +42,7 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
                 browser.initializeForResultCount(count);
             }
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
     }
 

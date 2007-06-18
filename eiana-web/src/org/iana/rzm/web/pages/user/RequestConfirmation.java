@@ -7,6 +7,7 @@ import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.model.ActionVOWrapper;
 import org.iana.rzm.web.model.ChangeMessageBuilder;
@@ -74,7 +75,9 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
             TransactionVOWrapper transaction = getRzmServices().getTransaction(getRequestId());
             setRequest(transaction);
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        }catch(AccessDeniedException e){
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
 
@@ -95,16 +98,21 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
             getUserServices().acceptTransaction(getRequestId(), getToken());
             getRequestCycle().activate(getHome());
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        } catch (AccessDeniedException e) {
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
+
     }
 
     public void decline() {
         try {
-                getUserServices().rejectTransaction(getRequestId(), getToken());
+            getUserServices().rejectTransaction(getRequestId(), getToken());
             getRequestCycle().activate(getHome());
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        } catch (AccessDeniedException e) {
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
 }

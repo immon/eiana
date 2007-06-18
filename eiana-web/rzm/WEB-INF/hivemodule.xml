@@ -39,6 +39,14 @@
         </invoke-factory>
     </service-point>
 
+    <service-point id="AccessDeniedHandler" interface="org.iana.rzm.web.services.AccessDeniedHandler">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.services.AccessDeniedHandlerImpl">
+                <set-object property="externalService" value="infrastructure:serviceMap"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
     <service-point id="ExternalPageErrorHandler" interface="org.iana.rzm.web.services.ExternalPageErrorHandler">
         <invoke-factory>
             <construct class="org.iana.rzm.web.services.ExternalPageErrorHandlerImpl">

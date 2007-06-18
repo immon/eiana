@@ -12,6 +12,7 @@ import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IFormComponent;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.common.NameServerAttributesEditor;
 import org.iana.rzm.web.common.user.TransactionForDomainFetcher;
@@ -71,6 +72,9 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
             return WebUtil.convert(getUserServices().getDomain(getDomainId()).getNameServers());
         } catch (NoObjectFoundException e) {
             log(LOGGER, "NoObjectFoundException", e);
+            return new ArrayList<NameServerValue>();
+        }catch(AccessDeniedException e){
+            log(LOGGER, "AccessDeniedException", e);
             return new ArrayList<NameServerValue>();
         }
     }

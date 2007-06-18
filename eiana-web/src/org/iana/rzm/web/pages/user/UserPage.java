@@ -1,6 +1,7 @@
 package org.iana.rzm.web.pages.user;
 
 import org.apache.tapestry.annotations.InjectObject;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.model.DomainVOWrapper;
 import org.iana.rzm.web.model.TransactionActionsVOWrapper;
@@ -13,13 +14,17 @@ public abstract class UserPage extends Protected {
     @InjectObject("service:rzm.UserServices")
     public abstract UserServices getUserServices();
 
-    public RzmServices getRzmServices(){
+    public RzmServices getRzmServices() {
         return getUserServices();
     }
 
     protected void restoreCurrentDomain(long domainId) throws NoObjectFoundException {
-        DomainVOWrapper wrapper = getUserServices().getDomain(domainId);
-        getVisitState().markAsVisited(wrapper);
+        try {
+            DomainVOWrapper wrapper = getUserServices().getDomain(domainId);
+            getVisitState().markAsVisited(wrapper);
+        } catch (AccessDeniedException e) {
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
+        }
     }
 
     protected void restoreModifiedDomain(DomainVOWrapper domain) throws NoObjectFoundException {

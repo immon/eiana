@@ -9,7 +9,9 @@ import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.util.CounterBean;
 
@@ -39,22 +41,22 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Component(id = "message", type = "Insert", bindings = {"value=prop:message"})
     public abstract IComponent getMessageComponent();
 
-    @Component(id = "continueEdit", type = "DirectLink", bindings = {"listener=listener:continueEdit",
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    @Component(id = "continueEdit", type = "LinkSubmit", bindings = {"listener=listener:continueEdit"})
     public abstract IComponent getContinueEditComponent();
 
-    @Component(id = "proceed", type = "LinkSubmit")
+    @Component(id = "proceed", type = "LinkSubmit", bindings = {"listener=listener:proceed"})
     public abstract IComponent getProceedComponent();
 
     @Component(id = "div", type = "Any", bindings = {"style=prop:style"})
     public abstract IComponent getStyleComponent();
 
-    @Component(id="form", type = "Form", bindings = {"success=listener:proceed"})
+    @Component(id = "form", type = "Form")
     public abstract IComponent getFormComponent();
 
-    @Component(id="submitter", type="TextField", bindings = {
+    @Component(id = "submitter", type = "TextField", bindings = {
             "value=prop:submitterEmail",
             "displayName=literal:Email",
+            "clientValidationEnabled=literal:false",
             "validators=validators:email"})
     public abstract IComponent getSubmitterFieldComponent();
 
@@ -73,28 +75,31 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomainPage();
 
-    @Persist("client:page")
+    @Persist("client:form")
     public abstract long getDomainId();
 
     public abstract void setDomainId(long id);
 
-    @Persist("client:page")
+    @Persist("client:form")
     public abstract List<ActionVOWrapper> getActionList();
 
     public abstract void setActionList(List<ActionVOWrapper> list);
 
-    @Persist("client:page")
+    @Persist("client:form")
     @InitialValue("literal:false")
     public abstract void setSeparateRequest(boolean value);
+
     public abstract boolean isSeparateRequest();
 
-    @Persist("client:page")
+    @Persist("client:form")
     public abstract DomainVOWrapper getModifiedDomain();
+
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
-    @Persist("client:page")
+    @Persist("client:form")
     @InitialValue("literal:false")
     public abstract void setMustSplitRequest(boolean value);
+
     public abstract boolean isMustSplitRequest();
 
     public abstract ActionVOWrapper getAction();
@@ -104,6 +109,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract String getDomainName();
 
     public abstract String getSubmitterEmail();
+
     public abstract void setSubmitterEmail(String email);
 
     public abstract void setDomainName(String domainName);
@@ -112,7 +118,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
     public abstract String getCountryName();
 
-    public String getChangeTitle(){
+    public String getChangeTitle() {
         return getAction().getTitle();
     }
 
@@ -132,6 +138,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         setModifiedDomain(getVisitState().getMmodifiedDomain());
         DomainVOWrapper currentDomain = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(currentDomain.getName());
+        setSubmitterEmail(getVisitState().getSubmitterEmail());
         try {
             if (getActionList() == null) {
                 TransactionActionsVOWrapper transactionActions = getUserServices().getChanges(currentDomain);
@@ -140,23 +147,25 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
                 setMustSplitRequest(transactionActions.mustSplitrequest());
             }
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        } catch (AccessDeniedException e) {
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
 
 
     protected Object[] getExternalParameters() {
         DomainVOWrapper domain = getModifiedDomain();
-        if(domain != null){
-            return new Object[]{getDomainId(), getActionList(), isSeparateRequest(), isMustSplitRequest(), domain};
+        if (domain != null) {
+            return new Object[]{getDomainId(), getActionList(), isSeparateRequest(), isMustSplitRequest(), getSubmitterEmail(), domain};
         }
-        return new Object[]{getDomainId(), getActionList(), isSeparateRequest(), isMustSplitRequest()};
+        return new Object[]{getDomainId(), getActionList(), isSeparateRequest(), isMustSplitRequest(), getSubmitterEmail()};
     }
 
 
     @SuppressWarnings("unchecked")
-    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
-        if(parameters.length == 0 || parameters.length < 4){
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
+        if (parameters.length == 0 || parameters.length < 5) {
             getExternalPageErrorHandler().handleExternalPageError(
                     getMessageUtil().getSessionRestorefailedMessage());
         }
@@ -168,18 +177,21 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         setMustSplitRequest(Boolean.valueOf(parameters[3].toString()));
         try {
             restoreCurrentDomain(getDomainId());
-            if(parameters.length == 5){
-                restoreModifiedDomain((DomainVOWrapper) parameters[4]);
+            if (parameters.length == 6) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[5]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
                     getMessageUtil().getSessionRestorefailedMessage());
             LOGGER.warn("NoObjectFoundException ", e);
         }
+
+        getVisitState().setSubmitterEmail(parameters[4].toString());
     }
 
-    public void proceed() {
 
+    public void proceed() {
+        getVisitState().setSubmitterEmail(getSubmitterEmail());
         if (isSeparateRequest()) {
             SeparateRequest separateRequestPage = getSeparateRequestPage();
             separateRequestPage.setDomainId(getDomainId());
@@ -191,6 +203,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     }
 
     public IPage continueEdit() {
+        getVisitState().setSubmitterEmail(getSubmitterEmail());
         ReviewDomain reviewDomain = getReviewDomainPage();
         reviewDomain.setDomainId(getDomainId());
         return reviewDomain;
@@ -200,7 +213,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     private void returnSummaryPage() {
         try {
             DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
-            TransactionVOWrapper transaction = getUserServices().createTransaction(domain);
+            TransactionVOWrapper transaction = getUserServices().createTransaction(domain, getSubmitterEmail());
             Summary summaryPage = getSummaryPage();
             summaryPage.setTikets(Arrays.asList(transaction));
             summaryPage.setDomainName(domain.getName());
@@ -208,7 +221,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             getRequestCycle().activate(summaryPage);
         } catch (NoObjectFoundException e) {
             log(LOGGER, "No Object Found Exception", Level.WARN);
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        } catch (NoDomainModificationException e) {
+            setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
         }
     }
 }

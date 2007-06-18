@@ -49,19 +49,19 @@ public class ContactVOWrapper extends ValueObject {
     }
 
 
-    public String getJobTitle(){
+    public String getJobTitle() {
         return getValue(vo.getJobTitle(), DEFAULT_VALUE);
     }
 
-    private void setJobTitle(String jobTitle){
+    private void setJobTitle(String jobTitle) {
         vo.setJobTitle(jobTitle);
     }
 
-    public String getOrganization(){
+    public String getOrganization() {
         return vo.getOrganization();
     }
 
-    private void setOrganization(String org){
+    private void setOrganization(String org) {
         CheckTool.checkNull(org, ORGANISATION);
         vo.setOrganization(org);
     }
@@ -88,12 +88,14 @@ public class ContactVOWrapper extends ValueObject {
         return vo.getPhoneNumber();
     }
 
-    public String getAlternatePhone(){
+    public String getAlternatePhone() {
         return getValue(vo.getAltPhoneNumber(), DEFAULT_VALUE);
     }
 
-    private void setAlternatePhone(String phone){
-        vo.setAltPhoneNumber(phone);
+    private void setAlternatePhone(String phone) {
+        if (!(StringUtils.isEmpty(phone) && StringUtils.isEmpty(vo.getAltPhoneNumber()))) {
+            vo.setAltPhoneNumber(phone);
+        }
     }
 
     public String getFax() {
@@ -104,12 +106,14 @@ public class ContactVOWrapper extends ValueObject {
         vo.setFaxNumber(fax);
     }
 
-    public String getAlternateFax(){
+    public String getAlternateFax() {
         return getValue(vo.getAltFaxNumber(), DEFAULT_VALUE);
     }
 
-    private void setAlternateFax(String fax){
-        vo.setAltFaxNumber(fax);
+    private void setAlternateFax(String fax) {
+        if (!(StringUtils.isEmpty(fax) && StringUtils.isEmpty(vo.getAltFaxNumber()))) {
+            vo.setAltFaxNumber(fax);
+        }
     }
 
     public String getEmail() {
@@ -126,12 +130,14 @@ public class ContactVOWrapper extends ValueObject {
         }
     }
 
-    public String getPrivateEmail(){
+    public String getPrivateEmail() {
         return vo.getPrivateEmail();
     }
 
-    private void setPrivateEmail(String email){
-        vo.setPrivateEmail(email);
+    private void setPrivateEmail(String email) {
+        if (!(StringUtils.isEmpty(email) && StringUtils.isEmpty(vo.getPrivateEmail()))) {
+            vo.setAltFaxNumber(email);
+        }
     }
 
     public Date getCreated() {

@@ -10,6 +10,7 @@ import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.web.model.DomainVOWrapper;
 import org.iana.rzm.web.model.TransactionVOWrapper;
 import org.iana.rzm.web.services.user.UserServices;
@@ -130,9 +131,9 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
 
             List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
             if (splitRequest == TWO_RQUEST) {
-                results.addAll(userServices.createTransactions(domain));
+                results.addAll(userServices.createTransactions(domain, getVisitState().getSubmitterEmail()));
             } else {
-                results.add(userServices.createTransaction(domain));
+                results.add(userServices.createTransaction(domain, getVisitState().getSubmitterEmail()));
             }
 
             Summary page = getSummaryPage();
@@ -141,8 +142,11 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             getVisitState().markAsNotVisited(getDomainId());
             getRequestCycle().activate(page);
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        }catch(NoDomainModificationException e){
+            setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
         }
+
     }
 
     public ReviewDomain makeMoreChanges() {

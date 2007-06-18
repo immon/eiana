@@ -13,7 +13,7 @@ public class Visit implements Serializable {
     private WebUser user;
     private Map<Long,DomainVOWrapper> visitedDomains  = new HashMap<Long, DomainVOWrapper>();
     private long modifiedDomain;
-
+    private String submitterEmail;
 
     public WebUser getUser() {
         return user;
@@ -100,4 +100,14 @@ public class Visit implements Serializable {
     public DomainVOWrapper getMmodifiedDomain() {
         return visitedDomains.get(modifiedDomain);
     }
+
+    public String getSubmitterEmail(){
+        return submitterEmail;
+    }
+
+    public void setSubmitterEmail(String email){
+        this.submitterEmail = email;
+    }
+
+
 }
