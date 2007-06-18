@@ -3,6 +3,7 @@ package org.iana.dns.validator;
 public class InvalidDomainNameException extends RuntimeException {
 
     public enum Reason {
+        NULL_NAME,
         PATTERN_MISMATCH,
         NAME_TOO_LONG,
         LABEL_TOO_LONG,
