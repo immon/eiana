@@ -5,10 +5,7 @@ import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.*;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.criteria.Criterion;
 
@@ -16,6 +13,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.Timestamp;
 
 /**
  * @author: Piotr Tkaczyk
@@ -58,13 +56,22 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         isUserInRole();
         CheckTool.checkNull(userVO, "userVO");
         RZMUser newUser = UserConverter.convert(userVO);
+        for (Role role : newUser.getRoles()) {
+            role.setObjId(null);
+        }
+        newUser.setCreated(new Timestamp(System.currentTimeMillis()));
+        newUser.setCreatedBy(getAuthenticatedUser().getUserName());
         this.userManager.create(newUser);
     }
 
     public void updateUser(UserVO userVO) {
         isUserInRole();
         CheckTool.checkNull(userVO, "userVO");
+        RZMUser user = userManager.get(userVO.getObjId());
         RZMUser updateUser = UserConverter.convert(userVO);
+        updateUser.setTrackData(user.getTrackData());
+        updateUser.setModified(new Timestamp(System.currentTimeMillis()));
+        updateUser.setModifiedBy(getAuthenticatedUser().getUserName());
         this.userManager.update(updateUser);
     }
 
