@@ -48,7 +48,8 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     @Component(id = "message", type = "Insert", bindings = {"value=prop:message"})
     public abstract IComponent getMessageComponent();
 
-    @Component(id="backToOverview", type="DirectLink", bindings = {"listener=listener:backToOverview"})
+    @Component(id="backToOverview", type="DirectLink", bindings = {"listener=listener:backToOverview",
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getOverviewComponent();
 
     @InjectPage("user/UserHome")

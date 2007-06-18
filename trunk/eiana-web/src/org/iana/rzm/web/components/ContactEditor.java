@@ -286,7 +286,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         }
 
         if(!validator.isValid(email)){
-            getEditor().setErrorField(field, "Invalid email format " + email);
+            getEditor().setErrorField(field, "Invalid email address format " + email);
         }
     }
 

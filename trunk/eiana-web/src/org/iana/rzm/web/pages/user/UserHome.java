@@ -7,6 +7,7 @@ import org.apache.tapestry.annotations.Component;
 import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.components.Border;
 import org.iana.rzm.web.components.Browser;
@@ -90,18 +91,20 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     public abstract UserDomain getUserDomain();
 
     public void pageBeginRender(PageEvent event) {
-        List<UserDomain> list = getUserServices().getUserDomains();
-        Collections.sort(list);
-        setUserDomains(list);
 
         try {
+            List<UserDomain> list = getUserServices().getUserDomains();
+            Collections.sort(list);
+            setUserDomains(list);
             int count = getEntityQuery().getResultCount();
             Browser browser = ((ListRequests) getComponent("listRequests")).getRecords();
             if (count != browser.getResultCount()) {
                 browser.initializeForResultCount(count);
             }
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        }catch(AccessDeniedException e){
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
 
     }

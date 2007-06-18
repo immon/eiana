@@ -9,7 +9,6 @@ import org.apache.tapestry.engine.ILink;
 import org.apache.tapestry.engine.state.ApplicationStateManager;
 import org.apache.tapestry.services.ServiceMap;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.pages.GeneralError;
 
 public class ObjectNotFoundHandlerImpl implements ObjectNotFoundHandler {
 
@@ -18,11 +17,11 @@ public class ObjectNotFoundHandlerImpl implements ObjectNotFoundHandler {
     private IEngineService externalService;
 
 
-    public void handleObjectNotFound(NoObjectFoundException error) {
+    public void handleObjectNotFound(NoObjectFoundException error, String page) {
         long id = error.getId();
         String name = error.getName();
         String message = buildMessage(id, name);
-        ILink link = externalService.getLink(true, new ExternalServiceParameter(GeneralError.PAGE_NAME, new Object[]{message}));
+        ILink link = externalService.getLink(true, new ExternalServiceParameter(page, new Object[]{message}));
         throw new RedirectException(link.getAbsoluteURL());
     }
 

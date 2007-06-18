@@ -4,6 +4,7 @@ import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.components.Browser;
 import org.iana.rzm.web.components.ListRequests;
@@ -58,8 +59,10 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
             if (count != browser.getResultCount()) {
                 browser.initializeForResultCount(count);
             }
-        } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+        }catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        }catch(AccessDeniedException e){
+            getAccessDeniedHandler().handleAccessDenied(e, AdminGeneralError.PAGE_NAME);
         }
     }
 

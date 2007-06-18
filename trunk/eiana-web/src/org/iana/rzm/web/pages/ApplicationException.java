@@ -40,6 +40,11 @@ public abstract class ApplicationException extends Exception {
     @InjectObject("infrastructure:request")
     public abstract WebRequest getRequest();
 
+    public boolean isRzmApplicationException(){
+        String exceptionName = getExceptionName();
+        return exceptionName != null && exceptionName.contains("RzmApplicationException");
+    }
+
 //    @InjectObject("service:rzm.EmailService")
 //    public abstract EmailService getEmailService();
 //
@@ -56,7 +61,7 @@ public abstract class ApplicationException extends Exception {
     }
 
     public boolean isOtherException(){
-        return !isPageNotFoundException();
+        return !isPageNotFoundException() && (!isRzmApplicationException());
     }
 
     @Override

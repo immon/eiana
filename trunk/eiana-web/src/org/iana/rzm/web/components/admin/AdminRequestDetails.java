@@ -4,6 +4,7 @@ import org.apache.tapestry.IAsset;
 import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.components.RequestDetails;
+import org.iana.rzm.web.pages.admin.AdminGeneralError;
 import org.iana.rzm.web.pages.admin.EditRequest;
 import org.iana.rzm.web.services.admin.AdminServices;
 
@@ -26,6 +27,10 @@ public abstract class AdminRequestDetails extends RequestDetails {
 
     protected AdminServices getRzmServices(){
         return getUserServices();
+    }
+
+    protected String getExceptionPage() {
+        return AdminGeneralError.PAGE_NAME;
     }
 
     public void editRequest(){

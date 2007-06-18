@@ -2,6 +2,7 @@ package org.iana.rzm.web.services.user;
 
 import org.apache.log4j.Logger;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.common.cc.CountryCodes;
 import org.iana.rzm.facade.system.domain.IDomainVO;
@@ -38,7 +39,7 @@ public class UserServicesImpl implements UserServices {
 
     public String getCountryName(String name) {
         String code = countryCodeService.getCountryName(name.toUpperCase());
-        if(code == null){
+        if (code == null) {
             return "Top Level Domain";
         }
         return code;
@@ -54,14 +55,14 @@ public class UserServicesImpl implements UserServices {
     }
 
     public void setAccessToDomain(long domainId, long userId, boolean access) {
-        domainService.setAccessToDomain(userId, domainId,access);
+        domainService.setAccessToDomain(userId, domainId, access);
     }
 
     public UserVOWrapper getUser() {
         return new UserVOWrapper(domainService.getUser());
     }
 
-    public void acceptTransaction(long requestId, String token) throws NoObjectFoundException {
+    public void acceptTransaction(long requestId, String token) throws NoObjectFoundException, AccessDeniedException {
         try {
             transactionService.acceptTransaction(requestId, token);
         } catch (InfrastructureException e) {
@@ -70,7 +71,7 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public void rejectTransaction(long requestId, String token) throws NoObjectFoundException {
+    public void rejectTransaction(long requestId, String token) throws NoObjectFoundException, AccessDeniedException {
         try {
             transactionService.rejectTransaction(requestId, token);
         } catch (InfrastructureException e) {
@@ -83,7 +84,7 @@ public class UserServicesImpl implements UserServices {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public SystemDomainVOWrapper getDomain(long domainId) throws NoObjectFoundException {
+    public SystemDomainVOWrapper getDomain(long domainId) throws NoObjectFoundException, AccessDeniedException {
         try {
             IDomainVO vo = domainService.getDomain(domainId);
             return new SystemDomainVOWrapper(vo);
@@ -93,12 +94,11 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public List<UserDomain> getUserDomains() {
-        List<SimpleDomainVO> list ;
+    public List<UserDomain> getUserDomains() throws AccessDeniedException {
         try {
-            list = domainService.findUserDomains();
-
+            List<SimpleDomainVO> list = domainService.findUserDomains();
             List<UserDomain> userDomains = new ArrayList<UserDomain>();
+
             for (SimpleDomainVO vo : list) {
                 Set<RoleVO.Type> roles = vo.getRoles();
                 for (RoleVO.Type role : roles) {
@@ -106,7 +106,6 @@ public class UserServicesImpl implements UserServices {
                     Timestamp modified = vo.getModified() == null ? vo.getCreated() : vo.getModified();
                     userDomains.add(new UserDomain(vo.getObjId(), vo.getName(), userRole.getTypeAsString(), modified));
                 }
-
             }
             return userDomains;
         } catch (InfrastructureException e) {
@@ -115,7 +114,7 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public int getTotalTransactionCount() {
+    public int getTotalTransactionCount() throws AccessDeniedException {
         try {
             return transactionService.findTransactions(new TransactionCriteriaVO()).size();
         } catch (InfrastructureException e) {
@@ -124,52 +123,9 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public List<TransactionVOWrapper> getTransactions() {
+    public List<TransactionVOWrapper> getTransactions() throws AccessDeniedException {
         try {
             List<TransactionVO> list = transactionService.findTransactions(new TransactionCriteriaVO());
-            List<TransactionVOWrapper>result = new ArrayList<TransactionVOWrapper>();
-            for (TransactionVO transactionVO : list) {
-                result.add(new TransactionVOWrapper(transactionVO));
-            }
-            return result;
-        } catch (InfrastructureException e) {
-            LOGGER.warn("InfrastructureException", e);
-            throw new RzmApplicationException(e);
-        }
-    }
-
-    public Collection<TransactionVOWrapper> getOpenTransactionsForDomin(final String domainName) throws NoObjectFoundException {
-
-        try{
-            TransactionCriteriaVO criteria = CriteriaBuilder.createOpenTransactionCriteriaForDomain(domainName);
-            List<TransactionVO> transactions = transactionService.findTransactions(criteria);
-            List<TransactionVOWrapper>result = new ArrayList<TransactionVOWrapper>();
-            for (TransactionVO transaction : transactions) {
-                result.add(new TransactionVOWrapper(transaction));
-            }
-            return result;
-        }catch(InfrastructureException e){
-            LOGGER.warn("InfrastructureException", e);
-            throw new RzmApplicationException(e);
-        }
-    }
-
-    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper) throws NoObjectFoundException {
-
-        try {
-            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false);
-            return new TransactionVOWrapper(list.get(0));
-        } catch (InfrastructureException e) {
-            LOGGER.warn("InfrastructureException", e);
-            throw new RzmApplicationException(e);
-        } catch (NoDomainModificationException e) {
-            throw new RzmApplicationException(e);
-        }
-    }
-
-    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain) throws NoObjectFoundException {
-        try {
-            List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(), true);
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
@@ -178,12 +134,62 @@ public class UserServicesImpl implements UserServices {
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
-        } catch (NoDomainModificationException e) {
+        }
+    }
+
+    public Collection<TransactionVOWrapper> getOpenTransactionsForDomin(final String domainName) throws NoObjectFoundException, AccessDeniedException {
+
+        try {
+            TransactionCriteriaVO criteria = CriteriaBuilder.createOpenTransactionCriteriaForDomain(domainName);
+            List<TransactionVO> transactions = transactionService.findTransactions(criteria);
+            List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
+            for (TransactionVO transaction : transactions) {
+                result.add(new TransactionVOWrapper(transaction));
+            }
+            return result;
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
         }
     }
 
-    public TransactionVOWrapper getTransaction(long requestId) throws NoObjectFoundException {
+    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException {
+
+        try {
+            List<TransactionVO> list;
+            if(submmiterEmail != null){
+                list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail);
+            }else{
+                list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false);
+            }
+
+            return new TransactionVOWrapper(list.get(0));
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException {
+        try {
+             List<TransactionVO> list;
+            if(submitterEmail != null){
+                list = transactionService.createTransactions(domain.getDomainVO(), true, submitterEmail);
+            }else{
+                list = transactionService.createTransactions(domain.getDomainVO(), true);                
+            }
+            List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
+            for (TransactionVO transactionVO : list) {
+                result.add(new TransactionVOWrapper(transactionVO));
+            }
+            return result;
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public TransactionVOWrapper getTransaction(long requestId) throws NoObjectFoundException, AccessDeniedException {
         try {
             TransactionVO vo = transactionService.getTransaction(requestId);
             return new TransactionVOWrapper(vo);
@@ -193,23 +199,21 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public List<TransactionVOWrapper> getOpenTransaction() throws NoObjectFoundException {
+    public List<TransactionVOWrapper> getOpenTransaction() throws NoObjectFoundException, AccessDeniedException {
         try {
             List<TransactionVO> list = transactionService.findOpenTransactions();
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
             }
-
             return result;
-
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
         }
     }
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain) throws NoObjectFoundException {
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain) throws NoObjectFoundException, AccessDeniedException {
         try {
             TransactionActionsVO vo = transactionService.detectTransactionActions(modifiedDomain.getDomainVO());
             return new TransactionActionsVOWrapper(vo);

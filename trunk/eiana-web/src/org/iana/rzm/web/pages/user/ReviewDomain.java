@@ -9,6 +9,7 @@ import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.common.user.TransactionForDomainFetcher;
 import org.iana.rzm.web.model.ContactVOWrapper;
@@ -145,7 +146,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             setOriginalDomain(domain);
             setModifiedDomain(getVisitState().getMmodifiedDomain());
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        }catch(AccessDeniedException e){
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
 
@@ -230,8 +233,11 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
                 all.add(new NameServerValue(wrapper).setStatus(NameServerValue.NEW));
             }
             return all;
-        } catch (NoObjectFoundException e) {
+        }catch (NoObjectFoundException e) {
             LOGGER_SERVICE.warn("NoObjectFoundException " + getDomainId());
+            return new ArrayList<NameServerValue>();
+        }catch(AccessDeniedException e){
+            LOGGER_SERVICE.warn("AccessDeniedException " + getDomainId());
             return new ArrayList<NameServerValue>();
         }
     }

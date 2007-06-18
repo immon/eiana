@@ -116,6 +116,9 @@ public abstract class UserEditor extends BaseComponent implements PageBeginRende
     @InjectComponent("newdomain")
     public abstract IFormComponent getNewDomainField();
 
+    @InjectComponent("password")
+    public abstract IFormComponent getPasswordField();
+
     @Parameter(required = true)
     public abstract boolean isCreate();
 
@@ -258,6 +261,11 @@ public abstract class UserEditor extends BaseComponent implements PageBeginRende
             return;
         }
 
+        validateInput();
+        if (getListener().getValidationDelegate().getHasErrors()) {
+            return;
+        }
+
         UserVOWrapper user = getUser();
         user.setUserName(getUserName());
         user.setFirstName(getName());
@@ -281,9 +289,23 @@ public abstract class UserEditor extends BaseComponent implements PageBeginRende
         getListener().save(user);
     }
 
-
     public void revert() {
         getListener().revert();
+    }
+
+
+    private void validateInput() {
+        if(getUserDomains() == null || getUserDomains().isEmpty()){
+             getListener().setErrorField(getNewDomainField(), "User should have at least one role in a domain");
+        }
+
+        if(isCreate()){
+            String password = getPassword();
+            String confirmPassword = getConfirmPassword();
+            if(!StringUtils.equals(confirmPassword, password)){
+                getListener().setErrorField(getPasswordField(), "Paswords are not the same");
+            }
+        }
     }
 
     private static class RolesSelectionModel implements IPropertySelectionModel, Serializable {

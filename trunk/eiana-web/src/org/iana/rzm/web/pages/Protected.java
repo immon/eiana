@@ -8,10 +8,7 @@ import org.apache.tapestry.annotations.InjectState;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.event.PageValidateListener;
 import org.apache.tapestry.web.WebRequest;
-import org.iana.rzm.web.services.ExternalPageErrorHandler;
-import org.iana.rzm.web.services.ObjectNotFoundHandler;
-import org.iana.rzm.web.services.RzmServices;
-import org.iana.rzm.web.services.TokenSynchronizer;
+import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.RzmCallback;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +24,9 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
 
     @InjectObject("service:rzm.ObjectNotFoundHandler")
     public abstract ObjectNotFoundHandler getObjectNotFoundHandler();
+
+    @InjectObject("service:rzm.AccessDeniedHandler")
+    public abstract AccessDeniedHandler getAccessDeniedHandler();
 
     @InjectObject("service:rzm.ExternalPageErrorHandler")
     public abstract ExternalPageErrorHandler getExternalPageErrorHandler();

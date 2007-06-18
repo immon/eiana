@@ -4,12 +4,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.Visit;
 import org.iana.rzm.web.model.ContactVOWrapper;
 import org.iana.rzm.web.model.RoleVOWrapper;
 import org.iana.rzm.web.model.SystemDomainVOWrapper;
 import org.iana.rzm.web.model.SystemRoleVOWrapper;
+import org.iana.rzm.web.pages.user.UserGeneralError;
+import org.iana.rzm.web.services.AccessDeniedHandler;
 import org.iana.rzm.web.services.ObjectNotFoundHandler;
 import org.iana.rzm.web.services.user.UserServices;
 
@@ -119,6 +122,9 @@ public abstract class Contact extends BaseComponent {
     @InjectObject("service:rzm.ObjectNotFoundHandler")
     public abstract ObjectNotFoundHandler getObjectNotFoundHandler();
 
+    @InjectObject("service:rzm.AccessDeniedHandler")
+    public abstract AccessDeniedHandler getAccessDeniedHandler();
+
     @InjectState("visit")
     public abstract Visit getVisitState();
 
@@ -188,7 +194,9 @@ public abstract class Contact extends BaseComponent {
 
             super.renderComponent(writer, cycle);
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        } catch (AccessDeniedException e) {
+            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
 
@@ -196,7 +204,7 @@ public abstract class Contact extends BaseComponent {
         return isAddressModified() ? "edited" : "";
     }
 
-    public boolean isRole(){
+    public boolean isRole() {
         String role = getContactAttributes().get(ContactVOWrapper.ROLE);
         return Boolean.valueOf(role);
     }
@@ -269,22 +277,21 @@ public abstract class Contact extends BaseComponent {
         return getOriginalAttributes().get(ContactVOWrapper.ALT_FAX);
     }
 
-    public String getOriginalJobTitle(){
-        return getOriginalAttributes().get(ContactVOWrapper.JOB_TITLE);        
+    public String getOriginalJobTitle() {
+        return getOriginalAttributes().get(ContactVOWrapper.JOB_TITLE);
     }
 
     public boolean isUsePrivateEmail() {
-        return !getPrivateEmailStyle().equals("hidden") ;
+        return !getPrivateEmailStyle().equals("hidden");
     }
 
-    public boolean isUseAltPhone(){
+    public boolean isUseAltPhone() {
         return !getAlternatePhoneSpan().equals("hidden");
     }
 
-    public boolean isUseJobTitle(){
+    public boolean isUseJobTitle() {
         return !getJobTitleSpan().equals("hidden");
     }
-
 
 
     private String getAlternateStyle(String value, String originalValue) {
@@ -292,7 +299,7 @@ public abstract class Contact extends BaseComponent {
             return "hidden";
         }
 
-        if(StringUtils.equals(value, originalValue)){
+        if (StringUtils.equals(value, originalValue)) {
             return "";
         }
 

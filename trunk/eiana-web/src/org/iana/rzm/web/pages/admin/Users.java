@@ -50,7 +50,7 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
                 browser.initializeForResultCount(count);
             }
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e);
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
     }
 
