@@ -53,8 +53,13 @@ public class ChangeDetector {
     }
 
     static private Change diffSimple(Object src, Object dst) {
+        if (isEmpty(src) && isEmpty(dst)) return null;
         if (src == null || dst == null) return new SimpleChange(src, dst);
         return src.equals(dst) ? null : new SimpleChange(src, dst);
+    }
+
+    static private boolean isEmpty(Object o) {
+        return o == null || o.toString().length() == 0; 
     }
 
     static private Change diffCollection(Collection src, Collection dst, DiffConfiguration config) {

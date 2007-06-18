@@ -20,7 +20,7 @@ public class ObjectChangeDetectorTest {
         Change change = ChangeDetector.diff(object, object, config);
         assert change == null;
     }
-
+    
     @Test
     public void testObjectAAddition() {
         ObjectA object = new ObjectA("a", "str1", Boolean.TRUE);
