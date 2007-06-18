@@ -49,8 +49,10 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         this.transactionService = transactionService;
     }
 
-    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager,
-                                              DomainManager domainManager, SystemTransactionService transactionService) {
+    public GuardedAdminTransactionServiceBean(UserManager userManager,
+                                              TransactionManager transactionManager,
+                                              DomainManager domainManager,
+                                              SystemTransactionService transactionService) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
@@ -99,16 +101,21 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     }
 
     public void updateTransaction(long id, Long ticketId, TransactionStateVO.Name targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException {
-        updateTransaction(id, ticketId, targetStateName == null ? null : targetStateName.toString(), redelegation);
+        isUserInRole();
+        _updateTransaction(id, ticketId, targetStateName == null ? null : targetStateName.toString(), redelegation);
     }
 
     public void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException {
         isUserInRole();
+        _updateTransaction(id, ticketId, targetStateName, redelegation);
+    }
+
+    private void _updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException {
         try {
             Transaction retTransaction= transactionManager.getTransaction(id);
             retTransaction.setTicketID(ticketId);
             retTransaction.setRedelegation(redelegation);
-            if (targetStateName != null && !targetStateName.equals(retTransaction.getState().getName())) {
+            if (targetStateName != null && !targetStateName.equals(""+retTransaction.getState().getName())) {
                 retTransaction.transitTo(getRZMUser(), targetStateName);
             }
         } catch (NoSuchTransactionException e) {
@@ -117,7 +124,6 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
             throw new StateUnreachableException(""+targetStateName);
         }
     }
-
     public void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException {
         isUserInRole();
         try {
