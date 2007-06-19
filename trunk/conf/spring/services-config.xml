@@ -158,13 +158,11 @@
                 <ref bean="jbpmInterceptor"/>
             </list>
         </property>
-        <!--
         <property name="postInterceptors">
             <list>
                 <ref bean="systemTransactionLoggerInterceptor"/>
             </list>
         </property>
-        -->
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
