@@ -60,6 +60,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             "validators=validators:email"})
     public abstract IComponent getSubmitterFieldComponent();
 
+    @Component(id="isNotNameServer", type = "If", bindings = {"condition=prop:notNameServer"})
+    public abstract IComponent getIsNotNameServerComponent();
+
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
 
@@ -118,6 +121,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
     public abstract String getCountryName();
 
+    public abstract void setNameServerChange(boolean nameServerChange);
+    public abstract boolean isNameServerChange();
+
     public String getChangeTitle() {
         return getAction().getTitle();
     }
@@ -143,14 +149,25 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             if (getActionList() == null) {
                 TransactionActionsVOWrapper transactionActions = getUserServices().getChanges(currentDomain);
                 setActionList(transactionActions.getChanges());
+                setNameServerChange(transactionActions.isNameServerChange());
                 setSeparateRequest(transactionActions.offerSeparateRequest());
                 setMustSplitRequest(transactionActions.mustSplitrequest());
+                if(isNameServerChange()){
+                    setWarningMessage("Currently Name Server Changes are not supported. Please start over and do Contact " +
+                            "changes only");
+                }
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         } catch (AccessDeniedException e) {
             getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
+    }
+
+
+
+    public boolean isNotNameServer(){
+        return !isNameServerChange();
     }
 
 

@@ -82,6 +82,7 @@ public interface ChangeFields {
     public static final String NS_NAME = "nameServers.name";
 
     public static final String NS_IP = "nameServers.address.address";
+    public static final String NS_IPS = "nameServers.addresses.address";
 
     public static final String NS_IPTYPE = "nameServers.address.type";
 

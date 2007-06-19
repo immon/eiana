@@ -28,13 +28,13 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
     @InjectStateFlag("visit")
     public abstract boolean getVisitStateExists();
 
-    @InitialValue("ognl:''")
+    @InitialValue("ognl:null")
     public abstract void setInfoMessage(String value);
 
-    @InitialValue("ognl:''")
+    @InitialValue("ognl:null")
     public abstract void setWarningMessage(String value);
 
-    @InitialValue("ognl:''")
+    @InitialValue("ognl:null")
     public abstract void setErrorMessage(String value);
 
     public abstract String getErrorMessage();

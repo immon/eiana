@@ -79,6 +79,7 @@ public class ChangeBuilder {
             add(ChangeFields.TC_ROLE, CONTACT_ROLE);
 
             add(ChangeFields.NS_IP, IP_ADDRESS);
+            add(ChangeFields.NS_IPS, IP_ADDRESS);
             add(ChangeFields.NS_NAME, HOST_NAME);
             add(ChangeFields.REGISTRY_URL, "Registry URL");
             add(ChangeFields.WHOIS, "WHOIS");

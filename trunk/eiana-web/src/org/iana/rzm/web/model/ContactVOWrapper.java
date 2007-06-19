@@ -136,7 +136,7 @@ public class ContactVOWrapper extends ValueObject {
 
     private void setPrivateEmail(String email) {
         if (!(StringUtils.isEmpty(email) && StringUtils.isEmpty(vo.getPrivateEmail()))) {
-            vo.setAltFaxNumber(email);
+            vo.setPrivateEmail(email);
         }
     }
 

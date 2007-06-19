@@ -103,6 +103,18 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         return rolesNames;
     }
 
+    public List<String> listSystemRolesForDomain(String domain){
+        List<String> rolesNames = new ArrayList<String>();
+        List<SystemRoleVOWrapper> list = getSystemRoles();
+        for (SystemRoleVOWrapper systemRoleVOWrapper : list) {
+            if(systemRoleVOWrapper.getDomainName().equals(domain)){
+                rolesNames.add(systemRoleVOWrapper.getTypeAsString());
+            }
+        }
+
+        return rolesNames;
+    }
+
 
     public boolean isAc() {
         return isInRole(SystemRoleVOWrapper.SystemType.AC);
