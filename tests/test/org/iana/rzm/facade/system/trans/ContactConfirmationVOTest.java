@@ -25,7 +25,7 @@ import java.util.Set;
 public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
     @BeforeClass
-    public void init() {
+    public void init() throws Exception {
         Domain domain = new Domain("contactconfirmation");
         domain.setSupportingOrg(new Contact("so-name"));
         domain.setAdminContact(new Contact("ac-name"));
@@ -38,6 +38,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
     @Test
     public void testNoConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
@@ -47,10 +49,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testACConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "ac-name");
@@ -66,10 +72,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testNewACConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "ac-name-new");
@@ -85,10 +95,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testTCConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "tc-name");
@@ -104,10 +118,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testNewTCConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "tc-name-new");
@@ -123,10 +141,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testACTCConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "tc-name");
@@ -144,10 +166,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testNewACNewTCConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "tc-name-new");
@@ -165,10 +191,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testACNewACConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "ac-name");
@@ -186,10 +216,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testTCNewTCConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "tc-name");
@@ -207,10 +241,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testACNewACTCConfirmationReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "ac-name");
@@ -231,10 +269,14 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @Test
     public void testAllConfirmationsReceived() throws Exception {
+        setDefaultUser();
+
         TransactionVO trans = createTransaction();
 
         String token = getToken(trans.getTransactionID(), "ac-name");
@@ -258,6 +300,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
+
+        closeServices();
     }
 
     @AfterClass(alwaysRun = true)

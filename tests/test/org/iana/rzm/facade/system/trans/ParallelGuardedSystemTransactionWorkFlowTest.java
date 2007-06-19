@@ -89,10 +89,10 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
     @Test
     public void testParallelRun1() throws Exception {
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);                          //1.2
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);                          //1.2
         Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
         acceptMANUAL_REVIEW(userIANA, transId);                                               //1.3
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId, 2);                       //2.2
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, secTransId, 2);                       //2.2
         acceptIANA_CHECK(userIANA, transId);                                                  //1.4
         acceptMANUAL_REVIEW(userIANA, secTransId);                                            //2.3
         acceptIANA_CHECK(userIANA, secTransId);                                               //2.4
@@ -124,10 +124,10 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         secondModificationVO.setAdminContact(secondContactVO);
 
         Long transId = createTransaction(firstModificationVO, userAC).getTransactionID();     //1.1
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 3);                          //1.2
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);                          //1.2
         Long secTransId = createTransaction(secondModificationVO, userAC).getTransactionID(); //2.1
         acceptMANUAL_REVIEW(userIANA, transId);                                               //1.3
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, secTransId, 3);                       //2.2
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, secTransId, 3);                       //2.2
         acceptIANA_CHECK(userIANA, transId);                                                  //1.4
         acceptMANUAL_REVIEW(userIANA, secTransId);                                            //2.3
         acceptIANA_CHECK(userIANA, secTransId);                                               //2.4

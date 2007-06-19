@@ -54,140 +54,137 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);     //iana
+        setUser(user);     //iana
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
         gsts.acceptTransaction(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptZONE_INSERTION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //iana
+        setUser(user); //iana
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
         gsts.acceptTransaction(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);   //USDoC
+        setUser(user);   //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.acceptTransaction(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptUSDOC_APPROVALnoNSChange(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //USDoC
+        setUser(user); //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.acceptTransaction(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptEXT_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
+        setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
         gsts.acceptTransaction(transId);
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptMANUAL_REVIEW(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
+        setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
         gsts.transitTransaction(transId, "accept");
         assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptIANA_CHECK(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
+        setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
         gsts.transitTransaction(transId, "accept");
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
+        setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
         gsts.acceptTransaction(transId);
         assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void rejectPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
+        setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
         TransactionVO trans = gsts.getTransaction(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() > 0;
         gsts.rejectTransaction(transId, tokens.iterator().next());
         assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void rejectPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
+        setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        try {
-            gsts.rejectTransaction(transId, "0");
-        } finally {
-            gsts.close();
-        }
+        gsts.rejectTransaction(transId, "0");
+        closeServices();
     }
 
     protected void closeEXT_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
+        setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
         gsts.transitTransaction(transId, "close");
         assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void rejectEXT_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
+        setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
         gsts.rejectTransaction(transId);
         assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void rejectUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //USDoC
+        setUser(user);  //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.rejectTransaction(transId);
         assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void rejectIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //userAC
+        setUser(user);  //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
         gsts.rejectTransaction(transId);
         assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void closeIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
+        setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
         gsts.transitTransaction(transId, "close");
         assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void closePENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
+        setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
         gsts.transitTransaction(transId, "close");
         assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
-        gsts.close();
+        closeServices();
     }
 
-    protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser firstUser, RZMUser secondUser, long transId, int tokenCount) throws Exception {
-        setGSTSAuthUser(firstUser); //userAC
+    protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId, int tokenCount) throws Exception {
+        setUser(user); //userAC
         TransactionVO trans = gsts.getTransaction(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
@@ -196,17 +193,14 @@ public abstract class CommonGuardedSystemTransaction {
             gsts.acceptTransaction(transId, token);
         }
         assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
-        gsts.close();
+        closeServices();
     }
 
     protected void acceptPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
-        setGSTSAuthUser(firstUser); //userAC
+        setUser(firstUser); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        try {
-            gsts.acceptTransaction(transId, "0");
-        } finally {
-            gsts.close();
-        }
+        gsts.acceptTransaction(transId, "0");
+        closeServices();
     }
 
     protected Domain createDomain(String name) {
@@ -221,19 +215,37 @@ public abstract class CommonGuardedSystemTransaction {
         return newDomain;
     }
 
-    protected void setGSTSAuthUser(RZMUser user) {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gsts.setUser(testAuthUser);
+    protected void setUser(RZMUser user) throws Exception {
+        AuthenticatedUser authUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gsts.setUser(authUser);
+        gsds.setUser(authUser);
+        ats.setUser(authUser);
+    }
+
+    protected void setUser(String loginName) throws Exception {
+        AuthenticatedUser authUser = authService.authenticate(new PasswordAuth(loginName, ""));
+        gsts.setUser(authUser);
+        gsds.setUser(authUser);
+        ats.setUser(authUser);
+    }
+
+    protected void setDefaultUser() throws Exception {
+        setUser(defaultIana.getLoginName());
+    }
+
+    protected RZMUser getDefaultUser() {
+        return defaultIana;
+    }
+
+    protected void closeServices() {
+        gsts.close();
+        gsds.close();
+        ats.close();
     }
 
     protected IDomainVO getDomain(String domainName, RZMUser user) throws Exception {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        try {
-            gsds.setUser(testAuthUser);
-            return gsds.getDomain(domainName);
-        } finally {
-            gsds.close();
-        }
+        setUser(user);
+        return gsds.getDomain(domainName);
     }
 
     protected IDomainVO getDomain(String domainName) throws Exception {
@@ -241,17 +253,33 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected TransactionVO createTransaction(IDomainVO domainVO, RZMUser user) throws Exception {
-//        domainManager.delete(domain);
-//        domainManager.create(domain);
-        setGSTSAuthUser(user);  //userAC
+        setUser(user);
         List<TransactionVO> transaction = gsts.createTransactions(domainVO, false);
-
-        gsts.close();
         return transaction.iterator().next();
     }
 
     protected TransactionVO createTransaction(IDomainVO domainVO) throws Exception {
-        return createTransaction(domainVO, defaultIana);        
+        return createTransaction(domainVO, defaultIana);
+    }
+
+    protected List<TransactionVO> createTransactions(IDomainVO domainVO, boolean splitNameServerChange) throws Exception {
+        return gsts.createTransactions(domainVO, splitNameServerChange);
+    }
+
+    protected void transitTransaction(long id, String transitionName) throws Exception {
+        gsts.transitTransaction(id, transitionName);
+    }
+
+    protected void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws Exception {
+        ats.updateTransaction(id, ticketId, targetStateName, redelegation);
+    }
+
+    protected void acceptTransaction(long transactionId, String token) throws Exception {
+        gsts.acceptTransaction(transactionId, token);
+    }
+
+    protected TransactionVO getTransaction (long transactionId) throws Exception {
+        return gsts.getTransaction(transactionId);
     }
 
     private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
@@ -260,7 +288,7 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void checkStateLog(RZMUser user, Long transId, String[][] usersStates) throws Exception {
-        setGSTSAuthUser(user);
+        setUser(user);
         TransactionVO trans = gsts.getTransaction(transId);
         List<TransactionStateLogEntryVO> log = trans.getStateLog();
         assert log != null;
@@ -273,6 +301,7 @@ public abstract class CommonGuardedSystemTransaction {
                     "unexpected state in log entry: " + i + ", " + usersStates[i][1];
             i++;
         }
+        closeServices();
     }
 
     protected Host setupFirstHost(String prefix) throws InvalidIPAddressException, InvalidDomainNameException {
@@ -287,34 +316,5 @@ public abstract class CommonGuardedSystemTransaction {
         host.addIPAddress(IPAddress.createIPv4Address("21.2.3.5"));
         host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));
         return host;
-    }
-
-    protected void setUser(String loginName) throws Exception {
-        AuthenticatedUser authUser = authService.authenticate(new PasswordAuth(loginName, ""));
-        gsts.setUser(authUser);
-        gsds.setUser(authUser);
-        ats.setUser(authUser);
-    }
-
-    protected void setDefaultUser() throws Exception {
-        setUser(defaultIana.getLoginName());
-    }
-
-    protected void acceptTransaction(long transactionId, String token) throws Exception {
-        setDefaultUser();
-        try {
-            gsts.acceptTransaction(transactionId, token);
-        } finally {
-            gsts.close();
-        }
-    }
-
-    protected TransactionVO getTransaction (long transactionId) throws Exception {
-        setDefaultUser();
-        try {
-            return gsts.getTransaction(transactionId);
-        } finally {
-            gsts.close();
-        }
     }
 }

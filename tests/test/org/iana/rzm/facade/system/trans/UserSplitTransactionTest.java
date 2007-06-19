@@ -5,7 +5,6 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.HostVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
@@ -23,13 +22,8 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system", "UserSplitTransactionTest"})
 public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
 
-    RZMUser iana;
-
     @BeforeClass
     public void init() {
-        iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
-        iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        userManager.create(iana);
         Domain domain = new Domain("usersplittest");
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
@@ -40,26 +34,32 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
 
     @Test
     public void testSingleTransaction() throws Exception {
-        IDomainVO domain = getDomain("usersplittest", iana);
+        setDefaultUser();
+
+        IDomainVO domain = getDomain("usersplittest");
         domain.getNameServers().add(new HostVO("usersplittest.host"));
         domain.setRegistryUrl("usersplittest.registry.url");
 
-        setGSTSAuthUser(iana);
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = createTransactions(domain, false);
 
         assert trans != null && trans.size() == 1;
+
+        closeServices();
     }
 
     @Test
     public void testSeparatedTransaction() throws Exception {
-        IDomainVO domain = getDomain("usersplittest", iana);
+        setDefaultUser();
+
+        IDomainVO domain = getDomain("usersplittest");
         domain.getNameServers().add(new HostVO("usersplittest.host"));
         domain.setRegistryUrl("usersplittest.registry.url");
 
-        setGSTSAuthUser(iana);
-        List<TransactionVO> trans = gsts.createTransactions(domain, true);
+        List<TransactionVO> trans = createTransactions(domain, true);
 
         assert trans != null && trans.size() == 2;
+        
+        closeServices();
     }
 
     @AfterClass(alwaysRun = true)

@@ -1,55 +1,35 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.admin.AdminTransactionService;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.system.domain.ContactVO;
+import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.HostVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true, groups = {"facade-system", "DomainCreationTransactionWorkFlowTest"})
-public class DomainCreationTransactionWorkFlowTest {
+public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
     private final static String DOMAIN_NAME_BASE = "createtranstest";
 
-    private ProcessDAO processDAO;
-    private UserManager userManager;
-    private DomainManager domainManager;
-
-    private AdminTransactionService gats;
-    private SystemTransactionService gsts;
-    private SystemDomainService gsds;
-
-    private RZMUser userAC, userTC, userIANA, userUSDoC;
-    int domainCounter = 0;
+    private RZMUser userAC;
+    private RZMUser userIANA;
+    private RZMUser userUSDoC;
+    private int domainCounter = 0;
 
     @BeforeClass
     public void init() {
-        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        userManager = (UserManager) appCtx.getBean("userManager");
-        gats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
-        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
-        gsds = (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
-
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
         userAC.setFirstName("ACuser");
@@ -61,7 +41,7 @@ public class DomainCreationTransactionWorkFlowTest {
         }
         userManager.create(userAC);
 
-        userTC = new RZMUser();
+        RZMUser userTC = new RZMUser();
         userTC.setLoginName("gstsignalseconduser");
         userTC.setFirstName("TCuser");
         userTC.setLastName("lastName");
@@ -196,7 +176,7 @@ public class DomainCreationTransactionWorkFlowTest {
         checkStateLog(userAC, transId, workFlowWithNSChangeLog);
 
         try {
-            setGSDSAuthUser(userAC);
+            setUser(userAC);
             IDomainVO retrievedDomain = gsds.getDomain(domain.getName());
             assert retrievedDomain != null;
             assert retrievedDomain.getAdminContact() != null;
@@ -219,7 +199,7 @@ public class DomainCreationTransactionWorkFlowTest {
             assert domain.getWhoisServer() != null ? domain.getWhoisServer().equals(retrievedDomain.getWhoisServer()) :
                     retrievedDomain.getWhoisServer() == null;
         } finally {
-            gsds.close();
+            closeServices();
         }
     }
 
@@ -243,178 +223,31 @@ public class DomainCreationTransactionWorkFlowTest {
     }
 
     private DomainVO getNextDomain() {
-        return ToVOConverter.toDomainVO(createDomain(DOMAIN_NAME_BASE + domainCounter++));
-    }
-
-    private Domain createDomain(String name) {
-        Domain domain = new Domain(name);
-        domain.setSupportingOrg(createContact(name + "-supp"));
-        domain.setTechContact(createContact(name + "-tech"));
-        domain.setAdminContact(createContact(name + "-admin"));
-        Host host = new Host("ns1." + name);
+        Domain domain = createDomain(DOMAIN_NAME_BASE + domainCounter++);
+        Host host = new Host("ns1." + domain.getName());
         host.addIPAddress("4.3.2.1");
         domain.addNameServer(host);
-        domain.setRegistryUrl("registry." + name);
-        domain.setWhoisServer("whois." + name);
-        return domain;
-    }
-
-    private Contact createContact(String name) {
-        Contact contact = new Contact(name);
-        contact.setAddress(new Address(name + "-addr", "US"));
-        contact.setAltFaxNumber("+123456780");
-        contact.setAltPhoneNumber("+123456781");
-        contact.setEmail(name + "@no-mail.org");
-        contact.setFaxNumber("+123456782");
-        contact.setJobTitle("title");
-        contact.setOrganization(name + "-org");
-        contact.setPhoneNumber("+123456783");
-        contact.setPrivateEmail(name + "@prv-no-mail.org");
-        return contact;
+        return ToVOConverter.toDomainVO(domain);
     }
 
     private void assertEquals(ContactVO c1, ContactVO c2) {
-        assert c1.getAddress().equals(c2.getAddress());
-        assert c1.getEmail().equals(c2.getEmail());
-        assert c1.getFaxNumber().equals(c2.getFaxNumber());
-        assert c1.getName().equals(c2.getName());
-        assert c1.getOrganization().equals(c2.getOrganization());
-        assert c1.getPhoneNumber().equals(c2.getPhoneNumber());
+        assert c1.getAddress() != null ? c1.getAddress().equals(c2.getAddress()) : c2.getAddress() == null;
+        assert c1.getEmail() != null ? c1.getEmail().equals(c2.getEmail()) : c2.getEmail() == null;
+        assert c1.getFaxNumber() != null ? c1.getFaxNumber().equals(c2.getFaxNumber()) : c2.getFaxNumber() == null;
+        assert c1.getName() != null ? c1.getName().equals(c2.getName()) : c2.getName() == null;
+        assert c1.getOrganization() != null ? c1.getOrganization().equals(c2.getOrganization()) : c2.getOrganization() == null;
+        assert c1.getPhoneNumber() != null ? c1.getPhoneNumber().equals(c2.getPhoneNumber()) : c2.getPhoneNumber() == null;
     }
 
     private void assertEquals(HostVO h1, HostVO h2) {
-        assert h1.getAddresses().equals(h2.getAddresses());
-        assert h1.getName().equals(h2.getName());
-    }
-
-    private void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);     //iana
-        assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
-        gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("COMPLETED", transId);
-        gsts.close();
-    }
-
-    private void acceptZONE_INSERTION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //iana
-        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
-        gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
-        gsts.close();
-    }
-
-    private void acceptUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);   //USDoC
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
-        gsts.close();
-    }
-
-    protected void acceptUSDOC_APPROVALnoNSChange(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //USDoC
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.acceptTransaction(transId);
-        assert isTransactionInDesiredState("COMPLETED", transId);
-        gsts.close();
-    }
-
-    protected void acceptMANUAL_REVIEW(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
-        gsts.transitTransaction(transId, "accept");
-        assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
-        gsts.close();
-    }
-
-    protected void acceptIANA_CHECK(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
-        gsts.transitTransaction(transId, "accept");
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.close();
-    }
-
-    private void rejectPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user); //userAC
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        TransactionVO trans = gsts.getTransaction(transId);
-        List<String> tokens = trans.getTokens();
-        assert tokens.size() > 0;
-        gsts.rejectTransaction(transId, tokens.iterator().next());
-        assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
-    }
-
-    private void rejectUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //USDoC
-        assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.rejectTransaction(transId);
-        assert isTransactionInDesiredState("REJECTED", transId);
-        gsts.close();
-    }
-
-    private void closePENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
-        setGSTSAuthUser(user);  //iana
-        assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.transitTransaction(transId, "close");
-        assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
-        gsts.close();
-    }
-
-    private void acceptPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId, int tokenCount) throws Exception {
-        setGSTSAuthUser(user); //userAC
-        TransactionVO trans = gsts.getTransaction(transId);
-        List<String> tokens = trans.getTokens();
-        assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
-        for (String token : tokens) {
-            assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-            gsts.acceptTransaction(transId, token);
-        }
-        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
-        gsts.close();
-    }
-
-    private void setGSTSAuthUser(RZMUser user) {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gsts.setUser(testAuthUser);
-    }
-
-    private void setGATSAuthUser(RZMUser user) {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gats.setUser(testAuthUser);
-    }
-
-    private void setGSDSAuthUser(RZMUser user) {
-        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gsds.setUser(testAuthUser);
+        assert h1.getAddresses() != null ? h1.getAddresses().equals(h2.getAddresses()) : h2.getAddresses() == null;
+        assert h1.getName() != null ? h1.getName().equals(h2.getName()) : h2.getName() == null;
     }
 
     private TransactionVO createTransaction(DomainVO domainVO, RZMUser user) throws Exception {
-        setGATSAuthUser(user);  //iana
-        TransactionVO transaction = gats.createDomainCreationTransaction(domainVO);
-        gsts.close();
+        setUser(user);  //iana
+        TransactionVO transaction = ats.createDomainCreationTransaction(domainVO);
+        closeServices();
         return transaction;
-    }
-
-    private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
-        TransactionVO retTransactionVO = gsts.getTransaction(transId);
-        return retTransactionVO.getState().getName().toString().equals(stateName);
-    }
-
-    private void checkStateLog(RZMUser user, Long transId, String[][] usersStates) throws Exception {
-        setGSTSAuthUser(user);
-        TransactionVO trans = gsts.getTransaction(transId);
-        List<TransactionStateLogEntryVO> log = trans.getStateLog();
-        assert log != null;
-        assert log.size() == usersStates.length;
-        int i = 0;
-        for (TransactionStateLogEntryVO entry : log) {
-            assert usersStates[i][0].equals(entry.getUserName()) :
-                    "unexpected user in log entry: " + i + ", " + usersStates[i][0];
-            assert usersStates[i][1].equals(entry.getState().getName().toString()) :
-                    "unexpected state in log entry: " + i + ", " + usersStates[i][1];
-            i++;
-        }
     }
 }
