@@ -261,6 +261,15 @@
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="xerces" level="project" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -331,10 +340,6 @@
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="module" name="eiana-startup">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/classes" />
-    </containerElement>
-    <containerElement type="module" name="eiana-techcheck">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
@@ -409,6 +414,11 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/hibernate/hibernate3.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />

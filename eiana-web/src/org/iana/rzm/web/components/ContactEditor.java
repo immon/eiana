@@ -11,6 +11,7 @@ import org.apache.tapestry.form.IFormComponent;
 import org.apache.tapestry.valid.IValidationDelegate;
 import org.iana.rzm.web.common.ContactAttributesEditor;
 import org.iana.rzm.web.model.ContactVOWrapper;
+import org.iana.rzm.web.services.user.UserServices;
 import org.iana.rzm.web.util.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,9 +141,18 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @InjectObject("service:tapestry.globals.HttpServletRequest")
     public abstract HttpServletRequest getHttpRequest();
 
-    public abstract boolean getRole();
+    @InjectObject("service:rzm.UserServices")
+    public abstract UserServices getUserServices();
 
-    public abstract void setRole(boolean role);
+    public boolean getRole() {
+        String role = getContactAttributes().get(ContactVOWrapper.ROLE);
+        return Boolean.valueOf(role);
+    }
+
+    public void setRole(boolean value) {
+        String role = String.valueOf(value);
+        getContactAttributes().put(ContactVOWrapper.ROLE, role);
+    }
 
     public abstract void setUsePrivateEmail(boolean value);
 
@@ -169,10 +179,8 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract void setAlternatePhone(String phone);
 
     public void pageBeginRender(PageEvent event) {
-        String role = getContactAttributes().get(ContactVOWrapper.ROLE);
 
         if (!event.getRequestCycle().isRewinding()) {
-            setRole(Boolean.valueOf(role));
 
             if (StringUtils.isBlank(getPrivateEmail()) && (!isUsePrivateEmail())) {
                 setPrivateEmail(getContactAttributes().get(ContactVOWrapper.PRIVATE_EMAIL));
@@ -188,7 +196,9 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
                 setAlternatePhone(getContactAttributes().get(ContactVOWrapper.ALT_PHONE));
                 setAddAltPhone(StringUtils.isNotBlank(getAlternatePhone()));
             }
+
         } else {
+
             if (!isUsePrivateEmail()) {
                 setPrivateEmail(null);
             }
@@ -197,7 +207,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
                 setAlternateFax(null);
             }
 
-            if(!isAddAltPhone()){
+            if (!isAddAltPhone()) {
                 setAlternatePhone(null);
             }
         }
@@ -230,7 +240,6 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             attributes.put(ContactVOWrapper.ALT_PHONE, getAlternatePhone());
         }
 
-        attributes.put(ContactVOWrapper.ROLE, String.valueOf(getRole()));
         getEditor().save(getContactAttributes());
     }
 
@@ -266,13 +275,23 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         validateReqiredField(contactAttributes, ContactVOWrapper.ADDRESS, getAddressField());
         validateReqiredField(contactAttributes, ContactVOWrapper.COUNTRY, getCountryField());
 
+        validateCountryCode(contactAttributes.get(ContactVOWrapper.COUNTRY));
+
         if (isUsePrivateEmail()) {
             validateEmail(getPrivateEmail(), getPrivateEmailField(), ContactVOWrapper.PRIVATE_EMAIL);
         }
 
-        if(getRole()){
-            if(StringUtils.isBlank(contactAttributes.get(ContactVOWrapper.JOB_TITLE))){
-                getEditor().setErrorField(getJobTitleField(), "Role accounts must have a Job Title");    
+        if (getRole()) {
+            if (StringUtils.isBlank(contactAttributes.get(ContactVOWrapper.JOB_TITLE))) {
+                getEditor().setErrorField(getJobTitleField(), "Role accounts must have a Job Title");
+            }
+        }
+    }
+
+    private void validateCountryCode(String code) {
+        if (code != null) {
+            if (!getUserServices().isValidCountryCode(code)) {
+                getEditor().setErrorField(getCountryField(), "Invalid Country Code " + code);
             }
         }
     }
@@ -280,12 +299,12 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     private void validateEmail(String email, IFormComponent field, String fieldName) {
         EmailValidator validator = EmailValidator.getInstance();
 
-        if(StringUtils.isBlank(email)){
+        if (StringUtils.isBlank(email)) {
             getEditor().setErrorField(field, "Please specify value for " + fieldName);
             return;
         }
 
-        if(!validator.isValid(email)){
+        if (!validator.isValid(email)) {
             getEditor().setErrorField(field, "Invalid email address format " + email);
         }
     }
