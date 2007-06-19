@@ -1,6 +1,7 @@
 package org.iana.rzm.web.services.user;
 
 import org.apache.log4j.Logger;
+import org.iana.codevalues.Value;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -43,6 +44,18 @@ public class UserServicesImpl implements UserServices {
             return "Top Level Domain";
         }
         return code;
+    }
+
+    public boolean isValidCountryCode(String code){
+        List<Value> list = countryCodeService.getCountries();
+        for (Value value : list) {
+            if(value.getValueId().equals(code)){
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     public List<UserVOWrapper> getUsersForDomain(String domainName) {

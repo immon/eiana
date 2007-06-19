@@ -231,6 +231,11 @@ public abstract class Contact extends BaseComponent {
         return isAddressModified() ? "edited" : "";
     }
 
+    public String getRoleAccountClass(){
+        String s = getOriginalAttributes().get(ContactVOWrapper.ROLE);
+        return isRole() == Boolean.valueOf(s) ? "" : "edited";
+    }
+
     public boolean isRole() {
         String role = getContactAttributes().get(ContactVOWrapper.ROLE);
         return Boolean.valueOf(role);
@@ -264,8 +269,10 @@ public abstract class Contact extends BaseComponent {
 
     public boolean isAddressModified() {
         String originalAddress = getOriginalAttributes().get(ContactVOWrapper.ADDRESS);
+        String originalCountry = getOriginalAttributes().get(ContactVOWrapper.COUNTRY);
         String newAddress = getContactAttributes().get(ContactVOWrapper.ADDRESS);
-        return originalAddress != null && (!originalAddress.equals(newAddress));
+        String country = getContactAttributes().get(ContactVOWrapper.COUNTRY);
+        return !(StringUtils.equals(originalAddress, newAddress) && StringUtils.equals(originalCountry, country));
     }
 
     public String getOriginalAddress() {

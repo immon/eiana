@@ -29,4 +29,6 @@ public interface UserServices extends RzmServices {
     public void rejectTransaction(long requestId, String token) throws NoObjectFoundException;
 
     public void setAccessToDomain(long domainId, long userId, boolean access);
+
+    public boolean isValidCountryCode(String code);
 }
