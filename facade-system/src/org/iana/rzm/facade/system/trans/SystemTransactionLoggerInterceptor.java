@@ -20,6 +20,8 @@ public class SystemTransactionLoggerInterceptor implements MethodInterceptor {
     private static final List<String> creationMethods = Arrays.asList(creationMethodsArray);
     private static final List<String> changeMethods = Arrays.asList(changeMethodsArray);
 
+    private static final String LOGGING_USER_MAIL_NAME = "MAIL";
+
     private TransactionManager transactionManager;
     private Logger logger;
 
@@ -49,7 +51,7 @@ public class SystemTransactionLoggerInterceptor implements MethodInterceptor {
         for (TransactionVO tran : trans) {
             long transactionId = tran.getTransactionID();
             TrackedObject trackedObject = transactionManager.getTransaction(transactionId);
-            logger.addLog(service.getAuthenticatedUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
+            logger.addLog(LOGGING_USER_MAIL_NAME, sessionId, methodInvocation.getMethod().getName(),
                     trackedObject, methodInvocation.getArguments());
         }
         return result;
@@ -61,7 +63,7 @@ public class SystemTransactionLoggerInterceptor implements MethodInterceptor {
         TrackedObject oldObject = transactionManager.getTransaction(transactionId);
         Object result = methodInvocation.proceed();
         TrackedObject object = transactionManager.getTransaction(transactionId);
-        logger.addLog(service.getAuthenticatedUser().getUserName(), sessionId, methodInvocation.getMethod().getName(),
+        logger.addLog(LOGGING_USER_MAIL_NAME, sessionId, methodInvocation.getMethod().getName(),
                 object, oldObject);
         return result;
     }
