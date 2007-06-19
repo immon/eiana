@@ -39,14 +39,18 @@ As a {currentOrNewContact}, for this domain you
 must consent to this change.
 {newContactOnly}
 Please review this change to ensure it is correct, and then indicate
-your approval or disapproval by visiting the following link:
+your approval or disapproval either by visiting the following link
+(username and password required):
 
 {url}
+
+or, you can simply reply to this email with the words "I ACCEPT" or
+"I DECLINE" on the first line.
 
 For your reference, this request has been assigned ticket number
 {ticket}. Current administrative and technical contacts for a domain
 can review the status of this request at any time at our website at
-http://rzm.iana.org/
+http://rzm.iana.org/rzm
 
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not

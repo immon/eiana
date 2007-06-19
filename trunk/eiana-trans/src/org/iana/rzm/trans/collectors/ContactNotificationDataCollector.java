@@ -49,7 +49,7 @@ public class ContactNotificationDataCollector extends AbstractNotificationDataCo
 
             values.put("currentOrNewContact", (isNewContact()) ? "proposed new contact" : "current contact");
             values.put("newContactOnly", (isNewContact()) ? newContactInfo() : "");
-            values.put("url", "http://rzm.iana.org/test");
+            values.put("url", "http://rzm.iana.org/rzm");
             values.put("ticket", "12345");
         }
         return values;
