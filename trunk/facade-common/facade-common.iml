@@ -21,6 +21,7 @@
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="common-pgp" />
     <orderEntry type="module" module-name="common-codevalues" />
+    <orderEntry type="library" name="hibernate" level="project" />
     <orderEntryProperties />
   </component>
 </module>
