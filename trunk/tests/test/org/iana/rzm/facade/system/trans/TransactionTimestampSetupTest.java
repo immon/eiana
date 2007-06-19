@@ -21,13 +21,8 @@ import java.util.List;
 
 @Test(sequential = true, groups = {"facade-system", "TransactionTimestampSetupTest"})
 public class TransactionTimestampSetupTest extends CommonGuardedSystemTransaction {
-    RZMUser iana;
-
     @BeforeClass
     public void init() {
-        iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
-        iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        userManager.create(iana);
         Domain domain = new Domain("timestampsetup");
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
@@ -38,16 +33,18 @@ public class TransactionTimestampSetupTest extends CommonGuardedSystemTransactio
 
     @Test
     public void testTransactionCreatedDate() throws Exception {
-        IDomainVO domain = getDomain("timestampsetup", iana);
+        setDefaultUser();
+
+        IDomainVO domain = getDomain("timestampsetup");
         domain.setRegistryUrl("timestampsetup.registry.url");
 
-        setGSTSAuthUser(iana);
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = createTransactions(domain, false);
         assert trans != null && trans.size() == 1;
 
         TransactionVO tran = trans.get(0);
-        assert tran.getCreated() != null && "iana".equals(tran.getCreatedBy());
+        assert tran.getCreated() != null && getDefaultUser().getLoginName().equals(tran.getCreatedBy());
 
+        closeServices();
     }
 
     @AfterClass(alwaysRun = true)

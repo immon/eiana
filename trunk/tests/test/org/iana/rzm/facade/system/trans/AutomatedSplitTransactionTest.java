@@ -4,7 +4,6 @@ import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.AfterClass;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Host;
@@ -24,14 +23,8 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system"})
 public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransaction {
 
-    RZMUser iana;
-
     @BeforeClass
     public void init() {
-        iana = new RZMUser("fn", "ln", "org", "iana", "iana@nowhere", "", false);
-        iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        userManager.create(iana);
-
         Domain domain1 = new Domain("automatedsplittest");
         domain1.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain1);
@@ -57,14 +50,15 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
 
     @Test
     public void testSingleTransaction() throws Exception {
-        IDomainVO domain = getDomain("automatedsplittest", iana);
+        IDomainVO domain = getDomain("automatedsplittest");
         domain.getNameServers().add(new HostVO("impactedhost-1"));
         domain.getNameServers().add(new HostVO("impactedhost-2"));
         domain.getNameServers().add(new HostVO("notimpactedhost"));
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
-        setGSTSAuthUser(iana);
+        setDefaultUser();
         List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        closeServices();
 
         // 1 group/trans -> impactedhost-1
         // 2 group/trans -> impactedhost-2
@@ -80,14 +74,15 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
     // domain1 -> host1, host2, someotherhost, registry url
     @Test
     public void testSeparatedTransaction() throws Exception {
-        IDomainVO domain = getDomain("automatedsplittest", iana);
+        IDomainVO domain = getDomain("automatedsplittest");
         domain.getNameServers().add(new HostVO("impactedhost-1"));
         domain.getNameServers().add(new HostVO("impactedhost-2"));
         domain.getNameServers().add(new HostVO("notimpactedhost"));
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
-        setGSTSAuthUser(iana);
+        setDefaultUser();
         List<TransactionVO> trans = gsts.createTransactions(domain, true);
+        closeServices();
 
         // 1 group/trans -> impactedhost-1
         // 2 group/trans -> impactedhost-2

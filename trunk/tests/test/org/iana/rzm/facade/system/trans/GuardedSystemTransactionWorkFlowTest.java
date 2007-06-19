@@ -124,7 +124,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
@@ -136,7 +136,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
     public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
     }
@@ -196,7 +196,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //        closeEXT_APPROVAL(userIANA, transId);
 //        checkStateLog(userAC, transId, CLOSE_EXT_APPROVALLog);
 //    }
-    //
+    
     private static final String[][] ACCEPT_IANA_CHECKLog = {
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
@@ -206,7 +206,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
     public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
@@ -222,7 +222,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_IANA_CHECK"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
@@ -240,14 +240,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 3);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);
         checkStateLog(userIANA, transId, workFlowNoNSChangeLog);
     }
 
-    //
     private static final String[][] workFlowWithNSChangeLog = {
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
@@ -258,11 +257,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
             {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
-    //
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
     public void testWorkFlowWithNSChange() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, userTC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
