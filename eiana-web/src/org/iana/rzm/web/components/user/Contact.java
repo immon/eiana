@@ -60,6 +60,10 @@ public abstract class Contact extends BaseComponent {
             "value=prop:altPhone", "originalValue=prop:altOriginalPhone", "modifiedStyle=literal:edited"})
     public abstract IComponent getAltPhoneComponent();
 
+    @Component(id = "phoneSefix", type = "Insert", bindings = {
+            "value=prop:phoneSefix", "raw=literal:true"})
+    public abstract IComponent getPhoneSefixComponent();
+
     @Component(id = "fax", type = "RzmInsert", bindings = {
             "value=prop:fax", "originalValue=prop:originalFax", "modifiedStyle=literal:edited"})
     public abstract IComponent getFaxComponent();
@@ -67,6 +71,10 @@ public abstract class Contact extends BaseComponent {
     @Component(id = "altFax", type = "RzmInsert", bindings = {
             "value=prop:altFax", "originalValue=prop:altOriginalFax", "modifiedStyle=literal:edited"})
     public abstract IComponent getAltFaxComponent();
+
+    @Component(id = "faxSefix", type = "Insert", bindings = {
+            "value=prop:faxSefix", "raw=literal:true"})
+    public abstract IComponent getFaxSefixComponent();
 
     @Component(id = "lastUpdated", type = "Insert", bindings = {"value=prop:lastUpdated"})
     public abstract IComponent getLastUpdatedComponent();
@@ -137,10 +145,12 @@ public abstract class Contact extends BaseComponent {
     public abstract void setLastUpdated(String value);
 
     public abstract void setFax(String fax);
+    public abstract String getFax();
 
     public abstract void setEmail(Object email);
 
     public abstract void setPhone(String phone);
+    public abstract String getPhone();
 
     public abstract void setName(Object name);
 
@@ -153,6 +163,7 @@ public abstract class Contact extends BaseComponent {
     public abstract void setAltPhone(String alternatePhone);
 
     public abstract void setAltFax(String alternateFax);
+    public abstract String getAltFax();
 
     public abstract void setJobTitle(String job);
 
@@ -198,6 +209,22 @@ public abstract class Contact extends BaseComponent {
         } catch (AccessDeniedException e) {
             getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
+    }
+
+    public String getPhoneSefix() {
+        if (StringUtils.isBlank(getPhone())){
+            return "";
+        }
+
+        return "(v) <br/>";
+    }
+
+    public String getFaxSefix() {
+        if (StringUtils.isBlank(getFax())){
+            return "";
+        }
+        String br = StringUtils.isBlank(getAltFax()) ? "" : "<br/>";
+        return "(f) " + br;
     }
 
     public String getAddressClass() {
@@ -309,8 +336,12 @@ public abstract class Contact extends BaseComponent {
 
     private String buildAddress(Map<String, String> attributes) {
         StringBuilder builder = new StringBuilder();
-        builder.append(attributes.get(ContactVOWrapper.ADDRESS)).append(" ");
-        builder.append(attributes.get(ContactVOWrapper.COUNTRY));
+        String address = attributes.get(ContactVOWrapper.ADDRESS);
+        builder.append(address).append(" ");
+        String country = attributes.get(ContactVOWrapper.COUNTRY);
+        if(!StringUtils.isEmpty(country)){
+            builder.append(country);
+        }
 
         return builder.toString();
     }

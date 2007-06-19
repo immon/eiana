@@ -104,6 +104,9 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
     }
 
     public void setId(long roleId) {
+        if(roleId == 0){
+            getVo().setObjId(null);
+        }
         getVo().setObjId(roleId);
     }
 

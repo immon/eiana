@@ -109,6 +109,7 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
         }
 
         setErrorMessage(getSessionTimeOutMessage());
+        setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. Currently NameServer changes are not supported");
         setSessionTimeOutMessage(null);
     }
 
