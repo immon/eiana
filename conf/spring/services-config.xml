@@ -558,6 +558,19 @@
                                       execution(* org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.updateDomain(..))"/>
             <aop:around method="log" pointcut-ref="loggedDomainOperation"/>
         </aop:aspect>
+        <aop:aspect id="hibernateExceptionAspect" ref="hibernateExceptionAdvisor">
+            <aop:pointcut id="hibernateExceptionOperation"
+                          expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..))"/>
+            <aop:around method="proceed" pointcut-ref="hibernateExceptionOperation"/>
+        </aop:aspect>
     </aop:config>
 
     <!-- advisors -->
@@ -640,6 +653,11 @@
         <property name="logger">
             <ref bean="logger"/>
         </property>
+    </bean>
+
+    <bean id="hibernateExceptionAdvisor"
+          class="org.iana.rzm.facade.common.HibernateExceptionAdvisor">
+        <property name="order" value="4"/>
     </bean>
 
 </beans>

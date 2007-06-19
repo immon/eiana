@@ -32,6 +32,7 @@
     <pathelement location="${common-pgp.testoutput.dir}"/>
     <pathelement location="${common-codevalues.output.dir}"/>
     <pathelement location="${common-codevalues.testoutput.dir}"/>
+    <path refid="library.hibernate.classpath"/>
   </path>
   
   
