@@ -17,6 +17,7 @@
     <path refid="library.testng-5.5-jdk15.classpath"/>
     <path refid="library.mail.classpath"/>
     <path refid="library.jbpm.classpath"/>
+    <path refid="library.log4j.classpath"/>
   </path>
   
   

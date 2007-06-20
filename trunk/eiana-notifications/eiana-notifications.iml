@@ -17,8 +17,9 @@
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="library" name="spring" level="project" />
-    <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="library" name="nask-commons" level="project" />
+    <orderEntry type="module" module-name="common-mail" />
     <orderEntryProperties />
   </component>
 </module>

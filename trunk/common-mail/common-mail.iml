@@ -13,6 +13,7 @@
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="library" name="mail" level="project" />
     <orderEntry type="library" name="jbpm" level="project" />
+    <orderEntry type="library" name="log4j" level="project" />
     <orderEntryProperties />
   </component>
 </module>
