@@ -22,6 +22,8 @@
     <path refid="library.hibernate.classpath"/>
     <path refid="library.spring.classpath"/>
     <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${common-mail.output.dir}"/>
+    <pathelement location="${common-mail.testoutput.dir}"/>
   </path>
   
   
@@ -49,7 +51,7 @@
   
   <target name="compile.module.eiana-notifications" depends="compile.module.eiana-notifications.production,compile.module.eiana-notifications.tests" description="Compile module eiana-notifications"/>
   
-  <target name="compile.module.eiana-notifications.production" depends="compile.module.eiana-util" description="Compile module eiana-notifications; production classes">
+  <target name="compile.module.eiana-notifications.production" depends="compile.module.eiana-util,compile.module.common-mail" description="Compile module eiana-notifications; production classes">
     <mkdir dir="${eiana-notifications.output.dir}"/>
     <javac destdir="${eiana-notifications.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-notifications}"/>

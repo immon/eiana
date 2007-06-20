@@ -1,11 +1,11 @@
 package org.iana.notifications;
 
 import org.apache.log4j.Logger;
+import org.iana.mail.MailSender;
+import org.iana.mail.MailSenderException;
+import org.iana.mail.smtp.SmtpMailSender;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.validators.CheckTool;
-import pl.nask.util.mail.Mailer;
-import pl.nask.util.mail.MailerException;
-import pl.nask.util.mail.smtp.SMTPMailer;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,23 +16,41 @@ import java.util.Iterator;
 
 public class NotificationSenderBean implements NotificationSender {
 
-    private String EMAIL_MAILHOST;
-    private String EMAIL_MAILER;
-    private String EMAIL_FROMADDRESS;
-    private String EMAIL_USERNAME;
-    private String EMAIL_PASSWORD;
+    private String emailMailhost;
+    private Integer emailMailhostPort;
+    private String emailMailer;
+    private String emailFromAddress;
+    private String emailUserName;
+    private String emailUserPassword;
+    private boolean emailUseSSL;
+    private boolean emailUseTLS;
+
 
     private static Logger logger = Logger.getLogger(NotificationSenderBean.class);
 
-    public NotificationSenderBean(String mailHost, String mailer, String fromAddress, String userName, String password) {
+    public NotificationSenderBean(String mailHost, String mailer, String fromAddress,
+                                  String userName, String password) {
+        this(mailHost, null, mailer, fromAddress, userName, password, false, false);
+    }
+
+    public NotificationSenderBean(String mailHost, String mailer, String fromAddress,
+                                  String userName, String password, boolean useSSL, boolean useTLS) {
+        this(mailHost, null, mailer, fromAddress, userName, password, useSSL, useTLS);
+    }
+
+    public NotificationSenderBean(String mailHost, Integer mailHostPort, String mailer, String fromAddress,
+                                  String userName, String password, boolean useSSL, boolean useTLS) {
         CheckTool.checkEmpty(mailHost, "mailHost param is null or empty");
         CheckTool.checkEmpty(mailer, "mailer param is null or empty");
         CheckTool.checkEmpty(fromAddress, "fromAddress param is null or empty");
-        this.EMAIL_MAILHOST = mailHost;
-        this.EMAIL_MAILER = mailer;
-        this.EMAIL_FROMADDRESS = fromAddress;
-        this.EMAIL_USERNAME = (userName == null || userName.trim().length() == 0) ? null : userName;
-        this.EMAIL_PASSWORD = (password == null || password.trim().length() == 0) ? null : password;
+        this.emailMailhost = mailHost;
+        this.emailMailhostPort = mailHostPort;
+        this.emailMailer = mailer;
+        this.emailFromAddress = fromAddress;
+        this.emailUserName = (userName == null || userName.trim().length() == 0) ? null : userName;
+        this.emailUserPassword = (password == null || password.trim().length() == 0) ? null : password;
+        this.emailUseSSL = useSSL;
+        this.emailUseTLS = useTLS;
     }
 
     public void send(Addressee addressee, String subject, String body) throws NotificationException {
@@ -77,10 +95,10 @@ public class NotificationSenderBean implements NotificationSender {
 
     private void sendMail(String address, String subject, String body) throws NotificationException {
         try {
-            Mailer mailer = new SMTPMailer(EMAIL_MAILHOST, EMAIL_MAILER, EMAIL_USERNAME, EMAIL_PASSWORD);
-//            logger.warn("################################################################\n" + body);
-            mailer.sendMail(EMAIL_FROMADDRESS, address, subject, body);
-        } catch (MailerException e) {
+            MailSender mailer = new SmtpMailSender(emailMailer, emailMailhost, emailMailhostPort,
+                    emailUserName, emailUserPassword, emailUseSSL, emailUseTLS);
+            mailer.sendMail(emailFromAddress, address, subject, body);
+        } catch (MailSenderException e) {
             logger.warn("Unable to send notification to '" + address + "'. Reason: " + e.getMessage());
             throw new NotificationException("Unable to send notification", e);
         }
