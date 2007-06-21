@@ -11,36 +11,49 @@ import javax.persistence.*;
 @Entity
 public abstract class IPAddress {
 
-    public static enum Type { IPv4, IPv6 }
+    public static enum Type {
+        IPv4, IPv6
+    }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Basic
     private String address;
     @Enumerated
     private Type type;
 
-    protected IPAddress() {}
-    
+    protected IPAddress() {
+    }
+
     protected IPAddress(String address, Type type) {
         this.address = address;
         this.type = type;
     }
-    final public boolean isIPv4() { return Type.IPv4 == type; }
 
-    final public boolean isIPv6() { return Type.IPv6 == type; }
+    final public boolean isIPv4() {
+        return Type.IPv4 == type;
+    }
 
-    final public Type getType() { return type; }
+    final public boolean isIPv6() {
+        return Type.IPv6 == type;
+    }
 
-    final public String getAddress() { return address; }
+    final public Type getType() {
+        return type;
+    }
 
-    final public void setAddress(String address) {
+    final public String getAddress() {
+        return address;
+    }
+
+    final public void setAddress(String address) throws InvalidIPAddressException {
         isValidAddress(address);
         this.address = address;
     }
 
     abstract protected void isValidAddress(String addr) throws InvalidIPAddressException;
-    
+
     public static IPAddress createIPAddress(String addr) throws InvalidIPAddressException {
         try {
             return createIPv4Address(addr);
