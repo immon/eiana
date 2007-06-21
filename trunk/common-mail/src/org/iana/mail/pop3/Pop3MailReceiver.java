@@ -17,22 +17,69 @@ public class Pop3MailReceiver implements MailReceiver {
     private String user;
     private String password;
     private String subjectToken;
+    private Integer port;
+    private boolean ssl;
+    private boolean debug;
 
 
     public Pop3MailReceiver(String host, String user, String password, String subjectToken) {
+        this(host, null, user, password, subjectToken, false, false);
+    }
+
+    public Pop3MailReceiver(String host, String user, String password,
+                            String subjectToken, boolean ssl) {
+        this(host, null, user, password, subjectToken, ssl, false);
+    }
+
+    public Pop3MailReceiver(String host, Integer port, String user, String password,
+                            String subjectToken, boolean ssl) {
+        this(host, port, user, password, subjectToken, ssl, false);
+    }
+
+    public Pop3MailReceiver(String host, String user, String password,
+                            String subjectToken, boolean ssl, boolean debug) {
+        this(host, null, user, password, subjectToken, ssl, debug);
+    }
+
+    public Pop3MailReceiver(String host, Integer port, String user, String password,
+                            String subjectToken, boolean ssl, boolean debug) {
         this.host = host;
         this.user = user;
         this.password = password;
         this.subjectToken = subjectToken;
+        this.port = port;
+        this.ssl = ssl;
+        this.debug = debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public void setSsl(boolean ssl) {
+        this.ssl = ssl;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    private String getProtocol() {
+        return ssl ? "pop3s" : "pop3";
     }
 
     public List<MimeMessage> getMessages() throws MailReceiverException {
         List<MimeMessage> list = new ArrayList<MimeMessage>();
         try {
             Properties props = System.getProperties();
+            if (port != null) props.setProperty("mail." + getProtocol() + ".port", port.toString());
             Session session = Session.getInstance(props, null);
-            Store store = session.getStore("pop3");
-            store.connect(host, user, password);
+            session.setDebug(debug);
+            Store store = session.getStore(getProtocol());
+            if (port != null)
+                store.connect(host, port, user, password);
+            else
+                store.connect(host, user, password);
             Folder folder = store.getFolder("inbox");
             if (folder == null || !folder.exists()) {
                 throw new MailReceiverException("folder inbox does not exist");

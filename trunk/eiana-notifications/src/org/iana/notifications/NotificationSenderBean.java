@@ -53,6 +53,18 @@ public class NotificationSenderBean implements NotificationSender {
         this.emailUseTLS = useTLS;
     }
 
+    public void setPort(Integer emailMailhostPort) {
+        this.emailMailhostPort = emailMailhostPort;
+    }
+
+    public void setTls(boolean emailUseTLS) {
+        this.emailUseTLS = emailUseTLS;
+    }
+
+    public void setSsl(boolean emailUseSSL) {
+        this.emailUseSSL = emailUseSSL;
+    }
+
     public void send(Addressee addressee, String subject, String body) throws NotificationException {
         CheckTool.checkNull(addressee, "null addressee param");
         sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", subject, body);

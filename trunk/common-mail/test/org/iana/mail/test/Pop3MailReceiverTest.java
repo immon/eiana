@@ -17,18 +17,40 @@ import java.util.List;
  */
 @Test (groups = {"excluded"})
 public class Pop3MailReceiverTest {
-    private static final String MAIL_HOST = "mail-host";
-    private static final String MAIL_USER = "mail-user";
-    private static final String MAIL_PASSWORD = "password";
+    private static final String MAIL_HOST = "test-host";
+    private static final Integer MAIL_HOST_PORT = 995;
+    private static final String MAIL_USER = "test-user";
+    private static final String MAIL_PASSWORD = "test-password";
 
     private static final String VALID_FROM = "jakub.laszkiewicz@nask.pl";
     private static final String VALID_SUBJECT = "Test";
     private static final String VALID_CONTENT = "Test content.";
 
-    @Test
     public void testGetMessages() throws MailReceiverException, MessagingException, IOException {
-        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, "");
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, "", false, true);
         List<MimeMessage> messages = receiver.getMessages();
+        assertMessages(messages);
+    }
+
+    public void testGetMessagesPort() throws MailReceiverException, MessagingException, IOException {
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, "", false, true);
+        List<MimeMessage> messages = receiver.getMessages();
+        assertMessages(messages);
+    }
+
+    public void testGetMessagesSSL() throws MailReceiverException, MessagingException, IOException {
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, "", true, true);
+        List<MimeMessage> messages = receiver.getMessages();
+        assertMessages(messages);
+    }
+
+    public void testGetMessagesPortSSL() throws MailReceiverException, MessagingException, IOException {
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, "", true, true);
+        List<MimeMessage> messages = receiver.getMessages();
+        assertMessages(messages);
+    }
+
+    private void assertMessages(List<MimeMessage> messages) throws MessagingException, IOException {
         assert messages != null;
         assert messages.size() == 1;
         MimeMessage msg = messages.iterator().next();

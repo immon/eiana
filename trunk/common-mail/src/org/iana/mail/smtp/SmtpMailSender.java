@@ -24,9 +24,9 @@ public class SmtpMailSender implements MailSender {
     private Integer port;
     private String userName;
     private String userPassword;
-    boolean ssl;
-    boolean tls;
-    boolean debug;
+    private boolean ssl;
+    private boolean tls;
+    private boolean debug;
 
     public SmtpMailSender(String mailer, String mailhost, String userName, String userPassword) {
         this(mailer, mailhost, null, userName, userPassword, false, false, false);
