@@ -34,11 +34,12 @@ public class MailParserImpl implements MailParser {
                     result.setDomainName(elements[3].trim());
                     result.setToken(elements[4].trim());
                     content = content.toUpperCase();
-                    if (content.contains(ACCEPT_STRING) && content.contains(DECLINE_STRING))
+                    String firstLine = getFirstLine(content);
+                    if (firstLine.contains(ACCEPT_STRING) && firstLine.contains(DECLINE_STRING))
                         throw new MailParserException("both accept and decline are present");
-                    if (!content.contains(ACCEPT_STRING) && !content.contains(DECLINE_STRING))
+                    if (!firstLine.contains(ACCEPT_STRING) && !firstLine.contains(DECLINE_STRING))
                         throw new MailParserException("both accept and decline are missing");
-                    result.setAccepted(content.contains(ACCEPT_STRING));
+                    result.setAccepted(firstLine.contains(ACCEPT_STRING));
                     return result;
                 default:
                     throw new MailParserException("wrong subject");
@@ -46,6 +47,11 @@ public class MailParserImpl implements MailParser {
         } catch (TemplatesServiceException e) {
             throw new MailParserTemplateException(e.getMessage(), e);
         }
+    }
+
+    private String getFirstLine(String content) {
+        String [] splitted = content.split("\n|\r", 2);
+        return splitted[0];
     }
 
     private String cleanSubject(String msgSubject) {

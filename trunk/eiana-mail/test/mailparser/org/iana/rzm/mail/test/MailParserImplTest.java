@@ -32,29 +32,28 @@ public class MailParserImplTest {
             CONFIRMATION_VALID_DOMAIN_NAME + " | " +
             CONFIRMATION_TOKEN;
     private static final String CONFIRMATION_CONTENT_ACCEPT =
-            "> declaration declaration declaration declaration\n" +
+            "I ACCEPT\n" +
                     "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n" +
-                    "I ACCEPT\n";
+                    "> declaration declaration declaration declaration\n";
     private static final String CONFIRMATION_CONTENT_DECLINE =
-            "> declaration declaration declaration declaration\n" +
-                    "> declaration declaration declaration declaration\n" +
-                    "> declaration declaration declaration declaration\n" +
-                    "> declaration declaration declaration declaration\n" +
-                    "I DECLINE\n";
+            "I DECLINE\r" +
+                    "> declaration declaration declaration declaration\r" +
+                    "> declaration declaration declaration declaration\r" +
+                    "> declaration declaration declaration declaration\r" +
+                    "> declaration declaration declaration declaration\r";
     private static final String CONFIRMATION_CONTENT_INVALID_1 =
             "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n";
     private static final String CONFIRMATION_CONTENT_INVALID_2 =
-            "> declaration declaration declaration declaration\n" +
-                    "> declaration declaration declaration declaration\n" +
-                    "> declaration declaration declaration declaration\n" +
-                    "> declaration declaration declaration declaration\n" +
-                    "I ACCEPT\n" +
-                    "I DECLINE\n";
+            "I ACCEPT\tI DECLINE\r\n" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n";
 
     private MailParser mailParser;
 
