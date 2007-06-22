@@ -24,8 +24,17 @@ public abstract class Border extends BaseComponent {
 //    @Asset("js/prototype.js")
 //    public abstract IAsset getPrototypeScript();
 
-    @Asset("images/iana-logo.png")
-    public abstract IAsset getBackground();
+    @Asset("images/iana-logo-alpha.png")
+    public abstract IAsset getLoginImage();
+
+    @Asset("images/iana-logo-pageheader.png")
+    public abstract IAsset getSiteLogo();
+
+//    @Asset("images/iana-logo-alpha.png")
+//    public abstract IAsset getBackground();
+
+    @Component(id="backgroundImage", type="Image", bindings = {"image=prop:background", "style=prop:backgroundStyle"})
+    public abstract IComponent getbackgroundImageComponent();
 
     @Component(type = "Shell", bindings = {
             "title=prop:windowTitle", "stylesheet=asset:stylesheet", "delegate=prop:javaScriptDelegator"})
@@ -65,6 +74,26 @@ public abstract class Border extends BaseComponent {
 
 
     protected abstract MessagePropertyCallback getHomeCallback();
+
+    public String getBackgroundStyle(){
+        if(isLoginPage()){
+            return "margin: 45px 0 0 0;";
+        }
+        return "margin: 25px 0 0 0;";
+    }
+
+    public IAsset getBackground(){
+        if (isLoginPage()){
+            return getLoginImage();
+        }
+
+        return getSiteLogo();
+    }
+
+    private boolean isLoginPage() {
+        String name = getPage().getPageName();
+        return name.equals("Login");
+    }
 
     public String getUserTitle() {
         return "Logged in as " + getVisit().getUser().getUserName();

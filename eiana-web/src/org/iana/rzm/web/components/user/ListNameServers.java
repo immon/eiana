@@ -31,7 +31,7 @@ public abstract class ListNameServers extends BaseComponent {
     @Component(id = "shared", type = "If", bindings = {"condition=prop:nameServer.shared"})
     public abstract IComponent getSharedComponent();
 
-    @Component(id = "sharedMessage", type = "If", bindings = {"condition=prop:nameServer.shared"})
+    @Component(id = "sharedMessage", type = "If", bindings = {"condition=prop:displaySharedMessage"})
     public abstract IComponent getSharedMessageComponent();
 
 
@@ -89,6 +89,38 @@ public abstract class ListNameServers extends BaseComponent {
         }
 
         return getGrayDotImage();
+    }
+
+    public IAsset getMessageImage(){
+
+        List<NameServerValue> list = getNameServers();
+        if(list == null || list.size() == 0){
+            return getGrayDotImage();
+        }
+
+//        for (NameServerValue nameServerValue : list) {
+//            if(nameServerValue.isShared()){
+//                return getOrangeDotImage();
+//            }
+//        }
+
+         return getGrayDotImage();
+
+    }
+
+    public boolean isDisplaySharedMessage(){
+        List<NameServerValue> list = getNameServers();
+        if(list == null || list.size() == 0){
+            return false;
+        }
+
+        for (NameServerValue nameServerValue : list) {
+            if(nameServerValue.isShared()){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public String getLastUpdated() {
