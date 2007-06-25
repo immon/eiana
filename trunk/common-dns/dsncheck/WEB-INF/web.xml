@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+  "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app>
+  <display-name>DNS Technical Check</display-name>
+  <description>DNS Technical Check</description>
+  <servlet>
+   <servlet-name>TechnicalCheck</servlet-name>
+   <display-name>TechnicalCheck</display-name>
+   <description>Servlet to handle Technical Check</description>
+   <servlet-class>com.sun.xml.rpc.server.http.JAXRPCServlet</servlet-class>
+   <init-param>
+     <param-name>configuration.file</param-name>
+     <param-value>/WEB-INF/TechnicalCheck_Config.properties</param-value>
+   </init-param>
+   <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+   <servlet-name>TechnicalCheck</servlet-name>
+   <url-pattern>/jaxrpc/*</url-pattern>
+  </servlet-mapping>
+  <session-config>
+   <session-timeout>60</session-timeout>
+  </session-config>
+</web-app>

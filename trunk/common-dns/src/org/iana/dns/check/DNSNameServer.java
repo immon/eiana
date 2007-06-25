@@ -109,4 +109,12 @@ public class DNSNameServer {
     public Message getSOA() {
         return (soaByUDP != null) ? soaByUDP : soaByTCP;
     }
+
+    public Message getSOAByUDP() {
+        return soaByUDP;
+    }
+
+    public Message getSOAByTCP() {
+        return soaByTCP;
+    }
 }
