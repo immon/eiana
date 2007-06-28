@@ -15,10 +15,10 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
     </buildFile>
   </component>
@@ -493,6 +493,37 @@
     <library name="junit">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/../lib/junit/junit-4.3.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="dnscheck">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/dnscheck/dnscheck-client.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jaxrpc">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/jaxrpc/jaxrpc-api.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/jaxrpc/jaxrpc-impl.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/jaxrpc/jaxrpc-spi.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="saaj">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/saaj/saaj-api.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/saaj/saaj-impl.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="fastinfoset">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/fastinfoset/FastInfoset.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

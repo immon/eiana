@@ -35,6 +35,13 @@ public class DNSNameServer {
         soaByTCP = sendSOAQuery(true);
     }
 
+    public DNSNameServer(DNSDomain domain, DNSHost host, Message soaByUDP, Message soaByTCP) {
+        this.domain = domain;
+        this.host = host;
+        this.soaByUDP = soaByUDP;
+        this.soaByTCP = soaByTCP;
+    }
+
     private Message sendSOAQuery(boolean byTCP) {
         try {
             Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.SOA, DClass.IN);
