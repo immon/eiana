@@ -1,12 +1,13 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.iana.notifications.TemplateContent;
+import org.iana.notifications.EmailAddressee;
 import org.iana.notifications.Notification;
+import org.iana.notifications.TemplateContent;
+import org.iana.rzm.auth.Identity;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.auth.Identity;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ import java.util.*;
 public class ContactConfirmationRemainder extends ProcessStateNotifier {
 
     protected String period;
-    
+
     public List<Notification> getNotifications() {
         String domainName = td.getCurrentDomain().getName();
 
@@ -27,15 +28,15 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier {
 
         List<Notification> notifications = new ArrayList<Notification>();
 
-        for(Identity id : users) {
-            RZMUser user = (RZMUser) id;   
+        for (Identity id : users) {
+            RZMUser user = (RZMUser) id;
             for (Role role : user.getRoles()) {
                 SystemRole systemRole = (SystemRole) role;
 
                 Map<String, String> values = new HashMap<String, String>();
                 values.put("roleName", systemRole.getTypeName());
                 values.put("domainName", domainName);
-                values.put("mustAccept", (systemRole.isMustAccept())? "must" : "are allowed to");
+                values.put("mustAccept", (systemRole.isMustAccept()) ? "must" : "are allowed to");
                 values.put("period", period);
                 values.put("transactionId", "" + transactionId);
                 values.put("stateName", stateName);
@@ -43,6 +44,8 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier {
                 TemplateContent templateContent = new TemplateContent(notification, values);
                 Notification notification = new Notification();
                 notification.addAddressee(user);
+                if (td.getSubmitterEmail() != null)
+                    notification.addAddressee(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));
                 notification.setContent(templateContent);
 
                 notifications.add(notification);

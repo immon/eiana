@@ -74,6 +74,8 @@ public class ProcessStateNotifier implements ActionHandler {
         Notification notification = new Notification();
         notification.setContent(templateContent);
         notification.setAddressee(users);
+        if (td.getSubmitterEmail() != null)
+            notification.addAddressee(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));
         notifications.add(notification);
 
         return notifications ;
