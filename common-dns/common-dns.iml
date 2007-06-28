@@ -12,25 +12,12 @@
     <orderEntry type="library" name="dnsjava" level="project" />
     <orderEntry type="library" name="log4j" level="project" />
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../lib/jaxrpc/jaxrpc-api.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../lib/jaxrpc/jaxrpc-impl.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="library" name="mail" level="project" />
+    <orderEntry type="library" name="saaj" level="project" />
+    <orderEntry type="library" name="jaxrpc" level="project" />
+    <orderEntry type="library" name="dnscheck" level="project" />
+    <orderEntry type="library" name="fastinfoset" level="project" />
     <orderEntryProperties />
   </component>
 </module>

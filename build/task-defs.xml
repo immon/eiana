@@ -49,4 +49,22 @@
     <taskdef name="testng"
              classname="org.testng.TestNGAntTask"
              classpathref="testng.classpath"/>
+
+    <path id="wstools.classpath">
+        <fileset dir="${lib.dir}/jaxrpc">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/mail">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/javaee">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+    <taskdef name="wscompile"
+             classname="com.sun.xml.rpc.tools.ant.Wscompile"
+             classpathref="wstools.classpath"/>
+    <taskdef name="wsdeploy"
+             classname="com.sun.xml.rpc.tools.ant.Wsdeploy"
+             classpathref="wstools.classpath"/>
 </project>

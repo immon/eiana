@@ -20,38 +20,19 @@ import java.util.ArrayList;
  */
 public class RPCTechnicalCheckImpl implements RPCTechnicalCheck {
 
-    public void check(String domainName, String[] nameServers, String[][] ipAddresses) throws RemoteException, DNSTechnicalCheckException {
-        DNSDomain domain = toDomain(domainName, nameServers, ipAddresses);
-        DNSTechnicalCheck check = new DNSTechnicalCheck();
-        // todo: make technical checks configurable
-        List<DNSNameServerTechnicalCheck> nsChecks = new ArrayList<DNSNameServerTechnicalCheck>();
-        nsChecks.add(new NameServerReachabilityCheck());
-        nsChecks.add(new NameServerAuthorityCheck());
-        nsChecks.add(new GlueCoherencyCheck());
-        check.setDomainChecks(Arrays.asList(new DNSDomainTechnicalCheck[]{
-            new MinimumNameServersAndNoReservedIPsCheck(),
-            new MinimumNetworkDiversityCheck(),
-            new NameServerCoherencyCheck(),
-            new SerialNumberCoherencyCheck()
-        }));
-        check.setNameServerChecks(Arrays.asList(new DNSNameServerTechnicalCheck[]{
-            new NameServerReachabilityCheck(),
-            new NameServerAuthorityCheck(),
-            new GlueCoherencyCheck()
-        }));
-        check.check(domain);
-    }
-
-
-    public SOA[] querySOA(String domainName, String[] nameServers, String[][] ipAddresses) throws RemoteException, IllegalArgumentException, InvalidDomainNameException, InvalidIPAddressException {
-        DNSDomain domain = toDomain(domainName, nameServers, ipAddresses);
-        List<SOA> ret = new ArrayList<SOA>();
-        for (DNSHost host : domain.getNameServers()) {
-            DNSNameServer ns = new DNSNameServer(domain, host);
-            ret.add(new SOA(host.getName(), ns.getSOAByUDP(), true));
-            ret.add(new SOA(host.getName(), ns.getSOAByTCP(), false));
+    public SOA[] querySOA(String domainName, String[] nameServers, String[][] ipAddresses) throws RemoteException, RPCTechnicalCheckException {
+        try {
+            DNSDomain domain = toDomain(domainName, nameServers, ipAddresses);
+            List<SOA> ret = new ArrayList<SOA>();
+            for (DNSHost host : domain.getNameServers()) {
+                DNSNameServer ns = new DNSNameServer(domain, host);
+                ret.add(new SOA(host.getName(), ns.getSOAByUDP(), true));
+                ret.add(new SOA(host.getName(), ns.getSOAByTCP(), false));
+            }
+            return ret.toArray(new SOA[0]);
+        } catch (RuntimeException e) {
+            throw new RPCTechnicalCheckException(e);
         }
-        return ret.toArray(new SOA[0]);
     }
 
     private DNSDomain toDomain(String domainName, String[] nameServers, String[][] ipAddresses) throws IllegalArgumentException, InvalidDomainNameException, InvalidIPAddressException {

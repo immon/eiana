@@ -49,6 +49,19 @@ public class DNSTechnicalCheck {
         }
     }
 
+    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+        if (domain == null) throw new IllegalArgumentException("null domain");
+        if (nameServers == null) throw new IllegalArgumentException("null name servers");
+        if (!isEmpty(domainChecks) || !isEmpty(nameServerChecks)) {
+            MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
+            checkDomain(domain, nameServers, e);
+            for (DNSNameServer ns : nameServers) {
+                checkNameServer(ns, e);
+            }
+            if (!e.isEmpty()) throw e;
+        }
+    }
+
     private void checkDomain(DNSDomain domain, Set<DNSNameServer> nameServers, MultipleDNSTechnicalCheckException error) {
         if (!isEmpty(domainChecks)) {
             for (DNSDomainTechnicalCheck check : domainChecks) {

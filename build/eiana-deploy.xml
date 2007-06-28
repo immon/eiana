@@ -18,6 +18,7 @@
     <property name="test.report.output" location="${tests}/reports"/>
     <property name="test.cobertura.output" location="${tests}/cobertura_code_coverage"/>
     <property name="hibernate.test.dir" value="../tests/hibernate"/>
+    <property name="dnscheck.output.dir" value="${output.dir}/dnscheck"/>
 
     <path id="cobertura.classpath">
         <fileset dir="${lib.dir}/cobertura">
@@ -488,4 +489,75 @@
         <antcall target="all.test"/>
     </target>
 
+    <!--
+        rpc technical check targets
+    -->
+    <path id="dnscheck.classpath">
+        <fileset dir="${jar.output.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="dnscheck.clean" depends="clean">
+        <mkdir dir="${dnscheck.output.dir}"/>
+        <mkdir dir="${dnscheck.output.dir}/client"/>
+        <mkdir dir="${war.output.dir}"/>
+    </target>
+
+    <target name="dnscheck.wscompile" depends="dnscheck.clean, all.jar">
+        <wscompile
+                define="true"
+                features="documentliteral"
+                base="${dnscheck.output.dir}"
+                model="${dnscheck.output.dir}/model.xml.gz"
+                config="${common-dns.output.dir}/org/iana/dns/check/remote/config.xml">
+            <classpath refid="dnscheck.classpath"/>
+        </wscompile>
+    </target>
+
+    <target name="dnscheck.war" depends="dnscheck.wscompile">
+        <war destfile="${dnscheck.output.dir}/dnscheck-raw.war"
+             webxml="${module.common-dns.basedir}/dsncheck/WEB-INF/web.xml">
+            <classes dir="${common-dns.output.dir}">
+                <include name="org/iana/dns/check/remote/*.class"/>
+            </classes>
+            <webinf dir="${module.common-dns.basedir}/dsncheck/WEB-INF"/>
+            <webinf file="${dnscheck.output.dir}/model.xml.gz"/>
+            <lib dir="${jar.output.dir}" includes="common-dns.jar"/>
+            <lib dir="${lib.dir}/dnsjava" includes="dnsjava-2.0.3.jar"/>
+            <lib dir="${lib.dir}/log4j" includes="log4j-1.2.14.jar"/>
+        </war>
+    </target>
+
+    <!-- creates remote rpc technical check service war -->
+    <target name="dnscheck.wsdeploy" depends="dnscheck.war">
+        <wsdeploy
+                inWarFile="${dnscheck.output.dir}/dnscheck-raw.war"
+                outWarFile="${war.output.dir}/dnscheck.war">
+            <classpath refid="wstools.classpath"/>
+        </wsdeploy>
+    </target>
+
+    <target name="dnscheck.client.wscompile" depends="dnscheck.wscompile">
+        <wscompile
+                client="true"
+                base="${dnscheck.output.dir}/client"
+                config="${common-dns.output.dir}/org/iana/dns/check/remote/client/config.xml">
+            <classpath refid="dnscheck.classpath"/>
+        </wscompile>
+    </target>
+
+    <target name="dnscheck.client.jar" depends="dnscheck.client.wscompile">
+        <jar destfile="${jar.output.dir}/dnscheck-client.jar">
+            <fileset dir="${dnscheck.output.dir}/client"/>
+        </jar>
+    </target>
+
+    <!-- creates and copies to libs client rpc technical check classes jar -->
+    <target name="dnscheck.client.jar.copy" depends="dnscheck.client.jar">
+        <copy file="${jar.output.dir}/dnscheck-client.jar" todir="${lib.dir}/dnscheck"/>
+    </target>
 </project>
