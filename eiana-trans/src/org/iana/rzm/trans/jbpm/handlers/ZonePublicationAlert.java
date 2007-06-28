@@ -1,7 +1,8 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.iana.notifications.Notification;
 import org.iana.notifications.Addressee;
+import org.iana.notifications.EmailAddressee;
+import org.iana.notifications.Notification;
 import org.iana.notifications.TemplateContent;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.AdminRole;
@@ -31,6 +32,8 @@ public class ZonePublicationAlert extends ProcessStateNotifier {
         Notification notification = new Notification();
         notification.setContent(templateContent);
         notification.setAddressee(users);
+        if (td.getSubmitterEmail() != null)
+            notification.addAddressee(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));
         notifications.add(notification);
 
         return notifications;
