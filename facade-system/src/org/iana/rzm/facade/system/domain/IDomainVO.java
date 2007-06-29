@@ -3,6 +3,7 @@ package org.iana.rzm.facade.system.domain;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.facade.common.Trackable;
 import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 
 import java.util.List;
 import java.util.Set;
@@ -64,13 +65,13 @@ public interface IDomainVO extends Trackable {
 
     void setWhoisServer(Name whoisServer);
 
-    Set<Breakpoint> getBreakpoints();
+    Set<Breakpoint> getBreakpoints() throws AccessDeniedException;
 
-    void setBreakpoints(Set<Breakpoint> breakpoints);
+    void setBreakpoints(Set<Breakpoint> breakpoints) throws AccessDeniedException;
 
-    String getSpecialInstructions();
+    String getSpecialInstructions() throws AccessDeniedException;
 
-    void setSpecialInstructions(String specialInstructions);
+    void setSpecialInstructions(String specialInstructions) throws AccessDeniedException;
 
     Status getStatus();
 

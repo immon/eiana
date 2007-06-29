@@ -47,7 +47,7 @@ public class CountryCode implements Cloneable, Serializable {
 
     public CountryCode() {}
 
-    public CountryCode(String cc) {
+    public CountryCode(String cc) throws InvalidCountryCodeException {
         if (cc == null) throw new NullPointerException("country code is null");
         cc = cc.toUpperCase(Locale.ENGLISH);
         if (!isoCC.contains(cc)) throw new InvalidCountryCodeException(cc);

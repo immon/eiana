@@ -86,19 +86,19 @@ class SystemDomainVO implements IDomainVO, Serializable {
         domain.setWhoisServer(whoisServer);
     }
 
-    public Set<Breakpoint> getBreakpoints() {
+    public Set<Breakpoint> getBreakpoints() throws AccessDeniedException {
         throw new AccessDeniedException("system user is not allowed to access special breakpoints");
     }
 
-    public void setBreakpoints(Set<Breakpoint> breakpoints) {
+    public void setBreakpoints(Set<Breakpoint> breakpoints) throws AccessDeniedException {
         throw new AccessDeniedException("system user is not allowed to createDomainModificationTransaction breakpoints");
     }
 
-    public String getSpecialInstructions() {
+    public String getSpecialInstructions() throws AccessDeniedException {
         throw new AccessDeniedException("system user is not allowed to access special instructions");
     }
 
-    public void setSpecialInstructions(String specialInstructions) {
+    public void setSpecialInstructions(String specialInstructions) throws AccessDeniedException {
         throw new AccessDeniedException("system user is not allowed to createDomainModificationTransaction special instructions");
     }
 

@@ -18,7 +18,7 @@ public class EmailAddress implements Cloneable, Serializable {
     private EmailAddress() {
     }
 
-    public EmailAddress(String email) {
+    public EmailAddress(String email) throws InvalidEmailException {
         if (email == null) throw new NullPointerException("email is null");
         email = email.toLowerCase(Locale.ENGLISH);
         isValidEmail(email);

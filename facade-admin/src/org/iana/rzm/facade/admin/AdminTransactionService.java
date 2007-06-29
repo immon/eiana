@@ -7,6 +7,7 @@ import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.criteria.Criterion;
 
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.List;
  */
 public interface AdminTransactionService extends RZMStatefulService, AdminFinderService<TransactionVO> {
 
-    TransactionVO getTransaction(long id) throws NoTransactionException;
+    TransactionVO getTransaction(long id) throws NoTransactionException, AccessDeniedException;
 
-    TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException;
+    TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException;
 
-    TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException;
+    TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException;
 
     /**
      * Creates the transaction splitting the transactions based on the splitNameServerChange flag.
@@ -36,29 +37,29 @@ public interface AdminTransactionService extends RZMStatefulService, AdminFinder
      * @throws org.iana.rzm.facade.common.NoObjectFoundException when no domain found with the specified name.
      * @throws org.iana.rzm.common.exceptions.InfrastructureException when an internal error occured during processing of this method.
      */
-    List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException;
+    List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException;
 
-    void acceptTransaction(long id) throws NoTransactionException, FacadeTransactionException;
+    void acceptTransaction(long id) throws NoTransactionException, FacadeTransactionException, AccessDeniedException;
 
-    void rejectTransaction(long id) throws NoTransactionException, FacadeTransactionException;
+    void rejectTransaction(long id) throws NoTransactionException, FacadeTransactionException, AccessDeniedException;
 
-    void transitTransaction(long id, String transitionName) throws NoTransactionException, FacadeTransactionException;
+    void transitTransaction(long id, String transitionName) throws NoTransactionException, FacadeTransactionException, AccessDeniedException;
 
-    void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException;
+    void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException, AccessDeniedException;
 
-    void updateTransaction(long id, Long ticketId, TransactionStateVO.Name targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException;
+    void updateTransaction(long id, Long ticketId, TransactionStateVO.Name targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException, AccessDeniedException;
 
-    List<TransactionVO> findAll();
+    List<TransactionVO> findAll() throws AccessDeniedException;
 
-    void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException;
+    void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException, AccessDeniedException;
 
-    List<TransactionVO> find(TransactionCriteriaVO criteria);
+    List<TransactionVO> find(TransactionCriteriaVO criteria) throws AccessDeniedException;
 
     public List<TransactionVO> findTransactions(Criterion criteria);
 
-    public void deleteTransaction(TransactionVO transaction) throws NoTransactionException;
+    public void deleteTransaction(TransactionVO transaction) throws NoTransactionException, AccessDeniedException;
 
-    public void deleteTransaction(long transactionId) throws NoTransactionException;
+    public void deleteTransaction(long transactionId) throws NoTransactionException, AccessDeniedException;
 
     public int count(Criterion criteria);
 

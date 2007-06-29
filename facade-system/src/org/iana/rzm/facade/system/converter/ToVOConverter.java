@@ -2,6 +2,8 @@ package org.iana.rzm.facade.system.converter;
 
 import org.iana.rzm.domain.*;
 import org.iana.rzm.common.Name;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
@@ -43,7 +45,7 @@ public class ToVOConverter {
     }
 
     // ---------------------- Domain convert methods ----------------------
-    public static DomainVO toDomainVO(Domain fromDomain) {
+    public static DomainVO toDomainVO(Domain fromDomain) throws InvalidCountryCodeException, InvalidEmailException {
         if (fromDomain == null) return null;
 
         DomainVO toDomainVO = new DomainVO();
@@ -51,7 +53,7 @@ public class ToVOConverter {
         return toDomainVO;
     }
 
-    private static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) {
+    private static void toDomainVO(Domain fromDomain, DomainVO toDomainVO) throws InvalidCountryCodeException, InvalidEmailException {
         if (fromDomain == null) throw new IllegalArgumentException("null fromDomain");
         if (toDomainVO == null) throw new IllegalArgumentException("null toDomainVO");
 
@@ -216,7 +218,7 @@ public class ToVOConverter {
     }
 
     // ---------------------- Contact convert methods ----------------------
-    public static List<ContactVO> toContactVOList(List<Contact> fromContactsList) {
+    public static List<ContactVO> toContactVOList(List<Contact> fromContactsList) throws InvalidCountryCodeException, InvalidEmailException {
         if (fromContactsList == null) return null;
 
         List<ContactVO> toContactVOList = new ArrayList<ContactVO>();
@@ -225,7 +227,7 @@ public class ToVOConverter {
         return toContactVOList;
     }
 
-    public static ContactVO toContactVO(Contact fromContact) {
+    public static ContactVO toContactVO(Contact fromContact) throws InvalidCountryCodeException, InvalidEmailException {
         if (fromContact == null) return null;
 
         ContactVO toContactVO = new ContactVO();
@@ -233,7 +235,7 @@ public class ToVOConverter {
         return toContactVO;
     }
 
-    private static void toContactVO(Contact fromContact, ContactVO toContactVO) {
+    private static void toContactVO(Contact fromContact, ContactVO toContactVO) throws InvalidCountryCodeException, InvalidEmailException {
         if (fromContact == null) throw new IllegalArgumentException("null fromContact");
         if (toContactVO == null) throw new IllegalArgumentException("null toContactVO");
 
@@ -263,7 +265,7 @@ public class ToVOConverter {
 
 // ---------------------- Address convert methods ----------------------
 
-    public static List<AddressVO> toAddressVOList(List<Address> fromAddressList) {
+    public static List<AddressVO> toAddressVOList(List<Address> fromAddressList) throws InvalidCountryCodeException {
         if (fromAddressList == null) return null;
 
         List<AddressVO> toAddressListV0 = new ArrayList<AddressVO>();
@@ -272,7 +274,7 @@ public class ToVOConverter {
         return toAddressListV0;
     }
 
-    public static AddressVO toAddressVO(Address fromAddress) {
+    public static AddressVO toAddressVO(Address fromAddress) throws InvalidCountryCodeException {
         if (fromAddress == null) return null;
 
         AddressVO addressVO = new AddressVO();
@@ -280,7 +282,7 @@ public class ToVOConverter {
         return addressVO;
     }
 
-    private static void toAddressVO(Address fromAddress, AddressVO toAddressVO) {
+    private static void toAddressVO(Address fromAddress, AddressVO toAddressVO) throws InvalidCountryCodeException {
         if (fromAddress == null) throw new IllegalArgumentException("null fromAddress");
         if (toAddressVO == null) throw new IllegalArgumentException("null toAddressVO");
 

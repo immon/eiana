@@ -37,7 +37,7 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         this.userManager = userMgr;
     }
 
-    public UserVO getUser(String userName) {
+    public UserVO getUser(String userName) throws AccessDeniedException {
         isUserInRole();
         CheckTool.checkEmpty(userName, "user name");
         RZMUser retUser = this.userManager.get(userName);
@@ -45,14 +45,14 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         return UserConverter.convert(retUser);
     }
 
-    public UserVO getUser(long id) {
+    public UserVO getUser(long id) throws AccessDeniedException {
         isUserInRole();
         RZMUser retUser = this.userManager.get(id);
         CheckTool.checkNull(retUser, "no such user: " + id);
         return UserConverter.convert(retUser);
     }
 
-    public void createUser(UserVO userVO) {
+    public void createUser(UserVO userVO) throws AccessDeniedException {
         isUserInRole();
         CheckTool.checkNull(userVO, "userVO");
         RZMUser newUser = UserConverter.convert(userVO);
@@ -68,7 +68,7 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         this.userManager.create(newUser);
     }
 
-    public void updateUser(UserVO userVO) {
+    public void updateUser(UserVO userVO) throws AccessDeniedException {
         isUserInRole();
         CheckTool.checkNull(userVO, "userVO");
         RZMUser user = userManager.get(userVO.getObjId());
@@ -79,25 +79,25 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         this.userManager.update(updateUser);
     }
 
-    public void deleteUser(String userName) {
+    public void deleteUser(String userName) throws AccessDeniedException {
         isUserInRole();
         CheckTool.checkEmpty(userName, "user Name");
         this.userManager.delete(userName);
     }
 
-    public void deleteUser(long id) {
+    public void deleteUser(long id) throws AccessDeniedException {
         isUserInRole();
         RZMUser retUser = this.userManager.get(id);
         CheckTool.checkNull(retUser, "no such user: " + id);
         this.userManager.delete(retUser);
     }
 
-    public List<UserVO> findUsers() {
+    public List<UserVO> findUsers() throws AccessDeniedException {
         isUserInRole();
         return findUsers(null);
     }
 
-    public List<UserVO> findUsers(Criterion criteria) {
+    public List<UserVO> findUsers(Criterion criteria) throws AccessDeniedException {
         isUserInRole();
         List<UserVO> userVOs = new ArrayList<UserVO>();
         for (RZMUser user : this.userManager.find(criteria))
@@ -106,12 +106,12 @@ public class GuardedAdminUserServiceBean  extends AdminFinderServiceBean<UserVO>
         return userVOs;
     }
 
-    public int count(Criterion criteria) {
+    public int count(Criterion criteria) throws AccessDeniedException {
         isUserInRole();
         return userManager.count(criteria);
     }
 
-    public List<UserVO> find(Criterion criteria, int offset, int limit) {
+    public List<UserVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException {
         isUserInRole();
         List<UserVO> userVOs = new ArrayList<UserVO>();
         for (RZMUser user : this.userManager.find(criteria, offset, limit))

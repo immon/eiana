@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
@@ -41,7 +42,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
         isUserInRole(allowedRoles);
     }
 
-    public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+    public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException, InvalidEmailException {
         isUserInRole();
         if (id < 1) throw new IllegalArgumentException("Domain Id value out of range");
         DomainVO domainVO = (DomainVO) delegate.getDomain(id);
@@ -50,7 +51,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
         return domainVO;
     }
 
-    public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+    public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException, InvalidEmailException {
         isUserInRole();
         CheckTool.checkEmpty(name, "Domain name");
         DomainVO domainVO = (DomainVO) delegate.getDomain(name);
@@ -74,12 +75,12 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
             throw new AccessDeniedException("invalid user");
     }
 
-    public void setAccessToDomain(long userId, long domainId, boolean access) {
+    public void setAccessToDomain(long userId, long domainId, boolean access) throws AccessDeniedException {
         isUserInRole();
         delegate.setAccessToDomain(userId, domainId, access);
     }
 
-    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) {
+    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) throws AccessDeniedException {
         isUserInRole();
         return delegate.findDomainUsers(domainName, havingAccessOnly);
     }

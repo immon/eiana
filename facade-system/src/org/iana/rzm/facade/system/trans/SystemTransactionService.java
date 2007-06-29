@@ -2,6 +2,7 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
@@ -37,7 +38,7 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException when no domain found with the specified name.
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
-    TransactionActionsVO detectTransactionActions(IDomainVO domain)  throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException;
 
     void performTransactionTechnicalCheck(IDomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
 
@@ -54,9 +55,9 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException when no domain found with the specified name.
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
-    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException;
+    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException;
 
-    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException;
+    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException;
 
     /**
      * Accepts a transaction identified by this id on behalf of the user. Note that this service is stateful and the user must be set prior any method call.

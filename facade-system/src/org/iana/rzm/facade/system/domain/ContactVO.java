@@ -31,7 +31,7 @@ public class ContactVO implements Trackable, Serializable {
     public ContactVO() {
     }
 
-    public ContactVO(String name, String publicEmail) {
+    public ContactVO(String name, String publicEmail) throws InvalidEmailException {
         this.name = name;
         this.publicEmail = toEmail(publicEmail);
     }
@@ -104,7 +104,7 @@ public class ContactVO implements Trackable, Serializable {
         return getEmail(publicEmail);
     }
 
-    public void setPublicEmail(String publicEmail) {
+    public void setPublicEmail(String publicEmail) throws InvalidEmailException {
         this.publicEmail = toEmail(publicEmail);
     }
 
@@ -112,7 +112,7 @@ public class ContactVO implements Trackable, Serializable {
         return getEmail(privateEmail);
     }
 
-    public void setPrivateEmail(String privateEmail) {
+    public void setPrivateEmail(String privateEmail) throws InvalidEmailException {
         this.privateEmail = toEmail(privateEmail);
     }
 
@@ -120,7 +120,7 @@ public class ContactVO implements Trackable, Serializable {
         return getPublicEmail();
     }
     
-    public void setEmail(String email) {
+    public void setEmail(String email) throws InvalidEmailException {
         setPublicEmail(email);
     }
 

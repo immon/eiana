@@ -40,14 +40,14 @@ public class GuardedAdminRoleServiceBean extends AdminFinderServiceBean<RoleVO> 
         this.roleManager = roleManager;
     }
 
-    public RoleVO getRole(long id) {
+    public RoleVO getRole(long id) throws AccessDeniedException {
         isUserInRole();
         Role retRole = this.roleManager.get(id);
         CheckTool.checkNull(retRole, "no such role: " + id);
         return RoleConverter.convertRole(retRole);
     }
 
-    public long createRole(RoleVO roleVO) {
+    public long createRole(RoleVO roleVO) throws AccessDeniedException {
         isUserInRole();
         CheckTool.checkNull(roleVO, "roleVO");
         Role newRole = RoleConverter.convertRole(roleVO);
@@ -55,21 +55,21 @@ public class GuardedAdminRoleServiceBean extends AdminFinderServiceBean<RoleVO> 
         return newRole.getObjId();
     }
 
-    public void updateRole(RoleVO roleVO) {
+    public void updateRole(RoleVO roleVO) throws AccessDeniedException {
         isUserInRole();
         CheckTool.checkNull(roleVO, "roleVO");
         Role updateRole = RoleConverter.convertRole(roleVO);
         this.roleManager.update(updateRole);
     }
 
-    public void deleteRole(long id) {
+    public void deleteRole(long id) throws AccessDeniedException {
         isUserInRole();
         Role retRole = this.roleManager.get(id);
         CheckTool.checkNull(retRole, "no such role: " + id);
         this.roleManager.delete(retRole);
     }
 
-    public List<RoleVO> findRoles() {
+    public List<RoleVO> findRoles() throws AccessDeniedException {
         isUserInRole();
         List<RoleVO> rolesVO = new ArrayList<RoleVO>();
         for (Role role : this.roleManager.findAll())
@@ -77,7 +77,7 @@ public class GuardedAdminRoleServiceBean extends AdminFinderServiceBean<RoleVO> 
         return rolesVO;
     }
 
-    public List<RoleVO> findRoles(Criterion criteria) {
+    public List<RoleVO> findRoles(Criterion criteria) throws AccessDeniedException {
         isUserInRole();
         List<RoleVO> roleVOs = new ArrayList<RoleVO>();
         for (Role role : this.roleManager.find(criteria))
@@ -86,12 +86,12 @@ public class GuardedAdminRoleServiceBean extends AdminFinderServiceBean<RoleVO> 
         return roleVOs;
     }
 
-    public int count(Criterion criteria) {
+    public int count(Criterion criteria) throws AccessDeniedException {
         isUserInRole();
         return roleManager.count(criteria);
     }
 
-    public List<RoleVO> find(Criterion criteria, int offset, int limit) {
+    public List<RoleVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException {
         isUserInRole();
         List<RoleVO> roleVOs = new ArrayList<RoleVO>();
         for (Role role : this.roleManager.find(criteria, offset, limit))

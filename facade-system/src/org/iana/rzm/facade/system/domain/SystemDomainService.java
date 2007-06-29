@@ -75,7 +75,7 @@ public interface SystemDomainService extends RZMStatefulService {
      * @param domainId domain identifier
      * @param access access to be set
      */
-    void setAccessToDomain(long userId, long domainId, boolean access);
+    void setAccessToDomain(long userId, long domainId, boolean access) throws AccessDeniedException;
 
     /**
      * <p>Returns a list of users, who have a role for the domain <code>domainName</code>,
@@ -90,5 +90,5 @@ public interface SystemDomainService extends RZMStatefulService {
      * when <code>havingAccessOnly</code> is set to <code>false</code> or the list of users,
      * who have access to this domain when <code>havingAccessOnly</code> is set to <code>true</code>.  
      */
-    List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly);
+    List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) throws AccessDeniedException;
 }
