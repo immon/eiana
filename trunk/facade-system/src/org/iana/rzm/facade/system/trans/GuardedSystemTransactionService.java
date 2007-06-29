@@ -7,6 +7,7 @@ import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.user.*;
 
@@ -47,7 +48,7 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         isUserInRole(allowedRoles);
     }
 
-    private void isUserInCreateTransactionRole() {
+    private void isUserInCreateTransactionRole() throws AccessDeniedException {
         isUserInRole(allowedCreateTransactionRoles);
     }
 
@@ -66,17 +67,17 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         delegate.performTransactionTechnicalCheck(domain);
     }
 
-    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
         isUserInRole();
         return delegate.detectTransactionActions(domain);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
     }

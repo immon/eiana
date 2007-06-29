@@ -57,7 +57,7 @@ public class Contact implements TrackedObject,Cloneable {
         this.organization = organization;
     }
 
-    public Contact(String name, String organization, Address address, String phone, String fax, String email, boolean role) {
+    public Contact(String name, String organization, Address address, String phone, String fax, String email, boolean role) throws InvalidEmailException {
         this.name = name;
         this.organization = organization;
         this.address = address;

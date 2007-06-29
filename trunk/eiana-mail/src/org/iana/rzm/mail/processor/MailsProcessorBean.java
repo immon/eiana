@@ -5,6 +5,8 @@ import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.*;
@@ -199,7 +201,7 @@ public class MailsProcessorBean implements MailsProcessor {
     private static final String DOMAIN_REGISTRY_URL_FIELD_NAME = "registryUrl";
     private static final String DOMAIN_WHOIS_SERVER_FIELD_NAME = "whoisServer";
 
-    private IDomainVO updateDomain(SectionInst template) throws InfrastructureException, NoObjectFoundException, MailsProcessorException {
+    private IDomainVO updateDomain(SectionInst template) throws InfrastructureException, NoObjectFoundException, MailsProcessorException, InvalidCountryCodeException, InvalidEmailException {
         String domainName = getFieldValue(template.getFieldInstance(DOMAIN_NAME_FIELD_NAME));
         IDomainVO domain = domSvc.getDomain(domainName);
 
@@ -231,6 +233,7 @@ public class MailsProcessorBean implements MailsProcessor {
             if (section.isRemoved()) {
                 HostVO key = new HostVO();
                 key.setName(section.getRemovedElementName());
+                Collections.sort(hosts, hostComparator);
                 int i = Collections.binarySearch(hosts, key, hostComparator);
                 if (i < 0)
                     throw new MailsProcessorException("Host to remove does not exist: " +
@@ -241,6 +244,7 @@ public class MailsProcessorBean implements MailsProcessor {
             if (section.isReplaced()) {
                 HostVO key = new HostVO();
                 key.setName(section.getReplacedElementName());
+                Collections.sort(hosts, hostComparator);
                 int i = Collections.binarySearch(hosts, key, hostComparator);
                 if (i < 0)
                     throw new MailsProcessorException("Host to replace does not exist: " +
@@ -263,7 +267,7 @@ public class MailsProcessorBean implements MailsProcessor {
     private static final String CONTACT_PUBLIC_EMAIL_FIELD_NAME = "publicEmail";
     private static final String CONTACT_PRIVATE_EMAIL_FIELD_NAME = "privateEmail";
 
-    private ContactVO toContact(SectionInst section, ContactVO contact) {
+    private ContactVO toContact(SectionInst section, ContactVO contact) throws InvalidCountryCodeException, InvalidEmailException {
         if (section.isNotChanged()) return contact;
         if (contact == null) contact = new ContactVO();
         contact.setName(getFieldValue(section.getFieldInstance(CONTACT_NAME_FIELD_NAME)));
@@ -289,7 +293,7 @@ public class MailsProcessorBean implements MailsProcessor {
     private static final String CONTACT_ADDRESS_TEXT_FIELD_NAME = "textAddress";
     private static final String CONTACT_ADDRESS_CC_FIELD_NAME = "countryCode";
 
-    private AddressVO toAddress(SectionInst section, AddressVO address) {
+    private AddressVO toAddress(SectionInst section, AddressVO address) throws InvalidCountryCodeException {
         if (section.isNotChanged()) return address;
         if (address == null) address = new AddressVO();
         address.setTextAddress(getFieldValue(section.getFieldInstance(CONTACT_ADDRESS_TEXT_FIELD_NAME)));

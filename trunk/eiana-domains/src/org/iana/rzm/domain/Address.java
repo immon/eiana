@@ -1,6 +1,7 @@
 package org.iana.rzm.domain;
 
 import org.iana.rzm.common.CountryCode;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 
 import javax.persistence.*;
 
@@ -19,7 +20,7 @@ public class Address implements Cloneable{
     public Address() {
     }
 
-    public Address(String textAddress, String countryCode) {
+    public Address(String textAddress, String countryCode) throws InvalidCountryCodeException {
         this.textAddress = textAddress;
         setCountryCode(countryCode);
     }
@@ -36,7 +37,7 @@ public class Address implements Cloneable{
         return countryCode == null ? null : countryCode.getCountryCode();
     }
 
-    public void setCountryCode(String countryCode) {
+    public void setCountryCode(String countryCode) throws InvalidCountryCodeException {
         this.countryCode = countryCode != null ? new CountryCode(countryCode) : null;
     }
 

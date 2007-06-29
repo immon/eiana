@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.CountryCode;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 
 import java.io.Serializable;
 
@@ -25,7 +26,7 @@ public class AddressVO implements Serializable {
         return countryCode == null ? null : countryCode.getCountryCode();
     }
 
-    public void setCountryCode(String countryCode) {
+    public void setCountryCode(String countryCode) throws InvalidCountryCodeException {
         this.countryCode = countryCode != null ? new CountryCode(countryCode) : null;
     }
 

@@ -2,6 +2,8 @@ package org.iana.rzm.facade.system.domain;
 
 import org.iana.criteria.In;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -34,19 +36,31 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
     public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         Domain domain = domainManager.get(id);
         if (domain == null) throw new NoObjectFoundException(id, "domain");
-        DomainVO domainVO = ToVOConverter.toDomainVO(domain);
-        RZMUser user = getRZMUser();
-        domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
-        return domainVO;
+        try {
+            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+            RZMUser user = getRZMUser();
+            domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
+            return domainVO;
+        } catch (InvalidCountryCodeException e) {
+            throw new InfrastructureException(e);
+        } catch (InvalidEmailException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
     public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         Domain domain = domainManager.get(name);
         if (domain == null) throw new NoObjectFoundException(name, "domain");
-        DomainVO domainVO = ToVOConverter.toDomainVO(domain);
-        RZMUser user = getRZMUser();
-        domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
-        return domainVO;
+        try {
+            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+            RZMUser user = getRZMUser();
+            domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
+            return domainVO;
+        } catch (InvalidCountryCodeException e) {
+            throw new InfrastructureException(e);
+        } catch (InvalidEmailException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
     public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {

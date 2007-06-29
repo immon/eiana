@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
@@ -62,7 +63,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         throw new UnsupportedOperationException();
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         CheckTool.checkNull(domain, "domain");
         if (domainManager.get(domain.getName()) == null) throw new NoObjectFoundException(domain.getName(), "domain");
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
@@ -146,7 +147,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         return ret;
     }
 
-    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
         CheckTool.checkNull(domain, "null domain");
 
         Domain currentDomain = domainManager.get(domain.getName());
@@ -161,12 +162,12 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         return ret;
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         return createTransactions(domain, splitNameServerChange, null);
     }
 
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         CheckTool.checkNull(domain, "null domain");
 
         try {
