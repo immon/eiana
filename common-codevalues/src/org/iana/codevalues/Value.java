@@ -1,6 +1,7 @@
 package org.iana.codevalues;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * This class represents a single value associated with a given code. It consists
@@ -9,7 +10,7 @@ import javax.persistence.*;
  * @author Patrycja Wegrzynowicz
  */
 @Entity
-public class Value {
+public class Value implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

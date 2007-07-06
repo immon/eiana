@@ -23,7 +23,7 @@
                                 <td>
                                     <div class="buttonStyle" style="float: right;">
                                         <b class="left"></b>
-                                        <b class="right"><a href="#" class="button" jwcid="@DirectLink" listener="listener:logout">Logout ></a></b>
+                                        <b class="right"><a href="#" class="button" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" jwcid="@DirectLink" listener="listener:logout">Logout ></a></b>
                                     </div>
                                 </td>
                             </tr>
@@ -71,7 +71,7 @@
                                         <b class="right"><a href="#" class="button" jwcid="userAccess">Manage Users</a></b>
                                     </div>
                                 </td>
-                            </tr>
+                              </tr>
                         </table>
                     </div>
                     <span class="roundbottom">
@@ -104,7 +104,7 @@
                                     <td height="20" align="right" valign="top"><strong>Actions</strong></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7"><img src="images/spacer.png" width="1" height="10"></td>
+                                    <td colspan="7"><img src="../images/spacer.png" width="1" height="10"></td>
                                 </tr>
                                 <tr>
                                     <td>111</td>
@@ -131,6 +131,35 @@
                     </div>
                 </div>
             </span>
+            <div class="mainBox" style="margin-bottom: 40px;">
+                <div class="containerBox">
+                    <span class="roundtop">
+                        <span class="roundTop1"></span>
+                        <span class="roundTop2"></span>
+                        <span class="roundTop3"></span>
+                        <span class="roundTop4"></span>
+                    </span>
+                    <div class="boxContent">
+                        <table width="95%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <div class="buttonStyle" style="float: right;">
+                                        <b class="left"></b>
+                                        <b class="right"><a href="#" class="button" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:viewPastRequest">View Past Requests</a></b>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <span class="roundbottom">
+                        <span class="round4"></span>
+                        <span class="round3"></span>
+                        <span class="round2"></span>
+                        <span class="round1"></span>
+                    </span>
+                </div>
+            </div>
         </body>
     </span>
 </html>

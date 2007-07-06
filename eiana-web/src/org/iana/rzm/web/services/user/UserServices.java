@@ -1,5 +1,6 @@
 package org.iana.rzm.web.services.user;
 
+import org.iana.codevalues.Value;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.web.model.*;
@@ -31,4 +32,6 @@ public interface UserServices extends RzmServices {
     public void setAccessToDomain(long domainId, long userId, boolean access);
 
     public boolean isValidCountryCode(String code);
+
+    public List<Value> getCountrys();
 }

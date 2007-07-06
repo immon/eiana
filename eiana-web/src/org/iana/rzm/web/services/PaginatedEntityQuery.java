@@ -9,10 +9,8 @@ public class PaginatedEntityQuery implements EntityQuery {
 
     private EntityFetcher entityFetcher;
 
-
     public int getResultCount() throws NoObjectFoundException {
         return entityFetcher.getTotal();
-
     }
 
     public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {

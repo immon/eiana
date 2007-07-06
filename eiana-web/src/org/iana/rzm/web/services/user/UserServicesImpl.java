@@ -18,10 +18,7 @@ import org.iana.rzm.web.services.CriteriaBuilder;
 import org.iana.rzm.web.tapestry.services.ServiceInitializer;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UserServicesImpl implements UserServices {
 
@@ -56,6 +53,12 @@ public class UserServicesImpl implements UserServices {
 
         return false;
 
+    }
+
+    public List<Value> getCountrys() {
+        List<Value> list = countryCodeService.getCountries();
+        Collections.sort(list, new CountryCodeSorter());
+        return list;
     }
 
     public List<UserVOWrapper> getUsersForDomain(String domainName) {
@@ -238,5 +241,12 @@ public class UserServicesImpl implements UserServices {
 
     public void setDomainService(SystemDomainService domainService) {
         this.domainService = domainService;
+    }
+
+    private static class CountryCodeSorter implements Comparator<Value> {
+
+        public int compare(Value o1, Value o2) {
+            return o1.getValueName().compareTo(o2.getValueName());
+        }
     }
 }

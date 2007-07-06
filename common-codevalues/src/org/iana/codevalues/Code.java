@@ -1,21 +1,20 @@
 package org.iana.codevalues;
 
-import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"code"}))
-public class Code {
+public class Code implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

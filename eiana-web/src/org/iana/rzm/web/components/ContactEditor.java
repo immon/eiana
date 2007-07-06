@@ -8,18 +8,25 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IFormComponent;
+import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tapestry.valid.IValidationDelegate;
+import org.iana.codevalues.Value;
 import org.iana.rzm.web.common.ContactAttributesEditor;
 import org.iana.rzm.web.model.ContactVOWrapper;
 import org.iana.rzm.web.services.user.UserServices;
+import org.iana.rzm.web.util.ListUtil;
 import org.iana.rzm.web.util.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 
 @ComponentClass
 public abstract class ContactEditor extends BaseComponent implements PageBeginRenderListener {
+    public static final Value NO_COUNTRY = new Value("NONE", "Country");
 
     @Component(id = "editContact", type = "Form", bindings = {
             "clientValidationEnabled=literal:false",
@@ -105,6 +112,12 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @Component(id = "emailTR", type = "Any", bindings = {"style=prop:privateEmailClass"})
     public abstract IComponent getPrivateEmailTRComponent();
 
+    @Component(id = "countries", type = "PropertySelection", bindings = {
+            "displayName=literal:Country:", "model=prop:countryCodeModel", "value=prop:country",
+            "validators=validators:required,countryCodeValidator"
+            })
+    public abstract IComponent getStatesComponent();
+
     @Parameter(required = true)
     public abstract ContactAttributesEditor getEditor();
 
@@ -144,16 +157,6 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @InjectObject("service:rzm.UserServices")
     public abstract UserServices getUserServices();
 
-    public boolean getRole() {
-        String role = getContactAttributes().get(ContactVOWrapper.ROLE);
-        return Boolean.valueOf(role);
-    }
-
-    public void setRole(boolean value) {
-        String role = String.valueOf(value);
-        getContactAttributes().put(ContactVOWrapper.ROLE, role);
-    }
-
     public abstract void setUsePrivateEmail(boolean value);
 
     public abstract boolean isUsePrivateEmail();
@@ -178,7 +181,50 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
 
     public abstract void setAlternatePhone(String phone);
 
+    @Persist("client:form")
+    public abstract List<Value> getCountryNames();
+
+    public abstract void setCountryNames(List<Value> countrys);
+
+    public Value getCountry(){
+        final String code = getContactAttributes().get(ContactVOWrapper.COUNTRY);
+
+        Value value = ListUtil.find(getCountryNames(), new ListUtil.Predicate<Value>() {
+            public boolean evaluate(Value object) {
+                return object.getValueId().equals(code);
+            }
+        });
+
+        if(value == null){
+            return NO_COUNTRY;
+        }
+
+        return value;
+    }
+
+    public void setCountry(Value country){
+        getContactAttributes().put(ContactVOWrapper.COUNTRY, country.getValueId());
+    }
+
+    public boolean getRole() {
+        String role = getContactAttributes().get(ContactVOWrapper.ROLE);
+        return Boolean.valueOf(role);
+    }
+
+    public void setRole(boolean value) {
+        String role = String.valueOf(value);
+        getContactAttributes().put(ContactVOWrapper.ROLE, role);
+    }
+
+    public CountryCodeModel getCountryCodeModel() {
+        List<Value> countries = getCountryNames();
+//        Collections.sort(countries, new CountryCodeSorter());
+        countries.add(0, NO_COUNTRY);
+        return new CountryCodeModel(countries);
+    }
+
     public void pageBeginRender(PageEvent event) {
+        setCountryNames(getUserServices().getCountrys());
 
         if (!event.getRequestCycle().isRewinding()) {
 
@@ -320,4 +366,46 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         }
     }
 
+
+    private class CountryCodeModel implements IPropertySelectionModel, Serializable {
+        private List<Value> codes;
+
+        public CountryCodeModel(List<Value> codes) {
+            this.codes = codes;
+        }
+
+        public int getOptionCount() {
+            return codes.size();
+        }
+
+        public Object getOption(int index) {
+            return codes.get(index);
+        }
+
+        public String getLabel(int index) {
+            return codes.get(index).getValueName();
+        }
+
+        public String getValue(int index) {
+            return codes.get(index).getValueId();
+        }
+
+        public Object translateValue(String value) {
+            for (Value code : codes) {
+                if (code.getValueId().equals(value)) {
+                    return code;
+                }
+            }
+
+            throw new IllegalArgumentException("Can not find value " + value);
+        }
+    }
+
+    private static class CountryCodeSorter implements Comparator<Value> {
+
+        public int compare(Value o1, Value o2) {
+            return o1.getValueName().compareTo(o2.getValueName());
+        }
+    }
 }
+
