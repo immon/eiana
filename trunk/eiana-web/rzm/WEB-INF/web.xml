@@ -42,8 +42,8 @@
         <url-pattern>/app</url-pattern>
     </servlet-mapping>
 
-    <!--<session-config>-->
-      <!--<session-timeout>2</session-timeout>-->
-    <!--</session-config>-->
+  <!--  <session-config>
+      <session-timeout>2</session-timeout>
+    </session-config>-->
 
 </web-app>

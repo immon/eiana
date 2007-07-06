@@ -188,6 +188,12 @@
                    class="org.iana.rzm.web.tapestry.validator.WebIPListValidator"/>
     </contribution>
 
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="countryCodeValidator" configurable="false"
+                   class="org.iana.rzm.web.tapestry.validator.WebCountryCodeValidator"/>
+    </contribution>
+
+
     <service-point id="TokenizedRequestFilter" interface="org.apache.tapestry.services.WebRequestServicerFilter">
         <invoke-factory>
             <construct class="org.iana.rzm.web.tapestry.filter.TokenizedRequestFilter">

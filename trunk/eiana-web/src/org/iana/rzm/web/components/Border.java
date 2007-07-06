@@ -4,7 +4,6 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.components.Insert;
 import org.apache.tapestry.engine.IEngineService;
-import org.apache.tapestry.engine.ILink;
 import org.apache.tapestry.html.Shell;
 import org.iana.rzm.web.Global;
 import org.iana.rzm.web.Visit;
@@ -21,8 +20,8 @@ public abstract class Border extends BaseComponent {
     @Asset("js/rzm.js")
     public abstract IAsset getScript();
     
-//    @Asset("js/prototype.js")
-//    public abstract IAsset getPrototypeScript();
+    @Asset("js/prototype.js")
+    public abstract IAsset getPrototypeScript();
 
     @Asset("images/iana-logo-alpha.png")
     public abstract IAsset getLoginImage();
@@ -108,14 +107,16 @@ public abstract class Border extends BaseComponent {
         return getLogin();
     }
 
-    public MyPasswordChange changePassword() {
-        MyPasswordChange myPasswordChange = getPasswordChangePage();
-        myPasswordChange.setCallback(getHomeCallback());
-        return myPasswordChange;
+    public void changePassword() {
+//        MyPasswordChange myPasswordChange = getPasswordChangePage();
+//        myPasswordChange.setCallback(getHomeCallback());
+//        getPage().getRequestCycle().activate(myPasswordChange);
+        return;
     }
 
-    public ILink homePage() {
-        return getPageService().getLink(true, null);
+    public void homePage() {
+        MessagePropertyCallback callback = getHomeCallback();
+        callback.performCallback(getPage().getRequestCycle());
     }
 
     public boolean getIsDebugDisabled() {

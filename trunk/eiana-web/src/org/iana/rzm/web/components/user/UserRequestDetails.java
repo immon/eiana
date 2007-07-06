@@ -65,7 +65,8 @@ public abstract class UserRequestDetails extends RequestDetails {
             result = true;
         }
 
-        return result;
+        return !wrapper.isClose() && result;
+
     }
 
     public void proceed(long requestId){

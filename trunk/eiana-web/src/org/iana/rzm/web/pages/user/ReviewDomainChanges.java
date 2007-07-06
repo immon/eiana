@@ -78,28 +78,28 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomainPage();
 
-    @Persist("client:form")
+    @Persist("client:page")
     public abstract long getDomainId();
 
     public abstract void setDomainId(long id);
 
-    @Persist("client:form")
+    @Persist("client:page")
     public abstract List<ActionVOWrapper> getActionList();
 
     public abstract void setActionList(List<ActionVOWrapper> list);
 
-    @Persist("client:form")
+    @Persist("client:page")
     @InitialValue("literal:false")
     public abstract void setSeparateRequest(boolean value);
 
     public abstract boolean isSeparateRequest();
 
-    @Persist("client:form")
+    @Persist("client:page")
     public abstract DomainVOWrapper getModifiedDomain();
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
-    @Persist("client:form")
+    @Persist("client:page")
     @InitialValue("literal:false")
     public abstract void setMustSplitRequest(boolean value);
 

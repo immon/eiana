@@ -31,7 +31,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return DateUtil.formatDate(vo.getCreated());
     }
 
-    public Date getStart(){
+    public Date getStart() {
         return vo.getStart();
     }
 
@@ -51,18 +51,18 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return vo.getTicketID();
     }
 
-    public boolean acConfirmed(){
+    public boolean acConfirmed() {
         return vo.acConfirmed();
     }
 
-    public boolean tcConfirmed(){
+    public boolean tcConfirmed() {
         return vo.tcConfirmed();
     }
 
-    public List<ConfirmationVOWrapper>getConfirmations(){
-        List<ConfirmationVOWrapper>list = new ArrayList<ConfirmationVOWrapper>();
+    public List<ConfirmationVOWrapper> getConfirmations() {
+        List<ConfirmationVOWrapper> list = new ArrayList<ConfirmationVOWrapper>();
         for (ConfirmationVO confirmationVO : vo.getConfirmations()) {
-            if(!confirmationVO.getRole().equals(SystemRoleVO.SystemType.SO)){
+            if (!confirmationVO.getRole().equals(SystemRoleVO.SystemType.SO)) {
                 list.add(new ConfirmationVOWrapper(confirmationVO));
             }
         }
@@ -78,11 +78,11 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return wrappers;
     }
 
-    public List<TransactionStateLogVOWrapper>getStateHistory(){
+    public List<TransactionStateLogVOWrapper> getStateHistory() {
         List<TransactionStateLogEntryVO> list = vo.getStateLog();
-        List<TransactionStateLogVOWrapper>history = new ArrayList<TransactionStateLogVOWrapper>();
+        List<TransactionStateLogVOWrapper> history = new ArrayList<TransactionStateLogVOWrapper>();
         for (TransactionStateLogEntryVO stateLog : list) {
-            history.add(new TransactionStateLogVOWrapper(stateLog));    
+            history.add(new TransactionStateLogVOWrapper(stateLog));
         }
 
         return history;
@@ -100,7 +100,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         vo.setTicketID(rt);
     }
 
-    public void setState( TransactionStateVOWrapper.State state){
+    public void setState(TransactionStateVOWrapper.State state) {
         TransactionStateVO.Name name = state.getVOName();
         TransactionStateVO voState = new TransactionStateVO();
         voState.setName(name);
@@ -112,7 +112,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         vo.setRedelegation(redeligation);
     }
 
-    public boolean isRedeligation(){
+    public boolean isRedeligation() {
         return vo.isRedelegation();
     }
 
@@ -125,4 +125,13 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     }
 
 
+    public boolean isClose() {
+        return
+            state.getState().equals(TransactionStateVOWrapper.State.COMPLETED) ||
+            state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION) ||
+            state.getState().equals(TransactionStateVOWrapper.State.REJECTED) ||
+            state.getState().equals(TransactionStateVOWrapper.State.WITHDRAWN) ||
+            state.getState().equals(TransactionStateVOWrapper.State.ADMIN_CLOSE);
+
+    }
 }

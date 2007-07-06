@@ -83,7 +83,8 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public abstract IComponent getSaveEditComponent();
 
 
-    @Component(id = "overview", type = "PageLink", bindings = {"page=literal:user/UserHome"})
+    @Component(id = "overview", type = "PageLink", bindings = {"page=literal:user/UserHome",
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getHomeLinkComponent();
 
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domain.name"})

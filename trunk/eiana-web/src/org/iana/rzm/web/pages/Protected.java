@@ -51,7 +51,7 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
 
         Login login = getLogin();
 
-        String state = getRequestCycle().getInfrastructure().getRequest().getParameterValue("state:" + getPageName());
+        String state = findState();
         if (state != null) {
             login.setSessionTimeOutMessage("Your Session has time out. Please login to continue");
             if (isExternal()) {
@@ -62,6 +62,14 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
 
         throw new PageRedirectException(login);
 
+    }
+
+    private String findState() {
+        String state =  getRequestCycle().getInfrastructure().getRequest().getParameterValue("state:" + getPageName());
+        if(state != null){
+            return state;
+        }
+        return  getRequestCycle().getInfrastructure().getRequest().getParameterValue("form:" + getPageName());
     }
 
 

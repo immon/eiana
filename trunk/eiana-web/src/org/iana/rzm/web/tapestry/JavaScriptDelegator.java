@@ -7,6 +7,7 @@ public class JavaScriptDelegator implements IRender {
     public void render(IMarkupWriter writer, IRequestCycle cycle) {
         IComponent border = cycle.getPage().getComponent("border");
         writeScript(writer, border.getAsset("script"));
+//        writeScript(writer, border.getAsset("prototypeScript"));
     }
 
     private void writeScript(IMarkupWriter writer, IAsset asset) {

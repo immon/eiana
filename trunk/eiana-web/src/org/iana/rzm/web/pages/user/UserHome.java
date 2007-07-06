@@ -75,6 +75,9 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     )
     public abstract IComponent getListRequestComponent();
 
+    @InjectPage("user/UserRequestsPerspective")
+    public abstract UserRequestsPerspective getRequestsPerspective();
+
     @InjectPage("user/RequestInformation")
     public abstract RequestInformation getRequestDetails();
 
@@ -141,6 +144,11 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     public IPage logout(){
         Border border = (Border) getPage().getComponent("border");
         return border.logout();
+    }
+
+    public void viewPastRequest(){
+        UserRequestsPerspective page = getRequestsPerspective();
+        getRequestCycle().activate(page);
     }
 
 

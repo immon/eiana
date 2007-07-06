@@ -26,7 +26,7 @@ public abstract class Contact extends BaseComponent {
     public abstract IComponent getTypeComponent();
 
     @Component(id = "contactName", type = "RzmInsert", bindings = {
-            "value=prop:name", "originalValue=prop:originalName", "modifiedStyle=literal:edited"}
+            "value=prop:name", "raw=literal:true", "originalValue=prop:originalName", "modifiedStyle=literal:edited"}
     )
     public abstract IComponent getContactNameComponent();
 
@@ -36,7 +36,7 @@ public abstract class Contact extends BaseComponent {
     public abstract IComponent getJobTitleComponent();
 
     @Component(id = "org", type = "RzmInsert", bindings = {
-            "value=prop:organization", "originalValue=prop:originalOrg", "modifiedStyle=literal:edited"}
+            "value=prop:organization","raw=literal:true", "originalValue=prop:originalOrg", "modifiedStyle=literal:edited"}
     )
     public abstract IComponent getContactOrganizationComponent();
 
