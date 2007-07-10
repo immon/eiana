@@ -1,5 +1,6 @@
 package org.iana.rzm.mail;
 
+import org.apache.log4j.Logger;
 import org.iana.mail.MailReceiver;
 import org.iana.rzm.mail.processor.MailsProcessor;
 import org.jbpm.graph.def.ActionHandler;
@@ -17,16 +18,6 @@ public class MailsProcessingAction implements ActionHandler {
         MailReceiver mailReceiver = (MailReceiver) executionContext.getJbpmContext().getObjectFactory().createObject("mailReceiver");
         MailsProcessor mailsProcessor = (MailsProcessor) executionContext.getJbpmContext().getObjectFactory().createObject("mailsProcessor");
         List<MimeMessage> messages = mailReceiver.getMessages();
-        for (MimeMessage message : messages) {
-            String subject = message.getSubject();
-            if (!(message.getContent() instanceof String)) {
-                //
-                continue;
-                // throw new Exception("only text messages are supported");
-            }
-            String content = (String) message.getContent();
-            InternetAddress from = new InternetAddress("" + message.getFrom()[0], false);
-            mailsProcessor.process(from.getAddress(), subject, content);
-        }
+        for (MimeMessage message : messages) mailsProcessor.process(message);
     }
 }

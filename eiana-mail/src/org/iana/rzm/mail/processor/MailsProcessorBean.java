@@ -20,7 +20,11 @@ import org.iana.templates.inst.FieldInst;
 import org.iana.templates.inst.ListInst;
 import org.iana.templates.inst.SectionInst;
 
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
+import javax.mail.MessagingException;
 import java.util.*;
+import java.io.IOException;
 
 /**
  * todo: adjust to a new contact structure!
@@ -86,6 +90,25 @@ public class MailsProcessorBean implements MailsProcessor {
             Logger.getLogger(getClass()).error(e);
         } catch (MailParserException e) {
             createEmailNotification(email, subject, content, "Mail content parse error: \n" + e.getMessage());
+            Logger.getLogger(getClass()).error(e);
+        }
+    }
+
+    public void process(MimeMessage message) throws MailsProcessorException {
+        try {
+            String subject = message.getSubject();
+            InternetAddress from = new InternetAddress("" + message.getFrom()[0], false);
+            if ((message.getContent() instanceof String)) {
+                String content = (String) message.getContent();
+                process(from.getAddress(), subject, content);
+            } else {
+                createEmailNotification(from.getAddress(), subject, null, "Not supported message format. Please send plain text message.");
+                Logger.getLogger(getClass()).warn("Nontext message: [from: " + from + ", subject: " +
+                        subject + ", content type: " + message.getContentType() + "]");
+            }
+        } catch (MessagingException e) {
+            Logger.getLogger(getClass()).error(e);
+        } catch (IOException e) {
             Logger.getLogger(getClass()).error(e);
         }
     }
@@ -164,8 +187,9 @@ public class MailsProcessorBean implements MailsProcessor {
     }
 
     private void createNotification(Addressee addressee, String originalSubject, String originalContent, String message) {
+        String quotedContent = originalContent != null ? quote(originalContent) + "\n"  : "";
         Content content = new TextContent(RESPONSE_PREFIX + originalSubject,
-                quote(originalContent) + "\n" + message);
+                quotedContent + message);
         Notification notification = new Notification();
         notification.addAddressee(addressee);
         notification.setContent(content);
