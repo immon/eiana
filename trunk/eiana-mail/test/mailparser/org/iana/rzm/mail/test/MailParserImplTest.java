@@ -66,6 +66,19 @@ public class MailParserImplTest {
                     "> declaration declaration declaration declaration\r\n" +
                     "> declaration declaration declaration declaration\r\n" +
                     "> declaration declaration declaration declaration\r\n";
+    private static final String CONFIRMATION_CONTENT_INVALID_3 =
+            "> declaration declaration declaration declaration\r\n" +
+                    "> I ACCEPT declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n";
+
+    private static final String CONFIRMATION_CONTENT_INVALID_4 =
+            "I ACCEPT\r" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "> declaration declaration declaration declaration\r\n" +
+                    "I DECLINE\n" +
+                    "> declaration declaration declaration declaration\r\n";
 
     private MailParser mailParser;
 
@@ -132,12 +145,32 @@ public class MailParserImplTest {
         }
     }
 
-    private static final String CONFIRMATION_MAIL_INVALID_MESSAGE_2 = "both accept and decline are present";
-
     @Test(expectedExceptions = MailParserException.class)
     public void testParseConfirmationMailInvalid2() throws MailParserException {
         try {
             mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_INVALID_2);
+        } catch (MailParserException e) {
+            assert CONFIRMATION_MAIL_INVALID_MESSAGE_1.equals(e.getMessage()) : "unexpected exception message: " + e.getMessage();
+            throw e;
+        }
+    }
+
+    @Test(expectedExceptions = MailParserException.class)
+    public void testParseConfirmationMailInvalid3() throws MailParserException {
+        try {
+            mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_INVALID_3);
+        } catch (MailParserException e) {
+            assert CONFIRMATION_MAIL_INVALID_MESSAGE_1.equals(e.getMessage()) : "unexpected exception message: " + e.getMessage();
+            throw e;
+        }
+    }
+
+    private static final String CONFIRMATION_MAIL_INVALID_MESSAGE_2 = "both accept and decline are present";
+
+    @Test(expectedExceptions = MailParserException.class)
+    public void testParseConfirmationMailInvalid4() throws MailParserException {
+        try {
+            mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_INVALID_4);
         } catch (MailParserException e) {
             assert CONFIRMATION_MAIL_INVALID_MESSAGE_2.equals(e.getMessage()) : "unexpected exception message: " + e.getMessage();
             throw e;
