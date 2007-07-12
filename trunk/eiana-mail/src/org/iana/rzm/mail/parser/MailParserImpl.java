@@ -10,8 +10,6 @@ import org.iana.templates.inst.SectionInst;
 public class MailParserImpl implements MailParser {
     private static final String RESPONSE_PREFIX = "Re:";
     private static final String SUBJECT_SEPARATOR = "\\|";
-    private static final String ACCEPT_STRING = "I ACCEPT";
-    private static final String DECLINE_STRING = "I DECLINE";
 
     private TemplatesService templatesService;
 
@@ -33,13 +31,7 @@ public class MailParserImpl implements MailParser {
                     result.setStateName(elements[1].trim());
                     result.setDomainName(elements[3].trim());
                     result.setToken(elements[4].trim());
-                    content = content.toUpperCase();
-                    String firstLine = getFirstLine(content);
-                    if (firstLine.contains(ACCEPT_STRING) && firstLine.contains(DECLINE_STRING))
-                        throw new MailParserException("both accept and decline are present");
-                    if (!firstLine.contains(ACCEPT_STRING) && !firstLine.contains(DECLINE_STRING))
-                        throw new MailParserException("both accept and decline are missing");
-                    result.setAccepted(firstLine.contains(ACCEPT_STRING));
+                    result.setAccepted(new ContentChecker(content).isAccepted());
                     return result;
                 default:
                     throw new MailParserException("wrong subject");
@@ -47,11 +39,6 @@ public class MailParserImpl implements MailParser {
         } catch (TemplatesServiceException e) {
             throw new MailParserTemplateException(e.getMessage(), e);
         }
-    }
-
-    private String getFirstLine(String content) {
-        String [] splitted = content.split("\n|\r", 2);
-        return splitted[0];
     }
 
     private String cleanSubject(String msgSubject) {

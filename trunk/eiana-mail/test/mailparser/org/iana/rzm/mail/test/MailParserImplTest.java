@@ -37,12 +37,24 @@ public class MailParserImplTest {
                     "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n";
+    private static final String CONFIRMATION_CONTENT_ACCEPT_MIDDLE =
+            "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "I ACCEPT\n" +
+                    "> declaration declaration declaration declaration\n" +
+                    "> declaration declaration declaration declaration\n";
     private static final String CONFIRMATION_CONTENT_DECLINE =
             "I DECLINE\r" +
                     "> declaration declaration declaration declaration\r" +
                     "> declaration declaration declaration declaration\r" +
                     "> declaration declaration declaration declaration\r" +
                     "> declaration declaration declaration declaration\r";
+    private static final String CONFIRMATION_CONTENT_DECLINE_ON_END =
+            "> declaration declaration declaration declaration\r" +
+                    "> declaration declaration declaration declaration\r" +
+                    "> declaration declaration declaration declaration\r" +
+                    "> declaration declaration declaration declaration\r" +
+                    "I DECLINE\r";
     private static final String CONFIRMATION_CONTENT_INVALID_1 =
             "> declaration declaration declaration declaration\n" +
                     "> declaration declaration declaration declaration\n" +
@@ -76,8 +88,30 @@ public class MailParserImplTest {
     }
 
     @Test
+    public void testParseConfirmationMailAcceptMiddle() throws MailParserException {
+        MailData result = mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_ACCEPT_MIDDLE);
+        assert result instanceof ConfirmationMailData;
+        ConfirmationMailData cmd = (ConfirmationMailData) result;
+        assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
+        assert CONFIRMATION_VALID_STATE_NAME.equals(cmd.getStateName());
+        assert CONFIRMATION_VALID_DOMAIN_NAME.equals(cmd.getDomainName());
+        assert cmd.isAccepted();
+    }
+
+    @Test
     public void testParseConfirmationMailDecline() throws MailParserException {
         MailData result = mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_DECLINE);
+        assert result instanceof ConfirmationMailData;
+        ConfirmationMailData cmd = (ConfirmationMailData) result;
+        assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
+        assert CONFIRMATION_VALID_STATE_NAME.equals(cmd.getStateName());
+        assert CONFIRMATION_VALID_DOMAIN_NAME.equals(cmd.getDomainName());
+        assert !cmd.isAccepted();
+    }
+
+    @Test
+    public void testParseConfirmationMailDeclineOnEnd() throws MailParserException {
+        MailData result = mailParser.parse(CONFIRMATION_VALID_SUBJECT, CONFIRMATION_CONTENT_DECLINE_ON_END);
         assert result instanceof ConfirmationMailData;
         ConfirmationMailData cmd = (ConfirmationMailData) result;
         assert CONFIRMATION_VALID_TRANSACTION_ID.equals(cmd.getTransactionId());
