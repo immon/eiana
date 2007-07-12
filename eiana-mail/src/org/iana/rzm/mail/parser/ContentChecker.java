@@ -38,8 +38,8 @@ public class ContentChecker {
     private void check(String content) {
         String[] splitted = content.split("\n|\r");
         for (String singleLine : splitted) {
-            if (singleLine.trim().contains(ACCEPT_STRING)) setAccepted(true);
-            if (singleLine.trim().contains(DECLINE_STRING)) setDeclined(true);
+            if (singleLine.trim().equals(ACCEPT_STRING)) setAccepted(true);
+            if (singleLine.trim().equals(DECLINE_STRING)) setDeclined(true);
         }
     }
 }
