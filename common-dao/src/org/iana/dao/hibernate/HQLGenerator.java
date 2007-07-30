@@ -2,6 +2,9 @@ package org.iana.dao.hibernate;
 
 import org.iana.criteria.*;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
@@ -11,8 +14,28 @@ public class HQLGenerator implements CriteriaVisitor {
     private HQLBuffer order = new HQLBuffer();
 
     public static HQLBuffer from(Class clazz, Criterion criteria) {
+        return from(clazz.getName(), criteria);
+    }
+
+    public static HQLBuffer from(List<String> froms, Criterion criteria) {
+        StringBuffer buff = new StringBuffer(" ");
+        Iterator<String> iterator = froms.iterator();
+        buff.append(iterator.next());
+        while (iterator.hasNext()) {
+            String line = iterator.next();
+            if (!line.startsWith("inner"))
+                buff.append(", ");
+            else
+                buff.append(" ");
+            buff.append(line);
+        }
+        buff.append(" ");
+        return from(buff.toString(), criteria);
+    }
+
+    private static HQLBuffer from(String from, Criterion criteria) {
         HQLBuffer buf = new HQLBuffer();
-        buf.append("from").append(clazz.getName());
+        buf.append("from").append(from);
 
         if (criteria != null) {
             HQLGenerator gen = new HQLGenerator();
