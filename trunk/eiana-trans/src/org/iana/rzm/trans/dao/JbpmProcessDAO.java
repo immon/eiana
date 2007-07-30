@@ -1,15 +1,16 @@
 package org.iana.rzm.trans.dao;
 
 import org.hibernate.Query;
+import org.iana.criteria.Criterion;
 import org.iana.rzm.trans.jbpm.JbpmContextFactory;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.JbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * @author Jakub Laszkiewicz
@@ -42,6 +43,16 @@ public class JbpmProcessDAO implements ProcessDAO {
 
     public List<ProcessInstance> findAll() {
         return getContext().getSession().createQuery("from ProcessInstance").list();
+    }
+
+    public List<ProcessInstance> find(Criterion criteria) {
+        JbpmProcessCriteriaTranslator translator = new JbpmProcessCriteriaTranslator(criteria);
+        Query query = getContext().getSession().createQuery(translator.getHQL());
+        int idx = 0;
+        for (Object param : translator.getParams()) {
+            query.setParameter(idx++, param);
+        }
+        return query.list();
     }
 
     public List<ProcessInstance> findAllProcessInstances(final String domainName) {

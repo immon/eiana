@@ -1,5 +1,9 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.criteria.Criterion;
+import org.iana.objectdiff.ChangeDetector;
+import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -9,15 +13,14 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
-import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.trans.*;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.UserManager;
-import org.iana.objectdiff.*;
 
-import java.util.*;
 import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -143,6 +146,18 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         for (Transaction trans : transactionManager.find(transactionCriteria)) {
             if (domainNames.contains(trans.getCurrentDomain().getName()))
                 ret.add(TransactionConverter.toTransactionVO(trans));
+        }
+        return ret;
+    }
+
+    public List<TransactionVO> findTransactions(Criterion criteria) throws AccessDeniedException, InfrastructureException {
+        List<TransactionVO> ret = new ArrayList<TransactionVO>();
+        Set<String> domainNames = getRoleDomainNames();
+        for (Transaction trans : transactionManager.find(criteria)) {
+            if (domainNames.contains(trans.getCurrentDomain().getName())) {
+                TransactionVO transactionVO = TransactionConverter.toTransactionVO(trans);
+                if (!ret.contains(transactionVO)) ret.add(transactionVO);
+            }
         }
         return ret;
     }

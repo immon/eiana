@@ -1,5 +1,6 @@
 package org.iana.rzm.trans;
 
+import org.iana.criteria.Criterion;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
 
@@ -45,6 +46,8 @@ public interface TransactionManager {
     Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail) throws NoModificationException;
 
     List<Transaction> findAll();
+
+    List<Transaction> find(Criterion criteria);
 
     List<Transaction> find(TransactionCriteria criteria);
 

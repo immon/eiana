@@ -1,5 +1,6 @@
 package org.iana.rzm.trans;
 
+import org.iana.criteria.Criterion;
 import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
@@ -62,7 +63,7 @@ public class TransactionManagerBean implements TransactionManager {
         return createTransaction(modifiedDomain, submitterEmail);
     }
 
-    private Transaction createTransaction(Domain domain, String submitterEmail)  throws NoModificationException {
+    private Transaction createTransaction(Domain domain, String submitterEmail) throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         td.setTicketID(ticketingService.generateID());
@@ -73,11 +74,16 @@ public class TransactionManagerBean implements TransactionManager {
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();
-        return new Transaction(pi);        
+        return new Transaction(pi);
     }
 
     public List<Transaction> findAll() {
         List<ProcessInstance> processInstances = processDAO.findAll();
+        return toTransactions(processInstances);
+    }
+
+    public List<Transaction> find(Criterion criteria) {
+        List<ProcessInstance> processInstances = processDAO.find(criteria);
         return toTransactions(processInstances);
     }
 

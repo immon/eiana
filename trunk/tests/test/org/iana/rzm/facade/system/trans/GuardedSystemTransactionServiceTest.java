@@ -1,5 +1,6 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.criteria.*;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
@@ -26,9 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -91,6 +90,18 @@ public class GuardedSystemTransactionServiceTest {
     }
 
     @Test(dependsOnMethods = "testCreateTransaction")
+    public void testFindOpenTransactionsByCriterion() throws Exception {
+        //todo
+        gsts.setUser(userAc);
+        Criterion crit = new SortCriterion(new IsNull("pi.end"), new Order("domain.name.name"));
+        List<TransactionVO> foundTransactions = gsts.findTransactions(crit);
+        assert foundTransactions != null;
+//        assert foundTransactions.size() == 1;
+//        assert transaction.equals(foundTransactions.iterator().next());
+//        assert compareTransactionVOs(transaction, foundTransactions.iterator().next());
+    }
+
+    @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")
     public void testFindOpenTransactions() throws Exception {
         gsts.setUser(userAc);
         List<TransactionVO> foundTransactions = gsts.findOpenTransactions();
@@ -157,6 +168,22 @@ public class GuardedSystemTransactionServiceTest {
     }
 
     @Test(dependsOnMethods = "testRejectTransaction")
+    public void testFindTransactionByDomainByCriterion() throws Exception {
+        gsts.setUser(userTc);
+        //todo
+        Set domainNames = new HashSet();
+        domainNames.add("gsts");
+        List<TransactionVO> found = gsts.findTransactions(new In("domain.name.name", domainNames));
+        assert found != null;
+//        assert found.size() == 2;
+
+        domainNames.add("nonexistent");
+        found = gsts.findTransactions(new In("domain.name.name", domainNames));
+        assert found != null;
+//        assert found.size() == 0;
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByDomainByCriterion")
     public void testFindTransactionByDomain() throws Exception {
         gsts.setUser(userTc);
 

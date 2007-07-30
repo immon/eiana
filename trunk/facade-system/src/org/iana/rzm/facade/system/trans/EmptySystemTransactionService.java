@@ -1,15 +1,16 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.common.exceptions.InfrastructureException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -77,7 +78,11 @@ public class EmptySystemTransactionService implements SystemTransactionService {
 
     }
 
-    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria)  throws AccessDeniedException, InfrastructureException {
+    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria) throws AccessDeniedException, InfrastructureException {
+        return null;
+    }
+
+    public List<TransactionVO> findTransactions(Criterion criteria) throws AccessDeniedException, InfrastructureException {
         return null;
     }
 

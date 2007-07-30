@@ -1,24 +1,28 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.common.AbstractRZMStatefulService;
-import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.criteria.Criterion;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.user.*;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.common.AbstractRZMStatefulService;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.TechnicalCheckException;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * A guarded version of <code>SystemTransactionService</code> which provides a role checking before calling
  * a relevant method.
- *  
+ *
  * @author Patrycja Wegrzynowicz
  */
 public class GuardedSystemTransactionService extends AbstractRZMStatefulService implements SystemTransactionService {
@@ -97,8 +101,14 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         delegate.transitTransaction(id, transitionName);
     }
 
-    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria)  throws AccessDeniedException, InfrastructureException {
+    public List<TransactionVO> findTransactions(TransactionCriteriaVO criteria) throws AccessDeniedException, InfrastructureException {
         //todo: only this user's domains
+        isUserInRole();
+        return delegate.findTransactions(criteria);
+    }
+
+
+    public List<TransactionVO> findTransactions(Criterion criteria) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
         return delegate.findTransactions(criteria);
     }

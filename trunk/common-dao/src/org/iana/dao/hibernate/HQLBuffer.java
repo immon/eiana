@@ -1,13 +1,13 @@
 package org.iana.dao.hibernate;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-class HQLBuffer {
+public class HQLBuffer {
 
 
     private StringBuffer buf = new StringBuffer();
@@ -42,7 +42,7 @@ class HQLBuffer {
             buf.append("?,");
             params.add(value);
         }
-        if (values.size() > 0) buf.deleteCharAt(buf.length()-1);
+        if (values.size() > 0) buf.deleteCharAt(buf.length() - 1);
         buf.append(')');
         return sp();
     }
@@ -51,7 +51,7 @@ class HQLBuffer {
         buf.append(str).append(' ');
         return this;
     }
-    
+
     public HQLBuffer append(HQLBuffer that) {
         if (that != null && that.buf.length() > 0) {
             this.buf.append('(').append(that.buf).append(')');
