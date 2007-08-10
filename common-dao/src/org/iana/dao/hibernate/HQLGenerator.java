@@ -33,7 +33,7 @@ public class HQLGenerator implements CriteriaVisitor {
         return from(buff.toString(), criteria);
     }
 
-    private static HQLBuffer from(String from, Criterion criteria) {
+    public static HQLBuffer from(String from, Criterion criteria) {
         HQLBuffer buf = new HQLBuffer();
         buf.append("from").append(from);
 

@@ -47,7 +47,9 @@ public class JbpmProcessDAO implements ProcessDAO {
 
     public List<ProcessInstance> find(Criterion criteria) {
         JbpmProcessCriteriaTranslator translator = new JbpmProcessCriteriaTranslator(criteria);
-        Query query = getContext().getSession().createQuery(translator.getHQL());
+        String hql = translator.getHQL();
+        System.out.println("#### HQL: " + hql);
+        Query query = getContext().getSession().createQuery(hql);
         int idx = 0;
         for (Object param : translator.getParams()) {
             query.setParameter(idx++, param);

@@ -93,12 +93,12 @@ public class GuardedSystemTransactionServiceTest {
     public void testFindOpenTransactionsByCriterion() throws Exception {
         //todo
         gsts.setUser(userAc);
-        Criterion crit = new SortCriterion(new IsNull("pi.end"), new Order("domain.name.name"));
+        Criterion crit = new SortCriterion(new IsNull("end"), new Order("currentDomain.name.name"));
         List<TransactionVO> foundTransactions = gsts.findTransactions(crit);
         assert foundTransactions != null;
-//        assert foundTransactions.size() == 1;
-//        assert transaction.equals(foundTransactions.iterator().next());
-//        assert compareTransactionVOs(transaction, foundTransactions.iterator().next());
+        assert foundTransactions.size() == 1;
+        //assert transaction.equals(foundTransactions.iterator().next());
+        assert compareTransactionVOs(transaction, foundTransactions.iterator().next());
     }
 
     @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")

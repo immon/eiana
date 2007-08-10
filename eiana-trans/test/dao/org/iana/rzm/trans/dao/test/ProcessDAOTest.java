@@ -14,6 +14,7 @@ import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.criteria.*;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
@@ -426,6 +427,285 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
 
             ProcessCriteria criteria3 = new ProcessCriteria();
             criteria3.setFinishedBefore(date1);
+            List<ProcessInstance> processes3 = processDAO.find(criteria3);
+
+            assert processes3 != null;
+            assert processes3.isEmpty();
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByProcDates")
+    public void findProcessInstancesByDomainCriteria() throws Exception {
+        try {
+            Criterion criteria1 = new Equal("currentDomain.name.name", "potestdomain1");
+            List<ProcessInstance> dbDomain1Processes = processDAO.find(criteria1);
+
+            assert dbDomain1Processes != null;
+
+            Set<Long> dbDomain1ProcIds = new HashSet<Long>();
+            for (ProcessInstance pi : dbDomain1Processes) dbDomain1ProcIds.add(pi.getId());
+
+            assert domain1ProcIds.equals(dbDomain1ProcIds);
+
+            Criterion criteria2 = new Equal("currentDomain.name.name", "potestdomain2");
+            List<ProcessInstance> dbDomain2Processes = processDAO.find(criteria2);
+
+            assert dbDomain2Processes != null;
+
+            Set<Long> dbDomain2ProcIds = new HashSet<Long>();
+            for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
+
+            assert domain2ProcIds.equals(dbDomain2ProcIds);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByDomainCriteria")
+    public void findProcessInstancesByUserCriteria() throws Exception {
+        try {
+            Criterion criteria1 = new Equal("loginName", "user-posys1");
+            List<ProcessInstance> dbDomain1Processes = processDAO.find(criteria1);
+
+            assert dbDomain1Processes != null;
+
+            Set<Long> dbDomain1ProcIds = new HashSet<Long>();
+            for (ProcessInstance pi : dbDomain1Processes) dbDomain1ProcIds.add(pi.getId());
+
+            assert domain1ProcIds.equals(dbDomain1ProcIds);
+
+            Criterion criteria2 = new Equal("loginName", "user-posys2");
+            List<ProcessInstance> dbDomain2Processes = processDAO.find(criteria2);
+
+            assert dbDomain2Processes != null;
+
+            Set<Long> dbDomain2ProcIds = new HashSet<Long>();
+            for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
+
+            assert domain2ProcIds.equals(dbDomain2ProcIds);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByUserCriteria")
+    public void findProcessInstancesByUserAndDomainCriteria() throws Exception {
+        try {
+            List<Criterion> criteria1 = new ArrayList<Criterion>();
+            criteria1.add(new Equal("loginName", "user-posys1"));
+            criteria1.add(new Equal("currentDomain.name.name", "potestdomain1"));
+            List<ProcessInstance> dbDomain1Processes = processDAO.find(new And(criteria1));
+
+            assert dbDomain1Processes != null;
+
+            Set<Long> dbDomain1ProcIds = new HashSet<Long>();
+            for (ProcessInstance pi : dbDomain1Processes) dbDomain1ProcIds.add(pi.getId());
+
+            assert domain1ProcIds.equals(dbDomain1ProcIds);
+
+            List<Criterion> criteria2 = new ArrayList<Criterion>();
+            criteria2.add(new Equal("loginName", "user-posys2"));
+            criteria2.add(new Equal("currentDomain.name.name", "potestdomain2"));
+            List<ProcessInstance> dbDomain2Processes = processDAO.find(new And(criteria2));
+
+            assert dbDomain2Processes != null;
+
+            Set<Long> dbDomain2ProcIds = new HashSet<Long>();
+            for (ProcessInstance pi : dbDomain2Processes) dbDomain2ProcIds.add(pi.getId());
+
+            assert domain2ProcIds.equals(dbDomain2ProcIds);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByUserAndDomainCriteria")
+    public void findProcessInstancesByStateCriteria() throws Exception {
+        try {
+            Criterion criteria1 = new Equal("state",
+                    TransactionState.Name.EXCEPTION.toString());
+            List<ProcessInstance> processes1 = processDAO.find(criteria1);
+
+            assert processes1 != null;
+            assert processes1.isEmpty();
+
+            Criterion criteria2 = new Equal("state",
+                    TransactionState.Name.PENDING_CONTACT_CONFIRMATION.toString());
+            List<ProcessInstance> processes2 = processDAO.find(criteria2);
+
+            assert processes2 != null;
+
+            Set<Long> processIds2 = new HashSet<Long>();
+            for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
+
+            Set<Long> allProcIds = new HashSet<Long>(domain1ProcIds);
+            allProcIds.addAll(domain2ProcIds);
+
+            assert allProcIds.equals(processIds2);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByStateCriteria")
+    public void findProcessInstancesByTicketIdCriteria() throws Exception {
+        try {
+            Criterion criteria1 = new In("ticketId",
+                    new HashSet(Arrays.asList(121L, 122L, 125L)));
+            List<ProcessInstance> processes1 = processDAO.find(criteria1);
+
+            assert processes1 != null;
+            assert processes1.isEmpty();
+
+            Criterion criteria2 = new In("ticketId",
+                    new HashSet(Arrays.asList(110L, 111L, 112L, 113L)));
+            List<ProcessInstance> processes2 = processDAO.find(criteria2);
+
+            assert processes2 != null;
+
+            Set<Long> processIds2 = new HashSet<Long>();
+            for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
+
+            assert domain2ProcIds.equals(processIds2);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByTicketIdCriteria")
+    public void findProcessInstancesByProcessNameCriteria() throws Exception {
+        try {
+            Criterion criteria1 = new Equal("name", "Nonexistent Transaction (Unified Workflow)");
+            List<ProcessInstance> processes1 = processDAO.find(criteria1);
+
+            assert processes1 != null;
+            assert processes1.isEmpty();
+
+            Criterion criteria2 = new Equal("name", DefinedTestProcess.getProcessName());
+            List<ProcessInstance> processes2 = processDAO.find(criteria2);
+
+            assert processes2 != null;
+
+            Set<Long> processIds2 = new HashSet<Long>();
+            for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
+
+            Set<Long> allProcIds = new HashSet<Long>(domain1ProcIds);
+            allProcIds.addAll(domain2ProcIds);
+
+            assert allProcIds.equals(processIds2);
+
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByProcessNameCriteria")
+    public void findProcessInstancesByCreatorsAndModifiersCriteria() throws Exception {
+        try {
+            List<Criterion> criteria0 = new ArrayList<Criterion>();
+            criteria0.add(new Equal("createdBy", "101-creator"));
+            criteria0.add(new Equal("modifiedBy", "102-modifier"));
+            List<ProcessInstance> processes0 = processDAO.find(new And(criteria0));
+
+            assert processes0 != null;
+            assert processes0.isEmpty();
+
+            Criterion criteria1 = new Equal("createdBy", "101-creator");
+            List<ProcessInstance> processes1 = processDAO.find(criteria1);
+
+            assert processes1 != null;
+            assert processes1.size() == 1;
+            assert processes1.iterator().next().getId() == domain1FirstProcId;
+
+            List<Criterion> criteria2 = new ArrayList<Criterion>();
+            criteria2.add(new Equal("createdBy", "111-creator"));
+            criteria2.add(new Equal("modifiedBy", "111-modifier"));
+            List<ProcessInstance> processes2 = processDAO.find(new And(criteria2));
+
+            assert processes2 != null;
+            assert processes2.size() == 1;
+            assert processes2.iterator().next().getId() == domain2FirstProcId;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByCreatorsAndModifiersCriteria")
+    public void findProcessInstancesByTrackDatesCriteria() throws Exception {
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.set(2006, 11, 15, 0, 0);
+            Criterion criteria0 = new Lower("created", new Date(cal.getTimeInMillis()));
+            List<ProcessInstance> processes0 = processDAO.find(criteria0);
+
+            assert processes0 != null;
+            assert processes0.isEmpty();
+
+            List<Criterion> criteria1 = new ArrayList<Criterion>();
+            cal.set(2006, 11, 15, 0, 0);
+            criteria1.add(new Greater("created", new Date(cal.getTimeInMillis())));
+            cal.set(2007, 0, 15, 0, 0);
+            criteria1.add(new Lower("created", new Date(cal.getTimeInMillis())));
+            List<ProcessInstance> processes1 = processDAO.find(new And(criteria1));
+
+            assert processes1 != null;
+            assert processes1.size() == 1;
+            assert processes1.iterator().next().getId() == domain1FirstProcId;
+
+            List<Criterion> criteria2 = new ArrayList<Criterion>();
+            cal.set(2007, 8, 15, 0, 0);
+            criteria2.add(new Greater("modified", new Date(cal.getTimeInMillis())));
+            cal.set(2007, 9, 15, 0, 0);
+            criteria2.add(new Lower("modified", new Date(cal.getTimeInMillis())));
+            List<ProcessInstance> processes2 = processDAO.find(new And(criteria2));
+
+            assert processes2 != null;
+            assert processes2.size() == 1;
+            assert processes2.iterator().next().getId() == domain2FirstProcId;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByTrackDatesCriteria")
+    public void findProcessInstancesByProcDatesCriteria() throws Exception {
+        try {
+            Criterion criteria0 = new Lower("start", date0);
+            List<ProcessInstance> processes0 = processDAO.find(criteria0);
+
+            assert processes0 != null;
+            assert processes0.isEmpty();
+
+            List<Criterion> criteria1 = new ArrayList<Criterion>();
+            criteria1.add(new Greater("start", date0));
+            criteria1.add(new Lower("start", date1));
+            List<ProcessInstance> processes1 = processDAO.find(new And(criteria1));
+
+            assert processes1 != null;
+
+            Set<Long> processIds1 = new HashSet<Long>();
+            for (ProcessInstance pi : processes1) processIds1.add(pi.getId());
+
+            assert domain1ProcIds.equals(processIds1);
+
+            for (Long id : domain2ProcIds) {
+                ProcessInstance pi = processDAO.getProcessInstance(id);
+                pi.end();
+            }
+
+            Criterion criteria2 = new Greater("end", date2);
+            List<ProcessInstance> processes2 = processDAO.find(criteria2);
+
+            assert processes2 != null;
+
+            Set<Long> processIds2 = new HashSet<Long>();
+            for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
+
+            assert domain2ProcIds.equals(processIds2);
+
+            Criterion criteria3 = new Lower("end", date1);
             List<ProcessInstance> processes3 = processDAO.find(criteria3);
 
             assert processes3 != null;
