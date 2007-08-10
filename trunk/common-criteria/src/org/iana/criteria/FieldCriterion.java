@@ -5,7 +5,7 @@ import org.iana.rzm.common.validators.CheckTool;
 /**
  * @author Patrycja Wegrzynowicz
  */
-abstract class FieldCriterion implements Criterion {
+abstract public class FieldCriterion implements Criterion {
 
     private String fieldName;
 
@@ -16,5 +16,9 @@ abstract class FieldCriterion implements Criterion {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 }
