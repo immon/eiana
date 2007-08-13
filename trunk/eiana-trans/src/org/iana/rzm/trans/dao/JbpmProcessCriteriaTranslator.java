@@ -1,13 +1,11 @@
 package org.iana.rzm.trans.dao;
 
+import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
 import org.iana.dao.hibernate.HQLBuffer;
 import org.iana.dao.hibernate.HQLGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -28,7 +26,7 @@ class JbpmProcessCriteriaTranslator {
             "RZMUser as user inner join user.roles as role";
     private static final String USER_JOIN_CONDITIONS =
             "role.class = SystemRole\n" +
-                        "and role.name = domain.name.name";
+                    "and role.name = domain.name.name";
     private static Map<String, String> criteriaFields = new HashMap<String, String>();
     private static Map<String, String> criteriaJoins = new HashMap<String, String>();
 
@@ -81,7 +79,7 @@ class JbpmProcessCriteriaTranslator {
             from.append(",\n").append(USER_JOIN);
             joinConditions += "\nand " + USER_JOIN_CONDITIONS;
         }
-        buff = HQLGenerator.from(from.toString(), criteria);
+        buff = HQLGenerator.from(from.toString(), new And(Collections.singletonList(criteria)));
     }
 
     public String getHQL() {
