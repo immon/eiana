@@ -2,6 +2,7 @@ package org.iana.rzm.trans.dao;
 
 import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
+import org.iana.criteria.SortCriterion;
 import org.iana.dao.hibernate.HQLBuffer;
 import org.iana.dao.hibernate.HQLGenerator;
 
@@ -79,13 +80,22 @@ class JbpmProcessCriteriaTranslator {
             from.append(",\n").append(USER_JOIN);
             joinConditions += "\nand " + USER_JOIN_CONDITIONS;
         }
-        buff = HQLGenerator.from(from.toString(), new And(Collections.singletonList(criteria)));
+        if (criteria instanceof SortCriterion) {
+            SortCriterion sortCriteria = (SortCriterion) criteria;
+            criteria = new SortCriterion(new And(Collections.singletonList(sortCriteria.getCriterion())),
+                    sortCriteria.getOrders());
+        } else criteria = new And(Collections.singletonList(criteria));
+        buff = HQLGenerator.from(from.toString(), criteria);
     }
 
     public String getHQL() {
+        return getHQL("select pi ");
+    }
+
+    public String getHQL(String select) {
         String[] elements = buff.getHQL().split("order by");
-        StringBuffer hql = new StringBuffer("select pi ");
-        hql.append(elements[0].trim());
+        StringBuffer hql = new StringBuffer(select);
+        hql.append("\n").append(elements[0].trim());
         hql.append("\nand ").append(joinConditions);
         if (elements.length == 2) {
             hql.append("\norder by\n");

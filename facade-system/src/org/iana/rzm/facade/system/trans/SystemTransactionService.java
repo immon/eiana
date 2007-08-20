@@ -110,4 +110,8 @@ public interface SystemTransactionService extends RZMStatefulService {
     List<TransactionVO> findTransactions(TransactionCriteriaVO criteria) throws AccessDeniedException, InfrastructureException;
 
     List<TransactionVO> findTransactions(Criterion criteria) throws AccessDeniedException, InfrastructureException;
+
+    int count(Criterion criteria) throws AccessDeniedException;
+
+    List<TransactionVO> findTransactions(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException;
 }

@@ -86,6 +86,14 @@ public class EmptySystemTransactionService implements SystemTransactionService {
         return null;
     }
 
+    public int count(Criterion criteria) throws AccessDeniedException {
+        return 0;
+    }
+
+    public List<TransactionVO> findTransactions(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        return null;
+    }
+
     public UserVO getUser() {
         return null;
     }

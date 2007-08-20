@@ -174,7 +174,7 @@ public class GuardedAdminUserServiceTest {
         gAdminUserServ.close();
     }
 
-    @Test(dependsOnMethods = {"testFacadeUpdateUser"})
+    @Test(dependsOnMethods = {"testFacadeUpdateUserAdminRole"})
     public void testFacadeFindUserByCriteria() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);

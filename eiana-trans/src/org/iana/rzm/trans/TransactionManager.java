@@ -3,6 +3,7 @@ package org.iana.rzm.trans;
 import org.iana.criteria.Criterion;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
 import java.util.Set;
@@ -48,6 +49,10 @@ public interface TransactionManager {
     List<Transaction> findAll();
 
     List<Transaction> find(Criterion criteria);
+
+    List<Transaction> find(Criterion criteria, int offset, int limit);
+
+    int count(Criterion criteria);
 
     List<Transaction> find(TransactionCriteria criteria);
 
