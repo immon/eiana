@@ -714,4 +714,88 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             processDAO.close();
         }
     }
+
+    @Test(dependsOnMethods = "findProcessInstancesByProcDatesCriteria")
+    public void findProcessInstancesByComplexCriteria() throws Exception {
+        try {
+            List<Criterion> criteria1 = new ArrayList<Criterion>();
+            criteria1.add(new Greater("start", date0));
+            criteria1.add(new Lower("start", date1));
+            List<ProcessInstance> processes1 = processDAO.find(new Or(criteria1));
+
+            assert processes1 != null;
+
+            Set<Long> processIds1 = new HashSet<Long>();
+            for (ProcessInstance pi : processes1) processIds1.add(pi.getId());
+
+            Set<Long> allProcIds = new HashSet<Long>(domain1ProcIds);
+            allProcIds.addAll(domain2ProcIds);
+            assert allProcIds.equals(processIds1);
+
+            for (Long id : domain2ProcIds) {
+                ProcessInstance pi = processDAO.getProcessInstance(id);
+                pi.end();
+            }
+
+            List<Criterion> criteria2 = new ArrayList<Criterion>();
+            criteria2.add(new Equal("createdBy", "111-creator"));
+            criteria2.add(new Equal("modifiedBy", "111-modifier"));
+            List<Criterion> criteria21 = new ArrayList<Criterion>();
+            criteria21.add(new Or(criteria2));
+            criteria21.add(new Greater("end", date2));
+            List<ProcessInstance> processes2 = processDAO.find(new And(criteria21));
+
+            assert processes2 != null;
+            assert processes2.size() == 1;
+            assert processes2.iterator().next().getId() == domain2FirstProcId;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByComplexCriteria")
+    public void countProcessInstancesByCriteria() throws Exception {
+        try {
+            Criterion criteria1 = new Equal("name", DefinedTestProcess.getProcessName());
+            int count1 = processDAO.count(criteria1);
+            assert count1 == 6;
+
+            List<Criterion> criteria2 = new ArrayList<Criterion>();
+            criteria2.add(new Equal("createdBy", "111-creator"));
+            criteria2.add(new Equal("modifiedBy", "111-modifier"));
+            List<Criterion> criteria21 = new ArrayList<Criterion>();
+            criteria21.add(new Or(criteria2));
+            criteria21.add(new Greater("end", date2));
+            int count2 = processDAO.count(new And(criteria21));
+            assert count2 == 1;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "countProcessInstancesByCriteria")
+    public void findProcessInstancesByCriteriaOffsetLimit() throws Exception {
+        try {
+            List<Criterion> criteria1 = new ArrayList<Criterion>();
+            criteria1.add(new Greater("start", date0));
+            criteria1.add(new Lower("start", date1));
+            List<ProcessInstance> processes1 = processDAO.find(new Or(criteria1), 0, 3);
+            assert processes1 != null;
+            assert processes1.size() == 3;
+            Set<Long> processIds1 = new HashSet<Long>();
+            for (ProcessInstance pi : processes1) processIds1.add(pi.getId());
+            List<ProcessInstance> processes2 = processDAO.find(new Or(criteria1), 3, 3);
+            assert processes2 != null;
+            assert processes2.size() == 3;
+            Set<Long> processIds2 = new HashSet<Long>();
+            for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
+            assert Collections.disjoint(processIds1, processIds2);
+            Set<Long> allProcIds = new HashSet<Long>(domain1ProcIds);
+            allProcIds.addAll(domain2ProcIds);
+            processIds1.addAll(processIds2);
+            assert allProcIds.equals(processIds1);
+        } finally {
+            processDAO.close();
+        }
+    }
 }

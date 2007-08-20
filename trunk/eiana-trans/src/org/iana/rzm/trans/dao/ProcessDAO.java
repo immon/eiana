@@ -19,6 +19,10 @@ public interface ProcessDAO {
 
     public List<ProcessInstance> find(Criterion criteria);
 
+    public List<ProcessInstance> find(final Criterion criteria, final int offset, final int limit);
+
+    public int count(final Criterion criteria);
+
     public List<ProcessInstance> findAll();
 
     public List<ProcessInstance> findOpenProcessInstances(final String domainName);

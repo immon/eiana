@@ -58,7 +58,7 @@ public class UserManagerBeanAccuracyTest extends TransactionalSpringContextTests
         assert userRetrieved.getLoginName().equals("user-ivan123");
     }
 
-    @Test
+    @Test(dependsOnMethods = {"testGetUserByName"})
     public void testFindUsersInRoles() throws Exception {
         userManager.create(UserManagementTestUtil.createUser("sys1", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
         userManager.create(UserManagementTestUtil.createUser("sys2", UserManagementTestUtil.createSystemRole("aaa", true, false, SystemRole.SystemType.AC)));
@@ -90,7 +90,7 @@ public class UserManagerBeanAccuracyTest extends TransactionalSpringContextTests
         assert "user-admin2".equals(user.getLoginName());
     }
 
-    @Test
+    @Test(dependsOnMethods = {"testFindUsersInRoles"})
     public void testFindUserByEmailAndRole() throws Exception {
         userManager.create(UserManagementTestUtil.createUser("s1", "email1@example.email", UserManagementTestUtil.createSystemRole("aaa", true, true, SystemRole.SystemType.AC)));
         userManager.create(UserManagementTestUtil.createUser("s2", "email1@example.email", UserManagementTestUtil.createSystemRole("bbb", true, true, SystemRole.SystemType.AC)));

@@ -87,6 +87,15 @@ public class TransactionManagerBean implements TransactionManager {
         return toTransactions(processInstances);
     }
 
+    public List<Transaction> find(Criterion criteria, int offset, int limit) {
+        List<ProcessInstance> processInstances = processDAO.find(criteria, offset, limit);
+        return toTransactions(processInstances);
+    }
+
+    public int count(Criterion criteria) {
+        return processDAO.count(criteria);    
+    }
+
     public List<Transaction> find(TransactionCriteria criteria) {
         ProcessCriteria processCriteria = TransactionToProcessCriteriaConverter.convert(criteria);
         List<ProcessInstance> processInstances = processDAO.find(processCriteria);

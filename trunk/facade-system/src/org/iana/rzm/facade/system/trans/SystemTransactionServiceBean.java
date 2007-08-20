@@ -162,6 +162,14 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         return ret;
     }
 
+    public int count(Criterion criteria) throws AccessDeniedException {
+        return transactionManager.count(criteria);
+    }
+
+    public List<TransactionVO> findTransactions(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria, offset, limit));
+    }
+
     public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
         CheckTool.checkNull(domain, "null domain");
 

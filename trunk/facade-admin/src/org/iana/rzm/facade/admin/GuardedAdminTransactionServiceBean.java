@@ -259,18 +259,18 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     }
 
     public List<TransactionVO> findTransactions(Criterion criteria) {
-        //todo
-        throw new UnsupportedOperationException();
+        isUserInRole();
+        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria));
     }
 
 
     public int count(Criterion criteria) {
-        //todo
-        throw new UnsupportedOperationException();
+        isUserInRole();
+        return transactionManager.count(criteria);
     }
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) {
-        //todo
-        throw new UnsupportedOperationException();
+        isUserInRole();
+        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria, offset, limit));
     }
 }

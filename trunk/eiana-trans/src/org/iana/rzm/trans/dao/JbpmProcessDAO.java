@@ -45,16 +45,39 @@ public class JbpmProcessDAO implements ProcessDAO {
         return getContext().getSession().createQuery("from ProcessInstance").list();
     }
 
-    public List<ProcessInstance> find(Criterion criteria) {
+    public List<ProcessInstance> find(final Criterion criteria) {
         JbpmProcessCriteriaTranslator translator = new JbpmProcessCriteriaTranslator(criteria);
-        String hql = translator.getHQL();
-        System.out.println("#### HQL: " + hql);
-        Query query = getContext().getSession().createQuery(hql);
+        Query query = getContext().getSession().createQuery(translator.getHQL());
         int idx = 0;
         for (Object param : translator.getParams()) {
             query.setParameter(idx++, param);
         }
         return query.list();
+    }
+
+    public List<ProcessInstance> find(final Criterion criteria, final int offset, final int limit) {
+        JbpmProcessCriteriaTranslator translator = new JbpmProcessCriteriaTranslator(criteria);
+        Query query = getContext().getSession().createQuery(translator.getHQL());
+        int idx = 0;
+        for (Object param : translator.getParams()) {
+            query.setParameter(idx++, param);
+        }
+        query.setFirstResult(offset)
+                .setMaxResults(limit)
+                .setFetchSize(limit);
+        return query.list();
+    }
+    
+    public int count(final Criterion criteria) {
+        JbpmProcessCriteriaTranslator translator = new JbpmProcessCriteriaTranslator(criteria);
+        String hql = translator.getHQL("select count(*)");
+        Query query = getContext().getSession().createQuery(hql);
+        int idx = 0;
+        for (Object param : translator.getParams()) {
+            query.setParameter(idx++, param);
+        }
+        Long result = (Long) query.uniqueResult();
+        return result.intValue();
     }
 
     public List<ProcessInstance> findAllProcessInstances(final String domainName) {

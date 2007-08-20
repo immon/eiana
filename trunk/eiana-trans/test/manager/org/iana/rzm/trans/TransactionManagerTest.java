@@ -1,5 +1,7 @@
 package org.iana.rzm.trans;
 
+import org.iana.criteria.Equal;
+import org.iana.criteria.In;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
@@ -16,10 +18,7 @@ import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Lukasz Zuchowski
@@ -182,6 +181,67 @@ public class TransactionManagerTest extends TransactionalSpringContextTests {
             for (Transaction tr : dbDomain2Trans) dbDomain2TransIds.add(tr.getTransactionID());
 
             assert domain2TransIds.equals(dbDomain2TransIds);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionsByUserAndDomain")
+    public void testFindTransactionByCriteria() {
+        try {
+            List<Transaction> transactions1 = transactionManagerBean.find(
+                    new In("currentDomain.name.name", new HashSet(Arrays.asList("tmtestdomain1", "tmtestdomain2"))));
+            assert transactions1 != null;
+            assert transactions1.size() == 6;
+            Set<Long> transIds1 = new HashSet<Long>();
+            for (Transaction tr : transactions1) transIds1.add(tr.getTransactionID());
+            Set<Long> allTransIds = new HashSet<Long>(domain1TransIds);
+            allTransIds.addAll(domain2TransIds);
+            assert allTransIds.equals(transIds1);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByCriteria")
+    public void testFindTransactionByCriteriaOffsetLimit() {
+        try {
+            List<Transaction> transactions1 = transactionManagerBean.find(
+                    new In("currentDomain.name.name", new HashSet(Arrays.asList("tmtestdomain1", "tmtestdomain2"))),
+                    0, 3);
+            assert transactions1 != null;
+            assert transactions1.size() == 3;
+            Set<Long> transIds1 = new HashSet<Long>();
+            for (Transaction tr : transactions1) transIds1.add(tr.getTransactionID());
+
+            List<Transaction> transactions2 = transactionManagerBean.find(
+                    new In("currentDomain.name.name", new HashSet(Arrays.asList("tmtestdomain1", "tmtestdomain2"))),
+                    3, 3);
+            assert transactions2 != null;
+            assert transactions2.size() == 3;
+            Set<Long> transIds2 = new HashSet<Long>();
+            for (Transaction tr : transactions2) transIds2.add(tr.getTransactionID());
+
+            assert Collections.disjoint(transIds1, transIds2);
+            transIds1.addAll(transIds2);
+            Set<Long> allTransIds = new HashSet<Long>(domain1TransIds);
+            allTransIds.addAll(domain2TransIds);
+            assert allTransIds.equals(transIds1);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "testFindTransactionByCriteriaOffsetLimit")
+    public void testCountTransactionByCriteria() {
+        try {
+            int count1 = transactionManagerBean.count(
+                    new Equal("currentDomain.name.name", "tmtestdomain1"));
+            assert count1 == 3;
+
+            int count2 = transactionManagerBean.count(
+                    new In("currentDomain.name.name", new HashSet(Arrays.asList("tmtestdomain1", "tmtestdomain2"))));
+            assert count2 == 6;
         } finally {
             processDAO.close();
         }
