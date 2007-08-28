@@ -39,6 +39,7 @@ class JbpmProcessCriteriaTranslator {
         criteriaFields.put("ticketID", "td.ticketID");
         criteriaFields.put("name", "pd.name");
         criteriaFields.put("currentDomain", "domain");
+        criteriaFields.put("currentDomainName", "domain.name.name");
         criteriaFields.put("state", "node.name");
         criteriaFields.put("start", "pi.start");
         criteriaFields.put("end", "pi.end");
@@ -60,9 +61,12 @@ class JbpmProcessCriteriaTranslator {
     private String joinConditions;
 
     public JbpmProcessCriteriaTranslator(Criterion criteria) {
-        JbpmProcessCriteriaFieldNamesExtractor ext = new JbpmProcessCriteriaFieldNamesExtractor(criteriaFields);
-        criteria.accept(ext);
-        Set<String> fieldNames = ext.getNames();
+        Set<String> fieldNames;
+        if (criteria != null) {
+            JbpmProcessCriteriaFieldNamesExtractor ext = new JbpmProcessCriteriaFieldNamesExtractor(criteriaFields);
+            criteria.accept(ext);
+            fieldNames = ext.getNames();
+        } else fieldNames = Collections.emptySet();
         StringBuffer from = new StringBuffer(JOIN_ROOT);
         Set<String> addedAliases = new HashSet<String>();
         for (String name : fieldNames) {
@@ -80,11 +84,13 @@ class JbpmProcessCriteriaTranslator {
             from.append(",\n").append(USER_JOIN);
             joinConditions += "\nand " + USER_JOIN_CONDITIONS;
         }
-        if (criteria instanceof SortCriterion) {
-            SortCriterion sortCriteria = (SortCriterion) criteria;
-            criteria = new SortCriterion(new And(Collections.singletonList(sortCriteria.getCriterion())),
-                    sortCriteria.getOrders());
-        } else criteria = new And(Collections.singletonList(criteria));
+        if (criteria != null) {
+            if (criteria instanceof SortCriterion) {
+                SortCriterion sortCriteria = (SortCriterion) criteria;
+                criteria = new SortCriterion(new And(Collections.singletonList(sortCriteria.getCriterion())),
+                        sortCriteria.getOrders());
+            } else criteria = new And(Collections.singletonList(criteria));
+        }
         buff = HQLGenerator.from(from.toString(), criteria);
     }
 
@@ -95,8 +101,13 @@ class JbpmProcessCriteriaTranslator {
     public String getHQL(String select) {
         String[] elements = buff.getHQL().split("order by");
         StringBuffer hql = new StringBuffer(select);
-        hql.append("\n").append(elements[0].trim());
-        hql.append("\nand ").append(joinConditions);
+        String beforeOrderBy = elements[0].trim();
+        hql.append("\n").append(beforeOrderBy).append("\n");
+        if (beforeOrderBy.contains("where"))
+            hql.append("and ");
+        else
+            hql.append("where ");
+        hql.append(joinConditions);
         if (elements.length == 2) {
             hql.append("\norder by\n");
             String second = elements[1].trim();

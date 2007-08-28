@@ -13,7 +13,7 @@ abstract public class MultipleCriterion implements Criterion {
     private List<Criterion> args;
 
     protected MultipleCriterion(List<Criterion> criteria) {
-        CheckTool.checkCollectionNull(criteria, "criteria arguments");
+        CheckTool.checkCollectionNullOrEmpty(criteria, "criteria arguments");
         this.args = criteria;
     }
 
