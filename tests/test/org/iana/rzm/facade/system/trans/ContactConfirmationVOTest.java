@@ -42,6 +42,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
+        trans = getTransaction(trans.getTransactionID());
+
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
@@ -58,6 +62,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "ac-name");
 
@@ -82,6 +88,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
         String token = getToken(trans.getTransactionID(), "ac-name-new");
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -104,6 +112,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "tc-name");
 
@@ -128,6 +138,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
         String token = getToken(trans.getTransactionID(), "tc-name-new");
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -150,6 +162,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "tc-name");
         acceptTransaction(trans.getTransactionID(), token);
@@ -176,6 +190,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
         String token = getToken(trans.getTransactionID(), "tc-name-new");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -200,6 +216,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "ac-name");
         acceptTransaction(trans.getTransactionID(), token);
@@ -226,6 +244,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
         String token = getToken(trans.getTransactionID(), "tc-name");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -250,6 +270,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "ac-name");
         acceptTransaction(trans.getTransactionID(), token);
@@ -278,6 +300,8 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "ac-name");
         acceptTransaction(trans.getTransactionID(), token);
@@ -321,6 +345,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
     private String getToken(long transID, String name) {
         ProcessInstance pi = processDAO.getProcessInstance(transID);
         TransactionData td = (TransactionData) pi.getContextInstance().getVariable("TRANSACTION_DATA");
+        if (td.getContactConfirmations() == null) return null;
         for (Identity id : td.getContactConfirmations().getUsersAbleToAccept()) {
             ContactIdentity cid = (ContactIdentity) id;
             if (name.equals(cid.getName())) {

@@ -26,6 +26,7 @@ import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
+ * @author: JaKub Laszkiewicz
  */
 
 public abstract class CommonGuardedSystemTransaction {
@@ -203,6 +204,13 @@ public abstract class CommonGuardedSystemTransaction {
         closeServices();
     }
 
+    protected void acceptPENDING_CREATION(long transId) throws Exception {
+        setDefaultUser();
+        assert isTransactionInDesiredState("PENDING_CREATION", transId);
+        gsts.transitTransaction(transId, "go-on");
+        closeServices();
+    }
+
     protected Domain createDomain(String name) {
         Domain newDomain = new Domain(name);
         newDomain.setSupportingOrg(new Contact("supportOrg"));
@@ -275,6 +283,7 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void acceptTransaction(long transactionId, String token) throws Exception {
+        assert token != null;
         gsts.acceptTransaction(transactionId, token);
     }
 

@@ -20,6 +20,7 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.AdminRole;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
@@ -31,6 +32,7 @@ import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author: JaKub Laszkiewicz
  */
 @Test(sequential = true, groups = {"facade-system", "GuardedSystemTransactionService"})
 public class GuardedSystemTransactionServiceTest {
@@ -44,7 +46,7 @@ public class GuardedSystemTransactionServiceTest {
     private IDomainVO domain, domain1;
     private ProcessDAO processDAO;
     private TransactionVO transaction, transaction1;
-    private AuthenticatedUser userAc, userTc, userAc1;
+    private AuthenticatedUser userAc, userTc, userAc1, userIANA;
 
     @BeforeClass
     public void init() throws Exception {
@@ -61,6 +63,7 @@ public class GuardedSystemTransactionServiceTest {
         userAc = createUser("ac", SystemRole.SystemType.AC, "gsts");
         userTc = createUser("tc", SystemRole.SystemType.TC, "gsts");
         userAc1 = createUser("ac1", SystemRole.SystemType.AC, "gstss");
+        userIANA = createUser("iana", AdminRole.AdminType.IANA);
         gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
         domain = createDomain("gsts");
         domain1 = createDomain("gstss");
@@ -123,6 +126,9 @@ public class GuardedSystemTransactionServiceTest {
         gsts.setUser(userAc);
 
         transaction = gsts.getTransaction(transaction.getTransactionID());
+        gsts.setUser(userIANA);
+        gsts.transitTransaction(transaction.getTransactionID(), "go-on");
+        transaction = gsts.getTransaction(transaction.getTransactionID());
         List<String> tokens = transaction.getTokens();
         assert tokens.size() == 2;
         Iterator<String> tokenIterator = tokens.iterator();
@@ -156,7 +162,10 @@ public class GuardedSystemTransactionServiceTest {
     public void testRejectTransaction() throws Exception {
         domain.setRegistryUrl("http://www.registry.url.new");
         TransactionVO transactionToReject = gsts.createTransactions(domain, false).get(0);
+        gsts.setUser(userIANA);
+        gsts.transitTransaction(transactionToReject.getTransactionID(), "go-on");
         gsts.setUser(userTc);
+        transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
         List<String> tokens = transactionToReject.getTokens();
         assert tokens.size() > 0;
         gsts.rejectTransaction(transactionToReject.getTransactionID(), tokens.iterator().next());
@@ -219,7 +228,7 @@ public class GuardedSystemTransactionServiceTest {
         gsts.setUser(userAc1);
 
         criteria = new TransactionCriteriaVO();
-        criteria.addState("PENDING_CONTACT_CONFIRMATION");
+        criteria.addState("PENDING_CREATION");
         found = gsts.findTransactions(criteria);
         assert found != null;
         assert found.size() == 1;
@@ -307,6 +316,21 @@ public class GuardedSystemTransactionServiceTest {
         user.setPassword(name + roleName);
         user.setSecurID(false);
         user.addRole(new SystemRole(roleType, roleName, true, false));
+        userManager.create(user);
+        TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user));
+        return testAuthUser.getAuthUser();
+    }
+
+    private AuthenticatedUser createUser(String name, AdminRole.AdminType roleType) {
+        RZMUser user = new RZMUser();
+        user.setEmail(name + "@no-mail.org");
+        user.setFirstName(name + " first name");
+        user.setLastName(name + " last name");
+        user.setLoginName(name);
+        user.setOrganization(name + " organization");
+        user.setPassword(name);
+        user.setSecurID(false);
+        user.addRole(new AdminRole(roleType));
         userManager.create(user);
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user));
         return testAuthUser.getAuthUser();

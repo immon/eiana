@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 
 /**
  * @author: Piotr Tkaczyk
+ * @author: JaKub Laszkiewicz
  */
 
 @Test(sequential = true, groups = {"test", "GuardedAdminTransactionServiceTest"})
@@ -103,6 +104,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test
     public void testRejectCONTACT_CONFIRMATION() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         rejectPENDING_CONTACT_CONFIRMATION();
     }
 
@@ -110,6 +112,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testRejectCONTACT_CONFIRMATION")
     public void testAcceptCONTACT_CONFIRMATION() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
     }
 
@@ -132,6 +135,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
     public void testRejectMANUAL_REVIEW() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         rejectMANUAL_REVIEW();
     }
@@ -139,6 +143,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptCONTACT_CONFIRMATION")
     public void testAcceptMANUAL_REVIEW() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
     }
@@ -146,6 +151,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptMANUAL_REVIEW")
     public void testRejectPENDING_IANA_CHECK() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         rejectPENDING_IANA_CHECK();
@@ -154,6 +160,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testRejectPENDING_IANA_CHECK")
     public void testAcceptPENDING_IANA_CHECK() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
@@ -182,6 +189,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptPENDING_IANA_CHECK")
     public void testRejectPENDING_USDOC_APPROVAL() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
@@ -191,6 +199,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testRejectPENDING_USDOC_APPROVAL")
     public void testAcceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
         createDomainModificationProcessNSChage();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
@@ -200,6 +209,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptPENDING_USDOC_APPROVALNSCHANGE")
     public void testAcceptPENDING_USDOC_APPROVAL() throws Exception {
         createDomainModificationProcess();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
@@ -209,6 +219,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptPENDING_USDOC_APPROVAL")
     public void testAcceptPENDING_ZONE_INSERTION() throws Exception {
         createDomainModificationProcessNSChage();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
@@ -219,6 +230,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     @Test(dependsOnMethods = "testAcceptPENDING_ZONE_INSERTION")
     public void testAcceptPENDING_ZONE_PUBLICATION() throws Exception {
         createDomainModificationProcessNSChage();
+        acceptPENDING_CREATION();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
@@ -265,6 +277,12 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         assert transactionVO.getName().equals(PROCESS_NAME);
     }
 
+
+    private void acceptPENDING_CREATION() throws Exception {
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
+        gAdminTransactionServ.transitTransaction(transactionID, "go-on");
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+    }
 
     private void rejectPENDING_CONTACT_CONFIRMATION() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);

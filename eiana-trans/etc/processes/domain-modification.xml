@@ -1,7 +1,7 @@
 <process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
-        <transition to="FIRST_NSLINK_CHANGE_DECISION"></transition>
+        <transition to="PENDING_CREATION"></transition>
     </start-state>
 
     <super-state name='LOGGED_STATE'>
@@ -38,14 +38,25 @@
         <transition name="TRANSITION_ADMIN_CLOSED" to="ADMIN_CLOSED"/>
         <transition name="TRANSITION_EXCEPTION" to="EXCEPTION"/>
 
+        <state name="PENDING_CREATION">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                    <roles>
+                        <element>IANA</element>
+                    </roles>
+                </action>
+            </event>
+            <transition name="go-on" to="FIRST_NSLINK_CHANGE_DECISION"/>
+        </state>
+
         <decision name="FIRST_NSLINK_CHANGE_DECISION">
             <handler class="org.iana.rzm.trans.jbpm.handlers.NSLinkChangeDecision"/>
             <transition name="yes" to="PENDING_TECH_CHECK"/>
             <transition name="no" to="PENDING_CONTACT_CONFIRMATION"/>
             <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
-                <start>true</start>
-            </action>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                    <start>true</start>
+                </action>
             </event>
         </decision>
 
@@ -419,9 +430,9 @@
                     <notification>completed</notification>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
-                        <start>false</start>
-                    </action>
-                </event>
+                    <start>false</start>
+                </action>
+            </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
@@ -481,6 +492,9 @@
             <event type='node-enter'>
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>exception</notification>
+                    <emails>
+                        <element>system-error@iana.org</element>
+                    </emails>
                 </action>
             </event>
             <!-- manual transition allowed -->

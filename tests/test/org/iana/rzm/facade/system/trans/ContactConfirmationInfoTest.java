@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author: JaKub Laszkiewicz
  */
 @Test(sequential = true)
 public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction {
@@ -41,6 +42,10 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
 
         TransactionVO trans = createTransaction(domain);
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
+        trans = getTransaction(trans.getTransactionID());
+
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         assert !trans.soConfirmed();
         assert !trans.tcConfirmed();
@@ -57,6 +62,8 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
         domain.setRegistryUrl("contactconfirmation.registry.url");
 
         TransactionVO trans = createTransaction(domain);
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), SystemRole.SystemType.AC);
 
@@ -81,6 +88,8 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
 
         TransactionVO trans = createTransaction(domain);
 
+        transitTransaction(trans.getTransactionID(), "go-on");
+
         String token = getToken(trans.getTransactionID(), SystemRole.SystemType.TC);
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -103,6 +112,8 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
         domain.setRegistryUrl("contactconfirmation.registry.url");
 
         TransactionVO trans = createTransaction(domain);
+
+        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), SystemRole.SystemType.TC);
         acceptTransaction(trans.getTransactionID(), token);
@@ -137,6 +148,7 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
     private String getToken(long transID, SystemRole.SystemType role) {
         ProcessInstance pi = processDAO.getProcessInstance(transID);
         TransactionData td = (TransactionData) pi.getContextInstance().getVariable("TRANSACTION_DATA");
+        if (td.getContactConfirmations() == null) return null;
         for (Identity id : td.getContactConfirmations().getUsersAbleToAccept()) {
             ContactIdentity cid = (ContactIdentity) id;
             if (cid.getType() == role) {

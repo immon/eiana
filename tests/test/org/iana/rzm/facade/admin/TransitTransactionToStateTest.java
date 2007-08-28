@@ -26,6 +26,7 @@ import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
+ * @author: Jakub Laszkiewicz
  */
 
 @Test(sequential = true, groups = {"test", "TransitTransactionToStateTest"})
@@ -81,7 +82,7 @@ public class TransitTransactionToStateTest {
             createDomainModificationProcess();
 
             TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-            assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+            assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
 
             gAdminTransactionServ.updateTransaction(transactionID, 0L, "WRONG_STATE", false);
 
@@ -96,7 +97,7 @@ public class TransitTransactionToStateTest {
         createDomainModificationProcess();
 
         TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
 
         for (String state : states) {
             if (!state.equals("PENDING_IANA_CONFIRMATION") && !state.equals("PENDING_TECH_CHECK") && !state.equals("PENDING_SUPP_TECH_CHECK") && !state.equals("PENDING_DATABASE_INSERTION")) {

@@ -23,6 +23,7 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.AdminRole;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
@@ -48,6 +49,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 
     private static final String EMAIL_AC = "ac@no-mail.org";
     private static final String EMAIL_TC = "tc@no-mail.org";
+    private static final String EMAIL_IANA = "iana@no-mail.org";
     private static final String EMAIL_SUBJECT_PREFIX = "Re: ";
     private static final String EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_CONTACT_CONFIRMATION | [RZM] |";
     private static final String PUBLIC_KEY_AC_FILE_NAME = "tester.pgp.asc";
@@ -81,6 +83,12 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             user2.setEmail(EMAIL_TC);
             user2.setPublicKey(loadFromFile(PUBLIC_KEY_TC_FILE_NAME));
             userManager.create(user2);
+
+            RZMUser user3 = new RZMUser();
+            user2.setLoginName("ianamailrec");
+            user2.addRole(new AdminRole(AdminRole.AdminType.IANA));
+            user2.setEmail(EMAIL_IANA);
+            userManager.create(user3);
 
             Domain domain = new Domain("mailrecdomain");
             domain.setAdminContact(new Contact("mailrecdomain-admin"));
@@ -137,8 +145,13 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             host2.getAddresses().add(ipAddr2);
             domain.getNameServers().add(host2);
             TransactionVO transaction = transSystemTransactionService.createTransactions(domain, false).get(0);
-            Long domainTrId = transaction.getTransactionID();
             assert transaction != null;
+            assert TransactionStateVO.Name.PENDING_CREATION.equals(transaction.getState().getName()) :
+                    "unexpected state: " + transaction.getState().getName();
+            Long domainTrId = transaction.getTransactionID();
+            setServicesUser("ianamailrec");
+            transSystemTransactionService.transitTransaction(domainTrId, "go-on");
+            transaction = transSystemTransactionService.getTransaction(domainTrId); 
             assert TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
 
