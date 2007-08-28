@@ -7,7 +7,6 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.TransactionData;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.graph.node.DecisionHandler;
 
 /**
  * This class performs required technical checks and decides to which state a process
@@ -15,11 +14,11 @@ import org.jbpm.graph.node.DecisionHandler;
  *
  * @author Patrycja Wegrzynowicz
  */
-public class TechnicalCheckDecision implements DecisionHandler {
+public class TechnicalCheckDecision extends DecisionExceptionHandler {
 
     boolean test;
 
-    public String decide(ExecutionContext executionContext) throws Exception {
+    public String doDecide(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         if (td != null && !test) {
             DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");

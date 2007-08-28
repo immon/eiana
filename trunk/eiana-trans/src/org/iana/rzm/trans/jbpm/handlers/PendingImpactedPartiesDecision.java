@@ -1,14 +1,13 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.jbpm.graph.node.DecisionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class PendingImpactedPartiesDecision implements DecisionHandler {
+public class PendingImpactedPartiesDecision extends DecisionExceptionHandler {
 
-    public String decide(ExecutionContext executionContext) throws Exception {
+    public String doDecide(ExecutionContext executionContext) throws Exception {
         return "iana";
     }
 }

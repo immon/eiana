@@ -1,22 +1,20 @@
-/**
- * @author Piotr Tkaczyk
- */
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.jbpm.graph.def.ActionHandler;
+import org.iana.objectdiff.ChangeApplicator;
+import org.iana.objectdiff.DiffConfiguration;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.DomainDiffConfiguration;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.ChangeApplicator;
-import org.iana.objectdiff.DiffConfiguration;
 
-public class UpdateDomainAction implements ActionHandler {
-    public void execute(org.jbpm.graph.exe.ExecutionContext executionContext) throws java.lang.Exception {
+/**
+ * @author Piotr Tkaczyk
+ */
+public class UpdateDomainAction extends ActionExceptionHandler {
+    public void doExecute(org.jbpm.graph.exe.ExecutionContext executionContext) throws java.lang.Exception {
 
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        if(td != null) {
+        if (td != null) {
             DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
             DiffConfiguration diffConfig = (DiffConfiguration) executionContext.getJbpmContext().getObjectFactory().createObject("diffConfig");
 
