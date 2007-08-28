@@ -1,17 +1,15 @@
 package org.iana.rzm.facade.system.domain;
 
-import org.iana.rzm.facade.common.TrackDataVO;
-import org.iana.rzm.facade.common.Trackable;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.common.Name;
+import org.iana.rzm.common.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.user.*;
 
-import java.util.Set;
-import java.util.List;
-import java.sql.Timestamp;
-import java.io.Serializable;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
 /**
- * A simplified version of DomainVO used with lists of domains. 
+ * A simplified version of DomainVO used with lists of domains.
  *
  * @author Patrycja Wegrzynowicz
  */
@@ -19,6 +17,7 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
 
     private String name;
     private Set<RoleVO.Type> roles;
+    private String specialInstructions;
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
@@ -79,7 +78,15 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         trackData.setModifiedBy(modifiedBy);
     }
 
-//------------------
+    public String getSpecialInstructions() {
+        return specialInstructions;
+    }
+
+    public void setSpecialInstructions(String specialInstructions) {
+       this.specialInstructions = specialInstructions;
+    }
+
+    //------------------
 
     public ContactVO getSupportingOrg() {
         throw new UnsupportedOperationException();
@@ -150,14 +157,6 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
     }
 
     public void setBreakpoints(Set<Breakpoint> breakpoints) {
-        throw new UnsupportedOperationException();
-    }
-
-    public String getSpecialInstructions() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setSpecialInstructions(String specialInstructions) {
         throw new UnsupportedOperationException();
     }
 
