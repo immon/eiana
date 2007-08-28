@@ -1,15 +1,12 @@
 package org.iana.rzm.facade.system.converter;
 
+import org.iana.rzm.common.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.common.Name;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.common.exceptions.InvalidEmailException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.user.*;
 
 import java.util.*;
 
@@ -93,6 +90,7 @@ public class ToVOConverter {
 
         toSimpleDomainVO.setObjId(fromDomain.getObjId());
         toSimpleDomainVO.setName(fromDomain.getName());
+        toSimpleDomainVO.setSpecialInstructions(fromDomain.getSpecialInstructions());
 
         if (fromDomain.getTrackData() != null) {
             toSimpleDomainVO.setCreated(fromDomain.getCreated());
