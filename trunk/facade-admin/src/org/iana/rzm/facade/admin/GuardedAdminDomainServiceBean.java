@@ -1,22 +1,15 @@
 package org.iana.rzm.facade.admin;
 
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.converter.FromVOConverter;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.AbstractRZMStatefulService;
+import org.iana.criteria.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.system.converter.*;
+import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.user.*;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.criteria.Criterion;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -49,14 +42,14 @@ public class GuardedAdminDomainServiceBean extends AdminFinderServiceBean<IDomai
         CheckTool.checkEmpty(domainName, "domain name");
         Domain retrivedDomain = domainManager.get(domainName);
         CheckTool.checkNull(retrivedDomain, "no such domain: " + domainName);
-        return ToVOConverter.toSimpleDomainVO(retrivedDomain);
+        return ToVOConverter.toDomainVO(retrivedDomain);
     }
 
     public IDomainVO getDomain(long id) throws AccessDeniedException {
         isUserInRole();
         Domain retrivedDomain = domainManager.get(id);
         CheckTool.checkNull(retrivedDomain, "no such domain: " + id);
-        return ToVOConverter.toSimpleDomainVO(retrivedDomain);
+        return ToVOConverter.toDomainVO(retrivedDomain);
     }
 
     public void createDomain(IDomainVO domain) throws InvalidCountryCodeException, AccessDeniedException {
