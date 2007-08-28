@@ -70,8 +70,7 @@ public class JbpmProcessDAO implements ProcessDAO {
     
     public int count(final Criterion criteria) {
         JbpmProcessCriteriaTranslator translator = new JbpmProcessCriteriaTranslator(criteria);
-        String hql = translator.getHQL("select count(*)");
-        Query query = getContext().getSession().createQuery(hql);
+        Query query = getContext().getSession().createQuery(translator.getHQL("select count(*)"));
         int idx = 0;
         for (Object param : translator.getParams()) {
             query.setParameter(idx++, param);

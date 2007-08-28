@@ -25,6 +25,16 @@ public class CheckTool {
         for (T object : collection) checkNull(object, field);
     }
 
+    final public static <T> void checkCollectionEmpty(Collection<T> collection, String field) {
+        checkNull(collection, field);
+        if (collection.isEmpty()) throw new IllegalArgumentException(field);
+    }
+
+    final public static <T> void checkCollectionNullOrEmpty(Collection<T> collection, String field) {
+        checkCollectionNull(collection, field);
+        checkCollectionEmpty(collection, field);
+    }
+
     final public static <T> void addAllNoDup(Collection<T> dst, Collection<T> src) {
         for (T object : src) {
             addNoDup(dst, object);
