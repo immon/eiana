@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
  * there is a transaction in progress for a given domain.
  *
  * @author Patrycja Wegrzynowicz
+ * @author: JaKub Laszkiewicz
  */
 @Test(sequential = true, groups = {"facade-system"})
 public class DomainActivityTest extends CommonGuardedSystemTransaction {
@@ -73,6 +74,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("activitytest.registry.url");
         TransactionVO trans = createTransactions(domain, false).get(0);
         transactionID = trans.getObjId();
+        transitTransaction(transactionID, "go-on");
 
         domain = getDomain("activitytest");
         assert domain != null && domain.getState() == IDomainVO.State.OPERATIONS_PENDING;

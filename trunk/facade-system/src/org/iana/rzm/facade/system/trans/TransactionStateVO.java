@@ -5,10 +5,12 @@ import java.sql.Timestamp;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
 public class TransactionStateVO implements Serializable {
 
     public static enum Name {
+        PENDING_CREATION,
         PENDING_TECH_CHECK,
         PENDING_TECH_CHECK_REMEDY,
         PENDING_CONTACT_CONFIRMATION,

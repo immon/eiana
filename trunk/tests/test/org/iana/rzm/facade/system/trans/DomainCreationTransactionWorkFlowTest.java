@@ -76,39 +76,46 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     }
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         rejectPENDING_CONTACT_CONFIRMATION(userIANA, transId);
         checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
     }
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
     public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         closePENDING_CONTACT_CONFIRMATION(userIANA, transId);
         checkStateLog(userAC, transId, CLOSE_CONTACT_CONFIRMATIONLog);
     }
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
     private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"}
     };
@@ -116,12 +123,14 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
     public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
     }
 
     private static final String[][] ACCEPT_IANA_CHECKLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"}
@@ -130,6 +139,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
     public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
@@ -137,6 +147,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     }
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
@@ -146,6 +157,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     @Test(dependsOnMethods = {"testACCEPT_IANA_CHECK"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(getNextDomain(), userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
@@ -154,6 +166,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     }
 
     private static final String[][] workFlowWithNSChangeLog = {
+            {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
@@ -167,6 +180,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
     public void testSuccessfulCreation() throws Exception {
         DomainVO domain = getNextDomain();
         Long transId = createTransaction(domain, userIANA).getTransactionID();
+        acceptPENDING_CREATION(transId);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);

@@ -15,6 +15,7 @@ import java.util.*;
 public class TransactionState {
 
     public static enum Name {
+        PENDING_CREATION,
         PENDING_TECH_CHECK,
         PENDING_TECH_CHECK_REMEDY,
         PENDING_CONTACT_CONFIRMATION,

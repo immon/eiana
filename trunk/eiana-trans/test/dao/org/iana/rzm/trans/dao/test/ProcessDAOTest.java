@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.dao.test;
 
+import org.iana.criteria.*;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.TransactionData;
@@ -13,8 +15,6 @@ import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.dao.UserDAO;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.iana.dns.validator.InvalidDomainNameException;
-import org.iana.criteria.*;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
@@ -241,7 +241,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             assert processes1.isEmpty();
 
             ProcessCriteria criteria2 = new ProcessCriteria();
-            criteria2.addState(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.toString());
+            criteria2.addState(TransactionState.Name.PENDING_CREATION.toString());
             List<ProcessInstance> processes2 = processDAO.find(criteria2);
 
             assert processes2 != null;
@@ -532,7 +532,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             assert processes1.isEmpty();
 
             Criterion criteria2 = new Equal("state",
-                    TransactionState.Name.PENDING_CONTACT_CONFIRMATION.toString());
+                    TransactionState.Name.PENDING_CREATION.toString());
             List<ProcessInstance> processes2 = processDAO.find(criteria2);
 
             assert processes2 != null;
@@ -763,6 +763,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             List<Criterion> criteria2 = new ArrayList<Criterion>();
             criteria2.add(new Equal("createdBy", "111-creator"));
             criteria2.add(new Equal("modifiedBy", "111-modifier"));
+            criteria2.add(new Equal("currentDomain.name.name", "potestdomain1"));
             List<Criterion> criteria21 = new ArrayList<Criterion>();
             criteria21.add(new Or(criteria2));
             criteria21.add(new Greater("end", date2));
@@ -794,6 +795,20 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             allProcIds.addAll(domain2ProcIds);
             processIds1.addAll(processIds2);
             assert allProcIds.equals(processIds1);
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "findProcessInstancesByCriteriaOffsetLimit")
+    public void findAndCountProcessInstancesByNullCriteria() throws Exception {
+        try {
+            List<ProcessInstance> processes1 = processDAO.find((Criterion) null);
+            assert processes1 != null;
+            assert processes1.size() == 6 : "Unexpected number of processes found: " + processes1.size();
+
+            int count1 = processDAO.count(null);
+            assert count1 == 6 : "Unexpected processes count: " + count1;
         } finally {
             processDAO.close();
         }
