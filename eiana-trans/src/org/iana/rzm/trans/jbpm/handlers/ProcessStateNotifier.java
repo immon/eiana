@@ -1,32 +1,32 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.jbpm.graph.def.ActionHandler;
-import org.jbpm.graph.exe.ExecutionContext;
 import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.SystemRole;
-import org.iana.notifications.Addressee;
+import org.jbpm.graph.exe.ExecutionContext;
 
 import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
- * @author Piotr    Tkaczyk
+ * @author Piotr Tkaczyk
+ * @author: JaKub Laszkiewicz
  */
-public class ProcessStateNotifier implements ActionHandler {
+public class ProcessStateNotifier extends ActionExceptionHandler {
 
     protected TransactionData td;
-    private   NotificationSender   notificationSender;
+    private NotificationSender notificationSender;
     protected NotificationTemplate notificationTemplate;
-    protected String               notification;
-    protected NotificationManager  notificationManagerBean;
+    protected String notification;
+    protected NotificationManager notificationManagerBean;
     protected Long transactionId;
     protected String stateName;
+    protected List<String> emails;
 
-    public void execute(ExecutionContext executionContext) throws Exception {
+    public void doExecute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
         sendNotifications(getNotifications());
     }
@@ -41,7 +41,7 @@ public class ProcessStateNotifier implements ActionHandler {
     }
 
     private void sendNotifications(List<Notification> notifications) throws Exception {
-        for (Notification notification: notifications)
+        for (Notification notification : notifications)
             sendNotification(notification);
     }
 
@@ -49,7 +49,7 @@ public class ProcessStateNotifier implements ActionHandler {
         try {
             if (!notification.getAddressee().isEmpty())
                 notificationSender.send(notification.getAddressee(), notification.getContent());
-        } catch(NotificationException e) {
+        } catch (NotificationException e) {
             notification.incSentFailures();
             notificationManagerBean.create(notification);
         }
@@ -70,7 +70,11 @@ public class ProcessStateNotifier implements ActionHandler {
         users.addAll(new RoleConfirmation(new AdminRole(AdminRole.AdminType.IANA)).getUsersAbleToAccept());
         users.addAll(new RoleConfirmation(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER)).getUsersAbleToAccept());
 
-        TemplateContent templateContent = new TemplateContent(notification, new HashMap<String,String>());
+        if (emails != null && !emails.isEmpty())
+            for (String email : emails)
+                users.add(new EmailAddressee(email, email));
+
+        TemplateContent templateContent = new TemplateContent(notification, new HashMap<String, String>());
         Notification notification = new Notification();
         notification.setContent(templateContent);
         notification.setAddressee(users);
@@ -78,6 +82,6 @@ public class ProcessStateNotifier implements ActionHandler {
             notification.addAddressee(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));
         notifications.add(notification);
 
-        return notifications ;
+        return notifications;
     }
 }

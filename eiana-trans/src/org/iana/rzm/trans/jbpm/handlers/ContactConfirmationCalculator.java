@@ -5,7 +5,6 @@ import org.iana.rzm.trans.confirmation.MandatoryRoleConfirmations;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.exe.Token;
@@ -19,9 +18,9 @@ import org.jbpm.graph.exe.Token;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-public class ContactConfirmationCalculator implements ActionHandler {
+public class ContactConfirmationCalculator extends ActionExceptionHandler {
 
-    public void execute(ExecutionContext executionContext) throws Exception {
+    public void doExecute(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         Token token = executionContext.getProcessInstance().getRootToken();
         Node node = token.getNode();

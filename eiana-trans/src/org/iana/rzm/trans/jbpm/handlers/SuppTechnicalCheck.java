@@ -7,16 +7,15 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.TransactionData;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.graph.node.DecisionHandler;
 
 /**
  * @author: Piotr Tkaczyk
  */
-public class SuppTechnicalCheck implements DecisionHandler {
+public class SuppTechnicalCheck extends DecisionExceptionHandler {
 
     boolean doTest;
 
-    public String decide(ExecutionContext executionContext) throws Exception {
+    public String doDecide(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         if (td != null && doTest) {
             DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");

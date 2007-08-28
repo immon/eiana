@@ -5,7 +5,6 @@ import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.user.AdminRole;
 import org.jbpm.configuration.ConfigurationException;
-import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.exe.Token;
@@ -19,7 +18,7 @@ import java.util.List;
  *
  * @author Jakub Laszkiewicz
  */
-public class RoleConfirmationCalculator implements ActionHandler {
+public class RoleConfirmationCalculator extends ActionExceptionHandler {
     private static final String ROLE_IANA = "IANA";
     private static final String ROLE_DOC = "USDoC";
 
@@ -31,7 +30,7 @@ public class RoleConfirmationCalculator implements ActionHandler {
         throw new IllegalArgumentException("role");
     }
 
-    public void execute(ExecutionContext executionContext) throws Exception {
+    public void doExecute(ExecutionContext executionContext) throws Exception {
         if (roles == null || roles.isEmpty())
             throw new ConfigurationException("no roles specified");
 

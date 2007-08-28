@@ -1,14 +1,13 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.graph.node.DecisionHandler;
 
 /**
  * @author: Piotr Tkaczyk
  */
-public class RedelFlagSetDecision implements DecisionHandler {
+public class RedelFlagSetDecision extends DecisionExceptionHandler {
 
-    public String decide(ExecutionContext executionContext) throws Exception {
+    public String doDecide(ExecutionContext executionContext) throws Exception {
         //todo
         return "no";
     }
