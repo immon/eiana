@@ -23,7 +23,7 @@ public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
 
         for (DNSNameServer ns : nameServers) {
             for (Record record : ns.getAuthoritySection())
-                retHostNames.add(removeLastDot(record.getAdditionalName().toString()));
+                retHostNames.add(removeLastDot(record.getAdditionalName().toString().toLowerCase()));
         }
 
         if (!retHostNames.equals(domain.getNameServerNames())) throw new NameServerCoherencyException(domain);
