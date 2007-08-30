@@ -1,29 +1,19 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Bean;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.form.IFormComponent;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.common.NameServerAttributesEditor;
-import org.iana.rzm.web.common.user.TransactionForDomainFetcher;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.NameServerVOWrapper;
-import org.iana.rzm.web.model.NameServerValue;
-import org.iana.rzm.web.tapestry.JavaScriptDelegator;
-import org.iana.rzm.web.util.WebUtil;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.apache.tapestry.form.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class UserNameServerListEditor extends UserPage implements PageBeginRenderListener,
         NameServerAttributesEditor, IExternalPage {

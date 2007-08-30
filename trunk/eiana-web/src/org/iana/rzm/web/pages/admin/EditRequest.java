@@ -1,124 +1,103 @@
 package org.iana.rzm.web.pages.admin;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.form.IPropertySelectionModel;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.RzmServerException;
-import org.iana.rzm.web.model.TransactionStateVOWrapper;
-import org.iana.rzm.web.model.TransactionVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.apache.tapestry.form.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 public abstract class EditRequest extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
     public static final RequestStateSelectionModel STATES = new RequestStateSelectionModel();
 
-    @Component(id="requestSummary", type = "RequestSummery", bindings = {
-            "domainName=prop:domainName", "request=prop:request"
-    })
-    public abstract IComponent getRequestSummaryComponent();
-
-    @Component(id="rt", type="TextField", bindings = {"value=prop:rt", "displayName=literal:Ticket Number:",
-            "validators=validators:required", "translator=translator:number"})
-    public abstract IComponent getRTFieldComponent();
-
     @Component(id = "editRequest", type = "Form", bindings = {
-                "clientValidationEnabled=literal:true",
-                "success=listener:save",
-                //"cancel=listener:revert",
-                "delegate=prop:validationDelegate"
-                })
+        "clientValidationEnabled=literal:true",
+        "success=listener:save",
+        "delegate=prop:validationDelegate"
+        })
     public abstract IComponent getEditContactComponent();
 
-    @Component(id = "save", type = "LinkSubmit")
-    public abstract IComponent getSubmitComponent();
+    @Component(id = "requestSummary", type = "RequestSummery", bindings = {
+        "domainName=prop:request.domainName", "request=prop:request"
+        })
+    public abstract IComponent getRequestSummaryComponent();
 
-    @Component(id = "cancel", type = "DirectLink", bindings = {"listener=listener:revert",
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
-    public abstract IComponent getCancelComponent();
-
-    @Component(id="states", type="PropertySelection", bindings = {
-            "displayName=literal:State:","model=ognl:@org.iana.rzm.web.pages.admin.EditRequest@STATES", "value=prop:state"
-            })
-    public abstract IComponent getStatesComponent();
+    @Component(id = "rt", type = "TextField", bindings = {
+        "value=prop:request.rtId", "displayName=literal:Ticket Number:",
+        "validators=validators:required", "translator=translator:number,omitZero=false"
+        })
+    public abstract IComponent getRTFieldComponent();
 
     @Component(id = "redeligation", type = "Checkbox", bindings = {
-            "displayName=literal:Redeligation", "value=prop:redeligation"})
+        "displayName=literal:Redeligation", "value=prop:request.redeligation"})
     public abstract IComponent getRoleComponent();
 
     @Component(id = "redeligationLabel", type = "FieldLabel", bindings = {"field=component:redeligation"})
     public abstract IComponent getRoleLabelComponent();
 
-    @Component(id="submitter", type="TextField", bindings = {"value=prop:submitterEmail",
-            "displayName=literal:Request Submitter Email", 
-            "validators=validators:email"})
+    @Component(id = "submitter", type = "TextField", bindings = {"value=prop:request.submitterEmail",
+        "displayName=literal:Request Submitter Email",
+        "validators=validators:email"})
     public abstract IComponent getSubmitterEmailComponent();
+
+    @Component(id = "save", type = "LinkSubmit")
+    public abstract IComponent getSubmitComponent();
+
+    @Component(id = "cancel", type = "DirectLink", bindings = {"listener=listener:revert",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getCancelComponent();
+
+    @Component(id = "states", type = "PropertySelection", bindings = {
+        "displayName=literal:State:", "model=ognl:@org.iana.rzm.web.pages.admin.EditRequest@STATES", "value=prop:request.state"
+        })
+    public abstract IComponent getStatesComponent();
+
 
     @InjectPage("admin/AdminHome")
     public abstract AdminHome getHomePage();
 
+    @InjectPage("admin/RequestInformation")
+    public abstract RequestInformation getRequestInformation();
 
     @Persist("client:page")
     public abstract void setRequest(TransactionVOWrapper request);
+
     public abstract TransactionVOWrapper getRequest();
 
     @Persist("client:page")
     public abstract void setRequestId(long id);
+
     public abstract long getRequestId();
-
-    public abstract void setDomainName(String domainName);
-
-    public abstract void setRt(long rtId);
-    public abstract long getRt();
-
-    public abstract void setState(TransactionStateVOWrapper.State state);
-    public abstract TransactionStateVOWrapper.State getState();
-
-    public abstract void setRedeligation(boolean value);
-    public abstract boolean isRedeligation();
-
-    public abstract String getSubmitterEmail();
-    public abstract void setSubmitterEmail(String email);
 
     protected Object[] getExternalParameters() {
         return new Object[]{getRequestId()};
     }
 
-    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
-        if(parameters.length == 0){
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
+        if (parameters.length == 0) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
         }
 
-        setRequestId((Long)parameters[0]);
+        setRequestId((Long) parameters[0]);
     }
 
-    public void pageBeginRender(PageEvent event){
+    public void pageBeginRender(PageEvent event) {
         try {
-            if(!event.getRequestCycle().isRewinding()){
+            if (!event.getRequestCycle().isRewinding()) {
                 TransactionVOWrapper request = getAdminServices().getTransaction(getRequestId());
                 setRequest(request);
-                setRt(request.getRtId());
-                setState(request.getState());
-                setDomainName(request.getDomainName());
-                setSubmitterEmail(request.getSubmitterEmail());
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
     }
 
-    public void save(){
+    public void save() {
         TransactionVOWrapper transaction = getRequest();
-        transaction.setRt(getRt());
-        transaction.setState(getState());
-        transaction.setRedeligation(isRedeligation());
         try {
             getAdminServices().updateTransaction(transaction);
             getRequestCycle().activate(getHomePage());
@@ -127,10 +106,16 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
         }
     }
 
-    private static class RequestStateSelectionModel implements IPropertySelectionModel, Serializable{
+    public void revert() {
+        RequestInformation requestInformation = getRequestInformation();
+        requestInformation.setRequestId(getRequestId());
+        getRequestCycle().activate(requestInformation);
+    }
+
+    private static class RequestStateSelectionModel implements IPropertySelectionModel, Serializable {
         private TransactionStateVOWrapper.State[] states;
 
-        public RequestStateSelectionModel(){
+        public RequestStateSelectionModel() {
             states = TransactionStateVOWrapper.State.values();
         }
 

@@ -1,10 +1,9 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.ComponentClass;
-import org.apache.tapestry.annotations.Parameter;
-import org.iana.rzm.web.model.TransactionVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
 
 @ComponentClass(allowBody = true)
 public abstract class ListRequests extends ListRecords {
@@ -28,17 +27,31 @@ public abstract class ListRequests extends ListRecords {
     public abstract IComponent getModifiedComponent();
 
     @Component(id="viewRequest", type="DirectLink",bindings = {
-        "listener=prop:listener","parameters=prop:record.id", 
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"
-            })
-    public abstract IComponent getListenerComponent();
+           "listener=prop:listener","parameters=prop:record.id",
+               "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"
+               })
+       public abstract IComponent getListenerComponent();
+    
+
+    @Component(id="domainLink", type="DirectLink", bindings = {
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+        "listener=listener:goToDomain", "parameters=prop:record.domainName"
+        })
+    public abstract IComponent getDomainLinkComponent();
 
     @Parameter(required = false, defaultValue = "literal:View Details")
     public abstract String getActionTitle();
 
+    @Parameter(required = true)
+    public abstract LinkTraget getLinkTragetPage();
 
     public TransactionVOWrapper getRecord(){
         return (TransactionVOWrapper) getCurrentRecord();
     }
 
+    public void goToDomain(String domainName){
+        LinkTraget target = getLinkTragetPage();
+        target.setIdentifier(domainName);
+        getPage().getRequestCycle().activate(target);
+    }
 }

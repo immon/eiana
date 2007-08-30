@@ -1,17 +1,10 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.AbstractComponent;
-import org.apache.tapestry.IMarkupWriter;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.Tapestry;
-import org.apache.tapestry.annotations.ComponentClass;
-import org.apache.tapestry.annotations.Parameter;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.model.EntityQuery;
-import org.iana.rzm.web.model.PaginatedEntity;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.*;
 
 @ComponentClass(allowInformalParameters = true, allowBody = true)
 public abstract class Browser extends AbstractComponent implements PageBeginRenderListener {
@@ -117,6 +110,10 @@ public abstract class Browser extends AbstractComponent implements PageBeginRend
 
         final int low = (currentPage - 1) * pageSize;
         final int high = Math.min(currentPage * pageSize, resultCount) - 1;
+
+        if(high < 0){
+            setPageResults(new PaginatedEntity[0]);
+        }
 
         if (low > high)
             return;

@@ -260,7 +260,6 @@
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="xerces" level="project" />
-    <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -270,6 +269,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="common-dns" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -555,6 +555,10 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
+    <containerElement type="library" name="dnscheck" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" name="dnsjava" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
@@ -571,8 +575,16 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
+    <containerElement type="library" name="fastinfoset" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" name="hibernate" level="project">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="jaxrpc" level="project">
+      <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="jbpm" level="project">
@@ -601,6 +613,10 @@
     </containerElement>
     <containerElement type="library" name="nask-commons" level="project">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="saaj" level="project">
+      <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="spring" level="project">

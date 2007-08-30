@@ -26,7 +26,7 @@
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:countries">Country:</span></td>
-                    <td align="right" valign="top"><span jwcid="countries" type="text" name="country" class="field"/>
+                    <td align="right" valign="top"><span jwcid="countries" type="text" name="country" class="field"/></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:email">Email:</span></td>
@@ -68,6 +68,7 @@
                     <td valign="top" class="label green"><label jwcid="roleLabel">Role</label></td>
                     <td align="left" valign="top"><span jwcid="role"/></td>
                 </tr>
+                <span jwcid=@If condition="prop:displayFormButtons">
                 <tr>
                     <td>&nbsp;</td>
                     <td>
@@ -85,6 +86,7 @@
                         </div>
                     </td>
                 </tr>
+                </span>      
             </table>
         </form>
     </body>

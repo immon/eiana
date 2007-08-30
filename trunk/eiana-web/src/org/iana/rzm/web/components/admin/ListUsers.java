@@ -1,12 +1,9 @@
 package org.iana.rzm.web.components.admin;
 
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Asset;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.ComponentClass;
-import org.iana.rzm.web.components.ListRecords;
-import org.iana.rzm.web.model.UserVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.model.*;
 
 @ComponentClass(allowBody = true)
 public abstract class ListUsers extends ListRecords {
@@ -25,12 +22,16 @@ public abstract class ListUsers extends ListRecords {
     public abstract IComponent getModifiedComponent();
 
     @Component(id="viewUser", type="DirectLink",bindings = {
-        "listener=prop:listener","parameters=prop:record.id",
+        "listener=prop:listener","parameters=prop:listenerParameters",
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getListenerComponent();
 
     public UserVOWrapper getRecord() {
         return (UserVOWrapper) getCurrentRecord();
+    }
+
+    public Object[] getListenerParameters(){
+        return new Object[]{getRecord().getId(), getRecord().isAdmin()};
     }
     
 }

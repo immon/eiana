@@ -1,22 +1,16 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IPage;
-import org.apache.tapestry.IRequestCycle;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.model.*;
-import org.iana.rzm.web.util.CounterBean;
+import org.iana.rzm.web.util.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public abstract class ReviewDomainChanges extends UserPage implements PageBeginRenderListener, IExternalPage {
 
@@ -152,10 +146,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
                 setNameServerChange(transactionActions.isNameServerChange());
                 setSeparateRequest(transactionActions.offerSeparateRequest());
                 setMustSplitRequest(transactionActions.mustSplitrequest());
-                if(isNameServerChange()){
-                    setWarningMessage("Currently Name Server Changes are not supported. Please start over and do Contact " +
-                            "changes only");
-                }
+                //if(isNameServerChange()){
+                //    setWarningMessage("Currently Name Server Changes are not supported. Please start over and do Contact " +
+                //            "changes only");
+                //}
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);

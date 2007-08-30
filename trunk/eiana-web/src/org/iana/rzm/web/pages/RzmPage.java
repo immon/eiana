@@ -1,18 +1,14 @@
 package org.iana.rzm.web.pages;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.tapestry.annotations.Bean;
-import org.apache.tapestry.annotations.InitialValue;
-import org.apache.tapestry.annotations.InjectState;
-import org.apache.tapestry.annotations.InjectStateFlag;
-import org.apache.tapestry.form.IFormComponent;
-import org.apache.tapestry.html.BasePage;
-import org.apache.tapestry.valid.IValidationDelegate;
-import org.iana.rzm.web.Visit;
-import org.iana.rzm.web.tapestry.IanaValidationDelegate;
-import org.iana.rzm.web.util.MessageUtil;
+import org.apache.commons.lang.*;
+import org.apache.log4j.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.form.*;
+import org.apache.tapestry.html.*;
+import org.apache.tapestry.valid.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.tapestry.*;
+import org.iana.rzm.web.util.*;
 
 public abstract class RzmPage extends BasePage implements MessageProperty {
 
@@ -65,6 +61,6 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
     }
 
 
-
+    
 }
 

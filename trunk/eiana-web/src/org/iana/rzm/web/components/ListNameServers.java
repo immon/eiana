@@ -1,16 +1,12 @@
-package org.iana.rzm.web.components.user;
+package org.iana.rzm.web.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IActionListener;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.iana.rzm.web.Visit;
-import org.iana.rzm.web.model.NameServerValue;
-import org.iana.rzm.web.util.DateUtil;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @ComponentClass(allowBody = true)
 public abstract class ListNameServers extends BaseComponent {
@@ -42,7 +38,7 @@ public abstract class ListNameServers extends BaseComponent {
     @Component(id = "lastUpdated", type = "Insert", bindings = {"value=prop:lastUpdated"})
     public abstract IComponent getlastUpdatedComponent();
 
-    @Asset(value = "WEB-INF/user/ListNameServers.html")
+    @Asset(value = "WEB-INF/ListNameServers.html")
     public abstract IAsset get$template();
 
     @Parameter(required = true)

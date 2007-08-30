@@ -1,9 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.web.util.DateUtil;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
@@ -74,6 +72,10 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         vo.setSecurID(value);
     }
 
+    public boolean isAdmin(){
+        return vo.isAdmin();
+    }
+
     public void setPassword(String pass){
         vo.setPassword(pass);
     }
@@ -124,6 +126,17 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         return isInRole(SystemRoleVOWrapper.SystemType.TC);
     }
 
+    public List<AdminRoleVOWrapper> getAdminRoles() {
+        Set<RoleVO> roleVOs = vo.getRoles();
+        List<AdminRoleVOWrapper> roles = new ArrayList<AdminRoleVOWrapper>();
+        for (RoleVO roleVO : roleVOs) {
+            if (roleVO.isAdmin()) {
+                roles.add(new AdminRoleVOWrapper((AdminRoleVO) roleVO));
+            }
+        }
+        return roles;
+    }
+
     public List<SystemRoleVOWrapper> getSystemRoles() {
         Set<RoleVO> roleVOs = vo.getRoles();
         List<SystemRoleVOWrapper> roles = new ArrayList<SystemRoleVOWrapper>();
@@ -163,18 +176,18 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
     }
 
 
-    public void addRole(SystemRoleVOWrapper role) {
+    public void addRole(RoleVOWrapper role) {
         vo.addRole(role.getVo());
     }
 
-    public void setRoles(List<SystemRoleVOWrapper> roles) {
+    public void setRoles(List<RoleVOWrapper> roles) {
         vo.setRoles(new HashSet<RoleVO>());
-        for (SystemRoleVOWrapper role : roles) {
+        for (RoleVOWrapper role : roles) {
             vo.addRole(role.getVo());
         }
     }
 
-    private boolean isInRole(SystemRoleVOWrapper.SystemType type) {
+    private boolean isInRole(RoleVOWrapper.Type type) {
         List<SystemRoleVOWrapper> list = getSystemRoles();
         for (SystemRoleVOWrapper role : list) {
             if (role.getType().equals(type)) {

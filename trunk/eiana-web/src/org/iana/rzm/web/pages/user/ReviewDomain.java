@@ -1,28 +1,20 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.common.user.TransactionForDomainFetcher;
-import org.iana.rzm.web.model.ContactVOWrapper;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.NameServerVOWrapper;
-import org.iana.rzm.web.model.NameServerValue;
-import org.iana.rzm.web.util.ListUtil;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
-public abstract class ReviewDomain extends UserPage implements PageBeginRenderListener, IExternalPage {
+public abstract class ReviewDomain extends UserPage implements PageBeginRenderListener, IExternalPage, LinkTraget {
 
     public static final String PAGE_NAME = "user/ReviewDomain";
     private static final Logger LOGGER_SERVICE = Logger.getLogger(ReviewDomain.class.getName());
@@ -33,7 +25,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "contactAttributes=prop:domain.supportingOrganization.map",
             "domainId=prop:domain.id",
             "listener=listener:editContact",
-            "editible=prop:editible"
+            "editible=prop:editible",
+            "rzmServices=prop:rzmServices",
+            "errorPage=prop:errorPage"
             })
     public abstract IComponent getSOContactComponent();
 
@@ -42,7 +36,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "contacts=prop:domain.adminContacts",
             "domainId=prop:domain.id",
             "action=listener:editContact",
-            "editible=prop:editible"
+            "editible=prop:editible",
+            "rzmServices=prop:rzmServices",
+            "errorPage=prop:errorPage"
             })
     public abstract IComponent getAdminContactsComponent();
 
@@ -51,7 +47,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "contacts=prop:domain.technicalContacts",
             "domainId=prop:domain.id",
             "action=listener:editContact",
-            "editible=prop:editible"
+            "editible=prop:editible",
+            "rzmServices=prop:rzmServices",
+            "errorPage=prop:errorPage"
             })
     public abstract IComponent getTechContactsComponent();
 
@@ -62,6 +60,16 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "editible=prop:editible"
             })
     public abstract IComponent getListNameServerComponent();
+
+    @Component(id = "subDomain", type = "SubDomain", bindings = {
+            "registryUrl=prop:domain.registryUrl",
+            "originalRegistryUrl=prop:originalDomain.registryUrl",
+            "whoisServer=prop:domain.whoisServer",
+            "originalWhoisServer=prop:originalDomain.whoisServer",
+            "listener=listener:editSubDomain",
+            "editible=prop:editible"
+            })
+    public abstract IComponent getSubDomainComponent();
 
     @Component(id = "isModified", type = "If", bindings = {
             "condition=prop:modified"
@@ -118,6 +126,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     @InjectPage("user/UserNameServerListEditor")
     public abstract UserNameServerListEditor getEditNameServerList();
 
+    @InjectPage("user/UserSubDomainEditor")
+    public abstract UserSubDomainEditor getUserSubDomainEditor();
+
     @Persist("client:page")
     public abstract void setDomainId(long domainId);
     public abstract long getDomainId();
@@ -139,10 +150,24 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
         }
     }
 
+    public void setIdentifier(Object id){
+        try {
+            SystemDomainVOWrapper domain = getUserServices().getDomain(id.toString());
+            setDomainId(domain.getId());
+            setOriginalDomain(domain);
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        }
+    }
+
     public void pageBeginRender(PageEvent event) {
 
         try {
-            DomainVOWrapper domain = getUserServices().getDomain(getDomainId());
+
+             DomainVOWrapper domain = getOriginalDomain();
+            if(domain == null){
+                domain = getUserServices().getDomain(getDomainId());
+            }
             getVisitState().markAsVisited(domain);
             setOriginalDomain(domain);
             setModifiedDomain(getVisitState().getMmodifiedDomain());
@@ -208,32 +233,23 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
         return editNameServerList;
     }
 
+    public UserSubDomainEditor editSubDomain(){
+        UserSubDomainEditor editor = getUserSubDomainEditor();
+        editor.setDomainId(getDomainId());
+        editor.setOriginalDomain(getOriginalDomain());
+        editor.setWhoisServer(getVisitState().getCurrentDomain(getDomainId()).getWhoisServer());
+        editor.setRegistryUrl(getVisitState().getCurrentDomain(getDomainId()).getRegistryUrl());
+        
+        return editor;
+    }
+
 
     public List<NameServerValue> getNameServers() {
-
         try {
             DomainVOWrapper domain = getUserServices().getDomain(getDomainId());
             List<NameServerVOWrapper> originals = domain.getNameServers();
             List<NameServerVOWrapper> current = new ArrayList<NameServerVOWrapper>(getDomain().getNameServers());
-            List<NameServerValue> all = new ArrayList<NameServerValue>();
-
-            for (NameServerVOWrapper wrapper : originals) {
-                NameServerVOWrapper currentVO = findNameServer(wrapper.getId(), current);
-                NameServerValue nameServerValue = new NameServerValue(currentVO == null ? wrapper : currentVO);
-                if (currentVO == null) {
-                    nameServerValue.setStatus(NameServerValue.DELETE);
-                } else {
-                    String status = currentVO.equals(wrapper) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
-                    nameServerValue.setStatus(status);
-                    current.remove(currentVO);
-                }
-                all.add(nameServerValue);
-            }
-            current.removeAll(originals);
-            for (NameServerVOWrapper wrapper : current) {
-                all.add(new NameServerValue(wrapper).setStatus(NameServerValue.NEW));
-            }
-            return all;
+            return WebUtil.buildNameServerList(originals, current);
         }catch (NoObjectFoundException e) {
             LOGGER_SERVICE.warn("NoObjectFoundException " + getDomainId());
             return new ArrayList<NameServerValue>();
@@ -259,16 +275,6 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
 
     public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
-    }
-
-
-    private NameServerVOWrapper findNameServer(final long id, List<NameServerVOWrapper> list) {
-        return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
-            public boolean evaluate(NameServerVOWrapper object) {
-                return object.getId() == id;
-            }
-        });
-
     }
 
 }

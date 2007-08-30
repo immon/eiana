@@ -4,8 +4,9 @@
         <title>Root Zone Management</title>
     </head>
     <span jwcid="$content$">
-        <body jwcid="border@AdminBorder" selected="literal:DOMAINS">
+        <body jwcid="border@AdminBorder" selected="literal:DOMAINS" finderListener="prop:finderListener" finderValidator="prop:finderValidator">
             <span jwcid="@ShowError"/>
+            <span jwcid="@ShowValidationError"/>
             <span jwcid="@ShowMessages"/>
             <div style="padding: 5px 0 80px 10px;">
                 <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
@@ -18,7 +19,6 @@
                     <td width="49%"><h5>Domains</h5></td>
                 </tr>
             </table>
-
             <span jwcid="listDomains">
                 <div class="mainBox" style="margin-bottom: 40px;">
                     <div class="containerBoxHeader">

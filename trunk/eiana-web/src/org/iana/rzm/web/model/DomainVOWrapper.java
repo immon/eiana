@@ -1,13 +1,30 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.HostVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.web.util.DateUtil;
-import org.iana.rzm.web.util.ListUtil;
+import org.iana.rzm.common.*;
+import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
 public abstract class DomainVOWrapper extends ValueObject implements PaginatedEntity {
+
+    public enum Type{
+        COUNTRY_CODE("country-code"),
+        SPONSORED("sponsored"),
+        INFRASTRUCTURE("infrastructure"),
+        GENERIC("generic"),
+        GENERIC_RESTRICTED("generic-restricted");
+
+        private String displayName;
+
+        Type(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName(){
+            return displayName;
+        }
+    }
 
     private enum Status {
         NEW("New"), ACTIVE("Active"), CLOSE("Close");
@@ -58,6 +75,42 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
         return "." + vo.getName();   
     }
 
+    public String getDescription(){
+        return "NASK NEED TO ADD This";
+    }
+
+    public void setDescription(String description){
+
+    }
+
+    public String getSpecialInstructions(){
+        return vo.getSpecialInstructions();
+    }
+
+    public void setSpecialInstructions(String specialInstructions){
+        vo.setSpecialInstructions(specialInstructions);
+    }
+
+    public String getRegistryUrl(){
+        return vo.getRegistryUrl();
+    }
+
+    public void setRegistryUrl(String url){
+        vo.setRegistryUrl(url);
+    }
+
+    public String getWhoisServer(){
+        Name server = vo.getWhoisServer();
+        if(server == null){
+            return null;
+        }
+        return server.getName();
+    }
+
+    public void setWhoisServer(String server){
+        vo.setWhoisServer(new Name(server));
+    }
+  
     public String getModified() {
         Date d = vo.getModified();
         return d == null ?
@@ -70,13 +123,19 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     }
 
     public List<ContactVOWrapper> getAdminContacts() {
-        ContactVOWrapper wrapper = new ContactVOWrapper(vo.getAdminContact(), SystemRoleVOWrapper.SystemType.AC);
-        return Arrays.asList(wrapper);
+        return Arrays.asList(getAdminContact());
+    }
+    
+    public ContactVOWrapper getAdminContact(){
+        return new ContactVOWrapper(vo.getAdminContact(), SystemRoleVOWrapper.SystemType.AC);
     }
 
     public List<ContactVOWrapper> getTechnicalContacts() {
-        ContactVOWrapper wrapper = new ContactVOWrapper(vo.getTechContact(), SystemRoleVOWrapper.SystemType.TC);
-        return Arrays.asList(wrapper);
+        return Arrays.asList(getTechnicalContact());
+    }
+
+    public ContactVOWrapper getTechnicalContact(){
+        return new ContactVOWrapper(vo.getTechContact(), SystemRoleVOWrapper.SystemType.TC);
     }
 
     public List<NameServerVOWrapper> getNameServers() {
@@ -117,6 +176,27 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     public ContactVOWrapper getContact(long contactId, String type) {
         return findContactByTypeAndId(contactId, type);
     }
+
+    public boolean isNew(){
+        return Status.form(vo.getStatus()).equals(Status.NEW);
+    }
+
+    public Type[]getTypes(){
+        return Type.values();
+    }
+
+    public Type getType(){
+        return Type.COUNTRY_CODE;
+    }
+
+    public void setType(Type type){
+
+    }
+
+    public String getTypeAsString(){
+        return Type.COUNTRY_CODE.getDisplayName();
+    }
+
 
     private ContactVOWrapper findContactByTypeAndId(final Long id, String type) {
         final SystemRoleVOWrapper.SystemType contactType = SystemRoleVOWrapper.SystemType.fromString(type);

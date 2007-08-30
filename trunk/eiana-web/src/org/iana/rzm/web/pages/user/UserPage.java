@@ -1,18 +1,21 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.tapestry.annotations.InjectObject;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.TransactionActionsVOWrapper;
-import org.iana.rzm.web.pages.Protected;
-import org.iana.rzm.web.services.RzmServices;
-import org.iana.rzm.web.services.user.UserServices;
+import org.apache.tapestry.annotations.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.pages.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.services.user.*;
 
 public abstract class UserPage extends Protected {
 
     @InjectObject("service:rzm.UserServices")
     public abstract UserServices getUserServices();
+
+
+    @InjectPage("user/GeneralError")
+    public abstract GeneralError getErrorPage();
 
     public RzmServices getRzmServices() {
         return getUserServices();

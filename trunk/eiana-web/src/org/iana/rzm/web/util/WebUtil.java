@@ -1,13 +1,9 @@
 package org.iana.rzm.web.util;
 
-import org.iana.rzm.web.model.IPAddressVOWrapper;
-import org.iana.rzm.web.model.NameServerVOWrapper;
-import org.iana.rzm.web.model.NameServerValue;
+import org.iana.rzm.web.model.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import javax.servlet.http.*;
+import java.util.*;
 
 
 public class WebUtil {
@@ -59,6 +55,32 @@ public class WebUtil {
         return result;
     }
 
+    public static List<NameServerValue> buildNameServerList(List<NameServerVOWrapper> originals, List<NameServerVOWrapper> current) {
+        List<NameServerValue> all = new ArrayList<NameServerValue>();
+
+        if(originals == null || originals.size() == 0){
+            return all;
+        }
+        
+        for (NameServerVOWrapper wrapper : originals) {
+            NameServerVOWrapper currentVO = findNameServer(wrapper.getId(), current);
+            NameServerValue nameServerValue = new NameServerValue(currentVO == null ? wrapper : currentVO);
+            if (currentVO == null) {
+                nameServerValue.setStatus(NameServerValue.DELETE);
+            } else {
+                String status = currentVO.equals(wrapper) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
+                nameServerValue.setStatus(status);
+                current.remove(currentVO);
+            }
+            all.add(nameServerValue);
+        }
+        current.removeAll(originals);
+        for (NameServerVOWrapper wrapper : current) {
+            all.add(new NameServerValue(wrapper).setStatus(NameServerValue.NEW));
+        }
+        return all;
+    }
+
     public static String getBrowserName(HttpServletRequest request) {
 
         String useragent = request.getHeader("User-Agent");
@@ -88,6 +110,15 @@ public class WebUtil {
     public static boolean isIEBrowser(HttpServletRequest request) {
         String broeser = getBrowserName(request);
         return broeser.equals(IE);
+    }
+
+    private static NameServerVOWrapper findNameServer(final long id, List<NameServerVOWrapper> list) {
+        return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
+            public boolean evaluate(NameServerVOWrapper object) {
+                return object.getId() == id;
+            }
+        });
+
     }
 
 

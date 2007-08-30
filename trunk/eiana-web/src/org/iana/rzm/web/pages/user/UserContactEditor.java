@@ -1,22 +1,13 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.common.AttributesEditor;
-import org.iana.rzm.web.common.ContactAttributesEditor;
-import org.iana.rzm.web.common.user.TransactionForDomainFetcher;
-import org.iana.rzm.web.model.ContactVOWrapper;
-import org.iana.rzm.web.model.DomainVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.model.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class UserContactEditor extends UserPage implements PageBeginRenderListener, ContactAttributesEditor,
         IExternalPage {
@@ -31,7 +22,9 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
                     "originalAttributes=prop:originalContact.map",
                     "contactAttributes=prop:originalContact.map",
                     "listener=literal:revert",
-                    "editible=literal:false"
+                    "editible=literal:false" ,
+                    "rzmServices=prop:rzmServices",
+                    "errorPage=prop:errorPage"
                     }
     )
     public abstract IComponent getCurrentDetailsComponent();

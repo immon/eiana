@@ -1,11 +1,8 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IActionListener;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.Parameter;
-import org.iana.rzm.web.model.TransactionVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.iana.rzm.web.model.*;
 
 public abstract class RequestSummery extends BaseComponent {
 
@@ -48,7 +45,8 @@ public abstract class RequestSummery extends BaseComponent {
     public abstract IActionListener getListener();
 
     public boolean isDisabled(){
-        return getListener() == null;
+        IActionListener actionListener= getListener();
+        return actionListener == null;
     }
 
     public boolean isShowEditLink(){

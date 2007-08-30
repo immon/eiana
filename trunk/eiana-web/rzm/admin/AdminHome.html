@@ -5,9 +5,12 @@
         <link rel="stylesheet" type="text/css" media="screen" href="../css/master.css" />
     </head>
     <span jwcid="$content$">
-        <body jwcid="border@AdminBorder">
-        	<div style="padding: 5px 0 80px 10px;">
-                <span jwcid="activeRequest">    
+        <body jwcid="border@AdminBorder" finderListener="prop:finderListener" finderValidator="prop:finderValidator">
+            <span jwcid="@ShowError"/> 
+            <span jwcid="@ShowValidationError"/>
+            <span jwcid="@ShowMessages"/> 
+            <div style="padding: 5px 0 80px 10px;">
+                <span jwcid="activeRequest">
                     <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
                         <b class="leftBlack"></b>
                         <b class="right"><a href="#" class="buttonBlack">Show Active Only </a></b>
