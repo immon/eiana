@@ -1,24 +1,17 @@
 package org.iana.rzm.web.pages;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.engine.ExternalServiceParameter;
-import org.apache.tapestry.engine.IEngineService;
-import org.apache.tapestry.engine.ILink;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.form.IFormComponent;
-import org.apache.tapestry.services.CookieSource;
-import org.apache.tapestry.valid.IValidationDelegate;
-import org.iana.rzm.facade.auth.Authentication;
-import org.iana.rzm.facade.auth.AuthenticationException;
-import org.iana.rzm.facade.auth.AuthenticationRequiredException;
-import org.iana.rzm.web.Visit;
-import org.iana.rzm.web.model.WebUser;
-import org.iana.rzm.web.services.LoginController;
-import org.iana.rzm.web.services.RzmAuthenticationService;
-import org.iana.rzm.web.tapestry.RzmCallback;
+import org.apache.tapestry.engine.*;
+import org.apache.tapestry.event.*;
+import org.apache.tapestry.form.*;
+import org.apache.tapestry.services.*;
+import org.apache.tapestry.valid.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.tapestry.*;
 
 public abstract class Login extends RzmPage implements PageBeginRenderListener  {
     /*
@@ -109,7 +102,7 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
         }
 
         setErrorMessage(getSessionTimeOutMessage());
-        setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. Currently NameServer changes are not supported");
+        setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. ");
         setSessionTimeOutMessage(null);
     }
 

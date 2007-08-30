@@ -1,24 +1,28 @@
 package org.iana.rzm.web.services;
 
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.TransactionVOWrapper;
+import org.iana.criteria.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.*;
 
-import java.util.List;
+import java.util.*;
 
 public interface RzmServices {
 
     public void changePassword(long userId, String newPassword);
 
-    public List<TransactionVOWrapper> getOpenTransaction() throws NoObjectFoundException;
-
     public TransactionVOWrapper getTransaction(long id) throws NoObjectFoundException;
 
-    public DomainVOWrapper getDomain(long domainId) throws NoObjectFoundException;
+    public SystemDomainVOWrapper getDomain(long domainId) throws NoObjectFoundException;
+
+    public SystemDomainVOWrapper getDomain(String domainName) throws NoObjectFoundException;
 
     public String getCountryName(String domainCode);
 
-    public int getTotalTransactionCount();
+    public int getTransactionCount(Criterion criterion);
 
-    public List<TransactionVOWrapper> getTransactions();
+    public List<TransactionVOWrapper>getTransactions(Criterion criterion, int offset, int length);
+
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException, AccessDeniedException;
+
 }

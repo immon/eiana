@@ -97,6 +97,7 @@ h5 {
 .errorMessageBox { border: 1px solid #FF0000; }
 .errorMessage { color: #FF0000; }
 .errorMessageField { width: 350px; color: White; background-color: Red; font-weight: Bold;}
+.bordererrorMessageField { width: 200px; color: White; background-color: Red; font-weight: Bold;}
 .infoMessageBox { border: 1px solid #009900; }
 .infoMessage { color: #009900; }
 .warningMessageBox { border: 1px solid #FFCC00; }

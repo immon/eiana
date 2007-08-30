@@ -1,87 +1,80 @@
-package org.iana.rzm.web.components.user;
+package org.iana.rzm.web.components;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.Visit;
-import org.iana.rzm.web.model.ContactVOWrapper;
-import org.iana.rzm.web.model.RoleVOWrapper;
-import org.iana.rzm.web.model.SystemDomainVOWrapper;
-import org.iana.rzm.web.model.SystemRoleVOWrapper;
-import org.iana.rzm.web.pages.user.UserGeneralError;
-import org.iana.rzm.web.services.AccessDeniedHandler;
-import org.iana.rzm.web.services.ObjectNotFoundHandler;
-import org.iana.rzm.web.services.user.UserServices;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.pages.*;
+import org.iana.rzm.web.services.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@ComponentClass
 public abstract class Contact extends BaseComponent {
 
     @Component(id = "type", type = "Insert", bindings = {"value=prop:type"})
     public abstract IComponent getTypeComponent();
 
     @Component(id = "contactName", type = "RzmInsert", bindings = {
-            "value=prop:name", "raw=literal:true", "originalValue=prop:originalName", "modifiedStyle=literal:edited"}
+        "value=prop:name", "raw=literal:true", "originalValue=prop:originalName", "modifiedStyle=literal:edited"}
     )
     public abstract IComponent getContactNameComponent();
 
     @Component(id = "jobTitle", type = "RzmInsert", bindings = {
-            "value=prop:jobTitle", "originalValue=prop:originalJobTitle", "modifiedStyle=literal:edited"}
+        "value=prop:jobTitle", "originalValue=prop:originalJobTitle", "modifiedStyle=literal:edited"}
     )
     public abstract IComponent getJobTitleComponent();
 
     @Component(id = "org", type = "RzmInsert", bindings = {
-            "value=prop:organization","raw=literal:true", "originalValue=prop:originalOrg", "modifiedStyle=literal:edited"}
+        "value=prop:organization", "raw=literal:true", "originalValue=prop:originalOrg", "modifiedStyle=literal:edited"}
     )
     public abstract IComponent getContactOrganizationComponent();
 
     @Component(id = "address", type = "InsertText", bindings = {
-            "value=prop:address", "raw=literal:true", "mode=@org.apache.tapestry.html.InsertTextMode@PARAGRAPH"})
+        "value=prop:address", "raw=literal:true", "mode=@org.apache.tapestry.html.InsertTextMode@PARAGRAPH"})
     public abstract IComponent getAddressComponent();
 
     @Component(id = "email", type = "RzmInsert", bindings = {
-            "value=prop:email", "originalValue=prop:originalEmail", "modifiedStyle=literal:edited"})
+        "value=prop:email", "originalValue=prop:originalEmail", "modifiedStyle=literal:edited"})
     public abstract IComponent getEmailComponent();
 
     @Component(id = "privateEmail", type = "RzmInsert", bindings = {
-            "value=prop:privateEmail", "originalValue=prop:originalPrivateEmail", "modifiedStyle=literal:edited"})
+        "value=prop:privateEmail", "originalValue=prop:originalPrivateEmail", "modifiedStyle=literal:edited"})
     public abstract IComponent getPrivateEmailComponent();
 
     @Component(id = "phone", type = "RzmInsert", bindings = {
-            "value=prop:phone", "originalValue=prop:originalPhone", "modifiedStyle=literal:edited"})
+        "value=prop:phone", "originalValue=prop:originalPhone", "modifiedStyle=literal:edited"})
     public abstract IComponent getPhoneComponent();
 
     @Component(id = "altPhone", type = "RzmInsert", bindings = {
-            "value=prop:altPhone", "originalValue=prop:altOriginalPhone", "modifiedStyle=literal:edited"})
+        "value=prop:altPhone", "originalValue=prop:altOriginalPhone", "modifiedStyle=literal:edited"})
     public abstract IComponent getAltPhoneComponent();
 
     @Component(id = "phoneSefix", type = "Insert", bindings = {
-            "value=prop:phoneSefix", "raw=literal:true"})
+        "value=prop:phoneSefix", "raw=literal:true"})
     public abstract IComponent getPhoneSefixComponent();
 
     @Component(id = "fax", type = "RzmInsert", bindings = {
-            "value=prop:fax", "originalValue=prop:originalFax", "modifiedStyle=literal:edited"})
+        "value=prop:fax", "originalValue=prop:originalFax", "modifiedStyle=literal:edited"})
     public abstract IComponent getFaxComponent();
 
     @Component(id = "altFax", type = "RzmInsert", bindings = {
-            "value=prop:altFax", "originalValue=prop:altOriginalFax", "modifiedStyle=literal:edited"})
+        "value=prop:altFax", "originalValue=prop:altOriginalFax", "modifiedStyle=literal:edited"})
     public abstract IComponent getAltFaxComponent();
 
     @Component(id = "faxSefix", type = "Insert", bindings = {
-            "value=prop:faxSefix", "raw=literal:true"})
+        "value=prop:faxSefix", "raw=literal:true"})
     public abstract IComponent getFaxSefixComponent();
 
     @Component(id = "lastUpdated", type = "Insert", bindings = {"value=prop:lastUpdated"})
     public abstract IComponent getLastUpdatedComponent();
 
     @Component(id = "edit", type = "DirectLink", bindings = {
-            "listener=prop:listener", "parameters=prop:editParameters",
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+        "listener=prop:listener", "parameters=prop:editParameters",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getEditLinkComponent();
 
     @Component(id = "editible", type = "If", bindings = {"condition=prop:editible"})
@@ -90,7 +83,9 @@ public abstract class Contact extends BaseComponent {
     @Component(id = "userRole", type = "Insert", bindings = {"value=prop:userRole", "raw=literal:true"})
     public abstract IComponent getUserRoleComponent();
 
-    @Component(id = "privateEmailSpan", type = "Any", bindings = {"element=literal:span", "class=prop:privateEmailStyle"})
+    @Component(id = "privateEmailSpan",
+               type = "Any",
+               bindings = {"element=literal:span", "class=prop:privateEmailStyle"})
     public abstract IComponent getPrivateEmailSpanComponent();
 
     @Component(id = "altPhoneSpan", type = "Any", bindings = {"element=literal:span", "class=prop:alternatePhoneSpan"})
@@ -102,13 +97,14 @@ public abstract class Contact extends BaseComponent {
     @Component(id = "jobTitleSpan", type = "Any", bindings = {"element=literal:span", "class=prop:jobTitleSpan"})
     public abstract IComponent getJobTitleSpanComponent();
 
-    @Asset(value = "WEB-INF/user/Contact.html")
+    @Asset(value = "WEB-INF/Contact.html")
     public abstract IAsset get$template();
 
     @Parameter(required = true)
-    public abstract Map<String, String> getContactAttributes();
+    public abstract RzmServices getRzmServices();
 
-    public abstract void setContactAttributes(Map<String, String> attributes);
+    @Parameter(required = true)
+    public abstract Map<String, String> getContactAttributes();
 
     @Parameter(required = true)
     public abstract long getDomainId();
@@ -116,16 +112,16 @@ public abstract class Contact extends BaseComponent {
     @Parameter(required = true)
     public abstract String getType();
 
+    @Parameter(required = true)
+    public abstract GeneralError getErrorPage();
+
     @Parameter(required = false, defaultValue = "true")
     public abstract boolean isEditible();
-
-    public abstract void setEditible(boolean value);
 
     @Parameter(required = false)
     public abstract IActionListener getListener();
 
-    @InjectObject("service:rzm.UserServices")
-    public abstract UserServices getUserServices();
+    public abstract void setContactAttributes(Map<String, String> attributes);
 
     @InjectObject("service:rzm.ObjectNotFoundHandler")
     public abstract ObjectNotFoundHandler getObjectNotFoundHandler();
@@ -144,12 +140,16 @@ public abstract class Contact extends BaseComponent {
 
     public abstract void setLastUpdated(String value);
 
+    public abstract void setEditible(boolean value);
+
     public abstract void setFax(String fax);
+
     public abstract String getFax();
 
     public abstract void setEmail(Object email);
 
     public abstract void setPhone(String phone);
+
     public abstract String getPhone();
 
     public abstract void setName(Object name);
@@ -163,6 +163,7 @@ public abstract class Contact extends BaseComponent {
     public abstract void setAltPhone(String alternatePhone);
 
     public abstract void setAltFax(String alternateFax);
+
     public abstract String getAltFax();
 
     public abstract void setJobTitle(String job);
@@ -178,7 +179,7 @@ public abstract class Contact extends BaseComponent {
 
         if (!cycle.isRewinding()) {
             setAddress(buildAddress(getContactAttributes()));
-            setLastUpdated(getContactAttributes().get(ContactVOWrapper.LAST_UPDATED));
+            setLastUpdated("Last updated " + getContactAttributes().get(ContactVOWrapper.LAST_UPDATED));
             setPhone(getContactAttributes().get(ContactVOWrapper.PHONE));
             setFax(getContactAttributes().get(ContactVOWrapper.FAX));
             setEmail(getContactAttributes().get(ContactVOWrapper.EMAIL));
@@ -191,7 +192,7 @@ public abstract class Contact extends BaseComponent {
         }
 
         try {
-            SystemDomainVOWrapper domain = (SystemDomainVOWrapper) getUserServices().getDomain(getDomainId());
+            SystemDomainVOWrapper domain = (SystemDomainVOWrapper) getRzmServices().getDomain(getDomainId());
             long id = Long.parseLong(getContactAttributes().get(ContactVOWrapper.ID));
             setOriginalAttributes(domain.getContact(id, getType()).getMap());
             setUserRole("");
@@ -205,14 +206,26 @@ public abstract class Contact extends BaseComponent {
 
             super.renderComponent(writer, cycle);
         } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+            getObjectNotFoundHandler().handleObjectNotFound(e, getErrorPage().getPageName());
         } catch (AccessDeniedException e) {
-            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
+            getAccessDeniedHandler().handleAccessDenied(e, getErrorPage().getPageName());
         }
     }
 
+    protected String buildAddress(Map<String, String> attributes) {
+        StringBuilder builder = new StringBuilder();
+        String address = attributes.get(ContactVOWrapper.ADDRESS);
+        builder.append(address).append(" ");
+        String country = attributes.get(ContactVOWrapper.COUNTRY);
+        if (!StringUtils.isEmpty(country)) {
+            builder.append(country);
+        }
+
+        return builder.toString();
+    }
+
     public String getPhoneSefix() {
-        if (StringUtils.isBlank(getPhone())){
+        if (StringUtils.isBlank(getPhone())) {
             return "";
         }
 
@@ -220,7 +233,7 @@ public abstract class Contact extends BaseComponent {
     }
 
     public String getFaxSefix() {
-        if (StringUtils.isBlank(getFax())){
+        if (StringUtils.isBlank(getFax())) {
             return "";
         }
         String br = StringUtils.isBlank(getAltFax()) ? "" : "<br/>";
@@ -231,7 +244,7 @@ public abstract class Contact extends BaseComponent {
         return isAddressModified() ? "edited" : "";
     }
 
-    public String getRoleAccountClass(){
+    public String getRoleAccountClass() {
         String s = getOriginalAttributes().get(ContactVOWrapper.ROLE);
         return isRole() == Boolean.valueOf(s) ? "" : "edited";
     }
@@ -338,19 +351,6 @@ public abstract class Contact extends BaseComponent {
         }
 
         return "edited";
-    }
-
-
-    private String buildAddress(Map<String, String> attributes) {
-        StringBuilder builder = new StringBuilder();
-        String address = attributes.get(ContactVOWrapper.ADDRESS);
-        builder.append(address).append(" ");
-        String country = attributes.get(ContactVOWrapper.COUNTRY);
-        if(!StringUtils.isEmpty(country)){
-            builder.append(country);
-        }
-
-        return builder.toString();
     }
 
 }

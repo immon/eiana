@@ -1,17 +1,16 @@
 package org.iana.rzm.web.pages.admin;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.web.common.admin.UserAttributeEditor;
-import org.iana.rzm.web.model.UserVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.web.common.admin.*;
+import org.iana.rzm.web.model.*;
 
 
-public abstract class CreateUser extends AdminPage implements PageBeginRenderListener, UserAttributeEditor {
+public abstract class CreateSystemUser extends AdminPage implements PageBeginRenderListener, UserAttributeEditor {
 
-    @Component(id="userEditor", type="UserEditor", bindings = {"create=literal:true", "listener=prop:editor", "user=prop:user"})
+    @Component(id = "userEditor",
+               type = "SystemUserEditor", bindings = {"create=literal:true", "listener=prop:editor", "user=prop:user"})
     public abstract IComponent getEditorComponent();
 
     @InjectPage("admin/Users")

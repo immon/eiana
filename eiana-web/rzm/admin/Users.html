@@ -4,22 +4,35 @@
         <title>Root Zone Management</title>
     </head>
     <span jwcid="$content$">
-        <body jwcid="border@AdminBorder" selected="literal:USERS">
+        <body jwcid="border@AdminBorder" selected="literal:USERS" finderListener="prop:finderListener" finderValidator="prop:finderValidator">
             <span jwcid="@ShowError"/>
             <span jwcid="@ShowMessages"/>
             <div style="padding: 5px 0 80px 10px;">
+                <span jwcid="systemUsers">
+                    <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
+                        <b class="leftBlack"></b>
+                        <b class="right"><a href="#" class="buttonBlack">System Users </a></b>
+				    </div>
+                </span>
+                <span jwcid="adminUsers">
+                    <div class="buttonStyle" style="float: left;">
+	    			    <b class="leftDot"></b>
+					    <b class="right"><a href="#" class="buttonDot">Admin Users </a></b>
+				    </div>
+                </span>
                 <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
-                    <b class=""></b>
+                    <b class="leftDot"></b>
                     <b class="right"><a jwcid="newuser" href="#" class="buttonDot">Create New </a></b>
                 </div>
             </div>
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="49%"><h5>Users</h5></td>
+                    <tr>
+                        <td width="49%"><h5><span jwcid="@Insert" value="prop:browserTitle">System users</span></h5></td>
+                    </tr>
                 </tr>
             </table>
-
-            <span jwcid="listUsers">
+          <span jwcid="listUsers">
                 <div class="mainBox" style="margin-bottom: 40px;">
                     <div class="containerBoxHeader">
                         <span class="roundtop">

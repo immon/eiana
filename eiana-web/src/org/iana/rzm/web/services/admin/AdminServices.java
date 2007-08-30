@@ -1,12 +1,11 @@
 package org.iana.rzm.web.services.admin;
 
-import org.iana.rzm.web.RzmServerException;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.TransactionVOWrapper;
-import org.iana.rzm.web.model.UserVOWrapper;
-import org.iana.rzm.web.services.RzmServices;
+import org.iana.criteria.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,8 +22,12 @@ public interface AdminServices extends RzmServices {
     public int getDomainsCount();
     public List<DomainVOWrapper> getDomains(int offset, int length);
     public int getTotalUserCount();
-    public List<UserVOWrapper> getUsers(int offset, int length);
+    public List<UserVOWrapper> getUsers(Criterion criterion, int offset, int length);
     public UserVOWrapper getUser(long userId);
     public void createUser(UserVOWrapper user);
     public void updateUser(UserVOWrapper user);
+    public TransactionVOWrapper getTransactionByRtId(long rtId);
+    public SystemDomainVOWrapper getDomain(String domainName);
+    public UserVOWrapper getUser(String userName);
+    public int getUserCount(Criterion criterion);
 }

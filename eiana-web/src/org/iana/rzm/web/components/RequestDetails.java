@@ -1,22 +1,15 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Bean;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectObject;
-import org.apache.tapestry.annotations.Parameter;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
-import org.iana.rzm.web.services.AccessDeniedHandler;
-import org.iana.rzm.web.services.ObjectNotFoundHandler;
-import org.iana.rzm.web.services.RzmServices;
-import org.iana.rzm.web.util.CounterBean;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.List;
+import java.util.*;
 
 public abstract class RequestDetails extends BaseComponent implements PageBeginRenderListener{
 
@@ -97,6 +90,10 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     public abstract ChangeVOWrapper getChange();
     public abstract TransactionStateLogVOWrapper getStateInfo();
 
+    @Persist("client")
+    public abstract boolean isRequestClosed();
+    public abstract void setRequestClosed(boolean value);
+
     public String getDomainName() {
         return getRequest().getDomainName();
     }
@@ -129,6 +126,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
         try {
             TransactionVOWrapper transaction = getRzmServices().getTransaction(getRequestId());
             setRequest(transaction);
+            setRequestClosed(transaction.isClose());
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, getExceptionPage());
         } catch(AccessDeniedException e){

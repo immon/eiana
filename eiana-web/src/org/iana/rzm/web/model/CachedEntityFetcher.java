@@ -1,39 +1,29 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.common.*;
 
 /**
  * Created by IntelliJ IDEA.
-* User: simon
-* Date: May 25, 2007
-* Time: 10:27:58 AM
-* To change this template use File | Settings | File Templates.
-*/
-public class EntityFetcherUtil {
-
-    private EntityFetcher entityFetcher;
+ * User: simon
+ * Date: Jul 18, 2007
+ * Time: 5:26:19 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class CachedEntityFetcher implements EntityFetcher {
     private PaginatedEntity[] entities;
 
-    public EntityFetcherUtil(EntityFetcher entityFetcher){
-
-        this.entityFetcher = entityFetcher;
+    public CachedEntityFetcher(PaginatedEntity[] entities) {
+        this.entities = entities;
     }
 
-    private PaginatedEntity[] getEntities() throws NoObjectFoundException {
-        if(entities == null){
-            entities = entityFetcher.getEntities();
-        }
-
-        return entities;
+    public int getTotal() throws NoObjectFoundException {
+        return entities.length;
     }
 
-    public PaginatedEntity[] calculatePageResult(int offset, int length) throws NoObjectFoundException {
-
+    public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
         if (offset < 0 || length < 0) {
             return new PaginatedEntity[0];
         }
-
-        PaginatedEntity[] entities = getEntities();
 
         if (entities == null || offset > entities.length) {
             return new PaginatedEntity[0];
@@ -50,6 +40,4 @@ public class EntityFetcherUtil {
             return result;
         }
     }
-
-
 }

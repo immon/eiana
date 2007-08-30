@@ -1,21 +1,15 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Bean;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.components.Browser;
-import org.iana.rzm.web.components.ListRequests;
-import org.iana.rzm.web.model.EntityFetcher;
-import org.iana.rzm.web.model.EntityFetcherUtil;
-import org.iana.rzm.web.model.EntityQuery;
-import org.iana.rzm.web.model.PaginatedEntity;
-import org.iana.rzm.web.services.PaginatedEntityQuery;
-import org.iana.rzm.web.services.user.UserServices;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.criteria.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.services.user.*;
 
 
 public abstract class UserRequestsPerspective extends UserPage implements PageBeginRenderListener {
@@ -23,7 +17,10 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
     public static final String PAGE_NAME = "user/UserRequestsPerspective";
 
     @Component(id = "listRequests", type = "ListRequests", bindings = {
-            "entityQuery=prop:entityQuery", "listener=listener:viewRequestDetails"})
+            "entityQuery=prop:entityQuery", "listener=listener:viewRequestDetails",
+             "linkTragetPage=prop:reviewDomainPage"
+
+        })
     public abstract IComponent getListRequestComponent();
 
     @Bean(PaginatedEntityQuery.class)
@@ -31,6 +28,9 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
 
     @InjectPage("user/RequestInformation")
     public abstract RequestInformation getRequestInformation();
+
+    @InjectPage("user/ReviewDomain")
+    public abstract ReviewDomain getReviewDomainPage();
 
     public abstract EntityFetcher getEntityFetcher();
 
@@ -73,24 +73,20 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
 
     private  class TransactionFetcher implements EntityFetcher {
         private UserServices userServices;
-        private EntityFetcherUtil entityFetcherUtil;
+        private Criterion criterion;
 
         public TransactionFetcher(UserServices userServices) {
             this.userServices = userServices;
-            entityFetcherUtil = new EntityFetcherUtil(TransactionFetcher.this);
+            criterion = CriteriaBuilder.empty();
         }
 
 
         public int getTotal() {
-            return userServices.getTotalTransactionCount();
-        }
-
-        public PaginatedEntity[] getEntities() throws NoObjectFoundException {
-            return userServices.getTransactions().toArray(new PaginatedEntity[0]);
+            return userServices.getTransactionCount(criterion);
         }
 
         public PaginatedEntity[] get(int offset, int length)throws NoObjectFoundException {
-            return entityFetcherUtil.calculatePageResult(offset, length);
+            return userServices.getTransactions(criterion, offset, length).toArray(new PaginatedEntity[0]);
         }
     }
 

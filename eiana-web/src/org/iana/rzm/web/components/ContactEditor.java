@@ -1,27 +1,21 @@
 package org.iana.rzm.web.components;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.*;
 import org.apache.commons.validator.EmailValidator;
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.form.IFormComponent;
-import org.apache.tapestry.form.IPropertySelectionModel;
-import org.apache.tapestry.valid.IValidationDelegate;
-import org.iana.codevalues.Value;
-import org.iana.rzm.web.common.ContactAttributesEditor;
-import org.iana.rzm.web.model.ContactVOWrapper;
-import org.iana.rzm.web.services.user.UserServices;
-import org.iana.rzm.web.util.ListUtil;
-import org.iana.rzm.web.util.WebUtil;
+import org.apache.tapestry.event.*;
+import org.apache.tapestry.form.*;
+import org.apache.tapestry.valid.*;
+import org.iana.codevalues.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.user.*;
+import org.iana.rzm.web.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.*;
 
 
 @ComponentClass
@@ -37,7 +31,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IComponent getEditContactComponent();
 
     @Component(id = "name", type = "TextField", bindings = {
-            "displayName=message:name-label", "value=ognl:contactAttributes.NAME", "validators=validators:required"})
+            "displayName=message:name-label", "value=ognl:contactAttributes.NAME"})
     public abstract IComponent getNameComponent();
 
     @Component(id = "jobTitle", type = "TextField", bindings = {
@@ -52,20 +46,16 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             "displayName=message:address-label", "value=ognl:contactAttributes.ADDRESS"})
     public abstract IComponent getStreetComponent();
 
-    @Component(id = "country", type = "TextField", bindings = {
-            "displayName=message:country-label", "value=ognl:contactAttributes.COUNTRY", "validators=validators:required"})
-    public abstract IComponent getCountryComponent();
-
-    @Component(id = "email", type = "TextField", bindings = {
-            "displayName=message:email-label", "value=ognl:contactAttributes.EMAIL", "validators=validators:required, email"})
+        @Component(id = "email", type = "TextField", bindings = {
+            "displayName=message:email-label", "value=ognl:contactAttributes.EMAIL", "validators=validators:email"})
     public abstract IComponent getEmailComponent();
 
     @Component(id = "privateEmail", type = "TextField", bindings = {
-            "displayName=message:alt-email-label", "value=prop:privateEmail"})
+            "displayName=message:alt-email-label", "value=prop:privateEmail", "validators=validators:email"})
     public abstract IComponent getPrivateEmailComponent();
 
     @Component(id = "phone", type = "TextField", bindings = {
-            "displayName=message:phone-label", "value=ognl:contactAttributes.PHONE", "validators=validators:required"})
+            "displayName=message:phone-label", "value=ognl:contactAttributes.PHONE"})
     public abstract IComponent getPhoneComponent();
 
     @Component(id = "altPhone", type = "TextField", bindings = {
@@ -124,14 +114,17 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @Parameter(required = true)
     public abstract Map<String, String> getContactAttributes();
 
+    @Parameter(required = false, defaultValue = "true")
+    public abstract boolean isDisplayFormButtons();
+
+    @Parameter(required = false, defaultValue = "true")
+    public abstract boolean isValidationRequired();
+
     @InjectComponent("name")
     public abstract IFormComponent getNameField();
 
     @InjectComponent("organisation")
     public abstract IFormComponent getOrganisationField();
-
-    @InjectComponent("country")
-    public abstract IFormComponent getCountryField();
 
     @InjectComponent("phone")
     public abstract IFormComponent getPhoneField();
@@ -150,6 +143,10 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
 
     @InjectComponent("jobTitle")
     public abstract IFormComponent getJobTitleField();
+
+    @InjectComponent("countries")
+    public abstract IFormComponent getCountryField();
+
 
     @InjectObject("service:tapestry.globals.HttpServletRequest")
     public abstract HttpServletRequest getHttpRequest();
@@ -269,9 +266,11 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
 
         Map<String, String> attributes = getContactAttributes();
 
-        validateInput();
-        if (getEditor().getValidationDelegate().getHasErrors()) {
-            return;
+        if(isValidationRequired()){
+            validateInput();
+            if (getEditor().getValidationDelegate().getHasErrors()) {
+                return;
+            }
         }
 
         if (isUsePrivateEmail()) {
@@ -312,14 +311,14 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         return getDisplayStyle(isAddAltFax());
     }
 
-    private void validateInput() {
+    protected void validateInput() {
         Map<String, String> contactAttributes = getContactAttributes();
         validateReqiredField(contactAttributes, ContactVOWrapper.NAME, getNameField());
         validateReqiredField(contactAttributes, ContactVOWrapper.ORGANISATION, getOrganisationField());
         validateReqiredField(contactAttributes, ContactVOWrapper.EMAIL, getEmailField());
         validateReqiredField(contactAttributes, ContactVOWrapper.PHONE, getPhoneField());
         validateReqiredField(contactAttributes, ContactVOWrapper.ADDRESS, getAddressField());
-        validateReqiredField(contactAttributes, ContactVOWrapper.COUNTRY, getCountryField());
+
 
         validateCountryCode(contactAttributes.get(ContactVOWrapper.COUNTRY));
 
@@ -342,7 +341,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         }
     }
 
-    private void validateEmail(String email, IFormComponent field, String fieldName) {
+   private void validateEmail(String email, IFormComponent field, String fieldName) {
         EmailValidator validator = EmailValidator.getInstance();
 
         if (StringUtils.isBlank(email)) {
@@ -398,13 +397,6 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             }
 
             throw new IllegalArgumentException("Can not find value " + value);
-        }
-    }
-
-    private static class CountryCodeSorter implements Comparator<Value> {
-
-        public int compare(Value o1, Value o2) {
-            return o1.getValueName().compareTo(o2.getValueName());
         }
     }
 }

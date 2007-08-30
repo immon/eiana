@@ -1,22 +1,20 @@
 package org.iana.rzm.web.pages.admin;
 
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.components.Browser;
-import org.iana.rzm.web.components.ListRequests;
-import org.iana.rzm.web.model.EntityFetcher;
-import org.iana.rzm.web.model.EntityFetcherUtil;
-import org.iana.rzm.web.model.EntityQuery;
-import org.iana.rzm.web.model.PaginatedEntity;
-import org.iana.rzm.web.services.OpenRequestFetcher;
-import org.iana.rzm.web.services.PaginatedEntityQuery;
-import org.iana.rzm.web.services.admin.AdminServices;
+import org.apache.tapestry.event.*;
+import org.iana.criteria.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.admin.*;
+import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.services.admin.*;
 
-public abstract class AdminHome extends AdminPage implements PageBeginRenderListener {
+import java.util.*;
+
+public abstract class AdminHome extends AdminPage implements PageBeginRenderListener, Search {
 
     public static final String PAGE_NAME = "admin/AdminHome";
 
@@ -33,11 +31,17 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
             "usePagination=literal:true",
             "noRequestMsg=literal:'There are no requests.'",
             "listener=listener:viewRequestDetails",
-            "actionTitle=literal:Review / Edit"
+            "actionTitle=literal:Review / Edit",
+            "linkTragetPage=prop:editDomain"
             }
     )
     public abstract IComponent getListRequestComponent();
 
+    @InjectPage("admin/EditDomain")
+    public abstract EditDomain getEditDomain();
+
+    @InjectPage("admin/RequestsPerspective")
+    public abstract RequestsPerspective getRequestsPerspective();
 
     @Bean(PaginatedEntityQuery.class)
     public abstract PaginatedEntityQuery getPaginatedEntityQuery();
@@ -45,12 +49,18 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
     @InjectPage("admin/RequestInformation")
     public abstract RequestInformation getRequestInformation();
 
-    @Persist("client:page")
-    @InitialValue("false")
+    @Persist("client:app")
     public abstract boolean isShowAll();
 
     public abstract void setShowAll(boolean value);
 
+    public FinderListener getFinderListener(){
+        return new RequestsFinderListener(getAdminServices(), getRequestCycle(), this, getRequestsPerspective());
+    }
+
+    public FinderValidator getFinderValidator(){
+        return new RequestFinderValidator();
+    }
 
     public void pageBeginRender(PageEvent event) {
         try {
@@ -136,24 +146,23 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
     private  class AllRequestFetcher implements EntityFetcher {
 
         private AdminServices services;
-        private EntityFetcherUtil entityFetcherUtil;
+        private Criterion criterion;
 
         public AllRequestFetcher(AdminServices services) {
             this.services = services;
-            entityFetcherUtil = new EntityFetcherUtil(this);
+            criterion = CriteriaBuilder.empty();
         }
 
         public int getTotal() throws NoObjectFoundException {
-            return services.getTotalTransactionCount();
-        }
-
-        public PaginatedEntity[] getEntities() throws NoObjectFoundException {
-            return services.getTransactions().toArray(new PaginatedEntity[0]);
+            return services.getTransactionCount(criterion);
         }
 
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
-            return entityFetcherUtil.calculatePageResult(offset, length);
+            List<TransactionVOWrapper> list = services.getTransactions(criterion, offset, length);
+            return list.toArray(new PaginatedEntity[0]);
         }
     }
+
+
 
 }

@@ -1,13 +1,11 @@
 package org.iana.rzm.web.model;
 
-import org.apache.commons.lang.StringUtils;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.system.domain.ContactVO;
-import org.iana.rzm.web.util.DateUtil;
+import org.apache.commons.lang.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ContactVOWrapper extends ValueObject {
 
@@ -36,8 +34,8 @@ public class ContactVOWrapper extends ValueObject {
     }
 
     public long getId() {
-        return vo.getObjId();
-
+        Long id = vo.getObjId();
+        return id == null ? 0 : id;
     }
 
     public String getName() {
@@ -48,7 +46,10 @@ public class ContactVOWrapper extends ValueObject {
         vo.setName(name);
     }
 
-
+    public boolean isNew() {
+        return vo.getObjId() == null;
+    }
+    
     public String getJobTitle() {
         return getValue(vo.getJobTitle(), DEFAULT_VALUE);
     }
@@ -215,4 +216,5 @@ public class ContactVOWrapper extends ValueObject {
     private void setRole(String role) {
         setRole(Boolean.valueOf(role));
     }
+
 }

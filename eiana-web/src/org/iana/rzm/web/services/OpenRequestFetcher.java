@@ -1,30 +1,25 @@
 package org.iana.rzm.web.services;
 
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.model.EntityFetcher;
-import org.iana.rzm.web.model.EntityFetcherUtil;
-import org.iana.rzm.web.model.PaginatedEntity;
+import org.iana.criteria.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.*;
 
 public class OpenRequestFetcher implements EntityFetcher {
 
     private RzmServices services;
-    private EntityFetcherUtil entityFetcherUtil;
+    private Criterion criterion;
 
     public OpenRequestFetcher(RzmServices services) {
         this.services = services;
-        entityFetcherUtil = new EntityFetcherUtil(this);
+        criterion = CriteriaBuilder.createOpenTransactions();
     }
 
 
     public int getTotal() throws NoObjectFoundException {
-        return services.getOpenTransaction().size();
-    }
-
-    public PaginatedEntity[] getEntities() throws NoObjectFoundException {
-        return services.getOpenTransaction().toArray(new PaginatedEntity[0]);
+        return services.getTransactionCount(criterion);
     }
 
     public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
-       return entityFetcherUtil.calculatePageResult(offset, length);
+        return services.getTransactions(criterion, offset, length).toArray(new PaginatedEntity[0]);
     }
 }

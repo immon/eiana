@@ -1,13 +1,12 @@
 package org.iana.rzm.web.services.user;
 
-import org.iana.codevalues.Value;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.iana.codevalues.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.model.*;
-import org.iana.rzm.web.services.RzmServices;
+import org.iana.rzm.web.services.*;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public interface UserServices extends RzmServices {
 
@@ -18,8 +17,6 @@ public interface UserServices extends RzmServices {
     public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail) throws NoObjectFoundException, NoDomainModificationException;
 
     public List<UserDomain> getUserDomains();
-
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain) throws NoObjectFoundException;
 
     public List<UserVOWrapper>getUsersForDomain(String domainName);
 

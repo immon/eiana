@@ -1,25 +1,16 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Asset;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectComponent;
-import org.apache.tapestry.annotations.Parameter;
-import org.apache.tapestry.form.IFormComponent;
-import org.apache.tapestry.valid.IValidationDelegate;
-import org.apache.tapestry.valid.ValidatorException;
-import org.iana.rzm.web.common.NameServerAttributesEditor;
-import org.iana.rzm.web.model.NameServerValue;
-import org.iana.rzm.web.tapestry.validator.WebDomainNameValidator;
-import org.iana.rzm.web.tapestry.validator.WebIPListValidator;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.form.*;
+import org.apache.tapestry.valid.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.validator.*;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public abstract class NameServerListEditor extends BaseComponent {
-
 
     @Component(id = "form", type = "Form", bindings = {"success=listener:save", "delegate=prop:validationDelegate"})
     public abstract IComponent getFormComponent();

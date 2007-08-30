@@ -1,25 +1,18 @@
 package org.iana.rzm.web.services.admin;
 
-import org.apache.log4j.Logger;
-import org.iana.criteria.Order;
+import org.apache.log4j.*;
+import org.iana.criteria.*;
 import org.iana.rzm.facade.admin.*;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.common.cc.CountryCodes;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.TransactionVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.web.RzmApplicationException;
-import org.iana.rzm.web.RzmServerException;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.SystemDomainVOWrapper;
-import org.iana.rzm.web.model.TransactionVOWrapper;
-import org.iana.rzm.web.model.UserVOWrapper;
-import org.iana.rzm.web.services.CriteriaBuilder;
-import org.iana.rzm.web.tapestry.services.ServiceInitializer;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.common.cc.*;
+import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.services.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class AdminServicesImpl implements AdminServices {
 
@@ -27,8 +20,8 @@ public class AdminServicesImpl implements AdminServices {
 
     private AdminTransactionService transactionService;
     private AdminDomainService domainService;
-    private AdminUserService   userService;
-    private CountryCodes       countryCodeService;
+    private AdminUserService userService;
+    private CountryCodes countryCodeService;
 
     public AdminServicesImpl(ServiceInitializer initializer) {
         domainService = initializer.getBean("GuardedAdminDomainServiceBean");
@@ -37,32 +30,21 @@ public class AdminServicesImpl implements AdminServices {
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
     }
 
-    public List<TransactionVOWrapper> getTransactions() {
-        List<TransactionVO> all = transactionService.findAll();
-        List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
-        for (TransactionVO transaction : all) {
-            result.add(new TransactionVOWrapper(transaction));
+    public int getTransactionCount(Criterion criterion) {
+        return transactionService.count(criterion);
+    }
+
+    public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length) {
+        List<TransactionVO> list = transactionService.find(criterion, offset, length);
+        List<TransactionVOWrapper>result = new ArrayList<TransactionVOWrapper>();
+        for (TransactionVO transactionVO : list) {
+            result.add(new TransactionVOWrapper(transactionVO));
         }
         return result;
     }
 
-    public List<DomainVOWrapper> getDomains() {
-        List<IDomainVO> list = domainService.findDomains();
-        List<DomainVOWrapper> result = new ArrayList<DomainVOWrapper>();
-        for (IDomainVO domainVO : list) {
-            result.add(new SystemDomainVOWrapper(domainVO));
-        }
-        return result;
-    }
-
-    public List<UserVOWrapper> getUsers() {
-        List<UserVO> list = userService.findUsers();
-        List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
-        for (UserVO userVO : list) {
-            users.add(new UserVOWrapper(userVO));
-        }
-
-        return users;
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) {
+        return new TransactionActionsVOWrapper(new TransactionActionsVO());
     }
 
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException {
@@ -80,17 +62,6 @@ public class AdminServicesImpl implements AdminServices {
         }
     }
 
-    public List<TransactionVOWrapper> getOpenTransaction() throws NoObjectFoundException {
-        TransactionCriteriaVO criteria = CriteriaBuilder.createOpenTransactionCriteria();
-        List<TransactionVO> list = transactionService.find(criteria);
-        List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
-        for (TransactionVO transaction : list) {
-            result.add(new TransactionVOWrapper(transaction));
-        }
-        return result;
-
-    }
-
     public TransactionVOWrapper getTransaction(long id) throws NoObjectFoundException {
         try {
             TransactionVO vo = transactionService.getTransaction(id);
@@ -102,30 +73,30 @@ public class AdminServicesImpl implements AdminServices {
 
     }
 
-    public DomainVOWrapper getDomain(long domainId) throws NoObjectFoundException {
-        IDomainVO vo = domainService.getDomain(domainId);
-        return new SystemDomainVOWrapper(vo);
-    }
-
-    public String getCountryName(String domainCode) {
-        String code = countryCodeService.getCountryName(domainCode.toUpperCase());
-        if(code == null){
-            return "Top Level Domain";
+    public TransactionVOWrapper getTransactionByRtId(long rtId) {
+        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
+        criteria.addTickedId(rtId);
+        List<TransactionVO> list = transactionService.find(criteria);
+        if (list == null || list.isEmpty()) {
+            return null;
         }
-        return code;
+
+        return new TransactionVOWrapper(list.get(0));
     }
 
-    public int getTotalTransactionCount() {
-        return transactionService.findAll().size();
-    }
 
-    public int getDomainsCount() {
-        return domainService.count(null);
+    public List<DomainVOWrapper> getDomains() {
+        List<IDomainVO> list = domainService.findDomains();
+        List<DomainVOWrapper> result = new ArrayList<DomainVOWrapper>();
+        for (IDomainVO domainVO : list) {
+            result.add(new SystemDomainVOWrapper(domainVO));
+        }
+        return result;
     }
 
     public List<DomainVOWrapper> getDomains(int offset, int length) {
         List<IDomainVO> list = domainService.find(new Order("name.name", true), offset, length);
-        List<DomainVOWrapper>result = new ArrayList<DomainVOWrapper>();
+        List<DomainVOWrapper> result = new ArrayList<DomainVOWrapper>();
         for (IDomainVO iDomainVO : list) {
             result.add(new SystemDomainVOWrapper(iDomainVO));
         }
@@ -133,13 +104,39 @@ public class AdminServicesImpl implements AdminServices {
         return result;
     }
 
-    public int getTotalUserCount() {
-        return userService.count(null);
+
+    public SystemDomainVOWrapper getDomain(long domainId) throws NoObjectFoundException {
+        IDomainVO vo = domainService.getDomain(domainId);
+        return new SystemDomainVOWrapper(vo);
     }
 
-    public List<UserVOWrapper> getUsers(int offset, int length) {
-        List<UserVO> list = userService.find(new Order("loginName", true), offset, length);
-         List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
+    public SystemDomainVOWrapper getDomain(String domainName) {
+        try{
+            IDomainVO vo = domainService.getDomain(domainName.toLowerCase().trim());
+            return new SystemDomainVOWrapper(vo);
+        }catch(IllegalArgumentException e){
+            return null;
+        }
+    }
+
+    public int getDomainsCount() {
+        return domainService.count(null);
+    }
+
+
+    public List<UserVOWrapper> getUsers() {
+        List<UserVO> list = userService.findUsers();
+        List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
+        for (UserVO userVO : list) {
+            users.add(new UserVOWrapper(userVO));
+        }
+
+        return users;
+    }
+
+    public List<UserVOWrapper> getUsers(Criterion criterion, int offset, int length) {
+        List<UserVO> list = userService.find(criterion, new Order("loginName", true),  offset, length);
+        List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
         for (UserVO userVO : list) {
             users.add(new UserVOWrapper(userVO));
         }
@@ -151,6 +148,24 @@ public class AdminServicesImpl implements AdminServices {
         return new UserVOWrapper(userService.getUser(userId));
     }
 
+    public UserVOWrapper getUser(String userName) {
+        try{
+            UserVO vo = userService.getUser(userName);
+            return new UserVOWrapper(vo);
+        }catch(IllegalArgumentException e){
+            return null;
+        }
+    }
+
+    public int getUserCount(Criterion criterion) {
+        return userService.count(criterion);
+    }
+
+
+    public int getTotalUserCount() {
+        return userService.count(null);
+    }
+
     public void createUser(UserVOWrapper user) {
         userService.createUser(user.getVo());
     }
@@ -158,6 +173,15 @@ public class AdminServicesImpl implements AdminServices {
     public void updateUser(UserVOWrapper user) {
         userService.updateUser(user.getVo());
     }
+
+    public String getCountryName(String domainCode) {
+        String code = countryCodeService.getCountryName(domainCode.toUpperCase());
+        if (code == null) {
+            return "Top Level Domain";
+        }
+        return code;
+    }
+
 
     public void changePassword(long userId, String newPassword) {
         //To change body of implemented methods use File | Settings | File Templates.

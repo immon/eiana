@@ -1,12 +1,10 @@
 package org.iana.rzm.web.model;
 
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.web.util.DateUtil;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class TransactionVOWrapper extends ValueObject implements PaginatedEntity {
 
@@ -49,6 +47,10 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public long getRtId() {
         return vo.getTicketID();
+    }
+
+    public void setRtId(long id){
+        vo.setTicketID(id);
     }
 
     public boolean acConfirmed() {
@@ -96,10 +98,6 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return state.getState();
     }
 
-    public void setRt(long rt) {
-        vo.setTicketID(rt);
-    }
-
     public void setState(TransactionStateVOWrapper.State state) {
         TransactionStateVO.Name name = state.getVOName();
         TransactionStateVO voState = new TransactionStateVO();
@@ -128,7 +126,6 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     public boolean isClose() {
         return
             state.getState().equals(TransactionStateVOWrapper.State.COMPLETED) ||
-            state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION) ||
             state.getState().equals(TransactionStateVOWrapper.State.REJECTED) ||
             state.getState().equals(TransactionStateVOWrapper.State.WITHDRAWN) ||
             state.getState().equals(TransactionStateVOWrapper.State.ADMIN_CLOSE);

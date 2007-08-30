@@ -1,27 +1,18 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IPage;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.components.Border;
-import org.iana.rzm.web.components.Browser;
-import org.iana.rzm.web.components.ListRequests;
-import org.iana.rzm.web.model.EntityQuery;
-import org.iana.rzm.web.model.UserDomain;
-import org.iana.rzm.web.services.OpenRequestFetcher;
-import org.iana.rzm.web.services.PaginatedEntityQuery;
-import org.iana.rzm.web.util.DateUtil;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.util.*;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.List;
+import java.text.*;
+import java.util.*;
 
 
 public abstract class UserHome extends UserPage implements PageBeginRenderListener {
@@ -44,6 +35,14 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     @Component(id = "lastUpdated", type = "Insert", bindings = {"value=components.domains.value.modified"})
     public abstract IComponent getLastUpdatedComponent();
 
+     @Component(id = "domainLink", type = "DirectLink", bindings = {
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+            "listener=listener:reviewDomain",
+            "parameters=components.domains.value.domainId"
+        }
+    )
+    public abstract IComponent getDomainLinkComponent();
+
     @Component(id = "review", type = "DirectLink", bindings = {
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
             "listener=listener:reviewDomain", "parameters=components.domains.value.domainId"
@@ -58,19 +57,13 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     )
     public abstract IComponent getUserAccessLinkComponent();
 
-    @Component(id = "domainLink", type = "DirectLink", bindings = {
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
-            "listener=listener:reviewDomain",
-            "parameters=components.domains.value.domainId"
-        }
-    )
-    public abstract IComponent getDomainLinkComponent();
 
     @Component(id = "listRequests", type = "ListRequests", bindings = {
             "entityQuery=prop:entityQuery",
             "usePagination=literal:false",
             "noRequestMsg=literal:'There are no outstanding requests.'",
-            "listener=listener:viewRequestDetails"
+            "listener=listener:viewRequestDetails",
+            "linkTragetPage=prop:reviewDomainPage"
             }
     )
     public abstract IComponent getListRequestComponent();

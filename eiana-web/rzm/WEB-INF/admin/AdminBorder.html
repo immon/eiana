@@ -15,7 +15,19 @@
                                 </span>
                             </p>
                         </div>
-                       <div class="links" align="right" style="clear: both;">
+                        <span jwcid="@If" condition="prop:searchActive">
+                            <form jwcid="searchForm" action="#">
+                                <div style="float: right; margin: 65px 0 0 0;">
+                                    <div class="label" style="float: left; margin: 0 5px 0 0;"><span jwcid="searchLabel">Search:</span></div>
+                                    <input type="text" jwcid="searchText" name="text" class="field" style="float: left; margin: 0 5px 0 0;"/>
+                                    <div class="buttonStyle" style="float: left;">
+                                        <b class="left"></b>
+                                        <b class="right"><a href="#" jwcid="search" class="button">Search</a></b>
+                                    </div>
+                                </div>
+                            </form>
+                        </span>    
+                        <div class="links" align="right" style="clear: both;">
                             <span jwcid="loggedIn">
 					            <span jwcid="loggedInTitle"/>
 						        <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:logout">Logout</a>
