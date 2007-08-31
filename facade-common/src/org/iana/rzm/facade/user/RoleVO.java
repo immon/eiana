@@ -1,10 +1,12 @@
 package org.iana.rzm.facade.user;
 
+import java.io.*;
+
 /**
  * @author Patrycja Wegrzynowicz
  * @author Marcin Zajaczkowski
  */
-public class RoleVO {
+public class RoleVO implements Serializable {
 
     public interface Type {}
 
