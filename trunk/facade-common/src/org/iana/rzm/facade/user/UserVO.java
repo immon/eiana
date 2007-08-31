@@ -1,19 +1,16 @@
 package org.iana.rzm.facade.user;
 
-import org.iana.rzm.facade.common.Trackable;
-import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.rzm.facade.common.*;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.TreeSet;
-import java.sql.Timestamp;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Marcin Zajaczkowski
  */
-public class UserVO implements Trackable {
+public class UserVO implements Trackable, Serializable {
 
     private String userName;
     private String firstName;
