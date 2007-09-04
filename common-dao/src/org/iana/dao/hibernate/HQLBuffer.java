@@ -14,7 +14,7 @@ public class HQLBuffer {
     private List<Object> params = new ArrayList<Object>();
 
     public boolean isEmpty() {
-        return buf.toString().trim().length() > 0;
+        return buf.toString().trim().length() == 0;
     }
 
     public String getHQL() {
@@ -86,7 +86,7 @@ public class HQLBuffer {
     }
 
     public HQLBuffer order(String field, boolean asc) {
-        if (buf.length() > 0) buf.append(',');
+        if (!isEmpty()) buf.append(',');
         buf.append(field).append(' ').append(asc ? "asc" : "desc");
         return sp();
     }
