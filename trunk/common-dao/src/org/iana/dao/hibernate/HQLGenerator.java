@@ -40,8 +40,8 @@ public class HQLGenerator implements CriteriaVisitor {
         if (criteria != null) {
             HQLGenerator gen = new HQLGenerator();
             criteria.accept(gen);
-            if (gen.where.isEmpty()) buf.append("where").appendSimple(gen.where);
-            if (gen.order.isEmpty()) buf.append("order by").appendSimple(gen.order);
+            if (!gen.where.isEmpty()) buf.append("where").appendSimple(gen.where);
+            if (!gen.order.isEmpty()) buf.append("order by").appendSimple(gen.order);
         }
 
         return buf;

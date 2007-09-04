@@ -58,6 +58,7 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
         return getHibernateTemplate().executeFind(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
                 HQLBuffer hql = HQLGenerator.from(clazz, criteria);
+                System.out.println("QUERY: " + hql.getHQL());
                 Query query = session.createQuery(hql.getHQL());
 
                 int idx = 0;
