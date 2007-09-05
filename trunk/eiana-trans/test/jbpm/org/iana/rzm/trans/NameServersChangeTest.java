@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
- * @author: JaKub Laszkiewicz
+ * @author JaKub Laszkiewicz
  */
 
 @Test(sequential = true, groups = {"eiana-trans", "jbpm", "NameServersChange"})
@@ -84,8 +84,7 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
             token.signal("accept");
             assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
-
-            assert token.getNode().getName().equals("COMPLETED");
+            assert token.getNode().getName().equals("COMPLETED") : "unexpected state: " + token.getNode().getName();
 
 //            assert clonedDomain.equals(domainManager.get("testdomain-ns.org").clone());
 
