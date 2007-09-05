@@ -84,26 +84,48 @@
         <decision name="PENDING_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
                 <doTest>false</doTest>
+                <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
             <transition name="error" to="PENDING_TECH_CHECK_REMEDY"/>
         </decision>
 
         <state name="PENDING_TECH_CHECK_REMEDY">
-            <event type='node-enter'>
+            <timer name="1d-check" duedate="1 day">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>6</period>
+                </action>
+            </timer>
+            <timer name="2d-check" duedate="2 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>5</period>
+                </action>
+            </timer>
+            <timer name="3d-check" duedate="3 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>4</period>
+                </action>
+            </timer>
+            <timer name="4d-check" duedate="4 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>3</period>
+                </action>
+            </timer>
+            <timer name="5d-check" duedate="5 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>2</period>
+                </action>
+            </timer>
+            <timer name="6d-check" duedate="6 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>1</period>
+                </action>
+            </timer>
+            <timer name="7d-check" duedate="7 days">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy"/>
-            </event>
-            <timer name="7d-time-out" duedate='7 days'>
-                <!--todo-->
             </timer>
-            <timer name="14d-time-out" duedate='14 days'>
-                <!--todo-->
-            </timer>
-            <timer name="21d-time-out" duedate='21 days'>
-                <!--todo-->
-            </timer>
-            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
-            <transition name="do-test" to="PENDING_TECH_CHECK"/>
+            <timer name="7d-time-out" duedate="7 days" transition="close"></timer>
+            <transition name="accept" to="PENDING_CONTACT_CONFIRMATION"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
             <transition name="withdraw" to="WITHDRAWN"/>
@@ -314,28 +336,50 @@
         </decision>
 
         <decision name="PENDING_SUPP_TECH_CHECK">
-            <handler class="org.iana.rzm.trans.jbpm.handlers.SuppTechnicalCheck">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
                 <doTest>false</doTest>
+                <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
             <transition name="error" to="PENDING_SUPP_TECH_CHECK_REMEDY"/>
         </decision>
 
         <state name="PENDING_SUPP_TECH_CHECK_REMEDY">
-            <event type='node-enter'>
-                <action class="org.iana.rzm.trans.jbpm.handlers.SuppTechnicalCheckRemedy"/>
-            </event>
-            <timer name="7d-time-out" duedate='7 days'>
-                <!--todo-->
+            <timer name="1d-check" duedate="1 day">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>6</period>
+                </action>
             </timer>
-            <timer name="14d-time-out" duedate='14 days'>
-                <!--todo-->
+            <timer name="2d-check" duedate="2 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>5</period>
+                </action>
             </timer>
-            <timer name="21d-time-out" duedate='21 days'>
-                <!--todo-->
+            <timer name="3d-check" duedate="3 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>4</period>
+                </action>
             </timer>
-            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
-            <transition name="do-test" to="PENDING_SUPP_TECH_CHECK"/>
+            <timer name="4d-check" duedate="4 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>3</period>
+                </action>
+            </timer>
+            <timer name="5d-check" duedate="5 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>2</period>
+                </action>
+            </timer>
+            <timer name="6d-check" duedate="6 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
+                    <period>1</period>
+                </action>
+            </timer>
+            <timer name="7d-check" duedate="7 days">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy"/>
+            </timer>
+            <timer name="7d-time-out" duedate="7 days" transition="close"></timer>
+            <transition name="accept" to="PENDING_CONTACT_CONFIRMATION"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
             <transition name="withdraw" to="WITHDRAWN"/>
