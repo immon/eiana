@@ -130,7 +130,7 @@
         </property>
     </bean>
 
-    <bean id="faketicket" class="org.iana.rzm.trans.FakeTicketingService"/>
+    <bean id="ticketingService" class="org.iana.rzm.trans.FakeTicketingService"/>
 
     <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
@@ -140,7 +140,7 @@
             <ref bean="domainDAO"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="faketicket"/>
+            <ref bean="ticketingService"/>
         </constructor-arg>        
         <constructor-arg>
             <ref bean="diffConfig"/>
@@ -172,7 +172,7 @@
             <ref bean="domainDAO"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="faketicket"/>
+            <ref bean="ticketingService"/>
         </constructor-arg>        
         <constructor-arg>
             <ref bean="diffConfig"/>
