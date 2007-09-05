@@ -10,6 +10,7 @@
                 <systemStates>
                     <element>PENDING_TECH_CHECK</element>
                     <element>PENDING_DATABASE_INSERTION</element>
+                    <element>PENDING_ZONE_TESTING</element>
                 </systemStates>
                 <contactStates>
                     <element>PENDING_CONTACT_CONFIRMATION</element>
@@ -429,6 +430,36 @@
                 </action>
             </timer>
             <timer name="7d-time-out" duedate="7 days" transition="alert"></timer>
+            <transition name="accept" to="PENDING_ZONE_TESTING"/>
+            <transition name="admin-accept" to="PENDING_ZONE_TESTING"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <state name="PENDING_ZONE_TESTING">
+            <event type="node-enter">
+                <action class="org.iana.rzm.trans.jbpm.handlers.ZoneTestingAction">
+                    <!--
+                    <rootServers>
+                        <element>ns.internic.net.net</element>
+                    </rootServers>
+                    -->
+                </action>
+                <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
+                    <roles>
+                        <element>IANA</element>
+                    </roles>
+                </action>
+            </event>
+            <timer name="1d-periodic-check" repeat="yes" duedate="2 hours">
+                <action class="org.iana.rzm.trans.jbpm.handlers.ZoneTestingAction">
+                    <!--
+                    <rootServers>
+                        <element>ns.internic.net.net</element>
+                    </rootServers>
+                    -->
+                </action>
+            </timer>
+            <timer name="1d-time-out" duedate="1 day" transition="alert"></timer>
             <transition name="accept" to="PENDING_DATABASE_INSERTION"/>
             <transition name="admin-accept" to="PENDING_DATABASE_INSERTION"/>
             <transition name="alert" to="EXCEPTION"/>

@@ -78,8 +78,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
 
         domainNS = createDomain(DOMAIN_NAMENS);
-        domain.addNameServer(setupFirstHost("pr3"));
-        domain.addNameServer(setupSecondHost("pr4"));
+        domainNS.addNameServer(setupFirstHost("pr3"));
+        domainNS.addNameServer(setupSecondHost("pr4"));
         domainManager.create(domainNS);
 
         Host nameServer = new Host("ns1.gstsnewnameserver");
@@ -270,6 +270,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
+            {"SYSTEM", "PENDING_ZONE_TESTING"},
             {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 

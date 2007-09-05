@@ -25,6 +25,7 @@ public class TransactionStateVO implements Serializable {
         PENDING_USDOC_APPROVAL,
         PENDING_ZONE_INSERTION,
         PENDING_ZONE_PUBLICATION,
+        PENDING_ZONE_TESTING,
         PENDING_DATABASE_INSERTION,
         COMPLETED,
         WITHDRAWN,
