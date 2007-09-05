@@ -46,7 +46,7 @@ public class TechnicalCheckHelper {
             try {
                 DNSTechnicalCheckFactory.getDomainCheck().check(DNSConverter.toDNSDomain(retrievedDomain));
             } catch (DNSTechnicalCheckException e) {
-                if (period != null && period.length() > 0 && td.getCurrentDomain().isEnableEmails()) {
+                if (period != null && period.length() > 0) {
                     DNSExceptionMessagesVisitor messagesVisitor = new DNSExceptionMessagesVisitor();
                     e.accept(messagesVisitor);
                     String messages = messagesVisitor.getMessages();
@@ -72,7 +72,7 @@ public class TechnicalCheckHelper {
         values.put(TEMPLATE_VALUE_ERROR_LIST, errorMessages);
         values.put(TEMPLATE_VALUE_DAYS, period);
         TemplateContent templateContent = new TemplateContent(TEMPLATE_NAME, values);
-        Notification notification = new Notification(transactionId);
+        Notification notification = new Notification();
         notification.addAllAddressees(to);
         notification.setContent(templateContent);
         return notification;
