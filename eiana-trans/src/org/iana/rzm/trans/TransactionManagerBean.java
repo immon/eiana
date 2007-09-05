@@ -10,6 +10,7 @@ import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.TicketingException;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
@@ -46,7 +47,12 @@ public class TransactionManagerBean implements TransactionManager {
     public Transaction createDomainCreationTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        td.setTicketID(ticketingService.generateID());
+        //todo: new RT ticket (simplified version)
+        try {
+            long ticketId = ticketingService.createTicket(domain.getName(), "");
+            td.setTicketID(ticketId);
+        } catch (TicketingException e) {
+        }
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(new Domain(domain.getName()), domain, diffConfiguration);
         td.setDomainChange(domainChange);
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
@@ -66,7 +72,12 @@ public class TransactionManagerBean implements TransactionManager {
     private Transaction createTransaction(Domain domain, String submitterEmail) throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        td.setTicketID(ticketingService.generateID());
+        //todo: new RT ticket (simplified version)
+        try {
+            long ticketId = ticketingService.createTicket(domain.getName(), "");
+            td.setTicketID(ticketId);
+        } catch (TicketingException e) {
+        }
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, diffConfiguration);
         if (domainChange == null) throw new NoModificationException(domain.getName());
         td.setDomainChange(domainChange);
