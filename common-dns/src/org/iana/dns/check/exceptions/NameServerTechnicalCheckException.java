@@ -2,6 +2,7 @@ package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSHost;
 import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Base exception for all checks from DNSNameServerTechnicalCheck.
@@ -36,5 +37,9 @@ public class NameServerTechnicalCheckException extends DNSTechnicalCheckExceptio
 
     public int hashCode() {
         return (host != null ? host.hashCode() : 0);
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptNameServerTechnicalCheckException(this);
     }
 }

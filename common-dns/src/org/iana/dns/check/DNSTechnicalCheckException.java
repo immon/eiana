@@ -5,5 +5,6 @@ package org.iana.dns.check;
  *
  * @author Patrycja Wegrzynowicz
  */
-public class DNSTechnicalCheckException extends Exception {
+public abstract class DNSTechnicalCheckException extends Exception {
+    public abstract void accept(DNSTechnicalCheckExceptionVisitor visitor);
 }

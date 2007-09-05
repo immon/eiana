@@ -2,6 +2,7 @@ package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 import java.util.List;
 import java.util.Map;
@@ -37,5 +38,9 @@ public class SerialNumberNotEqualException extends DomainTechnicalCheckException
 
     public List<DNSHost> getHosts(Long serialNumber) {
         return serialsMap.get(serialNumber);
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptSerialNumberNotEqualException(this);
     }
 }

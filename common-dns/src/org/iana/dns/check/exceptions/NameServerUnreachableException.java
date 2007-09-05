@@ -1,6 +1,7 @@
 package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in NameServerCheckBase when SOA record in unreachable.
@@ -16,5 +17,9 @@ public class NameServerUnreachableException extends NameServerTechnicalCheckExce
      */
     public NameServerUnreachableException(DNSHost host) {
         super(host);
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptNameServerUnreachableException(this);
     }
 }

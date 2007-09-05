@@ -3,6 +3,7 @@ package org.iana.dns.check.exceptions;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in MinimumNameServersAndNoReservedIPsCheck when IP address is duplicated.
@@ -45,5 +46,9 @@ public class DuplicatedIPAddressException extends DomainTechnicalCheckException 
         int result = super.hashCode();
         result = 31 * result + (ipAddress != null ? ipAddress.hashCode() : 0);
         return result;
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptDuplicatedIPAddressException(this);
     }
 }

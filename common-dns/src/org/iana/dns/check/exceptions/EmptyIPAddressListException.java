@@ -2,6 +2,7 @@ package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in MinimumNameServersAndNoReservedIPsCheck when host don't have any IP's.
@@ -18,5 +19,9 @@ public class EmptyIPAddressListException extends DomainTechnicalCheckException {
      */
     public EmptyIPAddressListException(DNSDomain domain, DNSHost host) {
         super(domain, host);
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptEmptyIPAddressListException(this);
     }
 }

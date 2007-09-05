@@ -2,6 +2,7 @@ package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in MinimumNetworkDiversityCheck when DNSWhoIsDataRetriever service returns IOException.
@@ -33,6 +34,10 @@ public class WhoIsIOException extends NameServerTechnicalCheckException {
 
     public Throwable getCause() {
         return cause;
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptWhoIsIOException(this);
     }
 }
 

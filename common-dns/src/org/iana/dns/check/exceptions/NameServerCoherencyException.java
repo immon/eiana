@@ -1,6 +1,7 @@
 package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSDomain;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in NameServerCoherencyCheck when supplied name servers names don't match names returned in SOA.
@@ -16,5 +17,9 @@ public class NameServerCoherencyException extends DomainTechnicalCheckException 
      */
     public NameServerCoherencyException(DNSDomain domain) {
         super(domain, null);
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptNameServerCoherencyException(this);
     }
 }
