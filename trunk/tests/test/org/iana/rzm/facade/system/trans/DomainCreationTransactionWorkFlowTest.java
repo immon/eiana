@@ -173,6 +173,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
+            {"SYSTEM", "PENDING_ZONE_TESTING"},
             {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
