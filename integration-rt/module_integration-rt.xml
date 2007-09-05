@@ -12,7 +12,13 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="integration-rt.module.classpath"/>
+  <path id="integration-rt.module.classpath">
+    <path refid="library.rt-api.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+  </path>
   
   
   <patternset id="excluded.from.module.integration-rt">
@@ -29,10 +35,16 @@
     </dirset>
   </path>
   
+  <path id="integration-rt.module.test.sourcepath">
+    <dirset dir="${module.integration-rt.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.integration-rt" depends="compile.module.integration-rt.production,compile.module.integration-rt.tests" description="Compile module integration-rt"/>
   
-  <target name="compile.module.integration-rt.production" description="Compile module integration-rt; production classes">
+  <target name="compile.module.integration-rt.production" depends="compile.module.eiana-util" description="Compile module integration-rt; production classes">
     <mkdir dir="${integration-rt.output.dir}"/>
     <javac destdir="${integration-rt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.integration-rt}"/>
@@ -50,7 +62,23 @@
     </copy>
   </target>
   
-  <target name="compile.module.integration-rt.tests" depends="compile.module.integration-rt.production" description="compile module integration-rt; test classes" unless="skip.tests"/>
+  <target name="compile.module.integration-rt.tests" depends="compile.module.integration-rt.production" description="compile module integration-rt; test classes" unless="skip.tests">
+    <mkdir dir="${integration-rt.testoutput.dir}"/>
+    <javac destdir="${integration-rt.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.integration-rt}"/>
+      <classpath refid="integration-rt.module.classpath"/>
+      <classpath location="${integration-rt.output.dir}"/>
+      <src refid="integration-rt.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.integration-rt"/>
+    </javac>
+    
+    <copy todir="${integration-rt.testoutput.dir}">
+      <fileset dir="${module.integration-rt.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.integration-rt" description="cleanup module">
     <delete dir="${integration-rt.output.dir}"/>

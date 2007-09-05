@@ -269,7 +269,15 @@
         </constructor-arg>
     </bean>
 
-    <bean id="faketicket" class="org.iana.ticketing.MockTicketingService"/>
+    <!--
+    <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
+        <constructor-arg index="0" value="http://localhost:8284/"/>
+        <constructor-arg index="1" value="root"/>
+        <constructor-arg index="2" value="password"/>
+    </bean>
+    -->
+
+    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
 
     <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
@@ -279,7 +287,7 @@
             <ref bean="domainDAO"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="faketicket"/>
+            <ref bean="ticketingService"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>
