@@ -26,4 +26,7 @@ public class MultipleDNSTechnicalCheckException extends DNSTechnicalCheckExcepti
     public boolean isEmpty() {
         return exceptions.size() == 0;
     }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+    }
 }

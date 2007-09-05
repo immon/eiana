@@ -1,6 +1,7 @@
 package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in NameServerReachabilityCheck when SOA record in unreachable by UDP.
@@ -16,5 +17,9 @@ public class NameServerUnreachableByUDPException extends NameServerUnreachableEx
      */
     public NameServerUnreachableByUDPException(DNSHost host) {
         super(host);
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptNameServerUnreachableByUDPException(this);
     }
 }

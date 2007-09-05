@@ -2,6 +2,7 @@ package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in NameServerAuthorityCheck when host is not authoritative.
@@ -25,5 +26,9 @@ public class NotAuthoritativeNameServerException extends NameServerTechnicalChec
 
     public String getDomainName() {
         return domain.getName();
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptNotAuthoritativeNameServerException(this);
     }
 }

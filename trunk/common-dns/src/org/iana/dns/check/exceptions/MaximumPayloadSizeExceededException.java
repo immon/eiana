@@ -1,6 +1,7 @@
 package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSDomain;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in MaximumPayloadSizeCheck when response estimated size is greater than 512 byts.
@@ -24,5 +25,9 @@ public class MaximumPayloadSizeExceededException extends DomainTechnicalCheckExc
 
     public int getEstimatedSize() {
         return estimatedSize;
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptMaximumPayloadSizeExceededException(this);
     }
 }

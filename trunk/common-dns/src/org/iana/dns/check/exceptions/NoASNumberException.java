@@ -3,6 +3,7 @@ package org.iana.dns.check.exceptions;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 /**
  * Thrown in MinimumNetworkDiversityCheck when there is no AS number for IP address.
@@ -46,5 +47,9 @@ public class NoASNumberException extends DomainTechnicalCheckException {
         int result = super.hashCode();
         result = 31 * result + (ipAddress != null ? ipAddress.hashCode() : 0);
         return result;
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptNoASNumberException(this);
     }
 }

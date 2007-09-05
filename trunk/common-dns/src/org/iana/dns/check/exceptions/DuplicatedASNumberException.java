@@ -2,6 +2,7 @@ package org.iana.dns.check.exceptions;
 
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
 import java.util.List;
 
@@ -54,5 +55,9 @@ public class DuplicatedASNumberException extends DomainTechnicalCheckException {
         result = 31 * result + (asNumber != null ? asNumber.hashCode() : 0);
         result = 31 * result + (hosts != null ? hosts.hashCode() : 0);
         return result;
+    }
+
+    public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptDuplicatedASNumberException(this);
     }
 }
