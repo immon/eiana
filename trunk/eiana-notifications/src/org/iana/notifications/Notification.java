@@ -81,6 +81,10 @@ public class Notification {
         this.addressee.add(addressee);
     }
 
+    public void addAllAddressees(Set<Addressee> addressees) {
+        this.addressee.addAll(addressees);
+    }
+
     public Content getContent() {
         return content;
     }

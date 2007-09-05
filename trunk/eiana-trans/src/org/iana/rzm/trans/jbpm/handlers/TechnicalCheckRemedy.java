@@ -1,13 +1,17 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
 import org.jbpm.graph.exe.ExecutionContext;
+import org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper;
 
 /**
- * @author: Piotr Tkaczyk
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
 public class TechnicalCheckRemedy extends ActionExceptionHandler {
+    String period;
 
-    public void doExecute(ExecutionContext executionContext) throws Exception {
-        //todo
+    protected void doExecute(ExecutionContext executionContext) throws Exception {
+        if (TechnicalCheckHelper.check(executionContext, period))
+                executionContext.leaveNode("accept");
     }
 }
