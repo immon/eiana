@@ -1,19 +1,25 @@
 package org.iana.rzm.facade.admin;
 
 import org.iana.criteria.Criterion;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.notifications.NotificationManager;
+import org.iana.notifications.NotificationSender;
+import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.notification.NotificationVO;
+import org.iana.rzm.facade.system.notification.NotificationAddresseeVO;
+import org.iana.rzm.facade.system.notification.NotificationConverter;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.trans.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -38,29 +44,30 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     TransactionManager transactionManager;
     DomainManager domainManager;
     SystemTransactionService transactionService;
+    NotificationManager notificationManager;
+    NotificationSender notificationSender;
 
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
     }
 
-    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, SystemTransactionService transactionService) {
-        super(userManager);
-        CheckTool.checkNull(transactionManager, "transaction manager");
-        this.transactionManager = transactionManager;
-        this.transactionService = transactionService;
-    }
-
     public GuardedAdminTransactionServiceBean(UserManager userManager,
                                               TransactionManager transactionManager,
                                               DomainManager domainManager,
-                                              SystemTransactionService transactionService) {
+                                              SystemTransactionService transactionService,
+                                              NotificationManager notificationManager,
+                                              NotificationSender notificationSender) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
         CheckTool.checkNull(transactionService, "transaction service");
+        CheckTool.checkNull(notificationManager, "notification manager");
+        CheckTool.checkNull(notificationSender, "notification sender");
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
         this.transactionService = transactionService;
+        this.notificationManager = notificationManager;
+        this.notificationSender = notificationSender;
     }
 
     public TransactionVO getTransaction(long id) throws NoTransactionException, AccessDeniedException {
@@ -272,5 +279,18 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) {
         isUserInRole();
         return TransactionConverter.toTransactionVOList(transactionManager.find(criteria, offset, limit));
+    }
+
+    public List<NotificationVO> getNotifications(long transactionId) throws InfrastructureException {
+        try {
+            return NotificationConverter.toNotificationVOList(notificationManager.findPersistentNotifications(transactionId));
+        } catch (NotificationException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+    public void resendNotification(Set<NotificationAddresseeVO> addressees, NotificationVO notification) throws NotificationException {
+        notificationSender.send(NotificationConverter.toAddresseeSet(addressees),
+                notificationManager.get(notification.getObjId()).getContent());
     }
 }

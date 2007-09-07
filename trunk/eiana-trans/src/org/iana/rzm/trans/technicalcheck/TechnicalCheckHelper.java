@@ -25,45 +25,68 @@ import java.util.Set;
  * @author Jakub Laszkiewicz
  */
 public class TechnicalCheckHelper {
+    private static final String TEMPLATE_PERIOD_NAME = "failed-technical-check-period";
     private static final String TEMPLATE_NAME = "failed-technical-check";
     private static final String TEMPLATE_VALUE_DOMAIN_NAME = "domainName";
     private static final String TEMPLATE_VALUE_ERROR_LIST = "errorList";
     private static final String TEMPLATE_VALUE_DAYS = "days";
 
-    public static boolean check(ExecutionContext executionContext, String period) throws Exception {
+    public static boolean check(ExecutionContext executionContext, String period) {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        NotificationManager notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
+        NotificationManager notificationManager = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         NotificationSender notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
         DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
         DiffConfiguration diffConfig = (DiffConfiguration) executionContext.getJbpmContext().getObjectFactory().createObject("diffConfig");
+        long prosessId = executionContext.getProcessInstance().getId();
+        return check(period, td, notificationManager, notificationSender, domainManager, diffConfig, prosessId);
+    }
 
-        String domainName = td.getCurrentDomain().getName();
+    public static boolean check(String period, TransactionData td, NotificationManager notificationManager,
+                                NotificationSender notificationSender, DomainManager domainManager,
+                                DiffConfiguration diffConfig, Long transactionId) {
         Domain retrievedDomain = domainManager.get(td.getCurrentDomain().getName()).clone();
-
         ObjectChange change = td.getDomainChange();
         if (change != null) {
             ChangeApplicator.applyChange(retrievedDomain, change, diffConfig);
-            try {
-                DNSTechnicalCheckFactory.getDomainCheck().check(DNSConverter.toDNSDomain(retrievedDomain));
-            } catch (DNSTechnicalCheckException e) {
-                if (period != null && period.length() > 0) {
-                    DNSExceptionMessagesVisitor messagesVisitor = new DNSExceptionMessagesVisitor();
-                    e.accept(messagesVisitor);
-                    String messages = messagesVisitor.getMessages();
-
-                    Set<Addressee> users = new HashSet<Addressee>();
-                    users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
-                    users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.TC, domainName, true, false)).getUsersAbleToAccept());
-                    if (td.getSubmitterEmail() != null)
-                        users.add(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));
-
-                    Notification notification = createNotification(executionContext.getProcessInstance().getId(), domainName, messages, period, users);
-                    sendNotification(notification, notificationManagerBean, notificationSender);
-                }
-                return false;
-            }
+            return check(retrievedDomain, td.getSubmitterEmail(), period, notificationManager, notificationSender, transactionId);
         }
         return true;
+    }
+
+    public static boolean check(Domain domain, String submitterEmail, String period,
+                                NotificationManager notificationManager, NotificationSender notificationSender,
+                                Long transactionId) {
+        String domainName = domain.getName();
+        try {
+            DNSTechnicalCheckFactory.getDomainCheck().check(DNSConverter.toDNSDomain(domain));
+        } catch (DNSTechnicalCheckException e) {
+            if (domain.isEnableEmails()) {
+                DNSExceptionMessagesVisitor messagesVisitor = new DNSExceptionMessagesVisitor();
+                e.accept(messagesVisitor);
+                String messages = messagesVisitor.getMessages();
+
+                Set<Addressee> users = new HashSet<Addressee>();
+                users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
+                users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.TC, domainName, true, false)).getUsersAbleToAccept());
+                if (submitterEmail != null)
+                    users.add(new EmailAddressee(submitterEmail, submitterEmail));
+
+                Notification notification = createNotification(transactionId, domainName, messages, period, users);
+
+                sendNotification(notification, notificationManager, notificationSender);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean check(Domain domain, String submitterEmail,
+                                NotificationManager notificationManager, NotificationSender notificationSender) {
+        return check(domain, submitterEmail, null, notificationManager, notificationSender, null);
+    }
+
+    public static boolean check(Domain domain, NotificationManager notificationManager, NotificationSender notificationSender) {
+        return check(domain, null, null, notificationManager, notificationSender, null);        
     }
 
     private static Notification createNotification(Long transactionId, String domainName, String errorMessages, String period, Set<Addressee> to) {
@@ -71,14 +94,15 @@ public class TechnicalCheckHelper {
         values.put(TEMPLATE_VALUE_DOMAIN_NAME, domainName);
         values.put(TEMPLATE_VALUE_ERROR_LIST, errorMessages);
         values.put(TEMPLATE_VALUE_DAYS, period);
-        TemplateContent templateContent = new TemplateContent(TEMPLATE_NAME, values);
-        Notification notification = new Notification();
+        TemplateContent templateContent = new TemplateContent(
+                (period != null && period.length() > 0) ? TEMPLATE_PERIOD_NAME : TEMPLATE_NAME, values);
+        Notification notification = new Notification(transactionId);
         notification.addAllAddressees(to);
         notification.setContent(templateContent);
         return notification;
     }
 
-    private static void sendNotification(Notification notification, NotificationManager notificationManagerBean, NotificationSender notificationSender) throws Exception {
+    private static void sendNotification(Notification notification, NotificationManager notificationManagerBean, NotificationSender notificationSender) {
         try {
             if (!notification.getAddressee().isEmpty())
                 notificationSender.send(notification.getAddressee(), notification.getContent());

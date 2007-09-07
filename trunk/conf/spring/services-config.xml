@@ -15,6 +15,8 @@
         <constructor-arg index="1" ref="transactionManagerBean"/>
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="SystemTransactionServiceBean"/>
+        <constructor-arg index="4" ref="NotificationManagerBean"/>
+        <constructor-arg index="5" ref="NotificationSenderBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -291,6 +293,12 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
         </constructor-arg>
     </bean>
 

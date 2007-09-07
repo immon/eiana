@@ -1,7 +1,7 @@
 package org.iana.notifications.dao;
 
-import org.iana.notifications.Notification;
 import org.iana.notifications.Addressee;
+import org.iana.notifications.Notification;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.List;
@@ -31,9 +31,9 @@ public class HibernateNotificationDAO extends HibernateDaoSupport implements Not
     public List<Notification> findUserNotifications(Addressee addressee) {
         String query = " select notif " +
                 " from " +
-                "   Notification as notif "+
-                "   inner join notif.addressee as addr "+
-                " where "+
+                "   Notification as notif " +
+                "   inner join notif.addressee as addr " +
+                " where " +
                 "   addr = ? ";
         return (List<Notification>) getHibernateTemplate().find(query, addressee);
     }
@@ -42,12 +42,21 @@ public class HibernateNotificationDAO extends HibernateDaoSupport implements Not
         String query = " select notif " +
                 " from " +
                 "   Notification as notif " +
-                "where notif.sent = false and "+
+                "where notif.sent = false and " +
                 "notif.sentFailures < ?";
         return (List<Notification>) getHibernateTemplate().find(query, maxSentFailures);
     }
 
     public List<Notification> findAll() {
         return getHibernateTemplate().find("from Notification");
+    }
+
+    public List<Notification> findPersistentNotifications(Long transactionId) {
+        String query = " select notif " +
+                "from " +
+                "    Notification as notif " +
+                "where notif.persistent = true " +
+                "    and transactionId = ?";
+        return (List<Notification>) getHibernateTemplate().find(query, transactionId);
     }
 }

@@ -145,6 +145,12 @@
         <constructor-arg>
             <ref bean="diffConfig"/>
         </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
     </bean>
     
     <bean id="testTransactionManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -176,6 +182,12 @@
         </constructor-arg>        
         <constructor-arg>
             <ref bean="diffConfig"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
         </constructor-arg>
     </bean>
 

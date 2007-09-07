@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -29,6 +28,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private String submitterEmail;
     //private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
     private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
+    private String comment;
 
     public Long getTransactionID() {
         return transactionID;
@@ -196,5 +196,13 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     public void addConfirmation(ConfirmationVO confirmation) {
         if (confirmation == null) confirmations = new HashSet<ConfirmationVO>();
         confirmations.add(confirmation);
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

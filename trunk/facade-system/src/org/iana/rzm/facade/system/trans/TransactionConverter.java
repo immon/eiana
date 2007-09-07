@@ -67,6 +67,8 @@ public class TransactionConverter {
         ret.setModifiedBy(trans.getModifiedBy());
 
         ret.setTokens(getTokens(trans));
+        
+        ret.setComment(trans.getComment());
 
         return ret;
     }

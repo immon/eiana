@@ -34,11 +34,21 @@ public class Notification {
     @Basic
     private long sentFailures;
 
+    @Basic
+    private boolean persistent;
+
+    @Basic
+    private Long transactionId;
 
     public Notification() {
+        this(null);
+    }
+
+    public Notification(Long transactionId) {
         this.created = new Timestamp(System.currentTimeMillis());
         this.sent = false;
         this.sentFailures = 0;
+        this.transactionId = transactionId;
     }
 
     public Long getObjId() {
@@ -99,5 +109,17 @@ public class Notification {
 
     public void setSent(boolean sent) {
         this.sent = sent;
+    }
+
+    public boolean isPersistent() {
+        return persistent;
+    }
+
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+
+    public Long getTransactionId() {
+        return transactionId;
     }
 }

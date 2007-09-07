@@ -129,6 +129,10 @@ public class Domain implements TrackedObject, Cloneable {
     private Long objId;
     @Embedded
     private TrackData trackData = new TrackData();
+    @Basic
+    private String description;
+    @Basic
+    private boolean enableEmails = true;
 
     protected Domain() {
     }
@@ -500,4 +504,20 @@ public class Domain implements TrackedObject, Cloneable {
     public void incThirdPartyPendingProcesses() { ++thirdPartyPendingProcesses; }
 
     public void decThirdPartyPendingProcesses() { --thirdPartyPendingProcesses; }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isEnableEmails() {
+        return enableEmails;
+    }
+
+    public void setEnableEmails(boolean enableEmails) {
+        this.enableEmails = enableEmails;
+    }
 }

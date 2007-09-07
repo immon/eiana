@@ -126,6 +126,14 @@ class SystemDomainVO implements IDomainVO, Serializable {
         return domain.getRoles();
     }
 
+    public boolean isEnableEmails() {
+        return domain.isEnableEmails();
+    }
+
+    public void setEnableEmails(boolean enableEmails) {
+        domain.setEnableEmails(enableEmails);
+    }
+
     public Timestamp getCreated() {
         return domain.getCreated();
     }

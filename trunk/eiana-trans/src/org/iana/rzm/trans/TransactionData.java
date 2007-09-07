@@ -55,6 +55,8 @@ public class TransactionData {
     private boolean redelegation; // contact redelegation!
     @Basic
     private String submitterEmail;
+    @Basic
+    private String comment;
 
     public Long getObjId() {
         return objId;
@@ -167,5 +169,13 @@ public class TransactionData {
 
     public void setSubmitterEmail(String submitterEmail) {
         this.submitterEmail = submitterEmail;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
