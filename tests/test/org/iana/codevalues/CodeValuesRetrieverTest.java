@@ -20,13 +20,13 @@ import java.util.ArrayList;
 public class CodeValuesRetrieverTest {
 
     private CodeValuesRetriever retriever;
-    private CodeValuesRetriever dao;
+    private CodeValuesManager dao;
 
     @BeforeClass
     public void init() {
         ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
-        retriever = (CodeValuesRetriever) ctx.getBean("cachedCodeValues");
-        dao = (CodeValuesRetriever) ctx.getBean("codeValues");
+        retriever = (CodeValuesManager) ctx.getBean("cachedCodeValues");
+        dao = (CodeValuesManager) ctx.getBean("codeValues");
         dao.create(createCode(1, 1));
         dao.create(createCode(2, 2));
     }

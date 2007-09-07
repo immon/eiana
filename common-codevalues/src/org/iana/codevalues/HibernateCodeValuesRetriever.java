@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 
  * @author Patrycja Wegrzynowicz
  */
-public class HibernateCodeValuesRetriever extends HibernateDAO<Code> implements CodeValuesRetriever {
+public class HibernateCodeValuesRetriever extends HibernateDAO<Code> implements CodeValuesManager {
 
     public HibernateCodeValuesRetriever() {
         super(Code.class);
