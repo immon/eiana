@@ -82,12 +82,17 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     }
 
     public TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
+        return createDomainCreationTransaction(domainVO, false);
+    }
+
+    public TransactionVO createDomainCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
         isUserInRole();
         if (userManager.findUsersInSystemRole(domainVO.getName(), null, true, false).isEmpty())
             throw new NoDomainSystemUsersException(domainVO.getName());
         domainManager.create(new Domain(domainVO.getName()));
         domainVO.setStatus(DomainVO.Status.ACTIVE);
-        Transaction trans = transactionManager.createDomainCreationTransaction(FromVOConverter.toDomain(domainVO));
+        Transaction trans;
+        trans = transactionManager.createDomainCreationTransaction(FromVOConverter.toDomain(domainVO), performTechnicalCheck);
         return TransactionConverter.toTransactionVO(trans);
     }
 
@@ -179,11 +184,15 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     }
 
     public TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException {
+        return createDomainModificationTransaction(domainVO, false);
+    }
+
+    public TransactionVO createDomainModificationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException {
         isUserInRole();
         try {
             CheckTool.checkNull(domainVO, "domainVO");
             Domain domain = FromVOConverter.toDomain(domainVO);
-            Transaction createdTransaction = transactionManager.createDomainModificationTransaction(domain);
+            Transaction createdTransaction = transactionManager.createDomainModificationTransaction(domain, performTechnicalCheck);
             CheckTool.checkNull(createdTransaction, "created modification transaction");
             return TransactionConverter.toTransactionVO(createdTransaction);
         } catch (NoModificationException e) {
