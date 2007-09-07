@@ -12,6 +12,7 @@ import pl.nask.util.StringTool;
 import java.rmi.server.UID;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Random;
 
 /**
  * @author Jakub Laszkiewicz
@@ -66,6 +67,15 @@ public class ContactConfirmationCalculator implements ActionHandler {
     }
 
     public String generateToken() {
-        return StringTool.encodeMd5(new UID().toString());
+        String stime = Long.toString(System.currentTimeMillis(), Character.MAX_RADIX);
+        if (stime.length() > 6) stime = stime.substring(stime.length()-6);
+        int max = (int) Math.pow(Character.MAX_RADIX, 8-stime.length());
+        int pre = random.nextInt(max);
+        String rand = Integer.toString(pre, Character.MAX_RADIX);
+        String ret = rand+stime;
+        while (ret.length() < 8) ret = "0"+ret;
+        return ret;
     }
+    
+    static Random random = new Random(System.currentTimeMillis());
 }
