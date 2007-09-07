@@ -91,7 +91,7 @@ class JbpmProcessCriteriaTranslator {
                         sortCriteria.getOrders());
             } else criteria = new And(Collections.singletonList(criteria));
         }
-        buff = HQLGenerator.from(from.toString(), criteria);
+        buff = new HQLGenerator().from(from.toString(), criteria);
     }
 
     public String getHQL() {

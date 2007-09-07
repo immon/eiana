@@ -50,15 +50,15 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
     }
 
     public List<T> find(Criterion criteria) {
-        HQLBuffer hql = HQLGenerator.from(clazz, criteria);
+        HQLBuffer hql = createFindSelect(criteria);
+        System.out.println("QUERY: " + hql.getHQL());
         return getHibernateTemplate().find(hql.getHQL(), hql.getParams());
     }
 
     public List<T> find(final Criterion criteria, final int offset, final int limit) {
         return getHibernateTemplate().executeFind(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-                HQLBuffer hql = HQLGenerator.from(clazz, criteria);
-                System.out.println("QUERY: " + hql.getHQL());
+                HQLBuffer hql = createFindSelect(criteria);
                 Query query = session.createQuery(hql.getHQL());
 
                 int idx = 0;
@@ -77,8 +77,8 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
     public int count(final Criterion criteria) {
         long ret = (Long) getHibernateTemplate().execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-                HQLBuffer hql = HQLGenerator.from(clazz, criteria);
-                Query query = session.createQuery("select count(*) " + hql.getHQL());
+                HQLBuffer hql = createCountSelect(criteria);
+                Query query = session.createQuery(hql.getHQL());
 
                 int idx = 0;
                 for (Object param : hql.getParams()) {
@@ -88,5 +88,17 @@ public class HibernateDAO<T> extends HibernateDaoSupport {
             }
         });
         return (int) ret;
+    }
+
+    protected HQLBuffer createFindSelect(Criterion criteria) {
+        return getGenerator().from(clazz, criteria);
+    }
+
+    protected HQLBuffer createCountSelect(Criterion criteria) {
+        return getGenerator().select("select count(*)", clazz, criteria);        
+    }
+
+    protected HQLGenerator getGenerator() {
+        return new HQLGenerator();
     }
 }

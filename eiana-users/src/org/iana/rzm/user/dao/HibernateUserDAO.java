@@ -4,23 +4,18 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.AdminRole;
 import org.iana.dao.hibernate.HibernateDAO;
+import org.iana.dao.hibernate.HQLGenerator;
+import org.iana.dao.hibernate.HQLBuffer;
+import org.iana.criteria.*;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
- * org.iana.rzm.user.dao.HibernateUserDAO
- *
  * @author Marcin Zajaczkowski
  * @author Jakub Laszkiewicz
- *         <p/>
- *         todo Generic methods (get, create, delete) need to be implemented in every specific DAO. That could be (probably) simplified.
- *         For example by something like that:
- *         interface DataAccessObject<T> {}
- *         interface UserDAO extends DataAccessObject<User> {}
- *         class HibernateUserDAO extends HibernateDAO<User> implements UserDAO {}
- *         <p/>
- *         class abstract HibernateDAO<T> extends HibernateDaoSupport implements DataAccessObject<T> {}
  */
 public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
 
@@ -102,5 +97,51 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
     public List<RZMUser> findAll() {
         String query = "from RZMUser";
         return (List<RZMUser>) getHibernateTemplate().find(query);
+    }
+
+
+    protected HQLBuffer createFindSelect(Criterion criteria) {
+        return getGenerator().select(
+                "select distinct user ",
+                "RZMUser as user " +
+                "inner join user.roles as role ",
+                criteria);
+    }
+
+    protected HQLBuffer createCountSelect(Criterion criteria) {
+        return getGenerator().select(
+                "select count(distinct user) ",
+                "RZMUser as user " +
+                "inner join user.roles as role ",
+                criteria);
+    }
+
+    protected HQLGenerator getGenerator() {
+        return new HQLGenerator() {
+            protected String getFieldName(FieldCriterion crit) {
+                String name = crit.getFieldName();
+                if ("role".equals(name)) return "role.class";
+                if (name.startsWith("role.")) return name;
+                return "user."+name;
+            }
+
+            protected Object getValue(ValuedFieldCriterion crit) {
+                String name = crit.getFieldName();
+                if ("role.type".equals(name)) return AdminRole.AdminType.valueOf(""+crit.getValue());
+                return crit.getValue();
+            }
+
+            protected Set<Object> getValues(In crit) {
+                String name = crit.getFieldName();
+                if ("role.type".equals(name)) {
+                    Set<Object> ret = new HashSet<Object>();
+                    for (Object object : crit.getValues()) {
+                        ret.add(AdminRole.AdminType.valueOf(""+object));
+                    }
+                    return ret;
+                }
+                return crit.getValues();
+            }
+        };
     }
 }

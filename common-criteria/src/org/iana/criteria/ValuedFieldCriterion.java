@@ -5,7 +5,7 @@ import org.iana.rzm.common.validators.CheckTool;
 /**
  * @author Patrycja Wegrzynowicz
  */
-abstract class ValuedFieldCriterion extends FieldCriterion {
+public abstract class ValuedFieldCriterion extends FieldCriterion {
 
     private Object value;
 

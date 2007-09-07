@@ -9,9 +9,19 @@ import java.util.Set;
  */
 public class HQLBuffer {
 
-
     private StringBuffer buf = new StringBuffer();
+
     private List<Object> params = new ArrayList<Object>();
+
+    private String prefix;
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
     public boolean isEmpty() {
         return buf.toString().trim().length() == 0;
@@ -26,18 +36,18 @@ public class HQLBuffer {
     }
 
     public HQLBuffer op(String op, String fieldName, Object value) {
-        buf.append(fieldName).append(" ").append(op).append(" ?");
+        buf.append(getName(fieldName)).append(" ").append(op).append(" ?");
         params.add(value);
         return sp();
     }
 
     public HQLBuffer op(String op, String fieldName) {
-        buf.append(fieldName).append(" ").append(op);
+        buf.append(getName(fieldName)).append(" ").append(op);
         return sp();
     }
 
     public HQLBuffer in(String fieldName, Set<Object> values) {
-        buf.append(fieldName).append(" ").append("in ").append('(');
+        buf.append(getName(fieldName)).append(" ").append("in ").append('(');
         for (Object value : values) {
             buf.append("?,");
             params.add(value);
@@ -45,6 +55,10 @@ public class HQLBuffer {
         if (values.size() > 0) buf.deleteCharAt(buf.length() - 1);
         buf.append(')');
         return sp();
+    }
+
+    private String getName(String fieldName) {
+        return prefix != null ? prefix + "." + fieldName : fieldName;
     }
 
     public HQLBuffer append(String str) {
