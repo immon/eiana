@@ -74,6 +74,8 @@ public class ToVOConverter {
 
         toDomainVO.setStatus(toStatusVO(fromDomain.getStatus()));
         toDomainVO.setState(toStateVO(fromDomain.getState()));
+
+        toDomainVO.setEnableEmails(fromDomain.isEnableEmails());
     }
 
     public static SimpleDomainVO toSimpleDomainVO(Domain fromDomain) {

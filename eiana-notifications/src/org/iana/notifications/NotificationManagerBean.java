@@ -60,4 +60,13 @@ public class NotificationManagerBean implements NotificationManager {
                 update(notif);
         }
     }
+
+    public List<Notification> findPersistentNotifications(Long transactionId) {
+        return notificationDAO.findPersistentNotifications(transactionId);
+    }
+
+    public void deletePersistentNotifications(Long transactionId) {
+        List<Notification> notifications = findPersistentNotifications(transactionId);
+        for(Notification notif : notifications) delete(notif);
+    }
 }

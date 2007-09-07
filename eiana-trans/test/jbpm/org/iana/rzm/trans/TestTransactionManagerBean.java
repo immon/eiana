@@ -1,12 +1,14 @@
 package org.iana.rzm.trans;
 
+import org.iana.notifications.NotificationManager;
+import org.iana.notifications.NotificationSender;
+import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.TransactionTestProcess;
 import org.iana.rzm.trans.conf.ConfirmationTestProcess;
+import org.iana.rzm.trans.conf.TransactionTestProcess;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.ticketing.TicketingService;
-import org.iana.objectdiff.DiffConfiguration;
 import org.jbpm.graph.exe.ProcessInstance;
 
 /**
@@ -17,8 +19,10 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
 
-    public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService, DiffConfiguration diffConfig) {
-        super(processDAO, domainDAO, ticketingService, diffConfig);
+    public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService,
+                                      DiffConfiguration diffConfig, NotificationManager notificationManager,
+                                      NotificationSender notificationSender) {
+        super(processDAO, domainDAO, ticketingService, diffConfig, notificationManager, notificationSender);
         this.processDAO = processDAO;
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
@@ -33,7 +37,7 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
         pi.signal();
         return new Transaction(pi);
     }
-    
+
     public Transaction createConfirmationTestTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));

@@ -23,7 +23,8 @@ public class NotificationsReSender extends ActionExceptionHandler {
         for (Notification notification : unSentNotifications)
             try {
                 notificationSender.send(notification.getAddressee(), notification.getContent());
-                notificationManagerBean.delete(notification);
+                if (!notification.isPersistent())
+                    notificationManagerBean.delete(notification);
             } catch (NotificationException e) {
                 notification.incSentFailures();
                 notificationManagerBean.update(notification);

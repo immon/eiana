@@ -28,6 +28,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
         fillDataFromContext(executionContext);
+        if (!td.getCurrentDomain().isEnableEmails()) return;
         sendNotifications(getNotifications());
     }
 
@@ -75,7 +76,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
                 users.add(new EmailAddressee(email, email));
 
         TemplateContent templateContent = new TemplateContent(notification, new HashMap<String, String>());
-        Notification notification = new Notification();
+        Notification notification = new Notification(transactionId);
         notification.setContent(templateContent);
         notification.setAddressee(users);
         if (td.getSubmitterEmail() != null)

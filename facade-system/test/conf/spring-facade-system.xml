@@ -310,6 +310,12 @@
         <constructor-arg>
             <ref bean="diffConfig"/>
         </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
     </bean>
 
     <!-- jBPM configuration -->

@@ -8,9 +8,12 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper;
 import org.iana.rzm.user.RZMUser;
-import org.iana.ticketing.TicketingService;
 import org.iana.ticketing.TicketingException;
+import org.iana.ticketing.TicketingService;
+import org.iana.notifications.NotificationManager;
+import org.iana.notifications.NotificationSender;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.ArrayList;
@@ -28,12 +31,18 @@ public class TransactionManagerBean implements TransactionManager {
     private TicketingService ticketingService;
     private DomainDAO domainDAO;
     private DiffConfiguration diffConfiguration;
+    private NotificationManager notificationManager;
+    private NotificationSender notificationSender;
 
-    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService, DiffConfiguration diff) {
+    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService,
+                                  DiffConfiguration diff, NotificationManager notificationManager,
+                                  NotificationSender notificationSender) {
         this.processDAO = processDAO;
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
         this.diffConfiguration = diff;
+        this.notificationManager = notificationManager;
+        this.notificationSender = notificationSender;
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
@@ -42,6 +51,13 @@ public class TransactionManagerBean implements TransactionManager {
             throw new NoSuchTransactionException(id);
         Transaction transaction = new Transaction(pi);
         return transaction;
+    }
+
+    public Transaction createDomainCreationTransaction(Domain domain, boolean performTechnicalCheck) {
+        if (performTechnicalCheck) {
+            TechnicalCheckHelper.check(domain, notificationManager, notificationSender);
+        }
+        return createDomainCreationTransaction(domain);
     }
 
     public Transaction createDomainCreationTransaction(Domain domain) {
@@ -66,6 +82,21 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail) throws NoModificationException {
+        return createTransaction(modifiedDomain, submitterEmail);
+    }
+
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain, boolean performTechnicalCheck) throws NoModificationException {
+        if (performTechnicalCheck) {
+            TechnicalCheckHelper.check(modifiedDomain, notificationManager, notificationSender);
+        }
+        return createTransaction(modifiedDomain, null);
+    }
+
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail,
+                                                           boolean performTechnicalCheck) throws NoModificationException {
+        if (performTechnicalCheck) {
+            TechnicalCheckHelper.check(modifiedDomain, submitterEmail, notificationManager, notificationSender);
+        }
         return createTransaction(modifiedDomain, submitterEmail);
     }
 

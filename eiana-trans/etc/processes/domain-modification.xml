@@ -528,6 +528,7 @@
                     <start>false</start>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -545,6 +546,7 @@
                     <start>false</start>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -562,6 +564,7 @@
                     <start>false</start>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -579,6 +582,7 @@
                     <start>false</start>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">

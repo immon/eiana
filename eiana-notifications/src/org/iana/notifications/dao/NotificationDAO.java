@@ -25,4 +25,6 @@ public interface NotificationDAO {
     public List<Notification> findUnSentNotifications(long maxSentFailures);
 
     public List<Notification> findAll();
+
+    public List<Notification> findPersistentNotifications(Long transactionId);
 }

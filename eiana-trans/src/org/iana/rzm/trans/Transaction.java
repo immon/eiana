@@ -263,4 +263,12 @@ public class Transaction implements TrackedObject {
     public void setSubmitterEmail(String submitterEmail) {
         getTransactionData().setSubmitterEmail(submitterEmail);
     }
+
+    public String getComment() {
+        return getTransactionData().getComment();
+    }
+
+    public void setComment(String comment) {
+        getTransactionData().setComment(comment);
+    }
 }

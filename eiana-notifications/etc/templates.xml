@@ -133,12 +133,21 @@ listed as a party to this request.
     </iana:template>
 
     <iana:template>
-        <iana:type>failed-technical-check</iana:type>
+        <iana:type>failed-technical-check-period</iana:type>
         <iana:subject>Domain {domainName} technical checks failed</iana:subject>
         <iana:content>
 Technical checks failed for domain {domainName}:
 {errorList}
 You have {days} day(s) left to make everything working properly.
+        </iana:content>
+    </iana:template>
+
+    <iana:template>
+        <iana:type>failed-technical-check</iana:type>
+        <iana:subject>Domain {domainName} technical checks failed</iana:subject>
+        <iana:content>
+Technical checks failed for domain {domainName}:
+{errorList}
         </iana:content>
     </iana:template>
 

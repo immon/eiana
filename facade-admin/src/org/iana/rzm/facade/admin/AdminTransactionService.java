@@ -1,16 +1,20 @@
 package org.iana.rzm.facade.admin;
 
-import org.iana.rzm.facade.common.RZMStatefulService;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.criteria.Criterion;
+import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.criteria.Criterion;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.common.RZMStatefulService;
+import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.notification.NotificationAddresseeVO;
+import org.iana.rzm.facade.system.notification.NotificationVO;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -65,4 +69,7 @@ public interface AdminTransactionService extends RZMStatefulService, AdminFinder
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit);
 
+    public List<NotificationVO> getNotifications(long transactionId) throws InfrastructureException;
+
+    public void resendNotification(Set<NotificationAddresseeVO> addressees, NotificationVO notification) throws NotificationException;
 }

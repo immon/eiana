@@ -34,6 +34,14 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         return roles;
     }
 
+    public boolean isEnableEmails() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setEnableEmails(boolean enableEmails) {
+        throw new UnsupportedOperationException();
+    }
+
     public void setRoles(Set<RoleVO.Type> roles) {
         this.roles = roles;
     }
