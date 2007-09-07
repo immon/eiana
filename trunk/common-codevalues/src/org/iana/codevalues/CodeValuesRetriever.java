@@ -23,14 +23,5 @@ public interface CodeValuesRetriever {
 
     public String getCodeValue(String code, String id);
 
-    public Code getCode(String codeId);
-
-    public Code get(final long id);
-    public void create(final Code object);
-    public void update(final Code object);
-    public void delete(Code object);
-    public List<Code> find();
-    public List<Code> find(Criterion criteria);
-    public List<Code> find(final Criterion criteria, final int offset, final int limit);
-    public int count(final Criterion criteria);
+    public Code getCode(String code);
 }

@@ -20,14 +20,14 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
     private Cache<CodeValuesEntry> cache;
 
     static class CodeValuesEntry {
-        List<Value> valueList;
+        Code code;
         Map<String, String> valueMap;
 
-        CodeValuesEntry(List<Value> valueList) {
-            this.valueList = valueList;
+        CodeValuesEntry(Code code) {
+            this.code = code;
             this.valueMap = new HashMap<String, String>();
-            if (valueList != null) {
-                for (Value value : valueList) {
+            if (code != null && code.getValues() != null) {
+                for (Value value : code.getValues()) {
                     this.valueMap.put(value.getValueId(), value.getValueName());
                 }
             }
@@ -42,44 +42,15 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
     }
 
     public List<Value> getCodeValues(String code) {
-        return getCodeValuesEntry(code).valueList;
+        return getCodeValuesEntry(code).code.getValues();
     }
 
     public String getCodeValue(String code, String id) {
         return getCodeValuesEntry(code).valueMap.get(id);
     }
 
-    public Code getCode(String codeId) {
-        return null;
-    }
-
-    public Code get(final long id) {
-        return null;
-    }
-
-    public void create(final Code object) {
-    }
-
-    public void update(final Code object) {
-    }
-
-    public void delete(Code object) {
-    }
-
-    public List<Code> find() {
-        return null;
-    }
-
-    public List<Code> find(Criterion criteria) {
-        return null;
-    }
-
-    public List<Code> find(final Criterion criteria, final int offset, final int limit) {
-        return null;
-    }
-
-    public int count(final Criterion criteria) {
-        return 0;
+    public Code getCode(String code) {
+        return getCodeValuesEntry(code).code;
     }
 
     private CodeValuesEntry getCodeValuesEntry(String code) {
@@ -87,7 +58,7 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
             try {
                 return cache.getElement(code);
             } catch (NameNotFoundException e) {
-                CodeValuesEntry ret = new CodeValuesEntry(retriever.getCodeValues(code));
+                CodeValuesEntry ret = new CodeValuesEntry(retriever.getCode(code));
                 cache.putElement(code, ret);
                 return ret;
             }
