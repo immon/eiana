@@ -529,7 +529,9 @@
                                   execution(public * org.iana.rzm.domain.dao.HibernateHostDAO.*(..)) ||
                                   execution(public * org.iana.rzm.trans.TransactionManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
-                                  execution(public * org.iana.rzm.user.RoleManagerBean.*(..))"/>
+                                  execution(public * org.iana.rzm.user.RoleManagerBean.*(..)) ||
+                                  execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
+                                  execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>

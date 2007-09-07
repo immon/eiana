@@ -3,6 +3,7 @@ package org.iana.rzm.init.ant;
 import org.iana.codevalues.Value;
 import org.iana.codevalues.Code;
 import org.iana.codevalues.HibernateCodeValuesRetriever;
+import org.iana.codevalues.CodeValuesRetriever;
 import org.springframework.context.ApplicationContext;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
@@ -33,7 +34,7 @@ public class InitCountryCodes {
                 }
             }
             ApplicationContext context = SpringInitContext.getContext();
-            HibernateCodeValuesRetriever dao = (HibernateCodeValuesRetriever) context.getBean("codeValues");
+            CodeValuesRetriever dao = (CodeValuesRetriever) context.getBean("codeValues");
             Code code = dao.getCode("cc");
             if (code != null) dao.delete(code);
             dao.create(new Code("cc", values));
