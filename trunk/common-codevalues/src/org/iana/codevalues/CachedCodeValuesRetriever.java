@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.iana.criteria.Criterion;
+
 /**
  * The implementation of <code>CodeValuesRetriever</code> that caches retrieved  values.
  *
@@ -45,6 +47,39 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
 
     public String getCodeValue(String code, String id) {
         return getCodeValuesEntry(code).valueMap.get(id);
+    }
+
+    public Code getCode(String codeId) {
+        return null;
+    }
+
+    public Code get(final long id) {
+        return null;
+    }
+
+    public void create(final Code object) {
+    }
+
+    public void update(final Code object) {
+    }
+
+    public void delete(Code object) {
+    }
+
+    public List<Code> find() {
+        return null;
+    }
+
+    public List<Code> find(Criterion criteria) {
+        return null;
+    }
+
+    public List<Code> find(final Criterion criteria, final int offset, final int limit) {
+        return null;
+    }
+
+    public int count(final Criterion criteria) {
+        return 0;
     }
 
     private CodeValuesEntry getCodeValuesEntry(String code) {
