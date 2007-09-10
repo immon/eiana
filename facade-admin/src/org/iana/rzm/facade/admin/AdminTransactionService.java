@@ -17,37 +17,28 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * @author Piotr Tkaczyk
  * @author Patrycja Wegrzynowicz
  */
 public interface AdminTransactionService extends RZMStatefulService, AdminFinderService<TransactionVO> {
 
     TransactionVO getTransaction(long id) throws NoTransactionException, AccessDeniedException;
 
-    TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException;
+    void setIgnoreTicketingSystemErrors(boolean ignore);
 
-    TransactionVO createDomainCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException;
+    boolean getIgnoreTicketingSystemErrors();
 
-    TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException;
+    TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException, CreateTicketException;
 
-    TransactionVO createDomainModificationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException;
+    TransactionVO createDomainCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException, CreateTicketException;
+
+    TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException, CreateTicketException;
+
+    TransactionVO createDomainModificationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException, CreateTicketException;
 
     TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoTransactionException, InfrastructureException, InvalidCountryCodeException;
 
-    /**
-     * Creates the transaction splitting the transactions based on the splitNameServerChange flag.
-     *
-     * Note that the transaction may be splitted regardless of split name server changes flag when there is a need
-     * to split it in case of parties impacted by the name server change.
-     *
-     * @param domain the modified domain.
-     * @param splitNameServerChange the flag indicating that the transaction is to be splitted if the name servers are modified.
-     * @param submitterEmail
-     * @return the created transactions.
-     * @throws org.iana.rzm.facade.auth.AccessDeniedException when access is denied to the user or no user is set.
-     * @throws org.iana.rzm.facade.common.NoObjectFoundException when no domain found with the specified name.
-     * @throws org.iana.rzm.common.exceptions.InfrastructureException when an internal error occured during processing of this method.
-     */
-    List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException;
+    List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException;
 
     void acceptTransaction(long id) throws NoTransactionException, FacadeTransactionException, AccessDeniedException;
 

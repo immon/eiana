@@ -70,6 +70,14 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         this.notificationSender = notificationSender;
     }
 
+    public void setIgnoreTicketingSystemErrors(boolean ignore) {
+        transactionService.setIgnoreTicketingSystemErrors(ignore);
+    }
+
+    public boolean getIgnoreTicketingSystemErrors() {
+        return transactionService.getIgnoreTicketingSystemErrors();
+    }
+
     public TransactionVO getTransaction(long id) throws NoTransactionException, AccessDeniedException {
         isUserInRole();
         try {
@@ -209,7 +217,7 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         }
     }
 
-    public List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createDomainModificationTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInRole();
         return transactionService.createTransactions(domain, splitNameServerChange, submitterEmail);
     }

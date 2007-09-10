@@ -261,9 +261,14 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected TransactionVO createTransaction(IDomainVO domainVO, RZMUser user) throws Exception {
-        setUser(user);
-        List<TransactionVO> transaction = gsts.createTransactions(domainVO, false);
-        return transaction.iterator().next();
+        try {
+            setUser(user);
+            List<TransactionVO> transaction = gsts.createTransactions(domainVO, false);
+            return transaction.iterator().next();
+        } catch (CreateTicketException e) {
+            // ignored
+            return gsts.getTransaction(e.getTransactionId());
+        }
     }
 
     protected TransactionVO createTransaction(IDomainVO domainVO) throws Exception {

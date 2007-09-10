@@ -43,6 +43,10 @@ public interface SystemTransactionService extends RZMStatefulService {
 
     void performTransactionTechnicalCheck(IDomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
 
+    void setIgnoreTicketingSystemErrors(boolean ignore);
+
+    boolean getIgnoreTicketingSystemErrors();
+
     /**
      * Creates the transaction splitting the transactions based on the splitNameServerChange flag.
      * <p/>
@@ -56,9 +60,9 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws NoObjectFoundException  when no domain found with the specified name.
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
-    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException;
+    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException;
 
-    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException;
+    List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException;
 
     /**
      * Accepts a transaction identified by this id on behalf of the user. Note that this service is stateful and the user must be set prior any method call.

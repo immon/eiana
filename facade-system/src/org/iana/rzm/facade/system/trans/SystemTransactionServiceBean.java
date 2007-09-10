@@ -30,7 +30,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     private TransactionManager transactionManager;
     private DomainManager domainManager;
     private DiffConfiguration diffConfiguration;
-
+    private boolean ignoreTicketingSystemErrors = true;
 
     public SystemTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, DiffConfiguration diffConfiguration) {
         super(userManager);
@@ -40,6 +40,14 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
         this.diffConfiguration = diffConfiguration;
+    }
+
+    public boolean getIgnoreTicketingSystemErrors() {
+        return ignoreTicketingSystemErrors;
+    }
+
+    public void setIgnoreTicketingSystemErrors(boolean ignoreTicketingSystemErrors) {
+        this.ignoreTicketingSystemErrors = ignoreTicketingSystemErrors;
     }
 
     public TransactionVO getTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -66,16 +74,17 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
         throw new UnsupportedOperationException();
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         CheckTool.checkNull(domain, "domain");
         if (domainManager.get(domain.getName()) == null) throw new NoObjectFoundException(domain.getName(), "domain");
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
         return createTransaction(modifiedDomain);
     }
 
-    private TransactionVO createTransaction(Domain modifiedDomain) throws NoDomainModificationException {
+    private TransactionVO createTransaction(Domain modifiedDomain) throws NoDomainModificationException, CreateTicketException {
         try {
             Transaction trans = transactionManager.createDomainModificationTransaction(modifiedDomain);
+            if (!ignoreTicketingSystemErrors && trans.getState().getName() == TransactionState.Name.PENDING_CREATION) throw new CreateTicketException(trans.getTransactionID());
             trans.setCreated(now());
             trans.setCreatedBy(user.getUserName());
             return TransactionConverter.toTransactionVO(trans);
