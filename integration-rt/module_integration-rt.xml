@@ -18,6 +18,10 @@
     <path refid="library.apache-commons.classpath"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
+    <pathelement location="${common-codevalues.output.dir}"/>
+    <pathelement location="${common-codevalues.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
   </path>
   
   
@@ -44,7 +48,7 @@
   
   <target name="compile.module.integration-rt" depends="compile.module.integration-rt.production,compile.module.integration-rt.tests" description="Compile module integration-rt"/>
   
-  <target name="compile.module.integration-rt.production" depends="compile.module.eiana-util" description="Compile module integration-rt; production classes">
+  <target name="compile.module.integration-rt.production" depends="compile.module.eiana-util,compile.module.common-codevalues" description="Compile module integration-rt; production classes">
     <mkdir dir="${integration-rt.output.dir}"/>
     <javac destdir="${integration-rt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.integration-rt}"/>

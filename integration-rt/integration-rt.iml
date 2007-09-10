@@ -13,6 +13,9 @@
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntry type="library" name="apache-commons" level="project" />
     <orderEntry type="module" module-name="eiana-util" />
+    <orderEntry type="module" module-name="common-codevalues" />
+    <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="library" name="hibernate" level="project" />
     <orderEntryProperties />
   </component>
 </module>

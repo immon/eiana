@@ -1,7 +1,7 @@
 <process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
-        <transition to="PENDING_CREATION"></transition>
+        <transition to="REQUEST_TRACKER_TICKET_CREATION"></transition>
     </start-state>
 
     <super-state name='LOGGED_STATE'>
@@ -59,6 +59,17 @@
         <transition name="TRANSITION_ADMIN_CLOSED" to="ADMIN_CLOSED"/>
         <transition name="TRANSITION_EXCEPTION" to="EXCEPTION"/>
 
+        <decision name="REQUEST_TRACKER_TICKET_CREATION">
+            <handler class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCreation"/>
+            <transition name="ok" to="FIRST_NSLINK_CHANGE_DECISION"/>
+            <transition name="failed" to="PENDING_CREATION"/>
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
+                    <start>true</start>
+                </action>
+            </event>
+        </decision>
+
         <state name="PENDING_CREATION">
             <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
@@ -74,11 +85,6 @@
             <handler class="org.iana.rzm.trans.jbpm.handlers.NSLinkChangeDecision"/>
             <transition name="yes" to="PENDING_TECH_CHECK"/>
             <transition name="no" to="PENDING_CONTACT_CONFIRMATION"/>
-            <event type='node-enter'>
-                <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
-                    <start>true</start>
-                </action>
-            </event>
         </decision>
 
         <decision name="PENDING_TECH_CHECK">

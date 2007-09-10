@@ -31,7 +31,6 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     public Transaction createTransactionTestTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        td.setTicketID(ticketingService.generateID());
         ProcessInstance pi = processDAO.newProcessInstance(TransactionTestProcess.getProcessName());
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();
@@ -41,7 +40,6 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     public Transaction createConfirmationTestTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        td.setTicketID(ticketingService.generateID());
         ProcessInstance pi = processDAO.newProcessInstance(ConfirmationTestProcess.getProcessName());
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();

@@ -8,12 +8,9 @@ import org.iana.ticketing.TicketingException;
  * @author Jakub Laszkiewicz
  */
 public class FakeTicketingService implements TicketingService {
-    public long generateID() {
-        return 0;  
-    }
 
-    public long createTicket(String tld, String label) throws TicketingException {
-        return 0;
+    public long createTicket(String tld) throws TicketingException {
+        throw new TicketingException();
     }
 
     public void setIanaState(long ticketId, String stateName) throws TicketingException {

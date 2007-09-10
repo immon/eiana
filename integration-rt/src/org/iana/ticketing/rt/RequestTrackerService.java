@@ -5,6 +5,7 @@ import org.iana.ticketing.TicketingException;
 import org.iana.rt.RTStore;
 import org.iana.rt.queue.Queue;
 import org.iana.rt.ticket.Ticket;
+import org.iana.codevalues.CodeValuesRetriever;
 
 import java.io.IOException;
 
@@ -23,10 +24,16 @@ public class RequestTrackerService implements TicketingService {
     private static final String CUSTOM_FIELD_IANA_STATE = "IANA State";
 
     private RTStore store;
+    private CodeValuesRetriever retriever;
 
     public RequestTrackerService(String url, String username, String password) throws TicketingException {
+        this(url, username, password, null);
+    }
+
+    public RequestTrackerService(String url, String username, String password, CodeValuesRetriever retriever) throws TicketingException {
         try {
             store = RTStore.getStore(url, username, password);
+            this.retriever = retriever;
         } catch (IOException e) {
             throw new TicketingException("service creation failed");
         }
@@ -36,14 +43,14 @@ public class RequestTrackerService implements TicketingService {
         return 0;
     }
 
-    public long createTicket(String tld, String label) throws TicketingException {
+    public long createTicket(String tld) throws TicketingException {
         try {
             Ticket ticket = store.tickets().newInstance();
             Queue queue = store.queues().findByName(QUEUE_NAME);
             if (queue == null) throw new TicketingException("Queue does not exist: " + QUEUE_NAME);
             ticket.setQueue(queue);
             ticket.setStatus(Ticket.Status.Open);
-            ticket.setSubject(TICKET_SUBJECT.replace("%tld%", tld).replace("%label%", label));
+            ticket.setSubject(TICKET_SUBJECT.replace("%tld%", tld).replace("%label%", getLabel(tld)));
             store.tickets().create(ticket);
             return ticket.getId();
         } catch (IOException e) {
@@ -51,6 +58,13 @@ public class RequestTrackerService implements TicketingService {
         }
     }
 
+    private String getLabel(String tld) {
+        String label = null;
+        if (retriever != null) label = retriever.getValueById("cc", tld);
+        if (label == null) label = "";
+        return label;
+    }
+    
     public void setIanaState(long ticketId, String stateName) throws TicketingException {
         try {
             Ticket ticket = store.tickets().load(ticketId);
