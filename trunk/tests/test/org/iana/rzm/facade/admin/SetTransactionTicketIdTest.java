@@ -72,7 +72,7 @@ public class SetTransactionTicketIdTest {
     public void testSetTransactionTicketId() throws Exception {
         createDomainModificationProcess();
         TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
-        assert transactionVO.getTicketID() != 123L;
+        assert !new Long(123l).equals(transactionVO.getTicketID());
         gAdminTransactionServ.setTransactionTicketId(transactionID, 123L);
         TransactionVO retTransactionVO = gAdminTransactionServ.getTransaction(transactionID);
         assert retTransactionVO.getTicketID() != transactionVO.getTicketID();

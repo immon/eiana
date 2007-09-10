@@ -20,6 +20,8 @@ public class ProcessStateUpdater extends ActionExceptionHandler {
         TicketingService ts = (TicketingService) executionContext.getJbpmContext().getObjectFactory().createObject("ticketingService");
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         String ianaState = processStateToIanaStatus.get(executionContext.getProcessInstance().getRootToken().getNode().getName());
-        if (ianaState != null) ts.setIanaState(td.getTicketID(), ianaState);
+        if (ianaState != null && td.getTicketID() != null) {
+            ts.setIanaState(td.getTicketID(), ianaState);
+        }
     }
 }

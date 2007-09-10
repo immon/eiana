@@ -15,6 +15,7 @@ public abstract class ActionExceptionHandler implements ActionHandler {
         try {
             doExecute(executionContext);
         } catch (Exception e) {
+            e.printStackTrace();
             executionContext.getToken().setNode(executionContext.getProcessDefinition().getNode("EXCEPTION"));
         }
     }

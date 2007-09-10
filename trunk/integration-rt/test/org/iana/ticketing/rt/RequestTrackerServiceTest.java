@@ -23,7 +23,7 @@ public class RequestTrackerServiceTest {
 
     @BeforeClass
     public void intit() throws TicketingException, IOException {
-        rts = new RequestTrackerService(RTS_URL, RTS_USERNAME, RTS_PASSWORD);
+        rts = new RequestTrackerService(RTS_URL, RTS_USERNAME, RTS_PASSWORD, new CountryCodesRetriever());
         store = RTStore.getStore(RTS_URL, RTS_USERNAME, RTS_PASSWORD);
     }
 
@@ -33,7 +33,7 @@ public class RequestTrackerServiceTest {
     private static final String TICKET_NEW_SUBJECT = "Root Zone Change request for .PL (Poland)";
 
     public void createTicket() throws TicketingException, IOException {
-        long ticketId = rts.createTicket(TICKET_NEW_TLD, TICKET_NEW_LABEL);
+        long ticketId = rts.createTicket(TICKET_NEW_TLD);
 
         Ticket ticket = store.tickets().load(ticketId);
         assert ticket.getQueue() != null : "queue is not set"; 
@@ -49,7 +49,7 @@ public class RequestTrackerServiceTest {
     private static final String TICKET_STATE_VALUE = "tech-check";
 
     public void setState() throws TicketingException, IOException {
-        long ticketId = rts.createTicket(TICKET_STATE_TLD, TICKET_STATE_LABEL);
+        long ticketId = rts.createTicket(TICKET_STATE_TLD);
         rts.setIanaState(ticketId, TICKET_STATE_VALUE);
 
         Ticket ticket = store.tickets().load(ticketId);
@@ -66,7 +66,7 @@ public class RequestTrackerServiceTest {
     private static final String TICKET_CLOSE_SUBJECT = "Root Zone Change request for .DE (Germany)";
 
     public void closeTicket() throws TicketingException, IOException {
-        long ticketId = rts.createTicket(TICKET_CLOSE_TLD, TICKET_CLOSE_LABEL);
+        long ticketId = rts.createTicket(TICKET_CLOSE_TLD);
         rts.closeTicket(ticketId);
 
         Ticket ticket = store.tickets().load(ticketId);

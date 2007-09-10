@@ -14,6 +14,6 @@ public class TicketCloser extends ActionExceptionHandler {
     protected void doExecute(ExecutionContext executionContext) throws Exception {
         TicketingService ts = (TicketingService) executionContext.getJbpmContext().getObjectFactory().createObject("ticketingService");
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        ts.closeTicket(td.getTicketID());
+        if (td.getTicketID() != null) ts.closeTicket(td.getTicketID());
     }
 }

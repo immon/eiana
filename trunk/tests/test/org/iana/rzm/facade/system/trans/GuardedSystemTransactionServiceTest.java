@@ -14,6 +14,7 @@ import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.admin.AdminTransactionService;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -42,6 +43,7 @@ public class GuardedSystemTransactionServiceTest {
     //private AuthenticationService authenticationService;
     private UserManager userManager;
     private SystemTransactionService gsts;
+    private AdminTransactionService ats;
     private DomainManager domainManager;
     private IDomainVO domain, domain1;
     private ProcessDAO processDAO;
@@ -65,6 +67,7 @@ public class GuardedSystemTransactionServiceTest {
         userAc1 = createUser("ac1", SystemRole.SystemType.AC, "gstss");
         userIANA = createUser("iana", AdminRole.AdminType.IANA);
         gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         domain = createDomain("gsts");
         domain1 = createDomain("gstss");
     }
@@ -76,6 +79,10 @@ public class GuardedSystemTransactionServiceTest {
         transaction = gsts.createTransactions(domain, false).get(0);
         assert transaction != null;
 
+        ats.setUser(userIANA);
+        ats.updateTransaction(transaction.getObjId(), 0l, transaction.getState().getName(), false);
+        transaction.setTicketID(0l);
+
         TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
         assert loadedTransaction != null;
 //        assert transaction.equals(loadedTransaction);
@@ -85,6 +92,8 @@ public class GuardedSystemTransactionServiceTest {
         domain1.setRegistryUrl("http://www.registry.url");
         transaction1 = gsts.createTransactions(domain1, false).get(0);
         assert transaction1 != null;
+        ats.updateTransaction(transaction1.getObjId(), 0l, transaction1.getState().getName(), false);
+        transaction1.setTicketID(0l);
 
         loadedTransaction = gsts.getTransaction(transaction1.getTransactionID());
         assert loadedTransaction != null;
@@ -242,7 +251,7 @@ public class GuardedSystemTransactionServiceTest {
         criteria.addTickedId(0L);
         List<TransactionVO> found = gsts.findTransactions(criteria);
         assert found != null;
-        assert found.size() == 2;
+        assert found.size() == 1;
         criteria = new TransactionCriteriaVO();
         criteria.addTickedId(10L);
         found = gsts.findTransactions(criteria);
