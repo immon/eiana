@@ -184,6 +184,22 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         throw new UnsupportedOperationException();
     }
 
+    public String getDescription() {
+        return null;
+    }
+
+    public void setDescription(String description) {
+
+    }
+
+    public String getType() {
+        return null;
+    }
+
+    public void setType(String type) {
+
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

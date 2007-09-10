@@ -154,7 +154,7 @@
     </target>
 
     <target name="cc.init" depends="all.jar">
-        <java classname="org.iana.rzm.init.ant.InitCountryCodes">
+        <java classname="org.iana.rzm.init.ant.InitCodeValues">
             <classpath refid="inittools.classpath"/>
         </java>
     </target>

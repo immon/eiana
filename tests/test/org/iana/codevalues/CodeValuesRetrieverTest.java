@@ -25,7 +25,7 @@ public class CodeValuesRetrieverTest {
     @BeforeClass
     public void init() {
         ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
-        retriever = (CodeValuesManager) ctx.getBean("cachedCodeValues");
+        retriever = (CodeValuesRetriever) ctx.getBean("cachedCodeValues");
         dao = (CodeValuesManager) ctx.getBean("codeValues");
         dao.create(createCode(1, 1));
         dao.create(createCode(2, 2));

@@ -4,7 +4,6 @@ import org.iana.codevalues.Value;
 import org.iana.codevalues.CodeValuesRetriever;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -19,7 +18,7 @@ public class CountryCodesImpl implements CountryCodes {
     }
 
     public String getCountryName(String countryCode) {
-        return retriever.getCodeValue("cc", countryCode);
+        return retriever.getValueById("cc", countryCode);
     }
 
     public List<Value> getCountries() {

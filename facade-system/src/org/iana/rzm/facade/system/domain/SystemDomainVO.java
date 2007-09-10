@@ -149,4 +149,21 @@ class SystemDomainVO implements IDomainVO, Serializable {
     public String getModifiedBy() {
         return domain.getModifiedBy();
     }
+
+
+    public String getDescription() {
+        return domain.getDescription();
+    }
+
+    public void setDescription(String description) {
+        domain.setDescription(description);
+    }
+
+    public String getType() {
+        return domain.getType();
+    }
+
+    public void setType(String type) {
+        domain.setType(type);
+    }
 }

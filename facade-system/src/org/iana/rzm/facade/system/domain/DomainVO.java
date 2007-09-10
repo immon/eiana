@@ -23,6 +23,8 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     private Status status;
     private State state;
     private boolean enableEmails;
+    private String description;
+    private String type;
 
     public ContactVO getSupportingOrg() {
         return supportingOrg;
@@ -118,6 +120,22 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
 
     public void setEnableEmails(boolean enableEmails) {
         this.enableEmails = enableEmails;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean equals(Object o) {
