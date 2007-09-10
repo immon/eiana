@@ -80,6 +80,8 @@ public class FromVOConverter {
             trackData.setModifiedBy(fDomainVO.getModifiedBy());
             tDomain.setTrackData(trackData);
             tDomain.setEnableEmails(fDomainVO.isEnableEmails());
+            tDomain.setDescription(fDomainVO.getDescription());
+            tDomain.setDescription(fDomainVO.getType());
         } catch (NameServerAlreadyExistsException e) {
             // imposible to occure because domain name servers set is converted from domainVO name servers set
             throw new IllegalArgumentException("Duplicated Name Servers", e);

@@ -88,4 +88,12 @@ public interface IDomainVO extends Trackable {
     boolean isEnableEmails();
 
     void setEnableEmails(boolean enableEmails);
+
+    String getDescription();
+
+    void setDescription(String description);
+
+    String getType();
+
+    void setType(String type);
 }

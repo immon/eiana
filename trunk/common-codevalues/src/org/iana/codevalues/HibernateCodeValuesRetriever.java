@@ -1,11 +1,9 @@
 package org.iana.codevalues;
 
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.iana.dao.hibernate.HibernateDAO;
 import org.iana.criteria.Equal;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * The hibernate-based implementation of <code>CodeValuesRetriever</code>.
@@ -29,7 +27,15 @@ public class HibernateCodeValuesRetriever extends HibernateDAO<Code> implements 
         return code != null && code.size() > 0 ? code.get(0) : null;
     }
 
-    public String getCodeValue(String codeId, String id) {
+    public boolean hasValueId(String code, String id) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean hasValue(String code, String value) {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getValueById(String codeId, String id) {
         List<Value> values = getCodeValues(codeId);
         if (values != null && id != null) {
             for (Value value : values) {

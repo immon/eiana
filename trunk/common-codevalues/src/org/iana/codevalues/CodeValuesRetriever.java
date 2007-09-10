@@ -21,7 +21,11 @@ public interface CodeValuesRetriever {
 
     public List<Value> getCodeValues(String code);
 
-    public String getCodeValue(String code, String id);
+    public boolean hasValueId(String code, String id);
+
+    public boolean hasValue(String code, String value);
+
+    public String getValueById(String code, String id);
 
     public Code getCode(String code);
 }

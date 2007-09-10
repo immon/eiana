@@ -25,6 +25,7 @@
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="library" name="apache-commons" level="project" />
     <orderEntry type="module" module-name="eiana-logs" />
+    <orderEntry type="module" module-name="common-codevalues" />
     <orderEntryProperties />
   </component>
 </module>

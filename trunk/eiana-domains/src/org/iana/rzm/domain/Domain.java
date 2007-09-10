@@ -132,7 +132,9 @@ public class Domain implements TrackedObject, Cloneable {
     @Basic
     private String description;
     @Basic
-    private boolean enableEmails = true;
+    private boolean enableEmails = false;
+    @Basic
+    private String type;
 
     protected Domain() {
     }
@@ -519,5 +521,13 @@ public class Domain implements TrackedObject, Cloneable {
 
     public void setEnableEmails(boolean enableEmails) {
         this.enableEmails = enableEmails;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

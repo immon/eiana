@@ -3,11 +3,7 @@ package org.iana.codevalues;
 import pl.nask.cache.Cache;
 import pl.nask.cache.NameNotFoundException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-
-import org.iana.criteria.Criterion;
+import java.util.*;
 
 /**
  * The implementation of <code>CodeValuesRetriever</code> that caches retrieved  values.
@@ -22,13 +18,16 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
     static class CodeValuesEntry {
         Code code;
         Map<String, String> valueMap;
+        Set<String> valueSet;
 
         CodeValuesEntry(Code code) {
             this.code = code;
             this.valueMap = new HashMap<String, String>();
+            this.valueSet = new HashSet<String>();
             if (code != null && code.getValues() != null) {
                 for (Value value : code.getValues()) {
                     this.valueMap.put(value.getValueId(), value.getValueName());
+                    this.valueSet.add(value.getValueName());
                 }
             }
         }
@@ -45,7 +44,15 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
         return getCodeValuesEntry(code).code.getValues();
     }
 
-    public String getCodeValue(String code, String id) {
+    public boolean hasValueId(String code, String id) {
+        return getCodeValuesEntry(code).valueMap.containsKey(id);
+    }
+
+    public boolean hasValue(String code, String value) {
+        return getCodeValuesEntry(code).valueSet.contains(value);
+    }
+
+    public String getValueById(String code, String id) {
         return getCodeValuesEntry(code).valueMap.get(id);
     }
 

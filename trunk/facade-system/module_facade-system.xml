@@ -39,6 +39,8 @@
     <path refid="library.apache-commons.classpath"/>
     <pathelement location="${eiana-logs.output.dir}"/>
     <pathelement location="${eiana-logs.testoutput.dir}"/>
+    <pathelement location="${common-codevalues.output.dir}"/>
+    <pathelement location="${common-codevalues.testoutput.dir}"/>
   </path>
   
   
@@ -66,7 +68,7 @@
   
   <target name="compile.module.facade-system" depends="compile.module.facade-system.production,compile.module.facade-system.tests" description="Compile module facade-system"/>
   
-  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.eiana-logs" description="Compile module facade-system; production classes">
+  <target name="compile.module.facade-system.production" depends="compile.module.eiana-util,compile.module.facade-common,compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-trans,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.eiana-logs,compile.module.common-codevalues" description="Compile module facade-system; production classes">
     <mkdir dir="${facade-system.output.dir}"/>
     <javac destdir="${facade-system.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-system}"/>
