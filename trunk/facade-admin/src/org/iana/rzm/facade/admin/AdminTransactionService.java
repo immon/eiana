@@ -31,6 +31,8 @@ public interface AdminTransactionService extends RZMStatefulService, AdminFinder
 
     TransactionVO createDomainModificationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException;
 
+    TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoTransactionException, InfrastructureException, InvalidCountryCodeException;
+
     /**
      * Creates the transaction splitting the transactions based on the splitNameServerChange flag.
      *
