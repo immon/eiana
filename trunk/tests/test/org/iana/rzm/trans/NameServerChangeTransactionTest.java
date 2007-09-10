@@ -69,7 +69,7 @@ public class NameServerChangeTransactionTest {
 
     @Test
     public void testNameServersChange() throws InfrastructureException, NoDomainModificationException, NoObjectFoundException {
-        TransactionVO transaction;
+        TransactionVO transaction = null;
 
         List<HostVO> ns = domain.getNameServers();
         HostVO newHostVO = new HostVO("new.host.name");
@@ -81,7 +81,10 @@ public class NameServerChangeTransactionTest {
         ns.add(newHostVO);
         domain.setNameServers(ns);
 
-        transaction = gsts.createTransactions(domain, false).get(0);
+        try {
+            transaction = gsts.createTransactions(domain, false).get(0);
+        } catch (CreateTicketException e) {
+        }
         assert transaction != null;
 
         TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());

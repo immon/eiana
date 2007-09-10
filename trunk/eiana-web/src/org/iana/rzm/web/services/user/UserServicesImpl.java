@@ -157,7 +157,7 @@ public class UserServicesImpl implements UserServices {
     }
 
     public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail)
-        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException {
+        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, CreateTicketException {
 
         try {
             List<TransactionVO> list;
@@ -175,7 +175,7 @@ public class UserServicesImpl implements UserServices {
     }
 
     public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail)
-        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException {
+        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, CreateTicketException {
         try {
             List<TransactionVO> list;
             if (submitterEmail != null) {

@@ -11,6 +11,7 @@ import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.iana.rzm.facade.system.trans.CreateTicketException;
 import org.iana.rzm.web.model.DomainVOWrapper;
 import org.iana.rzm.web.model.TransactionVOWrapper;
 import org.iana.rzm.web.services.user.UserServices;
@@ -145,6 +146,8 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         }catch(NoDomainModificationException e){
             setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
+        } catch (CreateTicketException e) {
+            // todo: "create ticket" error
         }
 
     }

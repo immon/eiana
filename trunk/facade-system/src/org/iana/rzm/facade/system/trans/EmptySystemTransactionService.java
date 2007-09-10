@@ -29,6 +29,14 @@ public class EmptySystemTransactionService implements SystemTransactionService {
         return null;
     }
 
+    public void setIgnoreTicketingSystemErrors(boolean ignore) {
+
+    }
+
+    public boolean getIgnoreTicketingSystemErrors() {
+        return false;
+    }
+
     public TransactionVO getTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         return null;
     }

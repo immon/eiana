@@ -1,9 +1,11 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.rzm.facade.system.trans.TransactionServiceException;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class NoDomainModificationException extends Exception {
+public class NoDomainModificationException extends TransactionServiceException {
 
     private String domainName;
 

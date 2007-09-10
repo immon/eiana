@@ -3,7 +3,7 @@ package org.iana.rzm.facade.system.trans;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class NoDomainSystemUsersException extends Exception {
+public class NoDomainSystemUsersException extends TransactionServiceException {
 
     private String domainName;
 

@@ -48,6 +48,14 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         this.delegate = delegate;
     }
 
+    public void setIgnoreTicketingSystemErrors(boolean ignore) {
+        delegate.setIgnoreTicketingSystemErrors(ignore);
+    }
+
+    public boolean getIgnoreTicketingSystemErrors() {
+        return delegate.getIgnoreTicketingSystemErrors();
+    }
+
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
     }
@@ -76,12 +84,12 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
         return delegate.detectTransactionActions(domain);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
     }
