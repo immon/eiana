@@ -40,6 +40,7 @@ public class ResendNotificationTest {
 
     private final static String DOMAIN_NAME = "resenddomain.org";
     private final static String PROCESS_NAME = "Domain Modification Transaction (Unified Workflow)";
+    private final static String NOTIFICATION_COMMENT = "Test";
 
     @BeforeClass
     public void init() {
@@ -86,6 +87,7 @@ public class ResendNotificationTest {
         newDomain.setSupportingOrg(new Contact("supportOrg"));
         newDomain.setAdminContact(new Contact("resendacuser"));
         newDomain.setTechContact(new Contact("resendtcuser"));
+        newDomain.setEnableEmails(true);
         return newDomain;
     }
 
@@ -101,7 +103,7 @@ public class ResendNotificationTest {
         assert notifications.size() == 2;
 
         for (NotificationVO notif : notifications)
-            ats.resendNotification(notif.getAddressees(), notif);
+            ats.resendNotification(notif.getAddressees(), notif.getObjId(), NOTIFICATION_COMMENT);
     }
 
     private void createDomainModificationProcess() throws Exception {

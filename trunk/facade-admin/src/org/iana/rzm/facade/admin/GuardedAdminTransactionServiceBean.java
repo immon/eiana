@@ -3,6 +3,7 @@ package org.iana.rzm.facade.admin;
 import org.iana.criteria.Criterion;
 import org.iana.notifications.NotificationManager;
 import org.iana.notifications.NotificationSender;
+import org.iana.notifications.Notification;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
@@ -315,8 +316,13 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         }
     }
 
-    public void resendNotification(Set<NotificationAddresseeVO> addressees, NotificationVO notification) throws NotificationException {
+    public void resendNotification(Set<NotificationAddresseeVO> addressees, Long notificationId, String comment) throws NotificationException {
+        Notification notification = notificationManager.get(notificationId);
+        StringBuffer body = new StringBuffer();
+        if (comment != null)
+            body.append(comment).append("\n");
+        body.append(notification.getContent().getBody());
         notificationSender.send(NotificationConverter.toAddresseeSet(addressees),
-                notificationManager.get(notification.getObjId()).getContent());
+                notification.getContent().getSubject(), body.toString());
     }
 }
