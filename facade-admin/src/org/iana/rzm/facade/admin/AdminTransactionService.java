@@ -68,5 +68,5 @@ public interface AdminTransactionService extends RZMStatefulService, AdminFinder
 
     public List<NotificationVO> getNotifications(long transactionId) throws InfrastructureException;
 
-    public void resendNotification(Set<NotificationAddresseeVO> addressees, NotificationVO notification) throws NotificationException;
+    public void resendNotification(Set<NotificationAddresseeVO> addressees, Long notificationId, String comment) throws NotificationException;
 }
