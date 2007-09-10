@@ -123,6 +123,15 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
         _updateTransaction(id, ticketId, targetStateName, redelegation);
     }
 
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, InfrastructureException, InvalidCountryCodeException {
+        try {
+            return transactionService.detectTransactionActions(domain);
+        } catch (NoObjectFoundException e) {
+            // cannot happen
+            throw new InfrastructureException(e);
+        }
+    }
+
     private void _updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException {
         try {
             Transaction retTransaction= transactionManager.getTransaction(id);
