@@ -21,8 +21,8 @@ public class DomainTypesImpl implements DomainTypes {
         this.retriever = retriever;
     }
 
-    public List<Value> getDomainTypes() {
-        return retriever.getCodeValues(CODE_DT);
+    public Set<Value> getDomainTypes() {
+        return new HashSet<Value>(retriever.getCodeValues(CODE_DT));
     }
 
     public boolean hasDomainType(String value) {

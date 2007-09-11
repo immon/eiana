@@ -27,5 +27,6 @@ public abstract class Content {
     }
 
     public abstract String getSubject() throws NotificationException;
+
     public abstract String getBody() throws NotificationException;
 }
