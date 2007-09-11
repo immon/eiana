@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
- * @author: JaKub Laszkiewicz
+ * @author Jakub Laszkiewicz
  */
 public class ProcessStateNotifier extends ActionExceptionHandler {
 
@@ -48,8 +48,11 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
 
     private void sendNotification(Notification notification) throws Exception {
         try {
-            if (!notification.getAddressee().isEmpty())
+            if (!notification.getAddressee().isEmpty()) {
                 notificationSender.send(notification.getAddressee(), notification.getContent());
+                if (notification.isPersistent())
+                    notificationManagerBean.create(notification);
+            }
         } catch (NotificationException e) {
             notification.incSentFailures();
             notificationManagerBean.create(notification);
