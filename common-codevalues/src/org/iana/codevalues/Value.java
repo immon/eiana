@@ -38,4 +38,23 @@ public class Value implements Serializable {
     public String getValueName() {
         return valueName;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Value value = (Value) o;
+
+        if (objId != null ? !objId.equals(value.objId) : value.objId != null) return false;
+        if (valueName != null ? !valueName.equals(value.valueName) : value.valueName != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (objId != null ? objId.hashCode() : 0);
+        result = 31 * result + (valueName != null ? valueName.hashCode() : 0);
+        return result;
+    }
 }
