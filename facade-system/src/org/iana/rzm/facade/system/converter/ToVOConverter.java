@@ -96,6 +96,7 @@ public class ToVOConverter {
         toSimpleDomainVO.setObjId(fromDomain.getObjId());
         toSimpleDomainVO.setName(fromDomain.getName());
         toSimpleDomainVO.setSpecialInstructions(fromDomain.getSpecialInstructions());
+        toSimpleDomainVO.setDescription(fromDomain.getDescription());
 
         if (fromDomain.getTrackData() != null) {
             toSimpleDomainVO.setCreated(fromDomain.getCreated());

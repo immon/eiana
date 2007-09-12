@@ -21,6 +21,7 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
+    private String description;
 
     public String getName() {
         return name;
@@ -34,17 +35,18 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         return roles;
     }
 
-    public boolean isEnableEmails() {
-        throw new UnsupportedOperationException();
+    public String getDescription() {
+        return description;
     }
 
-    public void setEnableEmails(boolean enableEmails) {
-        throw new UnsupportedOperationException();
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setRoles(Set<RoleVO.Type> roles) {
         this.roles = roles;
     }
+
 
     public Long getObjId() {
         return objId;
@@ -91,10 +93,26 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
     }
 
     public void setSpecialInstructions(String specialInstructions) {
-       this.specialInstructions = specialInstructions;
+        this.specialInstructions = specialInstructions;
     }
 
     //------------------
+
+    public String getType() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setType(String type) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isEnableEmails() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setEnableEmails(boolean enableEmails) {
+        throw new UnsupportedOperationException();
+    }
 
     public ContactVO getSupportingOrg() {
         throw new UnsupportedOperationException();
@@ -184,32 +202,29 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         throw new UnsupportedOperationException();
     }
 
-    public String getDescription() {
-        return null;
-    }
-
-    public void setDescription(String description) {
-
-    }
-
-    public String getType() {
-        return null;
-    }
-
-    public void setType(String type) {
-
-    }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SimpleDomainVO that = (SimpleDomainVO) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (objId != null ? !objId.equals(that.objId) : that.objId != null) return false;
-        if (roles != null ? !roles.equals(that.roles) : that.roles != null) return false;
-        if (trackData != null ? !trackData.equals(that.trackData) : that.trackData != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (objId != null ? !objId.equals(that.objId) : that.objId != null) {
+            return false;
+        }
+        if (roles != null ? !roles.equals(that.roles) : that.roles != null) {
+            return false;
+        }
+        if (trackData != null ? !trackData.equals(that.trackData) : that.trackData != null) {
+            return false;
+        }
 
         return true;
     }

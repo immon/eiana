@@ -1,16 +1,14 @@
 package org.iana.rzm.facade.system.converter;
 
+import org.iana.dns.validator.*;
+import org.iana.rzm.common.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.user.*;
 
 import java.util.*;
 
@@ -81,7 +79,7 @@ public class FromVOConverter {
             tDomain.setTrackData(trackData);
             tDomain.setEnableEmails(fDomainVO.isEnableEmails());
             tDomain.setDescription(fDomainVO.getDescription());
-            tDomain.setDescription(fDomainVO.getType());
+            tDomain.setType(fDomainVO.getType());
         } catch (NameServerAlreadyExistsException e) {
             // imposible to occure because domain name servers set is converted from domainVO name servers set
             throw new IllegalArgumentException("Duplicated Name Servers", e);
