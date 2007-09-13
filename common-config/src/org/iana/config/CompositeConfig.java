@@ -1,4 +1,4 @@
-package org.iana.criteria;
+package org.iana.config;
 
 import java.util.List;
 import java.util.ArrayList;

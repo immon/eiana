@@ -1,4 +1,4 @@
-package org.iana.criteria;
+package org.iana.config;
 
 /**
  * @author Patrycja Wegrzynowicz
