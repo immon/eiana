@@ -174,7 +174,8 @@
              compile.module.eiana-users,compile.module.eiana-startup,compile.module.eiana-util,compile.module.facade-admin,
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
-             compile.module.common-codevalues,compile.module.common-pgp, compile.module.common-test"
+             compile.module.common-codevalues,compile.module.common-pgp, compile.module.common-test,
+             compile.module.common-config"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
@@ -182,6 +183,9 @@
 
         <jar destfile="${jar.output.dir}/common-codevalues.jar">
             <fileset dir="${common-codevalues.output.dir}"/>
+        </jar>
+        <jar destfile="${jar.output.dir}/common-config.jar">
+            <fileset dir="${common-config.output.dir}"/>
         </jar>
         <jar destfile="${jar.output.dir}/common-criteria.jar">
             <fileset dir="${common-criteria.output.dir}"/>

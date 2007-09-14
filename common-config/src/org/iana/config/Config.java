@@ -6,10 +6,11 @@ import java.util.Set;
 /**
  * The base interface of config hierarchy that provides a set of methods
  * to fetch String values of parameters stored in a config.
- *
+ * <p/>
  * Each fetch method must return null to indicate that the value does not exist in a config.
  *
  * @author Patrycja Wegrzynowicz
+ * @author Piotr Tkaczyk
  */
 public interface Config {
 
@@ -19,7 +20,9 @@ public interface Config {
 
     Set<String> getParameterSet(String name);
 
-    Config getConfig(String name);
+    Config getSubConfig(String name);
+
+    Set<String> getSubConfigNames();
 
     Set<String> getParameterNames();
 
@@ -38,7 +41,7 @@ public interface Config {
     Set<Boolean> getBooleanParameterSet(String name);
 
     Set<Integer> getIntegerParameterSet(String name);
-    
+
     Set<Long> getLongParameterSet(String name);
 
 }

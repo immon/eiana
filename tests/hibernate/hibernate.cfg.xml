@@ -25,12 +25,12 @@
 
         <mapping class="org.iana.rzm.common.Name"/>
 
-		<mapping class="org.iana.rzm.domain.Address"/>
-		<mapping class="org.iana.rzm.domain.Contact"/>
-		<mapping class="org.iana.rzm.domain.Domain"/>
-		<mapping class="org.iana.rzm.domain.Host"/>
-		<mapping class="org.iana.rzm.domain.IPv4Address"/>
-		<mapping class="org.iana.rzm.domain.IPv6Address"/>
+        <mapping class="org.iana.rzm.domain.Address"/>
+        <mapping class="org.iana.rzm.domain.Contact"/>
+        <mapping class="org.iana.rzm.domain.Domain"/>
+        <mapping class="org.iana.rzm.domain.Host"/>
+        <mapping class="org.iana.rzm.domain.IPv4Address"/>
+        <mapping class="org.iana.rzm.domain.IPv6Address"/>
 
         <mapping class="org.iana.rzm.user.AbstractPassword"/>
         <mapping class="org.iana.rzm.user.AdminRole"/>
@@ -38,7 +38,7 @@
         <mapping class="org.iana.rzm.user.Role"/>
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
-        
+
         <mapping class="org.iana.rzm.log.LogEntry"/>
 
         <mapping class="org.iana.objectdiff.Change"/>
@@ -64,13 +64,17 @@
         <mapping class="org.iana.rzm.trans.confirmation.contact.ContactConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.contact.ContactIdentity"/>
 
-        <mapping class="org.iana.notifications.Content" />
-        <mapping class="org.iana.notifications.AbstractAddressee" />
-        <mapping class="org.iana.notifications.Notification" />
-        <mapping class="org.iana.notifications.EmailAddressee" />
-        <mapping class="org.iana.notifications.TemplateContent" />
-        <mapping class="org.iana.notifications.TextContent" />
+        <mapping class="org.iana.notifications.Content"/>
+        <mapping class="org.iana.notifications.AbstractAddressee"/>
+        <mapping class="org.iana.notifications.Notification"/>
+        <mapping class="org.iana.notifications.EmailAddressee"/>
+        <mapping class="org.iana.notifications.TemplateContent"/>
+        <mapping class="org.iana.notifications.TextContent"/>
 
+        <mapping class="org.iana.config.AbstractParameter"/>
+        <mapping class="org.iana.config.SingleParameter"/>
+        <mapping class="org.iana.config.ListParameter"/>
+        <mapping class="org.iana.config.SetParameter"/>
         <!-- ############################################ -->
         <!-- # mapping files with external dependencies # -->
         <!-- ############################################ -->
@@ -97,7 +101,7 @@
         <!-- ###################### -->
 
         <!-- hql queries and type defs -->
-        <mapping resource="org/jbpm/db/hibernate.queries.hbm.xml" />
+        <mapping resource="org/jbpm/db/hibernate.queries.hbm.xml"/>
 
         <!-- graph.def mapping files -->
         <mapping resource="org/jbpm/graph/def/ProcessDefinition.hbm.xml"/>
