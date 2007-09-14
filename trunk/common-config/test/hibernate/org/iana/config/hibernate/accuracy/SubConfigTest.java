@@ -1,14 +1,13 @@
 package org.iana.config.hibernate.accuracy;
 
-import org.iana.config.ConfigDAO;
-import org.iana.config.OwnedConfig;
-import org.iana.config.SetParameter;
-import org.iana.config.SingleParameter;
+import org.iana.config.*;
 import org.iana.config.conf.SpringConfigApplicationContext;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,9 +36,23 @@ public class SubConfigTest extends TransactionalSpringContextTests {
         singleParam.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(singleParam);
 
+        List<String> values = new ArrayList<String>();
+        values.add("20");
+        values.add("80");
+
+        ListParameter listParam = new ListParameter("sub1.sub2.sub3.param4", values);
+        listParam.setOwner(OWNER);
+        listParam.setFromDate(System.currentTimeMillis() - 100000);
+        listParam.setToDate(System.currentTimeMillis() + 100000);
+        hibernateConfigDAO.addParameter(listParam);
+
         OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
         Boolean retValue = ownedConfig.getSubConfig("sub1").getSubConfig("sub2").getBooleanParameter("param1");
         assert retValue;
+
+        List<String> retValues = ownedConfig.getSubConfig("sub1").getSubConfig("sub2").getSubConfig("sub3").getParameterList("param4");
+        assert values.equals(retValues);
+
     }
 
     @Test(dependsOnMethods = "testSubConfig")
@@ -58,6 +71,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
 
         Set<String> subConfigNames = new HashSet<String>();
         subConfigNames.add("sub1.sub2");
+        subConfigNames.add("sub1.sub2.sub3");
         subConfigNames.add("sub1");
         assert subConfigNames.equals(retSubConfigNames);
     }
@@ -66,6 +80,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     public void testRemoveNewParams() {
         hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2.param1");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.param2");
+        hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2.sub3.param4");
     }
 
     public void cleanUp() {
