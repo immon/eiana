@@ -124,7 +124,6 @@ public class ResendNotificationTest {
             ats.resendNotification(notif.getAddressees(), notif.getObjId(), NOTIFICATION_COMMENT);
     }
 
-    //@Test(dependsOnMethods = "testResendContactConfirmationNotification")
     public void testResendContactOutstandingConfirmationNotification() throws Exception {
         AuthenticatedUser au = new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser();
         ats.setUser(au);
@@ -138,6 +137,23 @@ public class ResendNotificationTest {
         sts.acceptTransaction(transactionID, token);
 
         ats.resendNotification(transactionID, NotificationVO.Type.CONTACT_CONFIRMATION, NOTIFICATION_COMMENT);
+    }
+
+    public void testResendUSDoCOutstandingConfirmationNotification() throws Exception {
+        AuthenticatedUser au = new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser();
+        ats.setUser(au);
+        Long transactionID = createDomainModificationProcess();
+        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
+        ats.transitTransaction(transactionID, "go-on");
+        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+        ats.transitTransaction(transactionID, "admin-accept");
+        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+        ats.transitTransaction(transactionID, "admin-accept");
+        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        ats.transitTransaction(transactionID, "admin-accept");
+        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+
+        ats.resendNotification(transactionID, NotificationVO.Type.USDOC_CONFIRMATION, NOTIFICATION_COMMENT);
     }
 
     private Long createDomainModificationProcess() throws Exception {
