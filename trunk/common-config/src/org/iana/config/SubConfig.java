@@ -91,15 +91,8 @@ class SubConfig implements Config {
 
     private String updateSubName(String subName, String paramName) {
         StringBuffer buff = new StringBuffer();
-        if (!subName.contains(".")) {
-            int lastDotIdx = subName.lastIndexOf(".");
-            buff.append(subName.substring(0, lastDotIdx + 1));
-            buff.append(subName).append(".");
-            buff.append(paramName);
-        } else {
-            buff.append(subName).append(".");
-            buff.append(paramName);
-        }
+        buff.append(subName).append(".");
+        buff.append(paramName);
         return buff.toString();
     }
 }
