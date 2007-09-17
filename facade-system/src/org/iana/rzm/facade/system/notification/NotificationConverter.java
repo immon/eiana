@@ -54,8 +54,8 @@ public class NotificationConverter {
         notificationVOType.put("contact-confirmation-remainder", NotificationVO.Type.CONTACT_CONFIRMATION_REMAINDER);
         notificationVOType.put("impacted_parties-confirmation", NotificationVO.Type.IMPACTED_PARTIES_CONFIRMATION);
         notificationVOType.put("impacted_parties-confirmation-remainder", NotificationVO.Type.IMPACTED_PARTIES_CONFIRMATION_REMAINDER);
-        notificationVOType.put("uscdoc-confirmation", NotificationVO.Type.USDOC_CONFIRMATION);
-        notificationVOType.put("uscdoc-confirmation-remainder", NotificationVO.Type.USDOC_CONFIRMATION_REMAINDER);
+        notificationVOType.put("usdoc-confirmation", NotificationVO.Type.USDOC_CONFIRMATION);
+        notificationVOType.put("usdoc-confirmation-remainder", NotificationVO.Type.USDOC_CONFIRMATION_REMAINDER);
         notificationVOType.put("zone-insertion-alert", NotificationVO.Type.ZONE_INSERTION_ALERT);
         notificationVOType.put("zone-publication-alert", NotificationVO.Type.ZONE_PUBLICATION_ALERT);
         notificationVOType.put("completed", NotificationVO.Type.COMPLETED);
