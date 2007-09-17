@@ -17,4 +17,6 @@ public interface NotificationSender {
     void send(Addressee addressee, Content content) throws NotificationException;
 
     void send(Collection<Addressee> addressees, Content content) throws NotificationException;
+
+    void send(Notification notification) throws NotificationException;
 }

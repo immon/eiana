@@ -1,6 +1,11 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.criteria.And;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
 import org.iana.notifications.EmailAddressee;
+import org.iana.notifications.Notification;
+import org.iana.notifications.NotificationCriteriaFields;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.converter.ToVOConverter;
@@ -13,6 +18,9 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -69,6 +77,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         domain = createDomain(DOMAIN_NAME);
         domain.addNameServer(setupFirstHost("pr1"));
         domain.addNameServer(setupSecondHost("pr2"));
+        domain.setEnableEmails(true);
         domainManager.create(domain);
 
         domain.setRegistryUrl("newregurl.org");
@@ -80,6 +89,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         domainNS = createDomain(DOMAIN_NAMENS);
         domainNS.addNameServer(setupFirstHost("pr3"));
         domainNS.addNameServer(setupSecondHost("pr4"));
+        domainNS.setEnableEmails(true);
         domainManager.create(domainNS);
 
         Host nameServer = new Host("ns1.gstsnewnameserver");
@@ -105,7 +115,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
+        assertPersistentNotifications(transId, 0);
         checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
     }
 
@@ -118,7 +130,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         closePENDING_CONTACT_CONFIRMATION(userIANA, transId);
+        assertPersistentNotifications(transId, 0);
         checkStateLog(userAC, transId, CLOSE_CONTACT_CONFIRMATIONLog);
     }
 
@@ -131,7 +145,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
 
@@ -145,7 +161,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
     }
@@ -205,7 +223,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //        closeEXT_APPROVAL(userIANA, transId);
 //        checkStateLog(userAC, transId, CLOSE_EXT_APPROVALLog);
 //    }
-    
+
     private static final String[][] ACCEPT_IANA_CHECKLog = {
             {"default-iana", "PENDING_CREATION"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
@@ -217,9 +235,12 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
         checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
     }
 
@@ -235,10 +256,14 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
+        assertPersistentNotifications(transId, 0);
         checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
 
@@ -255,10 +280,14 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 3);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
         acceptUSDOC_APPROVALnoNSChange(userUSDoC, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 0);
         checkStateLog(userIANA, transId, workFlowNoNSChangeLog);
     }
 
@@ -278,13 +307,39 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testWorkFlowWithNSChange() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         acceptPENDING_CREATION(transId);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 0);
         acceptZONE_INSERTION(userIANA, transId);
         acceptZONE_PUBLICATION(userIANA, transId);
+        assertPersistentNotifications(transId, 0);
         checkStateLog(userIANA, transId, workFlowWithNSChangeLog);
+    }
+
+    private void assertPersistentNotifications(Long transId, int count) {
+        assertPersistentNotifications(transId, null, count);
+    }
+    
+    private void assertPersistentNotifications(Long transId, String type, int count) {
+        List<Criterion> criteria = new ArrayList<Criterion>();
+        criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transId));
+        criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, true));
+        if (type != null)
+            criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
+        List<Notification> notifications = notificationManagerBean.find(new And(criteria));
+        assert notifications != null : "notifications list is null";
+        assert notifications.size() == count : "unexpected notifications count: " + notifications.size();
+        for (Notification notif : notifications) {
+            if (type != null)
+                assert type.equals(notif.getType()) :
+                        "unexpected notification type: " + notif.getType();
+            assert notif.isPersistent() : "notification is not persistent";
+        }
     }
 
     @AfterClass(alwaysRun = true)

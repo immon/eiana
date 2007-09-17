@@ -40,4 +40,8 @@ public class TextContent extends Content {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public boolean isTextContent() {
+        return true;
+    }
 }

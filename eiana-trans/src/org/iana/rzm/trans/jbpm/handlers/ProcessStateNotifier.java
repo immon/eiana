@@ -6,6 +6,7 @@ import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ExecutionContext;
 
 import java.util.*;
@@ -22,6 +23,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
     protected NotificationTemplate notificationTemplate;
     protected String notification;
     protected NotificationManager notificationManagerBean;
+    protected UserManager userManager;
     protected Long transactionId;
     protected String stateName;
     protected List<String> emails;
@@ -35,10 +37,11 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
     private void fillDataFromContext(ExecutionContext executionContext) throws NotificationException {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
-        notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationSenderBean");
+        notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("persistentNotificationSender");
         notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
         transactionId = executionContext.getProcessInstance().getId();
         stateName = executionContext.getProcessInstance().getRootToken().getNode().getName();
+        userManager = (UserManager) executionContext.getJbpmContext().getObjectFactory().createObject("userManager");
     }
 
     private void sendNotifications(List<Notification> notifications) throws Exception {
@@ -47,16 +50,8 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
     }
 
     private void sendNotification(Notification notification) throws Exception {
-        try {
-            if (!notification.getAddressee().isEmpty()) {
-                notificationSender.send(notification.getAddressee(), notification.getContent());
-                if (notification.isPersistent())
-                    notificationManagerBean.create(notification);
-            }
-        } catch (NotificationException e) {
-            notification.incSentFailures();
-            notificationManagerBean.create(notification);
-        }
+        if (!notification.getAddressee().isEmpty())
+            notificationSender.send(notification);
     }
 
     public List<Notification> getNotifications() {

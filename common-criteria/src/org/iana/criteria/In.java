@@ -22,6 +22,10 @@ public class In extends FieldCriterion {
         return Collections.unmodifiableSet(values);
     }
 
+    public void setValues(Set<Object> values) {
+        this.values = values;
+    }
+
     public void accept(CriteriaVisitor visitor) {
         visitor.visitIn(this);
     }

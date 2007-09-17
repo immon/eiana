@@ -20,6 +20,8 @@
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntry type="module" module-name="common-mail" />
+    <orderEntry type="module" module-name="common-dao" />
+    <orderEntry type="module" module-name="common-criteria" />
     <orderEntryProperties />
   </component>
 </module>

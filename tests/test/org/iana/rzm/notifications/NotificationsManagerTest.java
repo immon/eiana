@@ -5,19 +5,16 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.springframework.context.ApplicationContext;
+import org.iana.criteria.*;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential = true, groups = {"test", "notificationManager"})
+@Test(sequential = true, groups = {"test", "NotificationManagerBean"})
 public class NotificationsManagerTest extends TransactionalSpringContextTests {
     protected UserManager userManager;
     protected NotificationManager NotificationManagerBean;
@@ -48,10 +45,11 @@ public class NotificationsManagerTest extends TransactionalSpringContextTests {
 
         TemplateContent tc = new TemplateContent("SAMPLE_TEMPLATE3", values);
 
-        notification = new Notification();
+        notification = new Notification(1L);
         notification.addAddressee(firstUser);
         notification.setContent(tc);
         notification.setSent(false);
+        notification.setType(tc.getTemplateName());
 
         NotificationManagerBean.create(notification);
         notificationId = notification.getObjId();
@@ -61,11 +59,12 @@ public class NotificationsManagerTest extends TransactionalSpringContextTests {
         valuesNew.put("newKey2", "anyNameNew");
 
         TemplateContent tcNew = new TemplateContent("SAMPLE_TEMPLATE3", valuesNew);
-        Notification secondNotification = new Notification();
+        Notification secondNotification = new Notification(2L);
         secondNotification.addAddressee(firstUser);
         secondNotification.addAddressee(secondUser);
         secondNotification.setContent(tcNew);
         secondNotification.setSent(false);
+        secondNotification.setType(tcNew.getTemplateName());
         NotificationManagerBean.create(secondNotification);
 
         Notification retrivedNotif = NotificationManagerBean.get(notification.getObjId());
@@ -112,10 +111,11 @@ public class NotificationsManagerTest extends TransactionalSpringContextTests {
         TextContent tempContent = new TextContent();
         tempContent.setBody("temp body");
         tempContent.setSubject("temp subject");
-        thirdNotification = new Notification();
+        thirdNotification = new Notification(3L);
         thirdNotification.setContent(tempContent);
         thirdNotification.addAddressee(firstUser);
         thirdNotification.setSent(false);
+        thirdNotification.setType("text-content");
         NotificationManagerBean.create(thirdNotification);
         Notification retrivedNotification = NotificationManagerBean.get(thirdNotification.getObjId());
         assert retrivedNotification.getContent().getBody().equals("temp body");
@@ -127,7 +127,7 @@ public class NotificationsManagerTest extends TransactionalSpringContextTests {
         TextContent tempContent = new TextContent();
         tempContent.setBody("temp body");
         tempContent.setSubject("temp subject");
-        thirdNotification = new Notification();
+        thirdNotification = new Notification(4L);
         thirdNotification.setContent(tempContent);
 
         EmailAddressee emailAddressee = new EmailAddressee("some@emial.com", "someusername");
@@ -135,12 +135,23 @@ public class NotificationsManagerTest extends TransactionalSpringContextTests {
         emailAddressee.setName("someusername");
         thirdNotification.addAddressee(emailAddressee);
         thirdNotification.setSent(false);
+        thirdNotification.setType("text-content");
         NotificationManagerBean.create(thirdNotification);
         Notification retrivedNotification = NotificationManagerBean.get(thirdNotification.getObjId());
         assert retrivedNotification.getContent().getBody().equals("temp body");
         assert retrivedNotification.getContent().getSubject().equals("temp subject");
         assert retrivedNotification.getAddressee().iterator().next().getEmail().equals("some@emial.com");
         assert retrivedNotification.getAddressee().iterator().next().getName().equals("someusername");
+    }
+
+    @Test(dependsOnMethods = {"testNotificationsDAO_EmailAddresse"})
+    public void testFindNotifications() {
+        //List<Criterion> criteria = new ArrayList<Criterion>();
+        //criteria.add(new Lower(NotificationCriteriaFields.CREATED, new Date()));
+        //criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, false));
+        //List<Notification> found =  NotificationManagerBean.find(new And(criteria));
+        List<Notification> found =  NotificationManagerBean.findAll();
+        System.out.println("#### " + found);
     }
 
     protected void cleanUp() throws Exception {

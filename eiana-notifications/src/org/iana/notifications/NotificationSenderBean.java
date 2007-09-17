@@ -105,6 +105,10 @@ public class NotificationSenderBean implements NotificationSender {
         sendMail(address.toString(), content.getSubject(), content.getBody());
     }
 
+    public void send(Notification notification) throws NotificationException {
+        send(notification.getAddressee(), notification.getContent());
+    }
+
     private void sendMail(String address, String subject, String body) throws NotificationException {
         try {
             MailSender mailer = new SmtpMailSender(emailMailer, emailMailhost, emailMailhostPort,

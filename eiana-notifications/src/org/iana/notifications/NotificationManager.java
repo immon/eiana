@@ -1,5 +1,7 @@
 package org.iana.notifications;
 
+import org.iana.criteria.Criterion;
+
 import java.util.List;
 
 /**
@@ -27,4 +29,8 @@ public interface NotificationManager {
     public List<Notification> findPersistentNotifications(Long transactionId);
 
     public void deletePersistentNotifications(Long transactionId);
+
+    public void deletePersistentNotifications(Long transactionId, String type);
+
+    public List<Notification> find(Criterion criteria);
 }

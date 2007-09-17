@@ -233,6 +233,15 @@
         -->
     </bean>
 
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSenderBean">
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="logger" class="org.iana.rzm.log.LoggerBean">
         <constructor-arg index="0" ref="diffConfig"/>
         <constructor-arg index="1" ref="logDAO"/>
