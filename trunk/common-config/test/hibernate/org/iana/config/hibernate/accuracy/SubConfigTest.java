@@ -1,7 +1,11 @@
 package org.iana.config.hibernate.accuracy;
 
-import org.iana.config.*;
+import org.iana.config.ConfigDAO;
 import org.iana.config.conf.SpringConfigApplicationContext;
+import org.iana.config.impl.ListParameter;
+import org.iana.config.impl.OwnedConfig;
+import org.iana.config.impl.SetParameter;
+import org.iana.config.impl.SingleParameter;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
 
@@ -56,6 +60,29 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testSubConfig")
+    public void testParameterNames() {
+        SingleParameter singleParam = new SingleParameter("sub1.sub2_1.param13", Boolean.toString(true));
+        singleParam.setOwner(OWNER);
+        singleParam.setFromDate(System.currentTimeMillis() - 100000);
+        singleParam.setToDate(System.currentTimeMillis() + 100000);
+        hibernateConfigDAO.addParameter(singleParam);
+
+        SingleParameter singleParam1 = new SingleParameter("param11", Boolean.toString(true));
+        singleParam1.setOwner(OWNER);
+        singleParam1.setFromDate(System.currentTimeMillis() - 100000);
+        singleParam1.setToDate(System.currentTimeMillis() + 100000);
+        hibernateConfigDAO.addParameter(singleParam1);
+
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+
+        Set<String> retNames = ownedConfig.getParameterNames();
+        assert retNames != null && retNames.size() == 1 && retNames.contains("param11");
+
+        retNames = ownedConfig.getSubConfig("sub1").getSubConfig("sub2_1").getParameterNames();
+        assert retNames != null && retNames.size() == 1 && retNames.contains("param13");
+    }
+
+    @Test(dependsOnMethods = "testParameterNames")
     public void testSubConfigNames() {
         Set<String> values = new HashSet<String>();
         values.add("firstValue");
@@ -67,20 +94,24 @@ public class SubConfigTest extends TransactionalSpringContextTests {
         hibernateConfigDAO.addParameter(setParameter);
 
         OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
-        Set<String> retSubConfigNames = ownedConfig.getSubConfigNames();
+        Set<String> retSubConfigNames = ownedConfig.getSubConfig("sub1").getSubConfigNames();
 
         Set<String> subConfigNames = new HashSet<String>();
-        subConfigNames.add("sub1.sub2");
-        subConfigNames.add("sub1.sub2.sub3");
-        subConfigNames.add("sub1");
+        subConfigNames.add("sub2");
+        subConfigNames.add("sub2_1");
         assert subConfigNames.equals(retSubConfigNames);
+
+        retSubConfigNames = ownedConfig.getSubConfigNames();
+        assert retSubConfigNames != null && retSubConfigNames.size() == 1 && retSubConfigNames.contains("sub1");
     }
 
-    @Test(dependsOnMethods = "testSubConfigNames")
+    @Test(dependsOnMethods = "testSubConfigNames", alwaysRun = true)
     public void testRemoveNewParams() {
         hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2.param1");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.param2");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2.sub3.param4");
+        hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2_1.param13");
+        hibernateConfigDAO.removeParameter(OWNER, "param11");
     }
 
     public void cleanUp() {

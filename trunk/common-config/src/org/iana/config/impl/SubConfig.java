@@ -1,4 +1,6 @@
-package org.iana.config;
+package org.iana.config.impl;
+
+import org.iana.config.Config;
 
 import java.util.List;
 import java.util.Set;
@@ -11,16 +13,16 @@ import java.util.Set;
  * @author Piotr Tkaczyk
  */
 
-class SubConfig implements Config {
+class SubConfig extends AbstractConfig {
 
     /**
      * The name of this subconfig. Cannot be null or empty string.
      */
     private String subName;
 
-    private Config subsettedConfig;
+    private AbstractConfig subsettedConfig;
 
-    SubConfig(String subName, Config config) {
+    SubConfig(String subName, AbstractConfig config) {
         if (subName == null || subName.trim().length() == 0)
             throw new IllegalArgumentException("subconfig name cannot be null or empty");
         if (subName.lastIndexOf(".") == subName.length() - 1)
@@ -46,11 +48,19 @@ class SubConfig implements Config {
     }
 
     public Set<String> getSubConfigNames() {
-        return subsettedConfig.getSubConfigNames();
+        return subsettedConfig.getSubConfigNames(subName);
+    }
+
+    protected Set<String> getSubConfigNames(String name) {
+        return subsettedConfig.getSubConfigNames(name);
     }
 
     public Set<String> getParameterNames() {
-        return subsettedConfig.getParameterNames();
+        return subsettedConfig.getParameterNames(subName);
+    }
+
+    protected Set<String> getParameterNames(String name) {
+        return subsettedConfig.getParameterNames(name);
     }
 
     public Boolean getBooleanParameter(String name) {

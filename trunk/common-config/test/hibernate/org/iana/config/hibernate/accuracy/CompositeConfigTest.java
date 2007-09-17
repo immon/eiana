@@ -1,7 +1,11 @@
 package org.iana.config.hibernate.accuracy;
 
-import org.iana.config.*;
+import org.iana.config.Config;
+import org.iana.config.ConfigDAO;
 import org.iana.config.conf.SpringConfigApplicationContext;
+import org.iana.config.impl.CompositeConfig;
+import org.iana.config.impl.OwnedConfig;
+import org.iana.config.impl.SingleParameter;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
 
@@ -65,7 +69,7 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
         assert 100 == retLong;
     }
 
-    @Test(dependsOnMethods = "testCompositeConfig2")
+    @Test(dependsOnMethods = "testCompositeConfig2", alwaysRun = true)
     public void testRemove() {
         hibernateConfigDAO.removeParameter(OWNER, "param1");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.param1");

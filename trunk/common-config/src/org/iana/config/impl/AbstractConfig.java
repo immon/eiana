@@ -1,4 +1,6 @@
-package org.iana.config;
+package org.iana.config.impl;
+
+import org.iana.config.Config;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +13,7 @@ import java.util.Set;
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
  */
-public abstract class AbstractConfig implements Config {
+abstract class AbstractConfig implements Config {
 
     public Boolean getBooleanParameter(String name) {
         String value = getParameter(name);
@@ -25,7 +27,7 @@ public abstract class AbstractConfig implements Config {
 
     public Long getLongParameter(String name) {
         String value = getParameter(name);
-        return (value == null) ? null : Long.parseLong(getParameter(name));
+        return (value == null) ? null : Long.parseLong(value);
     }
 
     public List<Boolean> getBooleanParameterList(String name) {
@@ -75,4 +77,8 @@ public abstract class AbstractConfig implements Config {
 
         return (ret.isEmpty()) ? null : ret;
     }
+
+    protected abstract Set<String> getParameterNames(String name);
+
+    protected abstract Set<String> getSubConfigNames(String name);
 }
