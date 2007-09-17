@@ -1,5 +1,7 @@
 package org.iana.rzm.facade.admin;
 
+import org.iana.notifications.Notification;
+import org.iana.notifications.NotificationManager;
 import org.iana.rzm.auth.Identity;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Contact;
@@ -37,6 +39,7 @@ public class ResendNotificationTest {
     private AdminTransactionService ats;
     private UserManager userManager;
     private DomainManager domainManager;
+    private NotificationManager notificationManager;
     protected SystemTransactionService sts;
     private ProcessDAO processDAO;
     private RZMUser iana, usdoc;
@@ -55,6 +58,7 @@ public class ResendNotificationTest {
         userManager = (UserManager) appCtx.getBean("userManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
+        notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
@@ -213,5 +217,7 @@ public class ResendNotificationTest {
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())
             domainManager.delete(domain.getName());
+        for (Notification notification : notificationManager.findAll())
+            notificationManager.delete(notification);
     }
 }
