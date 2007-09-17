@@ -1,4 +1,6 @@
-package org.iana.config;
+package org.iana.config.impl;
+
+import org.iana.config.Config;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +15,7 @@ import java.util.Set;
  * @author Piotr Tkaczyk
  */
 
-public class CompositeConfig extends AbstractConfig implements Config {
+public class CompositeConfig extends AbstractConfig {
 
     private List<Config> configs = new ArrayList<Config>();
 
@@ -76,5 +78,14 @@ public class CompositeConfig extends AbstractConfig implements Config {
             if (paramNames != null) ret.addAll(paramNames);
         }
         return (ret.isEmpty()) ? null : ret;
+    }
+
+    protected Set<String> getParameterNames(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    protected Set<String> getSubConfigNames(String name) {
+        throw new UnsupportedOperationException();
     }
 }

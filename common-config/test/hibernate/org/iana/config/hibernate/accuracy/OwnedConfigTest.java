@@ -1,10 +1,10 @@
 package org.iana.config.hibernate.accuracy;
 
 import org.iana.config.ConfigDAO;
-import org.iana.config.ListParameter;
-import org.iana.config.OwnedConfig;
-import org.iana.config.SingleParameter;
 import org.iana.config.conf.SpringConfigApplicationContext;
+import org.iana.config.impl.ListParameter;
+import org.iana.config.impl.OwnedConfig;
+import org.iana.config.impl.SingleParameter;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
 
@@ -71,7 +71,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
         assert paramNames.equals(ownedConfig.getParameterNames());
     }
 
-    @Test(dependsOnMethods = "testGetParameterNames")
+    @Test(dependsOnMethods = "testGetParameterNames", alwaysRun = true)
     public void testRemoveParameter() {
         hibernateConfigDAO.removeParameter(OWNER, "param1");
         assert hibernateConfigDAO.getParameter(OWNER, "param1") == null;

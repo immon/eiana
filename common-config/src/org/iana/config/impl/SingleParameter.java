@@ -1,7 +1,11 @@
-package org.iana.config;
+package org.iana.config.impl;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * It represents a single parameter stored in a config.
@@ -26,13 +30,26 @@ public class SingleParameter extends AbstractParameter {
         setName(name);
     }
 
-    public String getValue() {
-        return value;
-    }
-
     public void setValue(String value) {
         if (value == null || value.trim().length() == 0)
             throw new IllegalArgumentException("parameter value cannot be null or empty");
         this.value = value;
+    }
+
+
+    public String getParameter() {
+        return value;
+    }
+
+    public List<String> getParameterList() {
+        List<String> ret = new ArrayList<String>();
+        ret.add(value);
+        return ret;
+    }
+
+    public Set<String> getParameterSet() {
+        Set<String> ret = new HashSet<String>();
+        ret.add(value);
+        return ret;
     }
 }

@@ -1,7 +1,11 @@
-package org.iana.config;
+package org.iana.config.impl;
 
+
+import org.iana.config.Parameter;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -9,7 +13,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Parameters")
-public class AbstractParameter {
+abstract class AbstractParameter implements Parameter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,4 +74,10 @@ public class AbstractParameter {
     public void setToDate(Long toDate) {
         this.toDate = toDate;
     }
+
+    public abstract String getParameter();
+
+    public abstract List<String> getParameterList();
+
+    public abstract Set<String> getParameterSet();
 }

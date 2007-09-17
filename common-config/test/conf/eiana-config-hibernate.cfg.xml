@@ -21,10 +21,10 @@
 
         <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
 
-        <mapping class="org.iana.config.AbstractParameter"/>
-        <mapping class="org.iana.config.SingleParameter"/>
-        <mapping class="org.iana.config.ListParameter"/>
-        <mapping class="org.iana.config.SetParameter"/>
+        <mapping class="org.iana.config.impl.AbstractParameter"/>
+        <mapping class="org.iana.config.impl.SingleParameter"/>
+        <mapping class="org.iana.config.impl.ListParameter"/>
+        <mapping class="org.iana.config.impl.SetParameter"/>
 
     </session-factory>
 </hibernate-configuration>
