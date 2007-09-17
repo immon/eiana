@@ -2,21 +2,19 @@ package org.iana.rzm.trans.jbpm.handlers;
 
 import org.iana.notifications.Notification;
 import org.iana.notifications.TemplateContent;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.AdminRole;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
-
+import java.util.HashMap;
 
 /**
- * @author Piotr Tkaczyk
  * @author Jakub Laszkiewicz
  */
 
-public class USDOCConfirmationRemainder extends ProcessStateNotifier {
+public class USDOCConfirmationNotifier extends ProcessStateNotifier {
 
     protected String period;
 
@@ -28,7 +26,6 @@ public class USDOCConfirmationRemainder extends ProcessStateNotifier {
         for (RZMUser user : users) {
             Map<String, String> values = new HashMap<String, String>();
             values.put("domainName", domainName);
-            values.put("period", period);
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
             TemplateContent templateContent = new TemplateContent(notification, values);
@@ -36,6 +33,7 @@ public class USDOCConfirmationRemainder extends ProcessStateNotifier {
             Notification notification = new Notification(transactionId);
             notification.addAddressee(user);
             notification.setContent(templateContent);
+            notification.setPersistent(true);
             notifications.add(notification);
         }
         return notifications;

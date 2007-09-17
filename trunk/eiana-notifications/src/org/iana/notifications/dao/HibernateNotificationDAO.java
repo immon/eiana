@@ -1,31 +1,20 @@
 package org.iana.notifications.dao;
 
+import org.iana.dao.hibernate.HibernateDAO;
 import org.iana.notifications.Addressee;
 import org.iana.notifications.Notification;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
  */
 
-public class HibernateNotificationDAO extends HibernateDaoSupport implements NotificationDAO {
+public class HibernateNotificationDAO extends HibernateDAO<Notification> implements NotificationDAO {
 
-    public Notification get(long id) {
-        return (Notification) getHibernateTemplate().get(Notification.class, id);
-    }
-
-    public void create(Notification notification) {
-        getHibernateTemplate().save(notification);
-    }
-
-    public void update(Notification notification) {
-        getHibernateTemplate().update(notification);
-    }
-
-    public void delete(Notification notification) {
-        getHibernateTemplate().delete(notification);
+    public HibernateNotificationDAO() {
+        super(Notification.class);
     }
 
     public List<Notification> findUserNotifications(Addressee addressee) {
@@ -58,5 +47,15 @@ public class HibernateNotificationDAO extends HibernateDaoSupport implements Not
                 "where notif.persistent = true " +
                 "    and transactionId = ?";
         return (List<Notification>) getHibernateTemplate().find(query, transactionId);
+    }
+
+    /*
+     Removing associations with RZMUser objects,
+     because they cause hibernate error when removing
+     persistent notifications in the end of the process.
+     */
+    public void delete(Notification object) {
+        object.setAddressee(new HashSet<Addressee>());
+        super.delete(object);
     }
 }

@@ -176,11 +176,19 @@
                 <!--</action>-->
             </timer>
             <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
-            <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION"/>
+            <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
+                    <notifiaction>contact-confirmation</notifiaction>
+                </action>
+            </transition>
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
             <transition name="withdraw" to="WITHDRAWN"/>
-            <transition name="admin-accept" to="MODIFICATIONS_IN_CONTACT_DECISION"/>
+            <transition name="admin-accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
+                    <notifiaction>contact-confirmation</notifiaction>
+                </action>
+            </transition>
             <transition name="admin-reject" to="REJECTED"/>
         </state>
 
@@ -410,17 +418,28 @@
                         <element>USDoC</element>
                     </roles>
                 </action>
+                <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationNotifier">
+                    <notification>usdoc-confirmation</notification>
+                </action>
             </event>
             <timer name="5d-time-out" duedate='5 days'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationRemainder">
                     <period>9</period>
-                    <notification>uscdoc-confirmation-remainder</notification>
+                    <notification>usdoc-confirmation-remainder</notification>
                 </action>
             </timer>
             <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
-            <transition name="accept" to="NS_CHANGE_DECISION"/>
+            <transition name="accept" to="NS_CHANGE_DECISION">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
+                    <notifiaction>usdoc-confirmation</notifiaction>
+                </action>
+            </transition>
             <transition name="reject" to="REJECTED"/>
-            <transition name="admin-accept" to="NS_CHANGE_DECISION"/>
+            <transition name="admin-accept" to="NS_CHANGE_DECISION">
+                <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
+                    <notifiaction>usdoc-confirmation</notifiaction>
+                </action>
+            </transition>
             <transition name="admin-reject" to="REJECTED"/>
             <transition name="alert" to="EXCEPTION"/>
         </state>

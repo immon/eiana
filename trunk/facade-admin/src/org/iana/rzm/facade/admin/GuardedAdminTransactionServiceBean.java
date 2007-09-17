@@ -1,9 +1,10 @@
 package org.iana.rzm.facade.admin;
 
+import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.NotificationSender;
-import org.iana.notifications.Notification;
+import org.iana.criteria.Equal;
+import org.iana.criteria.In;
+import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
@@ -15,22 +16,22 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.converter.FromVOConverter;
 import org.iana.rzm.facade.system.domain.DomainVO;
 import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.facade.system.notification.NotificationAddresseeVO;
 import org.iana.rzm.facade.system.notification.NotificationConverter;
+import org.iana.rzm.facade.system.notification.NotificationCriteriaConverter;
+import org.iana.rzm.facade.system.notification.NotificationVO;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.Confirmation;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -38,6 +39,7 @@ import java.util.Set;
 public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<TransactionVO> implements AdminTransactionService {
 
     private static Set<Role> allowedRoles = new HashSet<Role>();
+
     static {
         allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
     }
@@ -112,9 +114,9 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     public void transitTransactionToState(long id, String targetStateName) throws NoSuchStateException, StateUnreachableException, NoTransactionException, FacadeTransactionException, AccessDeniedException {
         isUserInRole();
         try {
-            Transaction transaction = transactionManager.getTransaction(id); 
+            Transaction transaction = transactionManager.getTransaction(id);
             transaction.transitTo(getRZMUser(), targetStateName);
-            
+
         } catch (NoSuchTransactionException e) {
             throw new NoTransactionException(e.getId());
         } catch (TransactionException e) {
@@ -143,22 +145,23 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
 
     private void _updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoTransactionException, StateUnreachableException, FacadeTransactionException {
         try {
-            Transaction retTransaction= transactionManager.getTransaction(id);
+            Transaction retTransaction = transactionManager.getTransaction(id);
             retTransaction.setTicketID(ticketId);
             retTransaction.setRedelegation(redelegation);
-            if (targetStateName != null && !targetStateName.equals(""+retTransaction.getState().getName())) {
+            if (targetStateName != null && !targetStateName.equals("" + retTransaction.getState().getName())) {
                 retTransaction.transitTo(getRZMUser(), targetStateName);
             }
         } catch (NoSuchTransactionException e) {
             throw new NoTransactionException(e.getId());
         } catch (TransactionException e) {
-            throw new StateUnreachableException(""+targetStateName);
+            throw new StateUnreachableException("" + targetStateName);
         }
     }
+
     public void setTransactionTicketId(long transactionID, long ticketId) throws NoTransactionException, AccessDeniedException {
         isUserInRole();
         try {
-            Transaction retTransaction= transactionManager.getTransaction(transactionID);
+            Transaction retTransaction = transactionManager.getTransaction(transactionID);
             retTransaction.setTicketID(ticketId);
         } catch (NoSuchTransactionException e) {
             throw new NoTransactionException(e.getId());
@@ -309,20 +312,101 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     }
 
     public List<NotificationVO> getNotifications(long transactionId) throws InfrastructureException {
+        isUserInRole();
         try {
-            return NotificationConverter.toNotificationVOList(notificationManager.findPersistentNotifications(transactionId));
+            List<Criterion> criteria = new ArrayList<Criterion>();
+            criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
+            criteria.add(new In(NotificationCriteriaFields.TYPE,
+                    new HashSet(Arrays.asList(NotificationVO.Type.CONTACT_CONFIRMATION,
+                            NotificationVO.Type.USDOC_CONFIRMATION))));
+            return NotificationConverter.toNotificationVOList(notificationManager.find(
+                    convertNotificationCriteria(new And(criteria))));
         } catch (NotificationException e) {
             throw new InfrastructureException(e);
         }
     }
 
-    public void resendNotification(Set<NotificationAddresseeVO> addressees, Long notificationId, String comment) throws NotificationException {
-        Notification notification = notificationManager.get(notificationId);
-        StringBuffer body = new StringBuffer();
+    public List<NotificationVO> getNotifications(Criterion criteria) throws InfrastructureException {
+        isUserInRole();
+        try {
+            return NotificationConverter.toNotificationVOList(notificationManager.find(
+                    convertNotificationCriteria(criteria)));
+        } catch (NotificationException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+    public void resendNotification(Set<NotificationAddresseeVO> addressees, Long notificationId, String comment) throws InfrastructureException {
+        isUserInRole();
+        try {
+            Notification notification = notificationManager.get(notificationId);
+            notificationSender.send(NotificationConverter.toAddresseeSet(addressees),
+                    notification.getContent().getSubject(),
+                    comment(notification.getContent().getBody(), comment));
+        } catch (NotificationException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+    public void resendNotification(Long transactionId, NotificationVO.Type type, String comment) throws InfrastructureException, FacadeTransactionException {
+        isUserInRole();
+        try {
+            if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
+                Transaction transaction = transactionManager.getTransaction(transactionId);
+
+                Set<ContactIdentity> identities = transaction.getIdentitiesSupposedToAccept();
+                Set<String> outstendingEmails = extractEmails(identities);
+
+                List<Criterion> criteria = new ArrayList<Criterion>();
+                criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
+                criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
+                List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
+
+                for (Notification notif : notifications) {
+                    Set<String> addresseeEmails = extractEmails(notif.getAddressee());
+                    if (!Collections.disjoint(addresseeEmails, outstendingEmails)) {
+                        notificationSender.send(notif);
+                    }
+                }
+            } else if (type == NotificationVO.Type.USDOC_CONFIRMATION) {
+                Transaction transaction = transactionManager.getTransaction(transactionId);
+                Confirmation sc = transaction.getTransactionData().getStateConfirmations(TransactionState.Name.PENDING_USDOC_APPROVAL.name());
+                if (!sc.isReceived()) {
+                    List<Criterion> criteria = new ArrayList<Criterion>();
+                    criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
+                    criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
+                    List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
+                    for (Notification notif : notifications) {
+                        notificationSender.send(notif);
+                    }
+                }
+            } else {
+                throw new FacadeTransactionException("unsupported notification type: " + type);
+            }
+        } catch (NoSuchTransactionException e) {
+            throw new InfrastructureException(e);
+        } catch (NotificationException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+    private Set<String> extractEmails(Set<? extends Addressee> addressees) {
+        Set<String> result = new HashSet<String>();
+        for (Addressee addr : addressees)
+            result.add(addr.getEmail());
+        return result;
+    }
+
+    private String comment(String body, String comment) {
+        StringBuffer buffer = new StringBuffer();
         if (comment != null)
-            body.append(comment).append("\n");
-        body.append(notification.getContent().getBody());
-        notificationSender.send(NotificationConverter.toAddresseeSet(addressees),
-                notification.getContent().getSubject(), body.toString());
+            buffer.append(comment).append("\n");
+        buffer.append(body);
+        return buffer.toString();
+    }
+
+    private Criterion convertNotificationCriteria(Criterion criteria) {
+        criteria.accept(new NotificationCriteriaConverter());
+        return criteria;
     }
 }

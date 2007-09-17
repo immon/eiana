@@ -1,8 +1,8 @@
 package org.iana.notifications.dao;
 
-import org.iana.notifications.Notification;
-import org.iana.notifications.AbstractAddressee;
+import org.iana.criteria.Criterion;
 import org.iana.notifications.Addressee;
+import org.iana.notifications.Notification;
 
 import java.util.List;
 
@@ -27,4 +27,10 @@ public interface NotificationDAO {
     public List<Notification> findAll();
 
     public List<Notification> findPersistentNotifications(Long transactionId);
+
+    public List<Notification> find(Criterion criteria);
+
+    public List<Notification> find(final Criterion criteria, final int offset, final int limit);
+
+    public int count(final Criterion criteria);
 }

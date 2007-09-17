@@ -151,4 +151,26 @@ Technical checks failed for domain {domainName}:
         </iana:content>
     </iana:template>
 
+    <!--todo-->
+    <iana:template>
+        <iana:type>usdoc-confirmation</iana:type>
+        <iana:subject>{domainName} USDoC confirmation notification</iana:subject>
+        <iana:content>
+            {domainName} USDoC confirmation notification
+            transaction ID: {transactionId}
+            state: {stateName}
+        </iana:content>
+    </iana:template>
+
+    <!--todo-->
+    <iana:template>
+        <iana:type>usdoc-confirmation-remainder</iana:type>
+        <iana:subject>{domainName} USDoC confirmation reminder</iana:subject>
+        <iana:content>
+            {domainName} USDoC confirmation reminder
+            transaction ID: {transactionId}
+            state: {stateName}
+            period: {period}
+        </iana:content>
+    </iana:template>
 </iana:templates>

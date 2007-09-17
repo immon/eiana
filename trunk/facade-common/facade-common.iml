@@ -22,6 +22,7 @@
     <orderEntry type="module" module-name="common-pgp" />
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="hibernate" level="project" />
+    <orderEntry type="module" module-name="integration-rt" />
     <orderEntryProperties />
   </component>
 </module>

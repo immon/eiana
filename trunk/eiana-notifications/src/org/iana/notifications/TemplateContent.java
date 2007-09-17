@@ -82,4 +82,8 @@ public class TemplateContent extends Content {
     private ContentConverter getContentConverter() {
         return new TemplateContentConverter();
     }
+
+    public boolean isTemplateContent() {
+        return true;
+    }
 }

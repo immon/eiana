@@ -7,8 +7,13 @@ import org.iana.notifications.NotificationManager;
  * @author Jakub Laszkiewicz
  */
 public class TransactionNotificationRemover extends ActionExceptionHandler {
+    String notification;
+
     protected void doExecute(ExecutionContext executionContext) throws Exception {
         NotificationManager notificationManager = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
-        notificationManager.deletePersistentNotifications(executionContext.getProcessInstance().getId());
+        if (notification == null)
+            notificationManager.deletePersistentNotifications(executionContext.getProcessInstance().getId());
+        else
+            notificationManager.deletePersistentNotifications(executionContext.getProcessInstance().getId(), notification);
     }
 }

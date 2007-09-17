@@ -29,4 +29,12 @@ public abstract class Content {
     public abstract String getSubject() throws NotificationException;
 
     public abstract String getBody() throws NotificationException;
+
+    public boolean isTemplateContent() {
+        return false;
+    }
+
+    public boolean isTextContent() {
+        return false;
+    }
 }

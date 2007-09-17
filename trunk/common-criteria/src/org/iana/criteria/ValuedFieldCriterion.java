@@ -18,4 +18,8 @@ public abstract class ValuedFieldCriterion extends FieldCriterion {
     public Object getValue() {
         return value;
     }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }

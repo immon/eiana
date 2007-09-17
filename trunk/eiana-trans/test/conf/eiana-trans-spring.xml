@@ -41,6 +41,15 @@
         <constructor-arg value=""/> <!--Password-->
     </bean>
 
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSenderBean">
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="domainManagerTarget" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>

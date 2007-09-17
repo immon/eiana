@@ -10,6 +10,7 @@ import java.util.*;
  */
 @Entity
 public class Notification {
+    private static final String TYPE_TEXT = "text";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +50,7 @@ public class Notification {
         this.sent = false;
         this.sentFailures = 0;
         this.transactionId = transactionId;
+        this.persistent = false;
     }
 
     public Long getObjId() {
@@ -101,6 +103,10 @@ public class Notification {
 
     public void setContent(Content content) {
         this.content = content;
+        if (content.isTemplateContent())
+            type = ((TemplateContent) content).getTemplateName();
+        else
+            type = TYPE_TEXT; 
     }
 
     public boolean isSent() {
