@@ -15,6 +15,7 @@ public class TransactionActionVO implements Serializable {
     public static final String MODIFY_REGISTRATION_URL = "modify registration url";
     public static final String MODIFY_WHOIS_SERVER = "modify whois server";
     public static final String MODIFY_NAME_SERVERS = "modify name servers";
+    public static final String MODIFY_OTHER_ATTRIBUTES = "modify other attributes";
 
     private String name;
     private List<ChangeVO> change;

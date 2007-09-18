@@ -16,7 +16,8 @@
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="SystemTransactionServiceBean"/>
         <constructor-arg index="4" ref="NotificationManagerBean"/>
-        <constructor-arg index="5" ref="NotificationSenderBean"/>
+        <constructor-arg index="5" ref="persistentNotificationSender"/>
+        <constructor-arg index="6" ref="adminDiffConfig"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -275,6 +276,12 @@
     </bean>
 
     <bean id="diffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
+        <constructor-arg>
+            <ref bean="hostManager"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="adminDiffConfig" class="org.iana.rzm.facade.admin.AdminDomainDiffConfiguration">
         <constructor-arg>
             <ref bean="hostManager"/>
         </constructor-arg>

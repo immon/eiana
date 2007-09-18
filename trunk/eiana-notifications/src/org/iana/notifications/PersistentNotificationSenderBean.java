@@ -1,8 +1,11 @@
 package org.iana.notifications;
 
 import org.iana.notifications.exception.NotificationException;
+import org.iana.rzm.common.validators.CheckTool;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Arrays;
 
 /**
  * @author Jakub Laszkiewicz
@@ -21,25 +24,35 @@ public class PersistentNotificationSenderBean implements NotificationSender {
     }
 
     public void send(Notification notification) throws NotificationException {
+        CheckTool.checkNull(notification, null);                
+        boolean persist = notification.isPersistent();
         try {
             notificationSender.send(notification.getAddressee(), notification.getContent());
-            if (notification.isPersistent())
-                notificationManager.create(notification);
         } catch (NotificationException e) {
             notification.incSentFailures();
-            notificationManager.create(notification);
+            persist = true;
         }
+        if (persist) notificationManager.create(notification);
     }
 
     public void send(Collection<Addressee> addressees, String subject, String body) throws NotificationException {
-        notificationSender.send(addressees, subject, body);
+        Notification notification = new Notification();
+        notification.setAddressee(new HashSet<Addressee>(addressees));
+        notification.setContent(new TextContent(subject, body));
+        send(notification);
     }
 
     public void send(Addressee addressee, Content content) throws NotificationException {
-        notificationSender.send(addressee, content);
+        Notification notification = new Notification();
+        notification.setAddressee(new HashSet<Addressee>(Arrays.asList(addressee)));
+        notification.setContent(content);
+        send(notification);
     }
 
     public void send(Collection<Addressee> addressees, Content content) throws NotificationException {
-        notificationSender.send(addressees, content);    
+        Notification notification = new Notification();
+        notification.setAddressee(new HashSet<Addressee>(addressees));
+        notification.setContent(content);
+        send(notification);
     }
 }

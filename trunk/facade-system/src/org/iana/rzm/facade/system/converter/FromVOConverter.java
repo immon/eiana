@@ -119,7 +119,7 @@ public class FromVOConverter {
 // ---------------------- Breakpoint convert methods ----------------------
 
     public static Set<Domain.Breakpoint> toBreakpointSet(Set<IDomainVO.Breakpoint> fromBreakpointVOSet) {
-        if (fromBreakpointVOSet == null) return null;
+        if (fromBreakpointVOSet == null) return new HashSet<Domain.Breakpoint>();
 
         Set<Domain.Breakpoint> toBreakpointSet = new HashSet<Domain.Breakpoint>();
         for (IDomainVO.Breakpoint breakpointVO : fromBreakpointVOSet)
@@ -138,7 +138,7 @@ public class FromVOConverter {
 // ---------------------- Host convert methods ----------------------
 
     public static List<Host> toHostList(List<HostVO> fromHostsVOList) {
-        if (fromHostsVOList == null) return null;
+        if (fromHostsVOList == null) return new ArrayList<Host>();
 
         List<Host> toHostList = new ArrayList<Host>();
         for (HostVO fromHostVO : fromHostsVOList)

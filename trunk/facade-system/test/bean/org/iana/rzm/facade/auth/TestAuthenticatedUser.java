@@ -6,14 +6,13 @@ import org.iana.rzm.facade.user.UserVO;
 * @author Piotr Tkaczyk
 */
 
-public class TestAuthenticatedUser {
-    AuthenticatedUser authUser;
+public class TestAuthenticatedUser extends AuthenticatedUser {
 
     public TestAuthenticatedUser(UserVO user) {
-        authUser = new AuthenticatedUser(user.getObjId(), user.getUserName(), false);
+        super(user.getObjId(), user.getUserName(), false);
     }
 
     public AuthenticatedUser getAuthUser() {
-        return authUser;
+        return this;
     }
 }

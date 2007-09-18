@@ -180,6 +180,10 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
     }
 
     public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
+        return detectTransactionActions(domain, diffConfiguration);
+    }
+
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
         CheckTool.checkNull(domain, "null domain");
 
         Domain currentDomain = domainManager.get(domain.getName());
@@ -187,7 +191,7 @@ public class SystemTransactionServiceBean extends AbstractRZMStatefulService imp
 
         TransactionActionsVO ret = new TransactionActionsVO();
         Domain modifiedDomain = FromVOConverter.toDomain(domain);
-        ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, diffConfiguration);
+        ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, config);
         List<TransactionActionVO> actions = TransactionConverter.toTransactionActionVO(change);
         ret.setGroups(createTransactionGroups(domain.getName(), actions));
 

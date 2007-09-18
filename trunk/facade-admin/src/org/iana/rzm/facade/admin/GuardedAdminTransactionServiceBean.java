@@ -30,6 +30,7 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
+import org.iana.objectdiff.DiffConfiguration;
 
 import java.util.*;
 
@@ -49,7 +50,8 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
     SystemTransactionService transactionService;
     NotificationManager notificationManager;
     NotificationSender notificationSender;
-
+    DiffConfiguration diffConfiguration;
+    
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
     }
@@ -59,18 +61,21 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
                                               DomainManager domainManager,
                                               SystemTransactionService transactionService,
                                               NotificationManager notificationManager,
-                                              NotificationSender notificationSender) {
+                                              NotificationSender notificationSender,
+                                              DiffConfiguration config) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
         CheckTool.checkNull(transactionService, "transaction service");
         CheckTool.checkNull(notificationManager, "notification manager");
         CheckTool.checkNull(notificationSender, "notification sender");
+        CheckTool.checkNull(config, "diff configuration");
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
         this.transactionService = transactionService;
         this.notificationManager = notificationManager;
         this.notificationSender = notificationSender;
+        this.diffConfiguration = config;
     }
 
     public void setIgnoreTicketingSystemErrors(boolean ignore) {
@@ -136,7 +141,7 @@ public class GuardedAdminTransactionServiceBean extends AdminFinderServiceBean<T
 
     public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, InfrastructureException, InvalidCountryCodeException {
         try {
-            return transactionService.detectTransactionActions(domain);
+            return transactionService.detectTransactionActions(domain, diffConfiguration);
         } catch (NoObjectFoundException e) {
             // cannot happen
             throw new InfrastructureException(e);
