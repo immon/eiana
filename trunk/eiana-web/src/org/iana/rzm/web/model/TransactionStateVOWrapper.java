@@ -1,12 +1,13 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.TransactionStateVO;
-import org.iana.rzm.web.util.DateUtil;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.util.*;
 
 public class TransactionStateVOWrapper extends ValueObject {
     private TransactionStateVO vo;
     
     public static enum State {
+        PENDING_CREATION("Pending RT Creation"),
         PENDING_TECH_CHECK("Pending Tech Check"),
         PENDING_TECH_CHECK_REMEDY("Pending Tech Check Remedy"),
         PENDING_CONTACT_CONFIRMATION("Pending Contact Confirmation"),
@@ -21,6 +22,7 @@ public class TransactionStateVOWrapper extends ValueObject {
         PENDING_USDOC_APPROVAL("Pending USDOC Approval"),
         PENDING_ZONE_INSERTION("Pending Zone Publication"),
         PENDING_ZONE_PUBLICATION("Pending Zone Publication"),
+        PENDING_ZONE_TESTING("Pending Zone Testing"),
         PENDING_DATABASE_INSERTION("Pending Database Insertion"),
         COMPLETED("Completed"),
         WITHDRAWN("Withdrawn"),

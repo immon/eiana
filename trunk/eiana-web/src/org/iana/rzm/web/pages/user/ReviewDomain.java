@@ -163,7 +163,6 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public void pageBeginRender(PageEvent event) {
 
         try {
-
              DomainVOWrapper domain = getOriginalDomain();
             if(domain == null){
                 domain = getUserServices().getDomain(getDomainId());

@@ -1,11 +1,6 @@
 package org.iana.rzm.facade.auth;
 
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.RoleVO;
-
-import java.sql.Timestamp;
-import java.util.Set;
-import java.security.Permission;
+import java.io.*;
 
 /**
  * <p>This class represents an authenticated user of the system i.e. an individual who provided valid credentials
@@ -17,7 +12,7 @@ import java.security.Permission;
  *
  * @author Patrycja Wegrzynowicz
  */
-public class AuthenticatedUser {
+public class AuthenticatedUser implements Serializable {
 
     /**
      * A identifier of a user who got authenticated.

@@ -1,7 +1,6 @@
 package org.iana.rzm.web.util;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public final class ListUtil {
 
@@ -34,4 +33,5 @@ public final class ListUtil {
         }
         return list.get(index);
     }
+    
 }

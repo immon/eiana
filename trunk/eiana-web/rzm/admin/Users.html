@@ -4,7 +4,7 @@
         <title>Root Zone Management</title>
     </head>
     <span jwcid="$content$">
-        <body jwcid="border@AdminBorder" selected="literal:USERS" finderListener="prop:finderListener" finderValidator="prop:finderValidator">
+        <body jwcid="border@AdminBorder" selected="literal:USERS" finderListener="prop:finderListener" finderValidator="prop:finderValidator" pageScriptDeligator="prop:pageScriptDeligator">
             <span jwcid="@ShowError"/>
             <span jwcid="@ShowMessages"/>
             <div style="padding: 5px 0 80px 10px;">
@@ -20,10 +20,25 @@
 					    <b class="right"><a href="#" class="buttonDot">Admin Users </a></b>
 				    </div>
                 </span>
-                <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
+                <div class="buttonStyle" style="margin: 0 3px 0 0; float: left;">
                     <b class="leftDot"></b>
-                    <b class="right"><a jwcid="newuser" href="#" class="buttonDot">Create New </a></b>
-                </div>
+                    <b class="right"><a  href="" onClick="navMenuOn('navMenu_1');clearTimeout(navMenuTimer); return false" class="buttonDot">Create New </a></b>
+                    <div class="container" style="clear: left;">
+                        <div id="navMenu_1" style="visibility: hidden;" onmouseover="event.cancelBubble = true;" class="navMenu">
+                            <table onMouseOver="clearTimeout(navMenuTimer);" onMouseOut="delayOff('navMenu_1');" cellspacing="0" cellpadding="0" width="160" border="0" style="margin-left: 9px; background: #F9F9F9; border: 1px solid #cccccc;">
+                                <tr>
+                                    <td style="padding: 5px; font-weight: normal;"><a href="#"  jwcid="createAdmin">Admin User</a></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px; border-top: 1px solid #cccccc; font-weight: normal;"><a href="#" jwcid="createSystem">System User</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../images/common/spacer.gif" width="1" height="5"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>        
             </div>
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>

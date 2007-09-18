@@ -27,8 +27,23 @@
                         </span>
                 </tr>
                 <tr>
+                    <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:statuses">Status:</span></td>
+                    <td align="left" valign="top">
+                        <span jwcid="statuses"  name="statuses" class="field">
+                            <select>
+                                <option>New</option>
+                                <option>Active</option>
+                                <option>Close</option>
+                            </select>
+                        </span>
+                </tr>
+                <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:specialInstructions">Special Instructions:</span></td>
                     <td align="right" valign="top"><textarea cols="40" rows="5" jwcid="specialInstructions"  name="specialInstructions" class="field" onkeypress="return submitOnEnter(event);"></textarea>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><label jwcid="emailLabel">Enable Emails</label></td>
+                    <td align="left" valign="top"><span jwcid="sendEmail"/></td>
                 </tr>
             </table>
            </span>

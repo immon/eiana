@@ -1,4 +1,6 @@
 package org.iana.rzm.web.model;
 
-public interface PaginatedEntity {
+import java.io.*;
+
+public interface PaginatedEntity extends Serializable {
 }

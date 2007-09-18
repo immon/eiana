@@ -8,25 +8,8 @@ import java.util.*;
 
 public abstract class DomainVOWrapper extends ValueObject implements PaginatedEntity {
 
-    public enum Type{
-        COUNTRY_CODE("country-code"),
-        SPONSORED("sponsored"),
-        INFRASTRUCTURE("infrastructure"),
-        GENERIC("generic"),
-        GENERIC_RESTRICTED("generic-restricted");
 
-        private String displayName;
-
-        Type(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String getDisplayName(){
-            return displayName;
-        }
-    }
-
-    private enum Status {
+    public enum Status {
         NEW("New"), ACTIVE("Active"), CLOSE("Close");
 
         private String displayName;
@@ -51,6 +34,10 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
             throw new IllegalArgumentException("Unknown status " + status);
         }
 
+        public IDomainVO.Status toVoStatus() {
+            IDomainVO.Status[] statuses = IDomainVO.Status.values();
+            return statuses[this.ordinal()];
+        }
     }
 
     private IDomainVO vo;
@@ -76,11 +63,19 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     }
 
     public String getDescription(){
-        return "NASK NEED TO ADD This";
+        return vo.getDescription();
     }
 
     public void setDescription(String description){
+        vo.setDescription(description);
+    }
 
+    public boolean isSendEmail(){
+        return vo.isEnableEmails();
+    }
+
+    public void setSendEmail(boolean value){
+        vo.setEnableEmails(value);
     }
 
     public String getSpecialInstructions(){
@@ -110,6 +105,8 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     public void setWhoisServer(String server){
         vo.setWhoisServer(new Name(server));
     }
+
+
   
     public String getModified() {
         Date d = vo.getModified();
@@ -148,8 +145,16 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
         return wrappers;
     }
 
-    public String getStatus() {
-        return Status.form(vo.getStatus()).getDisplayName();
+    public String getStatusAsString(){
+        return getStatus().getDisplayName();
+    }
+
+    public Status getStatus() {
+        return Status.form(vo.getStatus());
+    }
+
+    public void setStatus(Status s){
+        vo.setStatus(s.toVoStatus());
     }
 
     public abstract List<? extends RoleVOWrapper> getRoles();
@@ -181,20 +186,14 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
         return Status.form(vo.getStatus()).equals(Status.NEW);
     }
 
-    public Type[]getTypes(){
-        return Type.values();
+
+
+    public String getType(){
+        return vo.getType();
     }
 
-    public Type getType(){
-        return Type.COUNTRY_CODE;
-    }
-
-    public void setType(Type type){
-
-    }
-
-    public String getTypeAsString(){
-        return Type.COUNTRY_CODE.getDisplayName();
+    public void setType(String type){
+        vo.setType(type);
     }
 
 

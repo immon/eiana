@@ -1,0 +1,94 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/master.css"/>
+    <title>Root Zone Management</title>
+</head>
+    <span jwcid="$content$">
+        <body jwcid="border@AdminBorder">
+            <h1 style="margin-top: 40px;">Separate Request for Faster Processing </h1>
+            <div class="mainBox">
+                <div class="containerBox">
+                    <span class="roundtop">
+                        <span class="roundTop1"></span>
+                        <span class="roundTop2"></span>
+                        <span class="roundTop3"></span>
+                        <span class="roundTop4"></span>
+                    </span>
+                    <div class="boxContent">
+					    <table width="95%" border="0" cellspacing="0" cellpadding="0">
+					        <tr>                                                                                                `
+                                <td>
+                                    <span class="domainLabelBig">
+                                        <strong><span jwcid="domainName">.au</span></strong>
+                                    </span>
+                                    <span class="domainLabelSmall"><span jwcid="country">(country)</span></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <span class="roundbottom">
+                        <span class="round4"></span>
+                        <span class="round3"></span>
+                        <span class="round2"></span>
+                        <span class="round1"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div jwcid=@If condition="prop:mustSplit" element="literal:div" style="margin: 20px 0 40px 0;">
+                <p>We noticed that your request must be split to be process corectly. You will be required to confirm the two requests separately. You may go back and change your request to avoid this. </p>
+				<p>&nbsp;</p>
+				<p>How do you wish to proceed? </p>
+            </div>
+
+            <div jwcid="@Else" element="literal:div" style="margin: 20px 0 40px 0;">
+			    <p>We noticed that you have requested to change the nameserver records and other information relating to this domain. As the processing time for these requests can differ, we recommend you split this request in two parts. This will allow a delay in processing one to not hold up the other, although you will be required to confirm the two requests separately. </p>
+				<p>&nbsp;</p>
+				<p>How do you wish to proceed? </p>
+            </div>
+
+            <form jwcid="form">
+                <div class="mainBox">
+                    <div class="containerBox">
+                        <span class="roundtop">
+                            <span class="roundTop1"></span>
+                            <span class="roundTop2"></span>
+                            <span class="roundTop3"></span>
+                            <span class="roundTop4"></span>
+                        </span>
+                        <div class="boxContent">
+                            <span jwcid="splitRequest">
+                                <table width="95%" border="0" cellspacing="5" cellpadding="0">
+                                    <tr>
+                                        <td width="5%" valign="top"><span jwcid="twoRequest"/></td>
+                                        <td width="95%" valign="top"><strong>Yes, split my request into two parts to speed processing.</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top"><span jwcid="oneRequest"/></td>
+                                        <td valign="top"><strong>No, leave my changes as a single request.</strong></td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                        <span class="roundbottom">
+                            <span class="round4"></span>
+                            <span class="round3"></span>
+                            <span class="round2"></span>
+                            <span class="round1"></span>
+                        </span>
+                    </div>
+                </div>
+				<div style="margin: 20px 0 0 0;">
+					<div class="buttonStyle" style="float: right;">
+                        <b class="leftGreen"></b>
+					    <b class="right"><a href="#" jwcid="proceed" class="buttonGreen" style="padding-left: 5px;">Proceed with Request &gt;</a></b>
+                    </div>
+					<div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+					    <b class="left"></b>
+					    <b class="right"><a href="#" jwcid="makeChanges" class="button" style="padding-left: 3px;">&lt; Make More Changes</a></b>
+					</div>
+               </div>
+            </form>
+        </body>
+    </span>
+</html>

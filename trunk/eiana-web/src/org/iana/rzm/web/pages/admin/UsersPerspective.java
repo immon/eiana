@@ -18,7 +18,8 @@ public abstract class UsersPerspective extends AdminPage implements PageBeginRen
             "entityQuery=prop:entityQuery",
             "usePagination=literal:true",
             "noRequestMsg=literal:There are no users.",
-            "listener=listener:editUser"
+            "listener=listener:editUser",
+            "deleteListener=listener:deleteUser"
             }
     )
     public abstract IComponent getListUsersComponent();
@@ -29,8 +30,8 @@ public abstract class UsersPerspective extends AdminPage implements PageBeginRen
      @InjectPage("admin/EditAdminUser")
     public abstract EditAdminUser getEditAdminUserPage();
 
+    @Persist("client:page")
     public abstract EntityFetcher getEntityFetcher();
-
     public abstract void setEntityFetcher(EntityFetcher entityFetcher);
 
     public void pageBeginRender(PageEvent event) {
@@ -56,6 +57,10 @@ public abstract class UsersPerspective extends AdminPage implements PageBeginRen
         EntityIdPage page = getPage(admin);
         page.setEntityId(userId);
         getRequestCycle().activate((IPage) page);
+    }
+
+    public void deleteUser(long userId, boolean admin){
+        getAdminServices().deleteUser(userId);
     }
 
     private EntityIdPage getPage(boolean admin) {

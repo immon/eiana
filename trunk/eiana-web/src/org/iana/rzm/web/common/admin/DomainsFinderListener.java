@@ -1,6 +1,7 @@
 package org.iana.rzm.web.common.admin;
 
 import org.apache.tapestry.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.*;
 import org.iana.rzm.web.pages.admin.*;
@@ -19,7 +20,10 @@ public class DomainsFinderListener implements FinderListener {
     private IRequestCycle requestCycle;
     private DomainPerspective perspective;
 
-    public DomainsFinderListener(AdminServices services, IRequestCycle requestCycle, MessageProperty messageProperty, DomainPerspective perspective) {
+    public DomainsFinderListener(AdminServices services,
+                                 IRequestCycle requestCycle,
+                                 MessageProperty messageProperty,
+                                 DomainPerspective perspective) {
 
         this.messageProperty = messageProperty;
         this.services = services;
@@ -28,12 +32,17 @@ public class DomainsFinderListener implements FinderListener {
     }
 
     public void doFind(String entity) {
-        DomainVOWrapper domain = services.getDomain(entity);
-        if(domain == null){
+        DomainVOWrapper domain = null;
+        try {
+            domain = services.getDomain(entity);
+            if (domain == null) {
+                messageProperty.setWarningMessage("Can't find a domain with domain name: " + entity);
+            } else {
+                perspective.setEntityFetcher(new CachedEntityFetcher(new PaginatedEntity[]{domain}));
+                requestCycle.activate(perspective);
+            }
+        } catch (NoObjectFoundException e) {
             messageProperty.setWarningMessage("Can't find a domain with domain name: " + entity);
-        }else{
-            perspective.setEntityFetcher(new CachedEntityFetcher(new PaginatedEntity[]{domain}));
-            requestCycle.activate(perspective);
         }
 
     }

@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.admin;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
@@ -39,6 +40,10 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
     public abstract void setDomainId(long id);
 
     public abstract long getDomainId();
+
+    @Persist("client:page")
+    public abstract ICallback getCallback();
+    public abstract void setCallback(ICallback callback);
 
     public abstract void setOriginalContact(ContactVOWrapper contact);
 
@@ -103,18 +108,18 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
         String type = getContactType();
 
         if (attributes.equals(getOriginalContact().getMap())) {
-            goToEditDomainPage();
+            getCallback().performCallback(getRequestCycle());
             return;
         }
 
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
         getVisitState().markDomainDirty(getDomainId());
-        goToEditDomainPage();
+        getCallback().performCallback(getRequestCycle());
     }
 
     public void revert() {
-        goToEditDomainPage();
+        getCallback().performCallback(getRequestCycle());
     }
 
 
@@ -139,10 +144,5 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
     //}
 
 
-    private void goToEditDomainPage() {
-        EditDomain domain = getEditDomain();
-        domain.setDomainId(getDomainId());
-        getRequestCycle().activate(domain);
-    }
 
 }

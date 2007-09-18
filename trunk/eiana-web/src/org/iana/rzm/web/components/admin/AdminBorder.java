@@ -16,23 +16,25 @@ public abstract class AdminBorder extends Border {
 
     public static final String WINDOW_TITLE = "IANA Root Zone Maintenance";
 
-    @Component(id="navigation", type = "Navigation", bindings = {"selected=prop:selected"})
+    @Component(id = "navigation", type = "Navigation", bindings = {"selected=prop:selected"})
     public abstract IComponent getNavigationComponent();
 
-    @Component(id="searchLabel", type="Insert", bindings = {"value=prop:searchLabel"})
+    @Component(id = "searchLabel", type = "Insert", bindings = {"value=prop:searchLabel"})
     public abstract IComponent getSearchLabelComponent();
 
 
-    @Component(id="searchForm", type="Form", bindings = {
-            "clientValidationEnabled=literal:true",
-            "delegate=prop:validationDelegate"
-            })
+    @Component(id = "searchForm", type = "Form", bindings = {
+        "clientValidationEnabled=literal:true",
+        "delegate=prop:validationDelegate"
+        })
     public abstract IComponent getSearchFormComponent();
 
-    @Component(id="searchText", type="TextField", bindings = {"value=prop:search", "validators=validators:required"})
+    @Component(id = "searchText",
+               type = "TextField",
+               bindings = {"value=prop:search", "validators=validators:required"})
     public abstract IComponent getSearchTextComponent();
 
-    @Component(id="search", type="LinkSubmit", bindings = {"listener=listener:doFind"})
+    @Component(id = "search", type = "LinkSubmit", bindings = {"listener=listener:doFind"})
     public abstract IComponent getSearchComponent();
 
     @InjectComponent("searchText")
@@ -44,7 +46,7 @@ public abstract class AdminBorder extends Border {
     @InjectPage("admin/AdminHome")
     public abstract MessageProperty getHome();
 
-    @Parameter(required = false, defaultValue = "literal:REQUESTS" )
+    @Parameter(required = false, defaultValue = "literal:REQUESTS")
     public abstract String getSelected();
 
     @Parameter(required = false)
@@ -53,20 +55,33 @@ public abstract class AdminBorder extends Border {
     @Parameter(required = false)
     public abstract FinderValidator getFinderValidator();
 
+    @Parameter(required = false)
+    public abstract IRender getPageScriptDeligator();
+
     public abstract String getSearch();
 
-    public boolean isSearchActive(){
+
+    protected IRender javaScriptDelegator() {
+        if(getPageScriptDeligator() == null){
+            return super.javaScriptDelegator();
+        }
+
+        return getPageScriptDeligator();
+    }
+
+
+    public boolean isSearchActive() {
         return Search.class.isAssignableFrom(getPage().getClass());
     }
 
-    public IValidationDelegate getValidationDelegate(){
+    public IValidationDelegate getValidationDelegate() {
         RzmPage page = (RzmPage) getPage();
         IanaValidationDelegate delegate = (IanaValidationDelegate) page.getValidationDelegate();
         delegate.setDeligateErrorFieldClass("bordererrorMessageField");
         return delegate;
     }
 
-    public void doFind(){
+    public void doFind() {
         try {
             getFinderValidator().validate(getSearch());
             getFinderListener().doFind(getSearch());
@@ -76,13 +91,13 @@ public abstract class AdminBorder extends Border {
         }
     }
 
-    public String getSearchLabel(){
+    public String getSearchLabel() {
         String type = getSelected();
-        if(type.equals("REQUESTS")){
+        if (type.equals("REQUESTS")) {
             return "Request:";
-        }else if(type.equals("USERS")){
+        } else if (type.equals("USERS")) {
             return "User:";
-        }else{
+        } else {
             return "Domain:";
         }
     }
@@ -91,7 +106,7 @@ public abstract class AdminBorder extends Border {
         return new MessagePropertyCallback(getHome());
     }
 
-    public String getWindowTitle(){
+    public String getWindowTitle() {
         return WINDOW_TITLE;
     }
 }

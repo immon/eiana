@@ -143,8 +143,7 @@ public class UserServicesImpl implements UserServices {
 
 
         try {
-            TransactionCriteriaVO criteria = CriteriaBuilder.createOpenTransactionCriteriaForDomain(domainName);
-            List<TransactionVO> transactions = transactionService.findTransactions(criteria);
+            List<TransactionVO> transactions = transactionService.findTransactions(CriteriaBuilder.openTransactionForDomain(domainName));
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transaction : transactions) {
                 result.add(new TransactionVOWrapper(transaction));

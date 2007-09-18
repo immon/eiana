@@ -1,18 +1,17 @@
-package org.iana.rzm.web.pages.user;
+package org.iana.rzm.web.pages.admin;
 
-import org.apache.log4j.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 
 import java.util.*;
 
-public abstract class Summary extends UserPage implements PageBeginRenderListener, IExternalPage {
+public abstract class Summary extends AdminPage {
 
-    public static final String PAGE_NAME = "user/Summary";
-    public static final Logger LOGGER = Logger.getLogger(Summary.class.getName());
+    public static final String PAGE_NAME = "admin/Summary";
 
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryNameComponent();
@@ -38,12 +37,13 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     @Component(id = "message", type = "Insert", bindings = {"value=prop:message"})
     public abstract IComponent getMessageComponent();
 
-    @Component(id="backToOverview", type="DirectLink", bindings = {"listener=listener:backToOverview",
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    @Component(id = "backToOverview", type = "DirectLink", bindings = {"listener=listener:backToOverview",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getOverviewComponent();
 
-    @InjectPage("user/UserHome")
-    public abstract UserHome getHome();
+    @Persist("client:page")
+    public abstract ICallback getCallback();
+    public abstract void setCallback(ICallback callback);
 
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
@@ -55,6 +55,7 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     public abstract void setSummaryList(List<SummaryBean> list);
 
     public abstract void setDomainName(String domainName);
+
     public abstract String getDomainName();
 
     public abstract void setTikets(List<TransactionVOWrapper> transactions);
@@ -70,33 +71,32 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     public abstract int getIndex();
 
     public abstract SummaryBean getSummaryValue();
+
     public abstract void setSummaryValue(SummaryBean bean);
 
     @InitialValue("false")
     public abstract void setShowTiketingErrorMessage(boolean flag);
 
     public void pageBeginRender(PageEvent event) {
-        setCountryName("(" + getUserServices().getCountryName(getDomainName()) + ")");
+        setCountryName("(" + getAdminServices().getCountryName(getDomainName()) + ")");
         List<TransactionVOWrapper> tickets = getTikets();
         List<SummaryBean> list = new ArrayList<SummaryBean>();
 
         for (TransactionVOWrapper ticket : tickets) {
-            if(ticket.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION)){
-                    setShowTiketingErrorMessage(true);
+            if (ticket.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION)) {
+                setShowTiketingErrorMessage(true);
             }
             long rtId = ticket.getRtId();
-            list.add(new SummaryBean(rtId,ticket.getChanges()));
+            list.add(new SummaryBean(rtId, ticket.getChanges()));
         }
 
         setSummaryList(list);
 
     }
 
-
-
     @SuppressWarnings("unchecked")
-    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
-        if(parameters.length == 0 || parameters.length < 2){
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
+        if (parameters.length == 0 || parameters.length < 2) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
         }
 
@@ -105,8 +105,8 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     }
 
 
-    public UserHome backToOverview() {
-        return getHome();
+    public void backToOverview() {
+         getCallback().performCallback(getRequestCycle());
     }
 
     public String getMessage() {
@@ -118,5 +118,5 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     protected Object[] getExternalParameters() {
         return new Object[]{getTikets(), getDomainName()};
     }
-}
 
+}

@@ -11,6 +11,7 @@ import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
+import org.iana.rzm.web.tapestry.*;
 
 import java.util.*;
 
@@ -25,6 +26,10 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
     @Component(id = "allRequest", type = "SelectionLink", bindings = {"spanStyle=prop:allSpanStyle",
             "linkStyle=prop:allStyle", "linkText=literal:Show All", "listener=listener:showAll"})
     public abstract IComponent getAllRequestComponent();
+
+    @Component(id = "createNew", type = "DirectLink", bindings = { "listener=listener:createNew",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getCreateNewComponent();
 
     @Component(id = "listRequests", type = "ListRequests", bindings = {
             "entityQuery=prop:entityQuery",
@@ -48,6 +53,9 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
 
     @InjectPage("admin/RequestInformation")
     public abstract RequestInformation getRequestInformation();
+
+    @InjectPage("admin/DomainSelection")
+    public abstract DomainSelection getDomainSelection();
 
     @Persist("client:app")
     public abstract boolean isShowAll();
@@ -80,6 +88,12 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
         RequestInformation information = getRequestInformation();
         information.setRequestId(id);
         getRequestCycle().activate(information);
+    }
+
+    public void createNew(){
+        DomainSelection domainSelection = getDomainSelection();
+        domainSelection.setCallback(new RzmCallback(PAGE_NAME));
+        getRequestCycle().activate(domainSelection);
     }
 
     public String getBrowserTitle() {
