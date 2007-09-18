@@ -14,6 +14,7 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.objectdiff.DiffConfiguration;
 
 import java.util.HashSet;
 import java.util.List;
@@ -82,6 +83,11 @@ public class GuardedSystemTransactionService extends AbstractRZMStatefulService 
     public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
         isUserInRole();
         return delegate.detectTransactionActions(domain);
+    }
+
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
+        isUserInRole();
+        return delegate.detectTransactionActions(domain, config);
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {

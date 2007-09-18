@@ -2,12 +2,14 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.criteria.Criterion;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.objectdiff.DiffConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +105,10 @@ public class EmptySystemTransactionService implements SystemTransactionService {
     }
 
     public UserVO getUser() {
+        return null;
+    }
+
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
         return null;
     }
 }

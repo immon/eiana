@@ -77,6 +77,18 @@ public class TransactionConverter {
         List<TransactionActionVO> actions = new ArrayList<TransactionActionVO>();
         if (domainChange != null) {
             Map<String, Change> fieldChanges = domainChange.getFieldChanges();
+            if (fieldChanges.containsKey("specialInstructions") ||
+                fieldChanges.containsKey("type") ||
+                fieldChanges.containsKey("description") ||
+                fieldChanges.containsKey("enableEmails")) {
+                TransactionActionVO action = new TransactionActionVO();
+                action.setName(TransactionActionVO.MODIFY_OTHER_ATTRIBUTES);
+                for (String field : new String[]{"specialInstructions", "type", "description", "enableEmails"}) {
+                    SimpleChange simpleChange = (SimpleChange) fieldChanges.get(field);
+                    if (simpleChange != null) action.addChange(toChangeVOSimple(field, simpleChange));
+                }
+                actions.add(action);
+            }
             if (fieldChanges.containsKey("whoisServer")) {
                 SimpleChange simpleChange = (SimpleChange) fieldChanges.get("whoisServer");
                 TransactionActionVO action = new TransactionActionVO();

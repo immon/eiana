@@ -21,6 +21,10 @@ public class ObjectConfiguration {
         this.id = id;
     }
 
+    public void addField(String name) {
+        this.fields.add(name);
+    }
+    
     public void addFieldInstantiator(String field, ObjectInstantiator inst) {
         if (inst == null) throw new IllegalArgumentException("null object instantiator");
         classes.put(field, inst);

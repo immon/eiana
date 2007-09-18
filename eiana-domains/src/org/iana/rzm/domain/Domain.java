@@ -143,7 +143,7 @@ public class Domain implements TrackedObject, Cloneable {
         setName(name);
         this.nameServers = new ArrayList<Host>();
         this.breakpoints = new HashSet<Breakpoint>();
-        this.status = Status.NEW;
+        this.status = Status.ACTIVE;
     }
 
     public Long getObjId() {
@@ -516,6 +516,10 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     public boolean isEnableEmails() {
+        return enableEmails;
+    }
+
+    public boolean getEnableEmails() {
         return enableEmails;
     }
 

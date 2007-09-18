@@ -16,6 +16,7 @@
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="library" name="hibernate" level="project" />
+    <orderEntry type="library" name="epp" level="project" />
     <orderEntryProperties />
   </component>
 </module>

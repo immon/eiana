@@ -8,6 +8,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.common.RZMStatefulService;
 import org.iana.rzm.facade.system.domain.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
+import org.iana.objectdiff.DiffConfiguration;
 
 import java.util.List;
 
@@ -40,6 +41,8 @@ public interface SystemTransactionService extends RZMStatefulService {
      * @throws InfrastructureException when an internal error occured during processing of this method.
      */
     TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException;
+
+    TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException;
 
     void performTransactionTechnicalCheck(IDomainVO domain) throws AccessDeniedException, TechnicalCheckException, InfrastructureException;
 
