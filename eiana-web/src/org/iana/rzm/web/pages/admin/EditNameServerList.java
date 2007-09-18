@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.admin;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
 import org.iana.rzm.web.common.*;
@@ -38,6 +39,10 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
     public abstract List<NameServerValue> getNameServerListValue();
 
     public abstract void setNameServerListValue(List<NameServerValue> list);
+
+    @Persist("client:page")
+    public abstract void setCallback(ICallback callback);
+    public abstract ICallback getCallback();
 
     @Persist("client:page")
     public abstract long getDomainId();
@@ -84,17 +89,13 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
         domain.updateNameServers(nameServers);
         getVisitState().markDomainDirty(getDomainId());
         setNameServerListValue(null);
-        EditDomain editDomain = getEditDomain();
-        editDomain.setDomainId(getDomainId());
-        getRequestCycle().activate(editDomain);
+        getCallback().performCallback(getRequestCycle());
     }
 
 
     public void revert() {
         setNameServerListValue(null);
-        EditDomain editDomain = getEditDomain();
-        editDomain.setDomainId(getDomainId());
-        getRequestCycle().activate(editDomain);
+        getCallback().performCallback(getRequestCycle());
     }
 
     public boolean getIsRequestPending() {
@@ -110,5 +111,6 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
     public void setErrorField(IFormComponent field, String message) {
         super.setErrorField(field.getId(), message);
     }
+
 
 }

@@ -1,17 +1,16 @@
 package org.iana.rzm.web.pages;
 
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.PageRedirectException;
-import org.apache.tapestry.annotations.InjectObject;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.InjectState;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.event.PageValidateListener;
-import org.apache.tapestry.web.WebRequest;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.apache.tapestry.web.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
-import org.iana.rzm.web.tapestry.RzmCallback;
+import org.iana.rzm.web.tapestry.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
 public abstract class Protected extends RzmPage implements  PageValidateListener {
 
@@ -38,6 +37,8 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
     public abstract HttpServletRequest getHttpRequest();
 
     public abstract RzmServices getRzmServices();
+
+     protected abstract String getErrorPageName();
 
     protected Object[] getExternalParameters() {
         return null;
@@ -72,6 +73,22 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
         return  getRequestCycle().getInfrastructure().getRequest().getParameterValue("form:" + getPageName());
     }
 
+    protected void restoreModifiedDomain(DomainVOWrapper domain) throws NoObjectFoundException {
+        getVisitState().markAsVisited(domain);
+        TransactionActionsVOWrapper transactionActionsVOWrapper = getRzmServices().getChanges(domain);
+        if (transactionActionsVOWrapper.getChanges().size() > 0) {
+            getVisitState().markDomainDirty(domain.getId());
+        }
+    }
+
+    protected void restoreCurrentDomain(long domainId) throws NoObjectFoundException {
+        try {
+            DomainVOWrapper wrapper = getRzmServices().getDomain(domainId);
+            getVisitState().markAsVisited(wrapper);
+        } catch (AccessDeniedException e) {
+            getAccessDeniedHandler().handleAccessDenied(e, getErrorPageName() );
+        }
+    }
 
     public void preventResubmission() {
         getTokenSynchronizer().isResubmission();

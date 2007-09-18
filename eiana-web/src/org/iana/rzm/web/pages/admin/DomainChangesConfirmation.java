@@ -5,13 +5,15 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.user.*;
 import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
-public abstract class DomainChangesConfirmation extends AdminPage {
+public abstract class DomainChangesConfirmation extends AdminPage implements PageBeginRenderListener {
 
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryNameComponent();
@@ -59,8 +61,20 @@ public abstract class DomainChangesConfirmation extends AdminPage {
 
     public abstract void setActionList(List<ActionVOWrapper> list);
 
+    public abstract PageEditorListener<DomainVOWrapper> getEditor();
+
+    @Persist("client:page")
+    public abstract void setEditor(PageEditorListener<DomainVOWrapper> editor);
+
     @Persist("client:page")
     public abstract DomainVOWrapper getModifiedDomain();
+
+    @Persist("client:page")
+    public abstract String getCountryName();
+
+    @Persist("client:page")
+    public abstract String getBorderHeader();
+    public abstract void setBorderHeader(String header);
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
@@ -73,8 +87,6 @@ public abstract class DomainChangesConfirmation extends AdminPage {
     public abstract void setDomainName(String domainName);
 
     public abstract void setCountryName(String name);
-
-    public abstract String getCountryName();
 
     public String getChangeTitle() {
         return getAction().getTitle();
@@ -96,6 +108,7 @@ public abstract class DomainChangesConfirmation extends AdminPage {
         setModifiedDomain(getVisitState().getMmodifiedDomain());
         DomainVOWrapper currentDomain = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(currentDomain.getName());
+        setCountryName(getAdminServices().getCountryName(currentDomain.getName()));
         try {
             if (getActionList() == null) {
                 TransactionActionsVOWrapper transactionActions = getAdminServices().getChanges(currentDomain);
@@ -117,12 +130,22 @@ public abstract class DomainChangesConfirmation extends AdminPage {
     }
 
 
-
     public void proceed() {
+        try{
+            getEditor().saveEntity(getVisitState().getMmodifiedDomain(), getRequestCycle());
+        }catch(NoObjectFoundException e){
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        } catch (NoDomainModificationException e) {
+            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
+        }
     }
 
     public void continueEdit() {
+        getEditor().cancel(getRequestCycle());
     }
 
 
+    public void resetStateIfneeded() {
+        getVisitState().markAsNotVisited(getDomainId());
+    }
 }

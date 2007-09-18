@@ -12,11 +12,13 @@ public class NoObjectFoundException extends Exception {
     private String type;
 
     public NoObjectFoundException(long id, String type) {
+        super("Can't find Object " + type + " with id " + id);
         this.id = id;
         this.type = type;
     }
 
     public NoObjectFoundException(String name, String type) {
+        super("Can't find Object " + type + " with name " + name);
         this.name = name;
         this.type = type;
     }

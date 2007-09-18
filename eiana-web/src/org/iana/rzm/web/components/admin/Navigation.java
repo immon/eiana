@@ -1,14 +1,9 @@
 package org.iana.rzm.web.components.admin;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IPage;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.iana.rzm.web.components.Border;
-import org.iana.rzm.web.pages.admin.AdminHome;
-import org.iana.rzm.web.pages.admin.Domains;
-import org.iana.rzm.web.pages.admin.Users;
+import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.pages.admin.*;
 
 @ComponentClass
 public abstract class Navigation extends BaseComponent {
@@ -85,6 +80,10 @@ public abstract class Navigation extends BaseComponent {
 
 
     public void viewDomains(){
+
+        AdminPage page = (AdminPage) getPage();
+        page.resetStateIfneeded();
+
         if(!isSamePage(Domains.PAGE_NAME)){
             getPage().getRequestCycle().activate(Domains.PAGE_NAME);
         }

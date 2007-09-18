@@ -19,7 +19,7 @@ public class TransactionForDomainFetcher implements EntityFetcher {
 
     public TransactionForDomainFetcher(String domainName, RzmServices services) {
         this.services = services;
-        criterion = CriteriaBuilder.creteOpenTransactionCriterionForDomain(domainName);
+        criterion = CriteriaBuilder.openTransactionForDomain(domainName);
     }
 
     public int getTotal() throws NoObjectFoundException {

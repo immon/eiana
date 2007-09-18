@@ -3,14 +3,17 @@ package org.iana.rzm.web.components.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.admin.*;
 import org.iana.rzm.web.services.admin.*;
 
+import java.util.*;
+
 @ComponentClass
-public abstract class AdminRequestDetails extends RequestDetails {
+public abstract class AdminRequestDetails extends RequestDetails  {
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:domainName", "listener=ognl:listener", "request=prop:request"
+        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=listener:resend"
         })
     public abstract IComponent getRequestSummaryComponent();
 
@@ -22,6 +25,16 @@ public abstract class AdminRequestDetails extends RequestDetails {
 
     @InjectPage("admin/EditRequest")
     public abstract EditRequest getEditRequest();
+
+    @InjectPage(SendConfirmation.PAGE_NAME)
+    public abstract SendConfirmation getNotificationSender();
+
+    public abstract void setNotifications(List<NotificationVOWrapper> list);
+    public abstract List<NotificationVOWrapper> getNotifications();
+
+    public boolean isEnabled(){
+        return getNotifications() != null && getNotifications().size() > 0;
+    }
 
     protected AdminServices getRzmServices() {
         return getUserServices();
@@ -35,6 +48,13 @@ public abstract class AdminRequestDetails extends RequestDetails {
         EditRequest editRequest = getEditRequest();
         editRequest.setRequestId(getRequestId());
         getPage().getRequestCycle().activate(editRequest);
+    }
+
+    public void resend(){
+        SendConfirmation notificationSender = getNotificationSender();
+        notificationSender.setRequestId(getRequestId());
+        notificationSender.setRequest(getRequest());
+        getPage().getRequestCycle().activate(notificationSender);
     }
 
     public IActionListener getListener() {
@@ -60,5 +80,3 @@ public abstract class AdminRequestDetails extends RequestDetails {
         }
     }
 }
-
-

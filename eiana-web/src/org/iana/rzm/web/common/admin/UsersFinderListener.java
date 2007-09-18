@@ -4,6 +4,7 @@ import org.apache.tapestry.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.*;
 import org.iana.rzm.web.pages.admin.*;
+import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
 
 public class UsersFinderListener implements FinderListener {
@@ -11,6 +12,7 @@ public class UsersFinderListener implements FinderListener {
     private IRequestCycle requestCycle;
     private MessageProperty messageProperty;
     private UsersPerspective perspective;
+    private CachedEntityFetcher fetcher;
 
     public UsersFinderListener(AdminServices services, IRequestCycle requestCycle, MessageProperty messageProperty, UsersPerspective perspective) {
 
@@ -25,8 +27,8 @@ public class UsersFinderListener implements FinderListener {
         if (user == null) {
             messageProperty.setWarningMessage("Can't find user with user name: " + entity);
         } else {
-            perspective.setEntityFetcher(new CachedEntityFetcher(new PaginatedEntity[]{user}));
+            perspective.setEntityFetcher(new SearchUsersEntityFetcher(services,  CriteriaBuilder.forUserName(entity)));
             requestCycle.activate(perspective);
         }
     }
-}
+ }

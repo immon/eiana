@@ -146,10 +146,6 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
                 setNameServerChange(transactionActions.isNameServerChange());
                 setSeparateRequest(transactionActions.offerSeparateRequest());
                 setMustSplitRequest(transactionActions.mustSplitrequest());
-                //if(isNameServerChange()){
-                //    setWarningMessage("Currently Name Server Changes are not supported. Please start over and do Contact " +
-                //            "changes only");
-                //}
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);

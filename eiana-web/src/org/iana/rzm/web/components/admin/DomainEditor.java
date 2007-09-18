@@ -6,6 +6,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
 import org.apache.tapestry.valid.*;
+import org.iana.codevalues.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
@@ -20,7 +21,7 @@ import java.util.*;
 
 public abstract class DomainEditor extends BaseComponent implements PageBeginRenderListener {
 
-    public static final TypeModel TYPES = new TypeModel();
+    public static DomainStatusModel STATUS_MODEL = new DomainStatusModel();
 
     @Component(id = "editDomain", type = "Form", bindings = {
         "clientValidationEnabled=literal:false",
@@ -38,19 +39,25 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
     public abstract IComponent getDescriptionComponent();
 
     @Component(id = "types", type = "PropertySelection", bindings = {
-        "displayName=message:type-label", "model=prop:model", "value=prop:domain.type",
+        "displayName=message:type-label", "model=prop:model", "value=prop:type",
         "validators=validators:required"
         })
     public abstract IComponent getTypeComponent();
 
-     @Component(id = "subDomain", type = "SubDomain", bindings = {
-            "registryUrl=prop:domain.registryUrl",
-            "originalRegistryUrl=prop:originalDomain.registryUrl",
-            "whoisServer=prop:domain.whoisServer",
-            "originalWhoisServer=prop:originalDomain.whoisServer",
-            "listener=prop:subDomainListener",
-            "editible=literal:true"
-            })
+    @Component(id = "statuses", type = "PropertySelection", bindings = {
+        "displayName=message:status-label", "model=ognl:@org.iana.rzm.web.components.admin.DomainEditor@STATUS_MODEL", "value=prop:domain.status",
+        "validators=validators:required"
+        })
+    public abstract IComponent getStatusComponent();
+
+    @Component(id = "subDomain", type = "SubDomain", bindings = {
+        "registryUrl=prop:domain.registryUrl",
+        "originalRegistryUrl=prop:originalDomain.registryUrl",
+        "whoisServer=prop:domain.whoisServer",
+        "originalWhoisServer=prop:originalDomain.whoisServer",
+        "listener=prop:subDomainListener",
+        "editible=literal:true"
+        })
     public abstract IComponent getSubDomainComponent();
 
     @Component(id = "specialInstructions", type = "TextArea", bindings = {
@@ -106,6 +113,13 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCancelComponent();
 
+    @Component(id = "sendEmail", type = "Checkbox", bindings = {
+        "displayName=message:sendemail-label", "value=prop:domain.sendEmail"})
+    public abstract IComponent getSendEmailComponent();
+
+    @Component(id = "emailLabel", type = "FieldLabel", bindings = {"field=component:sendEmail"})
+    public abstract IComponent getSendEmailLabelComponent();
+
     @Asset(value = "WEB-INF/admin/DomainEditor.html")
     public abstract IAsset get$template();
 
@@ -146,12 +160,17 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
 
     public abstract SystemDomainVOWrapper getOriginalDomain();
 
+    @Persist("client:form")
+    public abstract List<Value> getDomainTypes();
+
+    public abstract void setDomainTypes(List<Value> values);
+
     public long getDomainId() {
         return getDomain().getId();
     }
 
     public IPropertySelectionModel getModel() {
-        return TYPES;
+        return new TypeModel(getDomainTypes());
     }
 
     public ContactVOWrapper getSoOriginalContact() {
@@ -178,7 +197,30 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
         return getDomain().getTechnicalContact();
     }
 
+    public Value getType() {
+        final String type = getDomain().getType();
+
+        Value value = ListUtil.find(getDomainTypes(), new ListUtil.Predicate<Value>() {
+            public boolean evaluate(Value object) {
+                return object.getValueId().equals(type);
+            }
+        });
+
+        if (value == null) {
+            return null;
+        }
+
+        return value;
+    }
+
+    public void setType(Value value) {
+        if (value != null) {
+            getDomain().setType(value.getValueId());
+        }
+    }
+
     public void pageBeginRender(PageEvent event) {
+        setDomainTypes(new ArrayList<Value>(getAdminServices().getDomainTypes()));
         try {
             if (isEdit()) {
                 setOriginalDomain(getAdminServices().getDomain(getDomainId()));
@@ -198,7 +240,6 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
 
 
     public void save() {
-
         DomainVOWrapper org = getOriginalDomain();
         SystemDomainVOWrapper domain = getDomain();
         long id = getDomainId();
@@ -216,11 +257,15 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
             visit.markDomainDirty(id);
         }
 
-        if (!equal(org.getTypeAsString(), domain.getTypeAsString())) {
+        if (!equal(org.getType(), domain.getType())) {
             visit.markDomainDirty(id);
         }
 
         if (!equal(org.getSpecialInstructions(), domain.getSpecialInstructions())) {
+            visit.markDomainDirty(id);
+        }
+
+        if (org.isSendEmail() != domain.isSendEmail()) {
             visit.markDomainDirty(id);
         }
 
@@ -241,33 +286,67 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
     }
 
     private static class TypeModel implements IPropertySelectionModel, Serializable {
+        private List<Value> types;
 
-        private DomainVOWrapper.Type[] types;
-
-        public TypeModel() {
-            types = DomainVOWrapper.Type.values();
+        public TypeModel(List<Value> types) {
+            this.types = types;
         }
 
         public int getOptionCount() {
-            return types.length;
+            return types.size();
         }
 
         public Object getOption(int index) {
-            return types[index];
+            return types.get(index);
         }
 
         public String getLabel(int index) {
-            return types[index].getDisplayName();
+            return types.get(index).getValueName();
         }
 
         public String getValue(int index) {
-            return String.valueOf(index);
+            return types.get(index).getValueId();
         }
 
         public Object translateValue(String value) {
-            int i = Integer.parseInt(value);
-            return types[i];
+            for (Value code : types) {
+                if (code.getValueId().equals(value)) {
+                    return code;
+                }
+            }
+
+            throw new IllegalArgumentException("Can not find value " + value);
         }
     }
+
+    private static class DomainStatusModel implements IPropertySelectionModel, Serializable {
+
+        private DomainVOWrapper.Status[] statuses;
+
+        public DomainStatusModel() {
+            statuses = DomainVOWrapper.Status.values();
+        }
+
+        public int getOptionCount() {
+            return statuses.length;
+        }
+
+        public Object getOption(int index) {
+            return statuses[index];
+        }
+
+        public String getLabel(int index) {
+            return statuses[index].getDisplayName();
+        }
+
+        public String getValue(int index) {
+            return statuses[index].name();
+        }
+
+        public Object translateValue(String value) {
+            return DomainVOWrapper.Status.valueOf(value);
+        }
+    }
+
 
 }

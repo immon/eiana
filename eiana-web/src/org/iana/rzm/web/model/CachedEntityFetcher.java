@@ -2,6 +2,8 @@ package org.iana.rzm.web.model;
 
 import org.iana.rzm.facade.common.*;
 
+import java.io.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: simon
@@ -9,7 +11,7 @@ import org.iana.rzm.facade.common.*;
  * Time: 5:26:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CachedEntityFetcher implements EntityFetcher {
+public class CachedEntityFetcher implements EntityFetcher, Serializable {
     private PaginatedEntity[] entities;
 
     public CachedEntityFetcher(PaginatedEntity[] entities) {

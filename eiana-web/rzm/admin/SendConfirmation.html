@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@AdminBorder">
+            <h4>Re-Send Confirmation/DoC email for Request</h4>
+            <span jwcid="requestSummery">
+            <div class="mainBox" style="margin-bottom: 40px;">
+                <table width="95%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
+                    <tr>
+                        <td height="20" valign="top"><strong>Reference</strong></td>
+                        <td height="20" valign="top"><strong>Domain</strong></td>
+                        <td height="20" valign="top"><strong>Lodged</strong></td>
+                        <td height="20" valign="top"><strong>Created By</strong></td>
+                        <td height="20" valign="top" ><strong>Current Status </strong></td>
+                        <td height="20" valign="top" ><strong>Last Change </strong></td>
+                        <td height="20" valign="top"  align="right"><strong>Action</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"><img src="../../images/spacer.png" width="1" height="10"></td>
+                    </tr>
+                    <tr>
+                        <td>.US</td>
+                        <td>9 Sep, 2006</td>
+                        <td>Admin</td>
+                        <td>Pending Contact Comfirmation</td>
+                        <td>06 Jan, 2007</td>
+                    </tr>
+                </table>
+            </div>
+        </span>
+        <div class="mainBox" style="margin: 20px 0 0 0;">
+            <span jwcid="container@GrayContainer">
+                <form action="#" name="sendConfirmation" jwcid="sendConfirmation">
+                    <input jwcid="@Hidden" value="ognl:page.tokenSynchronizer.token"/>
+                        <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
+                            <tr>
+                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:notificationTypes">Confirmation Type:</span></td>
+                                <td align="right" valign="top" class="field">
+                                    <span jwcid="notificationTypes"  name="notificationTypes" class="field">
+                                        <select><option>Contact Confirmation</option><option>DoC Confirmation</option></select>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:text">Comment:</span></td>
+                                <td align="right" valign="top"><textarea cols="40" rows="5" jwcid="text"  name="text" class="field" onkeypress="return submitOnEnter(event);"></textarea>
+                            </tr>
+                            <tr><td colspan="2">&nbsp;</td> </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <div class="buttonStyle" style="float: right;">
+                                        <b class="left"></b>
+                                        <b class="right" style="width: 130px;">
+                                            <a href="#" jwcid="send"  class="button" style="padding-left: 13px;">Send Confirmation &gt;</a>
+                                        </b>
+                                    </div>
+                                    <div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+                                        <b class="leftBlue"></b>
+                                        <b class="right" style="width: 130px;">
+                                            <a href="#" jwcid="cancel"  class="buttonBlue" style="padding-left: 8px;"> &lt; Back </a>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                     </table>
+                </form>
+            </span>
+         </div>
+        </body>
+    </span>
+</html>

@@ -13,4 +13,8 @@ public class MessageUtil {
     public String getRequestFinderValidationErrorMessage(String value) {
         return "Invalid value for request: " + value;
     }
+
+    public String getDomainModificationErrorMessage(String domainName) {
+        return "You can not modified this Domain " + domainName + " At This time";
+    }
 }

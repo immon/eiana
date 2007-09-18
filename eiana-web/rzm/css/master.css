@@ -278,8 +278,8 @@ span.hidden { display:none }
 /* Button */
 
 .buttonStyle 			{ font-size: 12px; font-style:bold; font-weight:600; font-family:Arial, Helvetica, sans-serif; line-height:normal; white-space: nowrap; margin: 0; }
-.buttonStyle b.left		{ float:left; background:url("../images/button_left.png") no-repeat left top; width: 9px; height: 25px; }
-.buttonStyle b.right 	{ float: left; margin: 0; }
+.buttonStyle b.left		{ float:left; background:url("../images/button_left.png") no-repeat left top; width: 9px; height: 25px; white-space: nowrap; }
+.buttonStyle b.right 	{ float: left; margin: 0; white-space: nowrap; }
 .buttonStyle a.button	{ display:block; background:url("../images/button_right.png") no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }
 .buttonStyle b.leftRed		{ float:left; background:url("../images/button_left_red.png") no-repeat left top; width: 9px; height: 25px; }
 .buttonStyle a.buttonRed	{ display:block; background:url("../images/button_right_red.png") no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }

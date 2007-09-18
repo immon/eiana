@@ -18,27 +18,34 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
     public static final String PAGE_NAME = "admin/Users";
 
     @Component(id = "systemUsers", type = "SelectionLink", bindings = {"spanStyle=prop:activeSpanStyle",
-              "linkStyle=prop:activeStyle", "linkText=literal:System Users", "listener=listener:showSystemUsers", "useDivStyle=literal:true"})
-      public abstract IComponent getSystemUsersComponent();
+        "linkStyle=prop:activeStyle", "linkText=literal:System Users", "listener=listener:showSystemUsers", "useDivStyle=literal:true"})
+    public abstract IComponent getSystemUsersComponent();
 
-      @Component(id = "adminUsers", type = "SelectionLink", bindings = {"spanStyle=prop:allSpanStyle",
-              "linkStyle=prop:allStyle", "linkText=literal:Admin Users", "listener=listener:showAdminUsers"})
-      public abstract IComponent getAllRequestComponent();
+    @Component(id = "adminUsers", type = "SelectionLink", bindings = {"spanStyle=prop:allSpanStyle",
+        "linkStyle=prop:allStyle", "linkText=literal:Admin Users", "listener=listener:showAdminUsers"})
+    public abstract IComponent getAllRequestComponent();
 
 
     @Component(id = "listUsers", type = "ListUsers", bindings = {
-            "entityQuery=prop:entityQuery",
-            "usePagination=literal:true",
-            "noRequestMsg=literal:There are no users.",
-            "listener=listener:editUser"
-            }
+        "entityQuery=prop:entityQuery",
+        "usePagination=literal:true",
+        "noRequestMsg=literal:There are no users.",
+        "listener=listener:editUser",
+        "deleteListener=listener:deleteUser"
+        }
     )
     public abstract IComponent getListUsersComponent();
 
-    @Component(id = "newuser", type = "DirectLink", bindings = {"listener=listener:createUser",
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
-    public abstract IComponent getnewuserComponent();
+    @Component(id = "createAdmin", type = "DirectLink", bindings = {"listener=listener:createAdminUser",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getCreateAdminUserComponent();
 
+    @Component(id = "createSystem", type = "DirectLink", bindings = {"listener=listener:createSystemUser",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getCreateSystemUserComponent();
+
+    @Asset("js/users.js")
+    public abstract IAsset getUsersScript();
 
     @InjectPage("admin/CreateSystemUser")
     public abstract CreateSystemUser getCreateSystemUserPage();
@@ -58,15 +65,21 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
     @Persist("client:app")
     public abstract boolean isAdminUsers();
+
     public abstract void setAdminUsers(boolean value);
 
-    public FinderValidator getFinderValidator(){
+    public FinderValidator getFinderValidator() {
         return new EmptyFinderValidator();
     }
 
-    public FinderListener getFinderListener(){
-        return new UsersFinderListener(getAdminServices(),getRequestCycle(),this, getUsersPerspective());
+    public FinderListener getFinderListener() {
+        return new UsersFinderListener(getAdminServices(), getRequestCycle(), this, getUsersPerspective());
     }
+
+    public IRender getPageScriptDeligator(){
+        return new UsersScriptDeligator(getUsersScript());
+    }
+
 
     public void pageBeginRender(PageEvent event) {
 
@@ -81,11 +94,12 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         }
     }
 
-    public void showAdminUsers(){
+
+    public void showAdminUsers() {
         setAdminUsers(true);
     }
 
-    public void showSystemUsers(){
+    public void showSystemUsers() {
         setAdminUsers(false);
     }
 
@@ -151,20 +165,16 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         return admin ? getEditAdminUserPage() : getEditSystemUserPage();
     }
 
-    public void createUser(){
-        if(isAdminUsers()){
-            createAdminUser();
-        }else{
-            createSystemUser();
-        }
-    }
-
     public void createSystemUser() {
         getRequestCycle().activate(getCreateSystemUserPage());
     }
-    
-    public void createAdminUser(){
-         getRequestCycle().activate(getCreateAdminUserPage());
+
+    public void createAdminUser() {
+        getRequestCycle().activate(getCreateAdminUserPage());
+    }
+
+    public void deleteUser(long userId, boolean admin) {
+        getAdminServices().deleteUser(userId);
     }
 
     private static class AdminUsersFetcher implements EntityFetcher {
@@ -202,5 +212,28 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
             return adminServices.getUsers(criterion, offset, length).toArray(new PaginatedEntity[0]);
         }
+    }
+
+    public static class UsersScriptDeligator implements IRender {
+        private IAsset javaScript;
+
+        public UsersScriptDeligator(IAsset javaScript){
+            this.javaScript = javaScript;
+        }
+
+        public void render(IMarkupWriter writer, IRequestCycle cycle) {
+            IComponent border = cycle.getPage().getComponent("border");
+            writeScript(writer, border.getAsset("script"));
+            writeScript(writer, javaScript);
+        }
+
+        private void writeScript(IMarkupWriter writer, IAsset asset) {
+            writer.begin("script");
+            writer.attribute("language", "javascript");
+            writer.attribute("src", asset.buildURL());
+            writer.end();
+        }
+
+
     }
 }

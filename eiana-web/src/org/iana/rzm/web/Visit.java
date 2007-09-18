@@ -1,12 +1,9 @@
 package org.iana.rzm.web;
 
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.ModelUtil;
-import org.iana.rzm.web.model.WebUser;
+import org.iana.rzm.web.model.*;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class Visit implements Serializable {
 
@@ -63,6 +60,7 @@ public class Visit implements Serializable {
         user = null;
         visitedDomains = null;
         modifiedDomain = 0;
+        submitterEmail = null;
     }
 
 
@@ -85,7 +83,13 @@ public class Visit implements Serializable {
         visitedDomains.remove(domainId);
         if(modifiedDomain == domainId){
             modifiedDomain = 0;
+            submitterEmail = null;
         }
+    }
+
+    public void resetModifirdDomain(){
+        modifiedDomain = 0;
+        submitterEmail = null;
     }
 
     public DomainVOWrapper getCurrentDomain(long domainId) {

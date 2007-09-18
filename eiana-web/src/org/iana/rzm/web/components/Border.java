@@ -2,15 +2,13 @@ package org.iana.rzm.web.components;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.components.Insert;
-import org.apache.tapestry.engine.IEngineService;
-import org.apache.tapestry.html.Shell;
-import org.iana.rzm.web.Global;
-import org.iana.rzm.web.Visit;
-import org.iana.rzm.web.pages.Login;
-import org.iana.rzm.web.pages.MyPasswordChange;
-import org.iana.rzm.web.services.ApplicationLifecycle;
-import org.iana.rzm.web.tapestry.MessagePropertyCallback;
+import org.apache.tapestry.components.*;
+import org.apache.tapestry.engine.*;
+import org.apache.tapestry.html.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.pages.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.tapestry.*;
 
 public abstract class Border extends BaseComponent {
 
@@ -46,7 +44,7 @@ public abstract class Border extends BaseComponent {
     public abstract IComponent getloggedInCondition();
 
     @InjectObject("service:rzm.JavaScriptDelegator")
-    public abstract IRender getJavaScriptDelegator();
+    public abstract IRender getDefaultJavaScriptDelegator();
 
     @InjectObject("service:rzm.ApplicationLifecycle")
     public abstract ApplicationLifecycle getApplicationLifecycle();
@@ -54,6 +52,13 @@ public abstract class Border extends BaseComponent {
     @InjectObject("engine-service:home")
     public abstract IEngineService getPageService();
 
+    public  IRender  getJavaScriptDelegator(){
+        return javaScriptDelegator();   
+    }
+
+    protected IRender javaScriptDelegator(){
+        return getDefaultJavaScriptDelegator();
+    }
 
     @InjectState("visit")
     public abstract Visit getVisit();

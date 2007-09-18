@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.commons.lang.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
@@ -28,6 +29,10 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
 
     @InjectPage("admin/RequestsPerspective")
     public abstract RequestsPerspective getRequestsPerspective();
+
+    @Persist("client:page")
+    public abstract void setCallback(ICallback callback);
+    public abstract ICallback getCallback();
 
     @Persist("client:page")
     public abstract long getDomainId();
@@ -68,10 +73,7 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
         domain.setRegistryUrl(registryUrl);
         domain.setWhoisServer(whois);
         getVisitState().markDomainDirty(getDomainId());
-
-        EditDomain editDomain = getEditDomain();
-        editDomain.setDomainId(getDomainId());
-        getRequestCycle().activate(editDomain);
+        getCallback().performCallback(getRequestCycle());
     }
 
     public RequestsPerspective viewPendingRequests() {
@@ -87,8 +89,8 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
     }
 
     public void revert() {
-        EditDomain editDomain = getEditDomain();
-        editDomain.setDomainId(getDomainId());
-        getRequestCycle().activate(editDomain);
+        getCallback().performCallback(getRequestCycle());
     }
+
+     
 }

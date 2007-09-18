@@ -2,13 +2,18 @@ package org.iana.rzm.web.pages.admin;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.admin.*;
 import org.iana.rzm.web.tapestry.*;
 
-public abstract class EditDomain extends AdminPage implements DomainAttributeEditor, PageBeginRenderListener, LinkTraget {
+public abstract class EditDomain extends AdminPage
+    implements DomainAttributeEditor, PageBeginRenderListener, LinkTraget, IExternalPage {
+    public static final String PAGE_NAME = "admin/EditDomain";
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:requestPending"})
     public abstract IComponent getPendingRequestsComponent();
@@ -45,6 +50,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
 
     @Persist("client:page")
     public abstract void setOriginalDomain(SystemDomainVOWrapper domain);
+
     public abstract SystemDomainVOWrapper getOriginalDomain();
 
     public abstract void setCountryName(String name);
@@ -67,18 +73,57 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
     @InjectPage("admin/DomainChangesConfirmation")
     public abstract DomainChangesConfirmation getDomainChangesConfirmation();
 
+    @Persist("client:page")
     public abstract void setModifiedDomain(DomainVOWrapper modifiedDomain);
 
-    public void setIdentifier(Object id){
-        SystemDomainVOWrapper domain = getAdminServices().getDomain(id.toString());
-        setOriginalDomain(domain);
-        setDomainId(domain.getId());
+    public abstract DomainVOWrapper getModifiedDomain();
+
+    public void setIdentifier(Object id) {
+        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        SystemDomainVOWrapper domain = null;
+        try {
+            domain = getAdminServices().getDomain(id.toString());
+            setOriginalDomain(domain);
+            setDomainId(domain.getId());
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        }
+    }
+
+
+    protected Object[] getExternalParameters() {
+        DomainVOWrapper modified = getModifiedDomain();
+        if (modified != null) {
+            return new Object[]{getDomainId(), modified};
+        } else {
+            return new Object[]{getDomainId()};
+        }
+    }
+
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
+
+        if (parameters == null || parameters.length == 0) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        Long domainId = (Long) parameters[0];
+        setDomainId(domainId);
+
+        try {
+            if (parameters.length == 2) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[1]);
+            }
+        } catch (NoObjectFoundException e) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
     }
 
     public void pageBeginRender(PageEvent event) {
         try {
-            SystemDomainVOWrapper domain =  getOriginalDomain();
-            if(domain == null){
+            SystemDomainVOWrapper domain = getOriginalDomain();
+            if (domain == null) {
                 domain = getAdminServices().getDomain(getDomainId());
             }
             getVisitState().markAsVisited(domain);
@@ -91,7 +136,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
         }
     }
 
-    public DomainVOWrapper getDomain(){
+    public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
     }
 
@@ -100,16 +145,32 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
     }
 
     public void save() {
-        if(getVisitState().isDomainModified(getDomainId())){
-
-        }else{
+        if (getVisitState().isDomainModified(getDomainId())) {
+            DomainChangesConfirmation domainChangesConfirmation = getDomainChangesConfirmation();
+            domainChangesConfirmation.setDomainId(getDomainId());
+            domainChangesConfirmation.setCountryName(getCountryName());
+            domainChangesConfirmation.setEditor(new DomainEntityEditorListener(getAdminServices(), new RzmCallback(getPageName(), isExternal(), getExternalParameters())));
+            domainChangesConfirmation.setBorderHeader("DOMAINS");
+            getRequestCycle().activate(domainChangesConfirmation);
+        } else {
             revert();
         }
     }
 
-    public void revert() {
-        Domains page = getDomainsPage();
+    public void saveEntity() {
+        DomainVOWrapper domain = getVisitState().getMmodifiedDomain();
         getVisitState().markAsNotVisited(getDomainId());
+        getAdminServices().updateDomain(domain);
+        goToDomains();
+    }
+
+    public void revert() {
+        getVisitState().markAsNotVisited(getDomainId());
+        goToDomains();
+    }
+
+    private void goToDomains() {
+        Domains page = getDomainsPage();
         getRequestCycle().activate(page);
     }
 
@@ -117,6 +178,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         ContactVOWrapper contact = domain.getContact(contactId, type);
         EditContact page = getEditContactPage();
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
         page.setContactAttributes(contact.getMap());
         page.setDomainId(domain.getId());
         page.setContactType(type);
@@ -124,22 +186,24 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
     }
 
     public void editNameServerList() {
-        EditNameServerList nameServerListt = getEditNameServerList();
-        nameServerListt.setDomainId(getDomainId());
-        getRequestCycle().activate(nameServerListt);
+        EditNameServerList page = getEditNameServerList();
+        page.setDomainId(getDomainId());
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        getRequestCycle().activate(page);
     }
 
-    public void editSubDomain(){
+    public void editSubDomain() {
         EditSubDomain editSubDomain = getEditSubDomain();
         editSubDomain.setDomainId(getDomainId());
         editSubDomain.setOriginalRegistryUrl(getOriginalDomain().getRegistryUrl());
         editSubDomain.setOriginalWhoisServer(getOriginalDomain().getWhoisServer());
         editSubDomain.setRegistryUrl(getDomain().getRegistryUrl());
         editSubDomain.setWhoisServer(getDomain().getWhoisServer());
+        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
         getRequestCycle().activate(editSubDomain);
     }
 
-     public RequestsPerspective viewPendingRequests() {
+    public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new TransactionForDomainFetcher(getDomain().getName(), getRzmServices()));
         return page;
@@ -148,6 +212,26 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
 
     public boolean isRequestPending() {
         return getVisitState().getCurrentDomain(getDomainId()).isOperationPending();
+    }
+
+    private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
+
+        private AdminServices services;
+        private ICallback callback;
+
+        public DomainEntityEditorListener(AdminServices services, ICallback callback) {
+            this.services = services;
+            this.callback = callback;
+        }
+
+        public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle) {
+            services.updateDomain(domainVOWrapper);
+            cycle.activate(Domains.PAGE_NAME);
+        }
+
+        public void cancel(IRequestCycle cycle) {
+            callback.performCallback(cycle);
+        }
     }
 
 }

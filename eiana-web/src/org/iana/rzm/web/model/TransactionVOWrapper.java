@@ -46,7 +46,8 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     }
 
     public long getRtId() {
-        return vo.getTicketID();
+        Long id = vo.getTicketID();
+        return id == null ? 0 : id;
     }
 
     public void setRtId(long id){
