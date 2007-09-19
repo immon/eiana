@@ -88,10 +88,10 @@ public abstract class DomainSelection extends AdminPage implements IExternalPage
             validationDelegate.record(e.getMessage(), ValidationConstraint.REQUIRED);
             return;
         }
-
         getVisitState().markAsVisited(domain);
         getVisitState().setSubmitterEmail(getEmail());
         DomainView page = getDomainView();
+        page.setSubmitterEmail(getEmail());
         page.setOriginalDomain(domain);
         page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
         page.setDomainId(domain.getId());

@@ -148,8 +148,11 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     @Persist("client:page")
     public abstract ICallback getCallback();
-
     public abstract void setCallback(ICallback callback);
+
+    @Persist("client:page")
+    public abstract void setSubmitterEmail(String email);
+    public abstract String getSubmitterEmail();
 
     public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
@@ -158,9 +161,9 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     protected Object[] getExternalParameters() {
         if (getModifiedDomain() != null) {
-            return new Object[]{getDomainId(), getCallback(), getModifiedDomain()};
+            return new Object[]{getDomainId(), getCallback(), getSubmitterEmail(), getModifiedDomain()};
         }
-        return new Object[]{getDomainId(), getCallback()};
+        return new Object[]{getDomainId(), getCallback(), getSubmitterEmail()};
     }
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
@@ -172,15 +175,19 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         Long id = (Long) parameters[0];
         setDomainId(id);
         setCallback((ICallback) parameters[1]);
+        setSubmitterEmail((String)parameters[2]);
+
 
         try {
-            if (parameters.length == 3) {
-                restoreModifiedDomain((DomainVOWrapper) parameters[2]);
+            if (parameters.length == 4) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
         }
+
+        getVisitState().setSubmitterEmail(getSubmitterEmail());
     }
 
     public void pageBeginRender(PageEvent event) {

@@ -3,6 +3,7 @@ package org.iana.rzm.web.services.admin;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.facade.admin.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
@@ -52,4 +53,6 @@ public interface AdminServices extends RzmServices {
     public List<NotificationVOWrapper> getNotifications(long requestId);
 
     public Set<Value> getDomainTypes();
+
+    public void sendNotification(long transactionId, NotificationVOWrapper vo, String comment )throws FacadeTransactionException;
 }

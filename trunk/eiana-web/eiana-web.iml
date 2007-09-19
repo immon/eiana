@@ -270,6 +270,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module" module-name="common-config" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -284,6 +285,10 @@
   </component>
   <component name="WebModuleProperties">
     <containerElement type="module" name="common-codevalues">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-config">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
@@ -583,6 +588,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
@@ -613,6 +622,10 @@
     </containerElement>
     <containerElement type="library" name="nask-commons" level="project">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="rt-api" level="project">
+      <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="saaj" level="project">

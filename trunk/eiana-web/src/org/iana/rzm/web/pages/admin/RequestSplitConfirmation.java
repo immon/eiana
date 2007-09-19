@@ -100,8 +100,6 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             return new Object[]{getDomainId(), getSplitRequest(), getCallback(), domain};
         }
         return new Object[]{getDomainId(), getSplitRequest(), getCallback()};
-
-
     }
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
