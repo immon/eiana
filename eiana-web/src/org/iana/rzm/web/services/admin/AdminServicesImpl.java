@@ -201,6 +201,14 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         return domainTypesService.getDomainTypes();
     }
 
+    public void sendNotification(long requestId, NotificationVOWrapper notification, String comment) throws FacadeTransactionException {
+        try {
+            transactionService.resendNotification(requestId, notification.getType().voType(), comment);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
 
     public void changePassword(long userId, String newPassword) {
         //To change body of implemented methods use File | Settings | File Templates.

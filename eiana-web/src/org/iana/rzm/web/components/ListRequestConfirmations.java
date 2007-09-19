@@ -1,21 +1,17 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Asset;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.Parameter;
-import org.iana.rzm.web.model.ConfirmationVOWrapper;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.iana.rzm.web.model.*;
 
-import java.util.List;
+import java.util.*;
 
 public abstract class ListRequestConfirmations extends BaseComponent {
 
     @Asset(value = "WEB-INF/ListRequestConfirmations.html")
     public abstract IAsset get$template();
 
-    @Component(id="confirmations",type="For", bindings = {"source=prop:confirmations", "value=prop:confirmation"})
+    @Component(id="confirmations",type="For", bindings = {"source=prop:confirmations", "value=prop:confirmation" , "element=literal:tr"})
     public abstract IComponent getConfirmationsComponent();
 
     @Asset("images/checkbox_on.png")
@@ -30,10 +26,17 @@ public abstract class ListRequestConfirmations extends BaseComponent {
     @Component(id="confirmation", type="Insert", bindings = {"value=prop:confirmationContact"})
     public abstract IComponent getConfirmationComponent();
 
+    @Component(id="noconfirmations", type="If", bindings = {"condition=prop:empty"})
+    public abstract IComponent getNoRecordComponent();
+
     @Parameter(required = true)
     public abstract List<ConfirmationVOWrapper>getConfirmations();
 
     public abstract ConfirmationVOWrapper getConfirmation();
+
+    public boolean isEmpty(){
+        return getConfirmations() == null || getConfirmations().size() == 0;
+    }
 
     public IAsset getImageAsset(){
         return getConfirmation().isConfirmed() ? getCheckboxOn() : getCheckboxOff();

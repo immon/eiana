@@ -4,6 +4,7 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
+import org.iana.rzm.facade.admin.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
 
@@ -24,10 +25,10 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
     public abstract IComponent getTextComponent();
 
     @Component(id = "notificationTypes", type = "PropertySelection", bindings = {
-            "displayName=literal:Confirmations:", "model=prop:model", "value=prop:confirmation"
-            })
+        "displayName=literal:Confirmations:", "model=prop:model", "value=prop:confirmation"
+        })
     public abstract IComponent getStatesComponent();
-    
+
     @Component(id = "send", type = "LinkSubmit", bindings = {"listener=listener:send"})
     public abstract IComponent getSubmitComponent();
 
@@ -35,7 +36,7 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
     public abstract IComponent getCancelComponent();
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:request.domainName",  "request=prop:request"})
+        "domainName=prop:request.domainName", "request=prop:request"})
     public abstract IComponent getRequestSummaryComponent();
 
     @InjectPage("admin/RequestInformation")
@@ -43,9 +44,11 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
 
     @Persist("client:form")
     public abstract long getRequestId();
-    public abstract  void setRequestId(long id);
+
+    public abstract void setRequestId(long id);
 
     public abstract TransactionVOWrapper getRequest();
+
     public abstract void setRequest(TransactionVOWrapper wrapper);
 
     public abstract NotificationVOWrapper getConfirmation();
@@ -53,30 +56,41 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
     public abstract String getText();
 
     public abstract void setNotifications(List<NotificationVOWrapper> notifications);
+
     public abstract List<NotificationVOWrapper> getNotifications();
 
     public void pageBeginRender(PageEvent event) {
         List<NotificationVOWrapper> notifications = getAdminServices().getNotifications(getRequestId());
         setNotifications(notifications);
-        if(getRequest() == null){
+        if (getRequest() == null) {
             try {
                 setRequest(getAdminServices().getTransaction(getRequestId()));
             } catch (NoObjectFoundException e) {
                 getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
             }
         }
-        
+
     }
 
-    public IPropertySelectionModel getModel(){
+    public IPropertySelectionModel getModel() {
         return new NotificationTypes(getNotifications().toArray(new NotificationVOWrapper[0]));
     }
 
-    public void send( long notificationId){
-
+    public void send() {
+        NotificationVOWrapper notification = getConfirmation();
+        String comment = getText();
+        try {
+            getAdminServices().sendNotification(getRequestId(), notification, comment);
+            RequestInformation page = getRequestInformationPage();
+            page.setRequestId(getRequestId());
+            page.setInfoMessage("Notification sent successfully");
+            getRequestCycle().activate(page);
+        } catch (FacadeTransactionException e) {
+            setErrorMessage(e.getMessage());
+        }
     }
 
-    public void revert(){
+    public void revert() {
         returnToRequestPage();
     }
 
@@ -88,7 +102,7 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
 
     private static class NotificationTypes implements IPropertySelectionModel, Serializable {
 
-        private NotificationVOWrapper[] types ;
+        private NotificationVOWrapper[] types;
 
         public NotificationTypes(NotificationVOWrapper[] types) {
             this.types = types;
@@ -103,7 +117,7 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
         }
 
         public String getLabel(int index) {
-            return types[index].getType();
+            return types[index].getType().getDisplayName();
         }
 
         public String getValue(int index) {
