@@ -30,7 +30,7 @@ public class CompositeConfig extends AbstractConfig {
         configs.add(config);
     }
 
-    public String getParameter(String name) {
+    public String getParameter(String name) throws ConfigException {
         for (Config config : configs) {
             String value = config.getParameter(name);
             if (value != null) return value;
@@ -38,7 +38,7 @@ public class CompositeConfig extends AbstractConfig {
         return null;
     }
 
-    public List<String> getParameterList(String name) {
+    public List<String> getParameterList(String name) throws ConfigException {
         for (Config config : configs) {
             List<String> ret = config.getParameterList(name);
             if (ret != null && !ret.isEmpty()) return ret;
@@ -46,7 +46,7 @@ public class CompositeConfig extends AbstractConfig {
         return null;
     }
 
-    public Set<String> getParameterSet(String name) {
+    public Set<String> getParameterSet(String name) throws ConfigException {
         for (Config config : configs) {
             Set<String> ret = config.getParameterSet(name);
             if (ret != null && !ret.isEmpty()) return ret;
@@ -54,7 +54,7 @@ public class CompositeConfig extends AbstractConfig {
         return null;
     }
 
-    public Config getSubConfig(String name) {
+    public Config getSubConfig(String name) throws ConfigException {
         for (Config config : configs) {
             Config conf = config.getSubConfig(name);
             if (conf != null) return conf;
@@ -62,7 +62,7 @@ public class CompositeConfig extends AbstractConfig {
         return null;
     }
 
-    public Set<String> getSubConfigNames() {
+    public Set<String> getSubConfigNames() throws ConfigException {
         Set<String> ret = new HashSet<String>();
         for (Config config : configs) {
             Set<String> subConfigNames = config.getSubConfigNames();
@@ -71,7 +71,7 @@ public class CompositeConfig extends AbstractConfig {
         return (ret.isEmpty()) ? null : ret;
     }
 
-    public Set<String> getParameterNames() {
+    public Set<String> getParameterNames() throws ConfigException {
         Set<String> ret = new HashSet<String>();
         for (Config config : configs) {
             Set<String> paramNames = config.getParameterNames();
