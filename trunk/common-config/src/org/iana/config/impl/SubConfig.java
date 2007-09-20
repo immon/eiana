@@ -31,71 +31,71 @@ class SubConfig extends AbstractConfig {
         this.subsettedConfig = config;
     }
 
-    public String getParameter(String name) {
+    public String getParameter(String name) throws ConfigException {
         return subsettedConfig.getParameter(updateSubName(subName, name));
     }
 
-    public List<String> getParameterList(String name) {
+    public List<String> getParameterList(String name) throws ConfigException {
         return subsettedConfig.getParameterList(updateSubName(subName, name));
     }
 
-    public Set<String> getParameterSet(String name) {
+    public Set<String> getParameterSet(String name) throws ConfigException {
         return subsettedConfig.getParameterSet(updateSubName(subName, name));
     }
 
-    public Config getSubConfig(String name) {
+    public Config getSubConfig(String name) throws ConfigException {
         return subsettedConfig.getSubConfig(updateSubName(subName, name));
     }
 
-    public Set<String> getSubConfigNames() {
+    public Set<String> getSubConfigNames() throws ConfigException {
         return subsettedConfig.getSubConfigNames(subName);
     }
 
-    protected Set<String> getSubConfigNames(String name) {
+    protected Set<String> getSubConfigNames(String name) throws ConfigException {
         return subsettedConfig.getSubConfigNames(name);
     }
 
-    public Set<String> getParameterNames() {
+    public Set<String> getParameterNames() throws ConfigException {
         return subsettedConfig.getParameterNames(subName);
     }
 
-    protected Set<String> getParameterNames(String name) {
+    protected Set<String> getParameterNames(String name) throws ConfigException {
         return subsettedConfig.getParameterNames(name);
     }
 
-    public Boolean getBooleanParameter(String name) {
+    public Boolean getBooleanParameter(String name) throws ConfigException {
         return subsettedConfig.getBooleanParameter(updateSubName(subName, name));
     }
 
-    public Integer getIntegerParameter(String name) {
+    public Integer getIntegerParameter(String name) throws ConfigException {
         return subsettedConfig.getIntegerParameter(updateSubName(subName, name));
     }
 
-    public Long getLongParameter(String name) {
+    public Long getLongParameter(String name) throws ConfigException {
         return subsettedConfig.getLongParameter(updateSubName(subName, name));
     }
 
-    public List<Boolean> getBooleanParameterList(String name) {
+    public List<Boolean> getBooleanParameterList(String name) throws ConfigException {
         return subsettedConfig.getBooleanParameterList(updateSubName(subName, name));
     }
 
-    public List<Integer> getIntegerParameterList(String name) {
+    public List<Integer> getIntegerParameterList(String name) throws ConfigException {
         return subsettedConfig.getIntegerParameterList(updateSubName(subName, name));
     }
 
-    public List<Long> getLongParameterList(String name) {
+    public List<Long> getLongParameterList(String name) throws ConfigException {
         return subsettedConfig.getLongParameterList(updateSubName(subName, name));
     }
 
-    public Set<Boolean> getBooleanParameterSet(String name) {
+    public Set<Boolean> getBooleanParameterSet(String name) throws ConfigException {
         return subsettedConfig.getBooleanParameterSet(updateSubName(subName, name));
     }
 
-    public Set<Integer> getIntegerParameterSet(String name) {
+    public Set<Integer> getIntegerParameterSet(String name) throws ConfigException {
         return subsettedConfig.getIntegerParameterSet(updateSubName(subName, name));
     }
 
-    public Set<Long> getLongParameterSet(String name) {
+    public Set<Long> getLongParameterSet(String name) throws ConfigException {
         return subsettedConfig.getLongParameterSet(updateSubName(subName, name));
     }
 

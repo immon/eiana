@@ -4,6 +4,7 @@ import org.iana.config.Config;
 import org.iana.config.ConfigDAO;
 import org.iana.config.conf.SpringConfigApplicationContext;
 import org.iana.config.impl.CompositeConfig;
+import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.OwnedConfig;
 import org.iana.config.impl.SingleParameter;
 import org.iana.test.spring.TransactionalSpringContextTests;
@@ -31,7 +32,7 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test
-    public void testCompositeConfig() {
+    public void testCompositeConfig() throws ConfigException {
         SingleParameter singleParam = new SingleParameter("param1", Long.toString(100));
         singleParam.setOwner(OWNER);
         singleParam.setFromDate(System.currentTimeMillis() - 100000);
@@ -57,7 +58,7 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testCompositeConfig")
-    public void testCompositeConfig2() {
+    public void testCompositeConfig2() throws ConfigException {
         List<Config> configs = new ArrayList<Config>();
         OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
 
@@ -70,7 +71,7 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testCompositeConfig2", alwaysRun = true)
-    public void testRemove() {
+    public void testRemove() throws ConfigException {
         hibernateConfigDAO.removeParameter(OWNER, "param1");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.param1");
     }

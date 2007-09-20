@@ -31,15 +31,15 @@ public class OwnedConfig extends AbstractConfig {
         this.dao = dao;
     }
 
-    public String getParameter(String name) {
+    public String getParameter(String name) throws ConfigException {
         return dao.getParameter(owner, name).getParameter();
     }
 
-    public List<String> getParameterList(String name) {
+    public List<String> getParameterList(String name) throws ConfigException {
         return dao.getParameter(owner, name).getParameterList();
     }
 
-    public Set<String> getParameterSet(String name) {
+    public Set<String> getParameterSet(String name) throws ConfigException {
         return dao.getParameter(owner, name).getParameterSet();
     }
 
@@ -47,15 +47,15 @@ public class OwnedConfig extends AbstractConfig {
         return new SubConfig(name, this);
     }
 
-    public Set<String> getSubConfigNames() {
+    public Set<String> getSubConfigNames() throws ConfigException {
         return getSubConfigNames("");
     }
 
-    public Set<String> getParameterNames() {
+    public Set<String> getParameterNames() throws ConfigException {
         return getParameterNames("");
     }
 
-    protected Set<String> getParameterNames(String name) {
+    protected Set<String> getParameterNames(String name) throws ConfigException {
         Set<String> ret = new HashSet<String>();
         Set<String> names = dao.getParameterNames(owner, name);
         if (names == null || names.isEmpty()) return null;
@@ -71,7 +71,7 @@ public class OwnedConfig extends AbstractConfig {
         return (ret.isEmpty()) ? null : ret;
     }
 
-    protected Set<String> getSubConfigNames(String name) {
+    protected Set<String> getSubConfigNames(String name) throws ConfigException {
         Set<String> ret = new HashSet<String>();
         Set<String> names = dao.getParameterNames(owner, name);
         if (names == null || names.isEmpty()) return null;

@@ -2,10 +2,7 @@ package org.iana.config.hibernate.accuracy;
 
 import org.iana.config.ConfigDAO;
 import org.iana.config.conf.SpringConfigApplicationContext;
-import org.iana.config.impl.ListParameter;
-import org.iana.config.impl.OwnedConfig;
-import org.iana.config.impl.SetParameter;
-import org.iana.config.impl.SingleParameter;
+import org.iana.config.impl.*;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
 
@@ -33,7 +30,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test
-    public void testSubConfig() {
+    public void testSubConfig() throws ConfigException {
         SingleParameter singleParam = new SingleParameter("sub1.sub2.param1", Boolean.toString(true));
         singleParam.setOwner(OWNER);
         singleParam.setFromDate(System.currentTimeMillis() - 100000);
@@ -60,7 +57,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testSubConfig")
-    public void testParameterNames() {
+    public void testParameterNames() throws ConfigException {
         SingleParameter singleParam = new SingleParameter("sub1.sub2_1.param13", Boolean.toString(true));
         singleParam.setOwner(OWNER);
         singleParam.setFromDate(System.currentTimeMillis() - 100000);
@@ -83,7 +80,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testParameterNames")
-    public void testSubConfigNames() {
+    public void testSubConfigNames() throws ConfigException {
         Set<String> values = new HashSet<String>();
         values.add("firstValue");
         values.add("secondValue");
@@ -106,7 +103,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testSubConfigNames", alwaysRun = true)
-    public void testRemoveNewParams() {
+    public void testRemoveNewParams() throws ConfigException {
         hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2.param1");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.param2");
         hibernateConfigDAO.removeParameter(OWNER, "sub1.sub2.sub3.param4");

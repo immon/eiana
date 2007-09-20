@@ -2,6 +2,7 @@ package org.iana.config.hibernate.accuracy;
 
 import org.iana.config.ConfigDAO;
 import org.iana.config.conf.SpringConfigApplicationContext;
+import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.ListParameter;
 import org.iana.config.impl.OwnedConfig;
 import org.iana.config.impl.SingleParameter;
@@ -32,7 +33,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test
-    public void testSingleParam() {
+    public void testSingleParam() throws ConfigException {
         SingleParameter singleParam = new SingleParameter("param1", "value1");
         singleParam.setOwner(OWNER);
         singleParam.setFromDate(System.currentTimeMillis() - 100000);
@@ -45,7 +46,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testSingleParam")
-    public void testListParam() {
+    public void testListParam() throws ConfigException {
         List<String> values = new ArrayList<String>();
         values.add("firstValue");
         values.add("secondValue");
@@ -62,7 +63,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testListParam")
-    public void testGetParameterNames() {
+    public void testGetParameterNames() throws ConfigException {
         Set<String> paramNames = new HashSet<String>();
         paramNames.add("param1");
         paramNames.add("param2");
@@ -72,7 +73,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testGetParameterNames", alwaysRun = true)
-    public void testRemoveParameter() {
+    public void testRemoveParameter() throws ConfigException {
         hibernateConfigDAO.removeParameter(OWNER, "param1");
         assert hibernateConfigDAO.getParameter(OWNER, "param1") == null;
 
