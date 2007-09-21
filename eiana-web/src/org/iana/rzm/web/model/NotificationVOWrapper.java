@@ -2,7 +2,9 @@ package org.iana.rzm.web.model;
 
 import org.iana.rzm.facade.system.notification.*;
 
-public class NotificationVOWrapper {
+import java.io.*;
+
+public class NotificationVOWrapper implements Serializable {
 
     public static enum Type {
         CONTACT_CONFIRMATION("Contact Confirmation"),

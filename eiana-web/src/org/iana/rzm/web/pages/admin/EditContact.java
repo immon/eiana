@@ -125,7 +125,7 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getModifiedDomain().getName(), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
         return page;
     }
 

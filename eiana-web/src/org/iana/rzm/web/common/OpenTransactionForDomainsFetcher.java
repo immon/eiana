@@ -5,6 +5,8 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
 
+import java.util.*;
+
 /**
  * Created by IntelliJ IDEA.
 * User: simon
@@ -12,14 +14,14 @@ import org.iana.rzm.web.services.*;
 * Time: 1:39:27 PM
 * To change this template use File | Settings | File Templates.
 */
-public class TransactionForDomainFetcher implements EntityFetcher {
+public class OpenTransactionForDomainsFetcher implements EntityFetcher {
     private RzmServices services;
     private Criterion criterion;
 
 
-    public TransactionForDomainFetcher(String domainName, RzmServices services) {
+    public OpenTransactionForDomainsFetcher(List<String> domains, RzmServices services) {
         this.services = services;
-        criterion = CriteriaBuilder.openTransactionForDomain(domainName);
+        criterion = CriteriaBuilder.openTransactionForDomains(domains);
     }
 
     public int getTotal() throws NoObjectFoundException {

@@ -83,6 +83,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     public abstract void setRequestId(long id);
     public abstract long getRequestId();
 
+    @Persist("client:page")
     public abstract void setRequest(TransactionVOWrapper request);
     public abstract TransactionVOWrapper getRequest();
 

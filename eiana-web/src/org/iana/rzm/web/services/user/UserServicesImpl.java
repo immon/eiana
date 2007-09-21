@@ -12,7 +12,6 @@ import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
-import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.services.*;
 
 import java.sql.*;
@@ -132,23 +131,6 @@ public class UserServicesImpl implements UserServices {
                 }
             }
             return userDomains;
-        } catch (InfrastructureException e) {
-            LOGGER.warn("InfrastructureException", e);
-            throw new RzmApplicationException(e);
-        }
-    }
-
-    public Collection<TransactionVOWrapper> getOpenTransactionsForDomin(final String domainName)
-        throws NoObjectFoundException, AccessDeniedException {
-
-
-        try {
-            List<TransactionVO> transactions = transactionService.findTransactions(CriteriaBuilder.openTransactionForDomain(domainName));
-            List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
-            for (TransactionVO transaction : transactions) {
-                result.add(new TransactionVOWrapper(transaction));
-            }
-            return result;
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);

@@ -11,7 +11,7 @@ public class OpenRequestFetcher implements EntityFetcher {
 
     public OpenRequestFetcher(RzmServices services) {
         this.services = services;
-        criterion = CriteriaBuilder.createOpenTransactions();
+        criterion = CriteriaBuilder.openTransactions();
     }
 
 

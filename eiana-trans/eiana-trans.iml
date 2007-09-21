@@ -61,6 +61,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="common-test" />
     <orderEntry type="library" name="junit" level="project" />
+    <orderEntry type="module" module-name="common-dns" />
     <orderEntryProperties />
   </component>
 </module>

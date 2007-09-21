@@ -104,7 +104,7 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getModifiedDomain().getName(), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
         return page;
     }
 

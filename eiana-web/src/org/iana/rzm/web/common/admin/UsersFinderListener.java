@@ -27,7 +27,7 @@ public class UsersFinderListener implements FinderListener {
         if (user == null) {
             messageProperty.setWarningMessage("Can't find user with user name: " + entity);
         } else {
-            perspective.setEntityFetcher(new SearchUsersEntityFetcher(services,  CriteriaBuilder.forUserName(entity)));
+            perspective.setEntityFetcher(new SearchUsersEntityFetcher(services,  CriteriaBuilder.userName(entity)));
             requestCycle.activate(perspective);
         }
     }

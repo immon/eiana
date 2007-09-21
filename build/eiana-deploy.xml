@@ -35,7 +35,7 @@
      You can use the standard mysql account "root" with empty password ("mysql -u root -p").
 
      CREATE DATABASE eiana;
-     GRANT ALL PRIVILEGES ON *.* TO 'eiana'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
+
     -->
     <target name="database.create"
             depends="all.compile">
@@ -175,7 +175,7 @@
              compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,
              compile.module.integration-securid,compile.module.eiana-init,compile.module.common-objectdiff,
              compile.module.common-codevalues,compile.module.common-pgp, compile.module.common-test,
-             compile.module.common-config"
+             compile.module.common-config, compile.module.eiana-web"
             description="build all"/>
 
     <target name="all.jar" depends="all.compile" description="makes jar archive to each module">
@@ -263,6 +263,15 @@
             <lib dir="${lib.dir}" includes="**/*.jar" excludes="**/*javaee*.jar,**/*j2ee*.jar,**/*testng*.jar"/>
         </war>
     </target>
+
+    <target name="war" depends="all.compile" description="makes war archive">
+         <mkdir dir="${war.output.dir}"/>
+        <antcall target="j2ee.build.jar.eiana-web">
+            <param name="j2ee.path.jar" value="${war.output.dir}/rzm.war"/>
+        </antcall>
+      </target>
+
+
 
     <!-- runs all test from group that is equal to property value ${test.group}
     and excludes all tests from group that is equal toproperty value ${test.group.excluded}.

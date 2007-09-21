@@ -275,8 +275,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getVisitState().getCurrentDomain(getDomainId()).getName(),
-                                                              getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getDomain().getName()), getRzmServices()));
         return page;
     }
 

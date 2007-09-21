@@ -23,7 +23,7 @@
     <orderEntry type="library" name="mysql" level="project" />
     <orderEntry type="module" module-name="common-dao" />
     <orderEntry type="module" module-name="common-criteria" />
-    <orderEntry type="module" module-name="common-dns" exported="" />
+    <orderEntry type="module" module-name="common-dns" />
     <orderEntryProperties />
   </component>
 </module>

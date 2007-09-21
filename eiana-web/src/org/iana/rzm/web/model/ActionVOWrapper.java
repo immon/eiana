@@ -1,10 +1,9 @@
 package org.iana.rzm.web.model;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang.*;
 import org.iana.rzm.facade.system.trans.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ActionVOWrapper extends ValueObject {
 
@@ -78,11 +77,11 @@ public class ActionVOWrapper extends ValueObject {
         public ChangeVO filter(ChangeVO change) {
             if (ChangeVO.Type.ADDITION.equals(change.getType())) {
                 ValueVO valueVO = change.getValue();
-                if (!NameServerChangeUtil.nameServerAddition(valueVO)) {
+                if (NameServerChangeUtil.isStringValue(valueVO)) {
                     return change;
                 }
 
-                if (NameServerChangeUtil.isStringValue(valueVO)) {
+                if (!NameServerChangeUtil.nameServerAddition(valueVO)) {
                     return change;
                 }
 
@@ -117,11 +116,12 @@ public class ActionVOWrapper extends ValueObject {
         public ChangeVO filter(ChangeVO change) {
             if (ChangeVO.Type.REMOVAL.equals(change.getType())) {
                 ValueVO valueVO = change.getValue();
-                if (!NameServerChangeUtil.nameServerRemoval(valueVO)) {
+
+                if(NameServerChangeUtil.isStringValue(valueVO)){
                     return change;
                 }
-
-                if (NameServerChangeUtil.isStringValue(valueVO)) {
+                
+                if (!NameServerChangeUtil.nameServerRemoval(valueVO)) {
                     return change;
                 }
 

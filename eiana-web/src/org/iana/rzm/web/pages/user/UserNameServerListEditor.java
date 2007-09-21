@@ -151,10 +151,8 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
     }
 
     public UserRequestsPerspective viewPendingRequests() {
-
         UserRequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getVisitState().getCurrentDomain(
-                getDomainId()).getName(), getUserServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
         return page;
     }
 

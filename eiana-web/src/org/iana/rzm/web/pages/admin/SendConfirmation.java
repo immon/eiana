@@ -83,7 +83,7 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
             getAdminServices().sendNotification(getRequestId(), notification, comment);
             RequestInformation page = getRequestInformationPage();
             page.setRequestId(getRequestId());
-            page.setInfoMessage("Notification sent successfully");
+            page.setInfoMessage("The Notification was sent successfully");
             getRequestCycle().activate(page);
         } catch (FacadeTransactionException e) {
             setErrorMessage(e.getMessage());
