@@ -218,16 +218,16 @@
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
         <constructor-arg index="0" value="localhost"/>
         <constructor-arg index="1" value="[RZM]"/>
-        <constructor-arg index="2" value="rzm-test@iana.org"/>
+        <constructor-arg index="2" value="rzm@iana.org"/>
         <constructor-arg index="3" value=""/>
         <constructor-arg index="4" value=""/>
-        <!--
-        <property name="port">
-            <value>995</value>
-        </property>
-        <property name="ssl">
-            <value>true</value>
-        </property>
+        <!--<property name="port">-->
+            <!--<value>465</value>-->
+        <!--</property>-->
+        <!--<property name="ssl">-->
+            <!--<value>true</value>-->
+        <!--</property>-->
+ <!--       
         <property name="tls">
             <value>true</value>
         </property>
@@ -460,17 +460,18 @@
 
     <bean id="mailReceiver" class="org.iana.mail.pop3.Pop3MailReceiver">
         <constructor-arg index="0" value="m02.icann.org"/>
-        <constructor-arg index="1" value="rzm"/>
-        <constructor-arg index="2" value="upowilgeod"/>
+        <constructor-arg index="1" value="rzm-dev"/>
+        <constructor-arg index="2" value="password"/>
         <constructor-arg index="3" value="[RZM]"/>
-        <!--
         <property name="port">
             <value>995</value>
+        </property>
+        <property name="debug">
+            <value>true</value>
         </property>
         <property name="ssl">
             <value>true</value>
         </property>
-        -->
     </bean>
 
     <bean id="templatesManager" class="org.iana.templates.def.parser.TemplatesManager">
@@ -496,6 +497,10 @@
     </bean>
 
     <!-- code values -->
+
+    <bean id="domainTypes" class="org.iana.rzm.facade.system.domain.types.DomainTypesImpl">
+        <constructor-arg index="0" ref="cachedCodeValues"/>
+    </bean>
 
     <bean id="cc" class="org.iana.rzm.facade.common.cc.CountryCodesImpl">
         <constructor-arg index="0" ref="cachedCodeValues"/>

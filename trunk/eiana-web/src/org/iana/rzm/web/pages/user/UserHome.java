@@ -4,11 +4,13 @@ import org.apache.log4j.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
+import org.iana.criteria.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.services.user.*;
 import org.iana.rzm.web.util.*;
 
 import java.text.*;
@@ -80,8 +82,8 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     @InjectPage("user/UserAccess")
     public abstract UserAccess   getUserAccessPage();
 
+    @Persist("client:page")
     public abstract void setUserDomains(List<UserDomain> list);
-
     public abstract List<UserDomain> getUserDomains();
 
     public abstract UserDomain getUserDomain();
@@ -141,8 +143,30 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
 
     public void viewPastRequest(){
         UserRequestsPerspective page = getRequestsPerspective();
+        List<UserDomain> list = getUserDomains();
+        List<String>domainNames = new ArrayList<String>();
+        for (UserDomain userDomain : list) {
+            domainNames.add(userDomain.getDomainName());
+        }
+        page.setEntityFetcher(new CloseTransactionsForDomains(domainNames, getUserServices()));
         getRequestCycle().activate(page);
     }
 
+    private static class CloseTransactionsForDomains implements EntityFetcher{
+        private UserServices services;
+        private Criterion criterion;
 
+        public CloseTransactionsForDomains(List<String>domains, UserServices services) {
+            criterion = CriteriaBuilder.closeTransactionForDomains(domains);
+            this.services = services;
+        }
+
+        public int getTotal() throws NoObjectFoundException {
+            return services.getTransactionCount(criterion);
+        }
+
+        public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
+            return services.getTransactions(criterion, offset, length).toArray(new PaginatedEntity[0]);
+        }
+    }
 }

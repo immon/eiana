@@ -1,11 +1,12 @@
 package org.iana.rzm.facade.system.notification;
 
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
  */
-public class NotificationVO {
+public class NotificationVO implements Serializable {
     public static enum Type {
         CONTACT_CONFIRMATION,
         CONTACT_CONFIRMATION_REMAINDER,

@@ -264,7 +264,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
 
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getDomain().getName(), getUserServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getDomain().getName()), getUserServices()));
         return page;
     }
 

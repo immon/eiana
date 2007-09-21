@@ -16,6 +16,7 @@ import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.services.*;
+import org.iana.rzm.web.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -218,6 +219,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         List<NotificationVOWrapper> result = new ArrayList<NotificationVOWrapper>();
         try {
             List<NotificationVO> list = transactionService.getNotifications(requestId);
+            ListUtil.filter(list,new DuplicateNotitificationType());
+
             for (NotificationVO notificationVO : list) {
                 result.add(new NotificationVOWrapper(notificationVO));
             }
@@ -226,6 +229,26 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             throw new RzmApplicationException(e);
         }
         return result;
+    }
+
+    private static class DuplicateNotitificationType implements ListUtil.Predicate<NotificationVO>{
+
+        private int contact = 0;
+        private int doc = 0;
+
+        public boolean evaluate(NotificationVO object) {
+            if(object.getType().equals(NotificationVO.Type.CONTACT_CONFIRMATION)){
+                boolean result = contact > 0;
+                contact++;
+                return result;
+            }
+            if(object.getType().equals(NotificationVO.Type.USDOC_CONFIRMATION)){
+                boolean result = doc > 0;
+                doc++;
+                return result;
+            }
+            return false;
+        }
     }
 
 }

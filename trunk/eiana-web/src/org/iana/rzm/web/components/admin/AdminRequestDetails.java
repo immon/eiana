@@ -13,7 +13,7 @@ import java.util.*;
 public abstract class AdminRequestDetails extends RequestDetails  {
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=listener:resend"
+        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend"
         })
     public abstract IComponent getRequestSummaryComponent();
 
@@ -29,6 +29,7 @@ public abstract class AdminRequestDetails extends RequestDetails  {
     @InjectPage(SendConfirmation.PAGE_NAME)
     public abstract SendConfirmation getNotificationSender();
 
+    @Persist("client:page")
     public abstract void setNotifications(List<NotificationVOWrapper> list);
     public abstract List<NotificationVOWrapper> getNotifications();
 
@@ -50,11 +51,12 @@ public abstract class AdminRequestDetails extends RequestDetails  {
         getPage().getRequestCycle().activate(editRequest);
     }
 
-    public void resend(){
-        SendConfirmation notificationSender = getNotificationSender();
-        notificationSender.setRequestId(getRequestId());
-        notificationSender.setRequest(getRequest());
-        getPage().getRequestCycle().activate(notificationSender);
+    public IActionListener getResend(){
+        if(!isEnabled()){
+            return null;
+        }
+        return new ResendConfirmationListener(getNotificationSender(), getRequest());
+
     }
 
     public IActionListener getListener() {
@@ -77,6 +79,23 @@ public abstract class AdminRequestDetails extends RequestDetails  {
         public void actionTriggered(IComponent component, IRequestCycle cycle) {
             editRequest.setRequestId(requestId);
             cycle.activate(editRequest);
+        }
+    }
+
+    private static class ResendConfirmationListener implements IActionListener{
+        private SendConfirmation confirmation;
+        private TransactionVOWrapper wrapper;
+
+        public ResendConfirmationListener(SendConfirmation confirmation, TransactionVOWrapper wrapper){
+            this.confirmation = confirmation;
+            this.wrapper = wrapper;
+        }
+
+
+        public void actionTriggered(IComponent component, IRequestCycle cycle) {
+            confirmation.setRequestId(wrapper.getId());
+            confirmation.setRequest(wrapper);
+            cycle.activate(confirmation);
         }
     }
 }

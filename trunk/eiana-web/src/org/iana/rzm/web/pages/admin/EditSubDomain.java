@@ -8,6 +8,8 @@ import org.apache.tapestry.event.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 
+import java.util.*;
+
 public abstract class EditSubDomain extends AdminPage implements SubDomainAttributeEditor, PageBeginRenderListener {
 
     @Component(id = "editor", type = "SubDomainEditor", bindings = {
@@ -78,8 +80,7 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getVisitState().getCurrentDomain(getDomainId()).getName(),
-                                                              getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList( getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
         return page;
     }
 

@@ -11,6 +11,8 @@ import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.admin.*;
 import org.iana.rzm.web.tapestry.*;
 
+import java.util.*;
+
 public abstract class EditDomain extends AdminPage
     implements DomainAttributeEditor, PageBeginRenderListener, LinkTraget, IExternalPage {
     public static final String PAGE_NAME = "admin/EditDomain";
@@ -205,7 +207,7 @@ public abstract class EditDomain extends AdminPage
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new TransactionForDomainFetcher(getDomain().getName(), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList( getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
         return page;
     }
 

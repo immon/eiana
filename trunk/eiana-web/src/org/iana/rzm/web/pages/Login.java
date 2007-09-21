@@ -52,6 +52,12 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
     )
     public abstract IComponent getPasswordComponent();
 
+    @Component(id="resetPassword", type="PageLink", bindings = {"page=literal:ResetPassword", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getResetPasswordComponent();
+
+    @Component(id="recoverUserName", type="PageLink", bindings = {"page=literal:RecoverUserName", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getRecoverUserNamedComponent();
+
     @InjectObject("engine-service:external")
     public abstract IEngineService getExternalPageService();
 
@@ -100,7 +106,6 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
         if (getUserName() == null){
             setUserName(getCookieSource().readCookieValue(COOKIE_NAME));
         }
-
         setErrorMessage(getSessionTimeOutMessage());
         setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. ");
         setSessionTimeOutMessage(null);

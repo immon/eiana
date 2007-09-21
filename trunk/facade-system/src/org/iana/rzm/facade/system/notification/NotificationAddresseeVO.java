@@ -1,9 +1,11 @@
 package org.iana.rzm.facade.system.notification;
 
+import java.io.*;
+
 /**
  * @author Jakub Laszkiewicz
  */
-public class NotificationAddresseeVO {
+public class NotificationAddresseeVO implements Serializable {
     private String name;
     private String email;
 

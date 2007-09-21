@@ -7,6 +7,8 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 
+import java.util.*;
+
 public abstract class UserSubDomainEditor extends UserPage
     implements PageBeginRenderListener, SubDomainAttributeEditor, IExternalPage {
 
@@ -117,9 +119,8 @@ public abstract class UserSubDomainEditor extends UserPage
 
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(
-            new TransactionForDomainFetcher(
-                getVisitState().getCurrentDomain(getDomainId()).getName(), getUserServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(
+            Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
         return page;
     }
 
