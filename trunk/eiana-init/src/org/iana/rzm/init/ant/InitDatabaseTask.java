@@ -1,10 +1,12 @@
 package org.iana.rzm.init.ant;
 
 import org.hibernate.Session;
+import org.iana.config.Config;
+import org.iana.config.Parameter;
+import org.iana.config.impl.SingleParameter;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.MD5Password;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 
@@ -102,7 +104,7 @@ public class InitDatabaseTask extends HibernateTask {
         zonePublisher.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         session.save(zonePublisher);
 
-        for (String domain: domains) {
+        for (String domain : domains) {
             session.save(setupSystemUser(domain + "-ac1", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.AC), domain, true, true, true)));
             session.save(setupSystemUser(domain + "-ac2", setupSystemRole(
@@ -127,8 +129,35 @@ public class InitDatabaseTask extends HibernateTask {
             session.save(setupDomain(domain));
         }
 
+        //Config
+        String subConfigName = "NotificationSenderBean.";
+        SingleParameter singleParam;
+        singleParam = new SingleParameter(subConfigName + "emailMailhost", "localhostFromConfig");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter(subConfigName + "emailMailer", "[RZM]FromConfig");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter(subConfigName + "emailFromAddress", "rzm-test-from-cofig@iana.org");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter(subConfigName + "emailUserName", "userFromConfig");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter(subConfigName + "emailUserPassword", "passwordFromConfig");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
     }
-
 
 
     public static void main(String[] args) {

@@ -221,13 +221,16 @@
         <constructor-arg index="2" value="rzm@iana.org"/>
         <constructor-arg index="3" value=""/>
         <constructor-arg index="4" value=""/>
-        <!--<property name="port">-->
-            <!--<value>465</value>-->
-        <!--</property>-->
-        <!--<property name="ssl">-->
-            <!--<value>true</value>-->
-        <!--</property>-->
- <!--       
+        <property name="configDAO">
+            <ref bean="hibernateConfigDAO"/>
+        </property>
+        <!--
+        <property name="port">
+            <value>995</value>
+        </property>
+        <property name="ssl">
+            <value>true</value>
+        </property>
         <property name="tls">
             <value>true</value>
         </property>
@@ -344,6 +347,14 @@
           class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
         <property name="transactionAttribute">
             <ref bean="transactionAttribute"/>
+        </property>
+    </bean>
+
+    <!-- Config configuration -->
+
+    <bean id="hibernateConfigDAO" class="org.iana.config.impl.HibernateConfigDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
         </property>
     </bean>
 

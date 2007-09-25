@@ -16,6 +16,8 @@ import java.util.Set;
  */
 public interface Config {
 
+    final static String DEFAULT_OWNER = "DefaultConfig";
+
     String getParameter(String name) throws ConfigException;
 
     List<String> getParameterList(String name) throws ConfigException;
