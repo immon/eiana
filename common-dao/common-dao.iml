@@ -19,6 +19,7 @@
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="library" name="ant" level="project" />
+    <orderEntry type="library" name="javaee" level="project" />
     <orderEntryProperties />
   </component>
 </module>

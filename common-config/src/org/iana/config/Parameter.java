@@ -8,6 +8,8 @@ import java.util.Set;
  */
 public interface Parameter {
 
+    public static final long DAY = 24 * 60 * 60 * 1000;
+
     public String getName();
 
     public String getParameter();

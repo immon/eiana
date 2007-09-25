@@ -1,104 +1,112 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-init" default="compile.module.eiana-init">
-  <dirname property="module.eiana-init.basedir" file="${ant.file.module_eiana-init}"/>
-  
-  
-  <property name="compiler.args.eiana-init" value="${compiler.args}"/>
-  
-  <property name="eiana-init.output.dir" value="${module.eiana-init.basedir}/../build/classes/production/eiana-init"/>
-  <property name="eiana-init.testoutput.dir" value="${module.eiana-init.basedir}/../build/classes/test/eiana-init"/>
-  
-  <path id="eiana-init.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="eiana-init.module.classpath">
-    <path refid="library.ant.classpath"/>
-    <path refid="library.hibernate.classpath"/>
-    <pathelement location="${eiana-domains.output.dir}"/>
-    <pathelement location="${eiana-domains.testoutput.dir}"/>
-    <pathelement location="${common-dns.output.dir}"/>
-    <pathelement location="${common-dns.testoutput.dir}"/>
-    <pathelement location="${eiana-users.output.dir}"/>
-    <pathelement location="${eiana-users.testoutput.dir}"/>
-    <path refid="library.javaee.classpath"/>
-    <pathelement location="${eiana-notifications.output.dir}"/>
-    <pathelement location="${eiana-notifications.testoutput.dir}"/>
-    <pathelement location="${eiana-util.output.dir}"/>
-    <pathelement location="${eiana-util.testoutput.dir}"/>
-    <path refid="library.cobertura.classpath"/>
-    <pathelement location="${tests.output.dir}"/>
-    <pathelement location="${tests.testoutput.dir}"/>
-    <pathelement location="${eiana-trans.output.dir}"/>
-    <pathelement location="${eiana-trans.testoutput.dir}"/>
-    <path refid="library.jbpm.classpath"/>
-    <path refid="library.spring.classpath"/>
-    <pathelement location="${eiana-mail.output.dir}"/>
-    <pathelement location="${eiana-mail.testoutput.dir}"/>
-    <pathelement location="${facade-admin.output.dir}"/>
-    <pathelement location="${facade-admin.testoutput.dir}"/>
-    <pathelement location="${facade-common.output.dir}"/>
-    <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${facade-system.output.dir}"/>
-    <pathelement location="${facade-system.testoutput.dir}"/>
-    <pathelement location="${module.eiana-init.basedir}/../conf/hibernate"/>
-    <pathelement location="${module.eiana-init.basedir}/../conf/spring"/>
-    <pathelement location="${common-pgp.output.dir}"/>
-    <pathelement location="${common-pgp.testoutput.dir}"/>
-    <path refid="library.mail.classpath"/>
-    <pathelement location="${common-codevalues.output.dir}"/>
-    <pathelement location="${common-codevalues.testoutput.dir}"/>
-    <path refid="library.nask-commons.classpath"/>
-    <path refid="library.jdom.classpath"/>
-    <pathelement location="${common-dao.output.dir}"/>
-    <pathelement location="${common-dao.testoutput.dir}"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.eiana-init">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.eiana-init">
-    <patternset refid="excluded.from.module.eiana-init"/>
-  </patternset>
-  
-  <path id="eiana-init.module.sourcepath">
-    <dirset dir="${module.eiana-init.basedir}">
-      <include name="etc"/>
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.eiana-init" depends="compile.module.eiana-init.production,compile.module.eiana-init.tests" description="Compile module eiana-init"/>
-  
-  <target name="compile.module.eiana-init.production" depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.common-pgp,compile.module.common-codevalues,compile.module.common-dao" description="Compile module eiana-init; production classes">
-    <mkdir dir="${eiana-init.output.dir}"/>
-    <javac destdir="${eiana-init.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-init}"/>
-      <bootclasspath refid="eiana-init.module.bootclasspath"/>
-      <classpath refid="eiana-init.module.classpath"/>
-      <src refid="eiana-init.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-init"/>
-    </javac>
-    
-    <copy todir="${eiana-init.output.dir}">
-      <fileset dir="${module.eiana-init.basedir}/etc">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-init.basedir}/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.eiana-init.tests" depends="compile.module.eiana-init.production" description="compile module eiana-init; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.eiana-init" description="cleanup module">
-    <delete dir="${eiana-init.output.dir}"/>
-    <delete dir="${eiana-init.testoutput.dir}"/>
-  </target>
+    <dirname property="module.eiana-init.basedir" file="${ant.file.module_eiana-init}"/>
+
+
+    <property name="compiler.args.eiana-init" value="${compiler.args}"/>
+
+    <property name="eiana-init.output.dir" value="${module.eiana-init.basedir}/../build/classes/production/eiana-init"/>
+    <property name="eiana-init.testoutput.dir" value="${module.eiana-init.basedir}/../build/classes/test/eiana-init"/>
+
+    <path id="eiana-init.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="eiana-init.module.classpath">
+        <path refid="library.ant.classpath"/>
+        <path refid="library.hibernate.classpath"/>
+        <pathelement location="${eiana-domains.output.dir}"/>
+        <pathelement location="${eiana-domains.testoutput.dir}"/>
+        <pathelement location="${common-dns.output.dir}"/>
+        <pathelement location="${common-dns.testoutput.dir}"/>
+        <pathelement location="${eiana-users.output.dir}"/>
+        <pathelement location="${eiana-users.testoutput.dir}"/>
+        <path refid="library.javaee.classpath"/>
+        <pathelement location="${eiana-notifications.output.dir}"/>
+        <pathelement location="${eiana-notifications.testoutput.dir}"/>
+        <pathelement location="${eiana-util.output.dir}"/>
+        <pathelement location="${eiana-util.testoutput.dir}"/>
+        <path refid="library.cobertura.classpath"/>
+        <pathelement location="${tests.output.dir}"/>
+        <pathelement location="${tests.testoutput.dir}"/>
+        <pathelement location="${eiana-trans.output.dir}"/>
+        <pathelement location="${eiana-trans.testoutput.dir}"/>
+        <path refid="library.jbpm.classpath"/>
+        <path refid="library.spring.classpath"/>
+        <pathelement location="${eiana-mail.output.dir}"/>
+        <pathelement location="${eiana-mail.testoutput.dir}"/>
+        <pathelement location="${facade-admin.output.dir}"/>
+        <pathelement location="${facade-admin.testoutput.dir}"/>
+        <pathelement location="${facade-common.output.dir}"/>
+        <pathelement location="${facade-common.testoutput.dir}"/>
+        <pathelement location="${facade-system.output.dir}"/>
+        <pathelement location="${facade-system.testoutput.dir}"/>
+        <pathelement location="${module.eiana-init.basedir}/../conf/hibernate"/>
+        <pathelement location="${module.eiana-init.basedir}/../conf/spring"/>
+        <pathelement location="${common-pgp.output.dir}"/>
+        <pathelement location="${common-pgp.testoutput.dir}"/>
+        <path refid="library.mail.classpath"/>
+        <pathelement location="${common-codevalues.output.dir}"/>
+        <pathelement location="${common-codevalues.testoutput.dir}"/>
+        <path refid="library.nask-commons.classpath"/>
+        <path refid="library.jdom.classpath"/>
+        <pathelement location="${common-dao.output.dir}"/>
+        <pathelement location="${common-dao.testoutput.dir}"/>
+        <pathelement location="${common-config.output.dir}"/>
+        <pathelement location="${common-config.testoutput.dir}"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.eiana-init">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.eiana-init">
+        <patternset refid="excluded.from.module.eiana-init"/>
+    </patternset>
+
+    <path id="eiana-init.module.sourcepath">
+        <dirset dir="${module.eiana-init.basedir}">
+            <include name="etc"/>
+            <include name="src"/>
+        </dirset>
+    </path>
+
+
+    <target name="compile.module.eiana-init"
+            depends="compile.module.eiana-init.production,compile.module.eiana-init.tests"
+            description="Compile module eiana-init"/>
+
+    <target name="compile.module.eiana-init.production"
+            depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.common-pgp,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-config"
+            description="Compile module eiana-init; production classes">
+        <mkdir dir="${eiana-init.output.dir}"/>
+        <javac destdir="${eiana-init.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+               memorymaximumsize="${compiler.max.memory}" fork="true">
+            <compilerarg line="${compiler.args.eiana-init}"/>
+            <bootclasspath refid="eiana-init.module.bootclasspath"/>
+            <classpath refid="eiana-init.module.classpath"/>
+            <src refid="eiana-init.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.eiana-init"/>
+        </javac>
+
+        <copy todir="${eiana-init.output.dir}">
+            <fileset dir="${module.eiana-init.basedir}/etc">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${module.eiana-init.basedir}/src">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile.module.eiana-init.tests" depends="compile.module.eiana-init.production"
+            description="compile module eiana-init; test classes" unless="skip.tests"/>
+
+    <target name="clean.module.eiana-init" description="cleanup module">
+        <delete dir="${eiana-init.output.dir}"/>
+        <delete dir="${eiana-init.testoutput.dir}"/>
+    </target>
 </project>
