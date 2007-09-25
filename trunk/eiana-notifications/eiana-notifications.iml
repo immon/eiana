@@ -22,6 +22,7 @@
     <orderEntry type="module" module-name="common-mail" />
     <orderEntry type="module" module-name="common-dao" />
     <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="module" module-name="common-config" />
     <orderEntryProperties />
   </component>
 </module>

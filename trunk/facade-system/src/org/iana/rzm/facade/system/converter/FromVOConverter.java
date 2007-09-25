@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.system.converter;
 
-import org.iana.dns.validator.*;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.common.validators.*;

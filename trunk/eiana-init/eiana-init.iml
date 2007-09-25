@@ -50,6 +50,7 @@
     <orderEntry type="library" name="jdom" level="project" />
     <orderEntry type="module" module-name="common-dao" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module" module-name="common-config" />
     <orderEntryProperties />
   </component>
 </module>
