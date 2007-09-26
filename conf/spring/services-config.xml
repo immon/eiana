@@ -469,11 +469,14 @@
 
     <!-- mails processing configuration -->
 
-    <bean id="mailReceiver" class="org.iana.mail.pop3.Pop3MailReceiver">
+    <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
         <constructor-arg index="0" value="m02.icann.org"/>
         <constructor-arg index="1" value="rzm-dev"/>
         <constructor-arg index="2" value="password"/>
         <constructor-arg index="3" value="[RZM]"/>
+        <property name="configDAO">
+            <ref bean="hibernateConfigDAO"/>
+        </property>
         <property name="port">
             <value>995</value>
         </property>
