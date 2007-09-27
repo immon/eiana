@@ -32,7 +32,9 @@ abstract class AbstractConfig implements Config {
 
     public List<Boolean> getBooleanParameterList(String name) throws ConfigException {
         List<Boolean> ret = new ArrayList<Boolean>();
-        for (String value : getParameterList(name))
+        List<String> params = getParameterList(name);
+        if (params == null || params.isEmpty()) return null;
+        for (String value : params)
             if (value != null) ret.add(Boolean.parseBoolean(value));
 
         return (ret.isEmpty()) ? null : ret;
@@ -40,7 +42,9 @@ abstract class AbstractConfig implements Config {
 
     public List<Integer> getIntegerParameterList(String name) throws ConfigException {
         List<Integer> ret = new ArrayList<Integer>();
-        for (String value : getParameterList(name))
+        List<String> params = getParameterList(name);
+        if (params == null || params.isEmpty()) return null;
+        for (String value : params)
             if (value != null) ret.add(Integer.parseInt(value));
 
         return (ret.isEmpty()) ? null : ret;
@@ -48,7 +52,9 @@ abstract class AbstractConfig implements Config {
 
     public List<Long> getLongParameterList(String name) throws ConfigException {
         List<Long> ret = new ArrayList<Long>();
-        for (String value : getParameterList(name))
+        List<String> params = getParameterList(name);
+        if (params == null || params.isEmpty()) return null;
+        for (String value : params)
             if (value != null) ret.add(Long.parseLong(value));
 
         return (ret.isEmpty()) ? null : ret;
@@ -56,7 +62,9 @@ abstract class AbstractConfig implements Config {
 
     public Set<Boolean> getBooleanParameterSet(String name) throws ConfigException {
         Set<Boolean> ret = new HashSet<Boolean>();
-        for (String value : getParameterSet(name))
+        Set<String> params = getParameterSet(name);
+        if (params == null || params.isEmpty()) return null;
+        for (String value : params)
             if (value != null) ret.add(Boolean.parseBoolean(value));
 
         return (ret.isEmpty()) ? null : ret;
@@ -64,7 +72,9 @@ abstract class AbstractConfig implements Config {
 
     public Set<Integer> getIntegerParameterSet(String name) throws ConfigException {
         Set<Integer> ret = new HashSet<Integer>();
-        for (String value : getParameterSet(name))
+        Set<String> params = getParameterSet(name);
+        if (params == null || params.isEmpty()) return null;
+        for (String value : params)
             if (value != null) ret.add(Integer.parseInt(value));
 
         return (ret.isEmpty()) ? null : ret;
@@ -72,7 +82,9 @@ abstract class AbstractConfig implements Config {
 
     public Set<Long> getLongParameterSet(String name) throws ConfigException {
         Set<Long> ret = new HashSet<Long>();
-        for (String value : getParameterSet(name))
+        Set<String> params = getParameterSet(name);
+        if (params == null || params.isEmpty()) return null;
+        for (String value : params)
             if (value != null) ret.add(Long.parseLong(value));
 
         return (ret.isEmpty()) ? null : ret;
