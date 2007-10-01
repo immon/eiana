@@ -1,15 +1,14 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Address;
+import org.iana.rzm.domain.Contact;
+import pl.nask.util.xml.XMLDateTime;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.sql.Timestamp;
 import java.text.ParseException;
-
-import pl.nask.util.xml.XMLDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
@@ -28,19 +27,23 @@ public class ContactDecorator {
         Address address = new Address();
 
         StringBuffer text = new StringBuffer();
-        if (this.address != null) text.append(this.address).append("<br/>");
-        if (city != null || postCode != null) {
-            if (city != null) text.append(city).append(" ");
-            if (state != null) text.append(state).append(" ");
+        if (!isEmpty(this.address)) text.append(this.address).append("<br/>");
+        if (!isEmpty(city) || !isEmpty(postCode)) {
+            if (!isEmpty(city)) text.append(city).append(" ");
+            if (!isEmpty(state)) text.append(state).append(" ");
             text.append("<br/>");
         }
-        if (country != null) text.append(country).append("<br/>");
+        if (!isEmpty(country)) text.append(country).append("<br/>");
         address.setTextAddress(text.toString());
 
         // warning: country is a full name - not a country code!
         // set up a correct country code
 
         contact.setAddress(address);
+    }
+
+    private boolean isEmpty(String value) {
+        return (value == null) || (value.trim().length() == 0);
     }
 
     public Contact getContact() {
@@ -53,7 +56,7 @@ public class ContactDecorator {
 
     public void setOrganization(String organization) {
         String name = this.contact.getName();
-        if (name == null || name.trim().length() == 0) this.contact.setName(organization);
+        if (isEmpty(name)) this.contact.setName(organization);
         this.contact.setOrganization(organization);
     }
 
@@ -106,22 +109,19 @@ public class ContactDecorator {
     }
 
     public void setEmail(String value) {
-        if(value.contains(" or ")) {
+        if (value.contains(" or ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split(" or ")));
             for (String email : emails)
                 contact.setEmail(email.trim());
-        } else
-        if(value.contains("; ")) {
+        } else if (value.contains("; ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split("; ")));
             for (String email : emails)
                 contact.setEmail(email.trim());
-        } else
-        if(value.contains(", ")) {
+        } else if (value.contains(", ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split(", ")));
             for (String email : emails)
                 contact.setEmail(email.trim());
-        } else
-        if(value.contains("/ ")) {
+        } else if (value.contains("/ ")) {
             List<String> emails = new ArrayList(Arrays.asList(value.split("/ ")));
             for (String email : emails)
                 contact.setEmail(email.trim());
