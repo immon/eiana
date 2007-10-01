@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SpringCommonApplicationContext {
+    public static final String CONFIG_FILE_NAME = "spring-facade-common.xml";
     private static SpringCommonApplicationContext instance;
     private ApplicationContext appCtx;
 
@@ -21,7 +22,7 @@ public class SpringCommonApplicationContext {
 
     public ApplicationContext getContext() {
         if(appCtx == null)
-            appCtx = new ClassPathXmlApplicationContext("spring-facade-common.xml");
+            appCtx = new ClassPathXmlApplicationContext(CONFIG_FILE_NAME);
         return appCtx;
     }
 }

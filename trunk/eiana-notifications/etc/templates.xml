@@ -173,4 +173,13 @@ Technical checks failed for domain {domainName}:
             period: {period}
         </iana:content>
     </iana:template>
+
+    <iana:template>
+        <iana:type>password-change</iana:type>
+        <iana:subject>Password change</iana:subject>
+        <iana:content>
+            {userName}
+            {link}
+        </iana:content>
+    </iana:template>
 </iana:templates>

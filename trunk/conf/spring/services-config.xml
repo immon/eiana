@@ -563,6 +563,7 @@
                                   execution(public * org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
                                   execution(public * org.iana.notifications.NotificationManagerBean.*(..)) ||
@@ -631,6 +632,7 @@
                                       execution(public * org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..))"/>
             <aop:around method="proceed" pointcut-ref="hibernateExceptionOperation"/>
@@ -724,4 +726,12 @@
         <property name="order" value="4"/>
     </bean>
 
+    <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+    </bean>
 </beans>
