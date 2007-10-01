@@ -41,6 +41,8 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
     // todo delete orphan does not work (Hibernate bug)
     private Password password;
     @Basic
+    private String passwordChangeToken;
+    @Basic
     private boolean securID;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -296,5 +298,26 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
             if (role.isEnabled()) return true;
         }
         return false;
+    }
+
+    public String getPasswordChangeToken() {
+        return passwordChangeToken;
+    }
+
+    public void setPasswordChangeToken(String passwordChangeToken) {
+        this.passwordChangeToken = passwordChangeToken;
+    }
+
+    public boolean isValidPasswordChangeToken(String passwordChangeToken) {
+        return this.passwordChangeToken == null ? passwordChangeToken == null :
+                this.passwordChangeToken.equals(passwordChangeToken);
+    }
+
+    public boolean isSetPasswordChangeToken() {
+        return passwordChangeToken != null;
+    }
+
+    public void resetPasswordChangeToken() {
+        passwordChangeToken = null;
     }
 }

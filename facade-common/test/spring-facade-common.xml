@@ -2,7 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
     <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
         <constructor-arg>
@@ -31,5 +34,110 @@
     <bean id="userManager" class="org.iana.rzm.facade.accuracy.TestUserManager"/>
 
     <bean id="securID" class="org.iana.rzm.facade.accuracy.TestSecurIDService"/>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="configLocation">
+            <value>hibernate-facade-common.cfg.xml</value>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="transactionAttribute"
+          class="org.springframework.transaction.interceptor.DefaultTransactionAttribute">
+        <property name="propagationBehaviorName">
+            <value>PROPAGATION_REQUIRED</value>
+        </property>
+        <property name="isolationLevelName">
+            <value>ISOLATION_READ_COMMITTED</value>
+        </property>
+    </bean>
+
+    <bean id="transactionAttributeSource"
+          class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+        <property name="transactionAttribute">
+            <ref bean="transactionAttribute"/>
+        </property>
+    </bean>
+
+    <bean id="passwdUserManager" class="org.iana.rzm.user.UserManagerBean">
+        <constructor-arg index="0" ref="userDAO"/>
+        <constructor-arg index="1" ref="notificationManager"/>
+    </bean>
+
+    <bean id="notificationManager" class="org.iana.notifications.NotificationManagerBean">
+        <constructor-arg index="0" ref="notificationDAO"/>
+    </bean>
+
+    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="userDAO" class="org.iana.rzm.user.dao.HibernateUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="testNotificationSender" class="org.iana.rzm.facade.passwd.FakeNotificationSenderBean"/>
+
+    <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">
+        <constructor-arg>
+            <ref bean="passwdUserManager"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="testNotificationSender"/>
+        </constructor-arg>
+    </bean>
+
+    <aop:config>
+        <aop:pointcut id="transactionalOperation"
+                      expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.user.RoleManagerBean.*(..)) ||
+                                  execution(public * org.iana.dao.hibernate.HibernateDAO.*(..))"/>
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut-ref="transactionalOperation"
+                     order="1"/>
+        <aop:aspect id="hibernateExceptionAspect" ref="hibernateExceptionAdvisor">
+            <aop:pointcut id="hibernateExceptionOperation"
+                          expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..))"/>
+            <aop:around method="proceed" pointcut-ref="hibernateExceptionOperation"/>
+        </aop:aspect>
+    </aop:config>
+
+    <!-- advisors -->
+
+    <tx:advice id="txAdvice">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"
+                       rollback-for="org.iana.rzm.facade.auth.AccessDeniedException,
+                                     org.iana.rzm.facade.auth.AuthenticationException,
+                                     org.iana.rzm.facade.auth.AuthenticationFailedException,
+                                     org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                                     org.iana.rzm.facade.auth.UserInvalidatedException,
+                                     org.iana.rzm.facade.common.NoObjectFoundException"/>
+            <tx:method name="*"
+                       rollback-for="org.iana.rzm.facade.auth.AccessDeniedException,
+                                     org.iana.rzm.facade.auth.AuthenticationException,
+                                     org.iana.rzm.facade.auth.AuthenticationFailedException,
+                                     org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                                     org.iana.rzm.facade.auth.UserInvalidatedException,
+                                     org.iana.rzm.facade.common.NoObjectFoundException"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <bean id="hibernateExceptionAdvisor"
+          class="org.iana.rzm.facade.common.HibernateExceptionAdvisor">
+        <property name="order" value="4"/>
+    </bean>
 
 </beans>

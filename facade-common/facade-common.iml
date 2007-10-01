@@ -23,6 +23,18 @@
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="library" name="hibernate" level="project" />
     <orderEntry type="module" module-name="integration-rt" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/nask-commons/dynaxml.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="nask-commons" level="project" />
+    <orderEntry type="library" name="junit" level="project" />
+    <orderEntry type="module" module-name="common-test" />
     <orderEntryProperties />
   </component>
 </module>

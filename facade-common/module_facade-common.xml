@@ -35,6 +35,11 @@
     <path refid="library.hibernate.classpath"/>
     <pathelement location="${integration-rt.output.dir}"/>
     <pathelement location="${integration-rt.testoutput.dir}"/>
+    <pathelement location="${module.facade-common.basedir}/../lib/nask-commons/dynaxml.jar"/>
+    <path refid="library.nask-commons.classpath"/>
+    <path refid="library.junit.classpath"/>
+    <pathelement location="${common-test.output.dir}"/>
+    <pathelement location="${common-test.testoutput.dir}"/>
   </path>
   
   
@@ -61,7 +66,7 @@
   
   <target name="compile.module.facade-common" depends="compile.module.facade-common.production,compile.module.facade-common.tests" description="Compile module facade-common"/>
   
-  <target name="compile.module.facade-common.production" depends="compile.module.eiana-users,compile.module.eiana-util,compile.module.integration-securid,compile.module.eiana-notifications,compile.module.common-criteria,compile.module.common-pgp,compile.module.common-codevalues,compile.module.integration-rt" description="Compile module facade-common; production classes">
+  <target name="compile.module.facade-common.production" depends="compile.module.eiana-users,compile.module.eiana-util,compile.module.integration-securid,compile.module.eiana-notifications,compile.module.common-criteria,compile.module.common-pgp,compile.module.common-codevalues,compile.module.integration-rt,compile.module.common-test" description="Compile module facade-common; production classes">
     <mkdir dir="${facade-common.output.dir}"/>
     <javac destdir="${facade-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-common}"/>
