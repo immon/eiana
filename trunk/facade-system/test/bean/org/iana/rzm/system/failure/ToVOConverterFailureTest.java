@@ -4,23 +4,23 @@
 package org.iana.rzm.system.failure;
 
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.domain.HostVO;
+import org.iana.rzm.facade.system.converter.ToVOConverter;
 import org.iana.rzm.facade.system.domain.AddressVO;
 import org.iana.rzm.facade.system.domain.ContactVO;
 import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.HostVO;
 import org.testng.annotations.Test;
 
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
  */
 
-@Test(sequential=true, groups = {"failure", "facade-system", "ToVOConverter"})
+@Test(sequential = true, groups = {"failure", "facade-system", "ToVOConverter"})
 public class ToVOConverterFailureTest {
 
     @Test
@@ -115,7 +115,7 @@ public class ToVOConverterFailureTest {
         assert domainVO.getWhoisServer() == null;
         assert domainVO.getBreakpoints().isEmpty();
         assert domainVO.getSpecialInstructions() == null;
-        assert domainVO.getStatus().equals(DomainVO.Status.NEW);
+        assert domainVO.getStatus().equals(DomainVO.Status.ACTIVE);
         assert domainVO.getState().equals(DomainVO.State.NO_ACTIVITY);
         assert domainVO.getRoles() == null;
         assert domainVO.getObjId() == null;
