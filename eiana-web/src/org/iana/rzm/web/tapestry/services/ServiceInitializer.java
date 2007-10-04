@@ -1,6 +1,6 @@
 package org.iana.rzm.web.tapestry.services;
 
-import org.iana.rzm.facade.common.RZMStatefulService;
+import org.iana.rzm.facade.services.RZMStatefulService;
 
 public interface ServiceInitializer {
 

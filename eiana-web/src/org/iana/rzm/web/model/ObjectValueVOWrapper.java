@@ -1,9 +1,9 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.ChangeVO;
-import org.iana.rzm.facade.system.trans.ObjectValueVO;
-import org.iana.rzm.facade.system.trans.StringValueVO;
-import org.iana.rzm.facade.system.trans.ValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
-import org.iana.rzm.facade.admin.*;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
 

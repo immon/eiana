@@ -98,7 +98,7 @@
 
     <aop:config>
         <aop:pointcut id="transactionalOperation"
-                      expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                      expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.user.RoleManagerBean.*(..)) ||
@@ -108,7 +108,7 @@
                      order="1"/>
         <aop:aspect id="hibernateExceptionAspect" ref="hibernateExceptionAdvisor">
             <aop:pointcut id="hibernateExceptionOperation"
-                          expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                          expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
                                       execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..))"/>
             <aop:around method="proceed" pointcut-ref="hibernateExceptionOperation"/>
         </aop:aspect>

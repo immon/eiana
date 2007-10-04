@@ -2,11 +2,12 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.ContactVO;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.HostVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.ContactVO;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.domain.vo.HostVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -242,7 +243,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
         Host host = new Host("ns1." + domain.getName());
         host.addIPAddress("4.3.2.1");
         domain.addNameServer(host);
-        return ToVOConverter.toDomainVO(domain);
+        return DomainToVOConverter.toDomainVO(domain);
     }
 
     private void assertEquals(ContactVO c1, ContactVO c2) {
@@ -261,8 +262,9 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private TransactionVO createTransaction(DomainVO domainVO, RZMUser user) throws Exception {
         setUser(user);  //iana
-        TransactionVO transaction = ats.createDomainCreationTransaction(domainVO);
-        closeServices();
-        return transaction;
+//        TransactionVO transaction = ats.createTransactions(domainVO);
+//        closeServices();
+//        return transaction;
+        return null;
     }
 }

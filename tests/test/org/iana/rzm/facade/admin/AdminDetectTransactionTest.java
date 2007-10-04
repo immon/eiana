@@ -7,12 +7,12 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.trans.TransactionActionsVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.system.trans.TransactionDetectorService;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.testng.annotations.BeforeClass;
@@ -26,6 +26,7 @@ public class AdminDetectTransactionTest {
 
     AdminTransactionService gTransServ;
     AdminDomainService gDomainServ;
+    TransactionDetectorService detectorServ;
     UserManager userManager;
     DomainManager domainManager;
 
@@ -36,6 +37,7 @@ public class AdminDetectTransactionTest {
         domainManager = (DomainManager) appCtx.getBean("domainManager");
         gTransServ = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         gDomainServ = (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
+        detectorServ = (TransactionDetectorService) appCtx.getBean("detectorService");
 
         RZMUser user = new RZMUser("fn", "ln", "", "login", "email", "", false);
         user.addRole(new AdminRole(AdminRole.AdminType.IANA));
@@ -45,6 +47,7 @@ public class AdminDetectTransactionTest {
         AuthenticatedUser auth = new TestAuthenticatedUser(UserConverter.convert(user));
         gTransServ.setUser(auth);
         gDomainServ.setUser(auth);
+        detectorServ.setUser(auth);
     }
 
     @AfterClass
@@ -57,7 +60,7 @@ public class AdminDetectTransactionTest {
     public void testDetectDescriptionChange() throws Exception {
         IDomainVO domain = gDomainServ.getDomain("admindetect-test");
         domain.setDescription("new description");
-        TransactionActionsVO actions = gTransServ.detectTransactionActions(domain);
+        TransactionActionsVO actions = detectorServ.detectTransactionActions(domain);
         assert actions.getActions().size() == 1;
     }
 
@@ -65,7 +68,7 @@ public class AdminDetectTransactionTest {
     public void testDetectTypeChange() throws Exception {
         IDomainVO domain = gDomainServ.getDomain("admindetect-test");
         domain.setType("new type");
-        TransactionActionsVO actions = gTransServ.detectTransactionActions(domain);
+        TransactionActionsVO actions = detectorServ.detectTransactionActions(domain);
         assert actions.getActions().size() == 1;
     }
 
@@ -73,7 +76,7 @@ public class AdminDetectTransactionTest {
     public void testDetectEnableEmailsChange() throws Exception {
         IDomainVO domain = gDomainServ.getDomain("admindetect-test");
         domain.setEnableEmails(true);
-        TransactionActionsVO actions = gTransServ.detectTransactionActions(domain);
+        TransactionActionsVO actions = detectorServ.detectTransactionActions(domain);
         assert actions.getActions().size() == 1;
     }
 
@@ -81,7 +84,7 @@ public class AdminDetectTransactionTest {
     public void testDetectSpecialInstructionsChange() throws Exception {
         IDomainVO domain = gDomainServ.getDomain("admindetect-test");
         domain.setSpecialInstructions("new special instructions");
-        TransactionActionsVO actions = gTransServ.detectTransactionActions(domain);
+        TransactionActionsVO actions = detectorServ.detectTransactionActions(domain);
         assert actions.getActions().size() == 1;
     }
 }

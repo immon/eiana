@@ -3,7 +3,7 @@ package org.iana.rzm.web.tapestry.services;
 import org.apache.hivemind.lib.*;
 import org.apache.tapestry.engine.state.*;
 import org.iana.rzm.common.validators.*;
-import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.services.RZMStatefulService;
 import org.iana.rzm.web.*;
 
 public class ServiceInitializerImpl implements ServiceInitializer {

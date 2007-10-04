@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.HostVO;
-import org.iana.rzm.facade.system.domain.IPAddressVO;
+import org.iana.rzm.facade.system.domain.vo.HostVO;
+import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
 import org.iana.rzm.web.util.WebUtil;
 
 import java.io.Serializable;

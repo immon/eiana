@@ -5,6 +5,8 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 
 import java.util.ArrayList;
 import java.util.List;

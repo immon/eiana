@@ -9,12 +9,14 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.notification.NotificationVO;
-import org.iana.rzm.facade.system.trans.SystemTransactionService;
-import org.iana.rzm.facade.system.trans.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.AdminNotificationService;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
@@ -34,13 +36,15 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-@Test(sequential = true, groups = "excluded")
+@Test(sequential = true)
 public class ResendNotificationTest {
+    private AdminNotificationService nts;
+    private TransactionService gts;
     private AdminTransactionService ats;
     private UserManager userManager;
     private DomainManager domainManager;
     private NotificationManager notificationManager;
-    protected SystemTransactionService sts;
+    protected TransactionService sts;
     private ProcessDAO processDAO;
     private RZMUser iana, usdoc;
     private int domainCounter = 0;
@@ -52,8 +56,9 @@ public class ResendNotificationTest {
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
+        gts = (TransactionService) appCtx.getBean("GuardedSystemTransactionServiceBean");
         ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
-        sts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        sts = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
 
         userManager = (UserManager) appCtx.getBean("userManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
@@ -119,13 +124,13 @@ public class ResendNotificationTest {
         ats.transitTransaction(transactionID, "go-on");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
-        List<NotificationVO> notifications = ats.getNotifications(transactionID);
+        List<NotificationVO> notifications = nts.getNotifications(transactionID);
 
         assert notifications != null;
         assert notifications.size() == 2;
 
         for (NotificationVO notif : notifications)
-            ats.resendNotification(notif.getAddressees(), notif.getObjId(), NOTIFICATION_COMMENT);
+            nts.resendNotification(notif.getAddressees(), notif.getObjId(), NOTIFICATION_COMMENT);
     }
 
     public void testResendContactOutstandingConfirmationNotification() throws Exception {
@@ -140,7 +145,7 @@ public class ResendNotificationTest {
         sts.setUser(au);
         sts.acceptTransaction(transactionID, token);
 
-        ats.resendNotification(transactionID, NotificationVO.Type.CONTACT_CONFIRMATION, NOTIFICATION_COMMENT);
+        nts.resendNotification(transactionID, NotificationVO.Type.CONTACT_CONFIRMATION, NOTIFICATION_COMMENT);
     }
 
     public void testResendUSDoCOutstandingConfirmationNotification() throws Exception {
@@ -157,19 +162,22 @@ public class ResendNotificationTest {
         ats.transitTransaction(transactionID, "admin-accept");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
 
-        ats.resendNotification(transactionID, NotificationVO.Type.USDOC_CONFIRMATION, NOTIFICATION_COMMENT);
+        nts.resendNotification(transactionID, NotificationVO.Type.USDOC_CONFIRMATION, NOTIFICATION_COMMENT);
     }
 
     private Long createDomainModificationProcess() throws Exception {
+        AuthenticatedUser au = new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser();
+        gts.setUser(au);
+
         String domainName = DOMAIN_NAME + domainCounter;
 
         Domain domain = createTestDomain(domainName);
         domain.setRegistryUrl("newregurl");
 
-        TransactionVO transactionVO = ats.createDomainModificationTransaction(ToVOConverter.toDomainVO(domain));
+        TransactionVO transactionVO = gts.createTransactions(DomainToVOConverter.toDomainVO(domain), false).get(0);
         Long transactionID = transactionVO.getTransactionID();
 
-        transactionVO = ats.getTransaction(transactionID);
+        transactionVO = ats.get(transactionID);
 
         assert transactionVO != null;
 
@@ -182,7 +190,7 @@ public class ResendNotificationTest {
     }
 
     private void assertTransactionState(Long transactionID, TransactionStateVO.Name transactionStateVOName) throws Exception {
-        TransactionVO transactionVO = ats.getTransaction(transactionID);
+        TransactionVO transactionVO = ats.get(transactionID);
         assert transactionVO != null;
         assert transactionStateVOName.equals(transactionVO.getState().getName()) :
                 "unexpected transaction state: " + transactionVO.getState().getName();

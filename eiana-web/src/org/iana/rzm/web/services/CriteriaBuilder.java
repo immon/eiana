@@ -1,8 +1,9 @@
 package org.iana.rzm.web.services;
 
 import org.iana.criteria.*;
-import org.iana.rzm.facade.admin.*;
+import org.iana.rzm.facade.admin.users.UserCriteriaFields;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 
 import java.util.*;
 

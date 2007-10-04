@@ -2,7 +2,7 @@ package org.iana.rzm.web.model;
 
 import org.apache.commons.lang.*;
 import org.iana.rzm.common.validators.*;
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.vo.ContactVO;
 import org.iana.rzm.web.util.*;
 
 import java.util.*;

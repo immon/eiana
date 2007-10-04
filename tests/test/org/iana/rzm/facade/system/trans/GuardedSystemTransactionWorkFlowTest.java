@@ -8,8 +8,8 @@ import org.iana.notifications.Notification;
 import org.iana.notifications.NotificationCriteriaFields;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.DomainVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -83,7 +83,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         domain.setRegistryUrl("newregurl.org");
         domain.getAdminContact().setEmail("admin@new-email.org");
 
-        domainVO = ToVOConverter.toDomainVO(domain);
+        domainVO = DomainToVOConverter.toDomainVO(domain);
 
 
         domainNS = createDomain(DOMAIN_NAMENS);
@@ -99,7 +99,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         nameServer.addIPAddress("82.50.50.10");
         domainNS.addNameServer(nameServer);
 
-        domainVONS = ToVOConverter.toDomainVO(domainNS);
+        domainVONS = DomainToVOConverter.toDomainVO(domainNS);
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();

@@ -8,10 +8,11 @@ import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.trans.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
@@ -94,7 +95,8 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
             gAdminTransactionServ.setUser(testAuthUser);
-            gAdminTransactionServ.createDomainModificationTransaction(ToVOConverter.toDomainVO(domain));
+            // todo
+            // gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain));
         } catch (AccessDeniedException e) {
             gAdminTransactionServ.close();
             throw e;
@@ -246,10 +248,10 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         Domain domain = createTestDomain(DOMAIN_NAME);
         domain.setRegistryUrl("newregurl");
 
-        TransactionVO transactionVO = gAdminTransactionServ.createDomainModificationTransaction(ToVOConverter.toDomainVO(domain));
+        TransactionVO transactionVO = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain)).get(0);
         transactionID = transactionVO.getTransactionID();
 
-        transactionVO = gAdminTransactionServ.getTransaction(transactionID);
+        transactionVO = gAdminTransactionServ.get(transactionID);
 
         assert transactionVO != null;
 
@@ -266,10 +268,10 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         newHost.addIPAddress("81.10.10.50");
         domain.addNameServer(newHost);
 
-        TransactionVO transactionVO = gAdminTransactionServ.createDomainModificationTransaction(ToVOConverter.toDomainVO(domain));
+        TransactionVO transactionVO = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain)).get(0);
         transactionID = transactionVO.getTransactionID();
 
-        transactionVO = gAdminTransactionServ.getTransaction(transactionID);
+        transactionVO = gAdminTransactionServ.get(transactionID);
 
         assert transactionVO != null;
 
@@ -376,7 +378,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     }
 
     private boolean isTransactionInDesiredState(Long transactionID, TransactionStateVO.Name transactionStateVOName) throws Exception {
-        TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
+        TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
 
         assert transactionVO != null;
         return transactionVO.getState().getName().equals(transactionStateVOName);

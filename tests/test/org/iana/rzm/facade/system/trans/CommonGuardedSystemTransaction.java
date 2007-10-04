@@ -6,13 +6,15 @@ import org.iana.notifications.NotificationManager;
 import org.iana.notifications.dao.EmailAddresseeDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.admin.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -38,8 +40,8 @@ public abstract class CommonGuardedSystemTransaction {
             (NotificationManager) appCtx.getBean("NotificationManagerBean");
     protected TransactionManager transactionManagerBean =
             (TransactionManager) appCtx.getBean("transactionManagerBean");
-    protected SystemTransactionService gsts =
-            (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+    protected TransactionService gsts =
+            (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
     protected SystemDomainService gsds =
             (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
     protected EmailAddresseeDAO emailAddresseeDAO = (EmailAddresseeDAO) appCtx.getBean("emailAddresseeDAO");
@@ -121,7 +123,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        TransactionVO trans = gsts.getTransaction(transId);
+        TransactionVO trans = gsts.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() > 0;
         gsts.rejectTransaction(transId, tokens.iterator().next());
@@ -186,7 +188,7 @@ public abstract class CommonGuardedSystemTransaction {
 
     protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId, int tokenCount) throws Exception {
         setUser(user); //userAC
-        TransactionVO trans = gsts.getTransaction(transId);
+        TransactionVO trans = gsts.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
         for (String token : tokens) {
@@ -267,7 +269,7 @@ public abstract class CommonGuardedSystemTransaction {
             return transaction.iterator().next();
         } catch (CreateTicketException e) {
             // ignored
-            return gsts.getTransaction(e.getTransactionId());
+            return gsts.get(e.getTransactionId());
         }
     }
 
@@ -284,7 +286,8 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws Exception {
-        ats.updateTransaction(id, ticketId, targetStateName, redelegation);
+        // todo
+        // ats.updateTransaction(id, ticketId, targetStateName, redelegation);
     }
 
     protected void acceptTransaction(long transactionId, String token) throws Exception {
@@ -293,17 +296,17 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected TransactionVO getTransaction (long transactionId) throws Exception {
-        return gsts.getTransaction(transactionId);
+        return gsts.get(transactionId);
     }
 
     private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
-        TransactionVO retTransactionVO = gsts.getTransaction(transId);
+        TransactionVO retTransactionVO = gsts.get(transId);
         return retTransactionVO.getState().getName().toString().equals(stateName);
     }
 
     protected void checkStateLog(RZMUser user, Long transId, String[][] usersStates) throws Exception {
         setUser(user);
-        TransactionVO trans = gsts.getTransaction(transId);
+        TransactionVO trans = gsts.get(transId);
         List<TransactionStateLogEntryVO> log = trans.getStateLog();
         assert log != null;
         assert log.size() == usersStates.length;

@@ -7,9 +7,12 @@ import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.AbstractRZMStatefulService;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
@@ -37,7 +40,7 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
         Domain domain = domainManager.get(id);
         if (domain == null) throw new NoObjectFoundException(id, "domain");
         try {
-            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+            DomainVO domainVO = DomainToVOConverter.toDomainVO(domain);
             RZMUser user = getRZMUser();
             domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
             return domainVO;
@@ -52,7 +55,7 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
         Domain domain = domainManager.get(name);
         if (domain == null) throw new NoObjectFoundException(name, "domain");
         try {
-            DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+            DomainVO domainVO = DomainToVOConverter.toDomainVO(domain);
             RZMUser user = getRZMUser();
             domainVO.setRoles(getRoleTypeByDomainName(user, domainVO.getName()));
             return domainVO;
@@ -81,7 +84,7 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
                     if (roles == null) {
                         roles = new HashSet<RoleVO.Type>();
                     }
-                    roles.add(ToVOConverter.toRoleTypeVO(sr.getType()));
+                    roles.add(DomainToVOConverter.toRoleTypeVO(sr.getType()));
                     domainNames.put(domainName, roles);
                 }
             }
@@ -91,7 +94,7 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
             List<Domain> domains = domainManager.find(new In("name.name", new HashSet<Object>(domainNames.keySet())));
             for (Domain domain : domains) {
                 if (domain != null) {
-                    SimpleDomainVO simpleDomainVO = ToVOConverter.toSimpleDomainVO(domain);
+                    SimpleDomainVO simpleDomainVO = DomainToVOConverter.toSimpleDomainVO(domain);
                     simpleDomainVO.setRoles(domainNames.get(domain.getName()));
                     ret.add(simpleDomainVO);
                 }
@@ -127,7 +130,7 @@ public class SystemDomainServiceBean extends AbstractRZMStatefulService implemen
             if (!role.isAdmin()) {
                 SystemRole sr = (SystemRole) role;
                 if (sr.isAccessToDomain() && sr.getName().equals(domainName))
-                    roleTypeVOSet.add(ToVOConverter.toRoleTypeVO(sr.getType()));
+                    roleTypeVOSet.add(DomainToVOConverter.toRoleTypeVO(sr.getType()));
             }
         return roleTypeVOSet;
     }

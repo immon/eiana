@@ -4,9 +4,9 @@ import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.converter.FromVOConverter;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.Test;
@@ -45,7 +45,7 @@ public class ToVOConverterTest {
     @Test
     public void testIPv4AddressConversion() throws InvalidIPAddressException {
         fromIPAddress = IPv4Address.createIPv4Address("10.0.0.1");
-        toIPAddressVO = ToVOConverter.toIPAddressVO(fromIPAddress);
+        toIPAddressVO = DomainToVOConverter.toIPAddressVO(fromIPAddress);
         assert toIPAddressVO.getType() == IPAddressVO.Type.IPv4;
         assert fromIPAddress.getAddress().equals(toIPAddressVO.getAddress());
     }
@@ -53,16 +53,16 @@ public class ToVOConverterTest {
     @Test
     public void testIPv6AddressConversion() throws InvalidIPAddressException {
         fromIPAddressV6 = IPv6Address.createIPv6Address("200c:0db8:0000:0000:0000:0000:1428:57ab");
-        toIPAddressVOV6 = ToVOConverter.toIPAddressVO(fromIPAddressV6);
+        toIPAddressVOV6 = DomainToVOConverter.toIPAddressVO(fromIPAddressV6);
         assert toIPAddressVOV6.getType() == IPAddressVO.Type.IPv6;
         assert fromIPAddressV6.getAddress().equals(toIPAddressVOV6.getAddress());
     }
 
     @Test
     public void testRoleTypeConversion() throws InvalidIPAddressException, InvalidDomainNameException {
-        assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.AC) == SystemRoleVO.SystemType.AC;
-        assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.SO) == SystemRoleVO.SystemType.SO;
-        assert ToVOConverter.toRoleTypeVO(SystemRole.SystemType.TC) == SystemRoleVO.SystemType.TC;
+        assert DomainToVOConverter.toRoleTypeVO(SystemRole.SystemType.AC) == SystemRoleVO.SystemType.AC;
+        assert DomainToVOConverter.toRoleTypeVO(SystemRole.SystemType.SO) == SystemRoleVO.SystemType.SO;
+        assert DomainToVOConverter.toRoleTypeVO(SystemRole.SystemType.TC) == SystemRoleVO.SystemType.TC;
     }
 
     @Test(dependsOnMethods = {"testIPv4AddressConversion", "testIPv6AddressConversion"})
@@ -83,7 +83,7 @@ public class ToVOConverterTest {
 
         fromHost.setTrackData(trackData);
 
-        toHostVO = ToVOConverter.toHostVO(fromHost);
+        toHostVO = DomainToVOConverter.toHostVO(fromHost);
         assert fromHost.getName().equals(toHostVO.getName());
         assert fromHost.getModified() == toHostVO.getModified();
         assert fromHost.getModifiedBy().equals(toHostVO.getModifiedBy());
@@ -97,7 +97,7 @@ public class ToVOConverterTest {
         fromAddress.setTextAddress("Sun Set avenue, LosAngeles, CA ZIP-999");
         fromAddress.setCountryCode("US");
 
-        toAddressVO = ToVOConverter.toAddressVO(fromAddress);
+        toAddressVO = DomainToVOConverter.toAddressVO(fromAddress);
         assert fromAddress.getTextAddress().equals(toAddressVO.getTextAddress());
         assert fromAddress.getCountryCode().equals(toAddressVO.getCountryCode());
     }
@@ -109,7 +109,7 @@ public class ToVOConverterTest {
         fromContact.setAltPhoneNumber("altphone");
         fromContact.setPrivateEmail("priv@email.com");
 
-        toContactVO = ToVOConverter.toContactVO(fromContact);
+        toContactVO = DomainToVOConverter.toContactVO(fromContact);
 
         assert toContactVO.getName().equals(fromContact.getName());
         assert toContactVO.getOrganization().equals(fromContact.getOrganization());
@@ -121,7 +121,7 @@ public class ToVOConverterTest {
         assert toContactVO.getAltPhoneNumber().equals("altphone");
         assert toContactVO.getPrivateEmail().equals("priv@email.com");
 
-        assert fromContact.equals(FromVOConverter.toContact(toContactVO));
+        assert fromContact.equals(DomainFromVOConverter.toContact(toContactVO));
     }
 
     @Test(dependsOnMethods = {"testContactConversion", "testHostConversion"})
@@ -142,7 +142,7 @@ public class ToVOConverterTest {
 
         fromDomain.setTrackData(trackData);
 
-        toDomainVO = ToVOConverter.toDomainVO(fromDomain);
+        toDomainVO = DomainToVOConverter.toDomainVO(fromDomain);
 
         assert fromDomain.getName().equals(toDomainVO.getName());
 
@@ -154,10 +154,10 @@ public class ToVOConverterTest {
         assert adminContactVO.isRole() == fromContact.isRole();
 
 
-        assert toDomainVO.getBreakpoints().equals(ToVOConverter.toBreakpointVOSet(fromDomain.getBreakpoints()));
+        assert toDomainVO.getBreakpoints().equals(DomainToVOConverter.toBreakpointVOSet(fromDomain.getBreakpoints()));
 
-        toDomainVO.getNameServers().equals(ToVOConverter.toHostVOList(fromDomain.getNameServers()));
-        toDomainVO.getTechContact().equals(ToVOConverter.toContactVO(fromDomain.getTechContact()));
+        toDomainVO.getNameServers().equals(DomainToVOConverter.toHostVOList(fromDomain.getNameServers()));
+        toDomainVO.getTechContact().equals(DomainToVOConverter.toContactVO(fromDomain.getTechContact()));
 
         assert toDomainVO.getRegistryUrl().equals(fromDomain.getRegistryUrl());
         assert toDomainVO.getSpecialInstructions().equals(fromDomain.getSpecialInstructions());

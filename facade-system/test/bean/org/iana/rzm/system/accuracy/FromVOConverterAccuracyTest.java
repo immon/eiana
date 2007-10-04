@@ -3,9 +3,9 @@ package org.iana.rzm.system.accuracy;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.converter.FromVOConverter;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -60,7 +60,7 @@ public class FromVOConverterAccuracyTest {
         addressVO.setTextAddress("1st Marszalkowska Str., 00-009 Warsaw, Mazovia");
         addressVO.setCountryCode("PL");
 
-        Address address = FromVOConverter.toAddress(addressVO);
+        Address address = DomainFromVOConverter.toAddress(addressVO);
         assert assertAddress(address);
 
         this.addressVO = addressVO;
@@ -110,10 +110,10 @@ public class FromVOConverterAccuracyTest {
         contactVO.setModified(modified);
         contactVO.setModifiedBy("anybody");
 
-        Contact contact = FromVOConverter.toContact(contactVO);
+        Contact contact = DomainFromVOConverter.toContact(contactVO);
         assert assertContact(contact);
 
-        contactVO.equals(ToVOConverter.toContactVO(contact));
+        contactVO.equals(DomainToVOConverter.toContactVO(contact));
 
         contactVOList.add(contactVO);
     }
@@ -129,7 +129,7 @@ public class FromVOConverterAccuracyTest {
     public void testBreakpointConversion() {
         breakpointVOSet.add(IDomainVO.Breakpoint.AC_CHANGE_EXT_REVIEW);
 
-        Set<Domain.Breakpoint> breakpointSet = FromVOConverter.toBreakpointSet(breakpointVOSet);
+        Set<Domain.Breakpoint> breakpointSet = DomainFromVOConverter.toBreakpointSet(breakpointVOSet);
         assert assertBreakpointSet(breakpointSet);
     }
 
@@ -145,7 +145,7 @@ public class FromVOConverterAccuracyTest {
         ipAddressVO.setAddress("10.0.0.1");
         ipAddressVO.setType(IPAddressVO.Type.IPv4);
 
-        IPAddress ipAddress = FromVOConverter.toIPAddress(ipAddressVO);
+        IPAddress ipAddress = DomainFromVOConverter.toIPAddress(ipAddressVO);
         assert assertIPAddress(ipAddress);
 
         ipAddressVOSet.add(ipAddressVO);
@@ -180,7 +180,7 @@ public class FromVOConverterAccuracyTest {
         hostVO.setModified(modified);
         hostVO.setModifiedBy("anybody");
 
-        Host host = FromVOConverter.toHost(hostVO);
+        Host host = DomainFromVOConverter.toHost(hostVO);
         assert assertHost(host);
 
         hostVOList.add(hostVO);
@@ -189,22 +189,22 @@ public class FromVOConverterAccuracyTest {
     @Test
     public void testStateConversion() throws MalformedURLException {
         Domain.State state;
-        state = FromVOConverter.toState(IDomainVO.State.NO_ACTIVITY);
+        state = DomainFromVOConverter.toState(IDomainVO.State.NO_ACTIVITY);
         assert state.equals(Domain.State.NO_ACTIVITY);
-        state = FromVOConverter.toState(IDomainVO.State.OPERATIONS_PENDING);
+        state = DomainFromVOConverter.toState(IDomainVO.State.OPERATIONS_PENDING);
         assert state.equals(Domain.State.OPERATIONS_PENDING);
-        state = FromVOConverter.toState(IDomainVO.State.THIRD_PARTY_PENDING);
+        state = DomainFromVOConverter.toState(IDomainVO.State.THIRD_PARTY_PENDING);
         assert state.equals(Domain.State.THIRD_PARTY_PENDING);
     }
 
     @Test
     public void testStatusConversion() throws MalformedURLException {
         Domain.Status status;
-        status = FromVOConverter.toStatus(IDomainVO.Status.ACTIVE);
+        status = DomainFromVOConverter.toStatus(IDomainVO.Status.ACTIVE);
         assert status.equals(Domain.Status.ACTIVE);
-        status = FromVOConverter.toStatus(IDomainVO.Status.CLOSED);
+        status = DomainFromVOConverter.toStatus(IDomainVO.Status.CLOSED);
         assert status.equals(Domain.Status.CLOSED);
-        status = FromVOConverter.toStatus(IDomainVO.Status.NEW);
+        status = DomainFromVOConverter.toStatus(IDomainVO.Status.NEW);
         assert status.equals(Domain.Status.NEW);
     }
 
@@ -230,7 +230,7 @@ public class FromVOConverterAccuracyTest {
         domainVO.setModified(modified);
         domainVO.setModifiedBy("anybody");
 
-        Domain domain = FromVOConverter.toDomain(domainVO);
+        Domain domain = DomainFromVOConverter.toDomain(domainVO);
 
         assert domain != null;
         assert domain.getObjId() == 1L;

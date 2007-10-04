@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.HostVO;
-import org.iana.rzm.facade.system.domain.IPAddressVO;
+import org.iana.rzm.facade.system.domain.vo.HostVO;
+import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
 
 import java.sql.Timestamp;
 import java.util.HashSet;

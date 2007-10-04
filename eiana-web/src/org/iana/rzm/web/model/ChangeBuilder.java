@@ -1,8 +1,8 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.ChangeFields;
-import org.iana.rzm.facade.system.trans.ChangeVO;
-import org.iana.rzm.facade.system.trans.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
+import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ChangeFields;
 
 import java.util.HashMap;
 import java.util.Map;

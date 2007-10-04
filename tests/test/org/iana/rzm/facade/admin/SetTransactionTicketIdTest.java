@@ -16,11 +16,10 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.jbpm.graph.exe.ProcessInstance;
-
-import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
@@ -71,10 +70,11 @@ public class SetTransactionTicketIdTest {
     @Test
     public void testSetTransactionTicketId() throws Exception {
         createDomainModificationProcess();
-        TransactionVO transactionVO = gAdminTransactionServ.getTransaction(transactionID);
+        TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
         assert !new Long(123l).equals(transactionVO.getTicketID());
-        gAdminTransactionServ.setTransactionTicketId(transactionID, 123L);
-        TransactionVO retTransactionVO = gAdminTransactionServ.getTransaction(transactionID);
+        // todo
+        // gAdminTransactionServ.setTransactionTicketId(transactionID, 123L);
+        TransactionVO retTransactionVO = gAdminTransactionServ.get(transactionID);
         assert retTransactionVO.getTicketID() != transactionVO.getTicketID();
         assert retTransactionVO.getTicketID() == 123L;
     }
@@ -86,10 +86,10 @@ public class SetTransactionTicketIdTest {
         Domain domain = createTestDomain(DOMAIN_NAME);
         domain.setRegistryUrl("newregurl");
 
-        TransactionVO transactionVO = gAdminTransactionServ.createDomainModificationTransaction(ToVOConverter.toDomainVO(domain));
+        TransactionVO transactionVO = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain), false).get(0);
         transactionID = transactionVO.getTransactionID();
 
-        transactionVO = gAdminTransactionServ.getTransaction(transactionID);
+        transactionVO = gAdminTransactionServ.get(transactionID);
 
         assert transactionVO != null;
 

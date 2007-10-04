@@ -5,23 +5,16 @@ import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.AfterClass;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.SimpleDomainVO;
-import org.iana.rzm.facade.system.converter.FromVOConverter;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.system.conf.SpringSystemApplicationContext;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
 
 /**

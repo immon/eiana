@@ -8,7 +8,11 @@ import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.common.cc.*;
 import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
@@ -22,13 +26,15 @@ public class UserServicesImpl implements UserServices {
     private static final Logger LOGGER = Logger.getLogger(UserServicesImpl.class);
 
     private SystemDomainService domainService;
-    private SystemTransactionService transactionService;
+    private TransactionService transactionService;
+    private TransactionDetectorService detectorService;
     private CountryCodes countryCodeService;
 
 
     public UserServicesImpl(ServiceInitializer initializer) {
         domainService = initializer.getBean("GuardedSystemDomainService");
         transactionService = initializer.getBean("GuardedSystemTransactionService");
+        transactionService = initializer.getBean("detectorService");
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
     }
 
@@ -177,7 +183,7 @@ public class UserServicesImpl implements UserServices {
 
     public TransactionVOWrapper getTransaction(long requestId) throws NoObjectFoundException, AccessDeniedException {
         try {
-            TransactionVO vo = transactionService.getTransaction(requestId);
+            TransactionVO vo = transactionService.get(requestId);
             return new TransactionVOWrapper(vo);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
@@ -186,13 +192,18 @@ public class UserServicesImpl implements UserServices {
     }
 
     public int getTransactionCount(Criterion criterion) {
-        return transactionService.count(criterion);
+        try {
+            return transactionService.count(criterion);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
     public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length) {
         List<TransactionVO> list = null;
         try {
-            list = transactionService.findTransactions(criterion, offset, length);
+            list = transactionService.find(criterion, offset, length);
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
@@ -207,7 +218,7 @@ public class UserServicesImpl implements UserServices {
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain)
         throws NoObjectFoundException, AccessDeniedException {
         try {
-            TransactionActionsVO vo = transactionService.detectTransactionActions(modifiedDomain.getDomainVO());
+            TransactionActionsVO vo = detectorService.detectTransactionActions(modifiedDomain.getDomainVO());
             return new TransactionActionsVOWrapper(vo);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);

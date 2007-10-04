@@ -10,11 +10,11 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.TechnicalCheckException;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.admin.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -42,7 +42,7 @@ public class GuardedSystemTransactionServiceTest {
     private TransactionManager transactionManager;
     //private AuthenticationService authenticationService;
     private UserManager userManager;
-    private SystemTransactionService gsts;
+    private TransactionService gsts;
     private AdminTransactionService ats;
     private DomainManager domainManager;
     private IDomainVO domain, domain1;
@@ -66,7 +66,7 @@ public class GuardedSystemTransactionServiceTest {
         userTc = createUser("tc", SystemRole.SystemType.TC, "gsts");
         userAc1 = createUser("ac1", SystemRole.SystemType.AC, "gstss");
         userIANA = createUser("iana", AdminRole.AdminType.IANA);
-        gsts = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        gsts = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
         ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         domain = createDomain("gsts");
         domain1 = createDomain("gstss");
@@ -80,10 +80,11 @@ public class GuardedSystemTransactionServiceTest {
         assert transaction != null;
 
         ats.setUser(userIANA);
-        ats.updateTransaction(transaction.getObjId(), 0l, transaction.getState().getName(), false);
+        // todo
+        // ats.updateTransaction(transaction.getObjId(), 0l, transaction.getState().getName(), false);
         transaction.setTicketID(0l);
 
-        TransactionVO loadedTransaction = gsts.getTransaction(transaction.getTransactionID());
+        TransactionVO loadedTransaction = gsts.get(transaction.getTransactionID());
         assert loadedTransaction != null;
 //        assert transaction.equals(loadedTransaction);
         assert compareTransactionVOs(transaction, loadedTransaction);
@@ -92,10 +93,11 @@ public class GuardedSystemTransactionServiceTest {
         domain1.setRegistryUrl("http://www.registry.url");
         transaction1 = gsts.createTransactions(domain1, false).get(0);
         assert transaction1 != null;
-        ats.updateTransaction(transaction1.getObjId(), 0l, transaction1.getState().getName(), false);
+        // todo
+        // ats.updateTransaction(transaction1.getObjId(), 0l, transaction1.getState().getName(), false);
         transaction1.setTicketID(0l);
 
-        loadedTransaction = gsts.getTransaction(transaction1.getTransactionID());
+        loadedTransaction = gsts.get(transaction1.getTransactionID());
         assert loadedTransaction != null;
 //        assert transaction1.equals(loadedTransaction);
         assert compareTransactionVOs(transaction1, loadedTransaction);
@@ -106,7 +108,7 @@ public class GuardedSystemTransactionServiceTest {
         //todo
         gsts.setUser(userAc);
         Criterion crit = new SortCriterion(new IsNull("end"), new Order("currentDomain.name.name"));
-        List<TransactionVO> foundTransactions = gsts.findTransactions(crit);
+        List<TransactionVO> foundTransactions = gsts.find(crit);
         assert foundTransactions != null;
         assert foundTransactions.size() == 1;
         //assert transaction.equals(foundTransactions.iterator().next());
@@ -116,34 +118,28 @@ public class GuardedSystemTransactionServiceTest {
     @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")
     public void testFindOpenTransactions() throws Exception {
         gsts.setUser(userAc);
-        List<TransactionVO> foundTransactions = gsts.findOpenTransactions();
+        Criterion open = new Not(new IsNull(TransactionCriteriaFields.END));
+        List<TransactionVO> foundTransactions = gsts.find(open);
         assert foundTransactions != null;
         assert foundTransactions.size() == 1;
 //        assert transaction.equals(foundTransactions.iterator().next());
         assert compareTransactionVOs(transaction, foundTransactions.iterator().next());
     }
 
-    @Test(dependsOnMethods = "testFindOpenTransactions",
-            expectedExceptions = UnsupportedOperationException.class)
-    public void testPerformTransactionTechnicalCheck() throws InfrastructureException, TechnicalCheckException {
-        gsts.setUser(userAc);
-        gsts.performTransactionTechnicalCheck(domain);
-    }
-
     @Test(dependsOnMethods = "testPerformTransactionTechnicalCheck")
     public void testAcceptTransaction() throws Exception {
         gsts.setUser(userAc);
 
-        transaction = gsts.getTransaction(transaction.getTransactionID());
+        transaction = gsts.get(transaction.getTransactionID());
         gsts.setUser(userIANA);
         gsts.transitTransaction(transaction.getTransactionID(), "go-on");
-        transaction = gsts.getTransaction(transaction.getTransactionID());
+        transaction = gsts.get(transaction.getTransactionID());
         List<String> tokens = transaction.getTokens();
         assert tokens.size() == 2;
         Iterator<String> tokenIterator = tokens.iterator();
 
         gsts.acceptTransaction(transaction.getTransactionID(), tokenIterator.next());
-        transaction = gsts.getTransaction(transaction.getTransactionID());
+        transaction = gsts.get(transaction.getTransactionID());
         assert transaction != null;
         assert transaction.getState() != null;
         assert transaction.getState().getName() != null;
@@ -152,7 +148,7 @@ public class GuardedSystemTransactionServiceTest {
         gsts.setUser(userTc);
 
         gsts.acceptTransaction(transaction.getTransactionID(), tokenIterator.next());
-        transaction = gsts.getTransaction(transaction.getTransactionID());
+        transaction = gsts.get(transaction.getTransactionID());
         assert transaction != null;
         assert transaction.getState() != null;
         assert transaction.getState().getName() != null;
@@ -174,11 +170,11 @@ public class GuardedSystemTransactionServiceTest {
         gsts.setUser(userIANA);
         gsts.transitTransaction(transactionToReject.getTransactionID(), "go-on");
         gsts.setUser(userTc);
-        transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
+        transactionToReject = gsts.get(transactionToReject.getTransactionID());
         List<String> tokens = transactionToReject.getTokens();
         assert tokens.size() > 0;
         gsts.rejectTransaction(transactionToReject.getTransactionID(), tokens.iterator().next());
-        transactionToReject = gsts.getTransaction(transactionToReject.getTransactionID());
+        transactionToReject = gsts.get(transactionToReject.getTransactionID());
         assert transactionToReject != null;
         assert transactionToReject.getState() != null;
         assert transactionToReject.getState().getName() != null;
@@ -191,104 +187,14 @@ public class GuardedSystemTransactionServiceTest {
         //todo
         Set domainNames = new HashSet();
         domainNames.add("gsts");
-        List<TransactionVO> found = gsts.findTransactions(new In("domain.name.name", domainNames));
+        List<TransactionVO> found = gsts.find(new In("domain.name.name", domainNames));
         assert found != null;
 //        assert found.size() == 2;
 
         domainNames.add("nonexistent");
-        found = gsts.findTransactions(new In("domain.name.name", domainNames));
+        found = gsts.find(new In("domain.name.name", domainNames));
         assert found != null;
 //        assert found.size() == 0;
-    }
-
-    @Test(dependsOnMethods = "testFindTransactionByDomainByCriterion")
-    public void testFindTransactionByDomain() throws Exception {
-        gsts.setUser(userTc);
-
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addDomainName("gsts");
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-
-        criteria = new TransactionCriteriaVO();
-        criteria.addDomainName("nonexistent");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-    }
-
-    @Test(dependsOnMethods = "testFindTransactionByDomain")
-    public void testFindTransactionByState() throws Exception {
-        gsts.setUser(userTc);
-
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addState("REJECTED");
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 1;
-
-        criteria = new TransactionCriteriaVO();
-        criteria.addState("nonexistent");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-
-        gsts.setUser(userAc1);
-
-        criteria = new TransactionCriteriaVO();
-        criteria.addState("PENDING_CREATION");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 1;
-    }
-
-    @Test(dependsOnMethods = "testFindTransactionByState")
-    public void testFindTransactionByTicketId() throws Exception {
-        gsts.setUser(userTc);
-
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addTickedId(0L);
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 1;
-        criteria = new TransactionCriteriaVO();
-        criteria.addTickedId(10L);
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-    }
-
-    @Test(dependsOnMethods = "testFindTransactionByTicketId")
-    public void testFindTransactionByProcessName() throws Exception {
-        gsts.setUser(userTc);
-
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addProcessName(DefinedTestProcess.getProcessName());
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-        criteria = new TransactionCriteriaVO();
-        criteria.addProcessName("nonexistent");
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
-    }
-
-    @Test(dependsOnMethods = "testFindTransactionByProcessName")
-    public void testFindTransactionByStartDate() throws Exception {
-        gsts.setUser(userTc);
-
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.setStartedBefore(new Date());
-        List<TransactionVO> found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 2;
-        criteria = new TransactionCriteriaVO();
-        criteria.setStartedAfter(new Date(new Date().getTime() + 1000));
-        found = gsts.findTransactions(criteria);
-        assert found != null;
-        assert found.size() == 0;
     }
 
     /*
@@ -392,7 +298,7 @@ public class GuardedSystemTransactionServiceTest {
     private IDomainVO createDomain(String name) throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
         Domain domain = setupDomain(name);
         domainManager.create(domain);
-        return ToVOConverter.toDomainVO(domain);
+        return DomainToVOConverter.toDomainVO(domain);
     }
 
     private boolean compareTransactionVOs(TransactionVO first, TransactionVO second) {

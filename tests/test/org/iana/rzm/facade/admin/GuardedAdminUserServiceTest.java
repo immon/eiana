@@ -5,6 +5,7 @@ import org.iana.rzm.conf.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.facade.user.converter.*;
+import org.iana.rzm.facade.admin.users.AdminUserService;
 import org.iana.rzm.user.*;
 import org.springframework.context.*;
 import org.testng.annotations.*;
@@ -78,7 +79,7 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testFacadeCreateUser"})
-    public void testCount() {
+    public void testCount() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
 
@@ -88,7 +89,7 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testCount"})
-    public void testFacadeFindUserByCriteria_Offset_Limit() {
+    public void testFacadeFindUserByCriteria_Offset_Limit() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
 
@@ -179,7 +180,7 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testFacadeUpdateUserAdminRole"})
-    public void testFacadeFindUserByCriteriaOrderAndOffset() {
+    public void testFacadeFindUserByCriteriaOrderAndOffset() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
 
@@ -209,7 +210,7 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testFacadeDeleteUser"})
-    public void testFind() {
+    public void testFind() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
 
