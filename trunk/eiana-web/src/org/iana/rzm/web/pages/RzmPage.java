@@ -6,7 +6,6 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.form.*;
 import org.apache.tapestry.html.*;
 import org.apache.tapestry.valid.*;
-import org.iana.rzm.web.*;
 import org.iana.rzm.web.tapestry.*;
 import org.iana.rzm.web.util.*;
 
@@ -17,12 +16,7 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
 
     @Bean(org.iana.rzm.web.util.MessageUtil.class)
     public abstract MessageUtil getMessageUtil();
-
-    @InjectState("visit")
-    public abstract Visit getVisitState();
-
-    @InjectStateFlag("visit")
-    public abstract boolean getVisitStateExists();
+    
 
     @InitialValue("ognl:null")
     public abstract void setInfoMessage(String value);
@@ -60,7 +54,9 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
         delegate.record(message, null);
     }
 
-
+    protected boolean hasErrors() {
+        return getValidationDelegate().getHasErrors();
+    }
     
 }
 

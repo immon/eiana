@@ -47,14 +47,33 @@
         </invoke-factory>
     </service-point>
 
-    <service-point id="ExternalPageErrorHandler" interface="org.iana.rzm.web.services.ExternalPageErrorHandler">
-        <invoke-factory>
-            <construct class="org.iana.rzm.web.services.ExternalPageErrorHandlerImpl">
-                <set-object property="requestCycle" value="infrastructure:requestCycle"/>
-                <set-object property="pageName" value="GeneralError"/>
-            </construct>
-        </invoke-factory>
-    </service-point>
+    <!--<service-point id="ExternalPageErrorHandler" interface="org.iana.rzm.web.services.ExternalPageErrorHandler">-->
+        <!--<invoke-factory>-->
+            <!--<construct class="{org.iana.rzm.web.services.ExternalPageErrorHandlerImpl">-->
+                <!--<set-object property="requestCycle" value="infrastructure:requestCycle"/>-->
+                <!--<set-object property="pageName" value="GeneralError"/>-->
+            <!--</construct>-->
+        <!--</invoke-factory>-->
+    <!--</service-point>-->
+
+    <service-point id="AdminExternalPageErrorHandler" interface="org.iana.rzm.web.services.ExternalPageErrorHandler">
+         <invoke-factory>
+             <construct class="org.iana.rzm.web.services.ExternalPageErrorHandlerImpl">
+                 <set-object property="requestCycle" value="infrastructure:requestCycle"/>
+                 <set-object property="pageName" value="AdminGeneralError"/>
+             </construct>
+         </invoke-factory>
+     </service-point>
+
+    <service-point id="UserExternalPageErrorHandler" interface="org.iana.rzm.web.services.ExternalPageErrorHandler">
+         <invoke-factory>
+             <construct class="org.iana.rzm.web.services.ExternalPageErrorHandlerImpl">
+                 <set-object property="requestCycle" value="infrastructure:requestCycle"/>
+                 <set-object property="pageName" value="UserGeneralError"/>
+             </construct>
+         </invoke-factory>
+     </service-point>
+
 
     <service-point id="DiscardSessionFilter" interface="org.apache.tapestry.services.WebRequestServicerFilter">
         Filter used to optionally discard the session at the end of a request (typically after a logout).

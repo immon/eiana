@@ -34,11 +34,19 @@
                     </span>
                 </div>
             </div>
-            <div style="margin: 20px 0 40px 0;">
+
+            <div jwcid=@If condition="prop:mustSplit" element="literal:div" style="margin: 20px 0 40px 0;">
+                <p>We noticed that your request must be split to be process corectly. You will be required to confirm the two requests separately. You may go back and change your request to avoid this. </p>
+				<p>&nbsp;</p>
+				<p>How do you wish to proceed? </p>
+            </div>
+
+            <div jwcid="@Else" element="literal:div" style="margin: 20px 0 40px 0;">
 			    <p>We noticed that you have requested to change the nameserver records and other information relating to this domain. As the processing time for these requests can differ, we recommend you split this request in two parts. This will allow a delay in processing one to not hold up the other, although you will be required to confirm the two requests separately. </p>
 				<p>&nbsp;</p>
 				<p>How do you wish to proceed? </p>
             </div>
+
             <form jwcid="form">
                 <div class="mainBox">
                     <div class="containerBox">

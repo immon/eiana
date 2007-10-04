@@ -14,6 +14,9 @@ public abstract class UserPage extends Protected {
     @InjectPage("user/GeneralError")
     public abstract GeneralError getErrorPage();
 
+    @InjectObject("service:rzm.UserExternalPageErrorHandler")
+    public abstract ExternalPageErrorHandler getExternalPageErrorHandler();
+
     public RzmServices getRzmServices() {
         return getUserServices();
     }

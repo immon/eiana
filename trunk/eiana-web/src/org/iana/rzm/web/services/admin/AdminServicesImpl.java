@@ -14,6 +14,7 @@ import org.iana.rzm.facade.system.notification.*;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.services.*;
 import org.iana.rzm.web.util.*;
@@ -65,14 +66,19 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
+    public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
                                                                                                                                                                InvalidCountryCodeException,
                                                                                                                                                                CreateTicketException {
+
+        //todo Nask need to add method include comment and boolean field for performTechCheck
         try {
-            List<TransactionVO> list = transactionService.createDomainModificationTransactions(domain.getDomainVO(), splitNameServerChange, submitterEmail);
+            List<TransactionVO> list = transactionService.createDomainModificationTransactions(domain.getDomainVO(), splitNameServerChange, params.getEmail());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
-                result.add(new TransactionVOWrapper(transactionVO));
+                TransactionVOWrapper o = new TransactionVOWrapper(transactionVO);
+                o.setComment(params.getComment());
+                //todo Nask need to add a way to update comment
+                result.add(o);
             }
             return result;
         } catch (InfrastructureException e) {
@@ -83,6 +89,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException {
 
         try {
+            //todo Nask need to add a way to update comment
             transactionService.updateTransaction(transaction.getId(), transaction.getRtId(), transaction.getState().getVOName(), transaction.isRedeligation());
         } catch (NoTransactionException e) {
             throw new RzmServerException("Can not find Transaction with id " + e.getId());

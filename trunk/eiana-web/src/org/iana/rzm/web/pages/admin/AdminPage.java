@@ -12,12 +12,15 @@ public abstract class AdminPage extends Protected {
     @InjectObject("service:rzm.AdminServices")
     public abstract AdminServices getAdminServices();
 
+    @InjectPage("admin/GeneralError")
+    public abstract GeneralError getErrorPage();
+
+    @InjectObject("service:rzm.AdminExternalPageErrorHandler")
+    public abstract ExternalPageErrorHandler getExternalPageErrorHandler();
+
     public RzmServices getRzmServices(){
         return getAdminServices();
     }
-
-    @InjectPage("admin/GeneralError")
-    public abstract GeneralError getErrorPage();
 
     protected String getErrorPageName(){
         return getErrorPage().getPageName();

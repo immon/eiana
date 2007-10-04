@@ -1,5 +1,6 @@
 package org.iana.rzm.web;
 
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 
 import java.io.*;
@@ -10,7 +11,7 @@ public class Visit implements Serializable {
     private WebUser user;
     private Map<Long,DomainVOWrapper> visitedDomains  = new HashMap<Long, DomainVOWrapper>();
     private long modifiedDomain;
-    private String submitterEmail;
+    private RequestMetaParameters requestMetaParam;
 
     public WebUser getUser() {
         return user;
@@ -60,7 +61,7 @@ public class Visit implements Serializable {
         user = null;
         visitedDomains = null;
         modifiedDomain = 0;
-        submitterEmail = null;
+        requestMetaParam = null;
     }
 
 
@@ -83,13 +84,13 @@ public class Visit implements Serializable {
         visitedDomains.remove(domainId);
         if(modifiedDomain == domainId){
             modifiedDomain = 0;
-            submitterEmail = null;
+            requestMetaParam = null;
         }
     }
 
     public void resetModifirdDomain(){
         modifiedDomain = 0;
-        submitterEmail = null;
+        requestMetaParam = null;
     }
 
     public DomainVOWrapper getCurrentDomain(long domainId) {
@@ -106,11 +107,20 @@ public class Visit implements Serializable {
     }
 
     public String getSubmitterEmail(){
-        return submitterEmail;
+        return getRequestMetaParameters().getEmail();
     }
 
     public void setSubmitterEmail(String email){
-        this.submitterEmail = email;
+        setRequestMetaParameters(new RequestMetaParameters(email, null));
+    }
+
+
+    public void setRequestMetaParameters(RequestMetaParameters parmeter) {
+        requestMetaParam = parmeter;
+    }
+
+    public RequestMetaParameters getRequestMetaParameters() {
+        return this.requestMetaParam;
     }
 
 

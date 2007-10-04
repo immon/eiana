@@ -13,7 +13,8 @@ import java.util.*;
 public abstract class AdminRequestDetails extends RequestDetails  {
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend"
+        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend",
+        "linkTragetPage=prop:editDomain"
         })
     public abstract IComponent getRequestSummaryComponent();
 
@@ -25,6 +26,9 @@ public abstract class AdminRequestDetails extends RequestDetails  {
 
     @InjectPage("admin/EditRequest")
     public abstract EditRequest getEditRequest();
+
+    @InjectPage(EditDomain.PAGE_NAME)
+    public abstract EditDomain getEditDomain();
 
     @InjectPage(SendConfirmation.PAGE_NAME)
     public abstract SendConfirmation getNotificationSender();

@@ -6,6 +6,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.callback.*;
 import org.apache.tapestry.valid.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.*;
 
@@ -90,8 +91,9 @@ public abstract class DomainSelection extends AdminPage implements IExternalPage
         }
         getVisitState().markAsVisited(domain);
         getVisitState().setSubmitterEmail(getEmail());
+        getVisitState().setRequestMetaParameters(new RequestMetaParameters(getEmail(), getComment()));
         DomainView page = getDomainView();
-        page.setSubmitterEmail(getEmail());
+        page.setRequestMetaParameters(getVisitState().getRequestMetaParameters());
         page.setOriginalDomain(domain);
         page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
         page.setDomainId(domain.getId());

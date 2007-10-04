@@ -7,6 +7,7 @@ import java.util.*;
 
 
 public class WebUtil {
+
     private static final String IE = "IE";
     private static final String NS6 = "NS6";
     private static final String NS4 = "NS4";
@@ -112,6 +113,7 @@ public class WebUtil {
         return broeser.equals(IE);
     }
 
+
     private static NameServerVOWrapper findNameServer(final long id, List<NameServerVOWrapper> list) {
         return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
             public boolean evaluate(NameServerVOWrapper object) {
@@ -122,4 +124,11 @@ public class WebUtil {
     }
 
 
+    public static int getServerPort(int defaultPort) {
+        if(Boolean.getBoolean("org.iana.web.debug-enabled")){
+            return defaultPort;
+        }
+
+        return 443;
+    }
 }
