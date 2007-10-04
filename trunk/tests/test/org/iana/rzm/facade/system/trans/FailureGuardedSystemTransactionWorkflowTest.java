@@ -3,8 +3,8 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.notifications.EmailAddressee;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -70,7 +70,7 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
 
         domain.setRegistryUrl("newregurl.org");
 
-        domainVO = ToVOConverter.toDomainVO(domain);
+        domainVO = DomainToVOConverter.toDomainVO(domain);
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();

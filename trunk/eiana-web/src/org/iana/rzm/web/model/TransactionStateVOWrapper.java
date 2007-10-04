@@ -1,6 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.web.util.*;
 
 public class TransactionStateVOWrapper extends ValueObject {

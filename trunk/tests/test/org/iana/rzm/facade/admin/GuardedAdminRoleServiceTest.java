@@ -13,6 +13,7 @@ import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.user.converter.RoleConverter;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.admin.users.AdminRoleService;
 import org.iana.criteria.Equal;
 
 import java.util.List;

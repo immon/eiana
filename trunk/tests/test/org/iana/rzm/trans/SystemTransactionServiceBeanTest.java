@@ -4,11 +4,16 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.facade.system.trans.SystemTransactionService;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.TransactionCriteriaFields;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Not;
+import org.iana.criteria.Equal;
+import org.iana.criteria.IsNull;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -21,7 +26,7 @@ import java.util.List;
 public class SystemTransactionServiceBeanTest {
 
     private UserManager userManager;
-    private SystemTransactionService service;
+    private TransactionService service;
     private AuthenticationService authService;
 
     private final static String USER_NAME = "test";
@@ -31,7 +36,7 @@ public class SystemTransactionServiceBeanTest {
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
         userManager = (UserManager) appCtx.getBean("userManager");
-        service = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
+        service = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
         authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
         createTestUsers();
     }
@@ -62,9 +67,10 @@ public class SystemTransactionServiceBeanTest {
         Assert.assertNotNull(authenticatedUser);
         Assert.assertEquals("test", authenticatedUser.getUserName());
         service.setUser(authenticatedUser);
-        List<TransactionVO> list = service.findOpenTransactions();
+        Criterion open = new Not(new IsNull(TransactionCriteriaFields.END));
+        List<TransactionVO> list = service.find(open);
         Assert.assertNotNull(list);
-        list = service.findOpenTransactions();
+        list = service.find(open);
         Assert.assertNotNull(list);
     }
 

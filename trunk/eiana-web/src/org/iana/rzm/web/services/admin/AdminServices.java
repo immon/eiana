@@ -3,7 +3,7 @@ package org.iana.rzm.web.services.admin;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.*;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;

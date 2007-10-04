@@ -9,7 +9,7 @@
 
     <!-- facade services configuration -->
 
-    <bean id="GuardedAdminTransactionServiceBean" class="org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean"
+    <bean id="GuardedAdminTransactionServiceBean" class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="transactionManagerBean"/>
@@ -21,20 +21,20 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminRoleServiceBean" class="org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean"
+    <bean id="GuardedAdminRoleServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="roleManager"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminUserServiceBean" class="org.iana.rzm.facade.admin.GuardedAdminUserServiceBean"
+    <bean id="GuardedAdminUserServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="GuardedAdminDomainServiceBean" class="org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean"
+    <bean id="GuardedAdminDomainServiceBean" class="org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="domainManager"/>
@@ -103,10 +103,10 @@
         <property name="transactionAttributes">
             <props>
                 <prop key="get*">readOnly,
-                    -org.iana.rzm.facade.admin.FacadeTransactionException,
-                    -org.iana.rzm.facade.admin.NoSuchStateException,
-                    -org.iana.rzm.facade.admin.NoTransactionException,
-                    -org.iana.rzm.facade.admin.StateUnreachableException,
+                    -org.iana.rzm.facade.admin.trans.FacadeTransactionException,
+                    -org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                    -org.iana.rzm.facade.admin.trans.NoTransactionException,
+                    -org.iana.rzm.facade.admin.trans.StateUnreachableException,
                     -org.iana.rzm.facade.auth.AccessDeniedException,
                     -org.iana.rzm.facade.auth.AuthenticationException,
                     -org.iana.rzm.facade.auth.AuthenticationFailedException,
@@ -118,10 +118,10 @@
                     -org.iana.rzm.facade.system.trans.NoDomainSystemUsersException
                 </prop>
                 <prop key="*">
-                    -org.iana.rzm.facade.admin.FacadeTransactionException,
-                    -org.iana.rzm.facade.admin.NoSuchStateException,
-                    -org.iana.rzm.facade.admin.NoTransactionException,
-                    -org.iana.rzm.facade.admin.StateUnreachableException,
+                    -org.iana.rzm.facade.admin.trans.FacadeTransactionException,
+                    -org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                    -org.iana.rzm.facade.admin.trans.NoTransactionException,
+                    -org.iana.rzm.facade.admin.trans.StateUnreachableException,
                     -org.iana.rzm.facade.auth.AccessDeniedException,
                     -org.iana.rzm.facade.auth.AuthenticationException,
                     -org.iana.rzm.facade.auth.AuthenticationFailedException,
@@ -180,7 +180,7 @@
     </bean>
 
     <bean id="systemTransactionLoggerInterceptor"
-          class="org.iana.rzm.facade.system.trans.SystemTransactionLoggerInterceptor">
+          class="org.iana.rzm.facade.system.trans.loggers.SystemTransactionLoggerInterceptor">
         <constructor-arg index="0" ref="transactionManagerBean"/>
         <property name="logger">
             <ref bean="logger"/>
@@ -190,7 +190,7 @@
     <!-- transaction service -->
 
     <bean id="GuardedSystemTransactionService"
-          class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService" scope="session">
+          class="org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService" scope="session">
         <constructor-arg ref="userManager"/>
         <constructor-arg ref="SystemTransactionServiceBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
@@ -284,7 +284,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="adminDiffConfig" class="org.iana.rzm.facade.admin.AdminDomainDiffConfiguration">
+    <bean id="adminDiffConfig" class="org.iana.rzm.facade.admin.trans.AdminDomainDiffConfiguration">
         <constructor-arg>
             <ref bean="hostManager"/>
         </constructor-arg>
@@ -469,23 +469,19 @@
 
     <!-- mails processing configuration -->
 
-    <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
+    <bean id="mailReceiver" class="org.iana.mail.pop3.Pop3MailReceiver">
         <constructor-arg index="0" value="m02.icann.org"/>
-        <constructor-arg index="1" value="rzm-dev"/>
-        <constructor-arg index="2" value="password"/>
+        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="2" value="upowilgeod"/>
         <constructor-arg index="3" value="[RZM]"/>
-        <property name="configDAO">
-            <ref bean="hibernateConfigDAO"/>
-        </property>
+        <!--
         <property name="port">
             <value>995</value>
-        </property>
-        <property name="debug">
-            <value>true</value>
         </property>
         <property name="ssl">
             <value>true</value>
         </property>
+        -->
     </bean>
 
     <bean id="templatesManager" class="org.iana.templates.def.parser.TemplatesManager">
@@ -556,13 +552,13 @@
 
     <aop:config>
         <aop:pointcut id="transactionalOperation"
-                      expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                      expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
@@ -581,57 +577,57 @@
                      order="1"/>
         <aop:aspect id="jbpmAspect" ref="jbpmAdvisor">
             <aop:pointcut id="jbpmOperation"
-                          expression="execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..))"/>
+                          expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.*(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..))"/>
             <aop:after method="close" pointcut-ref="jbpmOperation"/>
         </aop:aspect>
         <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
             <aop:pointcut id="loggedSystemTransactionCreation"
-                          expression="execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.createTransactions(..))"/>
+                          expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.createTransactions(..))"/>
             <aop:pointcut id="loggedSystemTransactionModification"
-                          expression="execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.acceptTransaction(..)) ||
-                                      execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.rejectTransaction(..)) ||
-                                      execution(* org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.transitTransaction(..))"/>
+                          expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.acceptTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.rejectTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.transitTransaction(..))"/>
             <aop:around method="logObjectCreation" pointcut-ref="loggedSystemTransactionCreation"/>
             <aop:around method="logObjectChange" pointcut-ref="loggedSystemTransactionModification"/>
         </aop:aspect>
         <aop:aspect id="adminTransactionLoggerAspect" ref="adminTransactionLoggerAdvisor">
             <aop:pointcut id="loggedAdminTransactionCreation"
-                          expression="execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.createDomainCreationTransaction(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.createDomainModificationTransaction(..))"/>
+                          expression="execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.createDomainCreationTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.createDomainModificationTransaction(..))"/>
             <aop:pointcut id="loggedAdminTransactionModification"
-                          expression="execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.acceptTransaction(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.rejectTransaction(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.transitTransaction(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.transitTransactionToState(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.setTransactionTicketId(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.deleteTransaction(..))"/>
+                          expression="execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.acceptTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.rejectTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.transitTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.transitTransactionToState(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.setTransactionTicketId(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.deleteTransaction(..))"/>
             <aop:around method="logObjectCreation" pointcut-ref="loggedAdminTransactionCreation"/>
             <aop:around method="logObjectChange" pointcut-ref="loggedAdminTransactionModification"/>
         </aop:aspect>
         <aop:aspect id="userLoggerAspect" ref="userLoggerAdvisor">
             <aop:pointcut id="loggedUserOperation"
-                          expression="execution(* org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.createUser(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.deleteUser(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.updateUser(..))"/>
+                          expression="execution(* org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.createUser(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.deleteUser(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.updateUser(..))"/>
             <aop:around method="log" pointcut-ref="loggedUserOperation"/>
         </aop:aspect>
         <aop:aspect id="domainLoggerAspect" ref="domainLoggerAdvisor">
             <aop:pointcut id="loggedDomainOperation"
-                          expression="execution(* org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.createDomain(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.deleteDomain(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.updateDomain(..))"/>
+                          expression="execution(* org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.createDomain(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.deleteDomain(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.updateDomain(..))"/>
             <aop:around method="log" pointcut-ref="loggedDomainOperation"/>
         </aop:aspect>
         <aop:aspect id="hibernateExceptionAspect" ref="hibernateExceptionAdvisor">
             <aop:pointcut id="hibernateExceptionOperation"
-                          expression="execution(public * org.iana.rzm.facade.common.AbstractRZMStatefulService.*(..)) ||
+                          expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
                                       execution(public * org.iana.rzm.facade.admin.AdminFinderServiceBean.*(..)) ||
-                                      execution(public * org.iana.rzm.facade.system.trans.GuardedSystemTransactionService.*(..)) ||
-                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminTransactionServiceBean.*(..)) ||
-                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminDomainServiceBean.*(..)) ||
-                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminRoleServiceBean.*(..)) ||
-                                      execution(public * org.iana.rzm.facade.admin.GuardedAdminUserServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.system.trans.guards.GuardedSystemTransactionService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
                                       execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..))"/>
@@ -651,10 +647,10 @@
     <tx:advice id="txAdvice">
         <tx:attributes>
             <tx:method name="get*" read-only="true"
-                       rollback-for="org.iana.rzm.facade.admin.FacadeTransactionException,
-                                     org.iana.rzm.facade.admin.NoSuchStateException,
-                                     org.iana.rzm.facade.admin.NoTransactionException,
-                                     org.iana.rzm.facade.admin.StateUnreachableException,
+                       rollback-for="org.iana.rzm.facade.admin.trans.FacadeTransactionException,
+                                     org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                                     org.iana.rzm.facade.admin.trans.NoTransactionException,
+                                     org.iana.rzm.facade.admin.trans.StateUnreachableException,
                                      org.iana.rzm.facade.auth.AccessDeniedException,
                                      org.iana.rzm.facade.auth.AuthenticationException,
                                      org.iana.rzm.facade.auth.AuthenticationFailedException,
@@ -665,10 +661,10 @@
                                      org.iana.rzm.facade.system.trans.NoDomainModificationException,
                                      org.iana.rzm.facade.system.trans.NoDomainSystemUsersException"/>
             <tx:method name="*"
-                       rollback-for="org.iana.rzm.facade.admin.FacadeTransactionException,
-                                     org.iana.rzm.facade.admin.NoSuchStateException,
-                                     org.iana.rzm.facade.admin.NoTransactionException,
-                                     org.iana.rzm.facade.admin.StateUnreachableException,
+                       rollback-for="org.iana.rzm.facade.admin.trans.FacadeTransactionException,
+                                     org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                                     org.iana.rzm.facade.admin.trans.NoTransactionException,
+                                     org.iana.rzm.facade.admin.trans.StateUnreachableException,
                                      org.iana.rzm.facade.auth.AccessDeniedException,
                                      org.iana.rzm.facade.auth.AuthenticationException,
                                      org.iana.rzm.facade.auth.AuthenticationFailedException,
@@ -682,7 +678,7 @@
     </tx:advice>
 
     <bean id="systemTransactionLoggerAdvisor"
-          class="org.iana.rzm.facade.system.trans.SystemTransactionLoggerAdvisor">
+          class="org.iana.rzm.facade.system.trans.loggers.SystemTransactionLoggerAdvisor">
         <constructor-arg index="0" ref="transactionManagerBean"/>
         <property name="order" value="3"/>
         <property name="logger">
@@ -691,7 +687,7 @@
     </bean>
 
     <bean id="adminTransactionLoggerAdvisor"
-          class="org.iana.rzm.facade.admin.AdminTransactionLoggerAdvisor">
+          class="org.iana.rzm.facade.admin.trans.loggers.AdminTransactionLoggerAdvisor">
         <constructor-arg index="0" ref="transactionManagerBean"/>
         <property name="order" value="3"/>
         <property name="logger">
@@ -700,7 +696,7 @@
     </bean>
 
     <bean id="userLoggerAdvisor"
-          class="org.iana.rzm.facade.admin.UserLoggerAdvisor">
+          class="org.iana.rzm.facade.admin.users.loggers.UserLoggerAdvisor">
         <property name="order" value="3"/>
         <property name="userManager">
             <ref bean="userManager"/>
@@ -711,7 +707,7 @@
     </bean>
 
     <bean id="domainLoggerAdvisor"
-          class="org.iana.rzm.facade.admin.DomainLoggerAdvisor">
+          class="org.iana.rzm.facade.admin.domain.loggers.DomainLoggerAdvisor">
         <property name="order" value="3"/>
         <property name="domainManager">
             <ref bean="domainManager"/>

@@ -4,14 +4,22 @@ import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.*;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
+import org.iana.rzm.facade.admin.users.AdminUserService;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.admin.trans.StateUnreachableException;
+import org.iana.rzm.facade.admin.trans.AdminNotificationService;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.common.cc.*;
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.types.*;
 import org.iana.rzm.facade.system.notification.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
@@ -27,52 +35,66 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private static final Logger LOGGER = Logger.getLogger(AdminServicesImpl.class);
 
     private AdminTransactionService transactionService;
+    private AdminNotificationService notificationService;
     private AdminDomainService domainService;
     private AdminUserService userService;
+    private TransactionDetectorService detectorService;
     private CountryCodes countryCodeService;
     private DomainTypes domainTypesService;
 
     public AdminServicesImpl(ServiceInitializer initializer) {
         domainService = initializer.getBean("GuardedAdminDomainServiceBean");
         transactionService = initializer.getBean("GuardedAdminTransactionServiceBean");
+        notificationService = initializer.getBean("transactionNotificationService");
         userService = initializer.getBean("GuardedAdminUserServiceBean");
+        detectorService = initializer.getBean("adminDetectorService");
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
         domainTypesService = initializer.getBean("domainTypes", DomainTypes.class);
     }
 
     public int getTransactionCount(Criterion criterion) {
-        return transactionService.count(criterion);
+        try {
+            return transactionService.count(criterion);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoObjectFoundException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
     public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length) {
-        List<TransactionVO> list = transactionService.find(criterion, offset, length);
-        List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
-        for (TransactionVO transactionVO : list) {
-            result.add(new TransactionVOWrapper(transactionVO));
+        try {
+            List<TransactionVO> list = transactionService.find(criterion, offset, length);
+            List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
+            for (TransactionVO transactionVO : list) {
+                result.add(new TransactionVOWrapper(transactionVO));
+            }
+            return result;
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoObjectFoundException", e);
+            throw new RzmApplicationException(e);
         }
-        return result;
     }
 
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException {
         try {
-            TransactionActionsVO vo = transactionService.detectTransactionActions(domain.getDomainVO());
+            TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO());
             return new TransactionActionsVOWrapper(vo);
-        } catch (NoTransactionException e) {
-            LOGGER.warn("NoTransactionException", e);
+        } catch (NoObjectFoundException e) {
+            LOGGER.warn("NoObjectFoundException", e);
             throw new NoObjectFoundException(e.getId(), "Request");
         } catch (InfrastructureException e) {
-            LOGGER.warn("NoTransactionException", e);
+            LOGGER.warn("NoObjectFoundException", e);
             throw new RzmApplicationException(e);
         }
     }
 
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-                                                                                                                                                               InvalidCountryCodeException,
-                                                                                                                                                               CreateTicketException {
+            InvalidCountryCodeException,
+            CreateTicketException {
 
         //todo Nask need to add method include comment and boolean field for performTechCheck
         try {
-            List<TransactionVO> list = transactionService.createDomainModificationTransactions(domain.getDomainVO(), splitNameServerChange, params.getEmail());
+            List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(), splitNameServerChange, params.getEmail());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 TransactionVOWrapper o = new TransactionVOWrapper(transactionVO);
@@ -90,11 +112,11 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
         try {
             //todo Nask need to add a way to update comment
-            transactionService.updateTransaction(transaction.getId(), transaction.getRtId(), transaction.getState().getVOName(), transaction.isRedeligation());
-        } catch (NoTransactionException e) {
+            transactionService.updateTransaction(transaction.getVO());
+        } catch (NoObjectFoundException e) {
             throw new RzmServerException("Can not find Transaction with id " + e.getId());
         } catch (FacadeTransactionException e) {
-            LOGGER.warn("NoTransactionException", e);
+            LOGGER.warn("NoObjectFoundException", e);
             throw new RzmApplicationException(e);
         } catch (StateUnreachableException e) {
             throw new RzmServerException("Transaction State " + transaction.getCurrentStateAsString() + " is Unreachable ");
@@ -103,35 +125,47 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public TransactionVOWrapper getTransaction(long id) throws NoObjectFoundException {
         try {
-            TransactionVO vo = transactionService.getTransaction(id);
+            TransactionVO vo = transactionService.get(id);
             return new TransactionVOWrapper(vo);
-        } catch (NoTransactionException e) {
-            LOGGER.warn("NoTransactionException", e);
+        } catch (NoObjectFoundException e) {
+            LOGGER.warn("NoObjectFoundException", e);
             throw new NoObjectFoundException(e.getId(), "Request");
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoObjectFoundException", e);
+            throw new RzmApplicationException(e);
         }
 
     }
 
     public TransactionVOWrapper getTransactionByRtId(long rtId) {
-        TransactionCriteriaVO criteria = new TransactionCriteriaVO();
-        criteria.addTickedId(rtId);
-        List<TransactionVO> list = transactionService.find(criteria);
-        if (list == null || list.isEmpty()) {
-            return null;
-        }
+        try {
+            Criterion tickedId = new Equal(TransactionCriteriaFields.TICKET_ID, rtId);
+            List<TransactionVO> list = transactionService.find(tickedId);
+            if (list == null || list.isEmpty()) {
+                return null;
+            }
 
-        return new TransactionVOWrapper(list.get(0));
+            return new TransactionVOWrapper(list.get(0));
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoObjectFoundException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
 
     public List<DomainVOWrapper> getDomains(int offset, int length) {
-        List<IDomainVO> list = domainService.find(new Order("name.name", true), offset, length);
-        List<DomainVOWrapper> result = new ArrayList<DomainVOWrapper>();
-        for (IDomainVO iDomainVO : list) {
-            result.add(new SystemDomainVOWrapper(iDomainVO));
-        }
+        try {
+            List<IDomainVO> list = domainService.find(new Order("name.name", true), offset, length);
+            List<DomainVOWrapper> result = new ArrayList<DomainVOWrapper>();
+            for (IDomainVO iDomainVO : list) {
+                result.add(new SystemDomainVOWrapper(iDomainVO));
+            }
 
-        return result;
+            return result;
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoObjectFoundException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
 
@@ -150,7 +184,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     }
 
     public int getDomainsCount() {
-        return domainService.count(null);
+        try {
+            return domainService.count(null);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoTransactionException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
     public void updateDomain(DomainVOWrapper domain) {
@@ -158,13 +197,18 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     }
 
     public List<UserVOWrapper> getUsers(Criterion criterion, int offset, int length) {
-        List<UserVO> list = userService.find(criterion, new Order("loginName", true), offset, length);
-        List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
-        for (UserVO userVO : list) {
-            users.add(new UserVOWrapper(userVO));
-        }
+        try {
+            List<UserVO> list = userService.find(criterion, new Order("loginName", true), offset, length);
+            List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
+            for (UserVO userVO : list) {
+                users.add(new UserVOWrapper(userVO));
+            }
 
-        return users;
+            return users;
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoTransactionException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
     public UserVOWrapper getUser(long userId) {
@@ -181,7 +225,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     }
 
     public int getUserCount(Criterion criterion) {
-        return userService.count(criterion);
+        try {
+            return userService.count(criterion);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("NoTransactionException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
     public void deleteUser(long userId) {
@@ -211,7 +260,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public void sendNotification(long requestId, NotificationVOWrapper notification, String comment) throws FacadeTransactionException {
         try {
-            transactionService.resendNotification(requestId, notification.getType().voType(), comment);
+            notificationService.resendNotification(requestId, notification.getType().voType(), comment);
         } catch (InfrastructureException e) {
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);
@@ -225,8 +274,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public List<NotificationVOWrapper> getNotifications(long requestId) {
         List<NotificationVOWrapper> result = new ArrayList<NotificationVOWrapper>();
         try {
-            List<NotificationVO> list = transactionService.getNotifications(requestId);
-            ListUtil.filter(list,new DuplicateNotitificationType());
+            List<NotificationVO> list = notificationService.getNotifications(requestId);
+            ListUtil.filter(list, new DuplicateNotitificationType());
 
             for (NotificationVO notificationVO : list) {
                 result.add(new NotificationVOWrapper(notificationVO));
@@ -238,18 +287,18 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         return result;
     }
 
-    private static class DuplicateNotitificationType implements ListUtil.Predicate<NotificationVO>{
+    private static class DuplicateNotitificationType implements ListUtil.Predicate<NotificationVO> {
 
         private int contact = 0;
         private int doc = 0;
 
         public boolean evaluate(NotificationVO object) {
-            if(object.getType().equals(NotificationVO.Type.CONTACT_CONFIRMATION)){
+            if (object.getType().equals(NotificationVO.Type.CONTACT_CONFIRMATION)) {
                 boolean result = contact > 0;
                 contact++;
                 return result;
             }
-            if(object.getType().equals(NotificationVO.Type.USDOC_CONFIRMATION)){
+            if (object.getType().equals(NotificationVO.Type.USDOC_CONFIRMATION)) {
                 boolean result = doc > 0;
                 doc++;
                 return result;

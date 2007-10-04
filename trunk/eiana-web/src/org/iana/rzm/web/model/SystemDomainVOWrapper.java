@@ -1,6 +1,8 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.ContactVO;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.user.*;
 
 import java.util.*;

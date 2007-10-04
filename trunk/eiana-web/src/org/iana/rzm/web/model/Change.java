@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
 import org.apache.commons.lang.StringUtils;
-import org.iana.rzm.facade.system.trans.ChangeVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
 
 public class Change extends ValueObject {
 

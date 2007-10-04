@@ -237,7 +237,7 @@
     <bean id="guardedSystemTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
-                <value>org.iana.rzm.facade.system.trans.SystemTransactionService</value>
+                <value>org.iana.rzm.facade.system.trans.TransactionService</value>
             </list>
         </property>
         <property name="target">
@@ -255,12 +255,12 @@
         <constructor-arg ref="userDAO" />
     </bean>
 
-    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.GuardedSystemTransactionService">
+    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService">
         <constructor-arg ref="userManager" />
         <constructor-arg ref="SystemTransactionServiceBean"/>
     </bean>
 
-    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.SystemTransactionServiceBean">
+    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.TransactionServiceImpl">
         <constructor-arg ref="userManager" />
         <constructor-arg ref="transactionManagerBean" />
         <constructor-arg ref="domainManager" />

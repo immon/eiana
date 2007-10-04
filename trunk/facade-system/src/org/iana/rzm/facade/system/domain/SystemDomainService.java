@@ -3,8 +3,10 @@ package org.iana.rzm.facade.system.domain;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.common.RZMStatefulService;
+import org.iana.rzm.facade.services.RZMStatefulService;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 
 import java.util.List;
 
@@ -62,6 +64,7 @@ public interface SystemDomainService extends RZMStatefulService {
      * system users are allowed to access only the domains for which they are in one of the roles: AC, TC, SO, thus
      * for them the returned list is limited only to those domains that they manage/administer at the moment of time.</p>
      *
+     * @
      * @return the list of the domains managed/administered by a given user, an empty list if no domains found.
      * @throws AccessDeniedException when the user is not allowed to access this method
      * @throws InfrastructureException when a low-level exception happened

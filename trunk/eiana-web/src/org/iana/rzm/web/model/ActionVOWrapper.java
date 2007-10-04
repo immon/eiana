@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
 import org.apache.commons.lang.*;
-import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
 
 import java.util.*;
 

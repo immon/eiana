@@ -1,6 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.IPAddressVO;
+import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
 
 public class IPAddressVOWrapper extends ValueObject {
 

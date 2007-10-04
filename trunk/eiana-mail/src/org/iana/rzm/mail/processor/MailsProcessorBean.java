@@ -10,9 +10,10 @@ import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.SystemTransactionService;
-import org.iana.rzm.facade.system.trans.TransactionVO;
+import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.mail.parser.*;
 import org.iana.rzm.user.UserManager;
 import org.iana.templates.inst.ElementInst;
@@ -36,7 +37,7 @@ public class MailsProcessorBean implements MailsProcessor {
 
     private MailParser parser;
     private AuthenticationService authSvc;
-    private SystemTransactionService transSvc;
+    private TransactionService transSvc;
     private SystemDomainService domSvc;
     private NotificationSender notSdr;
     private NotificationManager notMgr;
@@ -44,7 +45,7 @@ public class MailsProcessorBean implements MailsProcessor {
 
 
     public MailsProcessorBean(MailParser parser, AuthenticationService authSvc,
-                              SystemTransactionService transSvc, SystemDomainService domSvc,
+                              TransactionService transSvc, SystemDomainService domSvc,
                               NotificationSender notSdr, NotificationManager notMgr,
                               UserManager usrMgr) {
         this.parser = parser;
@@ -115,7 +116,7 @@ public class MailsProcessorBean implements MailsProcessor {
 
     private void processConfirmation(ConfirmationMailData data, String email) {
         try {
-            TransactionVO trans = transSvc.getTransaction(data.getTransactionId());
+            TransactionVO trans = transSvc.get(data.getTransactionId());
             if (trans == null) {
                 createEmailNotification(email, data,
                         "Transaction id not found: " + data.getTransactionId());

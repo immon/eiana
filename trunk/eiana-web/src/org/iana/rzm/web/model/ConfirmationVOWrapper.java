@@ -1,6 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.ConfirmationVO;
+import org.iana.rzm.facade.system.trans.vo.ConfirmationVO;
 
 public class ConfirmationVOWrapper extends ValueObject {
 

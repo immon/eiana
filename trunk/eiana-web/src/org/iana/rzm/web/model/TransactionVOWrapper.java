@@ -1,6 +1,10 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
+import org.iana.rzm.facade.system.trans.vo.ConfirmationVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.util.*;
 
@@ -135,5 +139,9 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public void setComment(String comment) {
         vo.setComment(comment);
+    }
+
+    public TransactionVO getVO() {
+        return vo;
     }
 }

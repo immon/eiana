@@ -1,6 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.TransactionStateLogEntryVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
 
 /**
  * Created by IntelliJ IDEA.

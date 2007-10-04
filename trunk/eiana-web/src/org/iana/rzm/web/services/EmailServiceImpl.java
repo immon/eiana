@@ -2,7 +2,7 @@ package org.iana.rzm.web.services;
 
 import org.apache.hivemind.lib.SpringBeanFactoryHolder;
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.common.EmailServiceBean;
+import org.iana.rzm.facade.common.email.EmailServiceBean;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -11,12 +11,14 @@ import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
-import org.iana.rzm.facade.system.domain.SimpleDomainVO;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.criteria.Equal;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Or;
@@ -95,7 +97,7 @@ public class GuardedAdminDomainServiceTest {
     }
 
     @Test (dependsOnMethods = {"testFacadeCreateDomain"})
-    public void testCount() {
+    public void testCount() throws InfrastructureException {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminServ.setUser(testAuthUser);
 
@@ -192,6 +194,6 @@ public class GuardedAdminDomainServiceTest {
     private DomainVO createDomainVO(String name) {
         Domain newDomain = new Domain(name);
         newDomain.setSupportingOrg(new Contact("supportOrg"));
-        return ToVOConverter.toDomainVO(newDomain);
+        return DomainToVOConverter.toDomainVO(newDomain);
     }
 }

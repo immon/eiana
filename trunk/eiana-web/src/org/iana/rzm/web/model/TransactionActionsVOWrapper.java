@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.TransactionActionVO;
-import org.iana.rzm.facade.system.trans.TransactionActionsVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
 
 import java.util.ArrayList;
 import java.util.List;

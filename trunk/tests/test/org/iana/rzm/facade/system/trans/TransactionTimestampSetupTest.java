@@ -2,9 +2,9 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;

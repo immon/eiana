@@ -3,9 +3,9 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.notifications.EmailAddressee;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.ContactVO;
-import org.iana.rzm.facade.system.domain.IDomainVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.ContactVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -75,11 +75,11 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
         domain.setRegistryUrl("newregurl.org");
 
-        firstModificationVO = ToVOConverter.toDomainVO(domain);
+        firstModificationVO = DomainToVOConverter.toDomainVO(domain);
 
         domain.setWhoisServer("newwhoisserver.com");
 
-        secondModificationVO = ToVOConverter.toDomainVO(domain);
+        secondModificationVO = DomainToVOConverter.toDomainVO(domain);
 
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
@@ -118,8 +118,8 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
         firstModificationVO = getDomain(DOMAIN_NAME, userAC);
         secondModificationVO = getDomain(DOMAIN_NAME, userAC);
 
-        ContactVO firstContactVO = ToVOConverter.toContactVO(new Contact("TechContact"));
-        ContactVO secondContactVO = ToVOConverter.toContactVO(new Contact("AdminContact"));
+        ContactVO firstContactVO = DomainToVOConverter.toContactVO(new Contact("TechContact"));
+        ContactVO secondContactVO = DomainToVOConverter.toContactVO(new Contact("AdminContact"));
 
         firstModificationVO.setTechContact(firstContactVO);
 

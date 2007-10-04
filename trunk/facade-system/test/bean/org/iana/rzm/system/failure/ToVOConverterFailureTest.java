@@ -4,11 +4,11 @@
 package org.iana.rzm.system.failure;
 
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.converter.ToVOConverter;
-import org.iana.rzm.facade.system.domain.AddressVO;
-import org.iana.rzm.facade.system.domain.ContactVO;
-import org.iana.rzm.facade.system.domain.DomainVO;
-import org.iana.rzm.facade.system.domain.HostVO;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.vo.AddressVO;
+import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.domain.vo.HostVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -27,26 +27,26 @@ public class ToVOConverterFailureTest {
     public void testIPConverter() throws IllegalArgumentException {
         IPAddress fromIPAddress = null;
 
-        assert ToVOConverter.toIPAddressVO(fromIPAddress) == null;
+        assert DomainToVOConverter.toIPAddressVO(fromIPAddress) == null;
 
         Set<IPAddress> IPAddressesSet = null;
-        assert ToVOConverter.toIPAddressVOSet(IPAddressesSet) == null;
+        assert DomainToVOConverter.toIPAddressVOSet(IPAddressesSet) == null;
 
         IPAddressesSet = new HashSet<IPAddress>();
-        assert ToVOConverter.toIPAddressVOSet(IPAddressesSet).isEmpty();
+        assert DomainToVOConverter.toIPAddressVOSet(IPAddressesSet).isEmpty();
     }
 
     @Test
     public void testHostConverter() {
         List<Host> hostsList = null;
-        assert ToVOConverter.toHostVOList(hostsList) == null;
+        assert DomainToVOConverter.toHostVOList(hostsList) == null;
         hostsList = new ArrayList<Host>();
-        assert ToVOConverter.toHostVOList(hostsList).isEmpty();
+        assert DomainToVOConverter.toHostVOList(hostsList).isEmpty();
 
-        assert ToVOConverter.toHostVO(null) == null;
+        assert DomainToVOConverter.toHostVO(null) == null;
 
         Host host = new Host("aaaa");
-        HostVO hostVO = ToVOConverter.toHostVO(host);
+        HostVO hostVO = DomainToVOConverter.toHostVO(host);
 
         assert hostVO.getName().equals("aaaa");
         assert hostVO.getAddresses().isEmpty();
@@ -61,14 +61,14 @@ public class ToVOConverterFailureTest {
     @Test
     public void testAddressConverter() {
         List<Address> addressList = null;
-        assert ToVOConverter.toAddressVOList(addressList) == null;
+        assert DomainToVOConverter.toAddressVOList(addressList) == null;
         addressList = new ArrayList<Address>();
-        assert ToVOConverter.toAddressVOList(addressList).isEmpty();
+        assert DomainToVOConverter.toAddressVOList(addressList).isEmpty();
 
-        assert ToVOConverter.toAddressVO(null) == null;
+        assert DomainToVOConverter.toAddressVO(null) == null;
 
         Address address = new Address("text address", "US");
-        AddressVO addressVO = ToVOConverter.toAddressVO(address);
+        AddressVO addressVO = DomainToVOConverter.toAddressVO(address);
 
         assert "text address".equals(addressVO.getTextAddress());
         assert "US".equals(addressVO.getCountryCode());
@@ -77,14 +77,14 @@ public class ToVOConverterFailureTest {
     @Test
     public void testContactConverter() {
         List<Contact> contactList = null;
-        assert ToVOConverter.toContactVOList(contactList) == null;
+        assert DomainToVOConverter.toContactVOList(contactList) == null;
         contactList = new ArrayList<Contact>();
-        assert ToVOConverter.toContactVOList(contactList).isEmpty();
+        assert DomainToVOConverter.toContactVOList(contactList).isEmpty();
 
-        assert ToVOConverter.toContactVO(null) == null;
+        assert DomainToVOConverter.toContactVO(null) == null;
 
         Contact contact = new Contact();
-        ContactVO contactVO = ToVOConverter.toContactVO(contact);
+        ContactVO contactVO = DomainToVOConverter.toContactVO(contact);
 
         assert contactVO.getName().equals("");
         assert contactVO.getAddress() == null;
@@ -101,10 +101,10 @@ public class ToVOConverterFailureTest {
 
     @Test
     public void testDomainConverter() {
-        assert ToVOConverter.toDomainVO(null) == null;
+        assert DomainToVOConverter.toDomainVO(null) == null;
 
         Domain domain = new Domain("domain.org");
-        DomainVO domainVO = ToVOConverter.toDomainVO(domain);
+        DomainVO domainVO = DomainToVOConverter.toDomainVO(domain);
 
         assert domainVO.getName().equals("domain.org");
         assert domainVO.getSupportingOrg() == null;
