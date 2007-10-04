@@ -199,10 +199,11 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
     public void proceed() {
         getVisitState().setSubmitterEmail(getSubmitterEmail());
-        if (isSeparateRequest()) {
+        if (isSeparateRequest() || isMustSplitRequest()) {
             SeparateRequest separateRequestPage = getSeparateRequestPage();
             separateRequestPage.setDomainId(getDomainId());
             separateRequestPage.setDomainName(getVisitState().getCurrentDomain(getDomainId()).getName());
+            separateRequestPage.setMustSplit(isMustSplitRequest());
             getRequestCycle().activate(separateRequestPage);
         } else {
             returnSummaryPage();

@@ -1,14 +1,11 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.domain.Contact;
-import pl.nask.util.xml.XMLDateTime;
+import org.iana.rzm.domain.*;
+import pl.nask.util.xml.*;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.*;
+import java.text.*;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -27,13 +24,13 @@ public class ContactDecorator {
         Address address = new Address();
 
         StringBuffer text = new StringBuffer();
-        if (!isEmpty(this.address)) text.append(this.address).append("<br/>");
+        if (!isEmpty(this.address)) text.append(this.address).append("\n");
         if (!isEmpty(city) || !isEmpty(postCode)) {
             if (!isEmpty(city)) text.append(city).append(" ");
             if (!isEmpty(state)) text.append(state).append(" ");
             text.append("<br/>");
         }
-        if (!isEmpty(country)) text.append(country).append("<br/>");
+        if (!isEmpty(country)) text.append(country).append("\n");
         address.setTextAddress(text.toString());
 
         // warning: country is a full name - not a country code!

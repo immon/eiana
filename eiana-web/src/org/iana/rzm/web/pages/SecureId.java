@@ -1,22 +1,15 @@
 package org.iana.rzm.web.pages;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectObject;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.engine.IEngineService;
-import org.apache.tapestry.engine.ILink;
-import org.apache.tapestry.services.CookieSource;
-import org.iana.rzm.facade.auth.AuthenticationFailedException;
-import org.iana.rzm.facade.auth.AuthenticationRequiredException;
-import org.iana.rzm.web.Visit;
-import org.iana.rzm.web.model.WebUser;
-import org.iana.rzm.web.services.ApplicationLifecycle;
-import org.iana.rzm.web.services.LoginController;
-import org.iana.rzm.web.services.RzmAuthenticationService;
-import org.iana.rzm.web.tapestry.RzmCallback;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.engine.*;
+import org.apache.tapestry.services.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.web.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.tapestry.*;
 
 public abstract class SecureId extends RzmPage implements IExternalPage {
 
@@ -71,6 +64,9 @@ public abstract class SecureId extends RzmPage implements IExternalPage {
 
     @InjectObject("service:rzm.RzmAuthenticationService")
     public abstract RzmAuthenticationService getSecureIdService();
+
+     @InjectState("visit")
+    public abstract Visit getVisitState();
 
     public abstract void setCode(String code);
 

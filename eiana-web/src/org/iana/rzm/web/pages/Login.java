@@ -90,6 +90,12 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
     @InjectPage("SecureId")
     public abstract SecureId getSecureIdPage();
 
+    @InjectState("visit")
+    public abstract Visit getVisitState();
+
+    @InjectStateFlag("visit")
+    public abstract boolean getVisitStateExists();
+
     @Persist("client:page")
     public abstract void setSessionTimeOutMessage(String message);
     public abstract String getSessionTimeOutMessage();

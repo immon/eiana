@@ -132,4 +132,8 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
             state.getState().equals(TransactionStateVOWrapper.State.ADMIN_CLOSE);
 
     }
+
+    public void setComment(String comment) {
+        vo.setComment(comment);
+    }
 }

@@ -151,19 +151,18 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
     public abstract void setCallback(ICallback callback);
 
     @Persist("client:page")
-    public abstract void setSubmitterEmail(String email);
-    public abstract String getSubmitterEmail();
+    public abstract void setRequestMetaParameters(RequestMetaParameters metaParameters);
+    public abstract RequestMetaParameters getRequestMetaParameters();
 
     public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
     }
 
-
     protected Object[] getExternalParameters() {
         if (getModifiedDomain() != null) {
-            return new Object[]{getDomainId(), getCallback(), getSubmitterEmail(), getModifiedDomain()};
+            return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), getModifiedDomain()};
         }
-        return new Object[]{getDomainId(), getCallback(), getSubmitterEmail()};
+        return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters()};
     }
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
@@ -175,7 +174,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         Long id = (Long) parameters[0];
         setDomainId(id);
         setCallback((ICallback) parameters[1]);
-        setSubmitterEmail((String)parameters[2]);
+        setRequestMetaParameters((RequestMetaParameters)parameters[2]);
 
 
         try {
@@ -187,7 +186,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
                 getMessageUtil().getSessionRestorefailedMessage());
         }
 
-        getVisitState().setSubmitterEmail(getSubmitterEmail());
+        getVisitState().setRequestMetaParameters(getRequestMetaParameters());
     }
 
     public void pageBeginRender(PageEvent event) {
@@ -304,6 +303,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         getVisitState().markAsNotVisited(getDomainId());
     }
 
+
     private static class TransactionDomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
 
         private AdminServices services;
@@ -335,7 +335,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
             boolean split = changes.mustSplitrequest();
             List<TransactionVOWrapper> list = null;
             try {
-                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, state.getSubmitterEmail());
+                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, state.getRequestMetaParameters());
                 state.markAsNotVisited(domainVOWrapper.getId());
                 page.setTikets(list);
             } catch (CreateTicketException e) {

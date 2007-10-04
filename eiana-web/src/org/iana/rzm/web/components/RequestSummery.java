@@ -3,6 +3,7 @@ package org.iana.rzm.web.components;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
 
 @ComponentClass
 public abstract class RequestSummery extends BaseComponent {
@@ -24,6 +25,12 @@ public abstract class RequestSummery extends BaseComponent {
 
     @Component(id = "requestDomain", type = "Insert", bindings = {"value=prop:domainName"})
     public abstract IComponent getRequestDomainNameComponent();
+
+     @Component(id="domainLink", type="DirectLink", bindings = {
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+        "listener=listener:goToDomain", "parameters=prop:domainName"
+        })
+    public abstract IComponent getDomainLinkComponent();
 
     @Component(id = "displayLinkActionLabel", type = "If", bindings = {"condition=prop:showActionLink"})
     public abstract IComponent getDisplayLinkActionComponent();
@@ -54,6 +61,9 @@ public abstract class RequestSummery extends BaseComponent {
     @Parameter(required = true)
     public abstract TransactionVOWrapper getRequest();
 
+    @Parameter(required = true)
+    public abstract LinkTraget getLinkTragetPage();
+
     @Parameter(required = false, defaultValue = "null")
     public abstract IActionListener getListener();
 
@@ -79,6 +89,12 @@ public abstract class RequestSummery extends BaseComponent {
 
     public int getColspan(){
         return getListener() == null && getConfirmationSenderListener() ==null ? 6 : 7;
+    }
+
+    public void goToDomain(){
+        LinkTraget target = getLinkTragetPage();
+        target.setIdentifier(getDomainName());
+        getPage().getRequestCycle().activate(target);
     }
 
 }

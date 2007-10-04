@@ -1,23 +1,15 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.CreateTicketException;
-import org.iana.rzm.web.model.DomainVOWrapper;
-import org.iana.rzm.web.model.TransactionVOWrapper;
-import org.iana.rzm.web.services.user.UserServices;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.user.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class SeparateRequest extends UserPage implements PageBeginRenderListener, IExternalPage {
 
@@ -36,7 +28,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryComponent();
 
-    @Component(id = "splitRequest", type = "RadioGroup", bindings = {"selected=prop:splitRequest"})
+    @Component(id = "splitRequest", type = "RadioGroup", bindings = {"selected=prop:splitRequest", "disabled=prop:mustSplit" })
     public abstract IComponent getSplitRequestComponent();
 
     @Component(id = "oneRequest", type = "Radio", bindings = {
@@ -72,6 +64,10 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
     public abstract int getSplitRequest();
 
     @Persist("client:page")
+    public abstract void setMustSplit(boolean value) ;
+    public abstract boolean isMustSplit();
+
+    @Persist("client:page")
     public abstract DomainVOWrapper getModifiedDomain();
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
@@ -86,7 +82,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
 
         setModifiedDomain(getVisitState().getMmodifiedDomain());
 
-        if (getSplitRequest() == 0) {
+        if (getSplitRequest() == 0 || isMustSplit()) {
             setSplitRequest(TWO_RQUEST);
         }
 
@@ -131,7 +127,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             DomainVOWrapper domain = getModifiedDomain();
 
             List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
-            if (splitRequest == TWO_RQUEST) {
+            if (splitRequest == TWO_RQUEST || isMustSplit() ) {
                 results.addAll(userServices.createTransactions(domain, getVisitState().getSubmitterEmail()));
             } else {
                 results.add(userServices.createTransaction(domain, getVisitState().getSubmitterEmail()));
@@ -157,5 +153,6 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
         reviewDomainPage.setDomainId(getDomainId());
         return reviewDomainPage;
     }
+
 
 }
