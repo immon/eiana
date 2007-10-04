@@ -14,7 +14,8 @@ public class ContactDecorator {
 
     private Contact contact = new Contact();
 
-    String address;
+    List<String> orgLines = new ArrayList<String>();
+    List<String> addressLines = new ArrayList<String>();
     String city;
     String state;
     String country;
@@ -24,11 +25,13 @@ public class ContactDecorator {
         Address address = new Address();
 
         StringBuffer text = new StringBuffer();
-        if (!isEmpty(this.address)) text.append(this.address).append("\n");
+        for (String line : addressLines) {
+            text.append(line).append("\n");
+        }
         if (!isEmpty(city) || !isEmpty(postCode)) {
             if (!isEmpty(city)) text.append(city).append(" ");
             if (!isEmpty(state)) text.append(state).append(" ");
-            text.append("<br/>");
+            text.append("\n");
         }
         if (!isEmpty(country)) text.append(country).append("\n");
         address.setTextAddress(text.toString());
@@ -37,6 +40,14 @@ public class ContactDecorator {
         // set up a correct country code
 
         contact.setAddress(address);
+    }
+
+    private void flushNameChange() {
+        StringBuffer buf = new StringBuffer();
+        for (String line : orgLines) {
+            buf.append(line).append("\n");
+        }
+        contact.setName(buf.toString());
     }
 
     private boolean isEmpty(String value) {
@@ -57,12 +68,20 @@ public class ContactDecorator {
         this.contact.setOrganization(organization);
     }
 
-    public String getAddress() {
-        return address;
+    public List<String> getOrgLines() {
+        return orgLines;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setOrgLines(List<String> orgLines) {
+        this.orgLines = orgLines;
+    }
+
+    public List<String> getAddressLines() {
+        return addressLines;
+    }
+
+    public void setAddressLines(List<String> addressLines) {
+        this.addressLines = addressLines;
     }
 
     public String getCity() {
@@ -129,6 +148,7 @@ public class ContactDecorator {
     public void setCreated(String value) throws ParseException {
         // cr-date is always set and is after address so we can flush address now
         flushAddressChange();
+        flushNameChange();
         contact.setCreated(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
     }
 
