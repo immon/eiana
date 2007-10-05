@@ -147,6 +147,12 @@
         </java>
     </target>
 
+    <target name="database.init.root" depends="database.create.test, all.jar, jbpm.init, cc.init">
+        <java classname="org.iana.rzm.init.ant.InitRootTask">
+            <classpath refid="inittools.classpath"/>
+        </java>
+    </target>
+
     <target name="database.init.xml" depends="database.create.test, all.jar, jbpm.init, cc.init">
         <java classname="org.iana.rzm.init.ant.InitDatabaseFromXMLTask">
             <classpath refid="inittools.classpath"/>
