@@ -4,14 +4,20 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.facade.accuracy.SpringCommonApplicationContext;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.passwd.*;
+import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true)
-public class PasswordChangeServiceTest extends TransactionalSpringContextTests {
+public class PasswordChangeServiceTest {
     protected UserManager passwdUserManager;
     protected PasswordChangeService passwordChangeService;
 
@@ -22,11 +28,11 @@ public class PasswordChangeServiceTest extends TransactionalSpringContextTests {
 
     private int userCounter = 0;
 
-    public PasswordChangeServiceTest() {
-        super(SpringCommonApplicationContext.CONFIG_FILE_NAME);
-    }
-
-    protected void init() {
+    @BeforeClass
+    public void init() {
+        ApplicationContext context = SpringApplicationContext.getInstance().getContext();
+        passwdUserManager = (UserManager) context.getBean("userManager");
+        passwordChangeService = (PasswordChangeService) context.getBean("passwordChangeService");
     }
 
     private static final String NEW_PASSWORD = "newpass";
@@ -114,19 +120,31 @@ public class PasswordChangeServiceTest extends TransactionalSpringContextTests {
         passwordChangeService.finishPasswordChange(userName, WRONG_TOKEN, NEW_PASSWORD, NEW_PASSWORD);
     }
 
-    protected void cleanUp() {
+    @Test
+    public void testRecoverUser() throws Exception {
+        createUser("lostuser", "unique@dot.dot", "pwd123");
+        UserVO user = passwordChangeService.recoverUser("unique@dot.dot", "pwd123");
+        assert "lostuser".equals(user.getUserName());
+    }
+
+    @AfterClass
+    public void cleanUp() {
         for (RZMUser user : passwdUserManager.findAll())
             passwdUserManager.delete(user.getLoginName());
     }
 
-    private String createUser() {
+    private String createUser(String userName, String email, String password) {
         RZMUser user = new RZMUser();
-        user.setLoginName(USER_NAME + userCounter++);
+        user.setLoginName(userName);
         user.setFirstName("firstName");
         user.setLastName("lastName");
-        user.setEmail("email@some.com");
-        user.setPassword(USER_PASSWORD);
+        user.setEmail(email);
+        user.setPassword(password);
         passwdUserManager.create(user);
         return user.getLoginName();
+    }
+
+    private String createUser() {
+        return createUser(USER_NAME + userCounter++, "email@domain.name", USER_PASSWORD);
     }
 }

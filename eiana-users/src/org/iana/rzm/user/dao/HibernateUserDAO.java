@@ -104,7 +104,7 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
         return getGenerator().select(
                 "select distinct user ",
                 "RZMUser as user " +
-                "inner join user.roles as role ",
+                "left join user.roles as role ",
                 criteria);
     }
 
@@ -112,7 +112,7 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
         return getGenerator().select(
                 "select count(distinct user) ",
                 "RZMUser as user " +
-                "inner join user.roles as role ",
+                "left join user.roles as role ",
                 criteria);
     }
 

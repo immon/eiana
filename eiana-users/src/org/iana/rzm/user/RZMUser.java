@@ -35,7 +35,7 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
     private String loginName;
     @Basic
     private String email;
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = AbstractPassword.class, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = AbstractPassword.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "Password_objId")
     //@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     // todo delete orphan does not work (Hibernate bug)
