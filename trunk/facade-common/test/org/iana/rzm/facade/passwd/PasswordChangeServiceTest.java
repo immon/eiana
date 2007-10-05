@@ -33,7 +33,7 @@ public class PasswordChangeServiceTest extends TransactionalSpringContextTests {
     private static final String WRONG_NEW_PASSWORD = "newpass1";
 
     @Test
-    public void successfulPasswordChange() throws PasswordChangeException {
+    public void successfulPasswordChange() throws Exception {
         String userName = createUser();
         passwordChangeService.changePassword(userName, USER_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
         RZMUser user = passwdUserManager.get(userName);
@@ -41,18 +41,18 @@ public class PasswordChangeServiceTest extends TransactionalSpringContextTests {
     }
 
     @Test(expectedExceptions = UserNotFoundException.class)
-    public void passwordChangeWrongUser() throws PasswordChangeException {
+    public void passwordChangeWrongUser() throws Exception {
         passwordChangeService.changePassword(WRONG_USER_NAME, USER_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
     }
 
     @Test(expectedExceptions = InvalidUserPasswordException.class)
-    public void passwordChangeWrongPassword() throws PasswordChangeException {
+    public void passwordChangeWrongPassword() throws Exception {
         String userName = createUser();
         passwordChangeService.changePassword(userName, WRONG_USER_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
     }
 
     @Test(expectedExceptions = NewPasswordConfirmationMismatchException.class)
-    public void passwordChangeNewPasswdConfMismatch() throws PasswordChangeException {
+    public void passwordChangeNewPasswdConfMismatch() throws Exception {
         String userName = createUser();
         passwordChangeService.changePassword(userName, USER_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD);
     }
