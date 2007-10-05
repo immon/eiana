@@ -5,17 +5,16 @@ package org.iana.ticketing;
  * @author Jakub Laszkiewicz
  */
 public class MockTicketingService implements TicketingService {
-
-    public long createTicket(String tld) throws TicketingException {
-        System.out.println("#### createTicket: " + tld);
-        throw new TicketingException(); 
+    public long createTicket(Ticket ticket) throws TicketingException {
+        System.out.println("#### createTicket: " + ticket.getTld());
+        throw new TicketingException();
     }
 
-    public void setIanaState(long ticketId, String stateName) {
-        System.out.println("#### setIanaState: " + ticketId + ", " + stateName);
+    public void updateTicket(Ticket ticket) throws TicketingException {
+        System.out.println("#### setIanaState: " + ticket.getId() + ", " + ticket.getIanaState());
     }
 
-    public void closeTicket(long ticketId) throws TicketingException {
-        System.out.println("#### closeTicket: " + ticketId);
+    public void closeTicket(Ticket ticket) throws TicketingException {
+        System.out.println("#### closeTicket: " + ticket.getId());
     }
 }

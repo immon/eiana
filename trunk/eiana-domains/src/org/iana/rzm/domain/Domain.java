@@ -135,6 +135,8 @@ public class Domain implements TrackedObject, Cloneable {
     private boolean enableEmails = false;
     @Basic
     private String type;
+    @Basic
+    private String ianaCode;
 
     protected Domain() {
     }
@@ -533,5 +535,13 @@ public class Domain implements TrackedObject, Cloneable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getIanaCode() {
+        return ianaCode;
+    }
+
+    public void setIanaCode(String ianaCode) {
+        this.ianaCode = ianaCode;
     }
 }

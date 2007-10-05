@@ -1,11 +1,12 @@
 package org.iana.ticketing.rt;
 
-import org.iana.ticketing.TicketingService;
-import org.iana.ticketing.TicketingException;
+import org.iana.codevalues.CodeValuesRetriever;
+import org.iana.rt.RTException;
 import org.iana.rt.RTStore;
 import org.iana.rt.queue.Queue;
 import org.iana.rt.ticket.Ticket;
-import org.iana.codevalues.CodeValuesRetriever;
+import org.iana.ticketing.TicketingException;
+import org.iana.ticketing.TicketingService;
 
 import java.io.IOException;
 
@@ -22,6 +23,8 @@ public class RequestTrackerService implements TicketingService {
     private static final String QUEUE_NAME = "IANA-Root_Mgmt";
     private static final String TICKET_SUBJECT = "Root Zone Change request for .%tld% (%label%)";
     private static final String CUSTOM_FIELD_IANA_STATE = "IANA State";
+    private static final String CUSTOM_FIELD_TLD = "TLD";
+    private static final String CUSTOM_FIELD_REQUEST_TYPE = "Request Type";
 
     private RTStore store;
     private CodeValuesRetriever retriever;
@@ -34,8 +37,10 @@ public class RequestTrackerService implements TicketingService {
         try {
             store = RTStore.getStore(url, username, password);
             this.retriever = retriever;
+        } catch (RTException e) {
+            throw new TicketingException("service creation failed", e);
         } catch (IOException e) {
-            throw new TicketingException("service creation failed");
+            throw new TicketingException("service creation failed", e);
         }
     }
 
@@ -43,17 +48,50 @@ public class RequestTrackerService implements TicketingService {
         return 0;
     }
 
-    public long createTicket(String tld) throws TicketingException {
+    public long createTicket(org.iana.ticketing.Ticket ticket) throws TicketingException {
         try {
-            Ticket ticket = store.tickets().newInstance();
+            Ticket rtTicket = store.tickets().newInstance();
             Queue queue = store.queues().findByName(QUEUE_NAME);
             if (queue == null) throw new TicketingException("Queue does not exist: " + QUEUE_NAME);
-            ticket.setQueue(queue);
-            ticket.setStatus(Ticket.Status.Open);
-            ticket.setSubject(TICKET_SUBJECT.replace("%tld%", tld).replace("%label%", getLabel(tld)));
-            store.tickets().create(ticket);
-            return ticket.getId();
+            rtTicket.setQueue(queue);
+            rtTicket.setStatus(Ticket.Status.Open);
+            rtTicket.setSubject(TICKET_SUBJECT.replace("%tld%", ticket.getTld()).replace("%label%", getLabel(ticket.getTld())));
+            rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
+            rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
+            store.tickets().create(rtTicket);
+            return rtTicket.getId();
         } catch (IOException e) {
+            throw new TicketingException(e);
+        } catch (RTException e) {
+            throw new TicketingException(e);
+        }
+    }
+
+    public void updateTicket(org.iana.ticketing.Ticket ticket) throws TicketingException {
+        if (ticket.getId() == null) return;
+        try {
+            Ticket rtTicket = store.tickets().load(ticket.getId());
+            String ianaState = ticket.getIanaState();
+            if (ianaState != null) {
+                rtTicket.customFields().setSingleVal(CUSTOM_FIELD_IANA_STATE, ianaState);
+                store.tickets().update(rtTicket);
+            }
+        } catch (IOException e) {
+            throw new TicketingException(e);
+        } catch (RTException e) {
+            throw new TicketingException(e);
+        }
+    }
+
+    public void closeTicket(org.iana.ticketing.Ticket ticket) throws TicketingException {
+        if (ticket.getId() == null) return;
+        try {
+            Ticket rtTicket = store.tickets().load(ticket.getId());
+            rtTicket.setStatus(Ticket.Status.Resolved);
+            store.tickets().update(rtTicket);
+        } catch (IOException e) {
+            throw new TicketingException(e);
+        } catch (RTException e) {
             throw new TicketingException(e);
         }
     }
@@ -63,25 +101,5 @@ public class RequestTrackerService implements TicketingService {
         if (retriever != null) label = retriever.getValueById("cc", tld);
         if (label == null) label = "";
         return label;
-    }
-    
-    public void setIanaState(long ticketId, String stateName) throws TicketingException {
-        try {
-            Ticket ticket = store.tickets().load(ticketId);
-            ticket.customFields().setSingleVal(CUSTOM_FIELD_IANA_STATE, stateName);
-            store.tickets().update(ticket);
-        } catch (IOException e) {
-            throw new TicketingException(e);
-        }
-    }
-
-    public void closeTicket(long ticketId) throws TicketingException {
-        try {
-            Ticket ticket = store.tickets().load(ticketId);
-            ticket.setStatus(Ticket.Status.Resolved);
-            store.tickets().update(ticket);
-        } catch (IOException e) {
-            throw new TicketingException(e);
-        }
     }
 }

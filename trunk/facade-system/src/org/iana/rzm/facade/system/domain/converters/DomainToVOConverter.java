@@ -79,6 +79,7 @@ public class DomainToVOConverter {
 
         toDomainVO.setDescription(fromDomain.getDescription());
         toDomainVO.setType(fromDomain.getType());
+        toDomainVO.setIanaCode(fromDomain.getIanaCode());
     }
 
     public static SimpleDomainVO toSimpleDomainVO(Domain fromDomain) {

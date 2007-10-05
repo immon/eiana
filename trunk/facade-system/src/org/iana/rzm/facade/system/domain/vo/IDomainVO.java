@@ -96,4 +96,8 @@ public interface IDomainVO extends Trackable {
     String getType();
 
     void setType(String type);
+
+    String getIanaCode();
+
+    void setIanaCode(String type);
 }

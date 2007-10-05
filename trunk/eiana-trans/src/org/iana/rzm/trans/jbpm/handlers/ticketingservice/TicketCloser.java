@@ -1,9 +1,10 @@
 package org.iana.rzm.trans.jbpm.handlers.ticketingservice;
 
-import org.jbpm.graph.exe.ExecutionContext;
-import org.iana.ticketing.TicketingService;
-import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.jbpm.handlers.ActionExceptionHandler;
+import org.iana.ticketing.TicketingService;
+import org.jbpm.graph.exe.ExecutionContext;
 
 /**
  * This class closes the ticket in the ticketing service, when the process reaches a terminal state.
@@ -13,7 +14,9 @@ import org.iana.rzm.trans.jbpm.handlers.ActionExceptionHandler;
 public class TicketCloser extends ActionExceptionHandler {
     protected void doExecute(ExecutionContext executionContext) throws Exception {
         TicketingService ts = (TicketingService) executionContext.getJbpmContext().getObjectFactory().createObject("ticketingService");
-        TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        if (td.getTicketID() != null) ts.closeTicket(td.getTicketID());
+        TransactionManager transactionManager = (TransactionManager)
+                executionContext.getJbpmContext().getObjectFactory().createObject("transactionManagerBean");
+        Transaction transaction = transactionManager.getTransaction(executionContext.getProcessInstance().getId());
+        ts.closeTicket(new RequestTrackerTicket(transaction));
     }
 }

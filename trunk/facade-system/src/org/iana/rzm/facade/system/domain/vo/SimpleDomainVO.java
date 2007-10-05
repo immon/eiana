@@ -106,6 +106,14 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         throw new UnsupportedOperationException();
     }
 
+    public String getIanaCode() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setIanaCode(String type) {
+        throw new UnsupportedOperationException();
+    }
+
     public boolean isEnableEmails() {
         throw new UnsupportedOperationException();
     }

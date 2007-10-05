@@ -1,11 +1,10 @@
 package org.iana.rzm.trans.jbpm.handlers.ticketingservice;
 
-import org.jbpm.graph.exe.ExecutionContext;
-import org.iana.ticketing.TicketingService;
-import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.jbpm.handlers.ActionExceptionHandler;
-
-import java.util.Map;
+import org.iana.ticketing.TicketingService;
+import org.jbpm.graph.exe.ExecutionContext;
 
 /**
  * This class updates the ticket's "IANA State" in the ticketing service,
@@ -14,14 +13,11 @@ import java.util.Map;
  * @author Jakub Laszkiewicz
  */
 public class ProcessStateUpdater extends ActionExceptionHandler {
-    Map<String, String> processStateToIanaStatus;
-
     public void doExecute(ExecutionContext executionContext) throws Exception {
         TicketingService ts = (TicketingService) executionContext.getJbpmContext().getObjectFactory().createObject("ticketingService");
-        TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        String ianaState = processStateToIanaStatus.get(executionContext.getProcessInstance().getRootToken().getNode().getName());
-        if (ianaState != null && td.getTicketID() != null) {
-            ts.setIanaState(td.getTicketID(), ianaState);
-        }
+        TransactionManager transactionManager = (TransactionManager)
+                executionContext.getJbpmContext().getObjectFactory().createObject("transactionManagerBean");
+        Transaction transaction = transactionManager.getTransaction(executionContext.getProcessInstance().getId());
+        ts.updateTicket(new RequestTrackerTicket(transaction));
     }
 }
