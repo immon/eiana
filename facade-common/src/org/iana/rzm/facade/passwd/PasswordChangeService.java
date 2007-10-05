@@ -26,6 +26,7 @@ public interface PasswordChangeService {
      * @return the recovered user.
      * @throws NonUniqueDataToRecoverUserException thrown when recovery impossible due to non unique identification of a user.
      * @throws NoObjectFoundException thrown when no user found matching the given email and password.
+     * @throws InfrastructureException thrown
      */
     public UserVO recoverUser(String email, String password) throws NonUniqueDataToRecoverUserException, NoObjectFoundException, InfrastructureException;
 }

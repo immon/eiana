@@ -23,7 +23,11 @@ public class RzmAuthenticationServiceImpl implements RzmAuthenticationService{
     }
 
     public void newPassword(String newPassword, String userName, String token, String newPasswordConfirmed) throws PasswordChangeException {
-        changePasswordService.finishPasswordChange(userName,token,newPassword,newPasswordConfirmed);
+        try {
+            changePasswordService.finishPasswordChange(userName,token,newPassword,newPasswordConfirmed);
+        } catch (InfrastructureException e) {
+            throw new RzmApplicationException(e);
+        }
     }
 
     public void resetPassword(String userName, String url, String token)throws PasswordChangeException {
