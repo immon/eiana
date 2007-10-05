@@ -9,7 +9,7 @@
             <action class="org.iana.rzm.mail.MailsProcessingAction"/>
         </event>
         <timer name="15m-time-out" duedate="30 minutes" transition="receive"></timer>
-        <transition name=Adm"receive" to="RECEIVE"/>
+        <transition name="receive" to="RECEIVE"/>
         <transition name="end" to="END_PROCESS"/>
     </state>
 
