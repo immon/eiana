@@ -751,7 +751,7 @@
             <ref bean="userManager"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
+            <ref bean="persistentNotificationSender"/>
         </constructor-arg>
     </bean>
 </beans>

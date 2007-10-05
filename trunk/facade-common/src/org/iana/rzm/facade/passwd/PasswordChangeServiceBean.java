@@ -94,7 +94,7 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
         Criterion emailAndPassword = new And(Arrays.asList(
                 (Criterion)
                 new Equal("email", email),
-                new Equal("password.password", md5)
+                new Equal("password.password", md5.getPassword())
         ));
         List<RZMUser> users = userManager.find(emailAndPassword);
         if (users.size() > 1) throw new NonUniqueDataToRecoverUserException();
