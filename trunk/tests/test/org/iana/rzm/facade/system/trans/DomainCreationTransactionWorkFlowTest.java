@@ -262,9 +262,8 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private TransactionVO createTransaction(DomainVO domainVO, RZMUser user) throws Exception {
         setUser(user);  //iana
-//        TransactionVO transaction = ats.createTransactions(domainVO);
-//        closeServices();
-//        return transaction;
-        return null;
+        TransactionVO transaction = ats.createCreationTransaction(domainVO);
+        closeServices();
+        return transaction;
     }
 }

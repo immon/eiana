@@ -39,6 +39,17 @@ public class TransactionStateVO implements Serializable {
     private Timestamp start;
     private Timestamp end;
 
+    public TransactionStateVO() {
+    }
+
+    public TransactionStateVO(Name name) {
+        this.name = name;
+    }
+
+    public TransactionStateVO(String name) {
+        this.name = Name.valueOf(name);
+    }
+
     public Name getName() {
         return name;
     }

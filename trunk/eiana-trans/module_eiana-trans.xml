@@ -15,8 +15,6 @@
   <path id="eiana-trans.module.classpath">
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
-    <pathelement location="${common-dns.output.dir}"/>
-    <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <path refid="library.jbpm.classpath"/>
@@ -44,6 +42,8 @@
     <pathelement location="${common-test.output.dir}"/>
     <pathelement location="${common-test.testoutput.dir}"/>
     <path refid="library.junit.classpath"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
   </path>
   
   
@@ -78,7 +78,7 @@
   
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
   
-  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.common-dao,compile.module.common-test" description="Compile module eiana-trans; production classes">
+  <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.common-dao,compile.module.common-test,compile.module.common-dns" description="Compile module eiana-trans; production classes">
     <mkdir dir="${eiana-trans.output.dir}"/>
     <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-trans}"/>

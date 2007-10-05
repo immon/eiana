@@ -27,7 +27,7 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
-public class AdminNotificationServiceImpl extends AbstractRZMStatefulService {
+public class AdminNotificationServiceImpl extends AbstractRZMStatefulService implements AdminNotificationService {
 
     NotificationManager notificationManager;
     NotificationSender notificationSender;

@@ -115,8 +115,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             transactionService.updateTransaction(transaction.getVO());
         } catch (NoObjectFoundException e) {
             throw new RzmServerException("Can not find Transaction with id " + e.getId());
-        } catch (FacadeTransactionException e) {
-            LOGGER.warn("NoObjectFoundException", e);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
         } catch (StateUnreachableException e) {
             throw new RzmServerException("Transaction State " + transaction.getCurrentStateAsString() + " is Unreachable ");

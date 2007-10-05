@@ -1,97 +1,89 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_common-mail" default="compile.module.common-mail">
-    <dirname property="module.common-mail.basedir" file="${ant.file.module_common-mail}"/>
-
-
-    <property name="compiler.args.common-mail" value="${compiler.args}"/>
-
-    <property name="common-mail.output.dir"
-              value="${module.common-mail.basedir}/../build/classes/production/common-mail"/>
-    <property name="common-mail.testoutput.dir"
-              value="${module.common-mail.basedir}/../build/classes/test/common-mail"/>
-
-    <path id="common-mail.module.bootclasspath">
-        <!-- Paths to be included in compilation bootclasspath -->
-    </path>
-
-    <path id="common-mail.module.classpath">
-        <path refid="library.javaee.classpath"/>
-        <path refid="library.testng-5.5-jdk15.classpath"/>
-        <path refid="library.mail.classpath"/>
-        <path refid="library.jbpm.classpath"/>
-        <path refid="library.log4j.classpath"/>
-        <pathelement location="${common-config.output.dir}"/>
-        <pathelement location="${common-config.testoutput.dir}"/>
-    </path>
-
-
-    <patternset id="excluded.from.module.common-mail">
-        <patternset refid="ignored.files"/>
-    </patternset>
-
-    <patternset id="excluded.from.compilation.common-mail">
-        <patternset refid="excluded.from.module.common-mail"/>
-    </patternset>
-
-    <path id="common-mail.module.sourcepath">
-        <dirset dir="${module.common-mail.basedir}">
-            <include name="src"/>
-        </dirset>
-    </path>
-
-    <path id="common-mail.module.test.sourcepath">
-        <dirset dir="${module.common-mail.basedir}">
-            <include name="test"/>
-        </dirset>
-    </path>
-
-
-    <target name="compile.module.common-mail"
-            depends="compile.module.common-mail.production,compile.module.common-mail.tests"
-            description="Compile module common-mail"/>
-
-    <target name="compile.module.common-mail.production" depends="compile.module.common-config"
-            description="Compile module common-mail; production classes">
-        <mkdir dir="${common-mail.output.dir}"/>
-        <javac destdir="${common-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
-               memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.common-mail}"/>
-            <bootclasspath refid="common-mail.module.bootclasspath"/>
-            <classpath refid="common-mail.module.classpath"/>
-            <src refid="common-mail.module.sourcepath"/>
-            <patternset refid="excluded.from.compilation.common-mail"/>
-        </javac>
-
-        <copy todir="${common-mail.output.dir}">
-            <fileset dir="${module.common-mail.basedir}/src">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="compile.module.common-mail.tests" depends="compile.module.common-mail.production"
-            description="compile module common-mail; test classes" unless="skip.tests">
-        <mkdir dir="${common-mail.testoutput.dir}"/>
-        <javac destdir="${common-mail.testoutput.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.common-mail}"/>
-            <classpath refid="common-mail.module.classpath"/>
-            <classpath location="${common-mail.output.dir}"/>
-            <src refid="common-mail.module.test.sourcepath"/>
-            <patternset refid="excluded.from.compilation.common-mail"/>
-        </javac>
-
-        <copy todir="${common-mail.testoutput.dir}">
-            <fileset dir="${module.common-mail.basedir}/test">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="clean.module.common-mail" description="cleanup module">
-        <delete dir="${common-mail.output.dir}"/>
-        <delete dir="${common-mail.testoutput.dir}"/>
-    </target>
+  <dirname property="module.common-mail.basedir" file="${ant.file.module_common-mail}"/>
+  
+  
+  <property name="compiler.args.common-mail" value="${compiler.args}"/>
+  
+  <property name="common-mail.output.dir" value="${module.common-mail.basedir}/../build/classes/production/common-mail"/>
+  <property name="common-mail.testoutput.dir" value="${module.common-mail.basedir}/../build/classes/test/common-mail"/>
+  
+  <path id="common-mail.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common-mail.module.classpath">
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.mail.classpath"/>
+    <path refid="library.jbpm.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common-mail">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common-mail">
+    <patternset refid="excluded.from.module.common-mail"/>
+  </patternset>
+  
+  <path id="common-mail.module.sourcepath">
+    <dirset dir="${module.common-mail.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="common-mail.module.test.sourcepath">
+    <dirset dir="${module.common-mail.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common-mail" depends="compile.module.common-mail.production,compile.module.common-mail.tests" description="Compile module common-mail"/>
+  
+  <target name="compile.module.common-mail.production" depends="compile.module.common-config" description="Compile module common-mail; production classes">
+    <mkdir dir="${common-mail.output.dir}"/>
+    <javac destdir="${common-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-mail}"/>
+      <bootclasspath refid="common-mail.module.bootclasspath"/>
+      <classpath refid="common-mail.module.classpath"/>
+      <src refid="common-mail.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-mail"/>
+    </javac>
+    
+    <copy todir="${common-mail.output.dir}">
+      <fileset dir="${module.common-mail.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.common-mail.tests" depends="compile.module.common-mail.production" description="compile module common-mail; test classes" unless="skip.tests">
+    <mkdir dir="${common-mail.testoutput.dir}"/>
+    <javac destdir="${common-mail.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-mail}"/>
+      <classpath refid="common-mail.module.classpath"/>
+      <classpath location="${common-mail.output.dir}"/>
+      <src refid="common-mail.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-mail"/>
+    </javac>
+    
+    <copy todir="${common-mail.testoutput.dir}">
+      <fileset dir="${module.common-mail.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.common-mail" description="cleanup module">
+    <delete dir="${common-mail.output.dir}"/>
+    <delete dir="${common-mail.testoutput.dir}"/>
+  </target>
 </project>

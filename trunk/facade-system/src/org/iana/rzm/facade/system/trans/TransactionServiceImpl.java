@@ -280,10 +280,10 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
 
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        return createTransactions(domain, false, null, false);
+        return createTransactions(domain, false, null);
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        return createTransactions(domain, false, null, false);
+        return createTransactions(domain, false, null);
     }
 }

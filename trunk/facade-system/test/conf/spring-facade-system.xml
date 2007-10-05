@@ -264,7 +264,15 @@
         <constructor-arg ref="userManager" />
         <constructor-arg ref="transactionManagerBean" />
         <constructor-arg ref="domainManager" />
-        <constructor-arg ref="diffConfig"/>
+        <constructor-arg ref="detectorService"/>
+    </bean>
+
+    <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl"
+          scope="session">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="transactionManagerBean"/>
+        <constructor-arg index="2" ref="diffConfig"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
     <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">

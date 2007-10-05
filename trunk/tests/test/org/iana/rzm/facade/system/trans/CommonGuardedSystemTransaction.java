@@ -15,6 +15,7 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -286,8 +287,12 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws Exception {
-        // todo
-        // ats.updateTransaction(id, ticketId, targetStateName, redelegation);
+        TransactionVO trans = new TransactionVO();
+        trans.setTransactionID(id);
+        trans.setTicketID(ticketId);
+        trans.setState(new TransactionStateVO(targetStateName));
+        trans.setRedelegation(redelegation);
+        ats.updateTransaction(trans);
     }
 
     protected void acceptTransaction(long transactionId, String token) throws Exception {

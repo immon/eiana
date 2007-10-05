@@ -37,7 +37,7 @@ public class AdminDetectTransactionTest {
         domainManager = (DomainManager) appCtx.getBean("domainManager");
         gTransServ = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         gDomainServ = (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
-        detectorServ = (TransactionDetectorService) appCtx.getBean("detectorService");
+        detectorServ = (TransactionDetectorService) appCtx.getBean("adminDetectorService");
 
         RZMUser user = new RZMUser("fn", "ln", "", "login", "email", "", false);
         user.addRole(new AdminRole(AdminRole.AdminType.IANA));
