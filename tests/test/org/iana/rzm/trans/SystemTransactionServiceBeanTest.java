@@ -67,7 +67,7 @@ public class SystemTransactionServiceBeanTest {
         Assert.assertNotNull(authenticatedUser);
         Assert.assertEquals("test", authenticatedUser.getUserName());
         service.setUser(authenticatedUser);
-        Criterion open = new Not(new IsNull(TransactionCriteriaFields.END));
+        Criterion open = new IsNull(TransactionCriteriaFields.END);
         List<TransactionVO> list = service.find(open);
         Assert.assertNotNull(list);
         list = service.find(open);

@@ -6,11 +6,13 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.user.UserManager;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.ChangeDetector;
@@ -20,13 +22,14 @@ import java.util.*;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class TransactionChangeDetectorImpl {
+public class TransactionDetectorImpl extends AbstractRZMStatefulService implements TransactionDetectorService {
 
     private DomainManager domainManager;
 
     private DiffConfiguration diffConfiguration;
 
-    public TransactionChangeDetectorImpl(DomainManager domainManager, DiffConfiguration diffConfiguration) {
+    public TransactionDetectorImpl(UserManager userManager, DomainManager domainManager, DiffConfiguration diffConfiguration) {
+        super(userManager);
         this.domainManager = domainManager;
         this.diffConfiguration = diffConfiguration;
     }

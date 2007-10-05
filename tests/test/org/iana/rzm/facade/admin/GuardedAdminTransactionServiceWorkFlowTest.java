@@ -95,8 +95,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         try {
             AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(wrongUser)).getAuthUser();
             gAdminTransactionServ.setUser(testAuthUser);
-            // todo
-            // gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain));
+            gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain));
         } catch (AccessDeniedException e) {
             gAdminTransactionServ.close();
             throw e;

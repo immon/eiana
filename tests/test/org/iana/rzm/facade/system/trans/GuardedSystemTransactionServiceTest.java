@@ -80,8 +80,7 @@ public class GuardedSystemTransactionServiceTest {
         assert transaction != null;
 
         ats.setUser(userIANA);
-        // todo
-        // ats.updateTransaction(transaction.getObjId(), 0l, transaction.getState().getName(), false);
+        ats.updateTransaction(transaction.getObjId(), 0l, ""+transaction.getState().getName(), false, null);
         transaction.setTicketID(0l);
 
         TransactionVO loadedTransaction = gsts.get(transaction.getTransactionID());
@@ -93,8 +92,7 @@ public class GuardedSystemTransactionServiceTest {
         domain1.setRegistryUrl("http://www.registry.url");
         transaction1 = gsts.createTransactions(domain1, false).get(0);
         assert transaction1 != null;
-        // todo
-        // ats.updateTransaction(transaction1.getObjId(), 0l, transaction1.getState().getName(), false);
+        ats.updateTransaction(transaction1.getObjId(), 0l, ""+transaction1.getState().getName(), false, null);
         transaction1.setTicketID(0l);
 
         loadedTransaction = gsts.get(transaction1.getTransactionID());
@@ -118,7 +116,7 @@ public class GuardedSystemTransactionServiceTest {
     @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")
     public void testFindOpenTransactions() throws Exception {
         gsts.setUser(userAc);
-        Criterion open = new Not(new IsNull(TransactionCriteriaFields.END));
+        Criterion open = new IsNull(TransactionCriteriaFields.END);
         List<TransactionVO> foundTransactions = gsts.find(open);
         assert foundTransactions != null;
         assert foundTransactions.size() == 1;
@@ -126,7 +124,7 @@ public class GuardedSystemTransactionServiceTest {
         assert compareTransactionVOs(transaction, foundTransactions.iterator().next());
     }
 
-    @Test(dependsOnMethods = "testPerformTransactionTechnicalCheck")
+    @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")
     public void testAcceptTransaction() throws Exception {
         gsts.setUser(userAc);
 

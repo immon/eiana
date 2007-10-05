@@ -56,10 +56,11 @@ public class ResendNotificationTest {
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        gts = (TransactionService) appCtx.getBean("GuardedSystemTransactionServiceBean");
+        gts = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
         ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         sts = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
-
+        nts = (AdminNotificationService) appCtx.getBean("notificationService");
+        
         userManager = (UserManager) appCtx.getBean("userManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");

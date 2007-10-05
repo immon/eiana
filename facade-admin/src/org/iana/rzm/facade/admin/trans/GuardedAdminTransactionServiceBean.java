@@ -1,9 +1,6 @@
 package org.iana.rzm.facade.admin.trans;
 
-import org.iana.criteria.And;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.criteria.In;
+import org.iana.criteria.*;
 import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
@@ -75,11 +72,11 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         }
     }
 
-    public TransactionVO createDomainCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
-        return createDomainCreationTransaction(domainVO, false);
+    public TransactionVO createCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
+        return createCreationTransaction(domainVO, false);
     }
 
-    public TransactionVO createDomainCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
+    public TransactionVO createCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
         isUserInRole();
         if (userManager.findUsersInSystemRole(domainVO.getName(), null, true, false).isEmpty())
             throw new NoDomainSystemUsersException(domainVO.getName());
@@ -107,21 +104,22 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         }
     }
 
-    public void updateTransaction(long id, Long ticketId, TransactionStateVO.Name targetStateName, boolean redelegation) throws NoObjectFoundException, StateUnreachableException, FacadeTransactionException, AccessDeniedException {
+    public void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation, String comment) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
+        TransactionVO trans = new TransactionVO();
+        try {
+            trans.setTransactionID(id);
+            trans.setTicketID(ticketId);
+            trans.setState(new TransactionStateVO(targetStateName));
+            trans.setRedelegation(redelegation);
+            trans.setComment(comment);
+            updateTransaction(trans);
+        } catch (IllegalArgumentException e) {
+            throw new StateUnreachableException(targetStateName);
+        }
+    }
+
+    public void updateTransaction(TransactionVO trans) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
         isUserInRole();
-        _updateTransaction(id, ticketId, targetStateName == null ? null : targetStateName.toString(), redelegation);
-    }
-
-    public void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoObjectFoundException, StateUnreachableException, FacadeTransactionException, AccessDeniedException {
-        isUserInRole();
-        _updateTransaction(id, ticketId, targetStateName, redelegation);
-    }
-
-    private void _updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws NoObjectFoundException, StateUnreachableException, FacadeTransactionException {
-    }
-
-
-    public void updateTransaction(TransactionVO trans) throws NoObjectFoundException, StateUnreachableException, FacadeTransactionException, AccessDeniedException {
         String targetStateName = ""+trans.getState().getName();
         try {
             Transaction retTransaction = transactionManager.getTransaction(trans.getObjId());
@@ -135,16 +133,6 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             throw new NoObjectFoundException("transaction", ""+e.getId());
         } catch (TransactionException e) {
             throw new StateUnreachableException(targetStateName);
-        }
-    }
-
-    public void setTransactionTicketId(long transactionID, long ticketId) throws NoObjectFoundException, AccessDeniedException {
-        isUserInRole();
-        try {
-            Transaction retTransaction = transactionManager.getTransaction(transactionID);
-            retTransaction.setTicketID(ticketId);
-        } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
         }
     }
 
@@ -184,72 +172,6 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         }
     }
 
-    public TransactionVO createDomainModificationTransaction(DomainVO domainVO) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException {
-        return createDomainModificationTransaction(domainVO, false);
-    }
-
-    public TransactionVO createDomainModificationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainModificationException, InvalidCountryCodeException, AccessDeniedException {
-        isUserInRole();
-        try {
-            CheckTool.checkNull(domainVO, "domainVO");
-            Domain domain = DomainFromVOConverter.toDomain(domainVO);
-            Transaction createdTransaction = transactionManager.createDomainModificationTransaction(domain, performTechnicalCheck);
-            CheckTool.checkNull(createdTransaction, "created modification transaction");
-            return TransactionConverter.toTransactionVO(createdTransaction);
-        } catch (NoModificationException e) {
-            throw new NoDomainModificationException(domainVO.getName());
-        }
-    }
-
-    public List<TransactionVO> find(TransactionCriteriaVO criteriaVO) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(criteriaVO, "transaction criteria");
-        List<TransactionVO> transactionVOs = new ArrayList<TransactionVO>();
-        TransactionCriteria criteria = TransactionCriteriaConverter.convert(criteriaVO);
-        for (Transaction transaction : transactionManager.find(criteria))
-            transactionVOs.add(TransactionConverter.toTransactionVO(transaction));
-        return transactionVOs;
-    }
-
-    public List<TransactionVO> findTransactions(String domainName) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkEmpty(domainName, "domain name");
-        List<TransactionVO> transactionVOs = new ArrayList<TransactionVO>();
-        for (Transaction transaction : transactionManager.findTransactions(domainName))
-            transactionVOs.add(TransactionConverter.toTransactionVO(transaction));
-        return transactionVOs;
-    }
-
-    public List<TransactionVO> findTransactions(Set<String> domainNames) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkCollectionNull(domainNames, "domains names");
-        List<TransactionVO> transactionVOs = new ArrayList<TransactionVO>();
-        for (Transaction transaction : transactionManager.findTransactions(domainNames))
-            transactionVOs.add(TransactionConverter.toTransactionVO(transaction));
-        return transactionVOs;
-    }
-
-    public List<TransactionVO> findTransactions(UserVO userVO) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(userVO, "userVO");
-        RZMUser user = UserConverter.convert(userVO);
-        List<TransactionVO> transactionVOs = new ArrayList<TransactionVO>();
-        for (Transaction transaction : transactionManager.findTransactions(user))
-            transactionVOs.add(TransactionConverter.toTransactionVO(transaction));
-        return transactionVOs;
-    }
-
-    public List<TransactionVO> findTransactions(UserVO userVO, String domainName) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(userVO, "userVO");
-        CheckTool.checkEmpty(domainName, "domain name");
-        RZMUser user = UserConverter.convert(userVO);
-        List<TransactionVO> transactionVOs = new ArrayList<TransactionVO>();
-        for (Transaction transaction : transactionManager.findTransactions(user, domainName))
-            transactionVOs.add(TransactionConverter.toTransactionVO(transaction));
-        return transactionVOs;
-    }
-
     public void deleteTransaction(TransactionVO transactionVO) throws NoObjectFoundException, AccessDeniedException {
         isUserInRole();
         CheckTool.checkNull(transactionVO, "transactionVO");
@@ -265,20 +187,74 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         }
     }
 
-    public List<TransactionVO> findTransactions(Criterion criteria) {
+
+    public TransactionVO get(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
-        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria));
+        return super.get(id);
     }
 
-
-    public int count(Criterion criteria) {
+    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInRole();
-        return transactionManager.count(criteria);
+        return super.createTransaction(domain);
     }
 
-    public List<TransactionVO> find(Criterion criteria, int offset, int limit) {
+    public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
-        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria, offset, limit));
+        super.acceptTransaction(id, token);
     }
 
+    public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        isUserInRole();
+        super.rejectTransaction(id, token);
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+        isUserInRole();
+        return super.createTransactions(domain, splitNameServerChange);
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+        isUserInRole();
+        return super.createTransactions(domain, splitNameServerChange, submitterEmail);
+    }
+
+    public List<TransactionVO> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return super.find(order, offset, limit);
+    }
+
+    public List<TransactionVO> find(Criterion criteria, Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return super.find(criteria, order, offset, limit);
+    }
+
+    public List<TransactionVO> find(Criterion criteria, List<Order> order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return super.find(criteria, order, offset, limit);
+    }
+
+    public int count(Criterion criteria) throws AccessDeniedException {
+        isUserInRole();
+        return super.count(criteria);
+    }
+
+    public List<TransactionVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return super.find(criteria, offset, limit);
+    }
+
+    public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return super.find(criteria);
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        isUserInRole();
+        return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck);
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        isUserInRole();
+        return super.createTransactions(domain);
+    }
 }

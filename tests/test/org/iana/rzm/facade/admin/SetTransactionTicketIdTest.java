@@ -72,8 +72,8 @@ public class SetTransactionTicketIdTest {
         createDomainModificationProcess();
         TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
         assert !new Long(123l).equals(transactionVO.getTicketID());
-        // todo
-        // gAdminTransactionServ.setTransactionTicketId(transactionID, 123L);
+        transactionVO.setTicketID(123L);
+        gAdminTransactionServ.updateTransaction(transactionVO);
         TransactionVO retTransactionVO = gAdminTransactionServ.get(transactionID);
         assert retTransactionVO.getTicketID() != transactionVO.getTicketID();
         assert retTransactionVO.getTicketID() == 123L;

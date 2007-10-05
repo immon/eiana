@@ -87,8 +87,7 @@ public class TransitTransactionToStateTest {
             TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
             assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
 
-            // todo
-            // gAdminTransactionServ.updateTransaction(transactionID, 0L, "WRONG_STATE", false);
+            gAdminTransactionServ.updateTransaction(transactionID, 0L, "WRONG_STATE", false, null);
 
         } catch (FacadeTransactionException e) {
             assert e.getMessage().equals("no such state: WRONG_STATE");
@@ -105,7 +104,7 @@ public class TransitTransactionToStateTest {
 
         for (String state : states) {
             if (!state.equals("PENDING_IANA_CONFIRMATION") && !state.equals("PENDING_TECH_CHECK") && !state.equals("PENDING_SUPP_TECH_CHECK") && !state.equals("PENDING_DATABASE_INSERTION")) {
-                // gAdminTransactionServ.updateTransaction(transactionID, 0L, state, false);
+                gAdminTransactionServ.updateTransaction(transactionID, 0L, state, false, null);
                 transactionVO = gAdminTransactionServ.get(transactionID);
                 assert state.equals(transactionVO.getState().getName().name()) :
                         "unexpected state: " + transactionVO.getState().getName().name() +
