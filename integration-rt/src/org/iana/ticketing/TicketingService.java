@@ -11,9 +11,9 @@ package org.iana.ticketing;
  */
 public interface TicketingService {
 
-    public long createTicket(String tld) throws TicketingException;
+    public long createTicket(Ticket ticket) throws TicketingException;
 
-    public void setIanaState(long ticketId, String stateName) throws TicketingException;
+    public void updateTicket(Ticket ticket) throws TicketingException;
 
-    public void closeTicket(long ticketId) throws TicketingException;
+    public void closeTicket(Ticket ticket) throws TicketingException;
 }

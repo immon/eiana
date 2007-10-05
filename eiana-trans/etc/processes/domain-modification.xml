@@ -16,26 +16,7 @@
                     <element>PENDING_CONTACT_CONFIRMATION</element>
                 </contactStates>
             </action>
-            <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.ProcessStateUpdater">
-                <processStateToIanaStatus>
-                    <entry><key>PENDING_TECH_CHECK</key><value>tech-check</value></entry>
-                    <entry><key>PENDING_TECH_CHECK_REMEDY</key><value>tech-check</value></entry>
-                    <entry><key>PENDING_EXT_APPROVAL</key><value>wait on letter</value></entry>
-                    <entry><key>PENDING_EVALUATION</key><value>prepare IANA Board report</value></entry>
-                    <entry><key>PENDING_IANA_CHECK</key><value>IANA Review - IN</value></entry>
-                    <entry><key>PENDING_SUPP_TECH_CHECK</key><value>tech-check</value></entry>
-                    <entry><key>PENDING_SUPP_TECH_CHECK_REMEDY</key><value>tech-check</value></entry>
-                    <entry><key>PENDING_USDOC_APPROVAL</key><value>wait on DoC</value></entry>
-                    <entry><key>PENDING_ZONE_INSERTION</key><value>wait on VGRS</value></entry>
-                    <entry><key>PENDING_ZONE_PUBLICATION</key><value>VGRS confirmed</value></entry>
-                    <entry><key>PENDING_DATABASE_INSERTION</key><value>commit data changes</value></entry>
-                    <entry><key>COMPLETED</key><value>Completed</value></entry>
-                    <entry><key>WITHDRAWN</key><value>withdrawn</value></entry>
-                    <entry><key>REJECTED</key><value>rejected</value></entry>
-                    <entry><key>ADMIN_CLOSED</key><value>admin-close</value></entry>
-                    <entry><key>PENDING_IANA_CONFIRMATION</key><value>pre-review</value></entry>
-                </processStateToIanaStatus>
-            </action>
+            <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.ProcessStateUpdater"/>
         </event>
 
         <transition name="TRANSITION_PENDING_TECH_CHECK" to="PENDING_TECH_CHECK"/>

@@ -24,6 +24,7 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     private boolean enableEmails;
     private String description;
     private String type;
+    private String ianaCode;
 
     public ContactVO getSupportingOrg() {
         return supportingOrg;
@@ -135,6 +136,14 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getIanaCode() {
+        return ianaCode;
+    }
+
+    public void setIanaCode(String ianaCode) {
+        this.ianaCode = ianaCode;
     }
 
     public boolean equals(Object o) {

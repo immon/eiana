@@ -166,4 +166,12 @@ class SystemDomainVO implements IDomainVO, Serializable {
     public void setType(String type) {
         domain.setType(type);
     }
+
+    public String getIanaCode() {
+        return domain.getIanaCode();
+    }
+
+    public void setIanaCode(String type) {
+        domain.setIanaCode(type);
+    }
 }
