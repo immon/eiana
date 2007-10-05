@@ -53,85 +53,20 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        CheckTool.checkNull(domain, "domain");
-        if (domainManager.get(domain.getName()) == null) throw new NoObjectFoundException(domain.getName(), "domain");
-        Domain modifiedDomain = DomainFromVOConverter.toDomain(domain);
-        return createTransaction(modifiedDomain);
+
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        return createTransactions(domain, false, null, false, null);
     }
 
-    private TransactionVO createTransaction(Domain modifiedDomain) throws NoDomainModificationException, CreateTicketException {
-        try {
-            Transaction trans = transactionManager.createDomainModificationTransaction(modifiedDomain);
-            trans.setCreated(now());
-            trans.setCreatedBy(user.getUserName());
-            return TransactionConverter.toTransactionVO(trans);
-        } catch (NoModificationException e) {
-            throw new NoDomainModificationException(modifiedDomain.getName());
-        }
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        return createTransactions(domain, splitNameServerChange, null, false, null);
     }
 
-    public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        try {
-            Transaction trans = transactionManager.getTransaction(id);
-            trans.accept(new ContactIdentity(token));
-            trans.setModified(now());
-            // set to the role
-            trans.setModifiedBy(token);
-        } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException(id, "transaction");
-        } catch (UserAlreadyAccepted e) {
-            // do nothing
-        } catch (UserConfirmationNotExpected e) {
-            throw new AccessDeniedException(e.getMessage());
-        } catch (TransactionException e) {
-            throw new InfrastructureException(e);
-        }
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        return createTransactions(domain, splitNameServerChange, submitterEmail, false, null);
     }
 
-    public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        try {
-            Transaction trans = transactionManager.getTransaction(id);
-            trans.reject(new ContactIdentity(token));
-            // set to the role
-            trans.setModified(now());
-            trans.setModifiedBy(token);
-        } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException(id, "transaction");
-        } catch (UserAlreadyAccepted e) {
-            // do nothing
-        } catch (UserConfirmationNotExpected e) {
-            throw new AccessDeniedException(e.getMessage());
-        } catch (TransactionException e) {
-            throw new InfrastructureException(e);
-        }
-    }
-
-    public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        try {
-            Transaction trans = transactionManager.getTransaction(id);
-            trans.transit(getRZMUser(), transitionName);
-            trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
-        } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException(id, "transaction");
-        } catch (UserAlreadyAccepted e) {
-            // do nothing
-        } catch (UserConfirmationNotExpected e) {
-            throw new AccessDeniedException(e.getMessage());
-        } catch (UserNotAuthorizedToTransit e) {
-            throw new AccessDeniedException(e.getMessage());
-        } catch (TransactionException e) {
-            throw new InfrastructureException(e);
-        }
-    }
-
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
-        return createTransactions(domain, splitNameServerChange, null);
-    }
-
-
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         CheckTool.checkNull(domain, "null domain");
 
         try {
@@ -151,11 +86,11 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
                     List<TransactionActionVO> tactions = new ArrayList<TransactionActionVO>();
                     for (TransactionActionVO action : group.getActions()) {
                         tactions.add(action);
-                        ret.add(createTransaction(currentDomain, modifiedDomain, tactions, submitterEmail));
+                        ret.add(createTransaction(currentDomain, modifiedDomain, tactions, submitterEmail, performTechnicalCheck, comment));
                         tactions.clear();
                     }
                 } else {
-                    ret.add(createTransaction(currentDomain, modifiedDomain, group.getActions(), submitterEmail));
+                    ret.add(createTransaction(currentDomain, modifiedDomain, group.getActions(), submitterEmail, performTechnicalCheck, comment));
                 }
             }
             return ret;
@@ -166,7 +101,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail) throws NoModificationException, CloneNotSupportedException {
+    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, boolean performTechnicalCheck, String comment) throws NoModificationException, CloneNotSupportedException {
         Domain md = currentDomain.clone();
         for (TransactionActionVO action : actions) {
             if (TransactionActionVO.MODIFY_TC.equals(action.getName())) {
@@ -197,6 +132,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         Transaction trans = transactionManager.createDomainModificationTransaction(md, submitterEmail);
         trans.setCreated(now());
         trans.setCreatedBy(user.getUserName());
+        trans.setComment(comment);
         return TransactionConverter.toTransactionVO(trans);
     }
 
@@ -279,11 +215,60 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     }
 
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        return createTransactions(domain, false, null);
+    public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.accept(new ContactIdentity(token));
+            trans.setModified(now());
+            // set to the role
+            trans.setModifiedBy(token);
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (UserAlreadyAccepted e) {
+            // do nothing
+        } catch (UserConfirmationNotExpected e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        return createTransactions(domain, false, null);
+    public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.reject(new ContactIdentity(token));
+            // set to the role
+            trans.setModified(now());
+            trans.setModifiedBy(token);
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (UserAlreadyAccepted e) {
+            // do nothing
+        } catch (UserConfirmationNotExpected e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
     }
+
+    public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.transit(getRZMUser(), transitionName);
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (UserAlreadyAccepted e) {
+            // do nothing
+        } catch (UserConfirmationNotExpected e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (UserNotAuthorizedToTransit e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+
 }
