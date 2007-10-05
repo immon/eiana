@@ -62,6 +62,11 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         isUserInRole(allowedCreateTransactionRoles);
     }
 
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        isUserInCreateTransactionRole();
+        return delegate.createTransactions(domain);
+    }
+
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange);
@@ -70,6 +75,11 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+        isUserInCreateTransactionRole();
+        return delegate.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }
 
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -82,64 +92,54 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         delegate.rejectTransaction(id, token);
     }
 
+    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        isUserInRole();
+        delegate.acceptTransaction(id);
+    }
+
+    public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        isUserInRole();
+        delegate.rejectTransaction(id);
+    }
+
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
         delegate.transitTransaction(id, transitionName);
     }
 
-    public void setUser(AuthenticatedUser user) {
-        super.setUser(user);
-        delegate.setUser(user);
-    }
-
-    public void close() {
-        super.close();
-        delegate.close();
-    }
 
     public TransactionVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        isUserInRole();
         return delegate.get(id);
     }
 
+
     public int count(Criterion criteria) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
         return delegate.count(criteria);
     }
 
+    public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return delegate.find(criteria);
+    }
+
     public List<TransactionVO> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
         return delegate.find(order, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
         return delegate.find(criteria, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
         return delegate.find(criteria, order, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, List<Order> order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         return delegate.find(criteria, order, offset, limit);
-    }
-
-    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        delegate.acceptTransaction(id);
-    }
-
-    public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        delegate.rejectTransaction(id);
-    }
-
-    public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        return delegate.find(criteria);
-    }
-
-
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        return null;
-    }
-
-
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        return null;
     }
 }

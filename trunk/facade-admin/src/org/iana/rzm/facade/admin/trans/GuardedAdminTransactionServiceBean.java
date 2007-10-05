@@ -193,11 +193,6 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         return super.get(id);
     }
 
-    public TransactionVO createTransaction(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        isUserInRole();
-        return super.createTransaction(domain);
-    }
-
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
         super.acceptTransaction(id, token);
@@ -248,13 +243,13 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         return super.find(criteria);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
-        isUserInRole();
-        return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck);
-    }
-
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         isUserInRole();
         return super.createTransactions(domain);
+    }
+
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+        isUserInRole();
+        return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }
 }
