@@ -5,6 +5,12 @@ import org.iana.notifications.exception.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.common.validators.*;
 import org.iana.rzm.user.*;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.And;
+import org.iana.criteria.Equal;
 import pl.nask.util.*;
 
 import java.rmi.server.*;
@@ -79,5 +85,20 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
 
     private String generateToken() {
         return StringTool.encodeMd5(new UID().toString());
+    }
+
+    public UserVO recoverUser(String email, String password) throws NonUniqueDataToRecoverUserException, NoObjectFoundException, InfrastructureException {
+        CheckTool.checkNull(email, "email");
+        CheckTool.checkNull(password, "password");
+        MD5Password md5 = new MD5Password(password);
+        Criterion emailAndPassword = new And(Arrays.asList(
+                (Criterion)
+                new Equal("email", email),
+                new Equal("password.password", md5)
+        ));
+        List<RZMUser> users = userManager.find(emailAndPassword);
+        if (users.size() > 1) throw new NonUniqueDataToRecoverUserException();
+        if (users.size() == 0) throw new NoObjectFoundException("user", email);
+        return UserConverter.convert(users.get(0));
     }
 }
