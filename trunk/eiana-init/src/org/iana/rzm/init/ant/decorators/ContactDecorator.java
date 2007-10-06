@@ -43,11 +43,14 @@ public class ContactDecorator {
     }
 
     private void flushNameChange() {
-        StringBuffer buf = new StringBuffer();
-        for (String line : orgLines) {
-            buf.append(line).append("\n");
+        if (orgLines.size() > 0) {
+            StringBuffer buf = new StringBuffer();
+            for (String line : orgLines) {
+                buf.append(line).append("\n");
+            }
+            contact.setName(buf.toString());
+            contact.setOrganization(buf.toString());
         }
-        contact.setName(buf.toString());
     }
 
     private boolean isEmpty(String value) {
