@@ -7,12 +7,12 @@ import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.common.cc.*;
+import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
@@ -29,13 +29,15 @@ public class UserServicesImpl implements UserServices {
     private TransactionService transactionService;
     private TransactionDetectorService detectorService;
     private CountryCodes countryCodeService;
+    private PasswordChangeService changePasswordService;
 
 
     public UserServicesImpl(ServiceInitializer initializer) {
         domainService = initializer.getBean("GuardedSystemDomainService");
         transactionService = initializer.getBean("GuardedSystemTransactionService");
-        transactionService = initializer.getBean("detectorService");
+        detectorService = initializer.getBean("detectorService");
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
+        changePasswordService = initializer.getBean("passwordChangeService", PasswordChangeService.class);
     }
 
     public String getCountryName(String name) {
@@ -99,8 +101,14 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public void changePassword(long userId, String newPassword) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void changePassword(String username, String oldPassword, String newPassword, String confirmedNewPassword)
+        throws PasswordChangeException {
+
+        try {
+            changePasswordService.changePassword(username,oldPassword, newPassword, confirmedNewPassword);
+        } catch (InfrastructureException e) {
+            e.printStackTrace();
+        }
     }
 
     public SystemDomainVOWrapper getDomain(long domainId) throws NoObjectFoundException, AccessDeniedException {

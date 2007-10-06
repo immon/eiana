@@ -3,17 +3,20 @@ package org.iana.rzm.web.pages;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
+import org.apache.tapestry.form.*;
 import org.apache.tapestry.web.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.web.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.*;
 
 import javax.servlet.http.*;
 
-public abstract class Protected extends RzmPage implements  PageValidateListener {
+public abstract class Protected extends RzmPage implements  PageValidateListener, MyChangePasswordListener {
 
     @InjectPage("Login")
     public abstract Login getLogin();
@@ -108,6 +111,22 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
         return IExternalPage.class.isAssignableFrom(this.getClass());
     }
 
-    
+        public MessageProperty getPage(){
+        return this;
+    }
+
+    public void changePassword(String currentPassword, String newPassword, String confirmNewPassword) {
+        try {
+            getRzmServices().changePassword(getVisitState().getUser().getUserName(), currentPassword, newPassword, confirmNewPassword);
+        } catch (PasswordChangeException e) {
+            setErrorMessage(e.getMessage());
+        }
+    }
+
+   
+
+    public void reportError(IFormComponent id, String message) {
+        setErrorField(id, message);
+    }
 
 }

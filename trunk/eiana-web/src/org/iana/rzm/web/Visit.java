@@ -13,6 +13,11 @@ public class Visit implements Serializable {
     private long modifiedDomain;
     private RequestMetaParameters requestMetaParam;
 
+
+    public Visit() {
+        setRequestMetaParameters(new RequestMetaParameters());
+    }
+
     public WebUser getUser() {
         return user;
     }

@@ -1,8 +1,7 @@
 package org.iana.rzm.web.model;
 
 import org.iana.rzm.common.*;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.vo.HostVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.web.util.*;
 
 import java.util.*;
@@ -156,6 +155,14 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
 
     public void setStatus(Status s){
         vo.setStatus(s.toVoStatus());
+    }
+
+    public String getIanaCode(){
+        return vo.getIanaCode();
+    }
+
+    public void setIanaCode(String code){
+        vo.setIanaCode(code);
     }
 
     public abstract List<? extends RoleVOWrapper> getRoles();

@@ -3,7 +3,9 @@ package org.iana.rzm.web.services;
 import org.apache.hivemind.lib.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.passwd.*;
+import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 
@@ -33,6 +35,16 @@ public class RzmAuthenticationServiceImpl implements RzmAuthenticationService{
     public void resetPassword(String userName, String url, String token)throws PasswordChangeException {
         try {
             changePasswordService.initPasswordChange(userName, url, token);
+        } catch (InfrastructureException e) {
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public String recoverUser(String email, String password) throws NonUniqueDataToRecoverUserException, NoObjectFoundException {
+
+        try {
+            UserVO vo = changePasswordService.recoverUser(email, password);
+            return vo.getUserName();
         } catch (InfrastructureException e) {
             throw new RzmApplicationException(e);
         }
