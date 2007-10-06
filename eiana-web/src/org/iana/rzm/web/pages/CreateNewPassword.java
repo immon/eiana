@@ -20,7 +20,7 @@ public abstract class CreateNewPassword extends RzmPage implements IExternalPage
     @Component(id = "newPassword", type = "TextField", bindings = {
         "value=prop:newPassword",
         "hidden=literal:true",
-        "displayName=message:new-password",
+        "displayName=literal:New Password:",
         "validators=validators:required"
         }
     )
@@ -32,7 +32,7 @@ public abstract class CreateNewPassword extends RzmPage implements IExternalPage
     @Component(id = "confirmPassword", type = "TextField", bindings = {
         "value=prop:confirmNewPassword",
         "hidden=literal:true",
-        "displayName=message:confirm-password",
+        "displayName=literal:Confirm new  Password:",
         "validators=validators:required"
         }
     )

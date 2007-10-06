@@ -4,22 +4,19 @@ import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.domain.AdminDomainService;
-import org.iana.rzm.facade.admin.users.AdminUserService;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
-import org.iana.rzm.facade.admin.trans.StateUnreachableException;
-import org.iana.rzm.facade.admin.trans.AdminNotificationService;
+import org.iana.rzm.facade.admin.domain.*;
+import org.iana.rzm.facade.admin.trans.*;
+import org.iana.rzm.facade.admin.users.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.common.cc.*;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.facade.system.domain.types.*;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.notification.*;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
@@ -41,15 +38,17 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private TransactionDetectorService detectorService;
     private CountryCodes countryCodeService;
     private DomainTypes domainTypesService;
+    private PasswordChangeService changePasswordService;
 
     public AdminServicesImpl(ServiceInitializer initializer) {
         domainService = initializer.getBean("GuardedAdminDomainServiceBean");
         transactionService = initializer.getBean("GuardedAdminTransactionServiceBean");
-        notificationService = initializer.getBean("transactionNotificationService");
+        notificationService = initializer.getBean("notificationService");
         userService = initializer.getBean("GuardedAdminUserServiceBean");
         detectorService = initializer.getBean("adminDetectorService");
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
         domainTypesService = initializer.getBean("domainTypes", DomainTypes.class);
+        changePasswordService = initializer.getBean("passwordChangeService", PasswordChangeService.class);
     }
 
     public int getTransactionCount(Criterion criterion) {
@@ -89,18 +88,14 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     }
 
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-            InvalidCountryCodeException,
-            CreateTicketException {
+            InvalidCountryCodeException, CreateTicketException {
 
         //todo Nask need to add method include comment and boolean field for performTechCheck
         try {
-            List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(), splitNameServerChange, params.getEmail());
+            List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(),splitNameServerChange,params.getEmail(), false,params.getComment());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
-                TransactionVOWrapper o = new TransactionVOWrapper(transactionVO);
-                o.setComment(params.getComment());
-                //todo Nask need to add a way to update comment
-                result.add(o);
+                result.add(new TransactionVOWrapper(transactionVO));
             }
             return result;
         } catch (InfrastructureException e) {
@@ -111,15 +106,14 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException {
 
         try {
-            //todo Nask need to add a way to update comment
             transactionService.updateTransaction(transaction.getVO());
         } catch (NoObjectFoundException e) {
             throw new RzmServerException("Can not find Transaction with id " + e.getId());
-        } catch (InfrastructureException e) {
-            LOGGER.warn("InfrastructureException", e);
-            throw new RzmApplicationException(e);
-        } catch (StateUnreachableException e) {
+        }
+        catch (StateUnreachableException e) {
             throw new RzmServerException("Transaction State " + transaction.getCurrentStateAsString() + " is Unreachable ");
+        } catch (InfrastructureException e) {
+            throw new RzmApplicationException(e);
         }
     }
 
@@ -267,8 +261,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public void changePassword(long userId, String newPassword) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void changePassword(String username, String oldPassword, String newPassword, String confirmedNewPassword) throws PasswordChangeException {
+        try {
+            changePasswordService.changePassword(username, oldPassword, newPassword, confirmedNewPassword );
+        } catch (InfrastructureException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<NotificationVOWrapper> getNotifications(long requestId) {

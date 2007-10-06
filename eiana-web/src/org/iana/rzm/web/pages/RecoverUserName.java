@@ -5,12 +5,13 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.form.*;
 import org.apache.tapestry.valid.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.web.services.*;
 
 public abstract class RecoverUserName extends RzmPage {
     @Component(id = "form", type = "Form",
                bindings = {
-                   "success=listener:recoverUserName",
                    "stateful=literal:false",
                     "delegate=prop:validationDelegate"
                    }
@@ -71,9 +72,18 @@ public abstract class RecoverUserName extends RzmPage {
             return;
         }
 
-        Login login = getLogin();
-        login.setInfoMessage("We have sent an email with your user name to the email address specified in your account");
-        getRequestCycle().activate(login);
+        try {
+            String userName = getAuthenticationService().recoverUser(getEmail(), getPassword());
+            Login login = getLogin();
+            login.setInfoMessage("Your user name is " + userName );
+            getRequestCycle().activate(login);
+        } catch (NonUniqueDataToRecoverUserException e) {
+            setErrorMessage("We couldn't retreave your user name base on the information.\n Please contact IANA for help");
+            return;
+        } catch (NoObjectFoundException e) {
+            setErrorMessage("We couldn't retreave your user name base on the information.\n Please contact IANA for help");
+            return;
+        }
     }
 
     public void cancel() {

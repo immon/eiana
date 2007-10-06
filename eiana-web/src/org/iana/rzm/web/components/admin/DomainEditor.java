@@ -38,6 +38,11 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
         "displayName=message:description-label", "value=prop:domain.description"})
     public abstract IComponent getDescriptionComponent();
 
+    @Component(id = "ianaCode", type = "TextField", bindings = {
+            "displayName=message:ianaCode-label", "value=prop:domain.ianaCode"})
+        public abstract IComponent getIanaCodeComponent();
+
+
     @Component(id = "types", type = "PropertySelection", bindings = {
         "displayName=message:type-label", "model=prop:model", "value=prop:type",
         "validators=validators:required"

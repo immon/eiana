@@ -1,22 +1,27 @@
-package org.iana.rzm.web.pages;
+package org.iana.rzm.web.components;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.iana.rzm.facade.passwd.*;
-import org.iana.rzm.web.tapestry.*;
+import org.apache.tapestry.form.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.pages.*;
 
-public abstract class MyPasswordChange extends Protected {
+@ComponentClass
+public abstract class MyPasswordChangeEditor extends BaseComponent {
 
     @Component(id = "changePasswordForm", type = "Form", bindings = {
-            "clientValidationEnabled=literal:true", "delegate=prop:validationDelegate", "success=listener:changePassword"})
+        "clientValidationEnabled=literal:true",
+        "delegate=prop:validationDelegate",
+        "success=listener:changePassword"
+        })
     public abstract IComponent getChangePasswordFormComponent();
 
     @Component(id = "currentPassword", type = "TextField", bindings = {
-            "value=prop:currentPassword",
-            "hidden=literal:true",
-            "displayName=message:current-password",
-            "validators=validators:required"
-            }
+        "value=prop:currentPassword",
+        "hidden=literal:true",
+        "displayName=message:current-password",
+        "validators=validators:required"
+        }
     )
     public abstract IComponent getCurrentPasswordComponent();
 
@@ -24,11 +29,11 @@ public abstract class MyPasswordChange extends Protected {
     public abstract IComponent getCurrentPasswordLabelComponent();
 
     @Component(id = "newPassword", type = "TextField", bindings = {
-            "value=prop:newPassword",
-            "hidden=literal:true",
-            "displayName=message:new-password",
-            "validators=validators:required"
-            }
+        "value=prop:newPassword",
+        "hidden=literal:true",
+        "displayName=message:new-password",
+        "validators=validators:required"
+        }
     )
     public abstract IComponent getNewPaswwordComponent();
 
@@ -36,11 +41,11 @@ public abstract class MyPasswordChange extends Protected {
     public abstract IComponent getNewPasswordLabelComponent();
 
     @Component(id = "confirmPassword", type = "TextField", bindings = {
-            "value=prop:confirmNewPassword",
-            "hidden=literal:true",
-            "displayName=message:confirm-password",
-            "validators=validators:required"
-            }
+        "value=prop:confirmNewPassword",
+        "hidden=literal:true",
+        "displayName=message:confirm-password",
+        "validators=validators:required"
+        }
     )
     public abstract IComponent getConfirmPaswwordComponent();
 
@@ -53,52 +58,39 @@ public abstract class MyPasswordChange extends Protected {
     @Component(id = "cancel", type = "DirectLink", bindings = {"listener=listener:cancel"})
     public abstract IComponent getCancelComponent();
 
-    @Persist("client")
-    public abstract void setCallback(MessagePropertyCallback callback);
+    @Parameter(required = true)
+    public abstract MyChangePasswordListener getListener();
 
-    public abstract MessagePropertyCallback getCallback();
 
     public abstract String getCurrentPassword();
-
     public abstract String getNewPassword();
 
     public abstract String getConfirmNewPassword();
 
 
     public void changePassword() {
-        preventResubmission();
-        if (hasErrors()) {
-            return;
-        }
-
         validateSave();
-        if (hasErrors()) {
+
+        if(getListener().getValidationDelegate().getHasErrors()){
             return;
         }
 
-        try {
-            getRzmServices().changePassword(getVisitState().getUser().getUserName(),getCurrentPassword(),  getNewPassword(), getConfirmNewPassword());
-        } catch (PasswordChangeException e) {
-            e.printStackTrace();
-        }
-        MessagePropertyCallback calback = getCallback();
-        calback.setInfoMessage("Password change successfully");
-        calback.performCallback(getRequestCycle());
+        getListener().changePassword(getCurrentPassword(),getNewPassword(), getConfirmNewPassword());
+        MessageProperty page = getListener().getPage();
+        page.setInfoMessage("Password change successfully ");
+        getPage().getRequestCycle().activate(page);
     }
 
     public void cancel() {
-        getValidationDelegate().clearErrors();
-        getCallback().performCallback(getRequestCycle());
+        getListener().getValidationDelegate().clearErrors();
+        getPage().getRequestCycle().activate(getListener().getPage());
     }
 
     private void validateSave() {
         if (getNewPassword().equals(getCurrentPassword())) {
-            setErrorField("newPassword", getMessages().getMessage("user-new-password-same-as-current"));
+            getListener().reportError((IFormComponent)getComponent("newPassword"), getMessage("user-new-password-same-as-current"));
         } else if (!getNewPassword().equals(getConfirmNewPassword())) {
-            setErrorField("newPassword", getMessages().getMessage("user-confirm-new-password-does-not-match"));
+            getListener().reportError((IFormComponent)getComponent("newPassword"), getMessage("user-confirm-new-password-does-not-match"));
         }
     }
-
-
-
 }

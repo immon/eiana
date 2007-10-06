@@ -8,6 +8,9 @@ public class RequestMetaParameters implements Serializable {
     private String comment;
 
 
+    public RequestMetaParameters() {
+    }
+
     public RequestMetaParameters(String email, String comment) {
         this.email = email;
         this.comment = comment;

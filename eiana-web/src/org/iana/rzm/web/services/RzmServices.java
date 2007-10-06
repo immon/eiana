@@ -3,13 +3,14 @@ package org.iana.rzm.web.services;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.web.model.*;
 
 import java.util.*;
 
 public interface RzmServices {
 
-    public void changePassword(long userId, String newPassword);
+    public void changePassword(String username, String oldPassword, String newPassword, String confirmedNewPassword) throws PasswordChangeException;
 
     public TransactionVOWrapper getTransaction(long id) throws NoObjectFoundException;
 

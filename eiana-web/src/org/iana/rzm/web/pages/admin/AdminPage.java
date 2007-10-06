@@ -18,17 +18,17 @@ public abstract class AdminPage extends Protected {
     @InjectObject("service:rzm.AdminExternalPageErrorHandler")
     public abstract ExternalPageErrorHandler getExternalPageErrorHandler();
 
-    public RzmServices getRzmServices(){
+    public RzmServices getRzmServices() {
         return getAdminServices();
     }
 
-    protected String getErrorPageName(){
+    protected String getErrorPageName() {
         return getErrorPage().getPageName();
     }
 
     public void pageValidate(PageEvent event) {
         super.pageValidate(event);
-        if(!getVisitState().getUser().isAdmin()){
+        if (!getVisitState().getUser().isAdmin()) {
             Login login = getLogin();
             login.setErrorMessage("You must be admin to view this page");
             throw new PageRedirectException(login);
@@ -38,4 +38,6 @@ public abstract class AdminPage extends Protected {
     public void resetStateIfneeded() {
 
     }
+
+
 }
