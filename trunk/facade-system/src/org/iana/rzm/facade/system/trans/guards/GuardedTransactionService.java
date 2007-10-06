@@ -62,6 +62,12 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         isUserInRole(allowedCreateTransactionRoles);
     }
 
+
+    public void setUser(AuthenticatedUser user) {
+        super.setUser(user);
+        delegate.setUser(user);
+    }
+
     public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, CreateTicketException {
         isUserInCreateTransactionRole();
         return delegate.createTransactions(domain);

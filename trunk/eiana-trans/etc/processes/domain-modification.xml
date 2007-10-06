@@ -1,11 +1,11 @@
-<process-definition name="Domain Modification Transfaction (Unified Workflow)">
+<process-definition name="Domain Modification Transaction (Unified Workflow)">
 
     <start-state>
         <transition to="REQUEST_TRACKER_TICKET_CREATION"></transition>
     </start-state>
 
-    <super-state name="LOGGED_STATE">
-        <event type="node-leave">
+    <super-state name='LOGGED_STATE'>
+        <event type='node-leave'>
             <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateLogger">
                 <systemStates>
                     <element>PENDING_TECH_CHECK</element>
@@ -44,7 +44,7 @@
             <handler class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCreation"/>
             <transition name="ok" to="FIRST_NSLINK_CHANGE_DECISION"/>
             <transition name="failed" to="PENDING_CREATION"/>
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
@@ -52,7 +52,7 @@
         </decision>
 
         <state name="PENDING_CREATION">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
@@ -121,7 +121,7 @@
         </state>
 
         <state name="PENDING_CONTACT_CONFIRMATION">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
@@ -138,25 +138,25 @@
                             </action>
                 -->
             </event>
-            <timer name="7d-time-out" duedate="7 days">
+            <timer name="7d-time-out" duedate='7 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
                 <!--<period>23</period>-->
                 <!--<notification>contact-confirmation-remainder</notification>-->
                 <!--</action>-->
             </timer>
-            <timer name="14d-time-out" duedate="14 days">
+            <timer name="14d-time-out" duedate='14 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
                 <!--<period>16</period>-->
                 <!--<notification>contact-confirmation-remainder</notification>-->
                 <!--</action>-->
             </timer>
-            <timer name="21d-time-out" duedate="21 days">
+            <timer name="21d-time-out" duedate='21 days'>
                 <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
                 <!--<period>9</period>-->
                 <!--<notification>contact-confirmation-remainder</notification>-->
                 <!--</action>-->
             </timer>
-            <timer name="30d-time-out" duedate="30 days" transition="close"></timer>
+            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
             <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
                     <notifiaction>contact-confirmation</notifiaction>
@@ -180,7 +180,7 @@
         </decision>
 
         <state name="PENDING_SOENDORSEMENT">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.SOEndorsement"/>
             </event>
             <transition name="accept" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
@@ -198,7 +198,7 @@
         </decision>
 
         <state name="PENDING_IMPACTED_PARTIES">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
@@ -212,30 +212,30 @@
                     <start>true</start>
                 </action>
             </event>
-            <event type="node-leave">
+            <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ThirdPartyPending">
                     <start>false</start>
                 </action>
             </event>
-            <timer name="7d-time-out" duedate="7 days">
+            <timer name="7d-time-out" duedate='7 days'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder">
                     <period>23</period>
                     <notification>impacted_parties-confirmation-remainder</notification>
                 </action>
             </timer>
-            <timer name="14d-time-out" duedate="14 days">
+            <timer name="14d-time-out" duedate='14 days'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder">
                     <period>16</period>
                     <notification>impacted_parties-confirmation-remainder</notification>
                 </action>
             </timer>
-            <timer name="21d-time-out" duedate="21 days">
+            <timer name="21d-time-out" duedate='21 days'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesConfirmationRemainder">
                     <period>9</period>
                     <notification>impacted_parties-confirmation-remainder</notification>
                 </action>
             </timer>
-            <timer name="30d-time-out" duedate="30 days" transition="close"></timer>
+            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
             <transition name="accept" to="PENDING_MANUAL_REVIEW"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
@@ -268,7 +268,7 @@
         </decision>
 
         <state name="PENDING_EXT_APPROVAL">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
@@ -280,7 +280,7 @@
                     </roles>
                 </action>
             </event>
-            <timer name="30d-time-out" duedate="30 days" transition="alert"></timer>
+            <timer name="30d-time-out" duedate='30 days' transition='alert'></timer>
             <transition name="accept" to="REDEL_FLAG_SET_DECISION"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="withdraw" to="WITHDRAWN"/>
@@ -297,7 +297,7 @@
         </decision>
 
         <state name="PENDING_EVALUATION">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.PendingEvaluation"/>
             </event>
             <transition name="accept" to="PENDING_IANA_CHECK"/>
@@ -307,14 +307,14 @@
         </state>
 
         <state name="PENDING_IANA_CHECK">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
                     </roles>
                 </action>
             </event>
-            <timer name="3d-time-out" duedate="3 days" transition="alert"></timer>
+            <timer name="3d-time-out" duedate='3 days' transition='alert'></timer>
             <transition name="accept" to="SECOND_NSLINK_CHANGE_DECISION"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
@@ -383,7 +383,7 @@
         </state>
 
         <state name="PENDING_USDOC_APPROVAL">
-            <event type="node-enter">
+            <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
                     <roles>
                         <element>IANA</element>
@@ -403,13 +403,13 @@
                     <notification>usdoc-confirmation</notification>
                 </action>
             </event>
-            <timer name="5d-time-out" duedate="5 days">
+            <timer name="5d-time-out" duedate='5 days'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationRemainder">
                     <period>9</period>
                     <notification>usdoc-confirmation-remainder</notification>
                 </action>
             </timer>
-            <timer name="14d-time-out" duedate="14 days" transition="alert"></timer>
+            <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
             <transition name="accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
                     <notifiaction>usdoc-confirmation</notifiaction>
@@ -515,19 +515,19 @@
             <transition name="alert" to="EXCEPTION"/>
         </state>
 
-        <node name="PENDING_DATABASE_INSERTION">
-            <event type="node-enter">
-                <action class="org.iana.rzm.trans.jbpm.handlers.UpdateDomainAction"/>
+        <node name='PENDING_DATABASE_INSERTION'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.UpdateDomainAction'/>
             </event>
-            <transition name="complete" to="COMPLETED">
+            <transition name='complete' to='COMPLETED'>
             </transition>
         </node>
 
         <!-- End states -->
 
-        <end-state name="COMPLETED">
-            <event type="node-enter">
-                <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier">
+        <end-state name='COMPLETED'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>completed</notification>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -536,16 +536,16 @@
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
-            <event type="node-leave">
+            <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
             </event>
         </end-state>
 
-        <end-state name="REJECTED">
-            <event type="node-enter">
-                <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier">
+        <end-state name='REJECTED'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>rejected</notification>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -554,16 +554,16 @@
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
-            <event type="node-leave">
+            <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
             </event>
         </end-state>
 
-        <end-state name="WITHDRAWN">
-            <event type="node-enter">
-                <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier">
+        <end-state name='WITHDRAWN'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>withdrawn</notification>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -572,16 +572,16 @@
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
-            <event type="node-leave">
+            <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
             </event>
         </end-state>
 
-        <end-state name="ADMIN_CLOSED">
-            <event type="node-enter">
-                <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier">
+        <end-state name='ADMIN_CLOSED'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>admin-closed</notification>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
@@ -590,16 +590,16 @@
                 <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketCloser"/>
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover"/>
             </event>
-            <event type="node-leave">
+            <event type='node-leave'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
             </event>
         </end-state>
 
-        <state name="EXCEPTION">
-            <event type="node-enter">
-                <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier">
+        <state name='EXCEPTION'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>exception</notification>
                     <emails>
                         <element>system-error@iana.org</element>
