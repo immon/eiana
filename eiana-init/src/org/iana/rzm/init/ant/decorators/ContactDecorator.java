@@ -48,8 +48,7 @@ public class ContactDecorator {
             for (String line : orgLines) {
                 buf.append(line).append("\n");
             }
-            contact.setName(buf.toString());
-            contact.setOrganization(buf.toString());
+            setOrganization(buf.toString());
         }
     }
 
