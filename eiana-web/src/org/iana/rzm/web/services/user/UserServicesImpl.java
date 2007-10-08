@@ -3,6 +3,7 @@ package org.iana.rzm.web.services.user;
 import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
+import org.iana.dns.check.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
@@ -152,20 +153,18 @@ public class UserServicesImpl implements UserServices {
     }
 
     public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail)
-        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, CreateTicketException {
+        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
+        CreateTicketException,
+        DNSTechnicalCheckExceptionWrapper {
 
         try {
-            List<TransactionVO> list;
-            if (submmiterEmail != null) {
-                list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail);
-            } else {
-                list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false);
-            }
-
+            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, true, null);
             return new TransactionVOWrapper(list.get(0));
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
+        } catch (DNSTechnicalCheckException e) {
+            throw new DNSTechnicalCheckExceptionWrapper(e);
         }
     }
 

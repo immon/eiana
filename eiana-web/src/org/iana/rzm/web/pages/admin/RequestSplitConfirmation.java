@@ -6,6 +6,7 @@ import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.user.*;
 import org.iana.rzm.web.services.admin.*;
@@ -131,9 +132,9 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
             results.addAll(adminServices.createDomainModificationTrunsaction(domain, split,  getVisitState().getRequestMetaParameters()));
             Summary page = getRequestSummaryPage();
-
             page.setTikets(results);
             page.setDomainName(getDomainName());
+            page.setCallback(new PageCallback(AdminHome.PAGE_NAME));
             getVisitState().markAsNotVisited(getDomainId());
             getRequestCycle().activate(page);
 
@@ -143,6 +144,8 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
         } catch (CreateTicketException e) {
             // todo: "create ticket" error
+        } catch (DNSTechnicalCheckExceptionWrapper e) {
+            setErrorMessage(e.getMessage());
         }
     }
 

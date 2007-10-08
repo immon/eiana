@@ -3,7 +3,7 @@ package org.iana.rzm.web.services.admin;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
@@ -11,7 +11,6 @@ import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
-import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.util.*;
 
@@ -24,8 +23,14 @@ import java.util.*;
  */
 public interface AdminServices extends RzmServices {
 
-    List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-                                                                                                                                                    InvalidCountryCodeException, CreateTicketException;
+    List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
+        throws
+        AccessDeniedException,
+        NoObjectFoundException,
+        NoDomainModificationException,
+        InvalidCountryCodeException,
+        CreateTicketException,
+        DNSTechnicalCheckExceptionWrapper;
 
 
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException;

@@ -1,25 +1,17 @@
 package org.iana.rzm.trans.technicalcheck;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.check.*;
 import org.iana.notifications.*;
-import org.iana.notifications.exception.NotificationException;
-import org.iana.objectdiff.ChangeApplicator;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.confirmation.RoleConfirmation;
-import org.iana.rzm.trans.dns.DNSConverter;
-import org.iana.rzm.trans.dns.DNSExceptionMessagesVisitor;
-import org.iana.rzm.trans.dns.DNSTechnicalCheckFactory;
-import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.exe.ExecutionContext;
+import org.iana.notifications.exception.*;
+import org.iana.objectdiff.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.*;
+import org.iana.rzm.trans.dns.*;
+import org.iana.rzm.user.*;
+import org.jbpm.graph.exe.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz

@@ -148,10 +148,12 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     @Persist("client:page")
     public abstract ICallback getCallback();
+
     public abstract void setCallback(ICallback callback);
 
     @Persist("client:page")
     public abstract void setRequestMetaParameters(RequestMetaParameters metaParameters);
+
     public abstract RequestMetaParameters getRequestMetaParameters();
 
     public DomainVOWrapper getDomain() {
@@ -174,7 +176,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         Long id = (Long) parameters[0];
         setDomainId(id);
         setCallback((ICallback) parameters[1]);
-        setRequestMetaParameters((RequestMetaParameters)parameters[2]);
+        setRequestMetaParameters((RequestMetaParameters) parameters[2]);
 
 
         try {
@@ -274,7 +276,8 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getDomain().getName()), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getDomain().getName()),
+                                                                   getRzmServices()));
         return page;
     }
 
@@ -293,7 +296,11 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     public void saveEdit() {
         DomainChangesConfirmation page = getDomainChangesConfirmation();
-        page.setEditor(new TransactionDomainEntityEditorListener(getAdminServices(), new RzmCallback(PAGE_NAME, true, getExternalParameters()), getVisitState()));
+        page.setEditor(new TransactionDomainEntityEditorListener(getAdminServices(),
+                                                                 new RzmCallback(PAGE_NAME,
+                                                                                 true,
+                                                                                 getExternalParameters()),
+                                                                 getVisitState()));
         page.setDomainId(getDomainId());
         page.setBorderHeader("REQUESTS");
         getRequestCycle().activate(page);
@@ -316,11 +323,13 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
             this.callback = callback;
         }
 
-        public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle) throws NoObjectFoundException, NoDomainModificationException {
+        public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle)
+            throws NoObjectFoundException, NoDomainModificationException {
 
             TransactionActionsVOWrapper changes = services.getChanges(domainVOWrapper);
             if (changes.offerSeparateRequest() || changes.mustSplitrequest()) {
-                RequestSplitConfirmation page = (RequestSplitConfirmation) cycle.getPage(RequestSplitConfirmation.PAGE_NAME);
+                RequestSplitConfirmation page =
+                    (RequestSplitConfirmation) cycle.getPage(RequestSplitConfirmation.PAGE_NAME);
                 page.setDomainId(domainVOWrapper.getId());
                 page.setDomainName(domainVOWrapper.getName());
                 page.setCallback(callback);
@@ -339,7 +348,10 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
                 state.markAsNotVisited(domainVOWrapper.getId());
                 page.setTikets(list);
             } catch (CreateTicketException e) {
-                e.printStackTrace();
+                page.setTikets(new ArrayList<TransactionVOWrapper>());
+                page.setErrorMessage(e.getMessage());
+            } catch (DNSTechnicalCheckExceptionWrapper e) {
+                page.setTikets(new ArrayList<TransactionVOWrapper>());
                 page.setErrorMessage(e.getMessage());
             }
             cycle.activate(page);

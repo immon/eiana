@@ -108,7 +108,7 @@ public abstract class Browser extends AbstractComponent implements PageBeginRend
         int resultCount = getResultCount();
         int currentPage = getCurrentPage();
 
-        final int low = (currentPage - 1) * pageSize;
+        final int low = (currentPage - 1) < 0 ? 0 : (currentPage - 1) * pageSize;
         final int high = Math.min(currentPage * pageSize, resultCount) - 1;
 
         if(high < 0){
