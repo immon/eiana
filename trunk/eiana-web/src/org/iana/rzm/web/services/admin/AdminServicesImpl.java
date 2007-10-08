@@ -23,6 +23,8 @@ import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.services.*;
 import org.iana.rzm.web.util.*;
+import org.iana.dns.check.DNSTechnicalCheck;
+import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.io.*;
 import java.util.*;
@@ -89,7 +91,6 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
             InvalidCountryCodeException, CreateTicketException {
-
         //todo Nask need to add method include comment and boolean field for performTechCheck
         try {
             List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(),splitNameServerChange,params.getEmail(), false,params.getComment());
@@ -99,6 +100,9 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             }
             return result;
         } catch (InfrastructureException e) {
+            throw new RzmApplicationException(e);
+        } catch (DNSTechnicalCheckException e) {
+            // todo: dns error handling
             throw new RzmApplicationException(e);
         }
     }

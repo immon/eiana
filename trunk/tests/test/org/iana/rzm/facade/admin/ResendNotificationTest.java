@@ -66,8 +66,11 @@ public class ResendNotificationTest {
         domainManager = (DomainManager) appCtx.getBean("domainManager");
         notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
+        try {
+            processDAO.deploy(DefinedTestProcess.getDefinition());
+        } finally {
+            processDAO.close();
+        }
 
         iana = new RZMUser();
         iana.setLoginName("resendianauser");

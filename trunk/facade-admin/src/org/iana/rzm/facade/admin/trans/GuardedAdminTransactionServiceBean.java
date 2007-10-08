@@ -38,6 +38,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
 import org.iana.objectdiff.DiffConfiguration;
+import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.util.*;
 
@@ -248,7 +249,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         return super.createTransactions(domain);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException {
         isUserInRole();
         return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }

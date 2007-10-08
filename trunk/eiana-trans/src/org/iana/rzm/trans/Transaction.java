@@ -87,17 +87,22 @@ public class Transaction implements TrackedObject {
 
     public TransactionState getState() {
         TransactionState ts = new TransactionState();
-        Token token = pi.getRootToken();
-        Node node = token.getNode();
-        if (node != null) {
-            ts.setName(node.getName());
-            ts.setStart(token.getNodeEnter());
-            for (Object o : node.getLeavingTransitions()) {
-                Transition transition = (Transition) o;
-                ts.addAvailableTransition(new StateTransition(transition.getName()));
+        try {
+            Token token = pi.getRootToken();
+            Node node = token.getNode();
+            if (node != null) {
+                ts.setName(node.getName());
+                ts.setStart(token.getNodeEnter());
+                for (Object o : node.getLeavingTransitions()) {
+                    Transition transition = (Transition) o;
+                    ts.addAvailableTransition(new StateTransition(transition.getName()));
+                }
             }
+            return ts;
+        } catch (IllegalArgumentException e) {
+            // todo: do something with that setName!!!
+            return ts;
         }
-        return ts;
     }
 
     public List<TransactionStateLogEntry> getStateLog() {

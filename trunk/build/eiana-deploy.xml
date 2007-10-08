@@ -110,7 +110,7 @@
         <fileset dir="${jar.output.dir}">
             <include name="**/*.jar"/>
         </fileset>
-        <fileset dir="${lib.dir}/apache-commons">
+        <fileset dir="${lib.dir}/apa?che-commons">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${lib.dir}/nask-commons">
