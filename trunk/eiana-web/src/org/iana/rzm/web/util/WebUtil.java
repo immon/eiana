@@ -125,7 +125,12 @@ public class WebUtil {
 
 
     public static int getServerPort(int defaultPort) {
+
         if(Boolean.getBoolean("org.iana.web.debug-enabled")){
+            return defaultPort;
+        }
+
+        if(Boolean.getBoolean("org.iana.web.use.default-port")){
             return defaultPort;
         }
 

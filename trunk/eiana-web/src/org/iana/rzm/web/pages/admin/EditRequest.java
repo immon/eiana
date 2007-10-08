@@ -22,7 +22,7 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     public abstract IComponent getEditContactComponent();
 
     @Component(id = "requestSummary", type = "RequestSummery", bindings = {
-        "domainName=prop:request.domainName", "request=prop:request"
+        "domainName=prop:request.domainName", "request=prop:request","linkTragetPage=prop:editDomain"
         })
     public abstract IComponent getRequestSummaryComponent();
 
@@ -54,8 +54,10 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     @Component(id = "states", type = "PropertySelection", bindings = {
         "displayName=literal:State:", "model=ognl:@org.iana.rzm.web.pages.admin.EditRequest@STATES", "value=prop:request.state"
         })
-    public abstract IComponent getStatesComponent();
+    public abstract IComponent getStatesComponent();      
 
+    @InjectPage("admin/EditDomain")
+    public abstract EditDomain getEditDomain();
 
     @InjectPage("admin/AdminHome")
     public abstract AdminHome getHomePage();

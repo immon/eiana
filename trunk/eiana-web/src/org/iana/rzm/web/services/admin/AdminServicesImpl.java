@@ -3,6 +3,7 @@ package org.iana.rzm.web.services.admin;
 import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
+import org.iana.dns.check.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.domain.*;
 import org.iana.rzm.facade.admin.trans.*;
@@ -23,8 +24,6 @@ import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.services.*;
 import org.iana.rzm.web.util.*;
-import org.iana.dns.check.DNSTechnicalCheck;
-import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.io.*;
 import java.util.*;
@@ -89,9 +88,9 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-            InvalidCountryCodeException, CreateTicketException {
-        //todo Nask need to add method include comment and boolean field for performTechCheck
+    public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
+        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
+               InvalidCountryCodeException, CreateTicketException, DNSTechnicalCheckExceptionWrapper {
         try {
             List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(),splitNameServerChange,params.getEmail(), false,params.getComment());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
@@ -102,8 +101,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         } catch (InfrastructureException e) {
             throw new RzmApplicationException(e);
         } catch (DNSTechnicalCheckException e) {
-            // todo: dns error handling
-            throw new RzmApplicationException(e);
+            throw new DNSTechnicalCheckExceptionWrapper(e);
         }
     }
 
@@ -196,7 +194,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public List<UserVOWrapper> getUsers(Criterion criterion, int offset, int length) {
         try {
-            List<UserVO> list = userService.find(criterion, new Order("loginName", true), offset, length);
+               List<UserVO> list = userService.find(criterion, new Order("loginName", true), offset, length);
             List<UserVOWrapper> users = new ArrayList<UserVOWrapper>();
             for (UserVO userVO : list) {
                 users.add(new UserVOWrapper(userVO));

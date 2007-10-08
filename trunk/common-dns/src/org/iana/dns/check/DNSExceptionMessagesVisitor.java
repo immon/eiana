@@ -1,15 +1,10 @@
-package org.iana.rzm.trans.dns;
+package org.iana.dns.check;
 
-import org.iana.dns.DNSHost;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
-import org.iana.dns.check.MultipleDNSTechnicalCheckException;
+import org.iana.dns.*;
 import org.iana.dns.check.exceptions.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz

@@ -6,6 +6,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.user.*;
 
@@ -144,6 +145,8 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
         } catch (CreateTicketException e) {
             // todo: "create ticket" error
+        } catch (DNSTechnicalCheckExceptionWrapper e) {
+            setErrorMessage(e.getMessage());
         }
 
     }
