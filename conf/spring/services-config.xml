@@ -9,7 +9,8 @@
 
     <!-- facade services configuration -->
 
-    <bean id="GuardedAdminTransactionServiceBean" class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean"
+    <bean id="GuardedAdminTransactionServiceBean"
+          class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="transactionManagerBean"/>
@@ -124,7 +125,7 @@
         </property>
         <property name="transactionAttributes">
             <props>
-                <prop key="get*">readOnly,
+                <prop key="get*">PROPAGATION_REQUIRED, readOnly,
                     -org.iana.rzm.facade.admin.trans.FacadeTransactionException,
                     -org.iana.rzm.facade.admin.trans.NoSuchStateException,
                     -org.iana.rzm.facade.admin.trans.NoTransactionException,
@@ -139,7 +140,7 @@
                     -org.iana.rzm.facade.system.trans.NoDomainModificationException,
                     -org.iana.rzm.facade.system.trans.NoDomainSystemUsersException
                 </prop>
-                <prop key="*">
+                <prop key="*">PROPAGATION_REQUIRED,
                     -org.iana.rzm.facade.admin.trans.FacadeTransactionException,
                     -org.iana.rzm.facade.admin.trans.NoSuchStateException,
                     -org.iana.rzm.facade.admin.trans.NoTransactionException,
@@ -502,7 +503,7 @@
             <value>995</value>
         </property>
         <!--<property name="debug">-->
-            <!--<value>true</value>-->
+        <!--<value>true</value>-->
         <!--</property>-->
         <property name="ssl">
             <value>true</value>
@@ -674,8 +675,7 @@
     <tx:advice id="txAdvice">
         <tx:attributes>
             <tx:method name="get*" read-only="true"
-                       rollback-for="org.iana.rzm.facade.admin.trans.FacadeTransactionException,
-                                     org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                       rollback-for="org.iana.rzm.facade.admin.trans.NoSuchStateException,
                                      org.iana.rzm.facade.admin.trans.NoObjectFoundException,
                                      org.iana.rzm.facade.admin.trans.StateUnreachableException,
                                      org.iana.rzm.facade.auth.AccessDeniedException,
@@ -688,8 +688,7 @@
                                      org.iana.rzm.facade.system.trans.NoDomainModificationException,
                                      org.iana.rzm.facade.system.trans.NoDomainSystemUsersException"/>
             <tx:method name="*"
-                       rollback-for="org.iana.rzm.facade.admin.trans.FacadeTransactionException,
-                                     org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                       rollback-for="org.iana.rzm.facade.admin.trans.NoSuchStateException,
                                      org.iana.rzm.facade.admin.trans.NoTransactionException,
                                      org.iana.rzm.facade.admin.trans.StateUnreachableException,
                                      org.iana.rzm.facade.auth.AccessDeniedException,

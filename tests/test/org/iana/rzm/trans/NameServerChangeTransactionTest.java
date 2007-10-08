@@ -87,10 +87,8 @@ public class NameServerChangeTransactionTest {
         ns.add(newHostVO);
         domain.setNameServers(ns);
 
-        try {
-            transaction = gsts.createTransactions(domain, false).get(0);
-        } catch (CreateTicketException e) {
-        }
+        transaction = gsts.createTransactions(domain, false).get(0);
+
         assert transaction != null;
 
         TransactionVO loadedTransaction = gsts.get(transaction.getTransactionID());

@@ -11,6 +11,7 @@ import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
+import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.util.*;
 
