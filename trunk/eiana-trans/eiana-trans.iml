@@ -62,6 +62,7 @@
     <orderEntry type="module" module-name="common-test" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="library" name="epp" level="project" />
     <orderEntryProperties />
   </component>
 </module>
