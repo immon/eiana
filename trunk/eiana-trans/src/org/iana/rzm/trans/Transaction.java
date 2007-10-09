@@ -276,4 +276,12 @@ public class Transaction implements TrackedObject {
     public void setComment(String comment) {
         getTransactionData().setComment(comment);
     }
+
+    public int getEPPRetries() {
+        return getTransactionData().getEPPRetries();
+    }
+
+    public void setEPPRetries(int retries) {
+        getTransactionData().setEPPRetries(retries);
+    }
 }
