@@ -57,6 +57,8 @@ public class TransactionData {
     private String submitterEmail;
     @Basic
     private String comment;
+    @Basic
+    private int retries; 
 
     public Long getObjId() {
         return objId;
@@ -177,5 +179,14 @@ public class TransactionData {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+
+    public int getEPPRetries() {
+        return retries;
+    }
+
+    public void setEPPRetries(int retries) {
+        this.retries = retries;
     }
 }
