@@ -270,7 +270,7 @@
         </war>
     </target>
 
-    <target name="war" depends="all.jar, dnscheck.client.jar.copy" description="makes war archive">
+    <target name="war" depends="all.jar" description="makes war archive">
          <mkdir dir="${war.output.dir}"/>
         <antcall target="j2ee.build.jar.eiana-web">
             <param name="j2ee.path.jar" value="${war.output.dir}/rzm.war"/>

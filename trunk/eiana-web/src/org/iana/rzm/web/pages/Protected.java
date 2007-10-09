@@ -3,20 +3,17 @@ package org.iana.rzm.web.pages;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
 import org.apache.tapestry.web.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.web.*;
-import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.*;
 
 import javax.servlet.http.*;
 
-public abstract class Protected extends RzmPage implements  PageValidateListener, MyChangePasswordListener {
+public abstract class Protected extends RzmPage implements PageValidateListener {
 
     @InjectPage("Login")
     public abstract Login getLogin();
@@ -45,10 +42,18 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
 
     public abstract RzmServices getRzmServices();
 
-     protected abstract String getErrorPageName();
+    protected abstract String getErrorPageName();
 
     protected Object[] getExternalParameters() {
         return null;
+    }
+
+    public RzmCallback createCallback() {
+        if (isExternal()) {
+            return new RzmCallback(getPageName(), isExternal(), getExternalParameters());
+        }
+
+        return new RzmCallback(getPageName());
     }
 
     public void pageValidate(PageEvent event) {
@@ -73,13 +78,12 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
     }
 
     private String findState() {
-        String state =  getRequestCycle().getInfrastructure().getRequest().getParameterValue("state:" + getPageName());
-        if(state != null){
+        String state = getRequestCycle().getInfrastructure().getRequest().getParameterValue("state:" + getPageName());
+        if (state != null) {
             return state;
         }
-        return  getRequestCycle().getInfrastructure().getRequest().getParameterValue("form:" + getPageName());
+        return getRequestCycle().getInfrastructure().getRequest().getParameterValue("form:" + getPageName());
     }
-
 
 
     protected void restoreModifiedDomain(DomainVOWrapper domain) throws NoObjectFoundException {
@@ -95,7 +99,7 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
             DomainVOWrapper wrapper = getRzmServices().getDomain(domainId);
             getVisitState().markAsVisited(wrapper);
         } catch (AccessDeniedException e) {
-            getAccessDeniedHandler().handleAccessDenied(e, getErrorPageName() );
+            getAccessDeniedHandler().handleAccessDenied(e, getErrorPageName());
         }
     }
 
@@ -110,23 +114,4 @@ public abstract class Protected extends RzmPage implements  PageValidateListener
     protected boolean isExternal() {
         return IExternalPage.class.isAssignableFrom(this.getClass());
     }
-
-        public MessageProperty getPage(){
-        return this;
-    }
-
-    public void changePassword(String currentPassword, String newPassword, String confirmNewPassword) {
-        try {
-            getRzmServices().changePassword(getVisitState().getUser().getUserName(), currentPassword, newPassword, confirmNewPassword);
-        } catch (PasswordChangeException e) {
-            setErrorMessage(e.getMessage());
-        }
-    }
-
-   
-
-    public void reportError(IFormComponent id, String message) {
-        setErrorField(id, message);
-    }
-
 }

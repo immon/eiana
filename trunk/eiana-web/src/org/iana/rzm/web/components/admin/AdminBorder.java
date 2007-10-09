@@ -58,6 +58,9 @@ public abstract class AdminBorder extends Border {
     @Parameter(required = false)
     public abstract IRender getPageScriptDeligator();
 
+    @InjectPage(AdminPasswordChange.PAGE_NAME)
+    public abstract AdminPasswordChange getPasswordChangePage();
+
     public abstract String getSearch();
 
 
@@ -67,6 +70,14 @@ public abstract class AdminBorder extends Border {
         }
 
         return getPageScriptDeligator();
+    }
+    
+    public void changePassword() {
+        AdminPasswordChange myPasswordChange = getPasswordChangePage();
+        AdminPage current = (AdminPage) getPage();
+        RzmCallback callback = current.createCallback();
+        myPasswordChange.setCallBack(callback);
+        getPage().getRequestCycle().activate(myPasswordChange);
     }
 
 

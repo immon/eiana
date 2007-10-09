@@ -71,11 +71,6 @@ public abstract class Border extends BaseComponent {
 
     @InjectPage("Login")
     public abstract Login getLogin();
-     
-
-    @InjectPage("MyPasswordChange")
-    public abstract MyPasswordChange getPasswordChangePage();
-
 
     protected abstract MessagePropertyCallback getHomeCallback();
 
@@ -110,13 +105,6 @@ public abstract class Border extends BaseComponent {
     public IPage logout() {
         getApplicationLifecycle().logout();
         return getLogin();
-    }
-
-    public void changePassword() {
-//        MyPasswordChange myPasswordChange = getPasswordChangePage();
-//        myPasswordChange.setCallback(getHomeCallback());
-//        getPage().getRequestCycle().activate(myPasswordChange);
-        return;
     }
 
     public void homePage() {
