@@ -4,14 +4,13 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.form.*;
 import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.pages.*;
 
 @ComponentClass
 public abstract class MyPasswordChangeEditor extends BaseComponent {
 
     @Component(id = "changePasswordForm", type = "Form", bindings = {
         "clientValidationEnabled=literal:true",
-        "delegate=prop:validationDelegate",
+        "delegate=prop:listener.validationDelegate",
         "success=listener:changePassword"
         })
     public abstract IComponent getChangePasswordFormComponent();
@@ -61,7 +60,6 @@ public abstract class MyPasswordChangeEditor extends BaseComponent {
     @Parameter(required = true)
     public abstract MyChangePasswordListener getListener();
 
-
     public abstract String getCurrentPassword();
     public abstract String getNewPassword();
 
@@ -74,16 +72,12 @@ public abstract class MyPasswordChangeEditor extends BaseComponent {
         if(getListener().getValidationDelegate().getHasErrors()){
             return;
         }
-
         getListener().changePassword(getCurrentPassword(),getNewPassword(), getConfirmNewPassword());
-        MessageProperty page = getListener().getPage();
-        page.setInfoMessage("Password change successfully ");
-        getPage().getRequestCycle().activate(page);
     }
 
     public void cancel() {
         getListener().getValidationDelegate().clearErrors();
-        getPage().getRequestCycle().activate(getListener().getPage());
+        getListener().cancel();
     }
 
     private void validateSave() {
