@@ -16,6 +16,7 @@
         <constructor-arg index="1" ref="transactionManagerBean"/>
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="adminDetectorService"/>
+        <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -224,9 +225,25 @@
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="domainManager"/>
         <constructor-arg ref="detectorService"/>
+        <constructor-arg ref="dnsTechnicalCheckBean"/>
     </bean>
 
     <!-- end of facade services configuration -->
+
+
+    <!-- Technical checks -->
+
+    <bean id="dnsTechnicalCheckBean" class="org.iana.dns.check.DNSTechnicalCheck">
+        <property name="domainChecks">
+            <list>
+                <ref bean="minimumNameServersAndNoReservedIPsCheck"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="minimumNameServersAndNoReservedIPsCheck" class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck" />
+
+    <!-- end of technical checks-->
 
     <bean id="NotificationManagerBean" class="org.iana.notifications.NotificationManagerBean">
         <constructor-arg index="0" ref="notificationDAO"/>

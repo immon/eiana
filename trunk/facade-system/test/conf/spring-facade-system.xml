@@ -265,7 +265,22 @@
         <constructor-arg ref="transactionManagerBean" />
         <constructor-arg ref="domainManager" />
         <constructor-arg ref="detectorService"/>
+        <constructor-arg ref="dnsTechnicalCheckBean"/>
     </bean>
+    
+    <!-- Technical checks -->
+
+    <bean id="dnsTechnicalCheckBean" class="org.iana.dns.check.DNSTechnicalCheck">
+        <property name="domainChecks">
+            <list>
+                <ref bean="minimumNameServersAndNoReservedIPsCheck"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="minimumNameServersAndNoReservedIPsCheck" class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck" />
+
+    <!-- end of technical checks-->
 
     <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl"
           scope="session">
