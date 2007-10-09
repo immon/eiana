@@ -380,6 +380,14 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
+    <containerElement type="library" name="ant" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="apache-commons" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
@@ -420,9 +428,10 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/hibernate/hibernate3.jar!/</url>
     </containerElement>
-    <containerElement type="library" name="javaee" level="project">
+    <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -544,14 +553,6 @@
       <attribute name="URI" value="/WEB-INF/lib/tapestry-spring-1.0.0.jar" />
       <url>jar://$MODULE_DIR$/../lib/tapestry/tapestry-spring-1.0.0.jar!/</url>
     </containerElement>
-    <containerElement type="library" name="ant" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib" />
-    </containerElement>
-    <containerElement type="library" name="apache-commons" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
-    </containerElement>
     <containerElement type="library" name="cobertura" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
@@ -580,6 +581,10 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
+    <containerElement type="library" name="epp" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" name="fastinfoset" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
@@ -587,6 +592,10 @@
     <containerElement type="library" name="hibernate" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />
