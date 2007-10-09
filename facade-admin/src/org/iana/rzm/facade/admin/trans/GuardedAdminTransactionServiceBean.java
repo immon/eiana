@@ -1,8 +1,9 @@
 package org.iana.rzm.facade.admin.trans;
 
-import org.iana.criteria.*;
-import org.iana.notifications.*;
-import org.iana.notifications.exception.NotificationException;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Order;
+import org.iana.dns.check.DNSTechnicalCheck;
+import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -13,34 +14,24 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.notification.NotificationAddresseeVO;
-import org.iana.rzm.facade.system.notification.NotificationConverter;
-import org.iana.rzm.facade.system.notification.NotificationCriteriaConverter;
-import org.iana.rzm.facade.system.notification.NotificationVO;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.converters.TransactionCriteriaConverter;
+import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.iana.rzm.facade.system.trans.NoDomainSystemUsersException;
+import org.iana.rzm.facade.system.trans.TransactionDetectorService;
+import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
-import org.iana.rzm.facade.admin.trans.NoSuchStateException;
-import org.iana.rzm.facade.admin.trans.StateUnreachableException;
-import org.iana.rzm.facade.services.AbstractFinderService;
-import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.confirmation.Confirmation;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.trans.NoSuchTransactionException;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionException;
+import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.dns.check.DNSTechnicalCheckException;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk
@@ -53,8 +44,8 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
     }
 
-    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService) {
-        super(userManager, transactionManager, domainManager, transactionDetectorService);
+    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck) {
+        super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck);
     }
 
     private void isUserInRole() throws AccessDeniedException {

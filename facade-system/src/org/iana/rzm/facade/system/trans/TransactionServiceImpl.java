@@ -3,31 +3,31 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
 import org.iana.criteria.SortCriterion;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.check.DNSTechnicalCheck;
+import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.dns.DNSConverter;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.dns.DNSConverter;
 import org.iana.rzm.user.UserManager;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.dns.check.DNSTechnicalCheck;
-import org.iana.dns.check.DNSDomainTechnicalCheck;
-import org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck;
-import org.iana.dns.DNSDomain;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -43,22 +43,16 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
 
     protected DNSTechnicalCheck technicalCheck;
 
-    public TransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService) {
+    public TransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck) {
         super(userManager);
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
         CheckTool.checkNull(transactionDetectorService, "change detector");
+        CheckTool.checkNull(dnsTechnicalCheck, "technical check");
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
         this.transactionDetectorService = transactionDetectorService;
-
-        // todo: move to spring
-        this.technicalCheck = new DNSTechnicalCheck();
-        technicalCheck.setDomainChecks(Arrays.asList(
-                (DNSDomainTechnicalCheck)
-                new MinimumNameServersAndNoReservedIPsCheck()
-            )
-        );
+        this.technicalCheck = dnsTechnicalCheck;
     }
 
     public TransactionVO get(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
