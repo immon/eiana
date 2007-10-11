@@ -1,16 +1,23 @@
 package org.iana.rzm.trans.epp;
 
-import org.iana.epp.ChangePriority;
 import org.iana.epp.EPPClient;
 import org.iana.epp.EPPOperationFactory;
+import org.iana.epp.ChangePriority;
+import org.iana.epp.response.PollResponse;
+import org.iana.epp.response.ChangeResponse;
+import org.iana.epp.request.PollRequest;
+import org.iana.epp.request.ChangeRequest;
+import org.iana.epp.request.DomainUpdate;
+import org.iana.epp.request.EPPChange;
 import org.iana.epp.exceptions.EPPFrameworkException;
 import org.iana.epp.internal.verisign.VerisignEPPClient;
-import org.iana.epp.request.ChangeRequest;
-import org.iana.rzm.domain.HostManager;
 import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.domain.HostManager;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.Change;
+import org.iana.objectdiff.CollectionChange;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -18,21 +25,22 @@ import java.util.List;
  */
 public class EPPChangeRequest extends EPPCommand {
 
-    private static EPPClient client = VerisignEPPClient.getEPPClient("conf/epp/epp.rootzone.config");
-
     private List<EPPCommand> collectors;
 
+    private EPPClient client;
+
     public EPPChangeRequest(Transaction transaction, HostManager hostManager) {
-        this(transaction, hostManager, client.getEppOperationFactory());
+        this(transaction, hostManager, VerisignEPPClient.getEPPClient("conf/epp.rootzone.config"));
     }
 
-    public EPPChangeRequest(Transaction transaction, HostManager hostManager, EPPOperationFactory operationFactory) {
-        super(transaction, hostManager, operationFactory);
+    public EPPChangeRequest(Transaction transaction, HostManager hostManager, EPPClient client) {
+        super(transaction, hostManager, client.getEppOperationFactory());
+        this.client = client;
         collectors = Arrays.asList(
-                new EPPCreateHosts(transaction, hostManager, operationFactory),
-                new EPPUpdateHosts(transaction, hostManager, operationFactory),
-                new EPPUpdateDomain(transaction, hostManager, operationFactory),
-                new EPPDeleteHosts(transaction, hostManager, operationFactory)
+                new EPPCreateHosts(transaction, hostManager, getOperationFactory()),
+                new EPPUpdateHosts(transaction, hostManager, getOperationFactory()),
+                new EPPUpdateDomain(transaction, hostManager, getOperationFactory()),
+                new EPPDeleteHosts(transaction, hostManager, getOperationFactory())
         );
     }
 
