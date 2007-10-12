@@ -230,6 +230,29 @@
 
     <!-- end of facade services configuration -->
 
+    <!-- Technical Check Helper -->
+
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper">
+        <constructor-arg ref="templateContentFactoryBean"/>
+    </bean>
+
+    <!-- Content -->
+
+    <bean id="templateContentFactoryBean" class="org.iana.notifications.TemplateContentFactoryBean">
+        <constructor-arg ref="templateContentConverter"/>
+    </bean>
+
+    <bean id="templateContentConverter" class="org.iana.notifications.TemplateContentConverter">
+        <constructor-arg ref="notificationTemplateManager"/>
+    </bean>
+
+    <bean id="notificationTemplateManager" class="org.iana.notifications.NotificationTemplateManager">
+        <constructor-arg index="0" value="iana-templates.properties"/>
+        <constructor-arg index="1" value="templates.xml"/>
+        <property name="configDAO">
+            <ref bean="hibernateConfigDAO"/>
+        </property>
+    </bean>
 
     <!-- Technical checks -->
 
@@ -241,12 +264,14 @@
         </property>
     </bean>
 
-    <bean id="minimumNameServersAndNoReservedIPsCheck" class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck" />
+    <bean id="minimumNameServersAndNoReservedIPsCheck"
+          class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck"/>
 
     <!-- end of technical checks-->
 
     <bean id="NotificationManagerBean" class="org.iana.notifications.NotificationManagerBean">
         <constructor-arg index="0" ref="notificationDAO"/>
+        <constructor-arg index="1" ref="templateContentConverter"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
@@ -358,6 +383,9 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="technicalCheckHelperBean"/>
         </constructor-arg>
     </bean>
 
@@ -771,6 +799,9 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="persistentNotificationSender"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="templateContentFactoryBean"/>
         </constructor-arg>
     </bean>
 </beans>

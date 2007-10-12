@@ -1,8 +1,8 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.notifications.Content;
 import org.iana.notifications.EmailAddressee;
 import org.iana.notifications.Notification;
-import org.iana.notifications.TemplateContent;
 import org.iana.rzm.auth.Identity;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.RZMUser;
@@ -41,7 +41,7 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier {
                 values.put("transactionId", "" + transactionId);
                 values.put("stateName", stateName);
 
-                TemplateContent templateContent = new TemplateContent(notification, values);
+                Content templateContent = templateContentFactory.createContent(notification, values);
                 Notification notification = new Notification(transactionId);
                 notification.addAddressee(user);
                 if (td.getSubmitterEmail() != null)

@@ -1,32 +1,36 @@
 package org.iana.notifications;
 
-import org.iana.notifications.dao.NotificationDAO;
+import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
-import org.iana.criteria.And;
+import org.iana.notifications.dao.NotificationDAO;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
 
 /**
  * @author Piotr Tkaczyk
  */
 public class NotificationManagerBean implements NotificationManager {
     private NotificationDAO notificationDAO;
+    private ContentConverter templateContentConverter;
 
 
-    public NotificationManagerBean(NotificationDAO notificationDAO) {
+    public NotificationManagerBean(NotificationDAO notificationDAO, ContentConverter contentConverter) {
         this.notificationDAO = notificationDAO;
+        this.templateContentConverter = contentConverter;
     }
 
     public Notification get(long id) {
-        return notificationDAO.get(id);
+        Notification notification = notificationDAO.get(id);
+        addContentConverter(notification);
+        return notification;
     }
 
     public void create(Notification notification) {
-        notificationDAO.create(notification);    
+        notificationDAO.create(notification);
     }
 
     public void update(Notification notification) {
@@ -38,22 +42,31 @@ public class NotificationManagerBean implements NotificationManager {
     }
 
     public List<Notification> findUserNotifications(Addressee addressee) {
-        return notificationDAO.findUserNotifications(addressee);
+        List<Notification> ret = notificationDAO.findUserNotifications(addressee);
+        for (Notification notification : ret)
+            addContentConverter(notification);
+        return ret;
     }
 
     public List<Notification> findUnSentNotifications(long maxSentFailures) {
-        return notificationDAO.findUnSentNotifications(maxSentFailures);
+        List<Notification> ret = notificationDAO.findUnSentNotifications(maxSentFailures);
+        for (Notification notification : ret)
+            addContentConverter(notification);
+        return ret;
     }
 
     public List<Notification> findAll() {
-        return notificationDAO.findAll();
+        List<Notification> ret = notificationDAO.findAll();
+        for (Notification notification : ret)
+            addContentConverter(notification);
+        return ret;
     }
 
     public void deleteNotificationsByAddresse(Addressee addressee) {
         List<Notification> notifications = findUserNotifications(addressee);
-        for(Notification notif : notifications) {
+        for (Notification notif : notifications) {
             Set<Addressee> newAddressee = new HashSet<Addressee>();
-            for(Addressee addr : notif.getAddressee()) {
+            for (Addressee addr : notif.getAddressee()) {
                 if (!addr.getObjId().equals(addressee.getObjId()))
                     newAddressee.add(addr);
             }
@@ -66,12 +79,15 @@ public class NotificationManagerBean implements NotificationManager {
     }
 
     public List<Notification> findPersistentNotifications(Long transactionId) {
-        return notificationDAO.findPersistentNotifications(transactionId);
+        List<Notification> ret = notificationDAO.findPersistentNotifications(transactionId);
+        for (Notification notification : ret)
+            addContentConverter(notification);
+        return ret;
     }
 
     public void deletePersistentNotifications(Long transactionId) {
         List<Notification> notifications = findPersistentNotifications(transactionId);
-        for(Notification notif : notifications) delete(notif);
+        for (Notification notif : notifications) delete(notif);
     }
 
     public void deletePersistentNotifications(Long transactionId, String type) {
@@ -80,10 +96,21 @@ public class NotificationManagerBean implements NotificationManager {
         criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, true));
         criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
         List<Notification> notifications = find(new And(criteria));
-        for(Notification notif : notifications) delete(notif);
+        for (Notification notif : notifications) delete(notif);
     }
 
     public List<Notification> find(Criterion criteria) {
-        return notificationDAO.find(criteria);
+        List<Notification> ret = notificationDAO.find(criteria);
+        for (Notification notification : ret)
+            addContentConverter(notification);
+        return ret;
+    }
+
+    private void addContentConverter(Notification notification) {
+        Content content = notification.getContent();
+        if (content != null && content.isTemplateContent()) {
+            ((TemplateContent) content).setTemplateConverter(templateContentConverter);
+            notification.setContent(content);
+        }
     }
 }

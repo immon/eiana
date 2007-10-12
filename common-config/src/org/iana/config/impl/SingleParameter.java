@@ -1,6 +1,7 @@
 package org.iana.config.impl;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ public class SingleParameter extends AbstractParameter {
      * Value of parameter cannot be null;
      */
     @Basic
+    @Column(length = 3999)
     private String value;
 
     private SingleParameter() {

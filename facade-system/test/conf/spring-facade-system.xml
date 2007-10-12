@@ -23,7 +23,8 @@
     </bean>
 
     <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO" />
+        <constructor-arg index="0" ref="notificationDAO"/>
+        <constructor-arg index="1" ref="mockContentConverter"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
@@ -32,7 +33,8 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemDomainService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedSystemDomainService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
@@ -50,22 +52,22 @@
     </bean>
 
     <bean id="GuardedSystemDomainServiceTarget" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
-        <constructor-arg ref="userManagerGSDomainS" />
+        <constructor-arg ref="userManagerGSDomainS"/>
         <constructor-arg ref="SystemDomainServiceBean"/>
     </bean>
 
     <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
-        <constructor-arg ref="domainManager" />
-        <constructor-arg ref="userManagerGSDomainS" />
+        <constructor-arg ref="domainManager"/>
+        <constructor-arg ref="userManagerGSDomainS"/>
     </bean>
 
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
-        <constructor-arg ref="domainDAO" />
+        <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>
     </bean>
 
     <bean id="hostManager" class="org.iana.rzm.domain.HostManagerBean">
-        <constructor-arg ref="hostDAO" />
+        <constructor-arg ref="hostDAO"/>
     </bean>
 
     <bean id="hostDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -101,7 +103,8 @@
 
 
     <!--Sterss-->
-    <bean id="GuardedSystemDomainServiceStress" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="GuardedSystemDomainServiceStress"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
@@ -118,18 +121,19 @@
         </property>
     </bean>
 
-    <bean id="GuardedSystemDomainServiceTargetStress" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
-        <constructor-arg ref="userManagerStress" />
+    <bean id="GuardedSystemDomainServiceTargetStress"
+          class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService">
+        <constructor-arg ref="userManagerStress"/>
         <constructor-arg ref="SystemDomainServiceBeanStress"/>
     </bean>
 
     <bean id="SystemDomainServiceBeanStress" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
-        <constructor-arg ref="domainManagerStress" />
-        <constructor-arg ref="userManagerStress" />
+        <constructor-arg ref="domainManagerStress"/>
+        <constructor-arg ref="userManagerStress"/>
     </bean>
 
     <bean id="domainManagerStress" class="org.iana.rzm.domain.DomainManagerBean">
-        <constructor-arg ref="domainDAO" />
+        <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>
     </bean>
 
@@ -137,7 +141,7 @@
     <!---->
 
 
-    <bean  id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="domainDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.domain.dao.DomainDAO</value>
@@ -162,7 +166,7 @@
 
     <!-- database hibernate configuration -->
 
-   <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName">
             <value>com.mysql.jdbc.Driver</value>
         </property>
@@ -234,7 +238,8 @@
         </property>
     </bean>
 
-    <bean id="guardedSystemTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="guardedSystemTransactionService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
                 <value>org.iana.rzm.facade.system.trans.TransactionService</value>
@@ -252,22 +257,23 @@
     </bean>
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
-        <constructor-arg ref="userDAO" />
+        <constructor-arg ref="userDAO"/>
     </bean>
 
-    <bean id="GuardedSystemTransactionServiceTarget" class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService">
-        <constructor-arg ref="userManager" />
+    <bean id="GuardedSystemTransactionServiceTarget"
+          class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService">
+        <constructor-arg ref="userManager"/>
         <constructor-arg ref="SystemTransactionServiceBean"/>
     </bean>
 
     <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.TransactionServiceImpl">
-        <constructor-arg ref="userManager" />
-        <constructor-arg ref="transactionManagerBean" />
-        <constructor-arg ref="domainManager" />
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="domainManager"/>
         <constructor-arg ref="detectorService"/>
         <constructor-arg ref="dnsTechnicalCheckBean"/>
     </bean>
-    
+
     <!-- Technical checks -->
 
     <bean id="dnsTechnicalCheckBean" class="org.iana.dns.check.DNSTechnicalCheck">
@@ -278,7 +284,8 @@
         </property>
     </bean>
 
-    <bean id="minimumNameServersAndNoReservedIPsCheck" class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck" />
+    <bean id="minimumNameServersAndNoReservedIPsCheck"
+          class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck"/>
 
     <!-- end of technical checks-->
 
@@ -339,6 +346,22 @@
         <constructor-arg>
             <ref bean="NotificationSenderBean"/>
         </constructor-arg>
+        <constructor-arg>
+            <ref bean="mockTechnicalCheckHelper"/>
+        </constructor-arg>
+    </bean>
+
+    <!-- Mock Content Converter -->
+
+    <bean id="mockContentConverter" class="org.iana.rzm.trans.MockContentConverter">
+    </bean>
+
+    <!-- Mock Technical Check Helper-->
+
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.MockTechnicalCheckHelper">
+    </bean>
+
+    <bean id="mockTechnicalCheckHelper" class="org.iana.rzm.trans.MockTechnicalCheckHelper">
     </bean>
 
     <!-- jBPM configuration -->

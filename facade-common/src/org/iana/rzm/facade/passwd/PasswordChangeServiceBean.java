@@ -1,20 +1,28 @@
 package org.iana.rzm.facade.passwd;
 
-import org.iana.notifications.*;
-import org.iana.notifications.exception.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.user.*;
+import org.iana.criteria.And;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.notifications.Content;
+import org.iana.notifications.ContentFactory;
+import org.iana.notifications.Notification;
+import org.iana.notifications.NotificationSender;
+import org.iana.notifications.exception.NotificationException;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.And;
-import org.iana.criteria.Equal;
-import pl.nask.util.*;
+import org.iana.rzm.user.MD5Password;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
+import pl.nask.util.StringTool;
 
-import java.rmi.server.*;
-import java.util.*;
+import java.rmi.server.UID;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jakub Laszkiewicz
@@ -24,12 +32,15 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
 
     private UserManager userManager;
     private NotificationSender notificationSender;
+    private ContentFactory templateContentFactory;
 
-    public PasswordChangeServiceBean(UserManager userManager, NotificationSender notificationSender) {
+    public PasswordChangeServiceBean(UserManager userManager, NotificationSender notificationSender, ContentFactory templateContentFactory) {
         CheckTool.checkNull(userManager, "passwdUserManager");
         CheckTool.checkNull(notificationSender, "notificationSender");
+        CheckTool.checkNull(templateContentFactory, "templateContentFactory");
         this.userManager = userManager;
         this.notificationSender = notificationSender;
+        this.templateContentFactory = templateContentFactory;
     }
 
     public void changePassword(String userName, String oldPassword, String newPwd, String newPwd2) throws PasswordChangeException {
@@ -46,7 +57,7 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
     }
 
     public void initPasswordChange(String userName, String link) throws InfrastructureException, PasswordChangeException {
-        initPasswordChange(userName,link, generateToken());
+        initPasswordChange(userName, link, generateToken());
     }
 
     public void initPasswordChange(String userName, String link, String token) throws InfrastructureException, PasswordChangeException {
@@ -59,7 +70,7 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
             Map<String, String> values = new HashMap<String, String>();
             values.put("userName", userName);
             values.put("link", link);
-            TemplateContent templateContent = new TemplateContent(PASSWORD_CHANGE_TEMPLATE_NAME, values);
+            Content templateContent = templateContentFactory.createContent(PASSWORD_CHANGE_TEMPLATE_NAME, values);
             Notification notification = new Notification();
             notification.setContent(templateContent);
             notificationSender.send(user, notification.getContent());
@@ -93,7 +104,7 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
         MD5Password md5 = new MD5Password(password);
         Criterion emailAndPassword = new And(Arrays.asList(
                 (Criterion)
-                new Equal("email", email),
+                        new Equal("email", email),
                 new Equal("password.password", md5.getPassword())
         ));
         List<RZMUser> users = userManager.find(emailAndPassword);

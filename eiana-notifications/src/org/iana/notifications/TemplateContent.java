@@ -29,14 +29,17 @@ public class TemplateContent extends Content {
     @Transient
     private String body = null;
 
+    @Transient
+    private ContentConverter templateConverter;
+
     protected TemplateContent() {
     }
 
-    public TemplateContent(String templateName) {
+    protected TemplateContent(String templateName) {
         this.templateName = templateName;
     }
 
-    public TemplateContent(String templateName, Map<String, String> values) {
+    protected TemplateContent(String templateName, Map<String, String> values) {
         this.templateName = templateName;
         this.values = values;
     }
@@ -58,12 +61,12 @@ public class TemplateContent extends Content {
     }
 
     public String getSubject() throws NotificationException {
-        if (subject == null) subject = getContentConverter().createSubject(this);
+        if (subject == null) subject = templateConverter.createSubject(this);
         return subject;
     }
 
     public String getBody() throws NotificationException {
-        if (body == null) body = getContentConverter().createBody(this);
+        if (body == null) body = templateConverter.createBody(this);
         return body;
     }
 
@@ -79,8 +82,8 @@ public class TemplateContent extends Content {
         return true;
     }
 
-    private ContentConverter getContentConverter() {
-        return new TemplateContentConverter();
+    public void setTemplateConverter(ContentConverter templateConverter) {
+        this.templateConverter = templateConverter;
     }
 
     public boolean isTemplateContent() {

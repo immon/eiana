@@ -8,6 +8,7 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.TransactionTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.iana.ticketing.TicketingService;
 import org.jbpm.graph.exe.ProcessInstance;
 
@@ -21,8 +22,8 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
 
     public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService,
                                       DiffConfiguration diffConfig, NotificationManager notificationManager,
-                                      NotificationSender notificationSender) {
-        super(processDAO, domainDAO, ticketingService, diffConfig, notificationManager, notificationSender);
+                                      NotificationSender notificationSender, CheckHelper technicalCheckHelper) {
+        super(processDAO, domainDAO, ticketingService, diffConfig, notificationManager, notificationSender, technicalCheckHelper);
         this.processDAO = processDAO;
         this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;

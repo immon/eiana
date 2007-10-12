@@ -3,8 +3,13 @@
  */
 package org.iana.notifications;
 
+import org.iana.config.Config;
+import org.iana.config.ConfigDAO;
+import org.iana.config.impl.ConfigException;
+import org.iana.config.impl.OwnedConfig;
 import org.iana.notifications.exception.InitializationNotificationException;
 import org.iana.notifications.exception.NotificationException;
+import org.iana.rzm.common.validators.CheckTool;
 import pl.nask.xml.dynamic.DynaXMLParser;
 import pl.nask.xml.dynamic.config.DPConfig;
 import pl.nask.xml.dynamic.env.Environment;
@@ -13,24 +18,26 @@ import pl.nask.xml.dynamic.exceptions.DynaXMLException;
 import java.io.*;
 
 public class NotificationTemplateManager {
-    private final static String IANA_TEMPLATES_PROPERTIES = "iana-templates.properties";
-    private final static String IANA_TEMPLATES_CONFIG = "templates.xml";
+
+    private static final String HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><iana:templates xmlns:iana=\"todo\">";
+    private static final String END = "</iana:templates>";
 
     private NotificationTemplateMapper mapper = null;
+    private Config templateConfig;
 
-    private static NotificationTemplateManager ourInstance = null;
+    Environment env;
+    DynaXMLParser parser;
 
-    public static NotificationTemplateManager getInstance() throws NotificationException {
-        return ourInstance != null ? ourInstance : (ourInstance = new NotificationTemplateManager());
-    }
-     
-    private NotificationTemplateManager() throws NotificationException {
+
+    public NotificationTemplateManager(String templateProperties, String templateConfigFile) throws NotificationException {
+        CheckTool.checkEmpty(templateProperties, "template properties cannot be null");
+        CheckTool.checkEmpty(templateConfigFile, "template config file cannot be null");
 
         try {
-            Environment env = DPConfig.getEnvironment(IANA_TEMPLATES_PROPERTIES);
-            DynaXMLParser parser = new DynaXMLParser();
+            env = DPConfig.getEnvironment(templateProperties);
+            parser = new DynaXMLParser();
 
-            mapper = (NotificationTemplateMapper) parser.fromXML(createReader(IANA_TEMPLATES_CONFIG), env);
+            mapper = (NotificationTemplateMapper) parser.fromXML(createReader(templateConfigFile), env);
 
         } catch (DynaXMLException e) {
             throw new InitializationNotificationException("Initialization error: " + e.getMessage(), e);
@@ -39,9 +46,27 @@ public class NotificationTemplateManager {
         }
     }
 
-    public NotificationTemplate getNotificationTemplate(String type) {
+    public void setConfigDAO(ConfigDAO dao) throws ConfigException {
+        templateConfig = new OwnedConfig(dao).getSubConfig(getClass().getSimpleName());
+    }
 
-        return mapper.getNotificationTemplate(type);
+    public NotificationTemplate getNotificationTemplate(String type) throws NotificationException {
+        try {
+            if (templateConfig != null) {
+                String content = templateConfig.getParameter(type);
+                if (content != null && content.trim().length() != 0) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(HEAD).append(content).append(END);
+                    NotificationTemplateMapper tempMap = (NotificationTemplateMapper) parser.fromXML(sb.toString(), env);
+                    return tempMap.getNotificationTemplate(type);
+                }
+            }
+            return mapper.getNotificationTemplate(type);
+        } catch (ConfigException e) {
+            throw new NotificationException(e);
+        } catch (DynaXMLException e) {
+            throw new NotificationException(e);
+        }
     }
 
     private Reader createReader(String filename) throws UnsupportedEncodingException {

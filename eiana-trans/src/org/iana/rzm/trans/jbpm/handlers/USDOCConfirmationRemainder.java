@@ -1,7 +1,7 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.notifications.Content;
 import org.iana.notifications.Notification;
-import org.iana.notifications.TemplateContent;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 
@@ -31,7 +31,7 @@ public class USDOCConfirmationRemainder extends ProcessStateNotifier {
             values.put("period", period);
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
-            TemplateContent templateContent = new TemplateContent(notification, values);
+            Content templateContent = templateContentFactory.createContent(notification, values);
 
             Notification notification = new Notification(transactionId);
             notification.addAddressee(user);

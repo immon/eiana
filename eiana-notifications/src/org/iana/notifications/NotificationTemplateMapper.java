@@ -3,10 +3,10 @@
  */
 package org.iana.notifications;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
 public class NotificationTemplateMapper {
     Map<String, NotificationTemplate> templates = new HashMap<String, NotificationTemplate>();
@@ -30,15 +30,15 @@ public class NotificationTemplateMapper {
 
     public List<NotificationTemplate> getTemplatesList() {
         if (templates == null) return null;
-        List<NotificationTemplate> contactsList = new ArrayList<NotificationTemplate>();
+        List<NotificationTemplate> templateList = new ArrayList<NotificationTemplate>();
         //no elements - return empty list
-        if (templates.size() == 0) return contactsList;
+        if (templates.size() == 0) return templateList;
 
         for (NotificationTemplate template : templates.values()) {
-            contactsList.add(template);
+            templateList.add(template);
         }
 
-        return contactsList;
+        return templateList;
     }
 
     public void setTemplatesList(List<NotificationTemplate> templates) {

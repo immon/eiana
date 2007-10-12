@@ -18,8 +18,10 @@ public class HibernateConfigDAO extends HibernateDaoSupport implements ConfigDAO
 
     public Parameter getParameter(String owner, String name) throws ConfigException {
         try {
-            String query = "from AbstractParameter where owner = ? and name = ? and ? between fromDate and toDate";
-            Object[] queryParams = {owner, name, System.currentTimeMillis()};
+            String query = "from AbstractParameter ap where ap.owner = ? and ap.name = ? and " +
+                    "(( ? between ap.fromDate and ap.toDate ) or ( ap.fromDate <= ? and ap.toDate is null ))";
+            long time = System.currentTimeMillis();
+            Object[] queryParams = {owner, name, time, time};
             List<Parameter> ret = getHibernateTemplate().find(query, queryParams);
             return (ret != null && !ret.isEmpty()) ? ret.get(0) : null;
         } catch (DataAccessException e) {
@@ -49,8 +51,10 @@ public class HibernateConfigDAO extends HibernateDaoSupport implements ConfigDAO
 
     public Set<String> getParameterNames(String owner, String name) throws ConfigException {
         try {
-            String query = "from AbstractParameter where owner = ? and name like ? and ? between fromDate and toDate";
-            Object[] queryParams = {owner, name + "%", System.currentTimeMillis()};
+            String query = "from AbstractParameter ap where ap.owner = ? and ap.name like ? and " +
+                    "(( ? between ap.fromDate and ap.toDate ) or ( ap.fromDate <= ? and ap.toDate is null ))";
+            long time = System.currentTimeMillis();
+            Object[] queryParams = {owner, name + "%", time, time};
             List<Parameter> ret = getHibernateTemplate().find(query, queryParams);
             if (ret == null || ret.isEmpty()) return null;
             Set<String> retSet = new HashSet<String>();

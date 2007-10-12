@@ -1,5 +1,6 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.node.DecisionHandler;
 
@@ -9,9 +10,14 @@ import org.jbpm.graph.node.DecisionHandler;
  * when an exception is thrown.
  *
  * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 public abstract class DecisionExceptionHandler implements DecisionHandler {
+
+    protected CheckHelper technicalCheckHelper;
+
     final public String decide(ExecutionContext executionContext) throws Exception {
+        technicalCheckHelper = (CheckHelper) executionContext.getJbpmContext().getObjectFactory().createObject("technicalCheckHelperBean");
         try {
             return doDecide(executionContext);
         } catch (Exception e) {

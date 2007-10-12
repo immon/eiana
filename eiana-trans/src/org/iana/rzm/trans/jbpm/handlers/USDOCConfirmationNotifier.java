@@ -1,14 +1,14 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.notifications.Content;
 import org.iana.notifications.Notification;
-import org.iana.notifications.TemplateContent;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jakub Laszkiewicz
@@ -28,7 +28,7 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             values.put("domainName", domainName);
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
-            TemplateContent templateContent = new TemplateContent(notification, values);
+            Content templateContent = templateContentFactory.createContent(notification, values);
 
             Notification notification = new Notification(transactionId);
             notification.addAddressee(user);

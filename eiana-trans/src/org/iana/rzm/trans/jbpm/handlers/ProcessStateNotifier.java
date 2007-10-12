@@ -20,7 +20,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
 
     protected TransactionData td;
     private NotificationSender notificationSender;
-    protected NotificationTemplate notificationTemplate;
+    protected ContentFactory templateContentFactory;
     protected String notification;
     protected NotificationManager notificationManagerBean;
     protected UserManager userManager;
@@ -38,7 +38,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("persistentNotificationSender");
-        notificationTemplate = NotificationTemplateManager.getInstance().getNotificationTemplate(notification);
+        templateContentFactory = (ContentFactory) executionContext.getJbpmContext().getObjectFactory().createObject("templateContentFactoryBean");
         transactionId = executionContext.getProcessInstance().getId();
         stateName = executionContext.getProcessInstance().getRootToken().getNode().getName();
         userManager = (UserManager) executionContext.getJbpmContext().getObjectFactory().createObject("userManager");
@@ -73,7 +73,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
             for (String email : emails)
                 users.add(new EmailAddressee(email, email));
 
-        TemplateContent templateContent = new TemplateContent(notification, new HashMap<String, String>());
+        Content templateContent = templateContentFactory.createContent(notification, new HashMap<String, String>());
         Notification notification = new Notification(transactionId);
         notification.setContent(templateContent);
         notification.setAddressee(users);
