@@ -41,15 +41,11 @@ public class MD5Password extends AbstractPassword implements Cloneable {
      */
     public void setPassword(String password) {
         if (password == null) password = "";
-        try {
+        try {            
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());
             byte[] md5 = md.digest();
-            StringBuffer encoded = new StringBuffer();
-            for (byte m : md5) {
-                encoded.append(Integer.toHexString(m & 0xff));
-            }
-            this.password = encoded.toString();
+            this.password = hexadecimalConversionMD5(md5);
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -91,4 +87,23 @@ public class MD5Password extends AbstractPassword implements Cloneable {
         md5Password.setPassword(password);
         return md5Password;
     }
+
+    private String hexadecimalConversionMD5(byte[] binaryData) {
+        final char[] hexadecimal = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+        if (binaryData.length != 16) {
+            return null;
+        }
+
+        char[] buffer = new char[32];
+
+        for (int i = 0; i < 16; i++) {
+            int low = (binaryData[i] & 0x0f);
+            int high = ((binaryData[i] & 0xf0) >> 4);
+            buffer[i * 2] = hexadecimal[high];
+            buffer[i * 2 + 1] = hexadecimal[low];
+        }
+        return new String(buffer);
+    }
+    
 }
