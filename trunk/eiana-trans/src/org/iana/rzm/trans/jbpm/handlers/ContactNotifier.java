@@ -1,12 +1,12 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.iana.notifications.TemplateContent;
+import org.iana.notifications.Content;
 import org.iana.notifications.Notification;
+import org.iana.rzm.auth.Identity;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.auth.Identity;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class ContactNotifier extends ProcessStateNotifier {
 
-      public List<Notification> getNotifications() {
+    public List<Notification> getNotifications() {
 
         String domainName = td.getCurrentDomain().getName();
 
@@ -28,7 +28,7 @@ public class ContactNotifier extends ProcessStateNotifier {
 
         List<Notification> notifications = new ArrayList<Notification>();
 
-        for(Identity identity : users) {
+        for (Identity identity : users) {
             RZMUser user = (RZMUser) identity;
             for (Role role : user.getRoles()) {
                 SystemRole systemRole = (SystemRole) role;
@@ -36,11 +36,11 @@ public class ContactNotifier extends ProcessStateNotifier {
                 Map<String, String> values = new HashMap<String, String>();
                 values.put("roleName", systemRole.getTypeName());
                 values.put("domainName", domainName);
-                values.put("mustAccept", (systemRole.isMustAccept())? "must" : "are allowed to");
+                values.put("mustAccept", (systemRole.isMustAccept()) ? "must" : "are allowed to");
                 values.put("transactionId", "" + transactionId);
                 values.put("stateName", stateName);
 
-                TemplateContent templateContent = new TemplateContent(notification, values);
+                Content templateContent = templateContentFactory.createContent(notification, values);
                 Notification notification = new Notification(transactionId);
                 notification.addAddressee(user);
                 notification.setContent(templateContent);

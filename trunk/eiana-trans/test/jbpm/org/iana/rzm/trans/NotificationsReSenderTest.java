@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 /**
- * @author: piotrt
+ * @author: Piotr Tkaczyk
  */
 @Test(sequential = true, groups = {"eiana-trans", "notificationsReSender"})
 public class NotificationsReSenderTest extends TransactionalSpringContextTests {
@@ -70,7 +70,7 @@ public class NotificationsReSenderTest extends TransactionalSpringContextTests {
         }
     }
 
-    @Test (dependsOnMethods = {"testReSender"})
+    @Test(dependsOnMethods = {"testReSender"})
     public void testNotificatioUp() throws Exception {
         try {
             ProcessInstance pi = processDAO.getProcessInstance(testProcessInstanceId);

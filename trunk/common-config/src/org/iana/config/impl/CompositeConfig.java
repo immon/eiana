@@ -55,11 +55,12 @@ public class CompositeConfig extends AbstractConfig {
     }
 
     public Config getSubConfig(String name) throws ConfigException {
+        List<Config> subConfigs = new ArrayList<Config>();
         for (Config config : configs) {
             Config conf = config.getSubConfig(name);
-            if (conf != null) return conf;
+            if (conf != null) subConfigs.add(conf);
         }
-        return null;
+        return (subConfigs.isEmpty()) ? null : new CompositeConfig(subConfigs);
     }
 
     public Set<String> getSubConfigNames() throws ConfigException {

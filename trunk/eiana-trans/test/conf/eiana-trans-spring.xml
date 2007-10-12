@@ -24,7 +24,8 @@
     </bean>
 
     <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO" />
+        <constructor-arg index="0" ref="notificationDAO"/>
+        <constructor-arg index="1" ref="mockContentConverter"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
@@ -38,7 +39,8 @@
         <constructor-arg value="mailer"/>
         <constructor-arg value="fromAddress"/>
         <constructor-arg value="username"/>
-        <constructor-arg value=""/> <!--Password-->
+        <constructor-arg value=""/>
+        <!--Password-->
     </bean>
 
     <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSenderBean">
@@ -96,7 +98,7 @@
     </bean>
 
     <bean id="hostManager" class="org.iana.rzm.domain.HostManagerBean">
-        <constructor-arg ref="hostDAO" />
+        <constructor-arg ref="hostDAO"/>
     </bean>
 
     <bean id="hostDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -150,7 +152,7 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="ticketingService"/>
-        </constructor-arg>        
+        </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>
         </constructor-arg>
@@ -160,8 +162,11 @@
         <constructor-arg>
             <ref bean="NotificationSenderBean"/>
         </constructor-arg>
+        <constructor-arg>
+            <ref bean="mockTechnicalCheckHelper"/>
+        </constructor-arg>
     </bean>
-    
+
     <bean id="testTransactionManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="proxyInterfaces">
             <list>
@@ -188,7 +193,7 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="ticketingService"/>
-        </constructor-arg>        
+        </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>
         </constructor-arg>
@@ -197,6 +202,9 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="mockTechnicalCheckHelper"/>
         </constructor-arg>
     </bean>
 
@@ -224,6 +232,24 @@
         </bean>0
     
     -->
+
+    <!-- Mock Content Converter -->
+
+    <bean id="templateContentFactoryBean" class="org.iana.notifications.TemplateContentFactoryBean">
+        <constructor-arg ref="mockContentConverter"/>
+    </bean>
+
+    <bean id="mockContentConverter" class="org.iana.rzm.trans.MockContentConverter">
+    </bean>
+
+    <!-- Mock Technical Check Helper -->
+
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.MockTechnicalCheckHelper">
+    </bean>
+
+    <bean id="mockTechnicalCheckHelper" class="org.iana.rzm.trans.MockTechnicalCheckHelper">
+    </bean>
+
     <!-- transactional properties -->
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -261,7 +287,7 @@
         </property>
     </bean>
 
-    <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory" />
+    <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory"/>
 
     <bean id="jbpmConfiguration"
           class="org.jbpm.JbpmConfiguration">
@@ -321,8 +347,8 @@
     </bean>
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
-        <constructor-arg ref="userDAO" />
-        <constructor-arg ref="NotificationManagerBean" />
+        <constructor-arg ref="userDAO"/>
+        <constructor-arg ref="NotificationManagerBean"/>
     </bean>
 
     <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -389,7 +415,8 @@
     </bean>
 
     <bean id="notificationManagerTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg ref="notifDAOTarget" />
+        <constructor-arg index="0" ref="notifDAOTarget"/>
+        <constructor-arg index="1" ref="mockContentConverter"/>
     </bean>
 
 </beans>

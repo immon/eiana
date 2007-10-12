@@ -1,5 +1,6 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 
@@ -9,9 +10,14 @@ import org.jbpm.graph.exe.ExecutionContext;
  * when an exception is thrown.
  *
  * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 public abstract class ActionExceptionHandler implements ActionHandler {
+    protected CheckHelper technicalCheckHelper;
+
     final public void execute(ExecutionContext executionContext) throws Exception {
+
+        technicalCheckHelper = (CheckHelper) executionContext.getJbpmContext().getObjectFactory().createObject("technicalCheckHelperBean");
         try {
             doExecute(executionContext);
         } catch (Exception e) {

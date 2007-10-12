@@ -1,7 +1,6 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
 import org.jbpm.graph.exe.ExecutionContext;
-import org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper;
 
 /**
  * This class performs required technical checks and decides to which state a process
@@ -17,8 +16,8 @@ public class TechnicalCheck extends DecisionExceptionHandler {
 
     public String doDecide(ExecutionContext executionContext) throws Exception {
         if (doTest) {
-            if (!TechnicalCheckHelper.check(executionContext, period))
-                return "error";    
+            if (!technicalCheckHelper.check(executionContext, period))
+                return "error";
         }
         return "test-ok";
     }
