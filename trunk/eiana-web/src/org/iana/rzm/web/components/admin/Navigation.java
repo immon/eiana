@@ -80,7 +80,6 @@ public abstract class Navigation extends BaseComponent {
 
 
     public void viewDomains(){
-
         AdminPage page = (AdminPage) getPage();
         page.resetStateIfneeded();
 

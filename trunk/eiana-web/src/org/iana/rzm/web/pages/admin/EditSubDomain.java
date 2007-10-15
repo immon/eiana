@@ -5,12 +5,14 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 
 import java.util.*;
 
-public abstract class EditSubDomain extends AdminPage implements SubDomainAttributeEditor, PageBeginRenderListener {
+public abstract class EditSubDomain extends AdminPage
+    implements SubDomainAttributeEditor, PageBeginRenderListener, IExternalPage {
 
     @Component(id = "editor", type = "SubDomainEditor", bindings = {
         "editor=prop:editor", "registryUrl=prop:registryUrl", "whoisServer=prop:whoisServer"
@@ -38,28 +40,65 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
 
     @Persist("client:page")
     public abstract long getDomainId();
-
     public abstract void setDomainId(long id);
 
     @Persist("client:page")
     public abstract String getOriginalWhoisServer();
-
     public abstract void setOriginalWhoisServer(String server);
 
     @Persist("client:page")
     public abstract String getOriginalRegistryUrl();
-
     public abstract void setOriginalRegistryUrl(String url);
 
-
+    @Persist("client:page")
     public abstract void setRegistryUrl(String url);
+    public abstract String getRegistryUrl();
 
+    @Persist("client:page")
     public abstract void setWhoisServer(String server);
+    public abstract String getWhoisServer();
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
+    public abstract DomainVOWrapper getModifiedDomain();
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getDomainId(), getWhoisServer(),getRegistryUrl(), getCallback(), getModifiedDomain()
+        };
+    }
+
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+        if(parameters.length < 4){
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
+        Long domainId = (Long) parameters[0];
+        setDomainId(domainId);
+        setWhoisServer((String) parameters[1]);
+        setRegistryUrl((String) parameters[2]);
+        setCallback((ICallback) parameters[3]);
+        try{
+            restoreCurrentDomain(getDomainId());
+            if(parameters.length > 5 && parameters[4] != null){
+                restoreModifiedDomain((DomainVOWrapper) parameters[5]);
+            }
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        }
+    }
+
 
     public void pageBeginRender(PageEvent event) {
         setModifiedDomain(getVisitState().getMmodifiedDomain());
+        try {
+            if (getOriginalRegistryUrl() == null || getOriginalWhoisServer() == null) {
+                SystemDomainVOWrapper domain = getAdminServices().getDomain(getDomainId());
+                setOriginalRegistryUrl(domain.getRegistryUrl());
+                setOriginalWhoisServer(domain.getWhoisServer());
+            }
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        }
     }
 
     public SubDomainAttributeEditor getEditor() {
@@ -80,7 +119,8 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList( getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(
+            getDomainId()).getName()), getRzmServices()));
         return page;
     }
 
@@ -93,5 +133,5 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
         getCallback().performCallback(getRequestCycle());
     }
 
-     
+
 }

@@ -12,7 +12,6 @@
     <property name="jar.output.dir" value="${output.dir}/jar"/>
     <property name="war.output.dir" value="${output.dir}/war"/>
     <property name="config.dir" value="../conf"/>
-    <property name="config.dir" value="../conf"/>
     <property name="hibernate.dir" value="${config.dir}/hibernate"/>
     <property name="tests" value="../tests"/>
     <property name="test.report.output" location="${tests}/reports"/>
@@ -110,7 +109,7 @@
         <fileset dir="${jar.output.dir}">
             <include name="**/*.jar"/>
         </fileset>
-        <fileset dir="${lib.dir}/apa?che-commons">
+        <fileset dir="${lib.dir}/apache-commons">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${lib.dir}/nask-commons">
@@ -259,6 +258,9 @@
         <jar destfile="${jar.output.dir}/config.jar">
             <fileset dir="${config.dir}/hibernate"/>
             <fileset dir="${config.dir}/spring"/>
+            <fileset dir="${config.dir}/epp">
+                <exclude name="test"/>
+             </fileset>
         </jar>
     </target>
 

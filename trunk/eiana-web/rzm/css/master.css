@@ -141,6 +141,7 @@ strong {
 /* page specific: [rzm-loginpage] */
 
 .edit input.field, textarea.field { width: 350px; }
+select.field { width: 175px;}
 
 .loginbox {
 

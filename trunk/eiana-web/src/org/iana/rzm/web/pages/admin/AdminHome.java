@@ -92,6 +92,7 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
 
     public void createNew(){
         DomainSelection domainSelection = getDomainSelection();
+        domainSelection.resetStateIfneeded();
         domainSelection.setCallback(new RzmCallback(PAGE_NAME));
         getRequestCycle().activate(domainSelection);
     }

@@ -5,6 +5,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.*;
@@ -12,7 +13,7 @@ import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
-public abstract class EditNameServerList extends AdminPage implements PageBeginRenderListener, NameServerAttributesEditor {
+public abstract class EditNameServerList extends AdminPage implements PageBeginRenderListener, NameServerAttributesEditor, IExternalPage {
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:isRequestPending"})
     public abstract IComponent getPendingRequestsComponent();
@@ -60,6 +61,34 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
     public NameServerAttributesEditor getEditor() {
         return this;
+    }
+
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getDomainId(), getNameServerListValue(), getCallback(), getModifiedDomain()
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+        if(parameters.length < 3){
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
+        Long domainId = (Long) parameters[0];
+        setDomainId(domainId);
+        setNameServerListValue((List<NameServerValue>) parameters[1]);
+        setCallback((ICallback) parameters[2]);
+        try{
+            restoreCurrentDomain(getDomainId());
+            if(parameters.length > 3 && parameters[3] != null){
+                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
+            }
+
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        }
     }
 
     public void pageBeginRender(PageEvent event) {

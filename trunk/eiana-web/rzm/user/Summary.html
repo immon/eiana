@@ -22,11 +22,12 @@
             <div jwcid="@If" condition="prop:showTiketingErrorMessage" element="literal:div"  style="margin: 10px 0 0 0; padding: 10px; border: 1px solid #F8EC00; display: block;" class="grey">
                     <strong>
                         <span class="alert">
-                            Your request has been queued. You will get an email with a reference number.  
+                            <p>Your requests has been queued for processing. You will be notified via email when a reference number will be assigned.</p>
+                            <p>You can always monitor the progress of the requests via root zone management interface. </p>
                         </span>
                     </strong>
             </div>
-            <div style="margin: 20px 0 40px 0;">
+            <div jwcid="@Else" element="literal:div" style="margin: 20px 0 40px 0;">
                 <p>Your requests have been lodged! </p>
 				<p>&nbsp;</p>
 				<p>Below you will find an explanation of the change requests, along with a reference number. This number can be used when speaking with IANA staff to confirm the details of this request. The contacts for this domain will also receive the confirmation via email. </p>

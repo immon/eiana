@@ -9,7 +9,7 @@ import org.iana.rzm.web.model.*;
 
 import java.util.*;
 
-public abstract class Summary extends AdminPage {
+public abstract class Summary extends AdminPage implements PageBeginRenderListener{
 
     public static final String PAGE_NAME = "admin/Summary";
 
@@ -74,7 +74,6 @@ public abstract class Summary extends AdminPage {
 
     public abstract void setSummaryValue(SummaryBean bean);
 
-    @InitialValue("false")
     public abstract void setShowTiketingErrorMessage(boolean flag);
 
     public void pageBeginRender(PageEvent event) {
