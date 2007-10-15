@@ -103,7 +103,8 @@ public abstract class AdminBorder extends Border {
     }
 
     public String getSearchLabel() {
-        String type = getSelected();
+        String type =
+            getSelected();
         if (type.equals("REQUESTS")) {
             return "Request:";
         } else if (type.equals("USERS")) {

@@ -12,7 +12,9 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="build.module.classpath"/>
+  <path id="build.module.classpath">
+    <path refid="library.epp.classpath"/>
+  </path>
   
   
   <patternset id="excluded.from.module.build">

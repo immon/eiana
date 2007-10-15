@@ -7,7 +7,7 @@ import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.model.*;
 
-public abstract class EditAdminUser extends AdminPage implements UserAttributeEditor, EntityIdPage, PageBeginRenderListener {
+public abstract class EditAdminUser extends AdminPage implements UserAttributeEditor, EntityIdPage, PageBeginRenderListener, IExternalPage {
 
     @Component(id = "userEditor", type = "AdminUserEditor", bindings = {"create=literal:false", "listener=prop:editor", "user=prop:user"})
     public abstract IComponent getEditorComponent();
@@ -15,7 +15,7 @@ public abstract class EditAdminUser extends AdminPage implements UserAttributeEd
     @InjectPage("admin/Users")
     public abstract Users getUsersPage();
 
-    @Persist("client:form")
+    @Persist("client:page")
     public abstract long getUserId();
     public abstract void setUserId(long userId);
 
@@ -23,6 +23,22 @@ public abstract class EditAdminUser extends AdminPage implements UserAttributeEd
 
     public void setEntityId(long id){
         setUserId(id);
+    }
+
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getUserId()
+        };
+    }
+
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+        if(parameters.length == 0){
+            getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        Long userId = (Long) parameters[0];
+        setUserId(userId);
     }
 
      public void pageBeginRender(PageEvent event){

@@ -216,6 +216,10 @@ public abstract class EditDomain extends AdminPage
         return getVisitState().getCurrentDomain(getDomainId()).isOperationPending();
     }
 
+    public void resetStateIfneeded() {
+        getVisitState().resetModifirdDomain();
+    }
+
     private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
 
         private AdminServices services;

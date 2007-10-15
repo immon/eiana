@@ -22,6 +22,7 @@
     <pathelement location="${common-codevalues.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.hibernate.classpath"/>
+    <path refid="library.epp.classpath"/>
   </path>
   
   

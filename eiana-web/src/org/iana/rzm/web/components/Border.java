@@ -82,10 +82,6 @@ public abstract class Border extends BaseComponent {
     }
 
     public IAsset getBackground(){
-        if (isLoginPage()){
-            return getLoginImage();
-        }
-
         return getSiteLogo();
     }
 

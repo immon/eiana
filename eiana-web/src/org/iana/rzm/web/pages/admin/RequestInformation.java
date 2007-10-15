@@ -9,7 +9,7 @@ import org.iana.rzm.web.model.*;
 import java.util.*;
 
 
-public abstract class RequestInformation extends AdminPage implements PageBeginRenderListener {
+public abstract class RequestInformation extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
     public static final String PAGE_NAME = "admin/RequestInformation";
 

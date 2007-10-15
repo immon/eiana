@@ -1,13 +1,11 @@
 package org.iana.rzm.web.components.user;
 
-import org.apache.hivemind.ApplicationRuntimeException;
-import org.apache.tapestry.IMarkupWriter;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.ComponentClass;
-import org.apache.tapestry.annotations.Parameter;
-import org.apache.tapestry.components.Insert;
+import org.apache.hivemind.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.components.*;
 
-import java.text.Format;
+import java.text.*;
 
 @ComponentClass(allowBody = false)
 public abstract class RzmInsert extends Insert {
@@ -79,7 +77,7 @@ public abstract class RzmInsert extends Insert {
     }
 
     private boolean valueHsChanged(Object value, Object originalValue) {
-        return !value.equals(originalValue);
+        return !value.toString().trim().equals(originalValue.toString().trim());
     }
 
 }

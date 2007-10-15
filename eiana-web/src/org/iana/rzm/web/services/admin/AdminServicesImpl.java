@@ -77,7 +77,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException {
         try {
-            TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO());
+                TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO());
             return new TransactionActionsVOWrapper(vo);
         } catch (NoObjectFoundException e) {
             LOGGER.warn("NoObjectFoundException", e);

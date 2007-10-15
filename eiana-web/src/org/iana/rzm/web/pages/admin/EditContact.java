@@ -10,7 +10,8 @@ import org.iana.rzm.web.model.*;
 
 import java.util.*;
 
-public abstract class EditContact extends AdminPage implements PageBeginRenderListener, ContactAttributesEditor {
+public abstract class EditContact extends AdminPage
+    implements PageBeginRenderListener, ContactAttributesEditor, IExternalPage {
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:requestsPending"})
     public abstract IComponent getPendingRequestsComponent();
@@ -43,6 +44,7 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
 
     @Persist("client:page")
     public abstract ICallback getCallback();
+
     public abstract void setCallback(ICallback callback);
 
     public abstract void setOriginalContact(ContactVOWrapper contact);
@@ -59,16 +61,44 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getDomainId(), getContactType(), getContactAttributes(), getCallback(), getModifiedDomain()
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
+        if (parameters.length < 4) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
+        Long domainId = (Long) parameters[0];
+        setDomainId(domainId);
+        setContactType((String) parameters[1]);
+        setContactAttributes((Map<String, String>) parameters[2]);
+        setCallback((ICallback) parameters[3]);
+        try {
+            restoreCurrentDomain(getDomainId());
+            if (parameters.length > 4 && parameters[4] != null) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[4]);
+            }
+        } catch (NoObjectFoundException e) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
+    }
+
+
     public void pageBeginRender(PageEvent event) {
-
         setModifiedDomain(getVisitState().getMmodifiedDomain());
-
         if (getContactAttributes() == null) {
             setContactAttributes(new HashMap<String, String>());
         }
 
         try {
-            if(getOriginalContact() == null){
+            if (getOriginalContact() == null) {
                 DomainVOWrapper domain = getRzmServices().getDomain(getDomainId());
                 String sid = getContactAttributes().get(ContactVOWrapper.ID);
                 ContactVOWrapper contactVOWrapper = domain.getContact(Long.parseLong(sid), getContactType());
@@ -78,27 +108,6 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
     }
-
-    //@SuppressWarnings("unchecked")
-    //public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
-    //
-    //    if (parameters.length == 0 || parameters.length < 3) {
-    //        getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
-    //    }
-    //
-    //    setContactAttributes((Map<String, String>) parameters[0]);
-    //    setContactType(parameters[1].toString());
-    //    setDomainId((Long) parameters[2]);
-    //    try {
-    //        restoreCurrentDomain(getDomainId());
-    //        if (parameters.length == 4) {
-    //            restoreModifiedDomain((DomainVOWrapper) parameters[3]);
-    //        }
-    //    } catch (NoObjectFoundException e) {
-    //        getExternalPageErrorHandler().handleExternalPageError("System Error restoring session");
-    //    }
-    //}
-
 
     public AttributesEditor getContactEditor() {
         return this;
@@ -125,7 +134,8 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(
+            getDomainId()).getName()), getRzmServices()));
         return page;
     }
 
@@ -142,7 +152,6 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
     //    }
     //    return new Object[]{getContactAttributes(), getContactType(), getDomainId()};
     //}
-
 
 
 }
