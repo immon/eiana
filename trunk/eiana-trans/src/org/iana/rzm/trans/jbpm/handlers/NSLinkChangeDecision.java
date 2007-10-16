@@ -9,13 +9,11 @@ import org.jbpm.graph.exe.ExecutionContext;
  */
 public class NSLinkChangeDecision extends DecisionExceptionHandler {
 
-    boolean doTest;
-
     public String doDecide(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         if (td != null) {
             ObjectChange change = td.getDomainChange();
-            if ((change != null) && (doTest)) {
+            if ((change != null)) {
                 if (change.getFieldChanges().containsKey("nameServers"))
                     //todo    link must be checked
                     return "yes";
