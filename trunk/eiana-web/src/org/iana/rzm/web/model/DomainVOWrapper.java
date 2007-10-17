@@ -8,7 +8,6 @@ import java.util.*;
 
 public abstract class DomainVOWrapper extends ValueObject implements PaginatedEntity {
 
-
     public enum Status {
         NEW("New"), ACTIVE("Active"), CLOSE("Close");
 

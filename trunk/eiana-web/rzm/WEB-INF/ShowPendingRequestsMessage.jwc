@@ -6,7 +6,7 @@
 
 <component-specification>
     <parameter name="listener" required="true"/>
-    <parameter name="pendigRequestMessage" default-value="literal:There is Request Pending for this domain. Edits to this domain are disabled until the currently outstanding request is resolved  "/>
+    <parameter name="pendigRequestMessage" default-value="literal:Request is pending for this domain. Edits to this domain are disabled until the currently outstanding request is resolved  "/>
 
     <component id="link" type="DirectLink">
         <binding name="listener" value="ognl:listener"/>

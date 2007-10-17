@@ -80,9 +80,7 @@ public class Visit implements Serializable {
     }
 
     public void markAsVisited(DomainVOWrapper domain) {
-        if(!visitedDomains.containsKey(domain.getId())){
             visitedDomains.put(domain.getId(), domain);
-        }
     }
 
     public void markAsNotVisited(long domainId) {
