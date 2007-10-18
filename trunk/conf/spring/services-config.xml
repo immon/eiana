@@ -36,7 +36,7 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.AdminNotificationServiceImpl"
+    <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="NotificationManagerBean"/>
@@ -628,7 +628,7 @@
                                   execution(public * org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.trans.TransactionDetectorService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.admin.trans.AdminNotificationService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.*(..)) ||

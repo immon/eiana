@@ -126,12 +126,12 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
         }
     }
 
-    public void resendNotification(long transactionId, NotificationVO.Type type, String comment, Collection<String> emails) throws InfrastructureException, FacadeTransactionException {
+    public void resendNotification(long transactionId, NotificationVO.Type type, String comment, String addresseeEmail) throws InfrastructureException, FacadeTransactionException {
         isUserInRole();
-        CheckTool.checkCollectionNullOrEmpty(emails, "emails cannot be null or empty");
+        if (addresseeEmail == null) resendNotification(transactionId, type, comment);
         try {
             Set<Addressee> addressee = new HashSet<Addressee>();
-            for (String email : emails) addressee.add(new EmailAddressee(email, ""));
+            addressee.add(new EmailAddressee(addresseeEmail, ""));
 
             if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
                 Transaction transaction = transactionManager.getTransaction(transactionId);
