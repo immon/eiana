@@ -16,7 +16,7 @@ import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.trans.AdminNotificationService;
+import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
@@ -149,7 +149,7 @@ public class ResendNotificationTest {
         sts.setUser(au);
         sts.acceptTransaction(transactionID, token);
 
-        nts.resendNotification(transactionID, NotificationVO.Type.CONTACT_CONFIRMATION, NOTIFICATION_COMMENT);
+        nts.resendNotification(transactionID, NotificationVO.Type.CONTACT_CONFIRMATION, NOTIFICATION_COMMENT, null);
     }
 
     public void testResendUSDoCOutstandingConfirmationNotification() throws Exception {
@@ -166,7 +166,7 @@ public class ResendNotificationTest {
         ats.transitTransaction(transactionID, "admin-accept");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
 
-        nts.resendNotification(transactionID, NotificationVO.Type.USDOC_CONFIRMATION, NOTIFICATION_COMMENT);
+        nts.resendNotification(transactionID, NotificationVO.Type.USDOC_CONFIRMATION, NOTIFICATION_COMMENT, null);
     }
 
     private Long createDomainModificationProcess() throws Exception {

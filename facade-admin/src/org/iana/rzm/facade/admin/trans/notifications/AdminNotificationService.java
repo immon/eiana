@@ -53,8 +53,6 @@ public interface AdminNotificationService extends RZMStatefulService {
      * @param comment to be added at the beginning of the notification body content.
      * @throws InfrastructureException when resending notification failed.
      */
-    public void resendNotification(long transactionId, NotificationVO.Type type, String comment) throws InfrastructureException, FacadeTransactionException;
-
-    public void resendNotification(long transactionId, NotificationVO.Type type, String comment, Collection<String> addresseeEmails) throws InfrastructureException, FacadeTransactionException;
+    public void resendNotification(long transactionId, NotificationVO.Type type, String comment,  String email) throws InfrastructureException, FacadeTransactionException;
 
 }
