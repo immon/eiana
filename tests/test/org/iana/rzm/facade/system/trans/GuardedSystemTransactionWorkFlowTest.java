@@ -277,11 +277,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] workFlowNoNSChangeLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
             {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
