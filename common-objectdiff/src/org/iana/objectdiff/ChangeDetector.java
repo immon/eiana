@@ -55,7 +55,14 @@ public class ChangeDetector {
     static private Change diffSimple(Object src, Object dst) {
         if (isEmpty(src) && isEmpty(dst)) return null;
         if (src == null || dst == null) return new SimpleChange(src, dst);
-        return src.equals(dst) ? null : new SimpleChange(src, dst);
+        String ssrc = normalize(src);
+        String sdst = normalize(dst);
+        return ssrc.equals(sdst) ? null : new SimpleChange(src, dst);
+    }
+
+    static private String normalize(Object o) {
+        String s = String.valueOf(o).trim();
+        return s.replaceAll("(\\s)+", " ");
     }
 
     static private boolean isEmpty(Object o) {
