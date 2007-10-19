@@ -22,6 +22,14 @@ public class ObjectChangeDetectorTest {
     }
     
     @Test
+    public void testObjectAEqual_IgnoreWhitespace() {
+        ObjectA object1 = new ObjectA("a\ra", "str1\rx", Boolean.TRUE);
+        ObjectA object2 = new ObjectA(" a  a", "str1\nx", Boolean.TRUE);
+        Change change = ChangeDetector.diff(object1, object2, config);
+        assert change == null;
+    }
+
+    @Test
     public void testObjectAAddition() {
         ObjectA object = new ObjectA("a", "str1", Boolean.TRUE);
         Change change = ChangeDetector.diff(null, object, config);
