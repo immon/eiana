@@ -7,7 +7,7 @@ import org.iana.dns.check.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.domain.*;
 import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
+import org.iana.rzm.facade.admin.trans.notifications.*;
 import org.iana.rzm.facade.admin.users.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
@@ -255,9 +255,9 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         return domainTypesService.getDomainTypes();
     }
 
-    public void sendNotification(long requestId, NotificationVOWrapper notification, String comment) throws FacadeTransactionException {
+    public void sendNotification(long requestId, NotificationVOWrapper notification, String comment, String email) throws FacadeTransactionException {
         try {
-            notificationService.resendNotification(requestId, notification.getType().voType(), comment, null);
+            notificationService.resendNotification(requestId, notification.getType().voType(), comment, email);
         } catch (InfrastructureException e) {
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);
