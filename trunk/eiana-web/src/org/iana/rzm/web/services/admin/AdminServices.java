@@ -61,5 +61,5 @@ public interface AdminServices extends RzmServices {
 
     public Set<Value> getDomainTypes();
 
-    public void sendNotification(long transactionId, NotificationVOWrapper vo, String comment )throws FacadeTransactionException;
+    public void sendNotification(long transactionId, NotificationVOWrapper vo, String comment, String email)throws FacadeTransactionException;
 }

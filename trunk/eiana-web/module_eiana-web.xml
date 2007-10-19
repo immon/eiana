@@ -87,7 +87,7 @@
   
       <target name="compile.module.eiana-web.production" depends="compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.conf,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-templates,compile.module.eiana-startup,compile.module.common-criteria,compile.module.common-codevalues,compile.module.common-dns,compile.module.common-config" description="Compile module eiana-web; production classes">
         <mkdir dir="${eiana-web.output.dir}"/>
-        <javac destdir="${eiana-web.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+        <javac  destdir="${eiana-web.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
           <classpath refid="eiana-web.module.classpath"/>
           <src refid="eiana-web.module.sourcepath"/>
           <patternset refid="excluded.from.compilation.eiana-web"/>

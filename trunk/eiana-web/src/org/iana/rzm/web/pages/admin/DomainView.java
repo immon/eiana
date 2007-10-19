@@ -196,8 +196,9 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
             if (getOriginalDomain() == null) {
                 DomainVOWrapper domain = getAdminServices().getDomain(getDomainId());
                 setOriginalDomain(domain);
-                getVisitState().markAsVisited(domain);
-                setModifiedDomain(getVisitState().getMmodifiedDomain());
+                DomainVOWrapper mdomain = getVisitState().getMmodifiedDomain();
+                setModifiedDomain(mdomain);
+                getVisitState().markAsVisited(mdomain != null ? mdomain : domain);
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);

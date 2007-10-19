@@ -167,9 +167,10 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             if(domain == null){
                 domain = getUserServices().getDomain(getDomainId());
             }
-            getVisitState().markAsVisited(domain);
+            DomainVOWrapper modifiedDomain = getVisitState().getMmodifiedDomain();
+            setModifiedDomain(modifiedDomain);
+            getVisitState().markAsVisited(modifiedDomain == null ? domain : modifiedDomain);
             setOriginalDomain(domain);
-            setModifiedDomain(getVisitState().getMmodifiedDomain());
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         }catch(AccessDeniedException e){

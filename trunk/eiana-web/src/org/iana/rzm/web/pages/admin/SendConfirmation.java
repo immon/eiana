@@ -4,14 +4,15 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
 
 import java.io.*;
 import java.util.*;
 
-public abstract class SendConfirmation extends AdminPage implements PageBeginRenderListener {
+public abstract class SendConfirmation extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
     public final static String PAGE_NAME = "admin/SendConfirmation";
 
@@ -23,6 +24,10 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
     @Component(id = "text", type = "TextArea", bindings = {
         "displayName=literal:Comment:", "value=prop:text"})
     public abstract IComponent getTextComponent();
+
+    @Component(id = "email", type = "TextField", bindings = {
+        "displayName=literal:Email", "value=prop:email", "validators=validators:email"})
+    public abstract IComponent getEmailComponent();
 
     @Component(id = "notificationTypes", type = "PropertySelection", bindings = {
         "displayName=literal:Confirmations:", "model=prop:model", "value=prop:confirmation"
@@ -36,13 +41,16 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
     public abstract IComponent getCancelComponent();
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:request.domainName", "request=prop:request"})
+        "domainName=prop:request.domainName", "request=prop:request", "linkTragetPage=prop:linkTarget"})
     public abstract IComponent getRequestSummaryComponent();
+
+    @InjectPage(EditDomain.PAGE_NAME)
+    public abstract EditDomain getEditDomain();
 
     @InjectPage("admin/RequestInformation")
     public abstract RequestInformation getRequestInformationPage();
 
-    @Persist("client:form")
+    @Persist("client:page")
     public abstract long getRequestId();
 
     public abstract void setRequestId(long id);
@@ -54,10 +62,45 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
     public abstract NotificationVOWrapper getConfirmation();
 
     public abstract String getText();
+    public abstract void setText(String text);
+
+    public abstract String getEmail();
+    public abstract void setEmail(String email);
 
     public abstract void setNotifications(List<NotificationVOWrapper> notifications);
 
     public abstract List<NotificationVOWrapper> getNotifications();
+
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getRequestId(),getText(),getEmail()
+        };
+    }
+
+    public LinkTraget getLinkTarget(){
+        return getEditDomain();
+    }
+
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+
+        if(parameters.length == 0 || parameters[0] == null){
+            getExternalPageErrorHandler().handleExternalPageError(
+                    getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        Long requestId = (Long) parameters[0];
+        setRequestId(requestId);
+
+        if(parameters.length >= 1 && parameters[1] != null){
+            setText(parameters[1].toString());
+        }
+
+        if(parameters.length >= 2 && parameters[2] != null){
+            setEmail(parameters[2].toString());
+        }
+
+    }
 
     public void pageBeginRender(PageEvent event) {
         List<NotificationVOWrapper> notifications = getAdminServices().getNotifications(getRequestId());
@@ -80,7 +123,7 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
         NotificationVOWrapper notification = getConfirmation();
         String comment = getText();
         try {
-            getAdminServices().sendNotification(getRequestId(), notification, comment);
+            getAdminServices().sendNotification(getRequestId(), notification, comment, getEmail());
             RequestInformation page = getRequestInformationPage();
             page.setRequestId(getRequestId());
             page.setInfoMessage("The Notification was sent successfully");

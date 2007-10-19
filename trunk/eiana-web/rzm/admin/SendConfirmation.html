@@ -38,11 +38,15 @@
                         <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
                             <tr>
                                 <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:notificationTypes">Confirmation Type:</span></td>
-                                <td align="right" valign="top" class="field">
+                                <td align="right" valign="top">
                                     <span jwcid="notificationTypes"  name="notificationTypes" class="field">
                                         <select><option>Contact Confirmation</option><option>DoC Confirmation</option></select>
                                     </span>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:email">Optional Email Address:</span></td>
+                                <td align="right" valign="top"><input type="text" jwcid="email"  name="email" class="field" onkeypress="return submitOnEnter(event);"/>
                             </tr>
                             <tr>
                                 <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:text">Comment:</span></td>
