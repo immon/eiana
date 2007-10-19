@@ -5,6 +5,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
@@ -36,6 +37,12 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain = new Domain("activitytest2");
         domain.addNameServer(new Host("host3.host"));
         domain.addNameServer(new Host("host4.host"));
+        domain.setSupportingOrg(new Contact("so-name"));
+        domainManager.create(domain);
+
+        domain = new Domain("activitytest3");
+        domain.addNameServer(new Host("host5.host"));
+        domain.addNameServer(new Host("host6.host"));
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
 
@@ -93,6 +100,20 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
 
         closeServices();
+    }
+
+    @Test
+    public void testDomainActivityAfterUpdate() throws Exception {
+        setDefaultUser();
+
+        IDomainVO domain = getDomain("activitytest3");
+        domain.setRegistryUrl("activitytest.registry.url");
+        TransactionVO trans = createTransactions(domain, false).get(0);
+
+        updateTransaction(trans.getTransactionID(), 1l, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.toString(), false);
+
+        domain = getDomain("activitytest3");
+        assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;
     }
 
     @Test
