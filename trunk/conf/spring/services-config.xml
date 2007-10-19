@@ -651,7 +651,8 @@
         <aop:aspect id="jbpmAspect" ref="jbpmAdvisor">
             <aop:pointcut id="jbpmOperation"
                           expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..))"/>
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..))"/>
             <aop:after method="close" pointcut-ref="jbpmOperation"/>
         </aop:aspect>
         <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
