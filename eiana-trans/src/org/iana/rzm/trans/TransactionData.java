@@ -119,6 +119,11 @@ public class TransactionData {
 
     public void addStateLogEntry(TransactionStateLogEntry entry) {
         stateLog.add(entry);
+        updateModified();
+    }
+
+    public void updateModified() {
+        getTrackData().setModified(new Timestamp(System.currentTimeMillis()));        
     }
 
     public Timestamp getCreated() {
