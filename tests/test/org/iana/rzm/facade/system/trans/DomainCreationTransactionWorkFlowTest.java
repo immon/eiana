@@ -78,6 +78,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
@@ -91,6 +92,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
@@ -104,6 +106,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
@@ -117,6 +120,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"}
     };
@@ -132,9 +136,11 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] ACCEPT_IANA_CHECKLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
-            {"gstsignaliana", "PENDING_IANA_CHECK"}
+            {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"}
     };
 
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
@@ -149,9 +155,11 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
     };
 
@@ -168,9 +176,11 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private static final String[][] workFlowWithNSChangeLog = {
             {"default-iana", "PENDING_CREATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
+            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
