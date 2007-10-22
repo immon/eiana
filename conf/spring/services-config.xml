@@ -249,8 +249,8 @@
     <bean id="notificationTemplateManager" class="org.iana.notifications.NotificationTemplateManager">
         <constructor-arg index="0" value="iana-templates.properties"/>
         <constructor-arg index="1" value="templates.xml"/>
-        <property name="configDAO">
-            <ref bean="hibernateConfigDAO"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
         </property>
     </bean>
 
@@ -286,8 +286,8 @@
         <constructor-arg index="2" value="rzm@iana.org"/>
         <constructor-arg index="3" value=""/>
         <constructor-arg index="4" value=""/>
-        <property name="configDAO">
-            <ref bean="hibernateConfigDAO"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
         </property>
         <property name="mail.smtp.from">
             <value>rt-sender@rs.icann.org</value>
@@ -423,6 +423,12 @@
 
     <!-- Config configuration -->
 
+    <bean id="parameterManager" class="org.iana.config.impl.ParameterManagerImpl">
+        <constructor-arg>
+            <ref bean="hibernateConfigDAO"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="hibernateConfigDAO" class="org.iana.config.impl.HibernateConfigDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
@@ -544,8 +550,8 @@
         <constructor-arg index="1" value="rzm-dev"/>
         <constructor-arg index="2" value="upowilgeod"/>
         <constructor-arg index="3" value="[RZM]"/>
-        <property name="configDAO">
-            <ref bean="hibernateConfigDAO"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
         </property>
         <property name="port">
             <value>995</value>
@@ -647,7 +653,9 @@
                                   execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.user.RoleManagerBean.*(..)) ||
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
-                                  execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..))"/>
+                                  execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
+                                  execution(public * org.iana.config.ConfigDAO.*(..)) || 
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>

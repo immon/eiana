@@ -17,6 +17,8 @@ import org.testng.annotations.Test;
 @Test(sequential = true, groups = {"test", "NotificationsTemplateManagerTest"})
 public class NotificationsTemplateManagerTest {
 
+    private static final String NOTIFICATION_TYPE = "contact-confirmation-remainder";
+
     private NotificationTemplateManager notificationTemplateManager;
     private ConfigDAO hibernateConfigDAO;
 
@@ -25,34 +27,40 @@ public class NotificationsTemplateManagerTest {
         ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
         notificationTemplateManager = (NotificationTemplateManager) ctx.getBean("notificationTemplateManager");
         hibernateConfigDAO = (ConfigDAO) ctx.getBean("hibernateConfigDAO");
-    }
 
-    @Test
-    public void doTest() throws Exception {
+        //create notification template in config
         String value = "<iana:template>\n" +
                 "        <iana:type>contact-confirmation-remainder</iana:type>\n" +
                 "        <iana:subject>{transactionId} | {stateName} | [RZM] | {domainName}</iana:subject>\n" +
                 "        <iana:content>FROM DATABASE</iana:content>\n" +
-                "    </iana:template>";
-        String type = "contact-confirmation-remainder";
-        String name = NotificationTemplateManager.class.getSimpleName() + "." + type;
+                "       </iana:template>";
+        String name = NotificationTemplateManager.class.getSimpleName() + "." + NOTIFICATION_TYPE;
+//        List<String> values = new ArrayList<String>(1);
+//        values.add(value);
         SingleParameter param = new SingleParameter(name, value);
         param.setOwner(Config.DEFAULT_OWNER);
         param.setFromDate(System.currentTimeMillis());
         hibernateConfigDAO.addParameter(param);
+    }
 
-        NotificationTemplate template = notificationTemplateManager.getNotificationTemplate(type);
+    @Test
+    public void doTest() throws Exception {
+
+        NotificationTemplate template = notificationTemplateManager.getNotificationTemplate(NOTIFICATION_TYPE);
 
         assert template != null;
-        assert template.getType().equals(type);
+        assert template.getType().equals(NOTIFICATION_TYPE);
         assert template.getContent().equals("FROM DATABASE");
 
+        //remove notification template from config
+        String name = NotificationTemplateManager.class.getSimpleName() + "." + NOTIFICATION_TYPE;
         hibernateConfigDAO.removeParameter(Config.DEFAULT_OWNER, name);
 
-        template = notificationTemplateManager.getNotificationTemplate(type);
+        //notification taken from mapper
+        template = notificationTemplateManager.getNotificationTemplate(NOTIFICATION_TYPE);
 
         assert template != null;
-        assert template.getType().equals(type);
+        assert template.getType().equals(NOTIFICATION_TYPE);
         assert !template.getContent().equals("FROM DATABASE");
     }
 }

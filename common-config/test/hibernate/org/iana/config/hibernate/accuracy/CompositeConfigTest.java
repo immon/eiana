@@ -2,6 +2,7 @@ package org.iana.config.hibernate.accuracy;
 
 import org.iana.config.Config;
 import org.iana.config.ConfigDAO;
+import org.iana.config.ParameterManager;
 import org.iana.config.conf.SpringConfigApplicationContext;
 import org.iana.config.impl.CompositeConfig;
 import org.iana.config.impl.ConfigException;
@@ -23,6 +24,8 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
     private static final String OWNER = "me";
 
     protected ConfigDAO hibernateConfigDAO;
+
+    protected ParameterManager parameterManager;
 
     public CompositeConfigTest() {
         super(SpringConfigApplicationContext.CONFIG_FILE_NAME);
@@ -46,7 +49,7 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
         hibernateConfigDAO.addParameter(singleParam2);
 
         List<Config> configs = new ArrayList<Config>();
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
 
         configs.add(ownedConfig.getSubConfig("sub1"));
         configs.add(ownedConfig);
@@ -60,7 +63,7 @@ public class CompositeConfigTest extends TransactionalSpringContextTests {
     @Test(dependsOnMethods = "testCompositeConfig")
     public void testCompositeConfig2() throws ConfigException {
         List<Config> configs = new ArrayList<Config>();
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
 
         configs.add(ownedConfig);
         configs.add(ownedConfig.getSubConfig("sub1"));

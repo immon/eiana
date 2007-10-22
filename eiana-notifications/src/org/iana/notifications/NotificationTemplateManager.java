@@ -4,7 +4,7 @@
 package org.iana.notifications;
 
 import org.iana.config.Config;
-import org.iana.config.ConfigDAO;
+import org.iana.config.ParameterManager;
 import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.OwnedConfig;
 import org.iana.notifications.exception.InitializationNotificationException;
@@ -46,8 +46,8 @@ public class NotificationTemplateManager {
         }
     }
 
-    public void setConfigDAO(ConfigDAO dao) throws ConfigException {
-        templateConfig = new OwnedConfig(dao).getSubConfig(getClass().getSimpleName());
+    public void setConfig(ParameterManager manager) throws ConfigException {
+        templateConfig = new OwnedConfig(manager).getSubConfig(getClass().getSimpleName());
     }
 
     public NotificationTemplate getNotificationTemplate(String type) throws NotificationException {

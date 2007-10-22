@@ -10,6 +10,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.jbpm.JbpmConfiguration;
+import org.jbpm.graph.def.Node;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.scheduler.impl.SchedulerThread;
@@ -58,13 +59,19 @@ public class NotificationsReSenderTest extends TransactionalSpringContextTests {
     }
 
     @Test
-    public void testReSender() throws Exception {
+    public void testReSender() {
         try {
             ProcessInstance pi = processDAO.newProcessInstance("notifications resender");
             testProcessInstanceId = pi.getId();
             Token token = pi.getRootToken();
             token.signal();
-            assert token.getNode().getName().equals("TRY_SEND");
+            Node node = token.getNode();
+            assert node != null;
+            String name = node.getName();
+            assert name != null;
+            assert "TRY_SEND".equals(name);
+        } catch (Exception e) {
+            System.out.print(e);
         } finally {
             processDAO.close();
         }

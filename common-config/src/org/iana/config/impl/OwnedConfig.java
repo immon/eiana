@@ -1,10 +1,8 @@
 package org.iana.config.impl;
 
 import org.iana.config.Config;
-import org.iana.config.ConfigDAO;
-import org.iana.config.Parameter;
+import org.iana.config.ParameterManager;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,33 +22,30 @@ public class OwnedConfig extends AbstractConfig {
 
     private String owner;
 
-    private ConfigDAO dao;
+    private ParameterManager manager;
 
-    public OwnedConfig(ConfigDAO dao) {
-        this(DEFAULT_OWNER, dao);
+    public OwnedConfig(ParameterManager manager) {
+        this(DEFAULT_OWNER, manager);
     }
 
-    public OwnedConfig(String owner, ConfigDAO dao) {
+    public OwnedConfig(String owner, ParameterManager manager) {
         if (owner == null || owner.trim().length() == 0)
             throw new IllegalArgumentException("owner cannot be null or empty");
-        if (dao == null) throw new IllegalArgumentException("config DAO cannot be null");
+        if (manager == null) throw new IllegalArgumentException("parameterManager cannot be null");
         this.owner = owner;
-        this.dao = dao;
+        this.manager = manager;
     }
 
     public String getParameter(String name) throws ConfigException {
-        Parameter param = dao.getParameter(owner, name);
-        return (param == null) ? null : param.getParameter();
+        return manager.getParameter(owner, name);
     }
 
     public List<String> getParameterList(String name) throws ConfigException {
-        Parameter param = dao.getParameter(owner, name);
-        return (param == null) ? null : param.getParameterList();
+        return manager.getParameterList(owner, name);
     }
 
     public Set<String> getParameterSet(String name) throws ConfigException {
-        Parameter param = dao.getParameter(owner, name);
-        return (param == null) ? null : param.getParameterSet();
+        return manager.getParameterSet(owner, name);
     }
 
     public Config getSubConfig(String name) {
@@ -58,42 +53,18 @@ public class OwnedConfig extends AbstractConfig {
     }
 
     public Set<String> getSubConfigNames() throws ConfigException {
-        return getSubConfigNames("");
+        return manager.getSubConfigNames(owner, "");
     }
 
     public Set<String> getParameterNames() throws ConfigException {
-        return getParameterNames("");
+        return manager.getParameterNames(owner, "");
     }
 
     protected Set<String> getParameterNames(String name) throws ConfigException {
-        Set<String> ret = new HashSet<String>();
-        Set<String> names = dao.getParameterNames(owner, name);
-        if (names == null || names.isEmpty()) return null;
-        for (String n : names) {
-            if (!name.contains(".") && (!n.contains("."))) {
-                ret.add(n);
-            } else {
-                int dotIndex = n.lastIndexOf(".");
-                if (dotIndex > 0 && n.substring(0, dotIndex).equals(name))
-                    ret.add(n.substring(dotIndex + 1));
-            }
-        }
-        return (ret.isEmpty()) ? null : ret;
+        return manager.getParameterNames(owner, name);
     }
 
     protected Set<String> getSubConfigNames(String name) throws ConfigException {
-        Set<String> ret = new HashSet<String>();
-        Set<String> names = dao.getParameterNames(owner, name);
-        if (names == null || names.isEmpty()) return null;
-        for (String n : names) {
-            if ("".equals(name) && (n.contains(".")))
-                ret.add(n.substring(0, n.indexOf(".")));
-            else if (n.startsWith(name)) {
-                String subString = n.substring(name.length() + 1);
-                if (subString.contains("."))
-                    ret.add(subString.substring(0, subString.indexOf(".")));
-            }
-        }
-        return (ret.isEmpty()) ? null : ret;
+        return manager.getSubConfigNames(owner, name);
     }
 }

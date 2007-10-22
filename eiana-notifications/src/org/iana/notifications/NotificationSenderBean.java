@@ -2,7 +2,7 @@ package org.iana.notifications;
 
 import org.apache.log4j.Logger;
 import org.iana.config.Config;
-import org.iana.config.ConfigDAO;
+import org.iana.config.ParameterManager;
 import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.OwnedConfig;
 import org.iana.mail.MailSender;
@@ -57,8 +57,8 @@ public class NotificationSenderBean implements NotificationSender {
         this.emailUseTLS = useTLS;
     }
 
-    public void setConfigDAO(ConfigDAO dao) throws ConfigException {
-        config = new OwnedConfig(dao).getSubConfig(getClass().getSimpleName());
+    public void setConfig(ParameterManager manager) throws ConfigException {
+        config = new OwnedConfig(manager).getSubConfig(getClass().getSimpleName());
     }
 
     public void setPort(Integer emailMailhostPort) {

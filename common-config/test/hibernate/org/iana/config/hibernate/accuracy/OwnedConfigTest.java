@@ -1,6 +1,7 @@
 package org.iana.config.hibernate.accuracy;
 
 import org.iana.config.ConfigDAO;
+import org.iana.config.ParameterManager;
 import org.iana.config.conf.SpringConfigApplicationContext;
 import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.ListParameter;
@@ -24,6 +25,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
     private static final String OWNER = "me";
 
     protected ConfigDAO hibernateConfigDAO;
+    protected ParameterManager parameterManager;
 
     public OwnedConfigTest() {
         super(SpringConfigApplicationContext.CONFIG_FILE_NAME);
@@ -40,7 +42,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
         singleParam.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(singleParam);
 
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
         String value = ownedConfig.getParameter("param1");
         assert "value1".equals(value);
     }
@@ -57,7 +59,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
         listParam.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(listParam);
 
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
         List<String> retValues = ownedConfig.getParameterList("param2");
         assert values.equals(retValues);
     }
@@ -68,7 +70,7 @@ public class OwnedConfigTest extends TransactionalSpringContextTests {
         paramNames.add("param1");
         paramNames.add("param2");
 
-        OwnedConfig ownedConfig = new OwnedConfig("me", hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig("me", parameterManager);
         assert paramNames.equals(ownedConfig.getParameterNames());
     }
 

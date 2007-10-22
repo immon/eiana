@@ -1,16 +1,16 @@
 package org.iana.mail.pop3;
 
-import org.iana.mail.MailReceiver;
-import org.iana.mail.MailReceiverException;
-import org.iana.config.ConfigDAO;
 import org.iana.config.Config;
+import org.iana.config.ParameterManager;
 import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.OwnedConfig;
+import org.iana.mail.MailReceiver;
+import org.iana.mail.MailReceiverException;
 
-import javax.mail.internet.MimeMessage;
 import javax.mail.*;
-import java.util.List;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -57,8 +57,8 @@ public class Pop3MailReceiver implements MailReceiver {
         this.debug = debug;
     }
 
-    public void setConfigDAO(ConfigDAO dao) throws ConfigException {
-        config = new OwnedConfig(dao).getSubConfig(getClass().getSimpleName());
+    public void setConfig(ParameterManager manager) throws ConfigException {
+        config = new OwnedConfig(manager).getSubConfig(getClass().getSimpleName());
     }
 
     public void setDebug(boolean debug) {
