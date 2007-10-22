@@ -1,6 +1,7 @@
 package org.iana.config.hibernate.accuracy;
 
 import org.iana.config.ConfigDAO;
+import org.iana.config.ParameterManager;
 import org.iana.config.conf.SpringConfigApplicationContext;
 import org.iana.config.impl.*;
 import org.iana.test.spring.TransactionalSpringContextTests;
@@ -21,6 +22,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
     private static final String OWNER = "me";
 
     protected ConfigDAO hibernateConfigDAO;
+    protected ParameterManager parameterManager;
 
     public SubConfigTest() {
         super(SpringConfigApplicationContext.CONFIG_FILE_NAME);
@@ -47,7 +49,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
         listParam.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(listParam);
 
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
         Boolean retValue = ownedConfig.getSubConfig("sub1").getSubConfig("sub2").getBooleanParameter("param1");
         assert retValue;
 
@@ -70,7 +72,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
         singleParam1.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(singleParam1);
 
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
 
         Set<String> retNames = ownedConfig.getParameterNames();
         assert retNames != null && retNames.size() == 1 && retNames.contains("param11");
@@ -90,7 +92,7 @@ public class SubConfigTest extends TransactionalSpringContextTests {
         setParameter.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(setParameter);
 
-        OwnedConfig ownedConfig = new OwnedConfig(OWNER, hibernateConfigDAO);
+        OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
         Set<String> retSubConfigNames = ownedConfig.getSubConfig("sub1").getSubConfigNames();
 
         Set<String> subConfigNames = new HashSet<String>();

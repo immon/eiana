@@ -113,12 +113,19 @@
     <bean id="notificationTemplateManager" class="org.iana.notifications.NotificationTemplateManager">
         <constructor-arg index="0" value="iana-templates.properties"/>
         <constructor-arg index="1" value="templates.xml"/>
-        <property name="configDAO">
-            <ref bean="hibernateConfigDAO"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
         </property>
     </bean>
 
     <!--  Config DAO -->
+
+    <bean id="parameterManager" class="org.iana.config.impl.ParameterManagerImpl">
+        <constructor-arg>
+            <ref bean="hibernateConfigDAO"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="hibernateConfigDAO" class="org.iana.config.impl.HibernateConfigDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
@@ -131,7 +138,9 @@
                                   execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.user.RoleManagerBean.*(..)) ||
-                                  execution(public * org.iana.dao.hibernate.HibernateDAO.*(..))"/>
+                                  execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
+                                  execution(public * org.iana.config.impl.HibernateConfigDAO.*(..)) ||
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
