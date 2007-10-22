@@ -1,11 +1,11 @@
 package org.iana.rzm.domain;
 
-import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.common.validators.CheckTool;
 import org.iana.criteria.Criterion;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.domain.dao.DomainDAO;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,7 +43,16 @@ public class DomainManagerBean implements DomainManager {
 
     public void create(Domain domain) {
         updateNameServers(domain);
+        updateState(domain);
         dao.create(domain);
+    }
+
+    public void updateState(Domain domain) {
+        Domain retDomain = get(domain.getName());
+        if (retDomain != null) {
+            domain.setOpenProcesses(retDomain.getOpenProcesses());
+            domain.setThirdPartyPendingProcesses(retDomain.getThirdPartyPendingProcesses());
+        }
     }
 
     private void updateNameServers(Domain domain) {

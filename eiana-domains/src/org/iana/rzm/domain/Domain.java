@@ -1,16 +1,15 @@
 package org.iana.rzm.domain;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.common.EmailAddress;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.dns.validator.InvalidDomainNameException;
 
 import javax.persistence.*;
-import java.util.*;
 import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -43,64 +42,64 @@ public class Domain implements TrackedObject, Cloneable {
     @Embedded
     private Name name;
     @Embedded
-    @AttributeOverrides( {
-            @AttributeOverride(name="name", column = @Column(name="so_name") ),
-            @AttributeOverride(name="organization", column = @Column(name="so_org") ),
-            @AttributeOverride(name="jobTitle", column = @Column(name="so_job_title") ),
-            @AttributeOverride(name="address.textAddress", column = @Column(name="so_address") ),
-            @AttributeOverride(name="address.countryCode.countryCode", column = @Column(name="so_cc") ),
-            @AttributeOverride(name="phoneNumber", column = @Column(name="so_phone") ),
-            @AttributeOverride(name="altPhoneNumber", column = @Column(name="so_alt_phone") ),
-            @AttributeOverride(name="faxNumber", column = @Column(name="so_fax") ),
-            @AttributeOverride(name="altFaxNumber", column = @Column(name="so_alt_fax") ),
-            @AttributeOverride(name="publicEmail.email", column = @Column(name="so_pub_email") ),
-            @AttributeOverride(name="privateEmail.email", column = @Column(name="so_priv_email") ),
-            @AttributeOverride(name="role", column = @Column(name="so_role") ),
-            @AttributeOverride(name="trackData.created", column = @Column(name="so_created") ),
-            @AttributeOverride(name="trackData.createdBy", column = @Column(name="so_createdby") ),
-            @AttributeOverride(name="trackData.modified", column = @Column(name="so_modified") ),
-            @AttributeOverride(name="trackData.modifiedBy", column = @Column(name="so_modifiedby") )
-     } )
+    @AttributeOverrides({
+    @AttributeOverride(name = "name", column = @Column(name = "so_name")),
+    @AttributeOverride(name = "organization", column = @Column(name = "so_org")),
+    @AttributeOverride(name = "jobTitle", column = @Column(name = "so_job_title")),
+    @AttributeOverride(name = "address.textAddress", column = @Column(name = "so_address")),
+    @AttributeOverride(name = "address.countryCode.countryCode", column = @Column(name = "so_cc")),
+    @AttributeOverride(name = "phoneNumber", column = @Column(name = "so_phone")),
+    @AttributeOverride(name = "altPhoneNumber", column = @Column(name = "so_alt_phone")),
+    @AttributeOverride(name = "faxNumber", column = @Column(name = "so_fax")),
+    @AttributeOverride(name = "altFaxNumber", column = @Column(name = "so_alt_fax")),
+    @AttributeOverride(name = "publicEmail.email", column = @Column(name = "so_pub_email")),
+    @AttributeOverride(name = "privateEmail.email", column = @Column(name = "so_priv_email")),
+    @AttributeOverride(name = "role", column = @Column(name = "so_role")),
+    @AttributeOverride(name = "trackData.created", column = @Column(name = "so_created")),
+    @AttributeOverride(name = "trackData.createdBy", column = @Column(name = "so_createdby")),
+    @AttributeOverride(name = "trackData.modified", column = @Column(name = "so_modified")),
+    @AttributeOverride(name = "trackData.modifiedBy", column = @Column(name = "so_modifiedby"))
+            })
     private Contact supportingOrg;
     @Embedded
-    @AttributeOverrides( {
-            @AttributeOverride(name="name", column = @Column(name="ac_name") ),
-            @AttributeOverride(name="organization", column = @Column(name="ac_org") ),
-            @AttributeOverride(name="jobTitle", column = @Column(name="ac_job_title") ),
-            @AttributeOverride(name="address.textAddress", column = @Column(name="ac_address") ),
-            @AttributeOverride(name="address.countryCode.countryCode", column = @Column(name="ac_cc") ),
-            @AttributeOverride(name="phoneNumber", column = @Column(name="ac_phone") ),
-            @AttributeOverride(name="altPhoneNumber", column = @Column(name="ac_alt_phone") ),
-            @AttributeOverride(name="faxNumber", column = @Column(name="ac_fax") ),
-            @AttributeOverride(name="altFaxNumber", column = @Column(name="ac_alt_fax") ),
-            @AttributeOverride(name="publicEmail.email", column = @Column(name="ac_pub_email") ),
-            @AttributeOverride(name="privateEmail.email", column = @Column(name="ac_priv_email") ),
-            @AttributeOverride(name="role", column = @Column(name="ac_role") ),
-            @AttributeOverride(name="trackData.created", column = @Column(name="ac_created") ),
-            @AttributeOverride(name="trackData.createdBy", column = @Column(name="ac_createdby") ),
-            @AttributeOverride(name="trackData.modified", column = @Column(name="ac_modified") ),
-            @AttributeOverride(name="trackData.modifiedBy", column = @Column(name="ac_modifiedby") )
-     } )
+    @AttributeOverrides({
+    @AttributeOverride(name = "name", column = @Column(name = "ac_name")),
+    @AttributeOverride(name = "organization", column = @Column(name = "ac_org")),
+    @AttributeOverride(name = "jobTitle", column = @Column(name = "ac_job_title")),
+    @AttributeOverride(name = "address.textAddress", column = @Column(name = "ac_address")),
+    @AttributeOverride(name = "address.countryCode.countryCode", column = @Column(name = "ac_cc")),
+    @AttributeOverride(name = "phoneNumber", column = @Column(name = "ac_phone")),
+    @AttributeOverride(name = "altPhoneNumber", column = @Column(name = "ac_alt_phone")),
+    @AttributeOverride(name = "faxNumber", column = @Column(name = "ac_fax")),
+    @AttributeOverride(name = "altFaxNumber", column = @Column(name = "ac_alt_fax")),
+    @AttributeOverride(name = "publicEmail.email", column = @Column(name = "ac_pub_email")),
+    @AttributeOverride(name = "privateEmail.email", column = @Column(name = "ac_priv_email")),
+    @AttributeOverride(name = "role", column = @Column(name = "ac_role")),
+    @AttributeOverride(name = "trackData.created", column = @Column(name = "ac_created")),
+    @AttributeOverride(name = "trackData.createdBy", column = @Column(name = "ac_createdby")),
+    @AttributeOverride(name = "trackData.modified", column = @Column(name = "ac_modified")),
+    @AttributeOverride(name = "trackData.modifiedBy", column = @Column(name = "ac_modifiedby"))
+            })
     private Contact adminContact;
     @Embedded
-    @AttributeOverrides( {
-            @AttributeOverride(name="name", column = @Column(name="tc_name") ),
-            @AttributeOverride(name="organization", column = @Column(name="tc_org") ),
-            @AttributeOverride(name="jobTitle", column = @Column(name="tc_job_title") ),
-            @AttributeOverride(name="address.textAddress", column = @Column(name="tc_address") ),
-            @AttributeOverride(name="address.countryCode.countryCode", column = @Column(name="tc_cc") ),
-            @AttributeOverride(name="phoneNumber", column = @Column(name="tc_phone") ),
-            @AttributeOverride(name="altPhoneNumber", column = @Column(name="tc_alt_phone") ),
-            @AttributeOverride(name="faxNumber", column = @Column(name="tc_fax") ),
-            @AttributeOverride(name="altFaxNumber", column = @Column(name="tc_alt_fax") ),
-            @AttributeOverride(name="publicEmail.email", column = @Column(name="tc_pub_email") ),
-            @AttributeOverride(name="privateEmail.email", column = @Column(name="tc_priv_email") ),
-            @AttributeOverride(name="role", column = @Column(name="tc_role") ),
-            @AttributeOverride(name="trackData.created", column = @Column(name="tc_created") ),
-            @AttributeOverride(name="trackData.createdBy", column = @Column(name="tc_createdby") ),
-            @AttributeOverride(name="trackData.modified", column = @Column(name="tc_modified") ),
-            @AttributeOverride(name="trackData.modifiedBy", column = @Column(name="tc_modifiedby") )
-     } )
+    @AttributeOverrides({
+    @AttributeOverride(name = "name", column = @Column(name = "tc_name")),
+    @AttributeOverride(name = "organization", column = @Column(name = "tc_org")),
+    @AttributeOverride(name = "jobTitle", column = @Column(name = "tc_job_title")),
+    @AttributeOverride(name = "address.textAddress", column = @Column(name = "tc_address")),
+    @AttributeOverride(name = "address.countryCode.countryCode", column = @Column(name = "tc_cc")),
+    @AttributeOverride(name = "phoneNumber", column = @Column(name = "tc_phone")),
+    @AttributeOverride(name = "altPhoneNumber", column = @Column(name = "tc_alt_phone")),
+    @AttributeOverride(name = "faxNumber", column = @Column(name = "tc_fax")),
+    @AttributeOverride(name = "altFaxNumber", column = @Column(name = "tc_alt_fax")),
+    @AttributeOverride(name = "publicEmail.email", column = @Column(name = "tc_pub_email")),
+    @AttributeOverride(name = "privateEmail.email", column = @Column(name = "tc_priv_email")),
+    @AttributeOverride(name = "role", column = @Column(name = "tc_role")),
+    @AttributeOverride(name = "trackData.created", column = @Column(name = "tc_created")),
+    @AttributeOverride(name = "trackData.createdBy", column = @Column(name = "tc_createdby")),
+    @AttributeOverride(name = "trackData.modified", column = @Column(name = "tc_modified")),
+    @AttributeOverride(name = "trackData.modifiedBy", column = @Column(name = "tc_modifiedby"))
+            })
     private Contact techContact;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Domain_NameServers",
@@ -420,7 +419,7 @@ public class Domain implements TrackedObject, Cloneable {
             if (techContact != null)
                 newDomain.techContact = techContact.clone();
             if (supportingOrg != null)
-                newDomain.supportingOrg = (Contact) supportingOrg.clone();
+                newDomain.supportingOrg = supportingOrg.clone();
             if (whoisServer != null)
                 newDomain.whoisServer = (Name) whoisServer.clone();
             newDomain.registryUrl = registryUrl;
@@ -479,7 +478,7 @@ public class Domain implements TrackedObject, Cloneable {
         List<Contact> contactsList = new ArrayList<Contact>();
         if (oldContacts != null) {
             for (Contact cont : oldContacts)
-                contactsList.add((Contact) cont.clone());
+                contactsList.add(cont.clone());
         }
         return contactsList;
     }
@@ -501,13 +500,37 @@ public class Domain implements TrackedObject, Cloneable {
         trackData.setModifiedBy(modifiedBy);
     }
 
-    public void incOpenProcesses() { ++openProcesses; }
+    public void incOpenProcesses() {
+        ++openProcesses;
+    }
 
-    public void decOpenProcesses() { --openProcesses; }
+    public void decOpenProcesses() {
+        --openProcesses;
+    }
 
-    public void incThirdPartyPendingProcesses() { ++thirdPartyPendingProcesses; }
+    protected int getOpenProcesses() {
+        return openProcesses;
+    }
 
-    public void decThirdPartyPendingProcesses() { --thirdPartyPendingProcesses; }
+    protected void setOpenProcesses(int value) {
+        openProcesses = value;
+    }
+
+    public void incThirdPartyPendingProcesses() {
+        ++thirdPartyPendingProcesses;
+    }
+
+    public void decThirdPartyPendingProcesses() {
+        --thirdPartyPendingProcesses;
+    }
+
+    protected int getThirdPartyPendingProcesses() {
+        return thirdPartyPendingProcesses;
+    }
+
+    protected void setThirdPartyPendingProcesses(int value) {
+        thirdPartyPendingProcesses = value;
+    }
 
     public String getDescription() {
         return description;
