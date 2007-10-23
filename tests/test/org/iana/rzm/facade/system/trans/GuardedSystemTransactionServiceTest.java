@@ -6,6 +6,7 @@ import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
@@ -14,14 +15,13 @@ import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.AdminRole;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
@@ -29,7 +29,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -80,7 +83,7 @@ public class GuardedSystemTransactionServiceTest {
         assert transaction != null;
 
         ats.setUser(userIANA);
-        ats.updateTransaction(transaction.getObjId(), 0l, ""+transaction.getState().getName(), false, null);
+        ats.updateTransaction(transaction.getObjId(), 0l, false, null);
         transaction.setTicketID(0l);
 
         TransactionVO loadedTransaction = gsts.get(transaction.getTransactionID());
@@ -92,7 +95,7 @@ public class GuardedSystemTransactionServiceTest {
         domain1.setRegistryUrl("http://www.registry.url");
         transaction1 = gsts.createTransactions(domain1, false).get(0);
         assert transaction1 != null;
-        ats.updateTransaction(transaction1.getObjId(), 0l, ""+transaction1.getState().getName(), false, null);
+        ats.updateTransaction(transaction1.getObjId(), 0l, false, null);
         transaction1.setTicketID(0l);
 
         loadedTransaction = gsts.get(transaction1.getTransactionID());

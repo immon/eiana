@@ -4,10 +4,10 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.log.Logger;
-import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.log.Logger;
+import org.iana.rzm.trans.TransactionManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SystemTransactionLoggerInterceptor implements MethodInterceptor {
     private static final String creationMethodsArray[] = {"createTransactions"};
     private static final String changeMethodsArray[] = {
-            "acceptTransaction", "rejectTransaction", "transitTransaction"};
+            "moveTransactionToNextState", "rejectTransaction", "transitTransaction"};
     private static final List<String> creationMethods = Arrays.asList(creationMethodsArray);
     private static final List<String> changeMethods = Arrays.asList(changeMethodsArray);
 

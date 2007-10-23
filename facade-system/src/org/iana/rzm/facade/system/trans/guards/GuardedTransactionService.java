@@ -2,26 +2,22 @@ package org.iana.rzm.facade.system.trans.guards;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
+import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.dns.check.DNSTechnicalCheck;
-import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -100,9 +96,9 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         delegate.rejectTransaction(id, token);
     }
 
-    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         isUserInRole();
-        delegate.acceptTransaction(id);
+        delegate.moveTransactionToNextState(id);
     }
 
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {

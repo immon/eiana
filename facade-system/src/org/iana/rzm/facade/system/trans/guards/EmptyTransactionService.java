@@ -2,21 +2,20 @@ package org.iana.rzm.facade.system.trans.guards;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
+import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
-import org.iana.rzm.facade.system.trans.TransactionService;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.CreateTicketException;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.user.UserVO;
-import org.iana.objectdiff.DiffConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +74,7 @@ public class EmptyTransactionService implements TransactionService {
         return null;
     }
 
-    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
 
     }
 

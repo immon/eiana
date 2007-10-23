@@ -1,19 +1,14 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.criteria.Criterion;
+import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.services.RZMStatefulService;
 import org.iana.rzm.facade.services.FinderService;
+import org.iana.rzm.facade.services.RZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.dns.check.DNSTechnicalCheckException;
 
 import java.util.List;
 
@@ -38,7 +33,7 @@ public interface TransactionService extends RZMStatefulService, FinderService<Tr
 
     // temporary method - not to break the tests
 
-    void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 

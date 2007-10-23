@@ -9,13 +9,12 @@ import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -60,7 +59,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setUser(user);     //iana
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
-        gsts.acceptTransaction(transId);
+        gsts.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
@@ -68,7 +67,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptZONE_INSERTION(RZMUser user, long transId) throws Exception {
         setUser(user); //iana
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
-        gsts.acceptTransaction(transId);
+        gsts.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
         closeServices();
     }
@@ -76,7 +75,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);   //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.acceptTransaction(transId);
+        gsts.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
         closeServices();
     }
@@ -84,7 +83,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptUSDOC_APPROVALnoNSChange(RZMUser user, long transId) throws Exception {
         setUser(user); //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.acceptTransaction(transId);
+        gsts.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
@@ -92,7 +91,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptEXT_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.acceptTransaction(transId);
+        gsts.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         closeServices();
     }
@@ -116,7 +115,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-        gsts.acceptTransaction(transId);
+        gsts.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
         closeServices();
     }
@@ -286,13 +285,16 @@ public abstract class CommonGuardedSystemTransaction {
         gsts.transitTransaction(id, transitionName);
     }
 
-    protected void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation) throws Exception {
+    protected void updateTransaction(long id, Long ticketId, boolean redelegation) throws Exception {
         TransactionVO trans = new TransactionVO();
         trans.setTransactionID(id);
         trans.setTicketID(ticketId);
-        trans.setState(new TransactionStateVO(targetStateName));
         trans.setRedelegation(redelegation);
         ats.updateTransaction(trans);
+    }
+
+    protected void transitTransactionToState(Long id, String state) throws Exception {
+        ats.transitTransactionToState(id, state);
     }
 
     protected void acceptTransaction(long transactionId, String token) throws Exception {
@@ -300,7 +302,7 @@ public abstract class CommonGuardedSystemTransaction {
         gsts.acceptTransaction(transactionId, token);
     }
 
-    protected TransactionVO getTransaction (long transactionId) throws Exception {
+    protected TransactionVO getTransaction(long transactionId) throws Exception {
         return gsts.get(transactionId);
     }
 
