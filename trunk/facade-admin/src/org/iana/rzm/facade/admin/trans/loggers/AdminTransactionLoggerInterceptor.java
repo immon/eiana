@@ -1,11 +1,11 @@
 package org.iana.rzm.facade.admin.trans.loggers;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.log.Logger;
 import org.iana.rzm.trans.TransactionManager;
 
@@ -19,7 +19,7 @@ public class AdminTransactionLoggerInterceptor implements MethodInterceptor {
     private static final String creationMethodsArray[] = {
             "createDomainCreationTransaction", "createDomainModificationTransaction"};
     private static final String changeMethodsArray[] = {
-            "acceptTransaction", "rejectTransaction", "transitTransaction",
+            "moveTransactionToNextState", "rejectTransaction", "transitTransaction",
             "transitTransactionToState", "setTransactionTicketId", "deleteTransaction"};
     private static final List<String> creationMethods = Arrays.asList(creationMethodsArray);
     private static final List<String> changeMethods = Arrays.asList(changeMethodsArray);

@@ -4,15 +4,14 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
-import org.iana.rzm.facade.admin.trans.StateUnreachableException;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
@@ -78,7 +77,7 @@ public class TransitTransactionToStateTest {
 
     }
 
-    @Test(expectedExceptions = StateUnreachableException.class)
+    @Test(expectedExceptions = FacadeTransactionException.class)
     public void testTransitTransactionToWrongState() throws Exception {
 
         try {
@@ -87,7 +86,7 @@ public class TransitTransactionToStateTest {
             TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
             assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
 
-            gAdminTransactionServ.updateTransaction(transactionID, 0L, "WRONG_STATE", false, null);
+            gAdminTransactionServ.transitTransactionToState(transactionID, "WRONG_STATE");
 
         } catch (FacadeTransactionException e) {
             assert e.getMessage().equals("no such state: WRONG_STATE");
@@ -104,7 +103,7 @@ public class TransitTransactionToStateTest {
 
         for (String state : states) {
             if (!state.equals("PENDING_IANA_CONFIRMATION") && !state.equals("PENDING_TECH_CHECK") && !state.equals("PENDING_SUPP_TECH_CHECK") && !state.equals("PENDING_DATABASE_INSERTION")) {
-                gAdminTransactionServ.updateTransaction(transactionID, 0L, state, false, null);
+                gAdminTransactionServ.transitTransactionToState(transactionID, state);
                 transactionVO = gAdminTransactionServ.get(transactionID);
                 assert state.equals(transactionVO.getState().getName().name()) :
                         "unexpected state: " + transactionVO.getState().getName().name() +

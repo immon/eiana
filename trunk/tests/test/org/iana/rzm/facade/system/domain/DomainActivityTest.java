@@ -3,10 +3,10 @@ package org.iana.rzm.facade.system.domain;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
-import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -50,7 +50,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         processDAO.close();
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() {
         try {
             for (ProcessInstance pi : processDAO.findAll())
@@ -74,7 +74,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         closeServices();
     }
 
-    @Test (dependsOnMethods="testDomainNoActivityBeforeTransaction")
+    @Test(dependsOnMethods = "testDomainNoActivityBeforeTransaction")
     public void testDomainActivityDuringTransaction() throws Exception {
         setDefaultUser();
 
@@ -90,7 +90,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         closeServices();
     }
 
-    @Test (dependsOnMethods="testDomainActivityDuringTransaction")
+    @Test(dependsOnMethods = "testDomainActivityDuringTransaction")
     public void testDomainNoActivityAfterTransaction() throws Exception {
         setDefaultUser();
 
@@ -110,7 +110,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("activitytest.registry.url");
         TransactionVO trans = createTransactions(domain, false).get(0);
 
-        updateTransaction(trans.getTransactionID(), 1l, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.toString(), false);
+        transitTransactionToState(trans.getTransactionID(), TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.toString());
 
         domain = getDomain("activitytest3");
         assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;
@@ -124,7 +124,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("activitytest.registry.url");
         TransactionVO trans = createTransactions(domain, false).get(0);
         long transactionID = trans.getObjId();
-        updateTransaction(transactionID, 0L, "COMPLETED", false);
+        transitTransactionToState(transactionID, "COMPLETED");
 
         domain = getDomain("activitytest2");
         assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;
@@ -140,7 +140,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("activitytest.registry.url");
         TransactionVO trans = createTransactions(domain, false).get(0);
         long transactionID = trans.getObjId();
-        updateTransaction(transactionID, 0L, "WITHDRAWN", false);
+        transitTransactionToState(transactionID, "WITHDRAWN");
 
         domain = getDomain("activitytest2");
         assert domain != null && domain.getState() == IDomainVO.State.NO_ACTIVITY;

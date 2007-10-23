@@ -60,7 +60,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             CheckTool.checkNull(retTransaction, "no such transaction: " + id);
             return TransactionConverter.toTransactionVO(retTransaction);
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         }
     }
 
@@ -90,51 +90,42 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             transaction.transitTo(getRZMUser(), targetStateName);
 
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
             throw new FacadeTransactionException(e.getMessage());
         }
     }
 
-    public void updateTransaction(long id, Long ticketId, String targetStateName, boolean redelegation, String comment) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
+    public void updateTransaction(long id, Long ticketId, boolean redelegation, String comment) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
         TransactionVO trans = new TransactionVO();
-        try {
-            trans.setTransactionID(id);
-            trans.setTicketID(ticketId);
-            trans.setState(new TransactionStateVO(targetStateName));
-            trans.setRedelegation(redelegation);
-            trans.setComment(comment);
-            updateTransaction(trans);
-        } catch (IllegalArgumentException e) {
-            throw new StateUnreachableException(targetStateName);
-        }
+
+        trans.setTransactionID(id);
+        trans.setTicketID(ticketId);
+        trans.setRedelegation(redelegation);
+        trans.setComment(comment);
+        updateTransaction(trans);
     }
 
     public void updateTransaction(TransactionVO trans) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
         isUserInRole();
-        String targetStateName = ""+trans.getState().getName();
+
         try {
             Transaction retTransaction = transactionManager.getTransaction(trans.getObjId());
             retTransaction.setTicketID(trans.getTicketID());
             retTransaction.setRedelegation(trans.isRedelegation());
-            if (targetStateName != null && !targetStateName.equals("" + retTransaction.getState().getName())) {
-                retTransaction.transitTo(getRZMUser(), targetStateName);
-            }
             retTransaction.setComment(trans.getComment());
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
-        } catch (TransactionException e) {
-            throw new StateUnreachableException(targetStateName);
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         }
     }
 
-    public void acceptTransaction(long id) throws NoObjectFoundException, AccessDeniedException, InfrastructureException {
+    public void moveTransactionToNextState(long id) throws NoObjectFoundException, AccessDeniedException, InfrastructureException {
         isUserInRole();
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             transaction.transit(this.getRZMUser(), "admin-accept");
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
             throw new InfrastructureException(e.getMessage());
         }
@@ -146,7 +137,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             Transaction transaction = transactionManager.getTransaction(id);
             transaction.transit(this.getRZMUser(), "admin-reject");
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
             throw new InfrastructureException(e.getMessage());
         }
@@ -158,7 +149,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             Transaction transaction = transactionManager.getTransaction(id);
             transaction.transit(getRZMUser(), transitionName);
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
             throw new InfrastructureException(e.getMessage());
         }
@@ -175,7 +166,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         try {
             transactionManager.deleteTransaction(transactionId);
         } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException("transaction", ""+e.getId());
+            throw new NoObjectFoundException("transaction", "" + e.getId());
         }
     }
 

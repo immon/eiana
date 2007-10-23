@@ -168,7 +168,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         return new Timestamp(System.currentTimeMillis());
     }
 
-    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
             trans.accept(getRZMUser());
@@ -205,7 +205,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     //
     // Finder interface
     //
-    
+
     public List<TransactionVO> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         return find(null, order, offset, limit);
     }
