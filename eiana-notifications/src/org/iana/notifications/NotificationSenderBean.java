@@ -1,18 +1,14 @@
 package org.iana.notifications;
 
-import org.apache.log4j.Logger;
-import org.iana.config.Config;
-import org.iana.config.ParameterManager;
-import org.iana.config.impl.ConfigException;
-import org.iana.config.impl.OwnedConfig;
-import org.iana.mail.MailSender;
-import org.iana.mail.MailSenderException;
-import org.iana.mail.smtp.SmtpMailSender;
-import org.iana.notifications.exception.NotificationException;
-import org.iana.rzm.common.validators.CheckTool;
+import org.apache.log4j.*;
+import org.iana.config.*;
+import org.iana.config.impl.*;
+import org.iana.mail.*;
+import org.iana.mail.smtp.*;
+import org.iana.notifications.exception.*;
+import org.iana.rzm.common.validators.*;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -28,6 +24,7 @@ public class NotificationSenderBean implements NotificationSender {
     private String emailUserPassword;
     private boolean emailUseSSL;
     private boolean emailUseTLS;
+    private String mailSmtpFrom;
     private Config config;
 
     private static Logger logger = Logger.getLogger(NotificationSenderBean.class);
@@ -73,6 +70,10 @@ public class NotificationSenderBean implements NotificationSender {
         this.emailUseSSL = emailUseSSL;
     }
 
+    public void setMailSmtpFrom(String value) {
+        mailSmtpFrom = value;
+    }
+
     public void send(Addressee addressee, String subject, String body) throws NotificationException {
         CheckTool.checkNull(addressee, "null addressee param");
         sendMail(addressee.getName() + "<" + addressee.getEmail() + ">", subject, body);
@@ -87,7 +88,9 @@ public class NotificationSenderBean implements NotificationSender {
             address.append("<");
             address.append(add.getEmail());
             address.append(">");
-            if (i.hasNext()) address.append(",");
+            if (i.hasNext()) {
+                address.append(",");
+            }
         }
         sendMail(address.toString(), subject, body);
     }
@@ -108,7 +111,9 @@ public class NotificationSenderBean implements NotificationSender {
             address.append("<");
             address.append(add.getEmail());
             address.append(">");
-            if (i.hasNext()) address.append(",");
+            if (i.hasNext()) {
+                address.append(",");
+            }
         }
         sendMail(address.toString(), content.getSubject(), content.getBody());
     }
@@ -120,7 +125,9 @@ public class NotificationSenderBean implements NotificationSender {
     public String getEmailMailer() throws ConfigException {
         if (config != null) {
             String param = config.getParameter("emailMailer");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailMailer;
     }
@@ -128,7 +135,9 @@ public class NotificationSenderBean implements NotificationSender {
     public String getEmailMailhost() throws ConfigException {
         if (config != null) {
             String param = config.getParameter("emailMailhost");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailMailhost;
     }
@@ -136,7 +145,9 @@ public class NotificationSenderBean implements NotificationSender {
     public Integer getEmailMailhostPort() throws ConfigException {
         if (config != null) {
             Integer param = config.getIntegerParameter("emailMailhostPort");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailMailhostPort;
     }
@@ -144,7 +155,9 @@ public class NotificationSenderBean implements NotificationSender {
     public String getEmailFromAddress() throws ConfigException {
         if (config != null) {
             String param = config.getParameter("emailFromAddress");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailFromAddress;
     }
@@ -152,7 +165,9 @@ public class NotificationSenderBean implements NotificationSender {
     public String getEmailUserName() throws ConfigException {
         if (config != null) {
             String param = config.getParameter("emailUserName");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailUserName;
     }
@@ -160,7 +175,9 @@ public class NotificationSenderBean implements NotificationSender {
     public String getEmailUserPassword() throws ConfigException {
         if (config != null) {
             String param = config.getParameter("emailUserPassword");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailUserPassword;
     }
@@ -168,7 +185,9 @@ public class NotificationSenderBean implements NotificationSender {
     public boolean isEmailUseSSL() throws ConfigException {
         if (config != null) {
             Boolean param = config.getBooleanParameter("emailUseSSL");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailUseSSL;
     }
@@ -176,15 +195,17 @@ public class NotificationSenderBean implements NotificationSender {
     public boolean isEmailUseTLS() throws ConfigException {
         if (config != null) {
             Boolean param = config.getBooleanParameter("emailUseTLS");
-            if (param != null) return param;
+            if (param != null) {
+                return param;
+            }
         }
         return emailUseTLS;
     }
 
     private void sendMail(String address, String subject, String body) throws NotificationException {
         try {
-            MailSender mailer = new SmtpMailSender(getEmailMailer(), getEmailMailhost(), getEmailMailhostPort(),
-                    getEmailUserName(), getEmailUserPassword(), isEmailUseSSL(), isEmailUseTLS());
+            MailSender mailer = new SmtpMailSender(getEmailMailer(), getEmailMailhost(), getEmailMailhostPort(), getEmailUserName(), getEmailUserPassword(), isEmailUseSSL(), isEmailUseTLS());
+            ((SmtpMailSender) mailer).setMailSmtpFrom(mailSmtpFrom);
             mailer.sendMail(getEmailFromAddress(), address, subject, body);
         } catch (MailSenderException e) {
             logger.warn("Unable to send notification to '" + address + "'. Reason: " + e.getMessage());

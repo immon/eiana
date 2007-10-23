@@ -62,4 +62,8 @@ public interface AdminServices extends RzmServices {
     public Set<Value> getDomainTypes();
 
     public void sendNotification(long transactionId, NotificationVOWrapper vo, String comment, String email)throws FacadeTransactionException;
+
+    public void moveTransactionNextState(long id) throws NoObjectFoundException;
+
+    void transitTransactionToState(long id, TransactionStateVOWrapper.State state) throws FacadeTransactionException, NoObjectFoundException, NoSuchStateException, StateUnreachableException;
 }
