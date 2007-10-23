@@ -45,9 +45,16 @@
                                 <td width="71%" align="right" valign="top"><input jwcid="rt" type="text" name="rt" class="field" onkeypress="return submitOnEnter(event);"/>
                             </tr>
                             <tr>
-                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:states">State</span></td>
-                                <td  valign="top"><span jwcid="states" class="field" onkeypress="return submitOnEnter(event);"></span>
+                                <td valign="top" class="label green">State:</td>                                
+                                <td align="right" valign="top">
+                                    <input name="nextState"     value="Next apporiate state"    type=submit jwcid="nextState"      class="button"/>
+                                    <input name="chooseState" value="Manualy choose state"  type=submit jwcid="chooseState"  class="button"/>
+                                </td>
                             </tr>
+                            <!--<tr>-->
+                                <!--<td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:states">State</span></td>-->
+                                <!--<td  valign="top"><span jwcid="states" class="field" onkeypress="return submitOnEnter(event);"></span>-->
+                            <!--</tr>-->
                             <tr>
                                 <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:submitter">Request Submitter Email</span></td>
                                 <td align="right" valign="top"><span jwcid="submitter" class="field" onkeypress="return submitOnEnter(event);"></span>

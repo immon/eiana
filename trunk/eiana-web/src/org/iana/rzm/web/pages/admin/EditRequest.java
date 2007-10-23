@@ -3,20 +3,15 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 
-import java.io.*;
-
 public abstract class EditRequest extends AdminPage implements PageBeginRenderListener, IExternalPage {
-
-    public static final RequestStateSelectionModel STATES = new RequestStateSelectionModel();
+    public static final String PAGE_NAME = "admin/EditRequest";
 
     @Component(id = "editRequest", type = "Form", bindings = {
         "clientValidationEnabled=literal:true",
-        "success=listener:save",
         "delegate=prop:validationDelegate"
         })
     public abstract IComponent getEditContactComponent();
@@ -44,25 +39,29 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
         "validators=validators:email"})
     public abstract IComponent getSubmitterEmailComponent();
 
-    @Component(id = "save", type = "LinkSubmit")
+    @Component(id = "save", type = "LinkSubmit", bindings = {"action=listener:save"})
     public abstract IComponent getSubmitComponent();
 
     @Component(id = "cancel", type = "DirectLink", bindings = {"listener=listener:revert",
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCancelComponent();
 
-    @Component(id = "states", type = "PropertySelection", bindings = {
-        "displayName=literal:State:", "model=ognl:@org.iana.rzm.web.pages.admin.EditRequest@STATES", "value=prop:request.state"
-        })
-    public abstract IComponent getStatesComponent();      
+    @Component(id="nextState", type="Submit", bindings = {"action=listener:nextState"})
+    public abstract IComponent getNextStateComponent();
+
+    @Component(id="chooseState", type = "Submit", bindings = {"action=listener:chooseState"})
+    public abstract IComponent getChooseStateComponent();
 
     @InjectPage("admin/EditDomain")
     public abstract EditDomain getEditDomain();
 
-    @InjectPage("admin/AdminHome")
+    @InjectPage(AdminHome.PAGE_NAME)
     public abstract AdminHome getHomePage();
 
-    @InjectPage("admin/RequestInformation")
+    @InjectPage(EditTransactionState.PAGE_NAME)
+    public abstract EditTransactionState getEditTransactionState();
+
+    @InjectPage(RequestInformation.PAGE_NAME)
     public abstract RequestInformation getRequestInformation();
 
     @Persist("client:page")
@@ -114,31 +113,22 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
         getRequestCycle().activate(requestInformation);
     }
 
-    private static class RequestStateSelectionModel implements IPropertySelectionModel, Serializable {
-        private TransactionStateVOWrapper.State[] states;
-
-        public RequestStateSelectionModel() {
-            states = TransactionStateVOWrapper.State.values();
-        }
-
-        public int getOptionCount() {
-            return states.length;
-        }
-
-        public Object getOption(int index) {
-            return states[index];
-        }
-
-        public String getLabel(int index) {
-            return states[index].getDisplayName();
-        }
-
-        public String getValue(int index) {
-            return states[index].name();
-        }
-
-        public Object translateValue(String value) {
-            return TransactionStateVOWrapper.State.valueOf(value);
+    public void nextState(){
+        try {
+            getAdminServices().moveTransactionNextState(getRequestId());
+            setInfoMessage("State change successfully");
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
     }
+
+    public void chooseState(){
+        EditTransactionState page = getEditTransactionState();
+        page.setRequestId(getRequestId());
+        getRequestCycle().activate(page);
+    }
+
+
+
+
 }

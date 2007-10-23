@@ -1,19 +1,13 @@
 package org.iana.mail.smtp;
 
-import com.sun.mail.smtp.SMTPTransport;
-import org.iana.mail.MailSender;
-import org.iana.mail.MailSenderException;
+import com.sun.mail.smtp.*;
+import org.iana.mail.*;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
+import javax.activation.*;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import java.io.File;
-import java.util.Date;
-import java.util.Properties;
+import javax.mail.internet.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -27,6 +21,7 @@ public class SmtpMailSender implements MailSender {
     private boolean ssl;
     private boolean tls;
     private boolean debug;
+    private String mailSmtpFrom;
 
     public SmtpMailSender(String mailer, String mailhost, String userName, String userPassword) {
         this(mailer, mailhost, null, userName, userPassword, false, false, false);
@@ -73,6 +68,11 @@ public class SmtpMailSender implements MailSender {
     private Session init() {
         Properties props = System.getProperties();
         props.put("mail." + getProtocol() + ".host", mailhost);
+
+        if(mailSmtpFrom != null){
+            props.put("mail.smtp.from", mailSmtpFrom);
+        }
+
         if (port != null) props.put("mail." + getProtocol() + ".port", port.toString());
         if (userName != null || userPassword != null)
             props.put("mail." + getProtocol() + ".auth", "true");
@@ -109,6 +109,10 @@ public class SmtpMailSender implements MailSender {
         } finally {
             transport.close();
         }
+    }
+
+    public void setMailSmtpFrom(String value){
+        mailSmtpFrom = value;
     }
 
     public void sendMail(String from, String to, String subject, String body) throws MailSenderException {

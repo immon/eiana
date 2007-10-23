@@ -264,11 +264,25 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
+    public void transitTransactionToState(long id, TransactionStateVOWrapper.State state) throws FacadeTransactionException, NoObjectFoundException, NoSuchStateException, StateUnreachableException {
+        transactionService.transitTransactionToState(id, state.getVOName());
+    }
+
+    public void moveTransactionNextState(long id) throws AccessDeniedException, NoObjectFoundException {
+        try {
+            transactionService.moveTransactionToNextState(id);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
     public void changePassword(String username, String oldPassword, String newPassword, String confirmedNewPassword) throws PasswordChangeException {
         try {
             changePasswordService.changePassword(username, oldPassword, newPassword, confirmedNewPassword );
         } catch (InfrastructureException e) {
-            e.printStackTrace();
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
         }
     }
 
