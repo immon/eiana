@@ -7,6 +7,7 @@ import org.iana.notifications.dao.EmailAddresseeDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
@@ -44,6 +45,8 @@ public abstract class CommonGuardedSystemTransaction {
             (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
     protected SystemDomainService gsds =
             (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
+    protected AdminDomainService ads =
+            (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
     protected EmailAddresseeDAO emailAddresseeDAO = (EmailAddresseeDAO) appCtx.getBean("emailAddresseeDAO");
     protected RZMUser defaultIana;
     protected AdminTransactionService ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
@@ -237,6 +240,7 @@ public abstract class CommonGuardedSystemTransaction {
         gsts.setUser(authUser);
         gsds.setUser(authUser);
         ats.setUser(authUser);
+        ads.setUser(authUser);
     }
 
     protected void setDefaultUser() throws Exception {

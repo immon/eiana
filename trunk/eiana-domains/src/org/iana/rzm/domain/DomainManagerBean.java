@@ -71,7 +71,10 @@ public class DomainManagerBean implements DomainManager {
     }
 
     public void update(Domain domain) {
+        Domain old = dao.get(domain.getObjId());
         updateNameServers(domain);
+        domain.setOpenProcesses(old.getOpenProcesses());
+        domain.setThirdPartyPendingProcesses(old.getThirdPartyPendingProcesses());
         dao.update(domain);
     }
 
