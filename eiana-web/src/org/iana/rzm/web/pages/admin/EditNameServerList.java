@@ -117,6 +117,7 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateNameServers(nameServers);
         getVisitState().markDomainDirty(getDomainId());
+        getVisitState().storeDomain(domain);
         setNameServerListValue(null);
         getCallback().performCallback(getRequestCycle());
     }

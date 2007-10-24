@@ -114,6 +114,7 @@ public abstract class EditSubDomain extends AdminPage
         domain.setRegistryUrl(registryUrl);
         domain.setWhoisServer(whois);
         getVisitState().markDomainDirty(getDomainId());
+        getVisitState().storeDomain(domain);
         getCallback().performCallback(getRequestCycle());
     }
 

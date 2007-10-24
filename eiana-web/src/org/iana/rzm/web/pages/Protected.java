@@ -90,6 +90,9 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
         getVisitState().markAsVisited(domain);
         TransactionActionsVOWrapper transactionActionsVOWrapper = getRzmServices().getChanges(domain);
         if (transactionActionsVOWrapper.getChanges().size() > 0) {
+            if(getVisitState().getMmodifiedDomain() == null){
+                 getVisitState().storeDomain(domain);
+            }
             getVisitState().markDomainDirty(domain.getId());
         }
     }
@@ -97,7 +100,7 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
     protected void restoreCurrentDomain(long domainId) throws NoObjectFoundException {
         try {
             DomainVOWrapper wrapper = getRzmServices().getDomain(domainId);
-            getVisitState().markAsVisited(wrapper);
+            getVisitState().storeDomain(wrapper);
         } catch (AccessDeniedException e) {
             getAccessDeniedHandler().handleAccessDenied(e, getErrorPageName());
         }

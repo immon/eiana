@@ -124,6 +124,7 @@ public abstract class EditContact extends AdminPage
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
         getVisitState().markDomainDirty(getDomainId());
+        getVisitState().storeDomain(domain);
         getCallback().performCallback(getRequestCycle());
     }
 

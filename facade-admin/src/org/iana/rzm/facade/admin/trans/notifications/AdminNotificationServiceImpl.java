@@ -1,25 +1,16 @@
 package org.iana.rzm.facade.admin.trans.notifications;
 
-import org.iana.criteria.And;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.criteria.In;
+import org.iana.criteria.*;
 import org.iana.notifications.*;
-import org.iana.notifications.exception.NotificationException;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
-import org.iana.rzm.facade.services.AbstractRZMStatefulService;
-import org.iana.rzm.facade.system.notification.NotificationAddresseeVO;
-import org.iana.rzm.facade.system.notification.NotificationConverter;
-import org.iana.rzm.facade.system.notification.NotificationCriteriaConverter;
-import org.iana.rzm.facade.system.notification.NotificationVO;
-import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.confirmation.Confirmation;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.user.UserManager;
+import org.iana.notifications.exception.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.facade.admin.trans.*;
+import org.iana.rzm.facade.services.*;
+import org.iana.rzm.facade.system.notification.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.*;
+import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.user.*;
 
 import java.util.*;
 
@@ -161,8 +152,13 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
 
     private Set<String> extractEmails(Set<? extends Addressee> addressees) {
         Set<String> result = new HashSet<String>();
-        for (Addressee addr : addressees)
-            result.add(addr.getEmail());
+
+        for (Addressee addr : addressees){
+            if(addr.getEmail() != null){
+                result.add(addr.getEmail());
+            }
+        }
+        
         return result;
     }
 
