@@ -132,6 +132,7 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateNameServers(nameServers);
         getVisitState().markDomainDirty(getDomainId());
+        getVisitState().storeDomain(domain);
         setNameServerListValue(null);
         ReviewDomain reviewDomainPage = getReviewDomainPage();
         reviewDomainPage.setDomainId(getDomainId());

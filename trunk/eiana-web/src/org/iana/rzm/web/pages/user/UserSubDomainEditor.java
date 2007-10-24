@@ -104,6 +104,7 @@ public abstract class UserSubDomainEditor extends UserPage
         domain.setRegistryUrl(registryUrl);
         domain.setWhoisServer(whois);
         getVisitState().markDomainDirty(getDomainId());
+        getVisitState().storeDomain(domain);
         backToRevewDomainPage();
     }
 

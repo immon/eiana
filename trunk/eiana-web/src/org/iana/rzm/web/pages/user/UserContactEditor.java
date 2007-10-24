@@ -123,6 +123,7 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
         getVisitState().markDomainDirty(getDomainId());
+        getVisitState().storeDomain(domain);
         goToReviewDomainPage();
     }
 
