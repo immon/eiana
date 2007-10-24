@@ -48,12 +48,6 @@
     </dirset>
   </path>
   
-  <path id="eiana-notifications.module.test.sourcepath">
-    <dirset dir="${module.eiana-notifications.basedir}">
-      <include name="test/accuracy"/>
-    </dirset>
-  </path>
-  
   
   <target name="compile.module.eiana-notifications" depends="compile.module.eiana-notifications.production,compile.module.eiana-notifications.tests" description="Compile module eiana-notifications"/>
   
@@ -79,23 +73,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.eiana-notifications.tests" depends="compile.module.eiana-notifications.production" description="compile module eiana-notifications; test classes" unless="skip.tests">
-    <mkdir dir="${eiana-notifications.testoutput.dir}"/>
-    <javac destdir="${eiana-notifications.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-notifications}"/>
-      <classpath refid="eiana-notifications.module.classpath"/>
-      <classpath location="${eiana-notifications.output.dir}"/>
-      <src refid="eiana-notifications.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-notifications"/>
-    </javac>
-    
-    <copy todir="${eiana-notifications.testoutput.dir}">
-      <fileset dir="${module.eiana-notifications.basedir}/test/accuracy">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
+  <target name="compile.module.eiana-notifications.tests" depends="compile.module.eiana-notifications.production" description="compile module eiana-notifications; test classes" unless="skip.tests"/>
   
   <target name="clean.module.eiana-notifications" description="cleanup module">
     <delete dir="${eiana-notifications.output.dir}"/>
