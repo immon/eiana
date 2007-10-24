@@ -85,7 +85,6 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
 
         setModifiedDomain(getVisitState().getMmodifiedDomain());
 
-
         if (getSplitRequest() == 0 || isMustSplit()) {
             setSplitRequest(TWO_RQUEST);
         }
@@ -132,6 +131,7 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
             results.addAll(adminServices.createDomainModificationTrunsaction(domain, split,  getVisitState().getRequestMetaParameters()));
             Summary page = getRequestSummaryPage();
+            page.setDomainId(domain.getId());
             page.setTikets(results);
             page.setDomainName(getDomainName());
             page.setCallback(new PageCallback(AdminHome.PAGE_NAME));

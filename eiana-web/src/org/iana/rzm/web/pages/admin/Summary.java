@@ -42,6 +42,10 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
     public abstract IComponent getOverviewComponent();
 
     @Persist("client:page")
+    public abstract long getDomainId();
+    public abstract void setDomainId(long id);
+
+    @Persist("client:page")
     public abstract ICallback getCallback();
     public abstract void setCallback(ICallback callback);
 
@@ -77,6 +81,7 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
     public abstract void setShowTiketingErrorMessage(boolean flag);
 
     public void pageBeginRender(PageEvent event) {
+        getVisitState().markAsNotVisited(getDomainId());
         setCountryName("(" + getAdminServices().getCountryName(getDomainName()) + ")");
         List<TransactionVOWrapper> tickets = getTikets();
         List<SummaryBean> list = new ArrayList<SummaryBean>();
@@ -92,6 +97,8 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
         setSummaryList(list);
 
     }
+
+
 
     @SuppressWarnings("unchecked")
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {

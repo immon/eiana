@@ -108,6 +108,9 @@ public class Visit implements Serializable {
 
 
     public DomainVOWrapper getMmodifiedDomain() {
+        if(modifiedDomain == 0){
+            return null;
+        }
         return visitedDomains.get(modifiedDomain);
     }
 

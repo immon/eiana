@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.callback.*;
+import org.apache.tapestry.engine.state.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
@@ -107,6 +108,9 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"
         })
     public abstract IComponent getSaveEditComponent();
+
+    @InjectObject("infrastructure:applicationStateManager")
+    public abstract ApplicationStateManager getApplicationStateManager();
 
     @InjectPage("admin/RequestsPerspective")
     public abstract RequestsPerspective getRequestsPerspective();
@@ -299,9 +303,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         DomainChangesConfirmation page = getDomainChangesConfirmation();
         page.setEditor(new TransactionDomainEntityEditorListener(getAdminServices(),
                                                                  new RzmCallback(PAGE_NAME,
-                                                                                 true,
-                                                                                 getExternalParameters()),
-                                                                 getVisitState()));
+                                                                                 true, getExternalParameters()), getApplicationStateManager()));
         page.setDomainId(getDomainId());
         page.setBorderHeader("REQUESTS");
         getRequestCycle().activate(page);
@@ -316,12 +318,12 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
         private AdminServices services;
         private ICallback callback;
-        private Visit state;
+        private ApplicationStateManager manager;
 
-        public TransactionDomainEntityEditorListener(AdminServices services, ICallback callback, Visit state) {
-            this.state = state;
+        public TransactionDomainEntityEditorListener(AdminServices services, ICallback callback, ApplicationStateManager manager) {
             this.services = services;
             this.callback = callback;
+            this.manager = manager;
         }
 
         public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle)
@@ -342,11 +344,13 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
             Summary page = (Summary) cycle.getPage(Summary.PAGE_NAME);
             page.setCallback(new PageCallback(AdminHome.PAGE_NAME));
             page.setDomainName(domainVOWrapper.getName());
+            page.setDomainId(domainVOWrapper.getId());
             boolean split = changes.mustSplitrequest();
             List<TransactionVOWrapper> list = null;
+            Visit visit = (Visit) manager.get("visit");
             try {
-                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, state.getRequestMetaParameters());
-                state.markAsNotVisited(domainVOWrapper.getId());
+                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, visit.getRequestMetaParameters());
+                visit.markAsNotVisited(domainVOWrapper.getId());
                 page.setTikets(list);
             } catch (CreateTicketException e) {
                 page.setTikets(new ArrayList<TransactionVOWrapper>());
