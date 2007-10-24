@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-init" default="compile.module.eiana-init">
   <dirname property="module.eiana-init.basedir" file="${ant.file.module_eiana-init}"/>
-    <import file="../build/eiana.xml"/>
-    
   
   
   <property name="compiler.args.eiana-init" value="${compiler.args}"/>

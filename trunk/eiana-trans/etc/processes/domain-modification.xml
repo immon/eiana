@@ -60,6 +60,7 @@
                 </action>
             </event>
             <transition name="go-on" to="FIRST_NSLINK_CHANGE_DECISION"/>
+            <transition name="admin-accept" to="FIRST_NSLINK_CHANGE_DECISION"/>
         </state>
 
         <decision name="FIRST_NSLINK_CHANGE_DECISION">
