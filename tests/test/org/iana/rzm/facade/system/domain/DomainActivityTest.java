@@ -46,6 +46,12 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
 
+        domain = new Domain("activitytest4");
+        domain.addNameServer(new Host("host7.host"));
+        domain.addNameServer(new Host("host8.host"));
+        domain.setSupportingOrg(new Contact("so-name"));
+        domainManager.create(domain);
+
         processDAO.deploy(DefinedTestProcess.getDefinition());
         processDAO.close();
     }
@@ -103,7 +109,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
     }
 
     @Test
-    public void testDomainActivityAfterUpdate() throws Exception {
+    public void testDomainActivityAfterTransactionUpdate() throws Exception {
         setDefaultUser();
 
         IDomainVO domain = getDomain("activitytest3");
@@ -113,6 +119,24 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         transitTransactionToState(trans.getTransactionID(), TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.toString());
 
         domain = getDomain("activitytest3");
+        assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;
+    }
+
+    @Test
+    public void testDomainActivityAfterDomainUpdate() throws Exception {
+        setDefaultUser();
+
+        IDomainVO domain = getDomain("activitytest4");
+        domain.setRegistryUrl("activitytest.registry.url");
+        createTransactions(domain, false).get(0);
+
+        domain = getDomain("activitytest4");
+        assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;
+
+        domain.setIanaCode("xyz");
+        ads.updateDomain(domain);
+
+        domain = getDomain("activitytest4");
         assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;
     }
 
