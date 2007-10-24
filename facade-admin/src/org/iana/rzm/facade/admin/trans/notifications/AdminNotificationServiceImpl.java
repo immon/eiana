@@ -100,7 +100,7 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
                 for (Notification notif : notifications) {
                     Set<String> addresseeEmails = extractEmails(notif.getAddressee());
                     if (!Collections.disjoint(addresseeEmails, outstendingEmails)) {
-                        notificationSender.send(notif);
+                        resend(notif, comment);
                     }
                 }
             } else if (type == NotificationVO.Type.USDOC_CONFIRMATION) {
@@ -112,7 +112,7 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
                     criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
                     List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
                     for (Notification notif : notifications) {
-                        notificationSender.send(notif);
+                        resend(notif, comment);
                     }
                 }
             } else {
@@ -132,37 +132,28 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
             return;
         }
         try {
-            Set<Addressee> addressee = new HashSet<Addressee>();
-            addressee.add(new EmailAddressee(addresseeEmail, ""));
+            Set<String> addressee = new HashSet<String>();
+            addressee.add(addresseeEmail);
 
             if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
-                Transaction transaction = transactionManager.getTransaction(transactionId);
-
                 List<Criterion> criteria = new ArrayList<Criterion>();
                 criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
                 criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
                 List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
-
                 for (Notification notif : notifications) {
-                    notif.setAddressee(addressee);
-                    notificationSender.send(notif);
+                    resend(notif, addressee, comment);
                 }
             } else if (type == NotificationVO.Type.USDOC_CONFIRMATION) {
-                Transaction transaction = transactionManager.getTransaction(transactionId);
-                Confirmation sc = transaction.getTransactionData().getStateConfirmations(TransactionState.Name.PENDING_USDOC_APPROVAL.name());
                 List<Criterion> criteria = new ArrayList<Criterion>();
                 criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
                 criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
                 List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
                 for (Notification notif : notifications) {
-                    notif.setAddressee(addressee);
-                    notificationSender.send(notif);
+                    resend(notif, addressee, comment);
                 }
             } else {
                 throw new FacadeTransactionException("unsupported notification type: " + type);
             }
-        } catch (NoSuchTransactionException e) {
-            throw new InfrastructureException(e);
         } catch (NotificationException e) {
             throw new InfrastructureException(e);
         }
@@ -186,5 +177,15 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
     private Criterion convertNotificationCriteria(Criterion criteria) {
         criteria.accept(new NotificationCriteriaConverter());
         return criteria;
+    }
+
+    private void resend(Notification notification, Set<String> set, String comment) throws NotificationException {
+        Set<Addressee> addressees = new HashSet<Addressee>();
+        for (String email : set) addressees.add(new EmailAddressee(email, email));
+        notificationSender.send(addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
+    }
+
+    private void resend(Notification notification, String comment) throws NotificationException {
+        notificationSender.send(notification.getAddressee(), notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
     }
 }
