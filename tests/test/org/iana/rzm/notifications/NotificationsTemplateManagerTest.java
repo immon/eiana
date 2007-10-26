@@ -33,6 +33,7 @@ public class NotificationsTemplateManagerTest {
                 "        <iana:type>contact-confirmation-remainder</iana:type>\n" +
                 "        <iana:subject>{transactionId} | {stateName} | [RZM] | {domainName}</iana:subject>\n" +
                 "        <iana:content>FROM DATABASE</iana:content>\n" +
+                "        <iana:signed>false</iana:signed>\n" +
                 "       </iana:template>";
         String name = NotificationTemplateManager.class.getSimpleName() + "." + NOTIFICATION_TYPE;
 //        List<String> values = new ArrayList<String>(1);

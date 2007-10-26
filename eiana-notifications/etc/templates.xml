@@ -6,18 +6,21 @@
         <iana:type>SAMPLE_TEMPLATE1</iana:type>
         <iana:subject>Warning</iana:subject>
         <iana:content>User %loginName% is trying to do something illegal.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>SAMPLE_TEMPLATE2</iana:type>
         <iana:subject>User info</iana:subject>
         <iana:content>%firstName% %lastName% has login %loginName% .</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>SAMPLE_TEMPLATE3</iana:type>
         <iana:subject>Sample subject {testText}</iana:subject>
         <iana:content>Sample text {testText}, Null -{testNull}- and date {testDate}.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
 
@@ -65,6 +68,7 @@ Internet Assigned Numbers Authority
 NOTE: This has been an automated message, sent to you as you are
 listed as a party to this request.
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
@@ -73,6 +77,7 @@ listed as a party to this request.
         <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have
             only {period} days left.
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
@@ -80,6 +85,7 @@ listed as a party to this request.
         <iana:subject>Domain modification</iana:subject>
         <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
@@ -88,48 +94,56 @@ listed as a party to this request.
         <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have
             only {period} days left.
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>zone-insertion-alert</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Zone Insertion Alert for {domainName}. Only {period} days left.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>zone-publication-alert</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Zone Publication Alert for {domainName}. Only {period} days left.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>completed</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Completed.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>rejected</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Rejected.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>withdrawn</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Withdrawn.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>admin-closed</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Admin Closed.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
         <iana:type>exception</iana:type>
         <iana:subject>Domain modification</iana:subject>
         <iana:content>Exception.</iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
@@ -140,6 +154,7 @@ Technical checks failed for domain {domainName}:
 {errorList}
 You have {days} day(s) left to make everything working properly.
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <iana:template>
@@ -149,6 +164,7 @@ You have {days} day(s) left to make everything working properly.
 Technical checks failed for domain {domainName}:
 {errorList}
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 
     <!--todo-->
@@ -160,6 +176,9 @@ Technical checks failed for domain {domainName}:
             transaction ID: {transactionId}
             state: {stateName}
         </iana:content>
+        <iana:signed>true</iana:signed>
+        <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
+        <iana:keyPassphrase>tester</iana:keyPassphrase>
     </iana:template>
 
     <!--todo-->
@@ -172,6 +191,9 @@ Technical checks failed for domain {domainName}:
             state: {stateName}
             period: {period}
         </iana:content>
+        <iana:signed>true</iana:signed>
+        <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
+        <iana:keyPassphrase>tester</iana:keyPassphrase>
     </iana:template>
 
     <iana:template>
@@ -181,5 +203,6 @@ Technical checks failed for domain {domainName}:
             {userName}
             {link}
         </iana:content>
+        <iana:signed>false</iana:signed>
     </iana:template>
 </iana:templates>

@@ -30,6 +30,8 @@
     <pathelement location="${common-criteria.testoutput.dir}"/>
     <pathelement location="${common-config.output.dir}"/>
     <pathelement location="${common-config.testoutput.dir}"/>
+    <pathelement location="${common-pgp.output.dir}"/>
+    <pathelement location="${common-pgp.testoutput.dir}"/>
   </path>
   
   
@@ -51,7 +53,7 @@
   
   <target name="compile.module.eiana-notifications" depends="compile.module.eiana-notifications.production,compile.module.eiana-notifications.tests" description="Compile module eiana-notifications"/>
   
-  <target name="compile.module.eiana-notifications.production" depends="compile.module.eiana-util,compile.module.common-mail,compile.module.common-dao,compile.module.common-criteria,compile.module.common-config" description="Compile module eiana-notifications; production classes">
+  <target name="compile.module.eiana-notifications.production" depends="compile.module.eiana-util,compile.module.common-mail,compile.module.common-dao,compile.module.common-criteria,compile.module.common-config,compile.module.common-pgp" description="Compile module eiana-notifications; production classes">
     <mkdir dir="${eiana-notifications.output.dir}"/>
     <javac destdir="${eiana-notifications.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-notifications}"/>
