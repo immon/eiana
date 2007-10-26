@@ -1,19 +1,25 @@
 package org.iana.pgp.cryptix;
 
-import cryptix.message.KeyBundleMessage;
-import cryptix.message.MessageException;
-import cryptix.message.MessageFactory;
-import cryptix.message.Message;
+import cryptix.message.*;
+import cryptix.pki.KeyBundle;
+import cryptix.pki.KeyBundleException;
+import cryptix.openpgp.PGPArmouredMessage;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
 import java.util.Collection;
 
 /**
  * @author Jakub Laszkiewicz
  */
 public class CryptixPGPUtils {
+    static {
+        java.security.Security.addProvider(new cryptix.jce.provider.CryptixCrypto() );
+        java.security.Security.addProvider(new cryptix.openpgp.provider.CryptixOpenPGP() );
+    }
+
     private static String removeTrailingWhitespaces(String line) {
         if (line == null) return null;
         while (line.length() > 0 && (line.charAt(line.length() - 1) == ' ' || (line.charAt(line.length() - 1) == '\t'))) {
@@ -49,5 +55,27 @@ public class CryptixPGPUtils {
         } finally {
             in.close();
         }
+    }
+
+    public static Message signMessage(Message msg, String privateKey, String passphrase) throws NoSuchAlgorithmException, MessageException, IOException, KeyBundleException, UnrecoverableKeyException {
+        InputStream in = new ByteArrayInputStream(privateKey.getBytes());
+        KeyBundle bundle;
+        try {
+            MessageFactory mf = MessageFactory.getInstance("OpenPGP");
+            Collection msgs = mf.generateMessages(in);
+            KeyBundleMessage kbm = (KeyBundleMessage) msgs.iterator().next();
+            bundle = kbm.getKeyBundle();
+        } finally {
+            in.close();
+        }
+        SignedMessageBuilder smb = SignedMessageBuilder.getInstance("OpenPGP");
+        smb.init(msg);
+        smb.addSigner(bundle, passphrase.toCharArray());
+        return smb.build();
+    }
+
+    public static String armourMessage(Message msg) throws MessageException, UnsupportedEncodingException {
+        Message signed = new PGPArmouredMessage(msg);
+        return new String(signed.getEncoded(), "US-ASCII");
     }
 }

@@ -57,6 +57,7 @@ public class NotificationTemplateManager {
                 if (content != null && content.trim().length() != 0) {
                     StringBuffer sb = new StringBuffer();
                     sb.append(HEAD).append(content).append(END);
+                    System.out.println(sb);
                     NotificationTemplateMapper tempMap = (NotificationTemplateMapper) parser.fromXML(sb.toString(), env);
                     return tempMap.getNotificationTemplate(type);
                 }

@@ -1,11 +1,10 @@
 package org.iana.pgp;
 
+import cryptix.message.LiteralMessage;
 import cryptix.message.Message;
 import cryptix.message.SignedMessage;
-import cryptix.message.LiteralMessage;
 import org.iana.pgp.cryptix.CryptixPGPUtils;
 
-import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
 
@@ -14,7 +13,7 @@ import java.security.PublicKey;
  */
 public class PGPUtils {
     public static PublicKey toPublicKey(String armouredKey) throws PGPUtilsException {
-        try {
+        try {        
             return CryptixPGPUtils.toPublicKey(armouredKey);
         } catch (Exception e) {
             throw new PGPUtilsException("while converting to public key", e);
@@ -32,6 +31,16 @@ public class PGPUtils {
             return new String(((LiteralMessage) cont).getBinaryData(), "US-ASCII");
         } catch (Exception e) {
             throw new PGPUtilsException("while getting signed message content", e);
+        }
+    }
+
+    public static String signMessage(String content, String armouredKey, String passphrase) throws PGPUtilsException {
+        try {
+            Message msg = CryptixPGPUtils.getMessage(new ByteArrayInputStream(content.getBytes("US-ASCII")));
+            Message signed = CryptixPGPUtils.signMessage(msg, armouredKey, passphrase);
+            return CryptixPGPUtils.armourMessage(signed);
+        } catch (Exception e) {
+            throw new PGPUtilsException("while signing message content", e);
         }
     }
 }
