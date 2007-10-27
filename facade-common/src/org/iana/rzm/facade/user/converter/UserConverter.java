@@ -107,7 +107,7 @@ public class UserConverter {
         rzmUser.setLoginName(userVO.getUserName());
         rzmUser.setEmail(userVO.getEmail());
         rzmUser.setPublicKey(userVO.getPublicKey());
-        rzmUser.setPassword(userVO.getPassword());
+        // rzmUser.setPassword(userVO.getPassword());
         rzmUser.setSecurID(userVO.isSecurID());
 
         return rzmUser;

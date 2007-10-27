@@ -126,6 +126,23 @@ public class GuardedAdminUserServiceTest {
     }
 
     @Test(dependsOnMethods = {"testFacadeUpdateUser"})
+    public void testFacadeUpdateUser_Password() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminUserServ.setUser(testAuthUser);
+        UserVO userVO = gAdminUserServ.getUser(USER_NAME);
+        String password = userVO.getPassword();
+        assert !"newpassword".equals(password);
+        userVO.setPassword("newpassword");
+        gAdminUserServ.updateUser(userVO);
+
+        userVO = gAdminUserServ.getUser(USER_NAME);
+        assert USER_NAME.equals(userVO.getUserName());
+        assert password.equals(userVO.getPassword());
+
+        gAdminUserServ.close();
+    }
+
+    @Test(dependsOnMethods = {"testFacadeUpdateUser"})
     public void testFacadeUpdateUserSystemRole() {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
