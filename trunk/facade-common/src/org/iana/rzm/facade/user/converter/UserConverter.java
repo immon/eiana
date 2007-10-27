@@ -72,8 +72,14 @@ public class UserConverter {
 
     public static RZMUser convert(UserVO user) {
         if (user == null) return null;
+        RZMUser rzmUser = new RZMUser();
+        return convertUser(rzmUser, user);
+    }
 
-        RZMUser rzmUser = convertUser(user);
+    public static RZMUser convert(RZMUser rzmUser, UserVO user) {
+        if (user == null) return null;
+
+        convertUser(rzmUser, user);
 
         List<Role> roles = new ArrayList<Role>();
         for (RoleVO roleVO : user.getRoles()) {
@@ -84,8 +90,7 @@ public class UserConverter {
         return rzmUser;
     }
 
-    private static RZMUser convertUser(UserVO userVO) {
-        RZMUser rzmUser = new RZMUser();
+    private static RZMUser convertUser(RZMUser rzmUser, UserVO userVO) {
 
         TrackData trackData = new TrackData();
 

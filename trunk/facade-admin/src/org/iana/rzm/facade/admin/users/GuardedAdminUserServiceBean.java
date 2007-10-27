@@ -74,7 +74,7 @@ public class GuardedAdminUserServiceBean  extends AbstractFinderService<UserVO> 
         isUserInRole();
         CheckTool.checkNull(userVO, "userVO");
         RZMUser user = userManager.get(userVO.getObjId());
-        RZMUser updateUser = UserConverter.convert(userVO);
+        RZMUser updateUser = UserConverter.convert(user, userVO);
         updateUser.setTrackData(user.getTrackData());
         updateUser.setModified(new Timestamp(System.currentTimeMillis()));
         updateUser.setModifiedBy(getAuthenticatedUser().getUserName());
