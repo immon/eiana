@@ -39,16 +39,24 @@
                 <span jwcid="@GrayContainer">
                     <form name="editRequest" jwcid="editRequest">
                         <input jwcid="@Hidden" value="ognl:page.tokenSynchronizer.token"/>
-                        <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
+                        <table class="edit" border="0" cellpadding="5" cellspacing="5" width="65%">
                             <tr>
-                                <td width="29%" valign="top" class="label green"><span jwcid="@FieldLabel" field="component:rt">RT Number</span></td>
-                                <td width="71%" align="right" valign="top"><input jwcid="rt" type="text" name="rt" class="field" onkeypress="return submitOnEnter(event);"/>
+                                <td class="label green" valign="top" width="29%"><span jwcid="@FieldLabel" field="component:rt">RT Number</span></td>
+                                <td align="right" valign="top" width="71%"><input jwcid="rt" type="text" name="rt" class="field" onkeypress="return submitOnEnter(event);"/>
                             </tr>
                             <tr>
-                                <td valign="top" class="label green">State:</td>                                
-                                <td align="right" valign="top">
-                                    <input name="nextState"     value="Next apporiate state"    type=submit jwcid="nextState"      class="button"/>
-                                    <input name="chooseState" value="Manualy choose state"  type=submit jwcid="chooseState"  class="button"/>
+                                <td class="label green" valign="top">State:</td>                                
+                                <td align="left" valign="top">
+                                    <div class="buttonStyle" style="float: left; margin-right: 5px;">
+                                        <b class="left"></b>
+                                        <b class="right"><a href="#" jwcid="nextState" class="button">Next Appropriate State</a></b>
+                                    </div>
+                                    <div class="buttonStyle" style="float: left;">
+                                        <b class="left"></b>
+                                        <b class="right"><a href="#" jwcid="chooseState" class="button">Manually Choose State</a></b>
+                                    </div>
+                                    <!--<input name="nextState"     value="Next apporiate state"    type=submit jwcid="nextState"      class="button"/>-->
+                                    <!--<input name="chooseState" value="Manualy choose state"  type=submit jwcid="chooseState"  class="button"/>-->
                                 </td>
                             </tr>
                             <!--<tr>-->
@@ -56,8 +64,8 @@
                                 <!--<td  valign="top"><span jwcid="states" class="field" onkeypress="return submitOnEnter(event);"></span>-->
                             <!--</tr>-->
                             <tr>
-                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:submitter">Request Submitter Email</span></td>
-                                <td align="right" valign="top"><span jwcid="submitter" class="field" onkeypress="return submitOnEnter(event);"></span>
+                                <td class="label green" valign="top"><span jwcid="@FieldLabel" field="component:submitter">Request Submitter Email</span></td>
+                                <td align="right" valign="top"><input type="text"  jwcid="submitter" class="field" onkeypress="return submitOnEnter(event);"/>
                             </tr>
                             <tr>
                                 <td valign="top" class="label green"><label jwcid="redeligationLabel">Redeligation</label></td>

@@ -3,8 +3,10 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.callback.*;
+import org.apache.tapestry.engine.state.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.model.*;
@@ -42,6 +44,9 @@ public abstract class EditDomain extends AdminPage
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryComponent();
 
+    @InjectObject("infrastructure:applicationStateManager")
+    public abstract ApplicationStateManager getApplicationStateManager();
+
     @Persist("client:page")
     public abstract long getDomainId();
 
@@ -51,9 +56,9 @@ public abstract class EditDomain extends AdminPage
     public abstract String getCountryName();
 
     @Persist("client:page")
+    public abstract SystemDomainVOWrapper getOriginalDomain();
     public abstract void setOriginalDomain(SystemDomainVOWrapper domain);
 
-    public abstract SystemDomainVOWrapper getOriginalDomain();
 
     public abstract void setCountryName(String name);
 
@@ -77,7 +82,6 @@ public abstract class EditDomain extends AdminPage
 
     @Persist("client:page")
     public abstract void setModifiedDomain(DomainVOWrapper modifiedDomain);
-
     public abstract DomainVOWrapper getModifiedDomain();
 
     public void setIdentifier(Object id) {
@@ -128,9 +132,14 @@ public abstract class EditDomain extends AdminPage
             if (domain == null) {
                 domain = getAdminServices().getDomain(getDomainId());
             }
-            getVisitState().markAsVisited(domain);
             setOriginalDomain(domain);
+
+            DomainVOWrapper mdomain = getVisitState().getMmodifiedDomain();
+            setModifiedDomain(mdomain);
+            getVisitState().markAsVisited(mdomain != null ? mdomain : domain);
+
             setModifiedDomain(getVisitState().getMmodifiedDomain());
+                                                                      
             String countryName = getAdminServices().getCountryName(domain.getName());
             setCountryName(countryName);
         } catch (NoObjectFoundException e) {
@@ -139,7 +148,12 @@ public abstract class EditDomain extends AdminPage
     }
 
     public DomainVOWrapper getDomain() {
-        return getVisitState().getCurrentDomain(getDomainId());
+        DomainVOWrapper domain = getVisitState().getMmodifiedDomain();
+        if(domain == null){
+            domain = getVisitState().getCurrentDomain(getDomainId());
+        }
+
+        return domain;
     }
 
     public DomainAttributeEditor getDomainEditor() {
@@ -151,7 +165,10 @@ public abstract class EditDomain extends AdminPage
             DomainChangesConfirmation domainChangesConfirmation = getDomainChangesConfirmation();
             domainChangesConfirmation.setDomainId(getDomainId());
             domainChangesConfirmation.setCountryName(getCountryName());
-            domainChangesConfirmation.setEditor(new DomainEntityEditorListener(getAdminServices(), new RzmCallback(getPageName(), isExternal(), getExternalParameters())));
+            domainChangesConfirmation.setEditor(new DomainEntityEditorListener(getAdminServices(),
+                                                                               new RzmCallback(getPageName(),
+                                                                                               isExternal(),
+                                                                                               getExternalParameters()),getApplicationStateManager()));
             domainChangesConfirmation.setBorderHeader("DOMAINS");
             getRequestCycle().activate(domainChangesConfirmation);
         } else {
@@ -207,7 +224,8 @@ public abstract class EditDomain extends AdminPage
 
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
-        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList( getVisitState().getCurrentDomain(getDomainId()).getName()), getRzmServices()));
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(
+            getDomainId()).getName()), getRzmServices()));
         return page;
     }
 
@@ -224,14 +242,20 @@ public abstract class EditDomain extends AdminPage
 
         private AdminServices services;
         private ICallback callback;
-
-        public DomainEntityEditorListener(AdminServices services, ICallback callback) {
+        private ApplicationStateManager stateManager;
+        
+        public DomainEntityEditorListener(AdminServices services,
+                                          ICallback callback,
+                                          ApplicationStateManager stateManager) {
             this.services = services;
             this.callback = callback;
+            this.stateManager = stateManager;
         }
 
         public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle) {
             services.updateDomain(domainVOWrapper);
+            Visit visit = (Visit) stateManager.get("visit");
+            visit.markAsNotVisited(domainVOWrapper.getId());
             cycle.activate(Domains.PAGE_NAME);
         }
 

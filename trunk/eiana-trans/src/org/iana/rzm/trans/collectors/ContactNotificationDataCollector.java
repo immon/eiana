@@ -1,16 +1,12 @@
 package org.iana.rzm.trans.collectors;
 
-import org.iana.objectdiff.Change;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.SimpleChange;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.objectdiff.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.contact.*;
 import static org.iana.rzm.user.SystemRole.SystemType.AC;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -49,7 +45,7 @@ public class ContactNotificationDataCollector extends AbstractNotificationDataCo
 
             values.put("currentOrNewContact", (isNewContact()) ? "proposed new contact" : "current contact");
             values.put("newContactOnly", (isNewContact()) ? newContactInfo() : "");
-            values.put("url", "https://rzm.iana.org/rzm");
+            values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", ""+td.getTicketID());
         }
         return values;

@@ -59,8 +59,8 @@ public class WebUtil {
     public static List<NameServerValue> buildNameServerList(List<NameServerVOWrapper> originals, List<NameServerVOWrapper> current) {
         List<NameServerValue> all = new ArrayList<NameServerValue>();
 
-        if(originals == null || originals.size() == 0){
-            return all;
+        if(originals == null){
+            originals = new ArrayList<NameServerVOWrapper>();
         }
         
         for (NameServerVOWrapper wrapper : originals) {
@@ -134,6 +134,6 @@ public class WebUtil {
             return defaultPort;
         }
 
-        return 443;
+        return 8080;
     }
 }
