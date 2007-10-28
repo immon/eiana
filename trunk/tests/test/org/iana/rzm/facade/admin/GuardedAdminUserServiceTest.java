@@ -79,7 +79,7 @@ public class GuardedAdminUserServiceTest {
 
         retUserVO = gAdminUserServ.getUser(retUserVO.getObjId());
         assert USER_NAME.equals(retUserVO.getUserName());
-        assert !retUserVO.getRoles().isEmpty();
+        assert retUserVO.getRoles().size() == 1;
         assert md5.getPassword().equals(retUserVO.getPassword());
 
         gAdminUserServ.close();
