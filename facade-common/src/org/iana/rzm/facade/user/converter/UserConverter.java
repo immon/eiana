@@ -1,19 +1,14 @@
 package org.iana.rzm.facade.user.converter;
 
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.*;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.user.*;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * org.iana.rzm.facade.user.converter.UserConverter
- *
+ * <p/>
  * Performs conversion between user representation at DAO and facade level
  *
  * @author Marcin Zajaczkowski
@@ -28,7 +23,9 @@ public class UserConverter {
      */
     public static UserVO convert(RZMUser user) {
 
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
 
         UserVO userVO = convertUser(user);
 
@@ -45,7 +42,9 @@ public class UserConverter {
     }
 
     public static UserVO convertSimple(RZMUser user) {
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
         return convertUser(user);
     }
 
@@ -71,13 +70,17 @@ public class UserConverter {
     }
 
     public static RZMUser convert(UserVO user) {
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
         RZMUser rzmUser = new RZMUser();
         return convert(rzmUser, user);
     }
 
     public static RZMUser convert(RZMUser rzmUser, UserVO user) {
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
 
         convertUser(rzmUser, user);
 
@@ -107,8 +110,14 @@ public class UserConverter {
         rzmUser.setLoginName(userVO.getUserName());
         rzmUser.setEmail(userVO.getEmail());
         rzmUser.setPublicKey(userVO.getPublicKey());
-        // rzmUser.setPassword(userVO.getPassword());
+        //rzmUser.setPassword(userVO.getPassword());
         rzmUser.setSecurID(userVO.isSecurID());
+
+        List<Role> roles = new ArrayList<Role>();
+        for (RoleVO roleVO : userVO.getRoles()) {
+            roles.add(RoleConverter.convertRole(roleVO));
+        }
+        rzmUser.setRoles(roles);
 
         return rzmUser;
     }

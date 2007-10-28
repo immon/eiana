@@ -46,10 +46,10 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCancelComponent();
 
-    @Component(id="nextState", type="Submit", bindings = {"action=listener:nextState"})
+    @Component(id="nextState", type="LinkSubmit", bindings = {"action=listener:nextState"})
     public abstract IComponent getNextStateComponent();
 
-    @Component(id="chooseState", type = "Submit", bindings = {"action=listener:chooseState"})
+    @Component(id="chooseState", type = "LinkSubmit", bindings = {"action=listener:chooseState"})
     public abstract IComponent getChooseStateComponent();
 
     @InjectPage("admin/EditDomain")

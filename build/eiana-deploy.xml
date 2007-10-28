@@ -2,6 +2,7 @@
 <project name="eiana-deploy" default="all.compile">
 
     <import file="eiana.xml"/>
+    <import file="${basedir}/../eiana-web/module_eiana-web.xml"/>
     <import file="task-defs.xml"/>
 
     <property environment="env"/>

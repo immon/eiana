@@ -93,6 +93,7 @@ public abstract class AdminBorder extends Border {
     }
 
     public void doFind() {
+        getVisit().resetModifirdDomain();
         try {
             getFinderValidator().validate(getSearch());
             getFinderListener().doFind(getSearch());

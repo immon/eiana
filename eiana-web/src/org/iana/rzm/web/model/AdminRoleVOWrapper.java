@@ -6,7 +6,9 @@ import org.iana.rzm.facade.user.*;
 public class AdminRoleVOWrapper extends RoleVOWrapper {
 
     public enum AdminType implements Type {
-        IANA("IANA", "IANA"), DoC( "GOV_OVERSIGHT", "DoC");
+        IANA("IANA", "IANA"),
+        DoC( "GOV_OVERSIGHT", "DoC"),
+        ZONE_PUBLISHER("ZONE_PUBLISHER", "Zone Publisher");
 
         private String displayName;
         private String serverName;
@@ -34,6 +36,8 @@ public class AdminRoleVOWrapper extends RoleVOWrapper {
                 return IANA;
             } else if (type.equals(DoC.serverName)) {
                 return DoC;
+            }else if(type.equals(ZONE_PUBLISHER.serverName)){
+                return ZONE_PUBLISHER;
             }
 
             throw new IllegalArgumentException(type);
@@ -45,6 +49,8 @@ public class AdminRoleVOWrapper extends RoleVOWrapper {
                 return IANA;
             } else if (type.equals(DoC.displayName)) {
                 return DoC;
+            }else if(type.equals(ZONE_PUBLISHER.displayName)){
+                return ZONE_PUBLISHER;
             }
 
             throw new IllegalArgumentException(type);
@@ -58,6 +64,8 @@ public class AdminRoleVOWrapper extends RoleVOWrapper {
                 return IANA;
             } else if (type.equals(AdminRoleVO.AdminType.GOV_OVERSIGHT)) {
                 return DoC;
+            } else if (type.equals(AdminRoleVO.AdminType.ZONE_PUBLISHER)) {
+                return ZONE_PUBLISHER;
             }
             throw new IllegalArgumentException(type.getClass().getName());
         }

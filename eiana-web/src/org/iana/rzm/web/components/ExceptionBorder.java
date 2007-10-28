@@ -6,6 +6,7 @@ import org.iana.rzm.web.pages.admin.*;
 import org.iana.rzm.web.pages.user.*;
 import org.iana.rzm.web.tapestry.*;
 
+@ComponentClass
 public abstract class ExceptionBorder extends Border {
     public static final String WINDOW_TITLE = "IANA Root Zone Maintenance";
         

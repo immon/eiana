@@ -205,7 +205,8 @@ public class NotificationSenderBean implements NotificationSender {
     private void sendMail(String address, String subject, String body) throws NotificationException {
         try {
             MailSender mailer = new SmtpMailSender(getEmailMailer(), getEmailMailhost(), getEmailMailhostPort(), getEmailUserName(), getEmailUserPassword(), isEmailUseSSL(), isEmailUseTLS());
-            ((SmtpMailSender) mailer).setMailSmtpFrom(mailSmtpFrom);
+            String configParam = config.getParameter("mailSmtpFrom");
+            ((SmtpMailSender) mailer).setMailSmtpFrom(configParam == null ? mailSmtpFrom : configParam);
             mailer.sendMail(getEmailFromAddress(), address, subject, body);
         } catch (MailSenderException e) {
             logger.warn("Unable to send notification to '" + address + "'. Reason: " + e.getMessage());

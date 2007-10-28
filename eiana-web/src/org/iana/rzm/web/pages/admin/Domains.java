@@ -41,7 +41,6 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
         return new DomainsFinderListener(getAdminServices(), getRequestCycle(), this, getDomainPerspective());
     }
 
-    
 
     public void pageBeginRender(PageEvent event) {
 
