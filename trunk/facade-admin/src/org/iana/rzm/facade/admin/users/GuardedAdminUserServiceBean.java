@@ -65,6 +65,7 @@ public class GuardedAdminUserServiceBean  extends AbstractFinderService<UserVO> 
                 systemRole.setAccessToDomain(true);
             }
         }
+        newUser.setPassword(userVO.getPassword());
         newUser.setCreated(new Timestamp(System.currentTimeMillis()));
         newUser.setCreatedBy(getAuthenticatedUser().getUserName());
         this.userManager.create(newUser);
