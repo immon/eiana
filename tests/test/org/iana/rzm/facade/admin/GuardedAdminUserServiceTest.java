@@ -68,13 +68,20 @@ public class GuardedAdminUserServiceTest {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminUserServ.setUser(testAuthUser);
 
-        gAdminUserServ.createUser(createTestUser(USER_NAME));
+        UserVO userVO = createTestUser(USER_NAME);
+        userVO.addRole(new AdminRoleVO(AdminRoleVO.AdminType.IANA));
+        String password = userVO.getPassword();
+        MD5Password md5 = new MD5Password(password);
+        gAdminUserServ.createUser(userVO);
 
         UserVO retUserVO = gAdminUserServ.getUser(USER_NAME);
         assert USER_NAME.equals(retUserVO.getUserName());
 
         retUserVO = gAdminUserServ.getUser(retUserVO.getObjId());
         assert USER_NAME.equals(retUserVO.getUserName());
+        assert !retUserVO.getRoles().isEmpty();
+        assert md5.getPassword().equals(retUserVO.getPassword());
+
         gAdminUserServ.close();
     }
 

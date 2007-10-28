@@ -73,7 +73,7 @@ public class UserConverter {
     public static RZMUser convert(UserVO user) {
         if (user == null) return null;
         RZMUser rzmUser = new RZMUser();
-        return convertUser(rzmUser, user);
+        return convert(rzmUser, user);
     }
 
     public static RZMUser convert(RZMUser rzmUser, UserVO user) {
