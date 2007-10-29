@@ -160,7 +160,7 @@
             <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
             <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notifiaction>contact-confirmation</notifiaction>
+                    <notification>contact-confirmation</notification>
                 </action>
             </transition>
             <transition name="reject" to="REJECTED"/>
@@ -168,7 +168,7 @@
             <transition name="withdraw" to="WITHDRAWN"/>
             <transition name="admin-accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notifiaction>contact-confirmation</notifiaction>
+                    <notification>contact-confirmation</notification>
                 </action>
             </transition>
             <transition name="admin-reject" to="REJECTED"/>
@@ -413,13 +413,13 @@
             <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
             <transition name="accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notifiaction>usdoc-confirmation</notifiaction>
+                    <notification>usdoc-confirmation</notification>
                 </action>
             </transition>
             <transition name="reject" to="REJECTED"/>
             <transition name="admin-accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notifiaction>usdoc-confirmation</notifiaction>
+                    <notification>usdoc-confirmation</notification>
                 </action>
             </transition>
             <transition name="admin-reject" to="REJECTED"/>
