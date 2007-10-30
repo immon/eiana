@@ -2,6 +2,7 @@ package org.iana.rzm.facade.admin.trans;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
+import org.iana.criteria.SortCriterion;
 import org.iana.dns.check.DNSTechnicalCheck;
 import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
@@ -32,6 +33,7 @@ import org.iana.rzm.user.UserManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author: Piotr Tkaczyk
@@ -198,32 +200,36 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
     public List<TransactionVO> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
-        return super.find(order, offset, limit);
+        return find(null, order, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
-        return super.find(criteria, order, offset, limit);
+        Criterion searchCriteria = criteria;
+        if (order != null) searchCriteria = new SortCriterion(criteria, order);
+        return find(searchCriteria, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, List<Order> order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
-        return super.find(criteria, order, offset, limit);
+        Criterion searchCriteria = criteria;
+        if (order != null) searchCriteria = new SortCriterion(criteria, order);
+        return find(searchCriteria, offset, limit);
     }
 
     public int count(Criterion criteria) throws AccessDeniedException {
         isUserInRole();
-        return super.count(criteria);
+        return transactionManager.count(criteria);
     }
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
-        return super.find(criteria, offset, limit);
+        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria, offset, limit));
     }
 
     public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
         isUserInRole();
-        return super.find(criteria);
+        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria));
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
