@@ -143,12 +143,9 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         }catch(NoDomainModificationException e){
             setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
-        } catch (CreateTicketException e) {
-            // todo: "create ticket" error
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         }
-
     }
 
     public ReviewDomain makeMoreChanges() {

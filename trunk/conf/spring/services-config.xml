@@ -290,7 +290,7 @@
             <ref bean="parameterManager"/>
         </property>
         <property name="mailSmtpFrom">
-            <value>bouns.email.address</value>
+            <value>rs.icann.org</value>
         </property>
         <!--
         <property name="port">
@@ -358,13 +358,11 @@
         </constructor-arg>
     </bean>
 
-    <!--
-    <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
-        <constructor-arg index="0" value="http://localhost:8284/"/>
-        <constructor-arg index="1" value="root"/>
-        <constructor-arg index="2" value="password"/>
-    </bean>
-    -->
+    <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
+        <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
+        <!--<constructor-arg index="1" value="root"/>-->
+        <!--<constructor-arg index="2" value="password"/>-->
+    <!--</bean>-->
 
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
 
@@ -556,9 +554,9 @@
         <property name="port">
             <value>995</value>
         </property>
-        <!--<property name="debug">-->
-        <!--<value>true</value>-->
-        <!--</property>-->
+        <property name="debug">
+        <value>true</value>
+        </property>
         <property name="ssl">
             <value>true</value>
         </property>

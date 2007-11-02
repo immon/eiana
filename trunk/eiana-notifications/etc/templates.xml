@@ -28,13 +28,13 @@
 
     <iana:template>
         <iana:type>contact-confirmation</iana:type>
-        <iana:subject>{transactionId} | {stateName} | [RZM] | {domainName} | {token}</iana:subject>
+        <iana:subject>{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}</iana:subject>
         <iana:content>
 Dear {name}{title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to alter the
-information associated with the {domainName} domain from $LODGER$. The
+information associated with the {domainName} domain from {subbmiter} The
 changes requested are as follows:
 
 {changes}

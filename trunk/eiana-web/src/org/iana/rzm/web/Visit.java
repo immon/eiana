@@ -1,7 +1,10 @@
 package org.iana.rzm.web;
 
+import org.apache.tapestry.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.pages.admin.*;
+import org.iana.rzm.web.pages.user.*;
 
 import java.io.*;
 import java.util.*;
@@ -134,5 +137,15 @@ public class Visit implements Serializable {
 
     public void storeDomain(DomainVOWrapper domain) {
         visitedDomains.put(domain.getId(), domain);
+    }
+
+    public boolean isAdminPage(IRequestCycle cycle, String pageName ){
+        IPage page = cycle.getPage(pageName);
+        return AdminPage.class.isAssignableFrom(page.getClass());
+    }
+
+    public boolean isUserPage(IRequestCycle cycle, String pageName) {
+        IPage page = cycle.getPage(pageName);
+        return UserPage.class.isAssignableFrom(page.getClass());
     }
 }

@@ -352,9 +352,6 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
                 list = services.createDomainModificationTrunsaction(domainVOWrapper, split, visit.getRequestMetaParameters());
                 visit.markAsNotVisited(domainVOWrapper.getId());
                 page.setTikets(list);
-            } catch (CreateTicketException e) {
-                page.setTikets(new ArrayList<TransactionVOWrapper>());
-                page.setErrorMessage(e.getMessage());
             } catch (DNSTechnicalCheckExceptionWrapper e) {
                 page.setTikets(new ArrayList<TransactionVOWrapper>());
                 page.setErrorMessage(e.getMessage());

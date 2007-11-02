@@ -1,8 +1,6 @@
 package org.iana.dns.check;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -28,5 +26,6 @@ public class MultipleDNSTechnicalCheckException extends DNSTechnicalCheckExcepti
     }
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
+        visitor.acceptMultipleDNSTechnicalCheckException(this);
     }
 }

@@ -142,8 +142,6 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
             setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
-        } catch (CreateTicketException e) {
-            // todo: "create ticket" error
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         }

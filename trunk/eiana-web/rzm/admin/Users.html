@@ -15,9 +15,15 @@
 				    </div>
                 </span>
                 <span jwcid="adminUsers">
-                    <div class="buttonStyle" style="float: left;">
+                    <div class="buttonStyle" style="float: left; margin: 0 10px 0 0;">
 	    			    <b class="leftDot"></b>
 					    <b class="right"><a href="#" class="buttonDot">Admin Users </a></b>
+				    </div>
+                </span>
+                <span jwcid="docUsers">
+                    <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
+	    			    <b class="leftDot"></b>
+					    <b class="right"><a href="#" class="buttonDot">DoC/Verisign </a></b>
 				    </div>
                 </span>
                 <div class="buttonStyle" style="margin: 0 3px 0 0; float: left;">
@@ -40,13 +46,15 @@
                     </div>
                 </div>        
             </div>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
+            <div class="mainBox">
+                <table>
                     <tr>
-                        <td width="49%"><h5><span jwcid="@Insert" value="prop:browserTitle">System users</span></h5></td>
+                        <td><h5><span jwcid="@Insert" value="prop:browserTitle">System users</span></h5></td>
                     </tr>
-                </tr>
-            </table>
+                </table>
+            </div>
+
+
           <span jwcid="listUsers">
                 <div class="mainBox" style="margin-bottom: 40px;">
                     <div class="containerBoxHeader">

@@ -1,27 +1,18 @@
 package org.iana.rzm.trans;
 
-import org.iana.objectdiff.ObjectChange;
-import org.iana.rzm.auth.Identity;
-import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
-import org.iana.rzm.trans.confirmation.Confirmation;
-import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
-import org.iana.rzm.trans.confirmation.TransitionConfirmations;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.def.Node;
-import org.jbpm.graph.def.Transition;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.graph.exe.Token;
+import org.iana.objectdiff.*;
+import org.iana.rzm.auth.*;
+import org.iana.rzm.common.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.confirmation.*;
+import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.user.*;
+import org.jbpm.graph.def.*;
+import org.jbpm.graph.exe.*;
 
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 /**
  * This class represents a domain modification transaction.
@@ -210,13 +201,19 @@ public class Transaction implements TrackedObject {
         Token token = pi.getRootToken();
         Node node = token.getNode();
         TransitionConfirmations tc = getTransactionData().getTransitionConfirmations(node.getName());
-        if (tc == null) throw new UserNotAuthorizedToTransit();
+        if (tc == null) {
+            String s =
+                "User " + user.getName() + "  " + user.getEmail() + " is not Authorized to move request to " + transitionName;
+            throw new UserNotAuthorizedToTransit(s);
+        }
         if (tc.isAcceptableBy(transitionName, user)) {
-            if (user instanceof RZMUser)
+            if (user instanceof RZMUser)    {
                 getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+            }
             pi.signal(transitionName);
-        } else
+        } else {
             throw new UserNotAuthorizedToTransit();
+        }
     }
 
     public synchronized void transitTo(Identity user, String stateName) throws TransactionException {
