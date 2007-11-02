@@ -103,6 +103,8 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
             List<TransactionVO> ret = new ArrayList<TransactionVO>();
             TransactionActionsVO actions = transactionDetectorService.detectTransactionActions(domain);
 
+            if (actions.containsNameServerAction() && performTechnicalCheck) performTechnicalCheck(modifiedDomain);
+
             for (TransactionActionGroupVO group : actions.getGroups()) {
                 if (group.isSplittable() &&
                         group.containsNameServerAction() &&
@@ -118,8 +120,6 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
                     ret.add(createTransaction(currentDomain, modifiedDomain, group.getActions(), submitterEmail, performTechnicalCheck, comment));
                 }
             }
-
-            if (actions.containsNameServerAction() && performTechnicalCheck) performTechnicalCheck(modifiedDomain);
 
             return ret;
         } catch (NoModificationException e) {
