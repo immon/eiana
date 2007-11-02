@@ -1,9 +1,9 @@
 package org.iana.rzm.web.services;
 
 import org.iana.criteria.*;
-import org.iana.rzm.facade.admin.users.UserCriteriaFields;
+import org.iana.rzm.facade.admin.users.*;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.*;
 
 import java.util.*;
 
@@ -59,5 +59,17 @@ public class CriteriaBuilder {
 
     public static Criterion userName(String userName) {
         return new Equal("loginName", userName);
+    }
+
+    public static Criterion docVerisignUsers() {
+        And DoC = new And(new ArrayList<Criterion>(Arrays.asList(
+            new Equal(UserCriteriaFields.ROLE, "AdminRole"),
+            new Equal(UserCriteriaFields.ROLE_TYPE, "GOV_OVERSIGHT"))));
+
+        And verisign = new And(new ArrayList<Criterion>(Arrays.asList(
+            new Equal(UserCriteriaFields.ROLE, "AdminRole"),
+            new Equal(UserCriteriaFields.ROLE_TYPE, "ZONE_PUBLISHER"))));
+
+       return new Or(new ArrayList<Criterion>(Arrays.asList(DoC,verisign)));
     }
 }

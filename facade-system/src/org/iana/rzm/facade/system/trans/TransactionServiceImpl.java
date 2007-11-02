@@ -1,33 +1,26 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Order;
-import org.iana.criteria.SortCriterion;
-import org.iana.dns.DNSDomain;
-import org.iana.dns.check.DNSTechnicalCheck;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.services.AbstractRZMStatefulService;
-import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.criteria.*;
+import org.iana.dns.*;
+import org.iana.dns.check.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.services.*;
+import org.iana.rzm.facade.system.domain.converters.*;
+import org.iana.rzm.facade.system.domain.vo.*;
+import org.iana.rzm.facade.system.trans.converters.*;
+import org.iana.rzm.facade.system.trans.vo.*;
 import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.dns.DNSConverter;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.trans.dns.*;
+import org.iana.rzm.user.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -103,7 +96,9 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
             List<TransactionVO> ret = new ArrayList<TransactionVO>();
             TransactionActionsVO actions = transactionDetectorService.detectTransactionActions(domain);
 
-            if (actions.containsNameServerAction() && performTechnicalCheck) performTechnicalCheck(modifiedDomain);
+            if (actions.containsNameServerAction() && performTechnicalCheck) {
+                performTechnicalCheck(modifiedDomain);
+            }
 
             for (TransactionActionGroupVO group : actions.getGroups()) {
                 if (group.isSplittable() &&

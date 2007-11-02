@@ -1,9 +1,7 @@
 package org.iana.rzm.web.tapestry;
 
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.callback.ExternalCallback;
-import org.apache.tapestry.callback.ICallback;
-import org.apache.tapestry.callback.PageCallback;
+import org.apache.tapestry.*;
+import org.apache.tapestry.callback.*;
 
 
 public class RzmCallback implements ICallback {
@@ -49,7 +47,6 @@ public class RzmCallback implements ICallback {
     public boolean isExternal() {
         return ExternalCallback.class.isAssignableFrom(callback.getClass());
     }
-
 
     private ICallback createCallback(String pageName, boolean external, Object[] parmeters) {
         ICallback callback;

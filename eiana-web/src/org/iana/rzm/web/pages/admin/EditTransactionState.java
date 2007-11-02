@@ -75,6 +75,12 @@ public abstract class EditTransactionState extends AdminPage implements PageBegi
 
     public void save() {
         try {
+            TransactionVOWrapper request = getAdminServices().getTransaction(getRequestId());
+            if(request.getState().equals(getState())){
+                revert();
+                return;
+            }
+
             getAdminServices().transitTransactionToState(getRequestId(), getState());
             EditRequest page = getEditRequestPage();
             page.setRequestId(getRequestId());

@@ -55,7 +55,7 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
     }
 
     protected boolean hasErrors() {
-        return getValidationDelegate().getHasErrors();
+        return getValidationDelegate().getHasErrors() || getErrorMessage() != null ;
     }
     
 }

@@ -12,9 +12,9 @@ import java.util.*;
 public interface UserServices extends RzmServices {
 
     public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail)
-        throws NoObjectFoundException, NoDomainModificationException, CreateTicketException, DNSTechnicalCheckExceptionWrapper;
+        throws NoObjectFoundException, NoDomainModificationException, DNSTechnicalCheckExceptionWrapper;
 
-    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail) throws NoObjectFoundException, NoDomainModificationException, CreateTicketException;
+    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail) throws NoObjectFoundException, NoDomainModificationException ;
 
     public List<UserDomain> getUserDomains();
 

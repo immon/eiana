@@ -91,7 +91,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
         throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-               InvalidCountryCodeException, CreateTicketException, DNSTechnicalCheckExceptionWrapper {
+               InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper {
         try {
             List<TransactionVO> list = transactionService.createTransactions(domain.getDomainVO(),splitNameServerChange,params.getEmail(), false,params.getComment());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();

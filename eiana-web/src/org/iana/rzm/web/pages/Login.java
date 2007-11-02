@@ -13,7 +13,7 @@ import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.*;
 
-public abstract class Login extends RzmPage implements PageBeginRenderListener  {
+public abstract class Login extends RzmPage implements PageBeginRenderListener {
     /*
      * The name of a cookie to store on the user's machine that will identify them next time they
      * log in.
@@ -25,37 +25,41 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
 
 
     @Component(id = "form", type = "Form",
-            bindings = {
-                    "success=listener:attemptLogin",
-                    "stateful=literal:false",
-                    "clientValidationEnabled=literal:true"
-                    }
+               bindings = {
+                   "success=listener:attemptLogin",
+                   "stateful=literal:false",
+                   "clientValidationEnabled=literal:true"
+                   }
     )
     public abstract IComponent getFormComponent();
 
     @Component(id = "username", type = "TextField",
-            bindings = {
-                    "displayName=message:user-label",
-                    "value=prop:userName",
-                    "validators=validators:required"
-                    }
+               bindings = {
+                   "displayName=message:user-label",
+                   "value=prop:userName",
+                   "validators=validators:required"
+                   }
     )
     public abstract IComponent getUserNameComponent();
 
     @Component(id = "password", type = "TextField",
-            bindings = {
-                    "displayName=message:password-label",
-                    "value=prop:password",
-                    "validators=validators:required",
-                    "hidden=literal:true"
-                    }
+               bindings = {
+                   "displayName=message:password-label",
+                   "value=prop:password",
+                   "validators=validators:required",
+                   "hidden=literal:true"
+                   }
     )
     public abstract IComponent getPasswordComponent();
 
-    @Component(id="resetPassword", type="PageLink", bindings = {"page=literal:ResetPassword", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    @Component(id = "resetPassword",
+               type = "PageLink",
+               bindings = {"page=literal:ResetPassword", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getResetPasswordComponent();
 
-    @Component(id="recoverUserName", type="PageLink", bindings = {"page=literal:RecoverUserName", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    @Component(id = "recoverUserName",
+               type = "PageLink",
+               bindings = {"page=literal:RecoverUserName", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getRecoverUserNamedComponent();
 
     @InjectObject("engine-service:external")
@@ -98,6 +102,7 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
 
     @Persist("client:page")
     public abstract void setSessionTimeOutMessage(String message);
+
     public abstract String getSessionTimeOutMessage();
 
     public abstract void setUserName(String value);
@@ -109,7 +114,7 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
     public abstract void setPassword(String password);
 
     public void pageBeginRender(PageEvent event) {
-        if (getUserName() == null){
+        if (getUserName() == null) {
             setUserName(getCookieSource().readCookieValue(COOKIE_NAME));
         }
         setErrorMessage(getSessionTimeOutMessage());
@@ -117,7 +122,7 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
         setSessionTimeOutMessage(null);
     }
 
- 
+
     /**
      * Attempts to login.
      * <p/>
@@ -136,8 +141,9 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
 
         // An error, from a validation field, may already have occured.
 
-        if (delegate.getHasErrors())
+        if (delegate.getHasErrors()) {
             return null;
+        }
 
 
         try {
@@ -164,7 +170,7 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
     private ILink redirectToSecureIdPage() {
         SecureId secureIdPage = getSecureIdPage();
         ExternalServiceParameter parameter =
-                new ExternalServiceParameter(secureIdPage.getPageName(), new Object[]{getUserName()});
+            new ExternalServiceParameter(secureIdPage.getPageName(), new Object[]{getUserName()});
         return getExternalPageService().getLink(true, parameter);
     }
 
@@ -190,13 +196,25 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener  
     }
 
     private IEngineService getService() {
+
         if (getCallback() == null) {
+            return getHomeService();
+        }
+
+        String name = getCallback().getPageName();
+        if(getVisitState().isAdminPage(getRequestCycle(), name) && (!getVisitState().getUser().isAdmin())){
+            setCallback(null);
+            return getHomeService();
+        }
+
+        if(getVisitState().isUserPage(getRequestCycle(), name) && (getVisitState().getUser().isAdmin())){
+            setCallback(null);
             return getHomeService();
         }
 
         boolean external = getCallback().isExternal();
 
-        if(external){
+        if (external) {
             return getExternalPageService();
         }
 

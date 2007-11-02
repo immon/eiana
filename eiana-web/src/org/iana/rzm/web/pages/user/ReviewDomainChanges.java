@@ -233,8 +233,6 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
             setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
-        } catch (CreateTicketException e) {
-            // todo: "create ticket" error
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         }

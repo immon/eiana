@@ -29,7 +29,6 @@ public interface AdminServices extends RzmServices {
         NoObjectFoundException,
         NoDomainModificationException,
         InvalidCountryCodeException,
-        CreateTicketException,
         DNSTechnicalCheckExceptionWrapper;
 
 

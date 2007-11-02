@@ -32,21 +32,22 @@ public class ContactNotificationDataCollector extends AbstractNotificationDataCo
 
         if ((td != null) && (contact != null)) {
 
+            String contactType = isAC() ? "administrative" : "technical";
+
             values.put("roleName", contact.getType().toString());
+            values.put("contactType",contactType);
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
             values.put("token", contact.getToken());
-
             values.put("domainName", td.getCurrentDomain().getName());
             values.put("name", contact.getName());
             values.put("title", getContactJobTitle());
-
             values.put("changes", getChanges(td));
-
-            values.put("currentOrNewContact", (isNewContact()) ? "proposed new contact" : "current contact");
+            values.put("currentOrNewContact", (isNewContact()) ? "proposed new " +contactType+ " contact" : "current " + contactType + "  contact");
             values.put("newContactOnly", (isNewContact()) ? newContactInfo() : "");
             values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", ""+td.getTicketID());
+            values.put("subbmiter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());
         }
         return values;
     }

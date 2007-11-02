@@ -17,13 +17,17 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
     public static final String PAGE_NAME = "admin/Users";
 
-    @Component(id = "systemUsers", type = "SelectionLink", bindings = {"spanStyle=prop:activeSpanStyle",
-        "linkStyle=prop:activeStyle", "linkText=literal:System Users", "listener=listener:showSystemUsers", "useDivStyle=literal:true"})
+    @Component(id = "systemUsers", type = "SelectionLink", bindings = {"spanStyle=prop:systemSpanStyle",
+        "linkStyle=prop:systemStyle", "linkText=literal:System Users", "listener=listener:showSystemUsers", "useDivStyle=literal:true"})
     public abstract IComponent getSystemUsersComponent();
 
-    @Component(id = "adminUsers", type = "SelectionLink", bindings = {"spanStyle=prop:allSpanStyle",
-        "linkStyle=prop:allStyle", "linkText=literal:Admin Users", "listener=listener:showAdminUsers"})
-    public abstract IComponent getAllRequestComponent();
+    @Component(id = "adminUsers", type = "SelectionLink", bindings = {"spanStyle=prop:adminSpanStyle",
+        "linkStyle=prop:adminStyle", "linkText=literal:Admin Users", "listener=listener:showAdminUsers", "useDivStyle=literal:true"})
+    public abstract IComponent getAdminUsersComponent();
+
+    @Component(id = "docUsers", type = "SelectionLink", bindings = {"spanStyle=prop:docSpanStyle",
+        "linkStyle=prop:docStyle", "linkText=literal:DoC/Verisign", "listener=listener:showDocVerisignUsers"})
+    public abstract IComponent getDoCComponent();
 
 
     @Component(id = "listUsers", type = "ListUsers", bindings = {
@@ -68,6 +72,17 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
     public abstract void setAdminUsers(boolean value);
 
+
+    @Persist("client:page")
+    public abstract boolean isSystemUsers();
+
+    public abstract void setSystemUsers(boolean b);
+
+    @Persist("client:page")
+    public abstract boolean isDocVerisignUsers();
+
+    public abstract void setDocVerisignUsers(boolean b);
+
     public FinderValidator getFinderValidator() {
         return new EmptyFinderValidator();
     }
@@ -76,12 +91,16 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         return new UsersFinderListener(getAdminServices(), getRequestCycle(), this, getUsersPerspective());
     }
 
-    public IRender getPageScriptDeligator(){
+    public IRender getPageScriptDeligator() {
         return new UsersScriptDeligator(getUsersScript());
     }
 
 
     public void pageBeginRender(PageEvent event) {
+
+        if(!isAdminUsers() && (!isDocVerisignUsers() )){
+            setSystemUsers(true);
+        }
 
         try {
             int count = getEntityQuery().getResultCount();
@@ -97,37 +116,52 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
     public void showAdminUsers() {
         setAdminUsers(true);
+        setSystemUsers(false);
+        setDocVerisignUsers(false);
     }
 
+
     public void showSystemUsers() {
+        setSystemUsers(true);
         setAdminUsers(false);
+        setDocVerisignUsers(false);
     }
+
+
+    public void showDocVerisignUsers() {
+        setDocVerisignUsers(true);
+        setAdminUsers(false);
+        setSystemUsers(false);
+    }
+
 
     public String getBrowserTitle() {
         if (isAdminUsers()) {
             return "Admin Users";
+        } else if (isSystemUsers()) {
+            return "System  Users";
+        } else {
+            return "DoC/Verisign Users";
         }
-
-        return "System  Users";
     }
 
-    public String getActiveSpanStyle() {
-        if (isAdminUsers()) {
+    public String getSystemSpanStyle() {
+        if (isAdminUsers() || isDocVerisignUsers()) {
             return "leftGrey";
         }
 
         return "leftBlack";
     }
 
-    public String getActiveStyle() {
-        if (isAdminUsers()) {
+    public String getSystemStyle() {
+        if (isAdminUsers() || isDocVerisignUsers()) {
             return "buttonGrey";
         }
 
         return "buttonBlack";
     }
 
-    public String getAllSpanStyle() {
+    public String getAdminSpanStyle() {
         if (isAdminUsers()) {
             return "leftBlack";
         }
@@ -135,11 +169,26 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
     }
 
-    public String getAllStyle() {
+    public String getAdminStyle() {
         if (isAdminUsers()) {
             return "buttonBlack";
         }
         return "buttonGrey";
+    }
+
+    public String getDocStyle() {
+        if (isDocVerisignUsers()) {
+            return "buttonBlack";
+        }
+        return "buttonGrey";
+    }
+
+    public String getDocSpanStyle() {
+        if (isDocVerisignUsers()) {
+            return "leftBlack";
+        }
+        return "leftGrey";
+
     }
 
     public EntityQuery getEntityQuery() {
@@ -151,6 +200,8 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
     private EntityFetcher getFetcher() {
         if (isAdminUsers()) {
             return new AdminUsersFetcher(getAdminServices());
+        } else if (isDocVerisignUsers()) {
+            return new DoCVerisignUsersFetcher(getAdminServices());
         }
         return new SystemUsersFetcher(getAdminServices());
     }
@@ -212,12 +263,32 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
             return adminServices.getUsers(criterion, offset, length).toArray(new PaginatedEntity[0]);
         }
+
     }
+
+    private static class DoCVerisignUsersFetcher implements EntityFetcher {
+        private AdminServices adminServices;
+        private Criterion criterion;
+
+        public DoCVerisignUsersFetcher(AdminServices adminServices) {
+            this.adminServices = adminServices;
+            criterion = CriteriaBuilder.docVerisignUsers();
+        }
+
+        public int getTotal() throws NoObjectFoundException {
+            return adminServices.getUserCount(criterion);
+        }
+
+        public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
+            return adminServices.getUsers(criterion, offset, length).toArray(new PaginatedEntity[0]);
+        }
+    }
+
 
     public static class UsersScriptDeligator implements IRender {
         private IAsset javaScript;
 
-        public UsersScriptDeligator(IAsset javaScript){
+        public UsersScriptDeligator(IAsset javaScript) {
             this.javaScript = javaScript;
         }
 
