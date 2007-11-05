@@ -229,11 +229,7 @@ public class Domain implements TrackedObject, Cloneable {
         CheckTool.checkNull(hostName, "hostName");
         for (Iterator<Host> i = nameServers.iterator(); i.hasNext();) {
             Host host = i.next();
-            if (hostName.equals(host.getName())) {
-                host.decDelegations();
-                i.remove();
-                return host;
-            }
+            if (hostName.equals(host.getName())) return host;
         }
         return null;
     }
