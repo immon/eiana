@@ -530,6 +530,8 @@
             <event type='node-enter'>
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>completed</notification>
+                    <sendToContacts>true</sendToContacts>
+                    <sendToAdmins>false</sendToAdmins>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>false</start>
