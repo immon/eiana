@@ -16,7 +16,8 @@ public abstract class RequestsPerspective extends AdminPage implements PageBegin
 
     @Component(id = "listRequests", type = "ListRequests", bindings = {
             "entityQuery=prop:entityQuery", "listener=listener:viewRequestDetails",
-            "linkTragetPage=prop:editDomain"
+            "linkTragetPage=prop:editDomain",
+            "cancelRequestPage=literal:admin/WithdrawRequest"
         })
     public abstract IComponent getListRequestComponent();
 

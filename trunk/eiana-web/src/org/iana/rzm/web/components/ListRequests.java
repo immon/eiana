@@ -39,19 +39,40 @@ public abstract class ListRequests extends ListRecords {
         })
     public abstract IComponent getDomainLinkComponent();
 
+    @Component(id="showCancelRequest", type="If", bindings = {"condition=prop:requestDeleteble", "element=literal:div"})
+    public abstract IComponent getShowCancelRequestComponent();
+
+    @Component(id="cancelRequest",type="DirectLink",bindings = {
+                "listener=listener:cancelRequest", "parameters=prop:record.id",
+               "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getCancelRequestComponent();
+
     @Parameter(required = false, defaultValue = "literal:View Details")
     public abstract String getActionTitle();
 
     @Parameter(required = true)
     public abstract LinkTraget getLinkTragetPage();
 
+    @Parameter(required = true)
+    public abstract String getCancelRequestPage();
+
     public TransactionVOWrapper getRecord(){
         return (TransactionVOWrapper) getCurrentRecord();
+    }
+
+    public boolean isRequestDeleteble(){
+        return ((TransactionVOWrapper) getCurrentRecord()).canCancel();
     }
 
     public void goToDomain(String domainName){
         LinkTraget target = getLinkTragetPage();
         target.setIdentifier(domainName);
         getPage().getRequestCycle().activate(target);
+    }
+
+    public void cancelRequest(long requestId){
+        LinkTraget page = (LinkTraget) getPage().getRequestCycle().getPage(getCancelRequestPage());
+        page.setIdentifier(requestId);
+        getPage().getRequestCycle().activate(page);
     }
 }

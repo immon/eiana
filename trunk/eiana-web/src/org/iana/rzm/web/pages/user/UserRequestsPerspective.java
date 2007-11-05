@@ -18,8 +18,8 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
 
     @Component(id = "listRequests", type = "ListRequests", bindings = {
             "entityQuery=prop:entityQuery", "listener=listener:viewRequestDetails",
-             "linkTragetPage=prop:reviewDomainPage"
-
+             "linkTragetPage=prop:reviewDomainPage",
+             "cancelRequestPage=literal:user/WithdrawRequest"
         })
     public abstract IComponent getListRequestComponent();
 

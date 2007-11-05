@@ -89,6 +89,11 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
+    public void withdrawnTransaction(long requestId)
+        throws FacadeTransactionException, NoSuchStateException, NoObjectFoundException, StateUnreachableException {
+        transactionService.transitTransactionToState(requestId, TransactionStateVOWrapper.State.WITHDRAWN.getVOName());
+    }
+
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
         throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
                InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper {

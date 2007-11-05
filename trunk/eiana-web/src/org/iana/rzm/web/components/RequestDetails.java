@@ -11,6 +11,7 @@ import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
+@ComponentClass
 public abstract class RequestDetails extends BaseComponent implements PageBeginRenderListener{
 
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})

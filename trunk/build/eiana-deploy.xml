@@ -61,21 +61,21 @@
     </target>
 
     <target name="database.test.dropCreate" depends="all.compile">
-        <sql
-                driver="com.mysql.jdbc.Driver"
-                url="jdbc:mysql://localhost/"
-                userid="testng"
-                password="1q2w3e">
-            <classpath>
-                <fileset dir="${lib.dir}">
-                    <include name="**/*.jar"/>
-                </fileset>
-            </classpath>
-            <![CDATA[
-                DROP DATABASE IF EXISTS eianatest;
-                CREATE DATABASE IF NOT EXISTS eianatest;
-            ]]>
-        </sql>
+        <!--<sql-->
+                <!--driver="com.mysql.jdbc.Driver"-->
+                <!--url="jdbc:mysql://localhost/"-->
+                <!--userid="testng"-->
+                <!--password="1q2w3e">-->
+            <!--<classpath>-->
+                <!--<fileset dir="${lib.dir}">-->
+                    <!--<include name="**/*.jar"/>-->
+                <!--</fileset>-->
+            <!--</classpath>-->
+            <!--<![CDATA[-->
+                <!--DROP DATABASE IF EXISTS eianatest;-->
+                <!--CREATE DATABASE IF NOT EXISTS eianatest;-->
+            <!--]]>-->
+        <!--</sql>-->
     </target>
 
     <!--creating test database
