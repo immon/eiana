@@ -44,21 +44,26 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
 
     protected abstract String getErrorPageName();
 
+    @Persist("client:page")
+    public abstract long getUserId();
+    public abstract void setUserId(long id);
+
     protected Object[] getExternalParameters() {
         return null;
     }
 
     public RzmCallback createCallback() {
         if (isExternal()) {
-            return new RzmCallback(getPageName(), isExternal(), getExternalParameters());
+            return new RzmCallback(getPageName(), isExternal(), getExternalParameters(), getUserId());
         }
 
-        return new RzmCallback(getPageName());
+        return new RzmCallback(getPageName(), getUserId());
     }
 
     public void pageValidate(PageEvent event) {
 
         if (isUserLoggedIn()) {
+            setUserId(getVisitState().getUserId());
             return;
         }
 
@@ -68,7 +73,7 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
         if (state != null) {
             login.setSessionTimeOutMessage("Your Session has time out. Please login to continue");
             if (isExternal()) {
-                RzmCallback callback = new RzmCallback(getPageName(), isExternal(), getExternalParameters());
+                RzmCallback callback = new RzmCallback(getPageName(), isExternal(), getExternalParameters(), getUserId());
                 login.setCallback(callback);
             }
         }

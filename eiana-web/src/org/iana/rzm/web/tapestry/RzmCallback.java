@@ -9,12 +9,14 @@ public class RzmCallback implements ICallback {
     private ICallback callback;
     private String pageName;
     private Object[] parameters;
+    private long callbackId;
 
-    public RzmCallback(String pageName) {
-        this(pageName, false, null);
+    public RzmCallback(String pageName, long userId) {
+        this(pageName, false, null, userId);
     }
 
-    public RzmCallback(String pageName, boolean external, Object[] parmeters) {
+    public RzmCallback(String pageName, boolean external, Object[] parmeters, long userId) {
+        this.callbackId = userId;
         callback = createCallback(pageName, external, parmeters);
         this.pageName = pageName;
         this.parameters = parmeters;
@@ -24,8 +26,8 @@ public class RzmCallback implements ICallback {
         this.callback = callback;
     }
 
-    public RzmCallback(String pageName, boolean external, Object[] listenerParameters, String url) {
-        this(pageName, external, listenerParameters);
+    public RzmCallback(String pageName, boolean external, Object[] listenerParameters, String url, long userId) {
+        this(pageName, external, listenerParameters, userId);
         if(url != null){
             callback =  createRedirectCallback(url);
         }
@@ -65,5 +67,13 @@ public class RzmCallback implements ICallback {
 
     public boolean isRedirect() {
         return RedirectCallback.class.isAssignableFrom(callback.getClass());
+    }
+
+    public long getCallbackId() {
+        return callbackId;
+    }
+
+    public boolean isCallbackForUser(long userId){
+        return callbackId == userId;
     }
 }

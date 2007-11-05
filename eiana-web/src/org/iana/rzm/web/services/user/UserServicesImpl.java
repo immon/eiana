@@ -5,6 +5,7 @@ import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.dns.check.*;
 import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.common.cc.*;
@@ -226,6 +227,16 @@ public class UserServicesImpl implements UserServices {
         try {
             TransactionActionsVO vo = detectorService.detectTransactionActions(modifiedDomain.getDomainVO());
             return new TransactionActionsVOWrapper(vo);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public void withdrawnTransaction(long requestId)
+        throws FacadeTransactionException, NoSuchStateException, NoObjectFoundException, StateUnreachableException {
+        try {
+            transactionService.transitTransaction(requestId, TransactionStateVOWrapper.State.WITHDRAWN.getVOName().name());
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);

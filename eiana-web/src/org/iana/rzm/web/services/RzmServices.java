@@ -1,6 +1,7 @@
 package org.iana.rzm.web.services;
 
 import org.iana.criteria.*;
+import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.passwd.*;
@@ -26,4 +27,6 @@ public interface RzmServices {
 
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException, AccessDeniedException;
 
+    public void withdrawnTransaction(long requestId)
+        throws FacadeTransactionException, NoSuchStateException, NoObjectFoundException, StateUnreachableException;
 }

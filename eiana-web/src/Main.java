@@ -11,7 +11,7 @@ public class Main {
      }
 
      private void start(int port) {
-        // new JettyLuncher().start(port);
+        new JettyLuncher().start(port);
      }
 
 }

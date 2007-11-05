@@ -253,14 +253,14 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         page.setContactAttributes(contact.getMap());
         page.setDomainId(domain.getId());
         page.setContactType(type);
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
         getRequestCycle().activate(page);
     }
 
     public void editNameServerList() {
         EditNameServerList page = getEditNameServerList();
         page.setDomainId(getDomainId());
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
         getRequestCycle().activate(page);
     }
 
@@ -271,7 +271,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         editSubDomain.setOriginalWhoisServer(getOriginalDomain().getWhoisServer());
         editSubDomain.setRegistryUrl(getVisitState().getCurrentDomain(getDomainId()).getRegistryUrl());
         editSubDomain.setWhoisServer(getVisitState().getCurrentDomain(getDomainId()).getWhoisServer());
-        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
         getRequestCycle().activate(editSubDomain);
     }
 
@@ -302,8 +302,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
     public void saveEdit() {
         DomainChangesConfirmation page = getDomainChangesConfirmation();
         page.setEditor(new TransactionDomainEntityEditorListener(getAdminServices(),
-                                                                 new RzmCallback(PAGE_NAME,
-                                                                                 true, getExternalParameters()), getApplicationStateManager()));
+                                                                 new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()), getApplicationStateManager()));
         page.setDomainId(getDomainId());
         page.setBorderHeader("REQUESTS");
         getRequestCycle().activate(page);

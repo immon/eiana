@@ -7,6 +7,7 @@ import org.apache.tapestry.event.*;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
@@ -65,7 +66,8 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
             "usePagination=literal:false",
             "noRequestMsg=literal:'There are no outstanding requests.'",
             "listener=listener:viewRequestDetails",
-            "linkTragetPage=prop:reviewDomainPage"
+            "linkTragetPage=prop:reviewDomainPage",
+            "cancelRequestPage=literal:user/WithdrawRequest"
             }
     )
     public abstract IComponent getListRequestComponent();
@@ -119,7 +121,13 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
 
     public EntityQuery getEntityQuery() {
         PaginatedEntityQuery entityQuery = new PaginatedEntityQuery();
-        entityQuery.setFetcher(new OpenRequestFetcher(getUserServices()));
+        List<String>domains = new ArrayList<String>();
+        for (UserDomain domain : getUserDomains()) {
+            if(!domains.contains(domain.getDomainName())){
+                domains.add(domain.getDomainName());
+            }
+        }
+        entityQuery.setFetcher(new OpenTransactionForDomainsFetcher(domains, getUserServices()));
         return entityQuery;
     }
 

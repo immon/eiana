@@ -80,9 +80,8 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
     @InjectObject("service:rzm.LoginController")
     public abstract LoginController getLoginController();
 
-    @Persist("client:page")
+    @Persist()
     public abstract RzmCallback getCallback();
-
     public abstract void setCallback(RzmCallback callback);
 
     @InjectComponent("username")
@@ -198,6 +197,11 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
     private IEngineService getService() {
 
         if (getCallback() == null) {
+            return getHomeService();
+        }
+
+        if(!getCallback().isCallbackForUser(getVisitState().getUserId())){
+            setCallback(null);
             return getHomeService();
         }
 

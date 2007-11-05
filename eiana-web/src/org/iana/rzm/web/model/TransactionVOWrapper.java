@@ -1,10 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
-import org.iana.rzm.facade.system.trans.vo.ConfirmationVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.util.*;
 
@@ -143,5 +140,15 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public TransactionVO getVO() {
         return vo;
+    }
+
+    public boolean canCancel() {
+        return
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_CONTACT_CONFIRMATION)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_MANUAL_REVIEW)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_IANA_CHECK);
     }
 }

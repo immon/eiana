@@ -37,7 +37,8 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
             "noRequestMsg=literal:'There are no requests.'",
             "listener=listener:viewRequestDetails",
             "actionTitle=literal:Review / Edit",
-            "linkTragetPage=prop:editDomain"
+            "linkTragetPage=prop:editDomain",
+            "cancelRequestPage=literal:admin/WithdrawRequest"
             }
     )
     public abstract IComponent getListRequestComponent();
@@ -93,7 +94,7 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
     public void createNew(){
         DomainSelection domainSelection = getDomainSelection();
         domainSelection.resetStateIfneeded();
-        domainSelection.setCallback(new RzmCallback(PAGE_NAME));
+        domainSelection.setCallback(new RzmCallback(PAGE_NAME,getUserId()));
         getRequestCycle().activate(domainSelection);
     }
 

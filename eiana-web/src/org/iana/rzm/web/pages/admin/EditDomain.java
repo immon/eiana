@@ -23,7 +23,7 @@ public abstract class EditDomain extends AdminPage
     public abstract IComponent getPendingRequestsComponent();
 
     @Component(id = "pendingRequestsMessage", type = "ShowPendingRequestsMessage",
-               bindings = {"listener=listener:viewPendingRequests", "pendigRequestMessage=literal:There is Request Pending for this domain."}
+               bindings = {"listener=listener:viewPendingRequests", "pendigRequestMessage=literal:There is a request pending for this domain."}
     )
     public abstract IComponent getPendingRequestsMessageComponent();
 
@@ -166,9 +166,8 @@ public abstract class EditDomain extends AdminPage
             domainChangesConfirmation.setDomainId(getDomainId());
             domainChangesConfirmation.setCountryName(getCountryName());
             domainChangesConfirmation.setEditor(new DomainEntityEditorListener(getAdminServices(),
-                                                                               new RzmCallback(getPageName(),
-                                                                                               isExternal(),
-                                                                                               getExternalParameters()),getApplicationStateManager()));
+                                                                               new RzmCallback(getPageName(),isExternal(), getExternalParameters(),getUserId()),
+                                                                               getApplicationStateManager()));
             domainChangesConfirmation.setBorderHeader("DOMAINS");
             getRequestCycle().activate(domainChangesConfirmation);
         } else {
@@ -197,7 +196,7 @@ public abstract class EditDomain extends AdminPage
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         ContactVOWrapper contact = domain.getContact(contactId, type);
         EditContact page = getEditContactPage();
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
         page.setContactAttributes(contact.getMap());
         page.setDomainId(domain.getId());
         page.setContactType(type);
@@ -207,7 +206,7 @@ public abstract class EditDomain extends AdminPage
     public void editNameServerList() {
         EditNameServerList page = getEditNameServerList();
         page.setDomainId(getDomainId());
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
         getRequestCycle().activate(page);
     }
 
@@ -218,7 +217,7 @@ public abstract class EditDomain extends AdminPage
         editSubDomain.setOriginalWhoisServer(getOriginalDomain().getWhoisServer());
         editSubDomain.setRegistryUrl(getDomain().getRegistryUrl());
         editSubDomain.setWhoisServer(getDomain().getWhoisServer());
-        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters()));
+        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
         getRequestCycle().activate(editSubDomain);
     }
 
