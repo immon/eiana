@@ -23,18 +23,19 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * @author: Piotr Tkaczyk
- * @author: Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
 
 @Test(sequential = true, groups = {"test", "TransitTransactionToStateTest"})
 public class TransitTransactionToStateTest {
 
-    static List<String> states = new ArrayList<String>();
+    static Map<String, String> states = new HashMap<String, String>();
 
     ApplicationContext appCtx;
     AdminTransactionService gAdminTransactionServ;
@@ -44,11 +45,10 @@ public class TransitTransactionToStateTest {
     ProcessDAO processDAO;
     RZMUser user;
 
-    Domain domain;
-
     Long transactionID;
 
-    private final static String DOMAIN_NAME = "gatstestdomain.org";
+    private final static String DOMAIN_NAME_1 = "gatstestdomain-1.org";
+    private final static String DOMAIN_NAME_2 = "gatstestdomain-2.org";
     private final static String PROCESS_NAME = "Domain Modification Transaction (Unified Workflow)";
 
     @BeforeClass
@@ -72,7 +72,9 @@ public class TransitTransactionToStateTest {
         user.addRole(new AdminRole(AdminRole.AdminType.IANA));
         this.userManager.create(user);
 
-        domain = createTestDomain(DOMAIN_NAME);
+        Domain domain = createTestDomain(DOMAIN_NAME_1);
+        domainManager.create(domain);
+        domain = createTestDomain(DOMAIN_NAME_2);
         domainManager.create(domain);
 
     }
@@ -81,7 +83,7 @@ public class TransitTransactionToStateTest {
     public void testTransitTransactionToWrongState() throws Exception {
 
         try {
-            createDomainModificationProcess();
+            createDomainModificationProcess(DOMAIN_NAME_1);
 
             TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
             assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
@@ -96,37 +98,39 @@ public class TransitTransactionToStateTest {
 
     @Test
     public void testTransitTransactionToState() throws Exception {
-        createDomainModificationProcess();
+        createDomainModificationProcess(DOMAIN_NAME_2);
 
         TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
         assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
 
-        for (String state : states) {
-            if (!state.equals("PENDING_IANA_CONFIRMATION") && !state.equals("PENDING_TECH_CHECK") && !state.equals("PENDING_SUPP_TECH_CHECK") && !state.equals("PENDING_DATABASE_INSERTION")) {
-                gAdminTransactionServ.transitTransactionToState(transactionID, state);
-                transactionVO = gAdminTransactionServ.get(transactionID);
-                assert state.equals(transactionVO.getState().getName().name()) :
-                        "unexpected state: " + transactionVO.getState().getName().name() +
-                                ", expected: " + state;
-            }
+        for (String state : states.keySet()) {
+            gAdminTransactionServ.transitTransactionToState(transactionID, state);
+            transactionVO = gAdminTransactionServ.get(transactionID);
+            String expectedState = states.get(state);
+            assert expectedState != null;
+            assert expectedState.equals(transactionVO.getState().getName().name()) :
+                    "unexpected state: " + transactionVO.getState().getName().name() +
+                            ", expected: " + expectedState;
         }
     }
 
-    private void createDomainModificationProcess() throws Exception {
+    private void createDomainModificationProcess(String domainName) throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminTransactionServ.setUser(testAuthUser);
 
-        Domain domain = createTestDomain(DOMAIN_NAME);
+        Domain domain = createTestDomain(domainName);
         domain.setRegistryUrl("newregurl");
 
-        TransactionVO transactionVO = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain), false).get(0);
+        List<TransactionVO> transactionList = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain), false);
+        assert transactionList.size() == 1;
+        TransactionVO transactionVO = transactionList.get(0);
         transactionID = transactionVO.getTransactionID();
 
         transactionVO = gAdminTransactionServ.get(transactionID);
 
         assert transactionVO != null;
 
-        assert transactionVO.getDomainName().equals(DOMAIN_NAME);
+        assert transactionVO.getDomainName().equals(domainName);
         assert transactionVO.getName().equals(PROCESS_NAME);
     }
 
@@ -151,25 +155,27 @@ public class TransitTransactionToStateTest {
     }
 
     private static void fillStates() {
-        states.add("PENDING_TECH_CHECK");
-        states.add("PENDING_TECH_CHECK_REMEDY");
-        states.add("PENDING_CONTACT_CONFIRMATION");
-        states.add("PENDING_SOENDORSEMENT");
-        states.add("PENDING_IMPACTED_PARTIES");
-        states.add("PENDING_MANUAL_REVIEW");
-        states.add("PENDING_EXT_APPROVAL");
-        states.add("PENDING_EVALUATION");
-        states.add("PENDING_IANA_CHECK");
-        states.add("PENDING_SUPP_TECH_CHECK");
-        states.add("PENDING_SUPP_TECH_CHECK_REMEDY");
-        states.add("PENDING_USDOC_APPROVAL");
-        states.add("PENDING_ZONE_INSERTION");
-        states.add("PENDING_ZONE_PUBLICATION");
-        states.add("PENDING_DATABASE_INSERTION");
-        states.add("COMPLETED");
-        states.add("WITHDRAWN");
-        states.add("REJECTED");
-        states.add("ADMIN_CLOSED");
-        states.add("EXCEPTION");
+        states.put("PENDING_CREATION", "PENDING_CREATION");
+        states.put("PENDING_TECH_CHECK", "PENDING_CONTACT_CONFIRMATION");
+        states.put("PENDING_TECH_CHECK_REMEDY", "PENDING_TECH_CHECK_REMEDY");
+        states.put("PENDING_CONTACT_CONFIRMATION", "PENDING_CONTACT_CONFIRMATION");
+        states.put("PENDING_SOENDORSEMENT", "PENDING_SOENDORSEMENT");
+        states.put("PENDING_IMPACTED_PARTIES", "PENDING_IMPACTED_PARTIES");
+        states.put("PENDING_MANUAL_REVIEW", "PENDING_MANUAL_REVIEW");
+        states.put("PENDING_EXT_APPROVAL", "PENDING_EXT_APPROVAL");
+        states.put("PENDING_EVALUATION", "PENDING_EVALUATION");
+        states.put("PENDING_IANA_CHECK", "PENDING_IANA_CHECK");
+        states.put("PENDING_SUPP_TECH_CHECK", "PENDING_USDOC_APPROVAL");
+        states.put("PENDING_SUPP_TECH_CHECK_REMEDY", "PENDING_SUPP_TECH_CHECK_REMEDY");
+        states.put("PENDING_USDOC_APPROVAL", "PENDING_USDOC_APPROVAL");
+        states.put("PENDING_ZONE_INSERTION", "PENDING_ZONE_INSERTION");
+        states.put("PENDING_ZONE_PUBLICATION", "PENDING_ZONE_PUBLICATION");
+        states.put("PENDING_ZONE_TESTING", "COMPLETED");
+        states.put("PENDING_DATABASE_INSERTION", "COMPLETED");
+        states.put("COMPLETED", "COMPLETED");
+        states.put("WITHDRAWN", "WITHDRAWN");
+        states.put("REJECTED", "REJECTED");
+        states.put("ADMIN_CLOSED", "ADMIN_CLOSED");
+        states.put("EXCEPTION", "EXCEPTION");
     }
 }

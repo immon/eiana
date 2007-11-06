@@ -19,6 +19,7 @@
             <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.ProcessStateUpdater"/>
         </event>
 
+        <transition name="TRANSITION_PENDING_CREATION" to="PENDING_CREATION"/>
         <transition name="TRANSITION_PENDING_TECH_CHECK" to="PENDING_TECH_CHECK"/>
         <transition name="TRANSITION_PENDING_TECH_CHECK_REMEDY" to="PENDING_TECH_CHECK_REMEDY"/>
         <transition name="TRANSITION_PENDING_CONTACT_CONFIRMATION" to="PENDING_CONTACT_CONFIRMATION"/>
@@ -33,6 +34,7 @@
         <transition name="TRANSITION_PENDING_USDOC_APPROVAL" to="PENDING_USDOC_APPROVAL"/>
         <transition name="TRANSITION_PENDING_ZONE_INSERTION" to="PENDING_ZONE_INSERTION"/>
         <transition name="TRANSITION_PENDING_ZONE_PUBLICATION" to="PENDING_ZONE_PUBLICATION"/>
+        <transition name="TRANSITION_PENDING_ZONE_TESTING" to="PENDING_ZONE_TESTING"/>
         <transition name="TRANSITION_PENDING_DATABASE_INSERTION" to="PENDING_DATABASE_INSERTION"/>
         <transition name="TRANSITION_COMPLETED" to="COMPLETED"/>
         <transition name="TRANSITION_WITHDRAWN" to="WITHDRAWN"/>
