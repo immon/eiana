@@ -123,12 +123,12 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
         prefix = prefix == null ? "" : prefix + ".";
         for (String key : changes.keySet()) {
             Change change = changes.get(key);
-            buffer.append(pringChange(change, prefix + key));
+            buffer.append(printChange(change, prefix + key));
         }
         return buffer.toString();
     }
 
-    private String pringChange(Change change, String key) {
+    private String printChange(Change change, String key) {
         StringBuffer buffer = new StringBuffer();
         if (change instanceof SimpleChange) {
             SimpleChange simple = (SimpleChange) change;
@@ -141,19 +141,15 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
                 buffer.append(printChangeMap(objectChange.getFieldChanges(), key));
             } else if (change instanceof CollectionChange) {
                 CollectionChange collChange = (CollectionChange) change;
-                if (collChange.isAddition()) {
-                    buffer.append("[ADDED]");
-                    for (Change c : collChange.getAdded())
-                        buffer.append(pringChange(c, key));
-                } else if (collChange.isRemoval()) {
-                    buffer.append("[REMOVED]");
-                    for (Change c : collChange.getRemoved())
-                        buffer.append(pringChange(c, key));
-                } else {
-                    buffer.append("[MODIFIED]");
-                    for (Change c : collChange.getModified())
-                        buffer.append(pringChange(c, key));
-                }
+                if (collChange.isAddition()) buffer.append("[ADDED] ");
+                else if (collChange.isRemoval()) buffer.append("[REMOVED] ");
+                else if (collChange.isModification()) buffer.append("[MODIFIED] ");
+                for (Change c : collChange.getAdded())
+                    buffer.append(printChange(c, key));
+                for (Change c : collChange.getRemoved())
+                    buffer.append(printChange(c, key));
+                for (Change c : collChange.getModified())
+                    buffer.append(printChange(c, key));
             }
         }
         return buffer.toString();
