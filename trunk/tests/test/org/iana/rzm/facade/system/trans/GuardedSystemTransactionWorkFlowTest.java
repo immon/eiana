@@ -108,8 +108,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
@@ -124,8 +124,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"gstsignaliana", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
@@ -140,8 +140,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
@@ -156,8 +156,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"}
     };
 
@@ -230,8 +230,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] ACCEPT_IANA_CHECKLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"}
@@ -252,8 +252,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
@@ -277,11 +277,11 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] workFlowNoNSChangeLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
+            {"gstsignalusdoc", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
@@ -301,16 +301,16 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] workFlowWithNSChangeLog = {
             {"default-iana", "PENDING_CREATION"},
-            {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
+            {"default-iana", "PENDING_TECH_CHECK"},
+            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
             {"gstsignaliana", "PENDING_ZONE_INSERTION"},
             {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
-            {"SYSTEM", "PENDING_ZONE_TESTING"},
-            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
+            {"gstsignaliana", "PENDING_ZONE_TESTING"},
+            {"gstsignaliana", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
