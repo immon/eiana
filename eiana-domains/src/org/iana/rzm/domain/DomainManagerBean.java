@@ -84,6 +84,7 @@ public class DomainManagerBean implements DomainManager {
         for (Host host : hosts) {
             domain.removeNameServer(host);
             if (!host.isNameServer()) hostManager.delete(host);
+            else hostManager.update(host);
         }
         dao.delete(domain);
     }
