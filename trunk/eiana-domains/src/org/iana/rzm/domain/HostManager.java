@@ -21,6 +21,8 @@ public interface HostManager {
 
     public void delete(Host host);
 
+    public void update(Host host);
+
     public List<Host> findAll();
 
     public List<Host> find(Criterion criteria);
