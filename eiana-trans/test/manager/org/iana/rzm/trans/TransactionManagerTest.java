@@ -1,7 +1,6 @@
 package org.iana.rzm.trans;
 
-import org.iana.criteria.Equal;
-import org.iana.criteria.In;
+import org.iana.criteria.*;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
@@ -242,6 +241,35 @@ public class TransactionManagerTest extends TransactionalSpringContextTests {
             int count2 = transactionManagerBean.count(
                     new In("currentDomain.name.name", new HashSet(Arrays.asList("tmtestdomain1", "tmtestdomain2"))));
             assert count2 == 6;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "testCountTransactionByCriteria")
+    public void testFindWithNoCriteria() {
+        try {
+            List<Transaction> transactions = transactionManagerBean.find((Criterion) null);
+            assert transactions != null;
+            assert transactions.size() == 6;
+        } finally {
+            processDAO.close();
+        }
+    }
+
+    @Test(dependsOnMethods = "testFindWithNoCriteria")
+    public void testSortWithNoCriteria() {
+        try {
+            List<Transaction> transactions = transactionManagerBean.find(new SortCriterion(null, new Order("transactionID", false)));
+            assert transactions != null;
+            assert transactions.size() == 6;
+            Iterator<Transaction> it = transactions.iterator();
+            Long lastId = it.next().getTransactionID();
+            while (it.hasNext()) {
+                Transaction trans = it.next();
+                assert lastId > trans.getTransactionID();
+                lastId = trans.getTransactionID();
+            }
         } finally {
             processDAO.close();
         }
