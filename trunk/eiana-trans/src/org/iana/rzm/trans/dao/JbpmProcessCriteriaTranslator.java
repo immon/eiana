@@ -87,8 +87,10 @@ class JbpmProcessCriteriaTranslator {
         if (criteria != null) {
             if (criteria instanceof SortCriterion) {
                 SortCriterion sortCriteria = (SortCriterion) criteria;
-                criteria = new SortCriterion(new And(Collections.singletonList(sortCriteria.getCriterion())),
-                        sortCriteria.getOrders());
+                if (sortCriteria.getCriterion() != null) {
+                    criteria = new SortCriterion(new And(Collections.singletonList(sortCriteria.getCriterion())),
+                            sortCriteria.getOrders());
+                }
             } else criteria = new And(Collections.singletonList(criteria));
         }
         buff = new HQLGenerator().from(from.toString(), criteria);

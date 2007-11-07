@@ -2,10 +2,10 @@ package org.iana.rzm.trans.dao;
 
 import org.iana.criteria.*;
 
-import java.util.Set;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz
@@ -66,9 +66,12 @@ class JbpmProcessCriteriaFieldNamesExtractor implements CriteriaVisitor {
     }
 
     public void visitSort(SortCriterion sort) {
-        sort.getCriterion().accept(this);
-        for (Order order : sort.getOrders())
-            replaceFieldName(order);
+        if (sort.getCriterion() != null)
+            sort.getCriterion().accept(this);
+        if (sort.getOrders() != null) {
+            for (Order order : sort.getOrders())
+                replaceFieldName(order);
+        }
     }
 
     public Set<String> getNames() {
