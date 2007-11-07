@@ -7,7 +7,12 @@ import java.util.List;
  */
 public interface Ticket {
     public Long getId();
+
     public String getTld();
+
     public List<String> getRequestType();
+
     public String getIanaState();
+
+    public String getComment();
 }
