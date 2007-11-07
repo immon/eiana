@@ -1,18 +1,18 @@
-package org.iana.rzm.trans.collectors;
+package org.iana.rzm.trans.change;
 
 import org.iana.objectdiff.Change;
 import org.iana.objectdiff.CollectionChange;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;
-import org.iana.rzm.trans.TransactionData;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
-public abstract class AbstractNotificationDataCollector implements NotificationDataCollector {
+public class DomainChangePrinter {
     private static Map<String, String> values = new HashMap<String, String>();
 
     static {
@@ -111,14 +111,14 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
 
     }
 
-    protected String getChanges(TransactionData td) {
+    public static String print(ObjectChange domainChange) {
         StringBuffer buffer = new StringBuffer();
-        Map<String, Change> changes = td.getDomainChange().getFieldChanges();
+        Map<String, Change> changes = domainChange.getFieldChanges();
         buffer.append(printChangeMap(changes, null));
         return buffer.toString();
     }
 
-    private String printChangeMap(Map<String, Change> changes, String prefix) {
+    private static String printChangeMap(Map<String, Change> changes, String prefix) {
         StringBuffer buffer = new StringBuffer();
         prefix = prefix == null ? "" : prefix + ".";
         for (String key : changes.keySet()) {
@@ -128,7 +128,7 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
         return buffer.toString();
     }
 
-    private String printChange(Change change, String key) {
+    private static String printChange(Change change, String key) {
         StringBuffer buffer = new StringBuffer();
         if (change instanceof SimpleChange) {
             SimpleChange simple = (SimpleChange) change;
@@ -155,7 +155,7 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
         return buffer.toString();
     }
 
-    private String printSimpleChange(SimpleChange change, String key) {
+    private static String printSimpleChange(SimpleChange change, String key) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(getValue(key));
         if (change.isAddition()) {
@@ -176,7 +176,7 @@ public abstract class AbstractNotificationDataCollector implements NotificationD
         return buffer.toString();
     }
 
-    private String getValue(String key) {
+    private static String getValue(String key) {
         String ret = values.get(key);
         return ret == null ? key : ret;
     }

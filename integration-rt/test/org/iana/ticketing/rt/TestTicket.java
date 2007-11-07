@@ -12,6 +12,7 @@ public class TestTicket implements Ticket {
     private String tld;
     private List<String> requestType;
     private String ianaState;
+    private String comment;
 
     public TestTicket(String tld) {
         this.tld = tld;
@@ -47,5 +48,13 @@ public class TestTicket implements Ticket {
 
     public String getIanaState() {
         return ianaState;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

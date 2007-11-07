@@ -4,6 +4,7 @@ import org.iana.codevalues.CodeValuesRetriever;
 import org.iana.rt.RTException;
 import org.iana.rt.RTStore;
 import org.iana.rt.queue.Queue;
+import org.iana.rt.ticket.Comment;
 import org.iana.rt.ticket.Ticket;
 import org.iana.ticketing.TicketingException;
 import org.iana.ticketing.TicketingService;
@@ -11,7 +12,7 @@ import org.iana.ticketing.TicketingService;
 import java.io.IOException;
 
 /**
- * <p>
+ * <p/>
  * This class is an implementation of <code>TicketingService</code> and facilitates the communication
  * with the RequestTracker, the ticketing system used by ICANN to process domain transactions.
  * </p>
@@ -59,6 +60,8 @@ public class RequestTrackerService implements TicketingService {
             rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
             rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
             store.tickets().create(rtTicket);
+            Comment comment = store.tickets().commentFactory().create(ticket.getComment());
+            store.tickets().addComment(rtTicket, comment);
             return rtTicket.getId();
         } catch (IOException e) {
             throw new TicketingException(e);

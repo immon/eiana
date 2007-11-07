@@ -9,6 +9,7 @@ import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.ticketing.Ticket;
 
 import java.util.ArrayList;
@@ -110,5 +111,9 @@ public class RequestTrackerTicket implements Ticket {
 
     public String getIanaState() {
         return transactionToIanaState.get(transaction.getState().getName());
+    }
+
+    public String getComment() {
+        return DomainChangePrinter.print(transaction.getDomainChange());
     }
 }
