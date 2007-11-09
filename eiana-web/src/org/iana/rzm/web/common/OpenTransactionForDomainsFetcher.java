@@ -3,6 +3,7 @@ package org.iana.rzm.web.common;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 
 import java.util.*;
@@ -17,11 +18,13 @@ import java.util.*;
 public class OpenTransactionForDomainsFetcher implements EntityFetcher {
     private RzmServices services;
     private Criterion criterion;
+    private SortOrder sortOrder;
 
 
     public OpenTransactionForDomainsFetcher(List<String> domains, RzmServices services) {
         this.services = services;
         criterion = CriteriaBuilder.openTransactionForDomains(domains);
+        sortOrder = new SortOrder();
     }
 
     public int getTotal() throws NoObjectFoundException {
@@ -29,6 +32,10 @@ public class OpenTransactionForDomainsFetcher implements EntityFetcher {
     }
 
     public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
-        return services.getTransactions(criterion, offset, length).toArray(new PaginatedEntity[0]);
+        return services.getTransactions(criterion, offset, length, sortOrder).toArray(new PaginatedEntity[0]);
+    }
+
+    public void applySortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

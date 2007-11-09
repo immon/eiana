@@ -1,6 +1,7 @@
 package org.iana.rzm.web.model;
 
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.criteria.*;
 
 import java.io.*;
 
@@ -41,5 +42,9 @@ public class CachedEntityFetcher implements EntityFetcher, Serializable {
             System.arraycopy(entities, offset, result, 0, size);
             return result;
         }
+    }
+
+    public void applySortOrder(SortOrder sortOrder) {
+
     }
 }

@@ -78,7 +78,7 @@ public abstract class Border extends BaseComponent {
         if(isLoginPage()){
             return "margin: 45px 0 0 0;";
         }
-        return "margin: 25px 0 0 0;";
+        return "margin: 15px 0 0 0;";
     }
 
     public IAsset getBackground(){

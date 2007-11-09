@@ -8,6 +8,7 @@ import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.components.admin.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
 
@@ -69,10 +70,11 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
 
     private static class DomainFetcher implements EntityFetcher {
         private AdminServices adminServices;
-
+        private SortOrder sortOrder;
 
         public DomainFetcher(AdminServices adminServices) {
             this.adminServices = adminServices;
+            sortOrder = new SortOrder();
         }
 
 
@@ -81,14 +83,12 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
         }
 
         public PaginatedEntity[] get(int offset, int length) {
-            List<DomainVOWrapper> list = adminServices.getDomains(offset, length);
-            Collections.sort(list, new Comparator<DomainVOWrapper>() {
-                public int compare(DomainVOWrapper o1, DomainVOWrapper o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
-
+            List<DomainVOWrapper> list = adminServices.getDomains(offset, length, sortOrder);
             return list.toArray(new PaginatedEntity[0]);
+        }
+
+        public void applySortOrder(SortOrder sortOrder) {
+            this.sortOrder = sortOrder;
         }
     }
 }

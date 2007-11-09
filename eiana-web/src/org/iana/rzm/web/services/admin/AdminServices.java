@@ -10,6 +10,7 @@ import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 
 import java.util.*;
@@ -40,7 +41,7 @@ public interface AdminServices extends RzmServices {
 
     public void updateDomain(DomainVOWrapper domain);
 
-    public List<DomainVOWrapper> getDomains(int offset, int length);
+    public List<DomainVOWrapper> getDomains(int offset, int length, SortOrder sort);
 
     public List<UserVOWrapper> getUsers(Criterion criterion, int offset, int length);
 

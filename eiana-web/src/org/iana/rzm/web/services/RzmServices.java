@@ -6,10 +6,12 @@ import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 
+import java.io.*;
 import java.util.*;
 
-public interface RzmServices {
+public interface RzmServices extends Serializable {
 
     public void changePassword(String username, String oldPassword, String newPassword, String confirmedNewPassword) throws PasswordChangeException;
 
@@ -23,7 +25,7 @@ public interface RzmServices {
 
     public int getTransactionCount(Criterion criterion);
 
-    public List<TransactionVOWrapper>getTransactions(Criterion criterion, int offset, int length);
+    public List<TransactionVOWrapper>getTransactions(Criterion criterion, int offset, int length, SortOrder sort);
 
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException, AccessDeniedException;
 
