@@ -3,11 +3,11 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
-import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
 
-public abstract class EditSystemUser extends AdminPage implements PageBeginRenderListener, UserAttributeEditor, EntityIdPage, IExternalPage {
+public abstract class EditSystemUser extends AdminPage implements PageBeginRenderListener, UserAttributeEditor, LinkTraget, IExternalPage {
 
     @Component(id = "userEditor",
                type = "SystemUserEditor", bindings = {"create=literal:false", "listener=prop:editor", "user=prop:user"})
@@ -22,9 +22,9 @@ public abstract class EditSystemUser extends AdminPage implements PageBeginRende
 
     public abstract void setUser(UserVOWrapper user);
 
-    public void setEntityId(long id){
-        setUserId(id);
-    }
+   public void setIdentifier(Object id){
+       setUserId((Long)id);
+   }
 
     protected Object[] getExternalParameters() {
         return new Object[]{

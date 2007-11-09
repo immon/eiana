@@ -18,6 +18,8 @@ import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
+import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.services.*;
 
 import java.sql.*;
@@ -207,10 +209,16 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length) {
+    public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length, SortOrder sort) {
         List<TransactionVO> list = null;
         try {
-            list = transactionService.find(criterion, offset, length);
+            if(sort != null && sort.isValid()){
+                Order order = new Order(new RequestFieldNameResolver().resolve(sort.getFieldName()), sort.isAscending());
+                 list = transactionService.find(criterion, order, offset, length);
+            }else{
+                 list = transactionService.find(criterion,  offset, length);
+            }
+
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));

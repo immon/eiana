@@ -4,11 +4,11 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.components.admin.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.tapestry.*;
 
 public abstract class UsersPerspective extends AdminPage implements PageBeginRenderListener {
 
@@ -54,16 +54,16 @@ public abstract class UsersPerspective extends AdminPage implements PageBeginRen
     }
 
     public void editUser(long userId, boolean admin) {
-        EntityIdPage page = getPage(admin);
-        page.setEntityId(userId);
-        getRequestCycle().activate((IPage) page);
+        LinkTraget page = getPage(admin);
+        page.setIdentifier(userId);
+        getRequestCycle().activate(page);
     }
 
     public void deleteUser(long userId, boolean admin){
         getAdminServices().deleteUser(userId);
     }
 
-    private EntityIdPage getPage(boolean admin) {
+    private LinkTraget getPage(boolean admin) {
         return admin ? getEditAdminUserPage() : getEditSystemUserPage();
     }
 

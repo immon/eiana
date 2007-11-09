@@ -5,13 +5,14 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.components.admin.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
+import org.iana.rzm.web.tapestry.*;
 
 public abstract class Users extends AdminPage implements PageBeginRenderListener, Search {
 
@@ -207,12 +208,12 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
     }
 
     public void editUser(long userId, boolean admin) {
-        EntityIdPage page = getPage(admin);
-        page.setEntityId(userId);
-        getRequestCycle().activate((IPage) page);
+        LinkTraget page = getPage(admin);
+        page.setIdentifier(userId);
+        getRequestCycle().activate(page);
     }
 
-    private EntityIdPage getPage(boolean admin) {
+    private LinkTraget getPage(boolean admin) {
         return admin ? getEditAdminUserPage() : getEditSystemUserPage();
     }
 
@@ -245,6 +246,10 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
             return adminServices.getUsers(criterion, offset, length).toArray(new PaginatedEntity[0]);
         }
+
+        public void applySortOrder(SortOrder sortOrder) {
+
+        }
     }
 
     private static class SystemUsersFetcher implements EntityFetcher {
@@ -264,6 +269,10 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
             return adminServices.getUsers(criterion, offset, length).toArray(new PaginatedEntity[0]);
         }
 
+        public void applySortOrder(SortOrder sortOrder) {
+
+        }
+
     }
 
     private static class DoCVerisignUsersFetcher implements EntityFetcher {
@@ -281,6 +290,10 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
             return adminServices.getUsers(criterion, offset, length).toArray(new PaginatedEntity[0]);
+        }
+
+        public void applySortOrder(SortOrder sortOrder) {
+            
         }
     }
 

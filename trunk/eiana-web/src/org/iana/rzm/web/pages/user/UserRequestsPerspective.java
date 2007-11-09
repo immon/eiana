@@ -6,20 +6,23 @@ import org.apache.tapestry.event.*;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.user.*;
 
 
-public abstract class UserRequestsPerspective extends UserPage implements PageBeginRenderListener {
+public abstract class UserRequestsPerspective extends UserPage implements PageBeginRenderListener, SortFactory {
 
     public static final String PAGE_NAME = "user/UserRequestsPerspective";
 
     @Component(id = "listRequests", type = "ListRequests", bindings = {
-            "entityQuery=prop:entityQuery", "listener=listener:viewRequestDetails",
-             "linkTragetPage=prop:reviewDomainPage",
-             "cancelRequestPage=literal:user/WithdrawRequest"
+        "entityQuery=prop:entityQuery", "listener=listener:viewRequestDetails",
+        "linkTragetPage=prop:reviewDomainPage",
+        "cancelRequestPage=literal:user/WithdrawRequest",
+        "sortFactory=prop:sortFactory"
         })
     public abstract IComponent getListRequestComponent();
 
@@ -32,13 +35,25 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomainPage();
 
+    @Persist("client:page")
     public abstract EntityFetcher getEntityFetcher();
-
     public abstract void setEntityFetcher(EntityFetcher fetcher);
+
+    @Persist("client:page")
+    public abstract void setSortField(SortOrder sortOrder);
+    public abstract SortOrder getSortField();
+
+    public SortFactory getSortFactory(){
+        return this;
+    }
 
     public void pageBeginRender(PageEvent event) {
         if (getEntityFetcher() == null) {
             setEntityFetcher(new TransactionFetcher(getUserServices()));
+        }
+
+        if(getSortField() == null){
+            setSortField(new SortOrder());
         }
 
         try {
@@ -49,19 +64,28 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
             }
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
-        }catch(AccessDeniedException e){
+        } catch (AccessDeniedException e) {
             getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
 
+    public void sort(String field, boolean accending) {
+        setSortField(new SortOrder(field, accending));
+    }
+
+    public boolean isFieldSortable(String name) {
+        return true;
+    }
+
     public EntityQuery getEntityQuery() {
         PaginatedEntityQuery entityQuery = getPaginatedEntityBean();
-        entityQuery.setFetcher(getEntityFetcher());
+        EntityFetcher entityFetcher = getEntityFetcher();
+        entityFetcher.applySortOrder(getSortField());
+        entityQuery.setFetcher(entityFetcher);
         return entityQuery;
     }
 
     public void viewRequestDetails(long requestId) {
-
         RequestInformation info = getRequestInformation();
         info.setRequestId(requestId);
         getRequestCycle().activate(info);
@@ -71,13 +95,15 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
         return ((ListRequests) getComponent("listRequests")).getRecords();
     }
 
-    private  class TransactionFetcher implements EntityFetcher {
+    private class TransactionFetcher implements EntityFetcher {
         private UserServices userServices;
         private Criterion criterion;
+        private SortOrder sortOrder;
 
         public TransactionFetcher(UserServices userServices) {
             this.userServices = userServices;
             criterion = CriteriaBuilder.empty();
+            sortOrder = new SortOrder();
         }
 
 
@@ -85,10 +111,14 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
             return userServices.getTransactionCount(criterion);
         }
 
-        public PaginatedEntity[] get(int offset, int length)throws NoObjectFoundException {
-            return userServices.getTransactions(criterion, offset, length).toArray(new PaginatedEntity[0]);
+        public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
+            return userServices.getTransactions(criterion, offset, length, sortOrder)
+                .toArray(new PaginatedEntity[0]);
+        }
+
+        public void applySortOrder(SortOrder sortOrder) {
+            this.sortOrder = sortOrder;
         }
     }
-
 
 }

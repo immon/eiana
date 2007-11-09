@@ -6,16 +6,18 @@ import org.apache.tapestry.event.*;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.admin.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
 import org.iana.rzm.web.tapestry.*;
 
 import java.util.*;
 
-public abstract class AdminHome extends AdminPage implements PageBeginRenderListener, Search {
+public abstract class AdminHome extends AdminPage implements PageBeginRenderListener, Search, SortFactory {
 
     public static final String PAGE_NAME = "admin/AdminHome";
 
@@ -38,7 +40,8 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
             "listener=listener:viewRequestDetails",
             "actionTitle=literal:Review / Edit",
             "linkTragetPage=prop:editDomain",
-            "cancelRequestPage=literal:admin/WithdrawRequest"
+            "cancelRequestPage=literal:admin/WithdrawRequest" ,
+            "sortFactory=prop:sortFactory"
             }
     )
     public abstract IComponent getListRequestComponent();
@@ -60,8 +63,15 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
 
     @Persist("client:app")
     public abstract boolean isShowAll();
-
     public abstract void setShowAll(boolean value);
+
+    @Persist("client:app")
+    public abstract SortOrder getSortField();
+    public abstract void setSortField(SortOrder sort);
+
+    public SortFactory getSortFactory(){
+        return this;
+    }
 
     public FinderListener getFinderListener(){
         return new RequestsFinderListener(getAdminServices(), getRequestCycle(), this, getRequestsPerspective());
@@ -73,6 +83,11 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
 
     public void pageBeginRender(PageEvent event) {
         try {
+
+            if(getSortField() == null){
+                setSortField(new SortOrder());
+            }
+
             int count = getEntityQuery().getResultCount();
             Browser browser = ((ListRequests) getComponent("listRequests")).getRecords();
             if (count != browser.getResultCount()) {
@@ -94,9 +109,18 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
     public void createNew(){
         DomainSelection domainSelection = getDomainSelection();
         domainSelection.resetStateIfneeded();
-        domainSelection.setCallback(new RzmCallback(PAGE_NAME,getUserId()));
+        domainSelection.setCallback(new RzmCallback(PAGE_NAME, getLogedInUserId()));
         getRequestCycle().activate(domainSelection);
     }
+
+    public void sort(String field, boolean accending){
+        setSortField(new SortOrder(field,accending));
+    }
+
+    public boolean isFieldSortable(String name){
+        return true;
+    }
+
 
     public String getBrowserTitle() {
         if (isShowAll()) {
@@ -153,19 +177,22 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
     }
 
     private EntityFetcher getFetcher() {
+        SortOrder sortOrder = getSortField();
         if (isShowAll()) {
-            return new AllRequestFetcher(getAdminServices());
+            return new AllRequestFetcher(getAdminServices(), sortOrder);
         }
-        return new OpenRequestFetcher(getAdminServices());
+        return new OpenRequestFetcher(getAdminServices(), sortOrder);
     }
 
-    private  class AllRequestFetcher implements EntityFetcher {
+    private static  class AllRequestFetcher implements EntityFetcher {
 
         private AdminServices services;
+        private SortOrder sort;
         private Criterion criterion;
 
-        public AllRequestFetcher(AdminServices services) {
+        public AllRequestFetcher(AdminServices services, SortOrder sort) {
             this.services = services;
+            this.sort = sort;
             criterion = CriteriaBuilder.empty();
         }
 
@@ -174,11 +201,13 @@ public abstract class AdminHome extends AdminPage implements PageBeginRenderList
         }
 
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
-            List<TransactionVOWrapper> list = services.getTransactions(criterion, offset, length);
+            List<TransactionVOWrapper> list = services.getTransactions(criterion, offset, length, sort);
             return list.toArray(new PaginatedEntity[0]);
         }
+
+        public void applySortOrder(SortOrder sortOrder) {
+            this.sort = sortOrder;
+        }
     }
-
-
 
 }

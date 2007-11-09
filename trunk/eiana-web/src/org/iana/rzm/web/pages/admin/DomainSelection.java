@@ -95,7 +95,7 @@ public abstract class DomainSelection extends AdminPage implements IExternalPage
         DomainView page = getDomainView();
         page.setRequestMetaParameters(getVisitState().getRequestMetaParameters());
         page.setOriginalDomain(domain);
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId()));
         page.setDomainId(domain.getId());
         getRequestCycle().activate(page);
     }

@@ -23,6 +23,8 @@ import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
+import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.services.*;
 import org.iana.rzm.web.util.*;
 
@@ -62,9 +64,16 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length) {
+    public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length, SortOrder sort) {
         try {
-            List<TransactionVO> list = transactionService.find(criterion, offset, length);
+            List<TransactionVO> list ;
+            if(sort.isValid()){
+                Order order = new Order(new RequestFieldNameResolver().resolve(sort.getFieldName()), sort.isAscending());
+                 list = transactionService.find(criterion, order, offset, length);
+            }else{
+                 list = transactionService.find(criterion,  offset, length);
+            }
+
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
@@ -155,9 +164,13 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     }
 
 
-    public List<DomainVOWrapper> getDomains(int offset, int length) {
+    public List<DomainVOWrapper> getDomains(int offset, int length, SortOrder sortOrder) {
         try {
-            List<IDomainVO> list = domainService.find(new Order("name.name", true), offset, length);
+            Order order = new Order(new DomainFieldNameResolver().resolve("domainName"));
+            if(sortOrder.isValid()){
+                order = new Order(sortOrder.getFieldName(), sortOrder.isAscending());
+            }
+            List<IDomainVO> list = domainService.find(order, offset, length);
             List<DomainVOWrapper> result = new ArrayList<DomainVOWrapper>();
             for (IDomainVO iDomainVO : list) {
                 result.add(new SystemDomainVOWrapper(iDomainVO));

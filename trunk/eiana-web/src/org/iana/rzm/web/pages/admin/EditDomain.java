@@ -166,7 +166,8 @@ public abstract class EditDomain extends AdminPage
             domainChangesConfirmation.setDomainId(getDomainId());
             domainChangesConfirmation.setCountryName(getCountryName());
             domainChangesConfirmation.setEditor(new DomainEntityEditorListener(getAdminServices(),
-                                                                               new RzmCallback(getPageName(),isExternal(), getExternalParameters(),getUserId()),
+                                                                               new RzmCallback(getPageName(),isExternal(), getExternalParameters(),
+                                                                                               getLogedInUserId()),
                                                                                getApplicationStateManager()));
             domainChangesConfirmation.setBorderHeader("DOMAINS");
             getRequestCycle().activate(domainChangesConfirmation);
@@ -196,7 +197,7 @@ public abstract class EditDomain extends AdminPage
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         ContactVOWrapper contact = domain.getContact(contactId, type);
         EditContact page = getEditContactPage();
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId()));
         page.setContactAttributes(contact.getMap());
         page.setDomainId(domain.getId());
         page.setContactType(type);
@@ -206,7 +207,7 @@ public abstract class EditDomain extends AdminPage
     public void editNameServerList() {
         EditNameServerList page = getEditNameServerList();
         page.setDomainId(getDomainId());
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId()));
         getRequestCycle().activate(page);
     }
 
@@ -217,7 +218,7 @@ public abstract class EditDomain extends AdminPage
         editSubDomain.setOriginalWhoisServer(getOriginalDomain().getWhoisServer());
         editSubDomain.setRegistryUrl(getDomain().getRegistryUrl());
         editSubDomain.setWhoisServer(getDomain().getWhoisServer());
-        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(),getUserId()));
+        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId()));
         getRequestCycle().activate(editSubDomain);
     }
 

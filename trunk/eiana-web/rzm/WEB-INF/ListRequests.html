@@ -14,12 +14,12 @@
                 <div class="boxContentHeader">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
                         <tr>
-                            <td height="20" valign="top"><strong>Ref</strong></td>
-                            <td height="20" valign="top"><strong>Domain</strong></td>
-                            <td height="20" valign="top"><strong>Lodged</strong></td>
-                            <td height="20" valign="top"><strong>Created By</strong></td>
-                            <td height="20" valign="top" ><strong>Current Status </strong></td>
-                            <td height="20" valign="top" ><strong>Last Change </strong></td>
+                            <td height="20" valign="top"><span jwcid="refHeader"><strong>Ref</strong></span></td>
+                            <td height="20" valign="top"><span jwcid="domainHeader"><strong>Domain</strong></span></td>
+                            <td height="20" valign="top"><span jwcid="createdHeader"><strong>Logged</strong></span></td>
+                            <td height="20" valign="top"><span jwcid="createdByHeader"><strong>Created By</strong></span></td>
+                            <td height="20" valign="top" ><span jwcid="stateHeader"><strong>Current Status </strong></span></td>
+                            <td height="20" valign="top" ><span jwcid="modifiedHeader"><strong>Last Change </strong></span></td>
                             <td height="20" align="right" valign="top" width="200px"><strong>Actions</strong></td>
                         </tr>
                         <tr>
@@ -31,20 +31,20 @@
                             </tr>
                         </span>
                         <tr jwcid="records">
-                            <td><span jwcid="rt">111</span></td>
-                            <td><a href="#" jwcid="domainLink"><span jwcid="domainName">.US</span></a></td>
-                            <td><span jwcid="created">9 Sep, 2006</span></td>
-                            <td><span jwcid="createdBy">Admin</span> </td>
-                            <td><span jwcid="state">Pending Contact Comfirmation</span></td>
-                            <td><span jwcid="modified"/></td>
+                            <td style="padding-right:5px"><span jwcid="rt">111</span></td>
+                            <td style="padding-right:5px"><a href="#" jwcid="domainLink"><span jwcid="domainName">.US</span></a></td>
+                            <td style="padding-right:5px" nowrap ><span jwcid="created">9 Sep, 2006</span></td>
+                            <td style="padding-right:5px"><span jwcid="createdBy">Admin</span> </td>
+                            <td style="padding-right:5px"><span jwcid="state">Pending Contact Comfirmation</span></td>
+                            <td style="padding-right:5px" nowrap ><span jwcid="modified"/></td>
                             <td nowrap>
-                                <div  jwcid="showCancelRequest" class="buttonStyle" style="float: right; ">
-                                    <b class="left"></b>
-                                    <b class="right"><a href="#" class="button" jwcid="cancelRequest">Withdraw Request</a></b>
-                                </div>
                                 <div class="buttonStyle" style="float: right; margin-right: 5px;">
-                                        <b class="left"></b>
-                                         <b class="right"><a href="#" class="button" jwcid="viewRequest"><span jwcid="@Insert" value="prop:actionTitle">View Details</span></a></b>
+                                    <b class="left"></b>
+                                    <b class="right"><a href="#" class="button" jwcid="viewRequest"><span jwcid="@Insert" value="prop:actionTitle">View Details</span></a></b>
+                                </div>
+                                <div  jwcid="showCancelRequest" class="buttonStyle" style="float: right; margin-right: 5px;">
+                                    <b class="left"></b>
+                                    <b class="right"><a href="#" class="button" jwcid="cancelRequest">Withdraw</a></b>
                                 </div>
                             </td>
                         </tr>

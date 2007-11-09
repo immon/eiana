@@ -10,6 +10,7 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.user.*;
 import org.iana.rzm.web.util.*;
@@ -163,10 +164,12 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     private static class CloseTransactionsForDomains implements EntityFetcher{
         private UserServices services;
         private Criterion criterion;
+        private SortOrder sortOrder;
 
         public CloseTransactionsForDomains(List<String>domains, UserServices services) {
             criterion = CriteriaBuilder.closeTransactionForDomains(domains);
             this.services = services;
+            sortOrder = new SortOrder();
         }
 
         public int getTotal() throws NoObjectFoundException {
@@ -174,7 +177,11 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
         }
 
         public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
-            return services.getTransactions(criterion, offset, length).toArray(new PaginatedEntity[0]);
+            return services.getTransactions(criterion, offset, length, sortOrder).toArray(new PaginatedEntity[0]);
+        }
+
+        public void applySortOrder(SortOrder sortOrder) {
+            this.sortOrder = sortOrder;
         }
     }
 }
