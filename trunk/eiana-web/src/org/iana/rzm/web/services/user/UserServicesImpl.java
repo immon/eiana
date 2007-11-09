@@ -21,6 +21,7 @@ import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.services.*;
+import org.iana.rzm.web.util.*;
 
 import java.sql.*;
 import java.util.*;
@@ -140,12 +141,23 @@ public class UserServicesImpl implements UserServices {
             List<SimpleDomainVO> list = domainService.findUserDomains();
             List<UserDomain> userDomains = new ArrayList<UserDomain>();
 
-            for (SimpleDomainVO vo : list) {
+            for (final SimpleDomainVO vo : list) {
                 Set<RoleVO.Type> roles = vo.getRoles();
+                boolean once = false;
                 for (RoleVO.Type role : roles) {
                     SystemRoleVOWrapper userRole = new SystemRoleVOWrapper(role);
                     Timestamp modified = vo.getModified() == null ? vo.getCreated() : vo.getModified();
-                    userDomains.add(new UserDomain(vo.getObjId(), vo.getName(), userRole.getTypeAsString(), modified));
+                    if(!once){
+                        userDomains.add(new UserDomain(vo.getObjId(), vo.getName(), userRole.getTypeAsString(), modified));
+                        once = true;
+                    }else{
+                        UserDomain userDomain = ListUtil.find(userDomains, new ListUtil.Predicate<UserDomain>() {
+                            public boolean evaluate(UserDomain object) {
+                                return object.getDomainId() == vo.getObjId();
+                            }
+                        });
+                        userDomain.addRole(userRole.getTypeAsString());
+                    }
                 }
             }
             return userDomains;
