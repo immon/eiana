@@ -297,4 +297,41 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         DNSDomain dns = DNSConverter.toDNSDomain(domain);
         technicalCheck.check(dns);
     }
+
+
+    static Set allowToWithdraw = new HashSet();
+    static {
+        allowToWithdraw.addAll(Arrays.asList(
+                TransactionState.Name.PENDING_CREATION,
+                TransactionState.Name.PENDING_TECH_CHECK,
+                TransactionState.Name.PENDING_TECH_CHECK_REMEDY,
+                TransactionState.Name.PENDING_CONTACT_CONFIRMATION,
+                TransactionState.Name.PENDING_SOENDORSEMENT,
+                TransactionState.Name.PENDING_IMPACTED_PARTIES,
+                TransactionState.Name.PENDING_MANUAL_REVIEW,
+                TransactionState.Name.PENDING_EXT_APPROVAL,
+                TransactionState.Name.PENDING_EVALUATION,
+                TransactionState.Name.PENDING_IANA_CHECK,
+                TransactionState.Name.PENDING_SUPP_TECH_CHECK,
+                TransactionState.Name.PENDING_SUPP_TECH_CHECK_REMEDY));
+    }
+
+    public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            if (trans == null) throw new NoObjectFoundException(id, "transaction");
+            if (!isAllowedToWithdraw(trans)) throw new TransactionCannotBeWithdrawnException(id, ""+trans.getState().getName());
+            trans.transitTo(getRZMUser(), TransactionState.Name.WITHDRAWN.toString());
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+    private boolean isAllowedToWithdraw(Transaction trans) {
+        return trans != null && allowToWithdraw.contains(trans.getState().getName());
+    }
 }

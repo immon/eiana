@@ -241,4 +241,5 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         isUserInRole();
         return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }
+
 }
