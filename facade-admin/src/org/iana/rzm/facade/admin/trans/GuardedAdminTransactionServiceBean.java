@@ -22,10 +22,7 @@ import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionException;
-import org.iana.rzm.trans.TransactionManager;
+import org.iana.rzm.trans.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
@@ -242,4 +239,30 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }
 
+
+    public void approveByUSDoC(long id) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        try {
+            Transaction transaction = transactionManager.getTransaction(id);
+            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
+            transaction.transit(this.getRZMUser(), "admin-accept");
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException("transaction", "" + e.getId());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
+    public void rejectByUSDoC(long id) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        try {
+            Transaction transaction = transactionManager.getTransaction(id);
+            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
+            transaction.transit(this.getRZMUser(), "admin-reject");
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException("transaction", "" + e.getId());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
+    }
 }
