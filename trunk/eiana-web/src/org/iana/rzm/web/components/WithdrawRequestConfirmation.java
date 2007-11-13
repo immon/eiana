@@ -3,9 +3,11 @@ package org.iana.rzm.web.components;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
+import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.*;
 import org.iana.rzm.web.services.*;
@@ -133,6 +135,10 @@ public abstract class WithdrawRequestConfirmation extends BaseComponent  impleme
             getRzmPage().setErrorMessage("Can't withdraw request. The request does not exsit ");
         } catch (StateUnreachableException e) {
             getRzmPage().setErrorMessage("This request can't be withdrawn online. Please contact IANA for more information");
+        } catch (TransactionCannotBeWithdrawnException e) {
+             getRzmPage().setErrorMessage("This request can't be withdrawn online. Please contact IANA for more information");
+        } catch (InfrastructureException e) {
+             getRzmPage().setErrorMessage("This request can't be withdrawn online. Please contact IANA for more information");
         }
     }
 }
