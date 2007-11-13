@@ -3,6 +3,7 @@ package org.iana.dao.hibernate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.iana.criteria.Criterion;
+import org.iana.dao.DataAccessObject;
 import org.hibernate.Session;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -17,7 +18,7 @@ import java.sql.SQLException;
  * @author Patrycja Wegrzynowicz
  */
 @SuppressWarnings("unchecked")
-public class HibernateDAO<T> extends HibernateDaoSupport {
+public class HibernateDAO<T> extends HibernateDaoSupport implements DataAccessObject<T> {
 
     private Class clazz;
 
