@@ -254,9 +254,14 @@ public class UserServicesImpl implements UserServices {
     }
 
     public void withdrawnTransaction(long requestId)
-        throws FacadeTransactionException, NoSuchStateException, NoObjectFoundException, StateUnreachableException {
+        throws
+        FacadeTransactionException,
+        NoSuchStateException,
+        NoObjectFoundException,
+        StateUnreachableException,
+        TransactionCannotBeWithdrawnException {
         try {
-            transactionService.transitTransaction(requestId, TransactionStateVOWrapper.State.WITHDRAWN.getVOName().name());
+            transactionService.withdrawTransaction(requestId);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);

@@ -1,10 +1,12 @@
 package org.iana.rzm.web.services;
 
 import org.iana.criteria.*;
+import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.passwd.*;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.model.criteria.*;
 
@@ -30,5 +32,10 @@ public interface RzmServices extends Serializable {
     public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException, AccessDeniedException;
 
     public void withdrawnTransaction(long requestId)
-        throws FacadeTransactionException, NoSuchStateException, NoObjectFoundException, StateUnreachableException;
+        throws
+        FacadeTransactionException,
+        NoSuchStateException,
+        NoObjectFoundException,
+        StateUnreachableException,
+        TransactionCannotBeWithdrawnException, InfrastructureException;
 }
