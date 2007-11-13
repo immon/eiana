@@ -20,9 +20,15 @@ public interface Config {
 
     String getParameter(String name) throws ConfigException;
 
+    String getParameter(String name, String defaultValue) throws ConfigException;
+
     List<String> getParameterList(String name) throws ConfigException;
 
+    List<String> getParameterList(String name, List<String> defaultValue) throws ConfigException;
+
     Set<String> getParameterSet(String name) throws ConfigException;
+
+    Set<String> getParameterSet(String name, Set<String> defaultValue) throws ConfigException;
 
     Config getSubConfig(String name) throws ConfigException;
 
@@ -32,20 +38,38 @@ public interface Config {
 
     Boolean getBooleanParameter(String name) throws ConfigException;
 
+    Boolean getBooleanParameter(String name, Boolean defaultValue) throws ConfigException;
+
     Integer getIntegerParameter(String name) throws ConfigException;
+
+    Integer getIntegerParameter(String name, Integer defaultValue) throws ConfigException;
 
     Long getLongParameter(String name) throws ConfigException;
 
+    Long getLongParameter(String name, Long defaultValue) throws ConfigException;
+
     List<Boolean> getBooleanParameterList(String name) throws ConfigException;
+
+    List<Boolean> getBooleanParameterList(String name, List<Boolean> defaultValue) throws ConfigException;
 
     List<Integer> getIntegerParameterList(String name) throws ConfigException;
 
+    List<Integer> getIntegerParameterList(String name, List<Integer> defaultValue) throws ConfigException;
+
     List<Long> getLongParameterList(String name) throws ConfigException;
+
+    List<Long> getLongParameterList(String name, List<Long> defaultValue) throws ConfigException;
 
     Set<Boolean> getBooleanParameterSet(String name) throws ConfigException;
 
+    Set<Boolean> getBooleanParameterSet(String name, Set<Boolean> defaultValue) throws ConfigException;
+
     Set<Integer> getIntegerParameterSet(String name) throws ConfigException;
 
+    Set<Integer> getIntegerParameterSet(String name, Set<Integer> defaultValue) throws ConfigException;
+
     Set<Long> getLongParameterSet(String name) throws ConfigException;
+
+    Set<Long> getLongParameterSet(String name, Set<Long> defaultValue) throws ConfigException;
 
 }
