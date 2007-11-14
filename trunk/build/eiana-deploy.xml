@@ -61,21 +61,21 @@
     </target>
 
     <target name="database.test.dropCreate" depends="all.compile">
-        <!--<sql-->
-                <!--driver="com.mysql.jdbc.Driver"-->
-                <!--url="jdbc:mysql://localhost/"-->
-                <!--userid="testng"-->
-                <!--password="1q2w3e">-->
-            <!--<classpath>-->
-                <!--<fileset dir="${lib.dir}">-->
-                    <!--<include name="**/*.jar"/>-->
-                <!--</fileset>-->
-            <!--</classpath>-->
-            <!--<![CDATA[-->
-                <!--DROP DATABASE IF EXISTS eianatest;-->
-                <!--CREATE DATABASE IF NOT EXISTS eianatest;-->
-            <!--]]>-->
-        <!--</sql>-->
+        <sql
+                driver="com.mysql.jdbc.Driver"
+                url="jdbc:mysql://localhost/"
+                userid="testng"
+                password="1q2w3e">
+            <classpath>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <![CDATA[
+                DROP DATABASE IF EXISTS eianatest;
+                CREATE DATABASE IF NOT EXISTS eianatest;
+            ]]>
+        </sql>
     </target>
 
     <!--creating test database
@@ -261,7 +261,7 @@
             <fileset dir="${config.dir}/spring"/>
             <fileset dir="${config.dir}/epp">
                 <exclude name="test"/>
-             </fileset>
+            </fileset>
         </jar>
     </target>
 
@@ -274,12 +274,11 @@
     </target>
 
     <target name="war" depends="all.jar" description="makes war archive">
-         <mkdir dir="${war.output.dir}"/>
+        <mkdir dir="${war.output.dir}"/>
         <antcall target="j2ee.build.jar.eiana-web">
             <param name="j2ee.path.jar" value="${war.output.dir}/rzm.war"/>
         </antcall>
-      </target>
-
+    </target>
 
 
     <!-- runs all test from group that is equal to property value ${test.group}
@@ -288,26 +287,9 @@
     Those properties could be set via IDEA IDE ("Ant build" tab) or from command line e.g. 'ant -Dtest.group="dao" '.
     Reports from tests are aviable in "Report" directory.
     -->
-    <target name="all.test" depends="clean,all.compile,database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
-     and excludes all tests from groups that is equal to property value (test.group.excluded).">
-        <condition property="test.group.excluded" value="">
-            <not>
-                <isset property="test.group.excluded"/>
-            </not>
-        </condition>
-        <condition property="test.group" value="">
-            <not>
-                <isset property="test.group"/>
-            </not>
-        </condition>
 
-        <delete>
-            <fileset dir="${basedir}">
-                <include name="cobertura.ser"/>
-            </fileset>
-        </delete>
-
-        <cobertura-instrument>
+    <target name="coberturaInstrument" if="use.cobertura">
+        <cobertura-instrument maxmemory="1024M">
             <fileset dir="${basedir}/classes">
                 <include name="**/*.class"/>
                 <exclude name="production/eiana-init/**/*.class"/>
@@ -317,36 +299,9 @@
                 <exclude name="test/facade-system/org/iana/rzm/system/stress/**/*.class"/>
             </fileset>
         </cobertura-instrument>
+    </target>
 
-        <mkdir dir="${test.report.output}"/>
-
-        <echo>
-            test inluded = ${test.group}
-            test excluded = ${test.group.excluded}
-        </echo>
-
-        <path id="eiana.test-ng.classpath">
-            <dirset dir="${basedir}/classes">
-                <include name="test/*"/>
-                <include name="production/*"/>
-            </dirset>
-            <fileset dir="${lib.dir}">
-                <include name="**/*jar"/>
-                <exclude name="cobertura/lib/asm-2.2.1.jar"/>
-            </fileset>
-        </path>
-
-        <path id="eiana.test-ng.classpath">
-            <dirset dir="${basedir}/classes">
-                <include name="test/*"/>
-                <include name="production/*"/>
-            </dirset>
-            <fileset dir="${lib.dir}">
-                <include name="**/*jar"/>
-                <exclude name="cobertura/lib/asm-2.2.1.jar"/>
-            </fileset>
-        </path>
-
+    <target name="testngUseCobertura" if="use.cobertura">
         <testng classpathref="eiana.test-ng.classpath"
                 outputDir="${test.report.output}"
                 haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}">
@@ -360,8 +315,27 @@
                 <include name="**/*"/>
             </fileset>
         </delete>
+    </target>
 
-        <cobertura-report format="html" datafile="${basedir}/cobertura.ser" destdir="${test.cobertura.output}">
+    <target name="testngNoCobertura" if="no.cobertura">
+        <testng classpathref="eiana.test-ng.classpath"
+                outputDir="${test.report.output}"
+                haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}">
+            <classfileset dir="${basedir}/classes/test"/>
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser"/>
+        </testng>
+
+        <mkdir dir="${test.cobertura.output}"/>
+        <delete>
+            <fileset dir="${test.cobertura.output}">
+                <include name="**/*"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="generateCoberturaReport" if="use.cobertura">
+        <cobertura-report maxmemory="1024M" if="use.cobertura" format="html" datafile="${basedir}/cobertura.ser"
+                          destdir="${test.cobertura.output}">
             <!--eiana-dns-->
             <fileset dir="../eiana-dns/src">
                 <include name="**/*.java"/>
@@ -499,8 +473,71 @@
         </cobertura-report>
     </target>
 
+    <target name="all.test" depends="clean,all.compile,database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+     and excludes all tests from groups that is equal to property value (test.group.excluded).">
+        <condition property="test.group.excluded" value="">
+            <not>
+                <isset property="test.group.excluded"/>
+            </not>
+        </condition>
+        <condition property="test.group" value="">
+            <not>
+                <isset property="test.group"/>
+            </not>
+        </condition>
+
+        <delete>
+            <fileset dir="${basedir}">
+                <include name="cobertura.ser"/>
+            </fileset>
+        </delete>
+
+        <antcall target="coberturaInstrument"/>
+
+        <mkdir dir="${test.report.output}"/>
+
+        <echo>
+            test inluded = ${test.group}
+            test excluded = ${test.group.excluded}
+        </echo>
+
+        <path id="eiana.test-ng.classpath">
+            <dirset dir="${basedir}/classes">
+                <include name="test/*"/>
+                <include name="production/*"/>
+            </dirset>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+                <exclude name="cobertura/lib/asm-2.2.1.jar"/>
+            </fileset>
+        </path>
+
+        <path id="eiana.test-ng.classpath">
+            <dirset dir="${basedir}/classes">
+                <include name="test/*"/>
+                <include name="production/*"/>
+            </dirset>
+            <fileset dir="${lib.dir}">
+                <include name="**/*jar"/>
+                <exclude name="cobertura/lib/asm-2.2.1.jar"/>
+            </fileset>
+        </path>
+
+        <antcall target="testngUseCobertura"/>
+        <antcall target="testngNoCobertura"/>
+        <antcall target="generateCoberturaReport"/>
+
+    </target>
+
     <target name="all.test.fast" description="runs fast tests (excludes slow tests e.g. stress tests)">
         <property name="test.group.excluded" value="excluded, stress"/>
+        <property name="no.cobertura" value="true"/>
+        <antcall target="all.test"/>
+    </target>
+
+    <target name="all.test.fast.cobertura" description="runs fast tests (excludes slow tests e.g. stress tests)">
+        <property name="test.group.excluded" value="excluded, stress"/>
+        <property name="use.cobertura" value="true"/>
         <antcall target="all.test"/>
     </target>
 
