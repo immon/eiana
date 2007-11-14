@@ -1,17 +1,17 @@
 package org.iana.dns.check.remote;
 
-import org.iana.dns.check.*;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSNameServer;
+import org.iana.dns.check.exceptions.DNSCheckIOException;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.dns.DNSDomain;
-import org.iana.dns.DNSHost;
 
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The default implementation of RPCTechnicalCheck interface.
@@ -30,13 +30,16 @@ public class RPCTechnicalCheckImpl implements RPCTechnicalCheck {
                 ret.add(new SOA(host.getName(), ns.getSOAByTCP(), false));
             }
             return ret.toArray(new SOA[0]);
+        } catch (DNSCheckIOException e) {
+            throw new RPCTechnicalCheckException(e);
         } catch (RuntimeException e) {
             throw new RPCTechnicalCheckException(e);
         }
     }
 
     private DNSDomain toDomain(String domainName, String[] nameServers, String[][] ipAddresses) throws IllegalArgumentException, InvalidDomainNameException, InvalidIPAddressException {
-        if (nameServers.length != ipAddresses.length) throw new IllegalArgumentException("ip addresses array does not correspont to name servers array (different length)");
+        if (nameServers.length != ipAddresses.length)
+            throw new IllegalArgumentException("ip addresses array does not correspont to name servers array (different length)");
         DNSDomainImpl domain = new DNSDomainImpl(domainName);
         for (int i = 0; i < nameServers.length; ++i) {
             DNSHostImpl host = new DNSHostImpl(nameServers[i]);

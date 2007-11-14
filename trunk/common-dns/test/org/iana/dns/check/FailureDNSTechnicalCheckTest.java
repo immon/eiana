@@ -62,13 +62,8 @@ public class FailureDNSTechnicalCheckTest {
         host2.addIPAddress("193.0.7.3");
         domain.addNameServer(host2);
 
-        try {
-            dnsTechnicalCheck.check(domain);
-        } catch (DNSTechnicalCheckException e) {
-            MultipleDNSTechnicalCheckException error = (MultipleDNSTechnicalCheckException) e;
-            assert error.getExceptions().contains(new NameServerUnreachableException(host1));
-            throw e;
-        }
+
+        dnsTechnicalCheck.check(domain);
     }
 
     @Test(expectedExceptions = MultipleDNSTechnicalCheckException.class)
