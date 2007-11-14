@@ -23,38 +23,65 @@ public class DNSNameServer {
 
     private DNSDomain domain;
     private DNSHost host;
-    private Message soaByUDP;
-    private Message soaByTCP;
+    private DNSSOA soaByUDP;
+    private DNSSOA soaByTCP;
+
+    private class DNSSOA {
+
+        private Message message;
+        private boolean tcp;
+        private boolean initialized;
+
+        public DNSSOA(boolean tcp) {
+            this.tcp = tcp;
+            this.initialized = false;
+        }
+
+        public DNSSOA(Message message, boolean tcp) {
+            this.message = message;
+            this.tcp = tcp;
+            this.initialized = true;
+        }
+
+        public Message getMessage() {
+            if (!initialized) {
+                message = sendSOAQuery(tcp);
+                initialized = true;
+            }
+            return message;
+        }
+
+        private Message sendSOAQuery(boolean byTCP) {
+            try {
+                Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.SOA, DClass.IN);
+                Message query = Message.newQuery(question);
+                Resolver resolver = new SimpleResolver(host.getName());
+                resolver.setTCP(byTCP);
+                return resolver.send(query);
+            } catch (TextParseException e) {
+                Logger.getLogger(DNSNameServer.class).error("parsing domain name: " + domain.getNameWithDot(), e);
+            } catch (IOException e) {
+                Logger.getLogger(DNSNameServer.class).error("io exception: " + host.getName(), e);
+            }
+            return null;
+        }
+
+    }
 
     public DNSNameServer(DNSDomain domain, DNSHost host) {
         if (domain == null) throw new IllegalArgumentException("null domain");
         if (host == null) throw new IllegalArgumentException("null host");
         this.domain = domain;
         this.host = host;
-        soaByUDP = sendSOAQuery(false);
-        soaByTCP = sendSOAQuery(true);
+        this.soaByUDP = new DNSSOA(false);
+        this.soaByTCP = new DNSSOA(true);
     }
 
     public DNSNameServer(DNSDomain domain, DNSHost host, Message soaByUDP, Message soaByTCP) {
         this.domain = domain;
         this.host = host;
-        this.soaByUDP = soaByUDP;
-        this.soaByTCP = soaByTCP;
-    }
-
-    private Message sendSOAQuery(boolean byTCP) {
-        try {
-            Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.SOA, DClass.IN);
-            Message query = Message.newQuery(question);
-            Resolver resolver = new SimpleResolver(host.getName());
-            resolver.setTCP(byTCP);
-            return resolver.send(query);
-        } catch (TextParseException e) {
-            Logger.getLogger(DNSNameServer.class).error("parsing domain name: " + domain.getNameWithDot(), e);
-        } catch (IOException e) {
-            Logger.getLogger(DNSNameServer.class).error("io exception: " + host.getName(), e);
-        }
-        return null;
+        this.soaByUDP = new DNSSOA(soaByUDP, false);
+        this.soaByTCP = new DNSSOA(soaByTCP, true);
     }
 
     public boolean isReachableByUDP() {
@@ -114,14 +141,14 @@ public class DNSNameServer {
     }
 
     public Message getSOA() {
-        return (soaByUDP != null) ? soaByUDP : soaByTCP;
+        return (getSOAByUDP() != null) ? getSOAByUDP() : getSOAByTCP();
     }
 
     public Message getSOAByUDP() {
-        return soaByUDP;
+        return soaByUDP.getMessage();
     }
 
     public Message getSOAByTCP() {
-        return soaByTCP;
+        return soaByTCP.getMessage();
     }
 }
