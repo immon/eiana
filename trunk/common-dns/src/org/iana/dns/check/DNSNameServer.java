@@ -46,8 +46,8 @@ public class DNSNameServer {
 
         public Message getMessage() throws DNSCheckIOException {
             if (!initialized) {
-                message = sendSOAQuery(tcp);
                 initialized = true;
+                message = sendSOAQuery(tcp);
             }
             return message;
         }
