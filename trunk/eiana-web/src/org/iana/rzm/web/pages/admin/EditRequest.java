@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
@@ -52,6 +53,15 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
     @Component(id="chooseState", type = "LinkSubmit", bindings = {"action=listener:chooseState"})
     public abstract IComponent getChooseStateComponent();
 
+    @Component(id="docApproved", type="LinkSubmit", bindings = {"action=listener:docApproved"})
+    public abstract IComponent getDocApprovedComponent();
+
+    @Component(id="docRegected", type = "LinkSubmit", bindings = {"action=listener:docRejected"})
+    public abstract IComponent getDocRejectedComponent();
+
+    @Component(id="pendingDoc", type="If", bindings = {"condition=prop:pendingDoc" ,"element=literal:tr"})
+    public abstract IComponent getIsPendingDocComponent();
+
     @InjectPage("admin/EditDomain")
     public abstract EditDomain getEditDomain();
 
@@ -66,7 +76,6 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
 
     @Persist("client:page")
     public abstract void setRequest(TransactionVOWrapper request);
-
     public abstract TransactionVOWrapper getRequest();
 
     @Persist("client:page")
@@ -126,6 +135,33 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
         EditTransactionState page = getEditTransactionState();
         page.setRequestId(getRequestId());
         getRequestCycle().activate(page);
+    }
+
+    public void docApproved(){
+        try {
+            getAdminServices().approveByUSDoC(getRequestId());
+            setInfoMessage("State change successfully");
+        } catch (NoObjectFoundException e) {
+           getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        } catch (IllegalTransactionStateException e) {
+            setErrorMessage("This operation is not allowed for the current state " + e.getState() );
+        }
+    }
+
+    public void docRejected(){
+        try {
+            getAdminServices().rejectByUSDoC(getRequestId());
+            setInfoMessage("State change successfully");
+        } catch (NoObjectFoundException e) {
+           getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        } catch (IllegalTransactionStateException e) {
+            setErrorMessage("This operation is not allowed for the current state " + e.getState() );
+        }            
+    }
+
+
+    public boolean isPendingDoc(){
+        return getRequest().getState().equals(TransactionStateVOWrapper.State.PENDING_USDOC_APPROVAL);
     }
 
 

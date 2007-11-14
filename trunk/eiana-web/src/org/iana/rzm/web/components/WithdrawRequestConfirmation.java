@@ -117,7 +117,7 @@ public abstract class WithdrawRequestConfirmation extends BaseComponent  impleme
     }
 
     protected RzmPage getRzmPage() {
-        return (RzmPage) getPage();
+        return (RzmPage) getPage();                        
     }
 
     public void delete(long requestId) {
