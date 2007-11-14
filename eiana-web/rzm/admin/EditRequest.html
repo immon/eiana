@@ -55,22 +55,30 @@
                                         <b class="left"></b>
                                         <b class="right"><a href="#" jwcid="chooseState" class="button">Manually Choose State</a></b>
                                     </div>
-                                    <!--<input name="nextState"     value="Next apporiate state"    type=submit jwcid="nextState"      class="button"/>-->
-                                    <!--<input name="chooseState" value="Manualy choose state"  type=submit jwcid="chooseState"  class="button"/>-->
                                 </td>
                             </tr>
-                            <!--<tr>-->
-                                <!--<td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:states">State</span></td>-->
-                                <!--<td  valign="top"><span jwcid="states" class="field" onkeypress="return submitOnEnter(event);"></span>-->
-                            <!--</tr>-->
                             <tr>
-                                <td class="label green" valign="top"><span jwcid="@FieldLabel" field="component:submitter">Request Submitter Email</span></td>
+                                <td class="label green" valign="top" nowrap><span jwcid="@FieldLabel" field="component:submitter">Request Submitter Email</span></td>
                                 <td align="right" valign="top"><input type="text"  jwcid="submitter" class="field" onkeypress="return submitOnEnter(event);"/>
                             </tr>
                             <tr>
                                 <td valign="top" class="label green"><label jwcid="redeligationLabel">Redeligation</label></td>
                                 <td align="left" valign="top"><span jwcid="redeligation"/></td>
                             </tr>
+                            <tr jwcid="pendingDoc">
+                                <td class="label green" valign="top">DoC Approve/Rejected:</td>
+                                <td align="left" valign="top">
+                                    <div class="buttonStyle" style="float: left; margin-right: 5px;">
+                                        <b class="left"></b>
+                                        <b class="right"><a href="#" jwcid="docApproved" class="button">Approved by DoC</a></b>
+                                    </div>
+                                    <div class="buttonStyle" style="float: left;">
+                                        <b class="left"></b>
+                                        <b class="right"><a href="#" jwcid="docRegected" class="button">Rejected by DoC</a></b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr><td colspan="2">&nbsp;</td> </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>

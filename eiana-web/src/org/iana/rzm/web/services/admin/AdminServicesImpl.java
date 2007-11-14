@@ -292,6 +292,24 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         transactionService.transitTransactionToState(id, state.getVOName());
     }
 
+    public void approveByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException{
+        try {
+            transactionService.approveByUSDoC(transactionId);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public void rejectByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException{
+        try {
+            transactionService.rejectByUSDoC(transactionId);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
     public void moveTransactionNextState(long id) throws AccessDeniedException, NoObjectFoundException {
         try {
             transactionService.moveTransactionToNextState(id);

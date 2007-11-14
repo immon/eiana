@@ -66,4 +66,8 @@ public interface AdminServices extends RzmServices {
     public void moveTransactionNextState(long id) throws NoObjectFoundException;
 
     void transitTransactionToState(long id, TransactionStateVOWrapper.State state) throws FacadeTransactionException, NoObjectFoundException, NoSuchStateException, StateUnreachableException;
+
+    void approveByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
+
+    void rejectByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
 }
