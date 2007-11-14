@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.exceptions.DNSCheckIOException;
 import org.xbill.DNS.*;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.Set;
 
 /**
  * A helper class that represents a host which is a name server for a domain. During
- * construction DNS is queried to obtain SOA record configured for a given domain on a given name server. 
+ * construction DNS is queried to obtain SOA record configured for a given domain on a given name server.
  *
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
@@ -43,7 +44,7 @@ public class DNSNameServer {
             this.initialized = true;
         }
 
-        public Message getMessage() {
+        public Message getMessage() throws DNSCheckIOException {
             if (!initialized) {
                 message = sendSOAQuery(tcp);
                 initialized = true;
@@ -51,21 +52,19 @@ public class DNSNameServer {
             return message;
         }
 
-        private Message sendSOAQuery(boolean byTCP) {
+        private Message sendSOAQuery(boolean byTCP) throws DNSCheckIOException {
             try {
                 Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.SOA, DClass.IN);
                 Message query = Message.newQuery(question);
                 Resolver resolver = new SimpleResolver(host.getName());
                 resolver.setTCP(byTCP);
                 return resolver.send(query);
-            } catch (TextParseException e) {
-                Logger.getLogger(DNSNameServer.class).error("parsing domain name: " + domain.getNameWithDot(), e);
             } catch (IOException e) {
-                Logger.getLogger(DNSNameServer.class).error("io exception: " + host.getName(), e);
+                String output = "io exception: " + host.getName();
+                Logger.getLogger(DNSNameServer.class).error(output, e);
+                throw new DNSCheckIOException(output);
             }
-            return null;
         }
-
     }
 
     public DNSNameServer(DNSDomain domain, DNSHost host) {
@@ -92,19 +91,19 @@ public class DNSNameServer {
         return soaByTCP != null;
     }
 
-    public boolean isAuthoritative() {
+    public boolean isAuthoritative() throws DNSCheckIOException {
         return ((getSOA() != null) && (getSOA().getHeader().getFlag(Flags.AA)));
     }
 
-    public List<Record> getAuthoritySection() {
+    public List<Record> getAuthoritySection() throws DNSCheckIOException {
         return (getSOA() != null) ? Arrays.asList(getSOA().getSectionArray(2)) : new ArrayList<Record>();
     }
 
-    public List<Record> getAdditionalSection() {
+    public List<Record> getAdditionalSection() throws DNSCheckIOException {
         return (getSOA() != null) ? Arrays.asList(getSOA().getSectionArray(3)) : new ArrayList<Record>();
     }
 
-    public long getSerialNumber() {
+    public long getSerialNumber() throws DNSCheckIOException {
         return (getSOA() != null) ? ((SOARecord) getSOA().getSectionArray(1)[0]).getSerial() : -1;
     }
 
@@ -140,15 +139,15 @@ public class DNSNameServer {
         return host.hasIPAddress(addr);
     }
 
-    public Message getSOA() {
+    public Message getSOA() throws DNSCheckIOException {
         return (getSOAByUDP() != null) ? getSOAByUDP() : getSOAByTCP();
     }
 
-    public Message getSOAByUDP() {
+    public Message getSOAByUDP() throws DNSCheckIOException {
         return soaByUDP.getMessage();
     }
 
-    public Message getSOAByTCP() {
+    public Message getSOAByTCP() throws DNSCheckIOException {
         return soaByTCP.getMessage();
     }
 }
