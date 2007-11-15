@@ -359,9 +359,9 @@
     </bean>
 
     <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
-        <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
-        <!--<constructor-arg index="1" value="root"/>-->
-        <!--<constructor-arg index="2" value="password"/>-->
+    <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
+    <!--<constructor-arg index="1" value="root"/>-->
+    <!--<constructor-arg index="2" value="password"/>-->
     <!--</bean>-->
 
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
@@ -555,7 +555,7 @@
             <value>995</value>
         </property>
         <property name="debug">
-        <value>true</value>
+            <value>true</value>
         </property>
         <property name="ssl">
             <value>true</value>
@@ -814,4 +814,13 @@
             <ref bean="templateContentFactoryBean"/>
         </constructor-arg>
     </bean>
+
+    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+
+    <!--
+    <bean id="eppClient" class="org.iana.epp.internal.verisign.VerisignEPPClient"
+            factory-method="getEPPClient">
+        <constructor-arg value="../conf/epp/epp.rootzone.config"/>
+    </bean>
+    -->
 </beans>

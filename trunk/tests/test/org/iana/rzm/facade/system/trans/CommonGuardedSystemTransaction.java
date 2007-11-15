@@ -6,8 +6,8 @@ import org.iana.notifications.NotificationManager;
 import org.iana.notifications.dao.EmailAddresseeDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
@@ -79,7 +79,7 @@ public abstract class CommonGuardedSystemTransaction {
         setUser(user);   //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.moveTransactionToNextState(transId);
-        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
+        assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
 
@@ -270,6 +270,8 @@ public abstract class CommonGuardedSystemTransaction {
         try {
             setUser(user);
             List<TransactionVO> transaction = gsts.createTransactions(domainVO, false);
+            assert transaction != null;
+            assert transaction.size() == 1;
             return transaction.iterator().next();
         } catch (CreateTicketException e) {
             // ignored
@@ -324,9 +326,9 @@ public abstract class CommonGuardedSystemTransaction {
         int i = 0;
         for (TransactionStateLogEntryVO entry : log) {
             assert usersStates[i][0].equals(entry.getUserName()) :
-                    "unexpected user in log entry: " + i + ", " + usersStates[i][0];
+                    "unexpected user in log entry: " + i + ", " + entry.getUserName();
             assert usersStates[i][1].equals(entry.getState().getName().toString()) :
-                    "unexpected state in log entry: " + i + ", " + usersStates[i][1];
+                    "unexpected state in log entry: " + i + ", " + entry.getState().getName();
             i++;
         }
         closeServices();

@@ -16,6 +16,9 @@ import java.util.List;
 
 /**
  * Generates epp update hosts requests.
+ *
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
 public class EPPUpdateHosts extends EPPCommand {
 
@@ -33,12 +36,14 @@ public class EPPUpdateHosts extends EPPCommand {
             CollectionChange addrChange = (CollectionChange) hostChange.getFieldChanges().get("addresses");
             if (addrChange != null) {
                 for (Change ipChange : addrChange.getAdded()) {
-                    SimpleChange simpleChange = (SimpleChange) ipChange;
+                    ObjectChange addrListChange = (ObjectChange) ipChange;
+                    SimpleChange simpleChange = (SimpleChange) addrListChange.getFieldChanges().get("address");
                     toAdd.add(toAddress(simpleChange.getNewValue()));
                 }
                 for (Change ipChange : addrChange.getRemoved()) {
-                    SimpleChange simpleChange = (SimpleChange) ipChange;
-                    toAdd.add(toAddress(simpleChange.getNewValue()));
+                    ObjectChange addrListChange = (ObjectChange) ipChange;
+                    SimpleChange simpleChange = (SimpleChange) addrListChange.getFieldChanges().get("address");
+                    toRemove.add(toAddress(simpleChange.getOldValue()));
                 }
             }
             EPPChange update = getOperationFactory().getUpdateHost(getId(req), hostName, toAdd, toRemove);

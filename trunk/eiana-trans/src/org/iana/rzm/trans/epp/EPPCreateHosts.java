@@ -17,6 +17,9 @@ import java.util.List;
 
 /**
  * Generates epp create host requests.
+ *
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
 public class EPPCreateHosts extends EPPCommand {
 
@@ -41,7 +44,8 @@ public class EPPCreateHosts extends EPPCommand {
         List<EPPHostAddress> ret = new ArrayList<EPPHostAddress>();
         CollectionChange addressChange = (CollectionChange) hostChange.getFieldChanges().get("addresses");
         for (Change change : addressChange.getAdded()) {
-            SimpleChange addrChange = (SimpleChange) change;
+            ObjectChange addrListChange = (ObjectChange) change;
+            SimpleChange addrChange = (SimpleChange) addrListChange.getFieldChanges().get("address");
             String addrValue = addrChange.getNewValue();
             ret.add(toAddress(addrValue));
         }

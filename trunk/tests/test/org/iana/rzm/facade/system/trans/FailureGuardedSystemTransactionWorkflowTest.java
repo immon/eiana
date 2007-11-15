@@ -84,21 +84,18 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
     @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_REJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         rejectPENDING_CONTACT_CONFIRMATIONWrongToken(userACWrong, transId);
     }
 
     @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_CLOSE_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         closePENDING_CONTACT_CONFIRMATION(userACWrong, transId);
     }
 
     @Test(expectedExceptions = {AccessDeniedException.class})
     public void testFAILURE_ACCEPT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         acceptPENDING_CONTACT_CONFIRMATIONWrongToken(userACWrong, userTC, transId);
     }
 

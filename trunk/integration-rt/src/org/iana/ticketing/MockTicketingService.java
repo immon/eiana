@@ -1,5 +1,7 @@
 package org.iana.ticketing;
 
+import java.util.Date;
+
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
@@ -7,7 +9,7 @@ package org.iana.ticketing;
 public class MockTicketingService implements TicketingService {
     public long createTicket(Ticket ticket) throws TicketingException {
         System.out.println("#### createTicket: " + ticket.getTld());
-        throw new TicketingException();
+        return new Date().getTime();
     }
 
     public void updateTicket(Ticket ticket) throws TicketingException {

@@ -11,10 +11,8 @@
                     <element>PENDING_TECH_CHECK</element>
                     <element>PENDING_DATABASE_INSERTION</element>
                     <element>PENDING_ZONE_TESTING</element>
-                </systemStates>
-                <contactStates>
                     <element>PENDING_CONTACT_CONFIRMATION</element>
-                </contactStates>
+                </systemStates>
             </action>
             <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.ProcessStateUpdater"/>
         </event>
@@ -73,7 +71,7 @@
 
         <decision name="PENDING_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
-                <doTest>true</doTest>
+                <doTest>false</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
@@ -162,7 +160,9 @@
             <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
             <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notification>contact-confirmation</notification>
+                    <notifications>
+                        <element>contact-confirmation</element>
+                    </notifications>
                 </action>
             </transition>
             <transition name="reject" to="REJECTED"/>
@@ -170,7 +170,9 @@
             <transition name="withdraw" to="WITHDRAWN"/>
             <transition name="admin-accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notification>contact-confirmation</notification>
+                    <notifications>
+                        <element>contact-confirmation</element>
+                    </notifications>
                 </action>
             </transition>
             <transition name="admin-reject" to="REJECTED"/>
@@ -335,7 +337,7 @@
 
         <decision name="PENDING_SUPP_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
-                <doTest>true</doTest>
+                <doTest>false</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
@@ -402,9 +404,7 @@
                         <element>USDoC</element>
                     </roles>
                 </action>
-                <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationNotifier">
-                    <notification>usdoc-confirmation</notification>
-                </action>
+                <action class="org.iana.rzm.trans.jbpm.handlers.USDOCApprovalAction"/>
             </event>
             <timer name="5d-time-out" duedate='5 days'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.USDOCConfirmationRemainder">
@@ -415,13 +415,19 @@
             <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
             <transition name="accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notification>usdoc-confirmation</notification>
+                    <notifications>
+                        <element>usdoc-confirmation</element>
+                        <element>usdoc-confirmation-nschange</element>
+                    </notifications>
                 </action>
             </transition>
             <transition name="reject" to="REJECTED"/>
             <transition name="admin-accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
-                    <notification>usdoc-confirmation</notification>
+                    <notification>
+                        <element>usdoc-confirmation</element>
+                        <element>usdoc-confirmation-nschange</element>
+                    </notification>
                 </action>
             </transition>
             <transition name="admin-reject" to="REJECTED"/>
@@ -443,11 +449,14 @@
                         <element>IANA</element>
                     </roles>
                 </action>
+                <!-- todo wywalic -->
+                <!--
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
                     <roles>
                         <element>IANA</element>
                     </roles>
                 </action>
+                -->
             </event>
             <timer name="7d-time-out" duedate="7 days">
                 <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAlert">
@@ -470,11 +479,14 @@
                         <element>IANA</element>
                     </roles>
                 </action>
+                <!-- todo wywalic -->
+                <!--
                 <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
                     <roles>
                         <element>IANA</element>
                     </roles>
                 </action>
+                -->
             </event>
             <timer name="3d-time-out" duedate="3 days">
                 <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAlert">
