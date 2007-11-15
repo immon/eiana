@@ -8,7 +8,7 @@ import org.iana.rzm.web.tapestry.*;
 @ComponentClass
 public abstract class RequestSummery extends BaseComponent {
 
-    @Component(id = "rt", type = "Insert", bindings = {"value=prop:request.rtId"})
+    @Component(id = "rt", type = "Insert", bindings = {"value=prop:request.rtIdAsString"})
     public abstract IComponent getRtComponent();
 
     @Component(id = "state", type = "Insert", bindings = {"value=prop:request.currentStateAsString"})

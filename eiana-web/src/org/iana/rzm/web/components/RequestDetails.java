@@ -35,7 +35,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     @Component(id = "title", type = "Insert", bindings = {"value=prop:action.title"})
     public abstract IComponent getTitleComponent();
 
-    @Component(id = "rt", type = "Insert", bindings = {"value=prop:request.rtId"})
+    @Component(id = "rt", type = "Insert", bindings = {"value=prop:request.rtIdAsString"})
     public abstract IComponent getRtComponent();
 
     @Component(id = "state", type = "Insert", bindings = {"value=prop:request.currentStateAsString"})
