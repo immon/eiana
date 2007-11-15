@@ -45,12 +45,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
@@ -66,8 +64,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "ac-name");
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -75,7 +71,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
@@ -91,8 +87,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "ac-name-new");
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -100,7 +94,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
@@ -116,8 +110,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "tc-name");
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -125,7 +117,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
@@ -141,8 +133,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "tc-name-new");
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -150,7 +140,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
@@ -166,8 +156,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "tc-name");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -177,7 +165,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
@@ -193,8 +181,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "tc-name-new");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -204,7 +190,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
@@ -220,8 +206,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "ac-name");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -231,7 +215,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
@@ -247,8 +231,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "tc-name");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -258,7 +240,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
@@ -274,8 +256,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         TransactionVO trans = createTransaction();
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), "ac-name");
         acceptTransaction(trans.getTransactionID(), token);
 
@@ -288,7 +268,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
@@ -303,8 +283,6 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         setDefaultUser();
 
         TransactionVO trans = createTransaction();
-
-        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), "ac-name");
         acceptTransaction(trans.getTransactionID(), token);
@@ -321,7 +299,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_MANUAL_REVIEW;
-        Set<ConfirmationVO> expectedConfirmations =  new HashSet<ConfirmationVO>();
+        Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));

@@ -86,7 +86,7 @@ public class TransitTransactionToStateTest {
             createDomainModificationProcess(DOMAIN_NAME_1);
 
             TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
-            assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
+            assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
             gAdminTransactionServ.transitTransactionToState(transactionID, "WRONG_STATE");
 
@@ -101,7 +101,7 @@ public class TransitTransactionToStateTest {
         createDomainModificationProcess(DOMAIN_NAME_2);
 
         TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
-        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CREATION);
+        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
         for (String state : states.keySet()) {
             gAdminTransactionServ.transitTransactionToState(transactionID, state);
@@ -168,8 +168,8 @@ public class TransitTransactionToStateTest {
         states.put("PENDING_SUPP_TECH_CHECK", "PENDING_USDOC_APPROVAL");
         states.put("PENDING_SUPP_TECH_CHECK_REMEDY", "PENDING_SUPP_TECH_CHECK_REMEDY");
         states.put("PENDING_USDOC_APPROVAL", "PENDING_USDOC_APPROVAL");
-        states.put("PENDING_ZONE_INSERTION", "PENDING_ZONE_INSERTION");
-        states.put("PENDING_ZONE_PUBLICATION", "PENDING_ZONE_PUBLICATION");
+        states.put("PENDING_ZONE_INSERTION", "COMPLETED");
+        states.put("PENDING_ZONE_PUBLICATION", "COMPLETED");
         states.put("PENDING_ZONE_TESTING", "COMPLETED");
         states.put("PENDING_DATABASE_INSERTION", "COMPLETED");
         states.put("COMPLETED", "COMPLETED");

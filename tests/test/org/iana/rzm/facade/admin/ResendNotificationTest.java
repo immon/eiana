@@ -7,6 +7,8 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
@@ -15,8 +17,6 @@ import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
@@ -60,7 +60,7 @@ public class ResendNotificationTest {
         ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
         sts = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
         nts = (AdminNotificationService) appCtx.getBean("notificationService");
-        
+
         userManager = (UserManager) appCtx.getBean("userManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
@@ -124,8 +124,6 @@ public class ResendNotificationTest {
     public void testResendContactConfirmationNotification() throws Exception {
         ats.setUser(new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser());
         Long transactionID = createDomainModificationProcess();
-        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
-        ats.transitTransaction(transactionID, "go-on");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
         List<NotificationVO> notifications = nts.getNotifications(transactionID);
@@ -141,8 +139,6 @@ public class ResendNotificationTest {
         AuthenticatedUser au = new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser();
         ats.setUser(au);
         Long transactionID = createDomainModificationProcess();
-        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
-        ats.transitTransaction(transactionID, "go-on");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
 
         String token = getToken(transactionID, SystemRole.SystemType.AC);
@@ -156,8 +152,6 @@ public class ResendNotificationTest {
         AuthenticatedUser au = new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser();
         ats.setUser(au);
         Long transactionID = createDomainModificationProcess();
-        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
-        ats.transitTransaction(transactionID, "go-on");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
         ats.transitTransaction(transactionID, "admin-accept");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
