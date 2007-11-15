@@ -44,8 +44,6 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
 
         TransactionVO trans = createTransaction(domain);
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         trans = getTransaction(trans.getTransactionID());
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
@@ -64,8 +62,6 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
         domain.setRegistryUrl("contactconfirmation.registry.url");
 
         TransactionVO trans = createTransaction(domain);
-
-        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), SystemRole.SystemType.AC);
 
@@ -90,8 +86,6 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
 
         TransactionVO trans = createTransaction(domain);
 
-        transitTransaction(trans.getTransactionID(), "go-on");
-
         String token = getToken(trans.getTransactionID(), SystemRole.SystemType.TC);
 
         acceptTransaction(trans.getTransactionID(), token);
@@ -114,8 +108,6 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
         domain.setRegistryUrl("contactconfirmation.registry.url");
 
         TransactionVO trans = createTransaction(domain);
-
-        transitTransaction(trans.getTransactionID(), "go-on");
 
         String token = getToken(trans.getTransactionID(), SystemRole.SystemType.TC);
         acceptTransaction(trans.getTransactionID(), token);

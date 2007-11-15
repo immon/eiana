@@ -4,6 +4,7 @@ import org.iana.criteria.*;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
@@ -34,6 +35,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
     private Set<Long> domain1ProcIds = new HashSet<Long>();
     private Long domain1FirstProcId;
     private Set<Long> domain2ProcIds = new HashSet<Long>();
+    private Set<Long> domain2TicketIds = new HashSet<Long>();
     private Long domain2FirstProcId;
 
     public ProcessDAOTest() {
@@ -92,6 +94,8 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
         pi = createTransaction(113L, domain2);
         domain2ProcIds.add(pi.getId());
 
+        domain2TicketIds = getTicketIds(domain2ProcIds);
+
         Thread.sleep(5000);
         date2 = new Date();
 
@@ -101,6 +105,20 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
         userDAO.create(UserManagementTestUtil.createUser("posys2",
                 UserManagementTestUtil.createSystemRole("potestdomain2", true, true,
                         SystemRole.SystemType.AC)));
+    }
+
+    private Set<Long> getTicketIds(Set<Long> ids) {
+        try {
+            Set<Long> result = new HashSet<Long>();
+            for (Long id : domain2ProcIds) {
+                ProcessInstance pi = processDAO.getProcessInstance(id);
+                Transaction trans = new Transaction(pi);
+                result.add(trans.getTicketID());
+            }
+            return result;
+        } finally {
+            processDAO.close();
+        }
     }
 
     private ProcessInstance createTransaction(final Long ticketId, final Domain domain) {
@@ -241,7 +259,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             assert processes1.isEmpty();
 
             ProcessCriteria criteria2 = new ProcessCriteria();
-            criteria2.addState(TransactionState.Name.PENDING_CREATION.toString());
+            criteria2.addState(TransactionState.Name.PENDING_CONTACT_CONFIRMATION.toString());
             List<ProcessInstance> processes2 = processDAO.find(criteria2);
 
             assert processes2 != null;
@@ -271,10 +289,8 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             assert processes1.isEmpty();
 
             ProcessCriteria criteria2 = new ProcessCriteria();
-            criteria2.addTicketId(110L);
-            criteria2.addTicketId(111L);
-            criteria2.addTicketId(112L);
-            criteria2.addTicketId(113L);
+            for (Long ticketId : domain2TicketIds)
+                criteria2.addTicketId(ticketId);
             List<ProcessInstance> processes2 = processDAO.find(criteria2);
 
             assert processes2 != null;
@@ -532,7 +548,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             assert processes1.isEmpty();
 
             Criterion criteria2 = new Equal("state",
-                    TransactionState.Name.PENDING_CREATION.toString());
+                    TransactionState.Name.PENDING_CONTACT_CONFIRMATION.toString());
             List<ProcessInstance> processes2 = processDAO.find(criteria2);
 
             assert processes2 != null;
@@ -559,8 +575,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             assert processes1 != null;
             assert processes1.isEmpty();
 
-            Criterion criteria2 = new In("ticketId",
-                    new HashSet(Arrays.asList(110L, 111L, 112L, 113L)));
+            Criterion criteria2 = new In("ticketId", new HashSet(domain2TicketIds));
             List<ProcessInstance> processes2 = processDAO.find(criteria2);
 
             assert processes2 != null;

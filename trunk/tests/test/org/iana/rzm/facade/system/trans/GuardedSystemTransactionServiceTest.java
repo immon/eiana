@@ -36,7 +36,7 @@ import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
- * @author: JaKub Laszkiewicz
+ * @author Jakub Laszkiewicz
  */
 @Test(sequential = true, groups = {"facade-system", "GuardedSystemTransactionService"})
 public class GuardedSystemTransactionServiceTest {
@@ -133,7 +133,6 @@ public class GuardedSystemTransactionServiceTest {
 
         transaction = gsts.get(transaction.getTransactionID());
         gsts.setUser(userIANA);
-        gsts.transitTransaction(transaction.getTransactionID(), "go-on");
         transaction = gsts.get(transaction.getTransactionID());
         List<String> tokens = transaction.getTokens();
         assert tokens.size() == 2;
@@ -168,8 +167,6 @@ public class GuardedSystemTransactionServiceTest {
     public void testRejectTransaction() throws Exception {
         domain.setRegistryUrl("http://www.registry.url.new");
         TransactionVO transactionToReject = gsts.createTransactions(domain, false).get(0);
-        gsts.setUser(userIANA);
-        gsts.transitTransaction(transactionToReject.getTransactionID(), "go-on");
         gsts.setUser(userTc);
         transactionToReject = gsts.get(transactionToReject.getTransactionID());
         List<String> tokens = transactionToReject.getTokens();

@@ -5,7 +5,6 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
@@ -22,9 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Test(sequential = true, groups = {"test"})
 public class MoveTransactionToNextStateTest {
@@ -71,7 +67,7 @@ public class MoveTransactionToNextStateTest {
         gAdminTransactionServ.moveTransactionToNextState(id);
 
         TransactionVO transactionVO = gAdminTransactionServ.get(id);
-        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
     }
 
     private long createDomainModificationProcess() throws Exception {

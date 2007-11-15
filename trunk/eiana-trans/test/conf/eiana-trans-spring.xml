@@ -419,4 +419,5 @@
         <constructor-arg index="1" ref="mockContentConverter"/>
     </bean>
 
+    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
 </beans>

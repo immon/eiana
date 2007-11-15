@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
- * @author JaKub Laszkiewicz
+ * @author Jakub Laszkiewicz
  */
 
 @Test(sequential = true, groups = {"eiana-trans", "jbpm", "NameServersChange"})
@@ -70,8 +70,6 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
 
 
             Token token = pi.getRootToken();
-            assert token.getNode().getName().equals("PENDING_CREATION") : "unexpected state: " + token.getNode().getName();
-            token.signal("go-on");
             assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
             assert token.getNode().getName().equals("PENDING_MANUAL_REVIEW") : "unexpected state: " + token.getNode().getName();
@@ -79,10 +77,6 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
             assert token.getNode().getName().equals("PENDING_IANA_CHECK") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
             assert token.getNode().getName().equals("PENDING_USDOC_APPROVAL") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
-            assert token.getNode().getName().equals("PENDING_ZONE_INSERTION") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
-            assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
             assert token.getNode().getName().equals("COMPLETED") : "unexpected state: " + token.getNode().getName();
 
