@@ -25,12 +25,12 @@ public class MailParserImpl implements MailParser {
                 case 1:
                     SectionInst template = templatesService.parseTemplate(content);
                     return new TemplateMailData(clearSubject, content, template);
-                case 5:
+                case 6:
                     ConfirmationMailData result = new ConfirmationMailData(clearSubject, content);
                     result.setTransactionId(Long.parseLong(elements[0].trim()));
                     result.setStateName(elements[1].trim());
                     result.setDomainName(elements[3].trim());
-                    result.setToken(elements[4].trim());
+                    result.setToken(elements[5].trim());
                     result.setAccepted(new ContentChecker(content).isAccepted());
                     return result;
                 default:
