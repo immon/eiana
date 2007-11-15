@@ -65,6 +65,7 @@
     <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
+    <path refid="library.epp.classpath"/>
   </path>
   
   
