@@ -5,17 +5,13 @@
  */
 package org.iana.rzm.trans.jbpm.handlers.ticketingservice;
 
-import org.iana.objectdiff.ObjectChange;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.change.DomainChangePrinter;
-import org.iana.ticketing.Ticket;
+import org.iana.objectdiff.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.change.*;
+import org.iana.ticketing.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -49,6 +45,7 @@ public class RequestTrackerTicket implements Ticket {
     private static Map<TransactionState.Name, String> transactionToIanaState = new HashMap<TransactionState.Name, String>();
 
     static {
+        transactionToIanaState.put(TransactionState.Name.PENDING_CONTACT_CONFIRMATION, "AC/TC");
         transactionToIanaState.put(TransactionState.Name.PENDING_TECH_CHECK, "tech-check");
         transactionToIanaState.put(TransactionState.Name.PENDING_TECH_CHECK_REMEDY, "tech-check");
         transactionToIanaState.put(TransactionState.Name.PENDING_EXT_APPROVAL, "wait on letter");
@@ -110,7 +107,8 @@ public class RequestTrackerTicket implements Ticket {
     }
 
     public String getIanaState() {
-        return transactionToIanaState.get(transaction.getState().getName());
+        TransactionState.Name name = transaction.getState().getName();
+        return transactionToIanaState.get(name);
     }
 
     public String getComment() {

@@ -8,11 +8,11 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/eiana-deploy.xml">
       <additionalClassPath />
@@ -145,8 +145,8 @@
   </component>
   <component name="LogConsolePreferences">
     <option name="FILTER_ERRORS" value="false" />
-    <option name="FILTER_WARNINGS" value="true" />
-    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="false" />
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="Palette2">

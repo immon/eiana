@@ -46,6 +46,10 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return vo.getDomainName();
     }
 
+    public String getRtIdAsString(){
+        return getRtId() == 0 ? "Unassigned" : String.valueOf(getRtId());
+    }
+
     public long getRtId() {
         Long id = vo.getTicketID();
         return id == null ? 0 : id;
@@ -54,6 +58,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     public void setRtId(long id){
         vo.setTicketID(id);
     }
+
 
     public boolean acConfirmed() {
         return vo.acConfirmed();

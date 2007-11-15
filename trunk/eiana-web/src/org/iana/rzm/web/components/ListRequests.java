@@ -13,7 +13,7 @@ public abstract class ListRequests extends ListRecords {
     @Bean(NullSortFactory.class)
     public abstract SortFactory getNullSortFactory();
 
-    @Component(id = "rt", type = "Insert", bindings = {"value=prop:record.rtId"})
+    @Component(id = "rt", type = "Insert", bindings = {"value=prop:record.rtIdAsString"})
     public abstract IComponent getRtComponent();
 
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:record.domainName"})
