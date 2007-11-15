@@ -89,4 +89,8 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
 
         return notifications;
     }
+
+    public void setNotification(String notification) {
+        this.notification = notification;
+    }
 }

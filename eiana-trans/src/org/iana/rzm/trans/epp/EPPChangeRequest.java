@@ -1,27 +1,22 @@
 package org.iana.rzm.trans.epp;
 
-import org.iana.epp.EPPClient;
-import org.iana.epp.EPPOperationFactory;
 import org.iana.epp.ChangePriority;
-import org.iana.epp.response.PollResponse;
-import org.iana.epp.response.ChangeResponse;
-import org.iana.epp.request.PollRequest;
-import org.iana.epp.request.ChangeRequest;
-import org.iana.epp.request.DomainUpdate;
-import org.iana.epp.request.EPPChange;
+import org.iana.epp.EPPClient;
+import org.iana.epp.Problem;
 import org.iana.epp.exceptions.EPPFrameworkException;
 import org.iana.epp.internal.verisign.VerisignEPPClient;
-import org.iana.rzm.trans.Transaction;
+import org.iana.epp.request.ChangeRequest;
+import org.iana.epp.response.ChangeResponse;
 import org.iana.rzm.domain.HostManager;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.Change;
-import org.iana.objectdiff.CollectionChange;
+import org.iana.rzm.trans.Transaction;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
 public class EPPChangeRequest extends EPPCommand {
 
@@ -30,7 +25,7 @@ public class EPPChangeRequest extends EPPCommand {
     private EPPClient client;
 
     public EPPChangeRequest(Transaction transaction, HostManager hostManager) {
-        this(transaction, hostManager, VerisignEPPClient.getEPPClient("conf/epp.rootzone.config"));
+        this(transaction, hostManager, VerisignEPPClient.getEPPClient("../conf/epp/epp.rootzone.config"));
     }
 
     public EPPChangeRequest(Transaction transaction, HostManager hostManager, EPPClient client) {
@@ -44,10 +39,18 @@ public class EPPChangeRequest extends EPPCommand {
         );
     }
 
-    public void send() throws EPPFrameworkException {
+    public String send() throws EPPFrameworkException, EPPException {
         ChangeRequest request = getOperationFactory().getChangeRequest(getClientId(), getTransactionId(), ChangePriority.NORMAL, Arrays.asList(getDomainName()));
         collectChanges(request);
-        client.submit(request);
+        ChangeResponse rsp = client.submit(request);
+        if (!rsp.isSuccessful()) {
+            EPPCompositeException ex = new EPPCompositeException();
+            for (Problem problem : rsp.getErrors())
+                ex.addException(new EPPException(problem.getCode(), problem.getMessage(),
+                        problem.getErrors()));
+            throw ex;
+        }
+        return rsp.getReceipt();
     }
 
     public void collectChanges(ChangeRequest req) {

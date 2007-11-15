@@ -24,8 +24,8 @@ import java.util.List;
 
 
 /**
- * @author: Piotr Tkaczyk
- * @author: JaKub Laszkiewicz
+ * @author Piotr Tkaczyk
+ * @author Jakub Laszkiewicz
  */
 
 @Test(sequential = true, groups = {"facade-system", "GuardedSystemTransactionWorkFlowTest"})
@@ -35,8 +35,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     DomainVO domainVONS, domainVO;
     Domain domainNS, domain;
 
-    final static String DOMAIN_NAME = "gstsignaltest.org";
-    final static String DOMAIN_NAMENS = "gstsignaltestns.org";
+    final static String DOMAIN_NAME = "org";
+    final static String DOMAIN_NAMENS = "com";
 
     @BeforeClass
     public void init() {
@@ -107,15 +107,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
         assertPersistentNotifications(transId, 0);
@@ -123,15 +121,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
             {"gstsignaliana", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
     public void testCLOSE_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         closePENDING_CONTACT_CONFIRMATION(userIANA, transId);
         assertPersistentNotifications(transId, 0);
@@ -139,15 +135,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"}
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
-    public void testACCEPT_CONTAC_CONFIRMATION() throws Exception {
+    public void testACCEPT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
@@ -155,16 +149,14 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"}
     };
 
-    @Test(dependsOnMethods = {"testACCEPT_CONTAC_CONFIRMATION"})
+    @Test(dependsOnMethods = {"testACCEPT_CONTACT_CONFIRMATION"})
     public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
@@ -229,9 +221,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 //    }
 
     private static final String[][] ACCEPT_IANA_CHECKLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"}
@@ -240,20 +231,18 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
     public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
     }
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
@@ -263,21 +252,19 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testACCEPT_IANA_CHECK"})
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
         assertPersistentNotifications(transId, 0);
         checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
 
     private static final String[][] workFlowNoNSChangeLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
@@ -287,7 +274,6 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 3);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
@@ -300,33 +286,29 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] workFlowWithNSChangeLog = {
-            {"default-iana", "PENDING_CREATION"},
-            {"default-iana", "PENDING_TECH_CHECK"},
-            {"default-iana", "PENDING_CONTACT_CONFIRMATION"},
+            {"SYSTEM", "PENDING_TECH_CHECK"},
+            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"gstsignaliana", "PENDING_ZONE_INSERTION"},
-            {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
-            {"gstsignaliana", "PENDING_ZONE_TESTING"},
-            {"gstsignaliana", "PENDING_DATABASE_INSERTION"}
+            {"gstsignalusdoc", "PENDING_ZONE_INSERTION"},
+            {"gstsignalusdoc", "PENDING_ZONE_PUBLICATION"},
+            {"gstsignalusdoc", "PENDING_ZONE_TESTING"},
+            {"gstsignalusdoc", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})
     public void testWorkFlowWithNSChange() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
-        acceptPENDING_CREATION(transId);
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation", 1);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation", 0);
-        acceptZONE_INSERTION(userIANA, transId);
-        acceptZONE_PUBLICATION(userIANA, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 0);
         assertPersistentNotifications(transId, 0);
         checkStateLog(userIANA, transId, workFlowWithNSChangeLog);
     }

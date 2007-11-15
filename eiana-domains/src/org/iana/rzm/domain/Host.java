@@ -1,22 +1,25 @@
 package org.iana.rzm.domain;
 
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.dns.validator.InvalidDomainNameException;
 
 import javax.persistence.*;
-import java.util.*;
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class represents a computer machine available in the net which serves as a DNS name server to one or many domain names.
  */
 @Entity
-@Table (uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
-public class Host implements TrackedObject,Cloneable {
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
+public class Host implements TrackedObject, Cloneable {
 
     /**
      * The name of this host.
@@ -106,6 +109,16 @@ public class Host implements TrackedObject,Cloneable {
         addIPAddress(IPAddress.createIPAddress(addr));
     }
 
+    final public void removeIPAddress(IPAddress addr) {
+        CheckTool.checkNull(addr, "IP address");
+        this.addresses.remove(addr);
+    }
+
+    final public void removeIPAddress(String addr) {
+        CheckTool.checkNull(addr, "IP address");
+        this.addresses.remove(IPAddress.createIPAddress(addr));
+    }
+
     final void incDelegations() {
         ++numDelegations;
     }
@@ -193,7 +206,7 @@ public class Host implements TrackedObject,Cloneable {
                 newAddresses.add(IPAddress.createIPAddress(ip.getAddress()));
         }
         newHost.addresses = newAddresses;
-        
+
         return newHost;
     }
 

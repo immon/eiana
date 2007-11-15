@@ -1,19 +1,23 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
-import org.jbpm.graph.exe.ExecutionContext;
 import org.iana.notifications.NotificationManager;
+import org.jbpm.graph.exe.ExecutionContext;
+
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
  */
 public class TransactionNotificationRemover extends ActionExceptionHandler {
-    String notification;
+    List<String> notifications;
 
     protected void doExecute(ExecutionContext executionContext) throws Exception {
         NotificationManager notificationManager = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
-        if (notification == null)
+        if (notifications == null || notifications.isEmpty())
             notificationManager.deletePersistentNotifications(executionContext.getProcessInstance().getId());
-        else
-            notificationManager.deletePersistentNotifications(executionContext.getProcessInstance().getId(), notification);
+        else {
+            for (String notif : notifications)
+                notificationManager.deletePersistentNotifications(executionContext.getProcessInstance().getId(), notif);
+        }
     }
 }

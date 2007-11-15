@@ -30,43 +30,43 @@
         <iana:type>contact-confirmation</iana:type>
         <iana:subject>{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}</iana:subject>
         <iana:content>
-Dear {name}{title},
+            Dear {name}{title},
 
-The Internet Assigned Numbers Authority (IANA), in its role as
-manager of the DNS root zone, has received a request to alter the
-information associated with the {domainName} domain from {subbmiter} The
-changes requested are as follows:
+            The Internet Assigned Numbers Authority (IANA), in its role as
+            manager of the DNS root zone, has received a request to alter the
+            information associated with the {domainName} domain from {subbmiter} The
+            changes requested are as follows:
 
-{changes}
-As a {currentOrNewContact}, for this domain you
-must consent to this change.
-{newContactOnly}
-Please review this change to ensure it is correct, and then indicate
-your approval or disapproval either by visiting the following link
-(username and password required):
+            {changes}
+            As a {currentOrNewContact}, for this domain you
+            must consent to this change.
+            {newContactOnly}
+            Please review this change to ensure it is correct, and then indicate
+            your approval or disapproval either by visiting the following link
+            (username and password required):
 
-{url}
+            {url}
 
-or, you can simply reply to this email with the words "I ACCEPT" or
-"I DECLINE" on the first line.
+            or, you can simply reply to this email with the words "I ACCEPT" or
+            "I DECLINE" on the first line.
 
-For your reference, this request has been assigned ticket number
-{ticket}. Current administrative and technical contacts for a domain
-can review the status of this request at any time at our website at
-https://rzm.iana.org:8080/rzm
+            For your reference, this request has been assigned ticket number
+            {ticket}. Current administrative and technical contacts for a domain
+            can review the status of this request at any time at our website at
+            https://rzm.iana.org:8080/rzm
 
-If you have any questions regarding this request, please reply to
-this email and we will try to assist you. Please ensure you do not
-modify the subject as we need the reference number intact to ensure
-the speediest processing of your enquiry.
+            If you have any questions regarding this request, please reply to
+            this email and we will try to assist you. Please ensure you do not
+            modify the subject as we need the reference number intact to ensure
+            the speediest processing of your enquiry.
 
-With kindest regards,
+            With kindest regards,
 
-Root Zone Management
-Internet Assigned Numbers Authority
+            Root Zone Management
+            Internet Assigned Numbers Authority
 
-NOTE: This has been an automated message, sent to you as you are
-listed as a party to this request.
+            NOTE: This has been an automated message, sent to you as you are
+            listed as a party to this request.
         </iana:content>
         <iana:signed>false</iana:signed>
     </iana:template>
@@ -150,9 +150,9 @@ listed as a party to this request.
         <iana:type>failed-technical-check-period</iana:type>
         <iana:subject>Domain {domainName} technical checks failed</iana:subject>
         <iana:content>
-Technical checks failed for domain {domainName}:
-{errorList}
-You have {days} day(s) left to make everything working properly.
+            Technical checks failed for domain {domainName}:
+            {errorList}
+            You have {days} day(s) left to make everything working properly.
         </iana:content>
         <iana:signed>false</iana:signed>
     </iana:template>
@@ -161,8 +161,8 @@ You have {days} day(s) left to make everything working properly.
         <iana:type>failed-technical-check</iana:type>
         <iana:subject>Domain {domainName} technical checks failed</iana:subject>
         <iana:content>
-Technical checks failed for domain {domainName}:
-{errorList}
+            Technical checks failed for domain {domainName}:
+            {errorList}
         </iana:content>
         <iana:signed>false</iana:signed>
     </iana:template>
@@ -175,6 +175,21 @@ Technical checks failed for domain {domainName}:
             {domainName} USDoC confirmation notification
             transaction ID: {transactionId}
             state: {stateName}
+        </iana:content>
+        <iana:signed>true</iana:signed>
+        <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
+        <iana:keyPassphrase>tester</iana:keyPassphrase>
+    </iana:template>
+
+    <!--todo-->
+    <iana:template>
+        <iana:type>usdoc-confirmation-nschange</iana:type>
+        <iana:subject>{domainName} USDoC confirmation notification</iana:subject>
+        <iana:content>
+            {domainName} USDoC confirmation notification
+            transaction ID: {transactionId}
+            state: {stateName}
+            receipt: {receipt}
         </iana:content>
         <iana:signed>true</iana:signed>
         <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
