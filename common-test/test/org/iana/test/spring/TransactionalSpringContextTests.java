@@ -32,6 +32,7 @@ public abstract class TransactionalSpringContextTests extends AbstractTransactio
     protected void onSetUpBeforeTransaction() throws Exception {
         super.onSetUpBeforeTransaction();
         getApplicationContext().getBeanFactory().registerScope("request", new RequestScope());
+        getApplicationContext().getBeanFactory().registerScope("session", new RequestScope());
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 

@@ -1,5 +1,7 @@
 package org.iana.rzm.mail;
 
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
 import org.iana.notifications.Notification;
 import org.iana.notifications.NotificationManager;
 import org.iana.objectdiff.DiffConfiguration;
@@ -7,18 +9,18 @@ import org.iana.rzm.auth.Identity;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
-import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.TransactionCriteriaFields;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
-import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
 import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
 import org.iana.rzm.mail.processor.MailsProcessor;
 import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
@@ -27,16 +29,13 @@ import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.AdminRole;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.iana.criteria.Equal;
-import org.iana.criteria.Criterion;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
-import org.hibernate.Criteria;
 
 import java.io.*;
 import java.util.*;
@@ -54,7 +53,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     protected DiffConfiguration diffConfig;
     protected NotificationManager NotificationManagerBean;
     protected AuthenticationService authenticationServiceBean;
-    protected TransactionService transTransactionService;
+    protected TransactionService transSystemTransactionService;
     protected SystemDomainService transSystemDomainService;
 
     private static final String EMAIL_AC = "ac@no-mail.org";
@@ -154,16 +153,12 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             ipAddr2.setType(IPAddressVO.Type.IPv4);
             host2.getAddresses().add(ipAddr2);
             domain.getNameServers().add(host2);
-            TransactionVO transaction = transTransactionService.createTransactions(domain, false).get(0);
+            TransactionVO transaction = transSystemTransactionService.createTransactions(domain, false).get(0);
             assert transaction != null;
-            assert TransactionStateVO.Name.PENDING_CREATION.equals(transaction.getState().getName()) :
+            assert TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
             Long domainTrId = transaction.getTransactionID();
             setServicesUser("ianamailrec");
-            transTransactionService.transitTransaction(domainTrId, "go-on");
-            transaction = transTransactionService.get(domainTrId);
-            assert TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
-                    "unexpected state: " + transaction.getState().getName();
 
             List<String> tokens = getTokens(transaction.getTransactionID());
             assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
@@ -174,7 +169,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
-            transaction = transTransactionService.get(domainTrId);
+            transaction = transSystemTransactionService.get(domainTrId);
             assert transaction != null;
             assert TransactionStateVO.Name.PENDING_MANUAL_REVIEW.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
@@ -192,7 +187,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 //            setServicesUser("sys1mailrec");
 //            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
 //            criteria.addDomainName("templatedomain");
-//            List<TransactionVO> transactions = transTransactionService.find(criteria);
+//            List<TransactionVO> transactions = transSystemTransactionService.find(criteria);
 //            assert transactions != null;
 //            assert transactions.isEmpty() : "unexpected number of transactions found: " + transactions.size();
         } finally {
@@ -210,7 +205,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 //            criteria.addDomainName("templatedomain");
             // todo
             Criterion domainName = new Equal(TransactionCriteriaFields.CURRENT_DOMAIN_NAME, "templatedomain");
-            List<TransactionVO> transactions = transTransactionService.find(domainName);
+            List<TransactionVO> transactions = transSystemTransactionService.find(domainName);
             assert transactions != null;
             assert transactions.size() == 1 : "unexpected number of transactions found: " + transactions.size();
             TransactionVO trans = transactions.iterator().next();
@@ -286,12 +281,12 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     private void setServicesUser(String userName) throws AuthenticationFailedException, AuthenticationRequiredException {
         AuthenticatedUser au = authenticationServiceBean.authenticate(new PasswordAuth(userName, null));
         transSystemDomainService.setUser(au);
-        transTransactionService.setUser(au);
+        transSystemTransactionService.setUser(au);
     }
 
     private void closeServices() {
         transSystemDomainService.close();
-        transTransactionService.close();
+        transSystemTransactionService.close();
     }
 
     private List<TransactionActionVO> getExpectedDomainActions() {
@@ -460,7 +455,8 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
         }
     }
 
-    abstract class TestValueVO {}
+    abstract class TestValueVO {
+    }
 
     public class TestStringValueVO extends TestValueVO {
         private String oldValue;
