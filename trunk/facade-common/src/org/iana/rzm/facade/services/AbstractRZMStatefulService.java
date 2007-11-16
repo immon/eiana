@@ -13,6 +13,7 @@ import org.iana.rzm.common.validators.CheckTool;
 import java.util.Set;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Collection;
 
 /**
  * A helper implementation of <code>RZMStatefulService</code>. It contains
@@ -68,10 +69,10 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         if (!rzmUser.isInRole(role, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + role);            
     }
 
-    protected void isUserInRole(Set<Role> roles) throws AccessDeniedException {
+    protected void isUserInRole(Collection<Role> roles) throws AccessDeniedException {
         if (user == null) throw new AccessDeniedException("no authenticated user");
         RZMUser rzmUser = getRZMUser();
-        if (!rzmUser.isInAnyRole(roles, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + roles);
+        if (!rzmUser.isInAnyRole(new HashSet<Role>(roles), roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + roles);
     }
 
     static RoleComparator roleComparator = new RoleComparator();

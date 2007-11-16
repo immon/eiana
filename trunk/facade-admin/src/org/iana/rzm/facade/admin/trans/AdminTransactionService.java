@@ -7,6 +7,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.trans.NoDomainSystemUsersException;
 import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 

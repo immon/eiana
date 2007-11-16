@@ -35,7 +35,7 @@ public interface TransactionService extends RZMStatefulService, FinderService<Tr
 
     // temporary method - not to break the tests
 
-    void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+    void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, IllegalTransactionStateException;
 
     void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 

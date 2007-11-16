@@ -11,9 +11,7 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
-import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
@@ -97,7 +95,7 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         delegate.rejectTransaction(id, token);
     }
 
-    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, IllegalTransactionStateException {
         isUserInRole();
         delegate.moveTransactionToNextState(id);
     }

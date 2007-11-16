@@ -310,7 +310,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public void moveTransactionNextState(long id) throws AccessDeniedException, NoObjectFoundException {
+    public void moveTransactionNextState(long id) throws AccessDeniedException, NoObjectFoundException, IllegalTransactionStateException {
         try {
             transactionService.moveTransactionToNextState(id);
         } catch (InfrastructureException e) {

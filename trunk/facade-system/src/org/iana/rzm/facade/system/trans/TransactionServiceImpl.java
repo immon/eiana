@@ -164,16 +164,20 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         return TransactionConverter.toTransactionVO(trans);
     }
 
-    private Timestamp now() {
+    final protected Timestamp now() {
         return new Timestamp(System.currentTimeMillis());
     }
 
-    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+    final protected void markModified(Transaction trans) {
+        trans.setModified(now());
+        trans.setModifiedBy(user.getUserName());
+    }
+
+    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, IllegalTransactionStateException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
             trans.accept(getRZMUser());
-            trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
+            markModified(trans);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -206,8 +210,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         try {
             Transaction trans = transactionManager.getTransaction(id);
             trans.reject(getRZMUser());
-            trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
+            markModified(trans);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -300,8 +303,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         try {
             Transaction trans = transactionManager.getTransaction(id);
             trans.transit(getRZMUser(), transitionName);
-            trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
+            markModified(trans);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (UserAlreadyAccepted e) {
@@ -346,8 +348,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
             if (!isAllowedToWithdraw(trans))
                 throw new TransactionCannotBeWithdrawnException(id, "" + trans.getState().getName());
             trans.transitTo(getRZMUser(), TransactionState.Name.WITHDRAWN.toString());
-            trans.setModified(now());
-            trans.setModifiedBy(user.getUserName());
+            markModified(trans);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
         } catch (TransactionException e) {

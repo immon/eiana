@@ -3,8 +3,8 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
-import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 
@@ -128,6 +128,8 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
             setInfoMessage("State change successfully");
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        } catch (IllegalTransactionStateException e) {
+            setErrorMessage("This operation is not allowed for the current state " + e.getState() );
         }
     }
 
