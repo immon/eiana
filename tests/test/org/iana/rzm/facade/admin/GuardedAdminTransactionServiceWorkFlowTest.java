@@ -213,6 +213,8 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         gAdminTransactionServ.setUser(testAuthUser);
 
         Domain domain = createTestDomain(DOMAIN_NAME);
+        domain.getSupportingOrg().setName("org1");
+        domain.getSupportingOrg().setOrganization("org2");
         domain.setRegistryUrl("newregurl");
 
         TransactionVO transactionVO = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain)).get(0);
