@@ -15,7 +15,6 @@ import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionService;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaFields;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.mail.parser.*;
 import org.iana.rzm.user.AdminRole;
@@ -26,8 +25,6 @@ import org.iana.templates.inst.ElementInst;
 import org.iana.templates.inst.FieldInst;
 import org.iana.templates.inst.ListInst;
 import org.iana.templates.inst.SectionInst;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -146,14 +143,13 @@ public class MailsProcessorBean implements MailsProcessor {
 
     private void processConfirmation(ConfirmationMailData data, String email, RZMUser user) {
         try {
-            Criterion rtID = new Equal(TransactionCriteriaFields.TICKET_ID, data.getTransactionId());
-            List<TransactionVO> found = transSvc.find(rtID);
+            List<TransactionVO> found = transSvc.getByTicketID(data.getTransactionId());
             if (found == null || found.isEmpty()) {
                 createEmailNotification(email, data,
                         "Transaction id not found: " + data.getTransactionId());
                 return;
             }
-            if (found.size() > 0) {
+            if (found.size() > 1) {
                 createEmailNotification(email, data,
                         "Transaction id not unique: " + data.getTransactionId());
                 return;

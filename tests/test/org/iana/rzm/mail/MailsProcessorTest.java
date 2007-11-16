@@ -178,9 +178,9 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
             Iterator<String> tokenIterator = tokens.iterator();
 
-            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | AC | " + tokenIterator.next();
+            String subject = EMAIL_SUBJECT_PREFIX + transaction.getTicketID() + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | AC | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
-            subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | TC | " + tokenIterator.next();
+            subject = EMAIL_SUBJECT_PREFIX + transaction.getTicketID() + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | TC | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
@@ -222,7 +222,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
             Iterator<String> tokenIterator = tokens.iterator();
 
-            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + USDOC_EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | GOV_OVERSIGHT";
+            String subject = EMAIL_SUBJECT_PREFIX + transaction.getTicketID() + USDOC_EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | GOV_OVERSIGHT";
             mailsProcessor.process(EMAIL_USDOC, subject, loadFromFile(CONTENT_USDOC_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
