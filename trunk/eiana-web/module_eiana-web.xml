@@ -51,7 +51,7 @@
     <pathelement location="${module.eiana-web.basedir}/../lib/jetty/jaxen-1.1-beta-7.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/tapestry/ognl-2.6.9.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/easymock/easymock.jar"/>
-    <pathelement location="C:/Program Files/JetBrains/IntelliJ IDEA 6.0/lib/j2ee.jar"/>
+    <pathelement location="${module.eiana-web.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/j2ee.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar"/>

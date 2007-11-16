@@ -43,4 +43,5 @@ public interface TransactionService extends RZMStatefulService, FinderService<Tr
 
     void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
+    public List<TransactionVO> getByTicketID(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 }

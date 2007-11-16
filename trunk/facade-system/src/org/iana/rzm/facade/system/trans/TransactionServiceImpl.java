@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.trans;
 
 import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
 import org.iana.criteria.Order;
 import org.iana.criteria.SortCriterion;
 import org.iana.dns.DNSDomain;
@@ -61,6 +62,11 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
+    public List<TransactionVO> getByTicketID(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        Criterion ticketID = new Equal(TransactionCriteriaFields.TICKET_ID, id);
+        List<Transaction> trans = transactionManager.find(ticketID);
+        return TransactionConverter.toTransactionVOList(trans);
+    }
 
     public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         try {
