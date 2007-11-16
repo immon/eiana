@@ -25,11 +25,13 @@ public class MailParserImplTest {
     private static final String CONFIRMATION_SUBJECT_TOKEN = "[RZM]";
     private static final String CONFIRMATION_VALID_DOMAIN_NAME = "confdomainname";
     private static final String CONFIRMATION_TOKEN = "1a2b3e4ff5a";
+    private static final String CONFIRMATION_ROLE = "AC";
     private static final String CONFIRMATION_VALID_SUBJECT = "Re: " +
             CONFIRMATION_VALID_TRANSACTION_ID + " | " +
             CONFIRMATION_VALID_STATE_NAME + " | " +
             CONFIRMATION_SUBJECT_TOKEN + " | " +
             CONFIRMATION_VALID_DOMAIN_NAME + " | " +
+            CONFIRMATION_ROLE + " | " +
             CONFIRMATION_TOKEN;
     private static final String CONFIRMATION_CONTENT_ACCEPT =
             "I ACCEPT\n" +

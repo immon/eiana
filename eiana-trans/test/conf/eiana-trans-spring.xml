@@ -34,12 +34,30 @@
         </property>
     </bean>
 
+    <bean id="parameterManager" class="org.iana.config.impl.ParameterManagerImpl">
+        <constructor-arg>
+            <ref bean="hibernateConfigDAO"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="hibernateConfigDAO" class="org.iana.config.impl.HibernateConfigDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
     <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
         <constructor-arg value="MailHost"/>
         <constructor-arg value="mailer"/>
         <constructor-arg value="fromAddress"/>
         <constructor-arg value="username"/>
         <constructor-arg value=""/>
+        <property name="config">
+            <ref bean="parameterManager"/>
+        </property>
+        <property name="mailSmtpFrom">
+            <value>rs.icann.org</value>
+        </property>
         <!--Password-->
     </bean>
 

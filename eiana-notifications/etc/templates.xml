@@ -170,7 +170,7 @@
     <!--todo-->
     <iana:template>
         <iana:type>usdoc-confirmation</iana:type>
-        <iana:subject>{domainName} USDoC confirmation notification</iana:subject>
+        <iana:subject>{ticket} | PENDING_USDOC_APPROVAL | [RZM] | {domainName} | GOV_OVERSIGHT</iana:subject>
         <iana:content>
             {domainName} USDoC confirmation notification
             transaction ID: {transactionId}
@@ -184,7 +184,7 @@
     <!--todo-->
     <iana:template>
         <iana:type>usdoc-confirmation-nschange</iana:type>
-        <iana:subject>{domainName} USDoC confirmation notification</iana:subject>
+        <iana:subject>{ticket} | PENDING_USDOC_APPROVAL | [RZM] | {domainName} | GOV_OVERSIGHT</iana:subject>
         <iana:content>
             {domainName} USDoC confirmation notification
             transaction ID: {transactionId}

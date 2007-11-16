@@ -31,11 +31,13 @@ public interface TransactionService extends RZMStatefulService, FinderService<Tr
 
     void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
-    void withdrawTransaction(long id) throws  AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+    void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
 
     // temporary method - not to break the tests
 
     void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+
+    void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 

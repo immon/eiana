@@ -3,29 +3,37 @@ package org.iana.rzm.mail.processor;
 import org.apache.log4j.Logger;
 import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
+import org.iana.pgp.PGPUtils;
+import org.iana.pgp.PGPUtilsException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.mail.parser.*;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
 import org.iana.templates.inst.ElementInst;
 import org.iana.templates.inst.FieldInst;
 import org.iana.templates.inst.ListInst;
 import org.iana.templates.inst.SectionInst;
 
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.InternetAddress;
 import javax.mail.MessagingException;
-import java.util.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * todo: adjust to a new contact structure!
@@ -60,16 +68,31 @@ public class MailsProcessorBean implements MailsProcessor {
     public void process(String email, String subject, String content) throws MailsProcessorException {
         AuthenticatedUser user = null;
         MailData mailData = null;
+        boolean isSigned = false;
         try {
-            mailData = parser.parse(subject, content);
-//            mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
+            try {
+                mailData = parser.parse(subject, PGPUtils.getSignedMessageContent(content));
+                isSigned = true;
+            } catch (PGPUtilsException e) {
+                mailData = parser.parse(subject, content);
+            }
             if (mailData instanceof ConfirmationMailData) {
                 ConfirmationMailData confData = (ConfirmationMailData) mailData;
-                // user = authSvc.authenticate(new MailAuth(email, confData.getDomainName()));
-                // user = null;
-                transSvc.setUser(user);
-                domSvc.setUser(user);
-                processConfirmation(confData, email);
+                if (isSigned) {
+                    user = authSvc.authenticate(new MailAuth(email, null));
+                    RZMUser rzmUser = usrMgr.get(user.getUserName());
+                    if (!isGovOversight(rzmUser)) {
+                        createEmailNotification(email, subject, content, "Authentication failed.");
+                        return;
+                    }
+                    transSvc.setUser(user);
+                    domSvc.setUser(user);
+                    processConfirmation(confData, email, rzmUser);
+                } else {
+                    transSvc.setUser(user);
+                    domSvc.setUser(user);
+                    processConfirmation(confData, email);
+                }
             } else if (mailData instanceof TemplateMailData) {
                 user = authSvc.authenticate(new MailAuth(email));
                 transSvc.setUser(user);
@@ -115,6 +138,10 @@ public class MailsProcessorBean implements MailsProcessor {
     }
 
     private void processConfirmation(ConfirmationMailData data, String email) {
+        processConfirmation(data, email, null);
+    }
+
+    private void processConfirmation(ConfirmationMailData data, String email, RZMUser user) {
         try {
             TransactionVO trans = transSvc.get(data.getTransactionId());
             if (trans == null) {
@@ -128,10 +155,17 @@ public class MailsProcessorBean implements MailsProcessor {
                                 ", expected: " + trans.getState().getName());
                 return;
             }
-            if (data.isAccepted())
-                transSvc.acceptTransaction(trans.getTransactionID(), data.getToken());
-            else
-                transSvc.rejectTransaction(trans.getTransactionID(), data.getToken());
+            if (user == null) {
+                if (data.isAccepted())
+                    transSvc.acceptTransaction(trans.getTransactionID(), data.getToken());
+                else
+                    transSvc.rejectTransaction(trans.getTransactionID(), data.getToken());
+            } else {
+                if (data.isAccepted())
+                    transSvc.acceptTransaction(trans.getTransactionID());
+                else
+                    transSvc.rejectTransaction(trans.getTransactionID());
+            }
             createEmailNotification(email, data, "Your request was successfully processed.");
         } catch (InfrastructureException e) {
             createEmailNotification(email, data, "Error occured while processing your request.");
@@ -188,7 +222,7 @@ public class MailsProcessorBean implements MailsProcessor {
     }
 
     private void createNotification(Addressee addressee, String originalSubject, String originalContent, String message) {
-        String quotedContent = originalContent != null ? quote(originalContent) + "\n"  : "";
+        String quotedContent = originalContent != null ? quote(originalContent) + "\n" : "";
         Content content = new TextContent(RESPONSE_PREFIX + originalSubject,
                 quotedContent + message);
         Notification notification = new Notification();
@@ -368,5 +402,12 @@ public class MailsProcessorBean implements MailsProcessor {
             else if (h1.getName() != null) return 1;
             else return 0;
         }
+    }
+
+    private boolean isGovOversight(RZMUser user) {
+        for (Role role : user.getRoles())
+            if (AdminRole.AdminType.GOV_OVERSIGHT.equals(role.getType()))
+                return true;
+        return false;
     }
 }

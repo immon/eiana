@@ -61,7 +61,7 @@ public class NotificationsReSenderTest extends TransactionalSpringContextTests {
     @Test
     public void testReSender() {
         try {
-            ProcessInstance pi = processDAO.newProcessInstance("notifications resender");
+            ProcessInstance pi = processDAO.newProcessInstance("Notifications reSender");
             testProcessInstanceId = pi.getId();
             Token token = pi.getRootToken();
             token.signal();

@@ -8,6 +8,7 @@ import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.auth.Identity;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
@@ -55,10 +56,12 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     protected AuthenticationService authenticationServiceBean;
     protected TransactionService transSystemTransactionService;
     protected SystemDomainService transSystemDomainService;
+    protected AdminTransactionService GuardedAdminTransactionServiceBean;
 
     private static final String EMAIL_AC = "ac@no-mail.org";
     private static final String EMAIL_TC = "tc@no-mail.org";
     private static final String EMAIL_IANA = "iana@no-mail.org";
+    private static final String EMAIL_USDOC = "usdoc@no-mail.org";
     private static final String EMAIL_SUBJECT_PREFIX = "Re: ";
     private static final String EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_CONTACT_CONFIRMATION | [RZM] |";
     private static final String PUBLIC_KEY_AC_FILE_NAME = "tester.pgp.asc";
@@ -69,6 +72,9 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     private static final String TEMPLATE_CONTENT_AC_FILE_NAME_NO_CHANGE = "template-nochange.txt.asc";
     //private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.txt.asc";
     private static final String TEMPLATE_CONTENT_AC_FILE_NAME = "template.not-signed.txt.asc";
+    private static final String PUBLIC_KEY_USDOC_FILE_NAME = "tester.pgp.asc";
+    private static final String CONTENT_USDOC_FILE_NAME = "signed-accept-message.txt.asc";
+    private static final String USDOC_EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_USDOC_APPROVAL | [RZM] |";
 
     public MailsProcessorTest() {
         super(SpringApplicationContext.CONFIG_FILE_NAME);
@@ -94,14 +100,22 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             userManager.create(user2);
 
             RZMUser user3 = new RZMUser();
-            user2.setLoginName("ianamailrec");
-            user2.addRole(new AdminRole(AdminRole.AdminType.IANA));
-            user2.setEmail(EMAIL_IANA);
+            user3.setLoginName("ianamailrec");
+            user3.addRole(new AdminRole(AdminRole.AdminType.IANA));
+            user3.setEmail(EMAIL_IANA);
             userManager.create(user3);
+
+            RZMUser user4 = new RZMUser();
+            user4.setLoginName("usdocmailrec");
+            user4.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+            user4.setEmail(EMAIL_USDOC);
+            user4.setPublicKey(loadFromFile(PUBLIC_KEY_USDOC_FILE_NAME));
+            userManager.create(user4);
 
             Domain domain = new Domain("mailrecdomain");
             domain.setAdminContact(new Contact("mailrecdomain-admin"));
             domain.setTechContact(new Contact("mailrecdomain-tech"));
+            domain.setEnableEmails(true);
             domainManager.create(domain);
 
             domain = new Domain("templatedomain");
@@ -164,9 +178,9 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
             Iterator<String> tokenIterator = tokens.iterator();
 
-            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | " + tokenIterator.next();
+            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | AC | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
-            subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | " + tokenIterator.next();
+            subject = EMAIL_SUBJECT_PREFIX + domainTrId + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | TC | " + tokenIterator.next();
             mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
@@ -179,6 +193,48 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     }
 
     @Test(dependsOnMethods = "testProcessConfirmationMail")
+    public void testProcessSignedConfirmationMail() throws Exception {
+        try {
+            setServicesUser("sys1mailrec");
+            IDomainVO domain = transSystemDomainService.getDomain("mailrecdomain");
+            assert domain != null;
+            HostVO host1 = new HostVO("ns1.mailrecdomain");
+            IPAddressVO ipAddr1 = new IPAddressVO();
+            ipAddr1.setAddress("1.2.3.4");
+            ipAddr1.setType(IPAddressVO.Type.IPv4);
+            host1.getAddresses().add(ipAddr1);
+            domain.getNameServers().add(host1);
+            HostVO host2 = new HostVO("ns2.mailrecdomain");
+            IPAddressVO ipAddr2 = new IPAddressVO();
+            ipAddr2.setAddress("2.2.3.4");
+            ipAddr2.setType(IPAddressVO.Type.IPv4);
+            host2.getAddresses().add(ipAddr2);
+            domain.getNameServers().add(host2);
+            TransactionVO transaction = transSystemTransactionService.createTransactions(domain, false).get(0);
+            assert transaction != null;
+            assert TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
+                    "unexpected state: " + transaction.getState().getName();
+            Long domainTrId = transaction.getTransactionID();
+            setServicesUser("ianamailrec");
+            GuardedAdminTransactionServiceBean.transitTransactionToState(domainTrId, "PENDING_USDOC_APPROVAL");
+
+            List<String> tokens = getTokens(transaction.getTransactionID());
+            assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
+            Iterator<String> tokenIterator = tokens.iterator();
+
+            String subject = EMAIL_SUBJECT_PREFIX + domainTrId + USDOC_EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | GOV_OVERSIGHT";
+            mailsProcessor.process(EMAIL_USDOC, subject, loadFromFile(CONTENT_USDOC_FILE_NAME));
+
+            transaction = transSystemTransactionService.get(domainTrId);
+            assert transaction != null;
+            assert TransactionStateVO.Name.COMPLETED.equals(transaction.getState().getName()) :
+                    "unexpected state: " + transaction.getState().getName();
+        } finally {
+            closeServices();
+        }
+    }
+
+    @Test(dependsOnMethods = "testProcessSignedConfirmationMail")
     public void testProcessTemplateMailNoChange() throws Exception {
         mailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME_NO_CHANGE));
 
@@ -282,11 +338,13 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
         AuthenticatedUser au = authenticationServiceBean.authenticate(new PasswordAuth(userName, null));
         transSystemDomainService.setUser(au);
         transSystemTransactionService.setUser(au);
+        GuardedAdminTransactionServiceBean.setUser(au);
     }
 
     private void closeServices() {
         transSystemDomainService.close();
         transSystemTransactionService.close();
+        GuardedAdminTransactionServiceBean.close();
     }
 
     private List<TransactionActionVO> getExpectedDomainActions() {

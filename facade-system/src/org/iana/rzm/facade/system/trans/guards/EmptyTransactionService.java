@@ -11,8 +11,8 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.TechnicalCheckException;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
@@ -77,6 +77,9 @@ public class EmptyTransactionService implements TransactionService {
 
     public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
 
+    }
+
+    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
     }
 
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
