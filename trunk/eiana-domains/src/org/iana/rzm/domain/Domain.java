@@ -175,20 +175,8 @@ public class Domain implements TrackedObject, Cloneable {
         return adminContact;
     }
 
-    final public List<Contact> getAdminContacts() {
-        List<Contact> ret = new ArrayList<Contact>();
-        if (adminContact != null) ret.add(adminContact);
-        return ret;
-    }
-
     final public void setAdminContact(Contact contact) {
         this.adminContact = contact;
-    }
-
-    final public List<Contact> getTechContacts() {
-        List<Contact> ret = new ArrayList<Contact>();
-        if (techContact != null) ret.add(techContact);
-        return ret;
     }
 
     final public Contact getTechContact() {
@@ -496,6 +484,17 @@ public class Domain implements TrackedObject, Cloneable {
         trackData.setModifiedBy(modifiedBy);
     }
 
+    public void modify(long timestamp, String modifiedBy) {
+        setModified(new Timestamp(timestamp));
+        setModifiedBy(modifiedBy);
+        if (adminContact != null) adminContact.checkModification(timestamp, modifiedBy);
+        if (techContact != null) techContact.checkModification(timestamp, modifiedBy);
+        if (supportingOrg != null) supportingOrg.checkModification(timestamp, modifiedBy);
+        for (Host host : nameServers) {
+            host.checkModification(timestamp, modifiedBy);
+        }
+    }
+
     public void incOpenProcesses() {
         ++openProcesses;
     }
@@ -563,4 +562,6 @@ public class Domain implements TrackedObject, Cloneable {
     public void setIanaCode(String ianaCode) {
         this.ianaCode = ianaCode;
     }
+
+
 }
