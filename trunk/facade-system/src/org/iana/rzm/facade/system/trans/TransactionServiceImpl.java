@@ -1,25 +1,30 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.criteria.*;
-import org.iana.dns.*;
-import org.iana.dns.check.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.services.*;
-import org.iana.rzm.facade.system.domain.converters.*;
-import org.iana.rzm.facade.system.domain.vo.*;
-import org.iana.rzm.facade.system.trans.converters.*;
-import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Order;
+import org.iana.criteria.SortCriterion;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.check.DNSTechnicalCheck;
+import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
+import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.confirmation.contact.*;
-import org.iana.rzm.trans.dns.*;
-import org.iana.rzm.user.*;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.dns.DNSConverter;
+import org.iana.rzm.user.UserManager;
 
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -180,6 +185,23 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
+    public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        try {
+            Transaction trans = transactionManager.getTransaction(id);
+            trans.accept(getRZMUser());
+            trans.setModified(now());
+            trans.setModifiedBy(user.getUserName());
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(id, "transaction");
+        } catch (UserAlreadyAccepted e) {
+            // do nothing
+        } catch (UserConfirmationNotExpected e) {
+            throw new AccessDeniedException(e.getMessage());
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
@@ -300,6 +322,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
 
 
     static Set allowToWithdraw = new HashSet();
+
     static {
         allowToWithdraw.addAll(Arrays.asList(
                 TransactionState.Name.PENDING_CREATION,
@@ -320,7 +343,8 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         try {
             Transaction trans = transactionManager.getTransaction(id);
             if (trans == null) throw new NoObjectFoundException(id, "transaction");
-            if (!isAllowedToWithdraw(trans)) throw new TransactionCannotBeWithdrawnException(id, ""+trans.getState().getName());
+            if (!isAllowedToWithdraw(trans))
+                throw new TransactionCannotBeWithdrawnException(id, "" + trans.getState().getName());
             trans.transitTo(getRZMUser(), TransactionState.Name.WITHDRAWN.toString());
             trans.setModified(now());
             trans.setModifiedBy(user.getUserName());

@@ -32,6 +32,7 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
             values.put("receipt", receipt);
+            values.put("ticket", "" + td.getTicketID());
             Content templateContent = templateContentFactory.createContent(notification, values);
 
             Notification notification = new Notification(transactionId);
