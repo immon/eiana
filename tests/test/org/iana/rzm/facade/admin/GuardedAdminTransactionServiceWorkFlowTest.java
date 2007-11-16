@@ -316,19 +316,19 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
     private void rejectPENDING_USDOC_APPROVAL() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
-        gAdminTransactionServ.rejectTransaction(transactionID);
+        gAdminTransactionServ.rejectByUSDoC(transactionID);
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptPENDING_USDOC_APPROVAL() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
-        gAdminTransactionServ.moveTransactionToNextState(transactionID);
+        gAdminTransactionServ.approveByUSDoC(transactionID);
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
     }
 
     private void acceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
-        gAdminTransactionServ.moveTransactionToNextState(transactionID);
+        gAdminTransactionServ.approveByUSDoC(transactionID);
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
     }
 

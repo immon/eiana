@@ -15,22 +15,17 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.NoDomainSystemUsersException;
-import org.iana.rzm.facade.system.trans.TransactionDetectorService;
-import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.TransactionException;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -87,7 +82,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             transaction.transitTo(getRZMUser(), targetStateName);
-
+            markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
@@ -97,7 +92,6 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
     public void updateTransaction(long id, Long ticketId, boolean redelegation, String comment) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
         TransactionVO trans = new TransactionVO();
-
         trans.setTransactionID(id);
         trans.setTicketID(ticketId);
         trans.setRedelegation(redelegation);
@@ -107,22 +101,26 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
     public void updateTransaction(TransactionVO trans) throws NoObjectFoundException, StateUnreachableException, InfrastructureException, AccessDeniedException {
         isUserInRole();
-
         try {
             Transaction retTransaction = transactionManager.getTransaction(trans.getObjId());
             retTransaction.setTicketID(trans.getTicketID());
             retTransaction.setRedelegation(trans.isRedelegation());
             retTransaction.setComment(trans.getComment());
+            markModified(retTransaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         }
     }
 
-    public void moveTransactionToNextState(long id) throws NoObjectFoundException, AccessDeniedException, InfrastructureException {
+    public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException {
         isUserInRole();
         try {
             Transaction transaction = transactionManager.getTransaction(id);
+            if (TransactionState.Name.PENDING_USDOC_APPROVAL == transaction.getState().getName()) {
+                throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(id, ""+transaction.getState().getName());
+            }
             transaction.transit(this.getRZMUser(), "admin-accept");
+            markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
@@ -135,6 +133,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             transaction.transit(this.getRZMUser(), "admin-reject");
+            markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
@@ -147,6 +146,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             transaction.transit(getRZMUser(), transitionName);
+            markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
@@ -240,12 +240,13 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
     }
 
 
-    public void approveByUSDoC(long id) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
+    public void approveByUSDoC(long id) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
         isUserInRole();
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
+            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
             transaction.transit(this.getRZMUser(), "admin-accept");
+            markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {
@@ -253,12 +254,13 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         }
     }
 
-    public void rejectByUSDoC(long id) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
+    public void rejectByUSDoC(long id) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
         isUserInRole();
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
+            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
             transaction.transit(this.getRZMUser(), "admin-reject");
+            markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
         } catch (TransactionException e) {

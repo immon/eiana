@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.admin.trans;
+package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.facade.system.trans.TransactionServiceException;
 
@@ -16,5 +16,9 @@ public class IllegalTransactionStateException extends TransactionServiceExceptio
 
     public String getState() {
         return state;
+    }
+
+    public String getMessage() {
+        return "illegal state: [" + state + "] of transaction [" + transactionId + "]";
     }
 }
