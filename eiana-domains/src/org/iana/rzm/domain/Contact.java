@@ -5,9 +5,13 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.exceptions.InvalidEmailException;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -77,10 +81,12 @@ public class Contact implements TrackedObject,Cloneable {
 
     final public void setName(String name) {
         this.name = name;
+        touch();
     }
 
     final public void setOrganization(String organization) {
         this.organization = organization;
+        touch();
     }
 
     final public String getOrganization() {
@@ -93,6 +99,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
+        touch();
     }
 
     public Address getAddress() {
@@ -101,6 +108,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setAddress(Address address) {
         this.address = address;
+        touch();
     }
 
     public String getPhoneNumber() {
@@ -109,6 +117,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        touch();
     }
 
     public String getAltPhoneNumber() {
@@ -117,6 +126,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setAltPhoneNumber(String altPhoneNumber) {
         this.altPhoneNumber = altPhoneNumber;
+        touch();
     }
 
     public String getFaxNumber() {
@@ -125,6 +135,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setFaxNumber(String faxNumber) {
         this.faxNumber = faxNumber;
+        touch();
     }
 
     public String getAltFaxNumber() {
@@ -133,6 +144,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setAltFaxNumber(String altFaxNumber) {
         this.altFaxNumber = altFaxNumber;
+        touch();
     }
 
     public String getEmail() {
@@ -149,6 +161,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setPublicEmail(String publicEmail) throws InvalidEmailException {
         this.publicEmail = toEmail(publicEmail);
+        touch();
     }
 
     public String getPrivateEmail() {
@@ -157,6 +170,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     public void setPrivateEmail(String privateEmail) throws InvalidEmailException {
         this.privateEmail = toEmail(privateEmail);
+        touch();
     }
 
     final public boolean isRole() {
@@ -169,6 +183,7 @@ public class Contact implements TrackedObject,Cloneable {
 
     final public void setRole(boolean role) {
         this.role = role;
+        touch();
     }
 
     final public void setRole(String role) {
@@ -279,6 +294,21 @@ public class Contact implements TrackedObject,Cloneable {
 
     private EmailAddress toEmail(String email) throws InvalidEmailException {
         return email == null ? null : new EmailAddress(email);
+    }
+
+    void touch() {
+        setModified(new Timestamp(System.currentTimeMillis()));
+    }
+
+    void checkModification(long timestamp, String modifiedBy) {
+        Timestamp created = getCreated();
+        Timestamp modified = getModified();
+        if (created != null && created.getTime() >= timestamp) {
+            setModified(null);
+            setCreatedBy(modifiedBy);
+        } else if (modified != null && modified.getTime() >= timestamp) {
+            setModifiedBy(modifiedBy);
+        }
     }
 
 }

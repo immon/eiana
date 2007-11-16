@@ -22,7 +22,10 @@ public class UpdateDomainAction extends ActionExceptionHandler {
 
             ObjectChange change = td.getDomainChange();
             if (change != null) {
+                String requestor = td.getCreatedBy();
+                long now = System.currentTimeMillis();
                 ChangeApplicator.applyChange(retrievedDomain, change, diffConfig);
+                retrievedDomain.modify(now, requestor);
                 domainManager.update(retrievedDomain);
             }
         }

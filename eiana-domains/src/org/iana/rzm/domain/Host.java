@@ -79,11 +79,13 @@ public class Host implements TrackedObject, Cloneable {
         this.addresses = new HashSet<IPAddress>();
         CheckTool.checkCollectionNull(addresses, "addresses");
         CheckTool.addAllNoDup(this.addresses, addresses);
+        touch();
     }
 
     final public void addIPv4Address(IPv4Address addr) {
         CheckTool.checkNull(addr, "IP address");
         this.addresses.add(addr);
+        touch();
     }
 
     final public void addIPv4Address(String addr) throws InvalidIPAddressException {
@@ -93,6 +95,7 @@ public class Host implements TrackedObject, Cloneable {
     final public void addIPv6Address(IPv6Address addr) {
         CheckTool.checkNull(addr, "IP address");
         this.addresses.add(addr);
+        touch();
     }
 
     final public void addIPv6Address(String addr) throws InvalidIPAddressException {
@@ -102,6 +105,7 @@ public class Host implements TrackedObject, Cloneable {
     final public void addIPAddress(IPAddress addr) {
         CheckTool.checkNull(addr, "IP address");
         this.addresses.add(addr);
+        touch();
     }
 
     final public void addIPAddress(String addr) throws InvalidIPAddressException {
@@ -112,11 +116,13 @@ public class Host implements TrackedObject, Cloneable {
     final public void removeIPAddress(IPAddress addr) {
         CheckTool.checkNull(addr, "IP address");
         this.addresses.remove(addr);
+        touch();
     }
 
     final public void removeIPAddress(String addr) {
         CheckTool.checkNull(addr, "IP address");
         this.addresses.remove(IPAddress.createIPAddress(addr));
+        touch();
     }
 
     final void incDelegations() {
@@ -229,5 +235,20 @@ public class Host implements TrackedObject, Cloneable {
 
     void setDelegations(int num) {
         this.numDelegations = num;
+    }
+
+    void touch() {
+        setModified(new Timestamp(System.currentTimeMillis()));
+    }
+
+    void checkModification(long timestamp, String modifiedBy) {
+        Timestamp created = getCreated();
+        Timestamp modified = getModified();
+        if (created != null && created.getTime() >= timestamp) {
+            setModified(null);
+            setCreatedBy(modifiedBy);
+        } else if (modified != null && modified.getTime() >= timestamp) {
+            setModifiedBy(modifiedBy);
+        }
     }
 }
