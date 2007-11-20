@@ -2,10 +2,10 @@ package org.iana.notifications;
 
 import org.iana.rzm.common.validators.CheckTool;
 
-import java.util.Map;
-import java.util.Date;
-import java.util.Set;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -17,13 +17,22 @@ public abstract class TemplateFiller {
         CheckTool.checkNull(data, "template content data");
         if (data.isEmpty()) return template;
         Set<String> keys = data.keySet();
-        for(String key : keys)
-            template=template.replaceAll("\\{" + key + "\\}", generateValue(key, data.get(key)));
+        for (String key : keys)
+            template = template.replaceAll("\\{" + key + "\\}", escapeDollars(generateValue(key, data.get(key))));
         return template;
     }
 
+    private static String escapeDollars(String value) {
+        StringBuffer result = new StringBuffer();
+        String[] splitted = value.split("\\$");
+        result.append(splitted[0]);
+        for (int i = 1; i < splitted.length; i++)
+            result.append("\\$").append(splitted[i]);
+        return result.toString();
+    }
+
     private static String generateValue(String key, String value) {
-        return (value == null)? "" : (!key.endsWith("Date"))? value : formDate(value);
+        return (value == null) ? "" : (!key.endsWith("Date")) ? value : formDate(value);
     }
 
     private static String formDate(String value) {
