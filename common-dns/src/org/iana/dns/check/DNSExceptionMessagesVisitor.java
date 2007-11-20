@@ -104,7 +104,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
                 .append(", IP: ").append(e.getIpAddress().getAddress()).append(", stack trace:\n");
         StringWriter stringWritter = new StringWriter();
         PrintWriter printWritter = new PrintWriter(stringWritter, true);
-        e.getCause().printStackTrace(printWritter);
+        e.printStackTrace(printWritter);
         printWritter.flush();
         stringWritter.flush();
         buffer.append(stringWritter.toString()).append("\n");
@@ -115,7 +115,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
                 .append(", stack trace:\n");
         StringWriter stringWritter = new StringWriter();
         PrintWriter printWritter = new PrintWriter(stringWritter, true);
-        e.getCause().printStackTrace(printWritter);
+        e.printStackTrace(printWritter);
         printWritter.flush();
         stringWritter.flush();
         buffer.append(stringWritter.toString()).append("\n");
