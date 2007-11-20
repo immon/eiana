@@ -15,6 +15,7 @@ import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.mail.parser.*;
 import org.iana.rzm.user.AdminRole;
@@ -162,6 +163,15 @@ public class MailsProcessorBean implements MailsProcessor {
                 return;
             }
             if (user == null) {
+                if (!TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION.equals(trans.getState().getName())) {
+                    createEmailNotification(email, data,
+                            "confirmation using token is allowed only in PENDING_CONTACT_CONFIRMATION state");
+                    return;
+                }
+                if (data.getToken() == null) {
+                    createEmailNotification(email, data, "token is missing");
+                    return;
+                }
                 if (data.isAccepted())
                     transSvc.acceptTransaction(trans.getTransactionID(), data.getToken());
                 else
