@@ -359,9 +359,9 @@
     </bean>
 
     <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
-    <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
-    <!--<constructor-arg index="1" value="root"/>-->
-    <!--<constructor-arg index="2" value="password"/>-->
+        <!--<constructor-arg index="0" value="http://localhost:8888"/>-->
+        <!--<constructor-arg index="1" value="rzm"/>-->
+        <!--<constructor-arg index="2" value="rzmrzm"/>-->
     <!--</bean>-->
 
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
@@ -545,7 +545,7 @@
     <!-- mails processing configuration -->
     <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
         <constructor-arg index="0" value="m02.icann.org"/>
-        <constructor-arg index="1" value="rzm-dev"/>
+        <constructor-arg index="1" value="rzm"/>
         <constructor-arg index="2" value="upowilgeod"/>
         <constructor-arg index="3" value="[RZM]"/>
         <property name="config">
@@ -555,7 +555,7 @@
             <value>995</value>
         </property>
         <property name="debug">
-            <value>true</value>
+        <value>true</value>
         </property>
         <property name="ssl">
             <value>true</value>
@@ -815,12 +815,14 @@
         </constructor-arg>
     </bean>
 
-    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
-
-    <!--
-    <bean id="eppClient" class="org.iana.epp.internal.verisign.VerisignEPPClient"
-            factory-method="getEPPClient">
-        <constructor-arg value="../conf/epp/epp.rootzone.config"/>
+    <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
+        <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
-    -->
+
+    <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance">
+    </bean>
+
+    <!--<bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
+
+
 </beans>

@@ -71,7 +71,7 @@
 
         <decision name="PENDING_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
-                <doTest>false</doTest>
+                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
@@ -337,7 +337,7 @@
 
         <decision name="PENDING_SUPP_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
-                <doTest>false</doTest>
+                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
@@ -619,7 +619,7 @@
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>exception</notification>
                     <emails>
-                        <element>system-error@iana.org</element>
+                        <element>system-errors@iana.org</element>
                     </emails>
                 </action>
             </event>
