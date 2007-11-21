@@ -41,7 +41,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptNameServerCoherencyException(NameServerCoherencyException e) {
         buffer.append("Supplied name servers names don't match names" +
-                " returned in SOA for domain: ").append(e.getDomainName());
+                " returned in NS Resource Record for domain: ").append(e.getDomainName());
     }
 
     public void acceptNoASNumberException(NoASNumberException e) {
@@ -72,7 +72,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNameServerIPAddressesNotEqualException(NameServerIPAddressesNotEqualException e) {
-        buffer.append("Current NS IP addresses and retrived from SOA record don't match for host: ")
+        buffer.append("A and AAAA records of the authoritative name servers don't match " +
+                "the supplied glue records for inclusion in the root zone for host: ")
                 .append(e.getHostName()).append("\n");
     }
 
