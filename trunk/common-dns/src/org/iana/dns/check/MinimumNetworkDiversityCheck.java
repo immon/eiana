@@ -3,7 +3,7 @@ package org.iana.dns.check;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
-import org.iana.dns.check.exceptions.DuplicatedASNumberException;
+import org.iana.dns.check.exceptions.MinimumNetworkDiversityException;
 import org.iana.dns.check.exceptions.NoASNumberException;
 import org.iana.dns.check.exceptions.WhoIsIOException;
 import org.iana.dns.whois.DNSWhoIsDataRetriever;
@@ -61,10 +61,13 @@ public class MinimumNetworkDiversityCheck implements DNSDomainTechnicalCheck {
             }
         }
 
-        for (String asNumber : asNumbers.keySet()) {
-            if (asNumbers.get(asNumber).size() > 1)
-                e.addException(new DuplicatedASNumberException(domain, asNumber, asNumbers.get(asNumber)));
-        }
+
+        if (asNumbers.keySet().size() < 2)
+            if (asNumbers.keySet().size() == 1) {
+                String asNumber = asNumbers.keySet().iterator().next();
+                e.addException(new MinimumNetworkDiversityException(domain, asNumber, asNumbers.get(asNumber)));
+            } else
+                e.addException(new MinimumNetworkDiversityException(domain));
 
         if (!e.isEmpty()) throw e;
     }

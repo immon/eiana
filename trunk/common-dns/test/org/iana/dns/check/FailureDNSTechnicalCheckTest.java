@@ -44,7 +44,7 @@ public class FailureDNSTechnicalCheckTest {
             dnsTechnicalCheck.check(domain);
         } catch (DNSTechnicalCheckException e) {
             MultipleDNSTechnicalCheckException error = (MultipleDNSTechnicalCheckException) e;
-            assert error.getExceptions().size() == 1;
+            assert error.getExceptions().size() == 2;
             assert error.getExceptions().iterator().next() instanceof NotEnoughNameServersException;
             throw e;
         }

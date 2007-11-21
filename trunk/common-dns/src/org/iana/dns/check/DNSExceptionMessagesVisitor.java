@@ -14,12 +14,16 @@ import java.util.Map;
 public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVisitor {
     private StringBuffer buffer = new StringBuffer();
 
-    public void acceptDuplicatedASNumberException(DuplicatedASNumberException e) {
-        buffer.append("The following name servers have the same AS number (")
-                .append(e.getASNumber()).append(") for domain: ")
-                .append(e.getDomainName()).append(":\n");
-        for (DNSHost host : e.getHosts())
-            buffer.append(host.getName()).append("\n");
+    public void acceptMinimumNetworkDiversityException(MinimumNetworkDiversityException e) {
+        if (e.getASNumber() == null) {
+            buffer.append("There is no AS number for the following domain: ").append(e.getDomainName());
+        } else {
+            buffer.append("The following name servers have the same AS number (")
+                    .append(e.getASNumber()).append(") for domain: ")
+                    .append(e.getDomainName()).append(":\n");
+            for (DNSHost host : e.getHosts())
+                buffer.append(host.getName()).append("\n");
+        }
     }
 
     public void acceptDuplicatedIPAddressException(DuplicatedIPAddressException e) {

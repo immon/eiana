@@ -7,11 +7,11 @@ import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 import java.util.List;
 
 /**
- * Thrown in MinimumNetworkDiversityCheck when two or more name servers have the same AS number.
+ * Thrown in MinimumNetworkDiversityCheck.
  *
  * @author Piotr Tkaczyk
  */
-public class DuplicatedASNumberException extends DomainTechnicalCheckException {
+public class MinimumNetworkDiversityException extends DomainTechnicalCheckException {
 
     private String asNumber;
     private List<DNSHost> hosts;
@@ -23,10 +23,17 @@ public class DuplicatedASNumberException extends DomainTechnicalCheckException {
      * @param asNumber duplicated AS number
      * @param hosts    hosts list with this asNumber
      */
-    public DuplicatedASNumberException(DNSDomain domain, String asNumber, List<DNSHost> hosts) {
+
+    public MinimumNetworkDiversityException(DNSDomain domain, String asNumber, List<DNSHost> hosts) {
         super(domain, null);
         this.asNumber = asNumber;
         this.hosts = hosts;
+    }
+
+    public MinimumNetworkDiversityException(DNSDomain domain) {
+        super(domain, null);
+        this.asNumber = null;
+        this.hosts = null;
     }
 
     public String getASNumber() {
@@ -42,7 +49,7 @@ public class DuplicatedASNumberException extends DomainTechnicalCheckException {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        DuplicatedASNumberException that = (DuplicatedASNumberException) o;
+        MinimumNetworkDiversityException that = (MinimumNetworkDiversityException) o;
 
         if (asNumber != null ? !asNumber.equals(that.asNumber) : that.asNumber != null) return false;
         if (hosts != null ? !hosts.equals(that.hosts) : that.hosts != null) return false;
@@ -58,6 +65,6 @@ public class DuplicatedASNumberException extends DomainTechnicalCheckException {
     }
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
-        visitor.acceptDuplicatedASNumberException(this);
+        visitor.acceptMinimumNetworkDiversityException(this);
     }
 }

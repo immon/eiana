@@ -1,6 +1,6 @@
 package org.iana.dns.check;
 
-import org.iana.dns.check.exceptions.DuplicatedASNumberException;
+import org.iana.dns.check.exceptions.MinimumNetworkDiversityException;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
 import org.testng.annotations.Test;
@@ -41,8 +41,8 @@ public class FailureNetworkDiversityCheckTest {
         } catch (DNSTechnicalCheckException e) {
             MultipleDNSTechnicalCheckException error = (MultipleDNSTechnicalCheckException) e;
             assert error.getExceptions().size() == 1;
-            assert error.getExceptions().iterator().next() instanceof DuplicatedASNumberException;
-            DuplicatedASNumberException asError = (DuplicatedASNumberException) error.getExceptions().iterator().next();
+            assert error.getExceptions().iterator().next() instanceof MinimumNetworkDiversityException;
+            MinimumNetworkDiversityException asError = (MinimumNetworkDiversityException) error.getExceptions().iterator().next();
             assert "AS1234".equals(asError.getASNumber());
             assert asError.getHosts().size() == 3;
             assert asError.getHosts().containsAll(domain.getNameServers());
