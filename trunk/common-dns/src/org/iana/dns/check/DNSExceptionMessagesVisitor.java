@@ -3,8 +3,6 @@ package org.iana.dns.check;
 import org.iana.dns.DNSHost;
 import org.iana.dns.check.exceptions.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -106,24 +104,12 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptWhoIsIOException(WhoIsIOException e) {
         buffer.append("Unexpected error checking WhoIs, host: ").append(e.getHostName())
-                .append(", IP: ").append(e.getIpAddress().getAddress()).append(", stack trace:\n");
-        StringWriter stringWritter = new StringWriter();
-        PrintWriter printWritter = new PrintWriter(stringWritter, true);
-        e.printStackTrace(printWritter);
-        printWritter.flush();
-        stringWritter.flush();
-        buffer.append(stringWritter.toString()).append("\n");
+                .append(", IP: ").append(e.getIpAddress().getAddress())
+                .append(", message:").append(e.getMessage()).append("\n");
     }
 
     public void acceptDNSCheckIOException(DNSCheckIOException e) {
-        buffer.append("Unexpected error: ").append(e.getMessage())
-                .append(", stack trace:\n");
-        StringWriter stringWritter = new StringWriter();
-        PrintWriter printWritter = new PrintWriter(stringWritter, true);
-        e.printStackTrace(printWritter);
-        printWritter.flush();
-        stringWritter.flush();
-        buffer.append(stringWritter.toString()).append("\n");
+        buffer.append("Unexpected error: ").append(e.getMessage()).append("\n");
     }
 
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {

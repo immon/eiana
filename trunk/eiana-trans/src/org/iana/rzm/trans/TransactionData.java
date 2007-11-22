@@ -21,7 +21,8 @@ import java.util.Map;
  */
 @Entity
 public class TransactionData {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
     @Basic
     private Long ticketID;
@@ -58,7 +59,9 @@ public class TransactionData {
     @Basic
     private String comment;
     @Basic
-    private int retries; 
+    private int retries;
+    @Basic
+    private String stateMessage;
 
     public Long getObjId() {
         return objId;
@@ -123,7 +126,7 @@ public class TransactionData {
     }
 
     public void updateModified() {
-        getTrackData().setModified(new Timestamp(System.currentTimeMillis()));        
+        getTrackData().setModified(new Timestamp(System.currentTimeMillis()));
     }
 
     public Timestamp getCreated() {
@@ -193,5 +196,13 @@ public class TransactionData {
 
     public void setEPPRetries(int retries) {
         this.retries = retries;
+    }
+
+    public String getStateMessage() {
+        return stateMessage;
+    }
+
+    public void setStateMessage(String stateMessage) {
+        this.stateMessage = stateMessage;
     }
 }

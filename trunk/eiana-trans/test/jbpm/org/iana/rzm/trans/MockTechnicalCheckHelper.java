@@ -21,8 +21,8 @@ public class MockTechnicalCheckHelper implements CheckHelper {
         return true;
     }
 
-    public boolean check(Domain domain, String submitterEmail, String period, NotificationManager notificationManager, NotificationSender notificationSender, Long transactionId) {
-        return true;
+    public boolean check(Domain domain, String submitterEmail, String period, TransactionData td, NotificationManager notificationManager, NotificationSender notificationSender, Long transactionId) {
+        return false;
     }
 
     public boolean check(Domain domain, String submitterEmail, NotificationManager notificationManager, NotificationSender notificationSender) {

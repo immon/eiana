@@ -1,18 +1,18 @@
 package org.iana.rzm.facade.system.trans.converters;
 
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionStateLogEntry;
-import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
-import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
-import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
-import org.iana.rzm.auth.Identity;
 import org.iana.objectdiff.*;
+import org.iana.rzm.auth.Identity;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
+import org.iana.rzm.facade.user.converter.RoleConverter;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.TransactionStateLogEntry;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 
 import java.util.*;
 
@@ -72,8 +72,9 @@ public class TransactionConverter {
         ret.setModifiedBy(trans.getModifiedBy());
 
         ret.setTokens(getTokens(trans));
-        
+
         ret.setComment(trans.getComment());
+        ret.setStateMessage(trans.getStateMessage());
 
         return ret;
     }
@@ -83,9 +84,9 @@ public class TransactionConverter {
         if (domainChange != null) {
             Map<String, Change> fieldChanges = domainChange.getFieldChanges();
             if (fieldChanges.containsKey("specialInstructions") ||
-                fieldChanges.containsKey("type") ||
-                fieldChanges.containsKey("description") ||
-                fieldChanges.containsKey("enableEmails")) {
+                    fieldChanges.containsKey("type") ||
+                    fieldChanges.containsKey("description") ||
+                    fieldChanges.containsKey("enableEmails")) {
                 TransactionActionVO action = new TransactionActionVO();
                 action.setName(TransactionActionVO.MODIFY_OTHER_ATTRIBUTES);
                 for (String field : new String[]{"specialInstructions", "type", "description", "enableEmails"}) {
