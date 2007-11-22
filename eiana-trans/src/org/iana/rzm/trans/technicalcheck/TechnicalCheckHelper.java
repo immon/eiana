@@ -56,12 +56,12 @@ public class TechnicalCheckHelper implements CheckHelper {
         ObjectChange change = td.getDomainChange();
         if (change != null) {
             ChangeApplicator.applyChange(retrievedDomain, change, diffConfig);
-            return check(retrievedDomain, td.getSubmitterEmail(), period, notificationManager, notificationSender, transactionId);
+            return check(retrievedDomain, td.getSubmitterEmail(), period, td, notificationManager, notificationSender, transactionId);
         }
         return true;
     }
 
-    public boolean check(Domain domain, String submitterEmail, String period,
+    public boolean check(Domain domain, String submitterEmail, String period, TransactionData td,
                          NotificationManager notificationManager, NotificationSender notificationSender,
                          Long transactionId) {
         String domainName = domain.getName();
@@ -72,6 +72,8 @@ public class TechnicalCheckHelper implements CheckHelper {
                 DNSExceptionMessagesVisitor messagesVisitor = new DNSExceptionMessagesVisitor();
                 e.accept(messagesVisitor);
                 String messages = messagesVisitor.getMessages();
+
+                td.setStateMessage(messages);
 
                 Set<Addressee> users = new HashSet<Addressee>();
                 users.addAll(new RoleConfirmation(new SystemRole(SystemRole.SystemType.AC, domainName, true, false)).getUsersAbleToAccept());
@@ -90,11 +92,11 @@ public class TechnicalCheckHelper implements CheckHelper {
 
     public boolean check(Domain domain, String submitterEmail,
                          NotificationManager notificationManager, NotificationSender notificationSender) {
-        return check(domain, submitterEmail, null, notificationManager, notificationSender, null);
+        return check(domain, submitterEmail, null, null, notificationManager, notificationSender, null);
     }
 
     public boolean check(Domain domain, NotificationManager notificationManager, NotificationSender notificationSender) {
-        return check(domain, null, null, notificationManager, notificationSender, null);
+        return check(domain, null, null, null, notificationManager, notificationSender, null);
     }
 
     private Notification createNotification(Long transactionId, String domainName, String errorMessages, String period, Set<Addressee> to) {

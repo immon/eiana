@@ -79,6 +79,11 @@
         </decision>
 
         <state name="PENDING_TECH_CHECK_REMEDY">
+            <event type='node-leave'>
+                <event type='node-enter'>
+                    <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageCleaner'/>
+                </event>
+            </event>
             <timer name="1d-check" duedate="1 day">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheckRemedy">
                     <period>6</period>
@@ -285,7 +290,11 @@
                     </roles>
                 </action>
             </event>
-            <timer name="30d-time-out" duedate='30 days' transition='alert'></timer>
+            <timer name="30d-time-out" duedate='30 days' transition='alert'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
             <transition name="accept" to="REDEL_FLAG_SET_DECISION"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="withdraw" to="WITHDRAWN"/>
@@ -319,7 +328,11 @@
                     </roles>
                 </action>
             </event>
-            <timer name="3d-time-out" duedate='3 days' transition='alert'></timer>
+            <timer name="3d-time-out" duedate='3 days' transition='alert'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
             <transition name="accept" to="SECOND_NSLINK_CHANGE_DECISION"/>
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
@@ -412,7 +425,11 @@
                     <notification>usdoc-confirmation-remainder</notification>
                 </action>
             </timer>
-            <timer name="14d-time-out" duedate='14 days' transition='alert'></timer>
+            <timer name="14d-time-out" duedate='14 days' transition='alert'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
             <transition name="accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.jbpm.handlers.TransactionNotificationRemover">
                     <notifications>
@@ -464,7 +481,11 @@
                     <notification>zone-insertion-alert</notification>
                 </action>
             </timer>
-            <timer name="14d-time-out" duedate="14 days" transition="alert"></timer>
+            <timer name="14d-time-out" duedate="14 days" transition="alert">
+                <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
             <transition name="accept" to="PENDING_ZONE_PUBLICATION"/>
             <transition name="admin-accept" to="PENDING_ZONE_PUBLICATION"/>
             <transition name="alert" to="EXCEPTION"/>
@@ -479,14 +500,6 @@
                         <element>IANA</element>
                     </roles>
                 </action>
-                <!-- todo wywalic -->
-                <!--
-                <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
-                    <roles>
-                        <element>IANA</element>
-                    </roles>
-                </action>
-                -->
             </event>
             <timer name="3d-time-out" duedate="3 days">
                 <action class="org.iana.rzm.trans.jbpm.handlers.ZonePublicationAlert">
@@ -494,7 +507,11 @@
                     <notification>zone-publication-alert</notification>
                 </action>
             </timer>
-            <timer name="7d-time-out" duedate="7 days" transition="alert"></timer>
+            <timer name="7d-time-out" duedate="7 days" transition="alert">
+                <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
             <transition name="accept" to="PENDING_ZONE_TESTING"/>
             <transition name="admin-accept" to="PENDING_ZONE_TESTING"/>
             <transition name="alert" to="EXCEPTION"/>
@@ -524,7 +541,11 @@
                     -->
                 </action>
             </timer>
-            <timer name="1d-time-out" duedate="1 day" transition="alert"></timer>
+            <timer name="1d-time-out" duedate="1 day" transition="alert">
+                <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
             <transition name="accept" to="PENDING_DATABASE_INSERTION"/>
             <transition name="admin-accept" to="PENDING_DATABASE_INSERTION"/>
             <transition name="alert" to="EXCEPTION"/>
@@ -622,6 +643,11 @@
                         <element>system-errors@iana.org</element>
                     </emails>
                 </action>
+            </event>
+            <event type='node-leave'>
+                <event type='node-enter'>
+                    <action class='org.iana.rzm.trans.jbpm.handlers.statemessage.TransactionStateMessageCleaner'/>
+                </event>
             </event>
             <!-- manual transition allowed -->
         </state>

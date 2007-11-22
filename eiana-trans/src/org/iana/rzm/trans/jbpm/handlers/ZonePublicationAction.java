@@ -17,6 +17,9 @@ public class ZonePublicationAction extends ActionExceptionHandler {
         EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
         EPPPollRequest eppPollRequest = new EPPPollRequest(trans.getTicketID(), eppClient);
         String rsp = eppPollRequest.send();
-        if (POLL_MESSAGE_USDOC_APPROVED.equals(rsp)) executionContext.leaveNode("accept");
+        if (POLL_MESSAGE_USDOC_APPROVED.equals(rsp))
+            executionContext.leaveNode("accept");
+        else
+            executionContext.leaveNode("alert");
     }
 }

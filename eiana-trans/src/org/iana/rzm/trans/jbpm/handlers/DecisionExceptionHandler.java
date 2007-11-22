@@ -1,5 +1,6 @@
 package org.iana.rzm.trans.jbpm.handlers;
 
+import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.node.DecisionHandler;
@@ -21,6 +22,8 @@ public abstract class DecisionExceptionHandler implements DecisionHandler {
         try {
             return doDecide(executionContext);
         } catch (Exception e) {
+            TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
+            td.setStateMessage(e.getMessage());
             executionContext.getToken().setNode(executionContext.getProcessDefinition().getNode("EXCEPTION"));
         }
         return "TRANSITION_EXCEPTION";

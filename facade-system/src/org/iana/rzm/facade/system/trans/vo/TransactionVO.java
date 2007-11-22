@@ -2,8 +2,8 @@ package org.iana.rzm.facade.system.trans.vo;
 
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.facade.common.TrackDataVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -30,6 +30,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     //private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
     private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
     private String comment;
+    private String stateMessage;
 
     public Long getTransactionID() {
         return transactionID;
@@ -205,5 +206,13 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getStateMessage() {
+        return stateMessage;
+    }
+
+    public void setStateMessage(String stateMessage) {
+        this.stateMessage = stateMessage;
     }
 }

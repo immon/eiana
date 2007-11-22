@@ -19,7 +19,7 @@ public interface CheckHelper {
                          NotificationSender notificationSender, DomainManager domainManager,
                          DiffConfiguration diffConfig, Long transactionId);
 
-    public boolean check(Domain domain, String submitterEmail, String period,
+    public boolean check(Domain domain, String submitterEmail, String period, TransactionData td,
                          NotificationManager notificationManager, NotificationSender notificationSender,
                          Long transactionId);
 
