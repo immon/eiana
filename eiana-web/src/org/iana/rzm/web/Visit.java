@@ -12,7 +12,7 @@ import java.util.*;
 public class Visit implements Serializable {
 
     private WebUser user;
-    private Map<Long,DomainVOWrapper> visitedDomains  = new HashMap<Long, DomainVOWrapper>();
+    private Map<Long, DomainVOWrapper> visitedDomains = new HashMap<Long, DomainVOWrapper>();
     private long modifiedDomain;
     private RequestMetaParameters requestMetaParam;
 
@@ -83,20 +83,20 @@ public class Visit implements Serializable {
     }
 
     public void markAsVisited(DomainVOWrapper domain) {
-            if(!visitedDomains.containsKey(domain.getId())){
-                visitedDomains.put(domain.getId(), domain);
-            }
+        if (!visitedDomains.containsKey(domain.getId())) {
+            visitedDomains.put(domain.getId(), domain);
+        }
     }
 
     public void markAsNotVisited(long domainId) {
         visitedDomains.remove(domainId);
-        if(modifiedDomain == domainId){
+        if (modifiedDomain == domainId) {
             modifiedDomain = 0;
             requestMetaParam = null;
         }
     }
 
-    public void resetModifirdDomain(){
+    public void resetModifirdDomain() {
         modifiedDomain = 0;
         requestMetaParam = null;
     }
@@ -111,17 +111,17 @@ public class Visit implements Serializable {
 
 
     public DomainVOWrapper getMmodifiedDomain() {
-        if(modifiedDomain == 0){
+        if (modifiedDomain == 0) {
             return null;
         }
         return visitedDomains.get(modifiedDomain);
     }
 
-    public String getSubmitterEmail(){
+    public String getSubmitterEmail() {
         return getRequestMetaParameters().getEmail();
     }
 
-    public void setSubmitterEmail(String email){
+    public void setSubmitterEmail(String email) {
         setRequestMetaParameters(new RequestMetaParameters(email, null));
     }
 
@@ -131,7 +131,10 @@ public class Visit implements Serializable {
     }
 
     public RequestMetaParameters getRequestMetaParameters() {
-        return this.requestMetaParam;
+        if(requestMetaParam == null){
+            requestMetaParam = new RequestMetaParameters();
+        }
+        return requestMetaParam;
     }
 
 
@@ -139,7 +142,7 @@ public class Visit implements Serializable {
         visitedDomains.put(domain.getId(), domain);
     }
 
-    public boolean isAdminPage(IRequestCycle cycle, String pageName ){
+    public boolean isAdminPage(IRequestCycle cycle, String pageName) {
         IPage page = cycle.getPage(pageName);
         return AdminPage.class.isAssignableFrom(page.getClass());
     }

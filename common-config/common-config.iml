@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4" relativePaths="true" type="JAVA_MODULE">
+  <component name="FacetManager">
+    <facet type="hibernate" name="Hibernate" implicit="true">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <datasource-map>
+          <unit-entry name="&lt;anonymous&gt;eiana-config-hibernate.cfg.xml@250" />
+        </datasource-map>
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/test/conf/eiana-config-hibernate.cfg.xml" optional="false" version="3.0" />
+      </configuration>
+    </facet>
+  </component>
   <component name="ModuleRootManager" />
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />

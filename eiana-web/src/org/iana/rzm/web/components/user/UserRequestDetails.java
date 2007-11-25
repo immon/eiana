@@ -1,15 +1,12 @@
 package org.iana.rzm.web.components.user;
 
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.web.components.RequestDetails;
-import org.iana.rzm.web.model.TransactionVOWrapper;
-import org.iana.rzm.web.model.UserVOWrapper;
-import org.iana.rzm.web.pages.user.RequestConfirmation;
-import org.iana.rzm.web.pages.user.UserGeneralError;
-import org.iana.rzm.web.services.user.UserServices;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.web.components.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.pages.user.*;
+import org.iana.rzm.web.services.user.*;
 
 @ComponentClass
 public abstract class UserRequestDetails extends RequestDetails {
@@ -65,7 +62,7 @@ public abstract class UserRequestDetails extends RequestDetails {
             result = true;
         }
 
-        return !wrapper.isClose() && result;
+        return wrapper.getState().equals(TransactionStateVOWrapper.State.PENDING_CONTACT_CONFIRMATION) && result;
 
     }
 

@@ -23,13 +23,14 @@
 // either expressed or implied, of ICANN.package org.iana.rzm.web;
 package org.iana.rzm.web.pages;
 
-import org.apache.tapestry.annotations.InjectObject;
-import org.apache.tapestry.describe.DescriptionReceiver;
+import org.apache.log4j.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.describe.*;
 import org.apache.tapestry.pages.Exception;
-import org.apache.tapestry.web.WebRequest;
+import org.apache.tapestry.web.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
+import javax.servlet.http.*;
+import java.util.*;
 
 /**
  * A custom Exception page that shows a frendly error message in case of an unhanded Exception occur
@@ -83,9 +84,10 @@ public abstract class ApplicationException extends Exception {
         String requestDetails = buildRequestDetails(receiver.getServletRequest());
 
         setError(message);
-//        if(!isPageNotFoundException()){
-//            getEmailService().sendLogMessage(requestDetails, value);
-//        }
+        if(!isPageNotFoundException()){
+            //getEmailService().sendLogMessage(requestDetails, value);
+            Logger.getLogger(getClass()).error(requestDetails, value);
+        }
     }
 
     private String buildRequestDetails(HttpServletRequest request) {

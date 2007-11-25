@@ -6,6 +6,7 @@ import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
@@ -51,6 +52,9 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
 
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
+
+     @Bean(value = CounterBean.class)
+    public abstract CounterBean getCounterBean();
 
     @Persist("client:page")
     public abstract List<TransactionVOWrapper> getTikets();
@@ -98,8 +102,6 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
 
     }
 
-
-
     @SuppressWarnings("unchecked")
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0 || parameters.length < 2) {
@@ -116,8 +118,7 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
     }
 
     public String getMessage() {
-        int counter = getIndex() + 1;
-        return counter + ". " + getMessageBuilder().message(getChange());
+        return getCounterBean().getCounter() + ". " + getMessageBuilder().message(getChange());
 
     }
 
