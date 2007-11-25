@@ -278,7 +278,7 @@
     <setting name="EXPLODED_ENABLED" value="true" />
     <setting name="JAR_URL" value="file://$MODULE_DIR$/rzm.war" />
     <setting name="JAR_ENABLED" value="true" />
-    <setting name="SYNC_EXPLODED_DIR" value="true" />
+    <setting name="SYNC_EXPLODED_DIR" value="false" />
     <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
     <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
     <setting name="RUN_JASPER_VALIDATION" value="true" />
@@ -387,7 +387,7 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib/junit-4.0.jar" />
+      <attribute name="URI" value="/WEB-INF/lib" />
       <url>jar://$APPLICATION_HOME_DIR$/lib/junit-4.0.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
@@ -466,7 +466,7 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib/util.jar" />
+      <attribute name="URI" value="/WEB-INF/lib" />
       <url>jar://$MODULE_DIR$/../lib/nask-commons/util.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
@@ -476,7 +476,7 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib/spring-aspects.jar" />
+      <attribute name="URI" value="/WEB-INF/lib" />
       <url>jar://$MODULE_DIR$/../lib/spring/spring-aspects.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
@@ -648,7 +648,7 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
-    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/rzm/WEB-INF/web.xml" optional="false" version="2.4" />
+    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/rzm/WEB-INF/web.xml" optional="false" version="2.5" />
     <webroots>
       <root url="file://$MODULE_DIR$/rzm" relative="/" />
       <root url="file://$MODULE_DIR$/rzm/WEB-INF" relative="/WEB-INF" />

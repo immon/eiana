@@ -18,7 +18,7 @@
     <orderEntry type="module" module-name="eiana-util" />
     <orderEntry type="library" name="cobertura" level="project" />
     <orderEntry type="module" module-name="tests" />
-    <orderEntry type="module" module-name="eiana-trans" />
+    <orderEntry type="module" module-name="eiana-trans" exported="" />
     <orderEntry type="library" name="jbpm" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="module" module-name="eiana-mail" />

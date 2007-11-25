@@ -142,6 +142,11 @@
             <include name="**/*.jar"/>
         </fileset>
 
+        <fileset dir="${lib.dir}/epp">
+            <include name="**/*.jar"/>
+        </fileset>
+
+
 
         <path location="${eiana-init.output.dir}"/>
         <path refid="eiana-init.module.classpath"/>

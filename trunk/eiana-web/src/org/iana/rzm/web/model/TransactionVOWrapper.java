@@ -18,6 +18,10 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         this.state = new TransactionStateVOWrapper(vo.getState());
     }
 
+    public String getStateMessage(){
+        return vo.getStateMessage();
+    }
+
     public String getCreatedBy() {
         return vo.getCreatedBy();
     }
@@ -149,11 +153,15 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public boolean canCancel() {
         return
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_CONTACT_CONFIRMATION)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION)||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION)||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_CONTACT_CONFIRMATION)||
              state.getState().equals(TransactionStateVOWrapper.State.PENDING_MANUAL_REVIEW)||
              state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK)||
              state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_IANA_CHECK);
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_IANA_CHECK)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_SOENDORSEMENT)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_IMPACTED_PARTIES)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_EXT_APPROVAL)||
+             state.getState().equals(TransactionStateVOWrapper.State.PENDING_EVALUATION);
     }
 }

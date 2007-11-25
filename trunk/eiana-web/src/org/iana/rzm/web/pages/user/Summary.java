@@ -6,6 +6,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
@@ -47,6 +48,9 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
 
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
+
+    @Bean(value = CounterBean.class)
+    public abstract CounterBean getCounterBean();
 
     @Persist("client:page")
     public abstract List<TransactionVOWrapper> getTikets();
@@ -110,9 +114,7 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     }
 
     public String getMessage() {
-        int counter = getIndex() + 1;
-        return counter + ". " + getMessageBuilder().message(getChange());
-
+        return getCounterBean().getCounter() + ". " + getMessageBuilder().message(getChange());
     }
 
     protected Object[] getExternalParameters() {
