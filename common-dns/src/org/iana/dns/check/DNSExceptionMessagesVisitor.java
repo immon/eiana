@@ -14,9 +14,11 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptMinimumNetworkDiversityException(MinimumNetworkDiversityException e) {
         if (e.getASNumber() == null) {
-            buffer.append("There is no AS number for the following domain: ").append(e.getDomainName());
+            buffer.append("Unable to identify the AS number for the following name servers: ");
+            for (DNSHost host : e.getHosts())
+                buffer.append(host.getName()).append("\n");
         } else {
-            buffer.append("The following name servers have the same AS number (")
+            buffer.append("All name servers have the same AS number (")
                     .append(e.getASNumber()).append(") for domain: ")
                     .append(e.getDomainName()).append(":\n");
             for (DNSHost host : e.getHosts())
