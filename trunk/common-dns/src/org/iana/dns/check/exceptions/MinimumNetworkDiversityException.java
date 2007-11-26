@@ -4,6 +4,7 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class MinimumNetworkDiversityException extends DomainTechnicalCheckExcept
     public MinimumNetworkDiversityException(DNSDomain domain) {
         super(domain, null);
         this.asNumber = null;
-        this.hosts = null;
+        this.hosts = new ArrayList<DNSHost>(domain.getNameServers());
     }
 
     public String getASNumber() {
