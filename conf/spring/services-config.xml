@@ -362,6 +362,22 @@
         <!--<constructor-arg index="0" value="http://localhost:8888"/>-->
         <!--<constructor-arg index="1" value="rzm"/>-->
         <!--<constructor-arg index="2" value="rzmrzm"/>-->
+        <!--<property name="customFieldsKeys">-->
+            <!--<map>-->
+                <!--<entry>-->
+                    <!--<key><value>tld</value></key>-->
+                    <!--<value>tld</value>-->
+                <!--</entry>-->
+                <!--<entry>-->
+                    <!--<key><value>state</value></key>-->
+                    <!--<value>iana_state</value>-->
+                <!--</entry>-->
+                <!--<entry>-->
+                    <!--<key><value>type</value></key>-->
+                    <!--<value>request_type</value>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
     <!--</bean>-->
 
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
@@ -819,10 +835,9 @@
         <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
 
-    <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance">
-    </bean>
+    <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
 
-    <!--<bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
+    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
 
 
 </beans>

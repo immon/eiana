@@ -164,4 +164,8 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
              state.getState().equals(TransactionStateVOWrapper.State.PENDING_EXT_APPROVAL)||
              state.getState().equals(TransactionStateVOWrapper.State.PENDING_EVALUATION);
     }
+
+    public boolean isException() {
+        return state != null && state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION);
+    }
 }

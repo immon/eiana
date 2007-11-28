@@ -18,6 +18,12 @@ public abstract class AdminRequestDetails extends RequestDetails  {
         })
     public abstract IComponent getRequestSummaryComponent();
 
+    @Component(id="exceptionState", type="If", bindings = {"condition=prop:exceptionState"})
+    public abstract IComponent getExceptionStateComponent();
+
+    @Component(id="stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
+    public abstract IComponent getStateMessageComponent();
+
     @Asset(value = "WEB-INF/admin/AdminRequestDetails.html")
     public abstract IAsset get$template();
 
@@ -39,6 +45,10 @@ public abstract class AdminRequestDetails extends RequestDetails  {
 
     public boolean isEnabled(){
         return getNotifications() != null && getNotifications().size() > 0;
+    }
+
+    public boolean isExceptionState(){
+        return getRequest().isException();
     }
 
     protected AdminServices getRzmServices() {
