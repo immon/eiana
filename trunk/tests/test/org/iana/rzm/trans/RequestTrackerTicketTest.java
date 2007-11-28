@@ -74,7 +74,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             assert rtt.getTld() != null;
-            assert "iana-code".equals(rtt.getTld());
+            assert "rttickettest-tld".equals(rtt.getTld());
         } finally {
             processDAO.close();
         }

@@ -328,6 +328,16 @@
     <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>
+        <constructor-arg ref="domainExporter"/>
+    </bean>
+
+    <bean id="domainExporter" class="org.iana.rzm.domain.exporter.DomainExporter">
+        <constructor-arg index="0">
+            <value>domainExporter.properties</value>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <value>exportedDomains.xml</value>
+        </constructor-arg>
     </bean>
 
     <bean id="domainDAO" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
@@ -359,25 +369,25 @@
     </bean>
 
     <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
-        <!--<constructor-arg index="0" value="http://localhost:8888"/>-->
-        <!--<constructor-arg index="1" value="rzm"/>-->
-        <!--<constructor-arg index="2" value="rzmrzm"/>-->
-        <!--<property name="customFieldsKeys">-->
-            <!--<map>-->
-                <!--<entry>-->
-                    <!--<key><value>tld</value></key>-->
-                    <!--<value>tld</value>-->
-                <!--</entry>-->
-                <!--<entry>-->
-                    <!--<key><value>state</value></key>-->
-                    <!--<value>iana_state</value>-->
-                <!--</entry>-->
-                <!--<entry>-->
-                    <!--<key><value>type</value></key>-->
-                    <!--<value>request_type</value>-->
-                <!--</entry>-->
-            <!--</map>-->
-        <!--</property>-->
+    <!--<constructor-arg index="0" value="http://localhost:8888"/>-->
+    <!--<constructor-arg index="1" value="rzm"/>-->
+    <!--<constructor-arg index="2" value="rzmrzm"/>-->
+    <!--<property name="customFieldsKeys">-->
+    <!--<map>-->
+    <!--<entry>-->
+    <!--<key><value>tld</value></key>-->
+    <!--<value>tld</value>-->
+    <!--</entry>-->
+    <!--<entry>-->
+    <!--<key><value>state</value></key>-->
+    <!--<value>iana_state</value>-->
+    <!--</entry>-->
+    <!--<entry>-->
+    <!--<key><value>type</value></key>-->
+    <!--<value>request_type</value>-->
+    <!--</entry>-->
+    <!--</map>-->
+    <!--</property>-->
     <!--</bean>-->
 
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
@@ -571,7 +581,7 @@
             <value>995</value>
         </property>
         <property name="debug">
-        <value>true</value>
+            <value>true</value>
         </property>
         <property name="ssl">
             <value>true</value>
