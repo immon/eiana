@@ -9,10 +9,7 @@ import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class represents a computer machine available in the net which serves as a DNS name server to one or many domain names.
@@ -73,6 +70,22 @@ public class Host implements TrackedObject, Cloneable {
 
     final public Set<IPAddress> getAddresses() {
         return Collections.unmodifiableSet(new HashSet<IPAddress>(addresses));
+    }
+
+    final public List<String> getIPv4Addresses() {
+        List<String> retIPv4Address = new ArrayList<String>();
+        for (IPAddress ipAddress : getAddresses())
+            if (ipAddress.isIPv4()) retIPv4Address.add(ipAddress.getAddress());
+
+        return retIPv4Address;
+    }
+
+    final public List<String> getIPv6Addresses() {
+        List<String> retIPv6Address = new ArrayList<String>();
+        for (IPAddress ipAddress : getAddresses())
+            if (ipAddress.isIPv6()) retIPv6Address.add(ipAddress.getAddress());
+
+        return retIPv6Address;
     }
 
     final public void setAddresses(Collection<IPAddress> addresses) {

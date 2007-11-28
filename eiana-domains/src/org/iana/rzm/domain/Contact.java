@@ -10,6 +10,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  * @author Jakub Laszkiewicz
  */
 @Embeddable
-public class Contact implements TrackedObject,Cloneable {
+public class Contact implements TrackedObject, Cloneable {
 
     final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
     final private static List<String> STRING_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<String>());
@@ -93,6 +94,12 @@ public class Contact implements TrackedObject,Cloneable {
         return organization;
     }
 
+    final public List<String> getSplittedOrganization() {
+        if (getOrganization() != null)
+            return Arrays.asList(getOrganization().split("\n"));
+        return null;
+    }
+
     public String getJobTitle() {
         return jobTitle;
     }
@@ -104,6 +111,12 @@ public class Contact implements TrackedObject,Cloneable {
 
     public Address getAddress() {
         return address;
+    }
+
+    final public List<String> getSplittedTextAddress() {
+        if (getAddress() != null && getAddress().getTextAddress() != null)
+            return Arrays.asList(getAddress().getTextAddress().split("\n"));
+        return null;
     }
 
     public void setAddress(Address address) {
@@ -262,10 +275,10 @@ public class Contact implements TrackedObject,Cloneable {
         return contact;
     }
 
-    private List<String> listOfStringCopy(List<String> oldStringCollection){
+    private List<String> listOfStringCopy(List<String> oldStringCollection) {
         List<String> newList = new ArrayList<String>();
         if (oldStringCollection != null) {
-            for(String s : oldStringCollection)
+            for (String s : oldStringCollection)
                 newList.add(s);
         }
         return newList;

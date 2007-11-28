@@ -3,6 +3,7 @@ package org.iana.rzm.domain;
 import org.iana.criteria.Criterion;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.domain.exporter.DomainExporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,15 @@ public class DomainManagerBean implements DomainManager {
 
     private DomainDAO dao;
     private HostManager hostManager;
+    private DomainExporter domainExporter;
 
-    public DomainManagerBean(DomainDAO dao, HostManager hostManager) {
+    public DomainManagerBean(DomainDAO dao, HostManager hostManager, DomainExporter domainExporter) {
         CheckTool.checkNull(dao, "domain dao");
         this.dao = dao;
         CheckTool.checkNull(hostManager, "host manager");
         this.hostManager = hostManager;
+        CheckTool.checkNull(domainExporter, "domain exporter");
+        this.domainExporter = domainExporter;
     }
 
     public Domain get(String name) {
@@ -76,6 +80,7 @@ public class DomainManagerBean implements DomainManager {
         domain.setOpenProcesses(old.getOpenProcesses());
         domain.setThirdPartyPendingProcesses(old.getThirdPartyPendingProcesses());
         dao.update(domain);
+        domainExporter.exportToXML(dao.findAll());
     }
 
     public void delete(Domain domain) {

@@ -18,6 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/conf" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/dao" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test/exporter" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/failure" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/hibernate" isTestSource="true" />
     </content>
@@ -35,6 +36,8 @@
     <orderEntry type="module" module-name="common-dao" />
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="library" name="nask-commons" level="project" />
+    <orderEntry type="library" name="jdom" level="project" />
     <orderEntryProperties />
   </component>
 </module>
