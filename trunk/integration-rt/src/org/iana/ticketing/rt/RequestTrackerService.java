@@ -1,15 +1,13 @@
 package org.iana.ticketing.rt;
 
-import org.iana.codevalues.CodeValuesRetriever;
-import org.iana.rt.RTException;
-import org.iana.rt.RTStore;
+import org.iana.codevalues.*;
+import org.iana.rt.*;
 import org.iana.rt.queue.Queue;
-import org.iana.rt.ticket.Comment;
 import org.iana.rt.ticket.Ticket;
-import org.iana.ticketing.TicketingException;
-import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.*;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 /**
  * <p/>
@@ -21,7 +19,7 @@ import java.io.IOException;
  * @author Jakub Laszkiewicz
  */
 public class RequestTrackerService implements TicketingService {
-    private static final String QUEUE_NAME = "IANA-Root_Mgmt";
+    private static final String QUEUE_NAME = "IANA-Root-Mgmt";
     private static final String TICKET_SUBJECT = "Root Zone Change request for .%tld% (%label%)";
     private static final String CUSTOM_FIELD_IANA_STATE = "IANA State";
     private static final String CUSTOM_FIELD_TLD = "TLD";
@@ -29,6 +27,7 @@ public class RequestTrackerService implements TicketingService {
 
     private RTStore store;
     private CodeValuesRetriever retriever;
+    private Map<String,String> customFields;
 
     public RequestTrackerService(String url, String username, String password) throws TicketingException {
         this(url, username, password, null);
@@ -38,11 +37,21 @@ public class RequestTrackerService implements TicketingService {
         try {
             store = RTStore.getStore(url, username, password);
             this.retriever = retriever;
+            customFields = new HashMap<String, String>();
+            customFields.put("state", CUSTOM_FIELD_IANA_STATE);
+            customFields.put("tld", CUSTOM_FIELD_TLD);
+            customFields.put("type", CUSTOM_FIELD_REQUEST_TYPE);
         } catch (RTException e) {
             throw new TicketingException("service creation failed", e);
         } catch (IOException e) {
             throw new TicketingException("service creation failed", e);
         }
+    }
+
+    public void setCustomFieldsKeys(Map fields){
+        customFields.put("tld", (String) fields.get("tld"));
+        customFields.put("state", (String) fields.get("state"));
+        customFields.put("type", (String) fields.get("type"));
     }
 
     public long generateID() {
@@ -57,11 +66,14 @@ public class RequestTrackerService implements TicketingService {
             rtTicket.setQueue(queue);
             rtTicket.setStatus(Ticket.Status.Open);
             rtTicket.setSubject(TICKET_SUBJECT.replace("%tld%", ticket.getTld()).replace("%label%", getLabel(ticket.getTld())));
-            rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
-            rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
+            //rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
+            //rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
+            rtTicket.customFields().setSingleVal(customFields.get("tld"), ticket.getTld());
             store.tickets().create(rtTicket);
-            Comment comment = store.tickets().commentFactory().create(ticket.getComment());
-            store.tickets().addComment(rtTicket, comment);
+            String content = ticket.getComment();
+            //todo comment out until we discover what is the problem with multi line comments
+            //Comment comment = store.tickets().commentFactory().create(content);
+            //store.tickets().addComment(rtTicket, comment);
             return rtTicket.getId();
         } catch (IOException e) {
             throw new TicketingException(e);
@@ -76,7 +88,8 @@ public class RequestTrackerService implements TicketingService {
             Ticket rtTicket = store.tickets().load(ticket.getId());
             String ianaState = ticket.getIanaState();
             if (ianaState != null) {
-                rtTicket.customFields().setSingleVal(CUSTOM_FIELD_IANA_STATE, ianaState);
+                //rtTicket.customFields().setSingleVal(CUSTOM_FIELD_IANA_STATE, ianaState);
+                rtTicket.customFields().setSingleVal(customFields.get("state"), ianaState);
                 store.tickets().update(rtTicket);
             }
         } catch (IOException e) {
@@ -101,7 +114,7 @@ public class RequestTrackerService implements TicketingService {
 
     private String getLabel(String tld) {
         String label = null;
-        if (retriever != null) label = retriever.getValueById("cc", tld);
+        if (retriever != null) label = retriever.getValueById("cc", tld.toUpperCase());
         if (label == null) label = "";
         return label;
     }
