@@ -76,7 +76,7 @@ public class RequestTrackerTicket implements Ticket {
     }
 
     public String getTld() {
-        return transaction.getCurrentDomain().getIanaCode();
+        return transaction.getCurrentDomain().getName();
     }
 
     public List<String> getRequestType() {
