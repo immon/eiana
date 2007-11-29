@@ -144,7 +144,8 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send();
+            String[] rsps = eppChangeRequest.send();
+            String rsp = rsps[1];
             assert rsp != null;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(ADD_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
@@ -173,7 +174,7 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send();
+            String rsp = eppChangeRequest.send()[1];
             assert rsp != null;
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
@@ -201,7 +202,7 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send();
+            String rsp = eppChangeRequest.send()[1];
             assert rsp != null;
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
@@ -230,7 +231,7 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send();
+            String rsp = eppChangeRequest.send()[1];
             assert rsp != null;
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");

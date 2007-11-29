@@ -14,10 +14,17 @@ import java.util.Map;
  * @author Jakub Laszkiewicz
  */
 public class USDOCConfirmationNotifier extends ProcessStateNotifier {
+
+    protected String eppID;
+
     protected String receipt;
 
     public void setReceipt(String receipt) {
         this.receipt = receipt;
+    }
+
+    public void setEppID(String eppID) {
+        this.eppID = eppID;
     }
 
     public List<Notification> getNotifications() {
@@ -33,6 +40,8 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             values.put("stateName", stateName);
             values.put("receipt", receipt);
             values.put("ticket", "" + td.getTicketID());
+            values.put("notes", "");
+            values.put("eppid", eppID);
             Content templateContent = templateContentFactory.createContent(notification, values);
 
             Notification notification = new Notification(transactionId);

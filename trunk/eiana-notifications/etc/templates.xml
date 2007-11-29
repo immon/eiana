@@ -170,11 +170,37 @@
     <!--todo-->
     <iana:template>
         <iana:type>usdoc-confirmation</iana:type>
-        <iana:subject>{ticket} | PENDING_USDOC_APPROVAL | [RZM] | {domainName} | GOV_OVERSIGHT</iana:subject>
+        <iana:subject>[Root change {ticket}] Database change to {domainName}</iana:subject>
         <iana:content>
-            {domainName} USDoC confirmation notification
-            transaction ID: {transactionId}
-            state: {stateName}
+            Dear NTIA:
+
+            IANA has received the following root zone database modification request
+            that requires your authorisation for implementation. This aspect
+            of this request will be machine read and processed, and you should
+            indicate your disposition of this request by inserting either the
+            word YES or NO after the phrase "Authorized:" below.
+
+            Once your response is received, it will be verified by IANA, and if
+            authorized, the change will be implemented.
+
+            IANA has provided the following additional notes on this change:
+
+                {notes}
+
+            This message has been automatically generated. If you have any
+            questions or concerns, please email them to root-mgmt@iana.org
+            with a subject of "[IANA #{ticket}]".
+
+            Root Zone Services
+            Internet Assigned Numbers Authority
+
+            --
+
+            Authorized:
+
+            [+] Begin Change Request Summary: DO NOT EDIT BELOW
+            {receipt}
+            [-] End Change Request Summary: DO NOT EDIT ABOVE
         </iana:content>
         <iana:signed>true</iana:signed>
         <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
@@ -184,12 +210,38 @@
     <!--todo-->
     <iana:template>
         <iana:type>usdoc-confirmation-nschange</iana:type>
-        <iana:subject>{ticket} | PENDING_USDOC_APPROVAL | [RZM] | {domainName} | GOV_OVERSIGHT</iana:subject>
+        <iana:subject>[Root change {ticket}:{eppid}] Name server change to {domainName}</iana:subject>
         <iana:content>
-            {domainName} USDoC confirmation notification
-            transaction ID: {transactionId}
-            state: {stateName}
-            receipt: {receipt}
+            Dear NTIA:
+
+            IANA has received the following root zone modification request
+            that requires your authorisation for implementation. This aspect
+            of this request will be machine read and processed, and you should
+            indicate your disposition of this request by inserting either the
+            word YES or NO after the phrase "Authorized:" below.
+
+            Once your response is received, it will be cross-verified by both
+            IANA and VeriSign's systems, and if authorized, VeriSign will
+            commence implementation of this change.
+
+            IANA has provided the following additional notes on this change:
+
+                {notes}
+
+            This message has been automatically generated. If you have any
+            questions or concerns, please email them to root-mgmt@iana.org
+            with a subject of "[IANA #{ticket}]".
+
+            Root Zone Services
+            Internet Assigned Numbers Authority
+
+            --
+
+            Authorized:
+
+            [+] Begin Change Request Summary: DO NOT EDIT BELOW
+            {receipt}
+            [-] End Change Request Summary: DO NOT EDIT ABOVE
         </iana:content>
         <iana:signed>true</iana:signed>
         <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>

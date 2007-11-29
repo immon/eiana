@@ -18,10 +18,13 @@ public class USDOCApprovalAction extends ActionExceptionHandler {
             Transaction trans = new Transaction(executionContext.getProcessInstance());
             EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send();
-            notifier.setReceipt(rsp);
+            String[] rsp = eppChangeRequest.send();
+            notifier.setReceipt(rsp[1]);
+            notifier.setEppID(rsp[0]);
             notifier.setNotification("usdoc-confirmation-nschange");
-        } else notifier.setNotification("usdoc-confirmation");
+        } else {
+            notifier.setNotification("usdoc-confirmation");
+        }
         notifier.execute(executionContext);
     }
 
