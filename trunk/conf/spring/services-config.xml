@@ -601,14 +601,134 @@
         <constructor-arg index="0" ref="templatesService"/>
     </bean>
 
-    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean">
-        <constructor-arg index="0" ref="mailParser"/>
-        <constructor-arg index="1" ref="authenticationServiceBean"/>
-        <constructor-arg index="2" ref="transSystemTransactionService"/>
-        <constructor-arg index="3" ref="transSystemDomainService"/>
-        <constructor-arg index="4" ref="NotificationSenderBean"/>
-        <constructor-arg index="5" ref="NotificationManagerBean"/>
-        <constructor-arg index="6" ref="userManager"/>
+    <!--
+        <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean">
+            <constructor-arg index="0" ref="mailParser"/>
+            <constructor-arg index="1" ref="authenticationServiceBean"/>
+            <constructor-arg index="2" ref="transSystemTransactionService"/>
+            <constructor-arg index="3" ref="transSystemDomainService"/>
+            <constructor-arg index="4" ref="NotificationSenderBean"/>
+            <constructor-arg index="5" ref="NotificationManagerBean"/>
+            <constructor-arg index="6" ref="userManager"/>
+        </bean>
+
+    -->
+
+    <bean id="contactAnswerParser" class="org.iana.rzm.mail.processor.contact.ContactAnswerParser">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="domain_name" value="3"/>
+                        <entry key="token" value="5"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \| ([^\| ]*)</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="accept" value="1"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>\s*(I ACCEPT|I DECLINE).+</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2" value="I ACCEPT"/>
+    </bean>
+
+
+    <bean id="plainUSDoCAnswerParser" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="epp_id" value="3"/>
+                        <entry key="domain_name" value="4"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*\[Root change ([\d]+):([^\]]+)\] Name server change to ([^\s]+)</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="domain_name" value="3"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*\[Root change ([\d]+)] Database change to ([^\s]+)</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="accept" value="1"/>
+                        <entry key="change_summary" value="2"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>.+Authorized: (yes|no).+\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="3" value="yes"/>
+    </bean>
+
+    <bean id="usdocAnswerParser" class="org.iana.rzm.mail.processor.usdoc.PGPUSDoCParser">
+        <constructor-arg ref="plainUSDoCAnswerParser"/>
+        <property name="pgp" value="false"/>
+    </bean>
+
+    <bean id="usdocAnswerProcessor" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerProcessor">
+        <constructor-arg ref="authenticationServiceBean"/>
+        <constructor-arg ref="GuardedAdminTransactionServiceBean"/>
+    </bean>
+
+    <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
+        <constructor-arg ref="transSystemTransactionService"/>
+    </bean>
+
+    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.simple.parser.CompositeEmailParser">
+                <constructor-arg>
+                    <list>
+                        <ref bean="contactAnswerParser"/>
+                        <ref bean="usdocAnswerParser"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.simple.processor.CompositeEmailProcessor">
+                <constructor-arg>
+                    <list>
+                        <ref bean="contactAnswerProcessor"/>
+                        <ref bean="usdocAnswerProcessor"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
+                <constructor-arg ref="persistentNotificationSender"/>
+            </bean>
+        </constructor-arg>
     </bean>
 
     <!-- code values -->
@@ -680,7 +800,8 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.jbpm.handlers.NotificationsReSender.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
@@ -842,9 +963,11 @@
         </constructor-arg>
     </bean>
 
-    <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
-        <property name="path" value="conf/epp/epp.rootzone.config"/>
-    </bean>
+    <!--
+        <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
+            <property name="path" value="conf/epp/epp.rootzone.config"/>
+        </bean>
+    -->
 
     <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
 

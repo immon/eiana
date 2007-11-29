@@ -1,129 +1,120 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-domains" default="compile.module.eiana-domains">
-    <dirname property="module.eiana-domains.basedir" file="${ant.file.module_eiana-domains}"/>
-
-
-    <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
-
-    <property name="eiana-domains.output.dir"
-              value="${module.eiana-domains.basedir}/../build/classes/production/eiana-domains"/>
-    <property name="eiana-domains.testoutput.dir"
-              value="${module.eiana-domains.basedir}/../build/classes/test/eiana-domains"/>
-
-    <path id="eiana-domains.module.bootclasspath">
-        <!-- Paths to be included in compilation bootclasspath -->
-    </path>
-
-    <path id="eiana-domains.module.classpath">
-        <pathelement location="${eiana-util.output.dir}"/>
-        <pathelement location="${eiana-util.testoutput.dir}"/>
-        <path refid="library.javaee.classpath"/>
-        <path refid="library.hibernate.classpath"/>
-        <path refid="library.log4j.classpath"/>
-        <path refid="library.spring.classpath"/>
-        <path refid="library.apache-commons.classpath"/>
-        <path refid="library.testng-5.5-jdk15.classpath"/>
-        <path refid="library.dom4j.classpath"/>
-        <path refid="library.mysql.classpath"/>
-        <pathelement location="${common-dao.output.dir}"/>
-        <pathelement location="${common-dao.testoutput.dir}"/>
-        <pathelement location="${common-criteria.output.dir}"/>
-        <pathelement location="${common-criteria.testoutput.dir}"/>
-        <pathelement location="${common-dns.output.dir}"/>
-        <pathelement location="${common-dns.testoutput.dir}"/>
-        <path refid="library.nask-commons.classpath"/>
-        <path refid="library.jdom.classpath"/>
-    </path>
-
-
-    <patternset id="excluded.from.module.eiana-domains">
-        <patternset refid="ignored.files"/>
-    </patternset>
-
-    <patternset id="excluded.from.compilation.eiana-domains">
-        <patternset refid="excluded.from.module.eiana-domains"/>
-    </patternset>
-
-    <path id="eiana-domains.module.sourcepath">
-        <dirset dir="${module.eiana-domains.basedir}">
-            <include name="src"/>
-        </dirset>
-    </path>
-
-    <path id="eiana-domains.module.test.sourcepath">
-        <dirset dir="${module.eiana-domains.basedir}">
-            <include name="test/conf"/>
-            <include name="test/dao"/>
-            <include name="test/exporter"/>
-            <include name="test/failure"/>
-            <include name="test/hibernate"/>
-        </dirset>
-    </path>
-
-
-    <target name="compile.module.eiana-domains"
-            depends="compile.module.eiana-domains.production,compile.module.eiana-domains.tests"
-            description="Compile module eiana-domains"/>
-
-    <target name="compile.module.eiana-domains.production"
-            depends="compile.module.eiana-util,compile.module.common-dao,compile.module.common-criteria,compile.module.common-dns"
-            description="Compile module eiana-domains; production classes">
-        <mkdir dir="${eiana-domains.output.dir}"/>
-        <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
-               memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.eiana-domains}"/>
-            <bootclasspath refid="eiana-domains.module.bootclasspath"/>
-            <classpath refid="eiana-domains.module.classpath"/>
-            <src refid="eiana-domains.module.sourcepath"/>
-            <patternset refid="excluded.from.compilation.eiana-domains"/>
-        </javac>
-
-        <copy todir="${eiana-domains.output.dir}">
-            <fileset dir="${module.eiana-domains.basedir}/src">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production"
-            description="compile module eiana-domains; test classes" unless="skip.tests">
-        <mkdir dir="${eiana-domains.testoutput.dir}"/>
-        <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-            <compilerarg line="${compiler.args.eiana-domains}"/>
-            <classpath refid="eiana-domains.module.classpath"/>
-            <classpath location="${eiana-domains.output.dir}"/>
-            <src refid="eiana-domains.module.test.sourcepath"/>
-            <patternset refid="excluded.from.compilation.eiana-domains"/>
-        </javac>
-
-        <copy todir="${eiana-domains.testoutput.dir}">
-            <fileset dir="${module.eiana-domains.basedir}/test/conf">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-domains.basedir}/test/dao">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-domains.basedir}/test/exporter">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-domains.basedir}/test/failure">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-            <fileset dir="${module.eiana-domains.basedir}/test/hibernate">
-                <patternset refid="compiler.resources"/>
-                <type type="file"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="clean.module.eiana-domains" description="cleanup module">
-        <delete dir="${eiana-domains.output.dir}"/>
-        <delete dir="${eiana-domains.testoutput.dir}"/>
-    </target>
+  <dirname property="module.eiana-domains.basedir" file="${ant.file.module_eiana-domains}"/>
+  
+  
+  <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
+  
+  <property name="eiana-domains.output.dir" value="${module.eiana-domains.basedir}/../build/classes/production/eiana-domains"/>
+  <property name="eiana-domains.testoutput.dir" value="${module.eiana-domains.basedir}/../build/classes/test/eiana-domains"/>
+  
+  <path id="eiana-domains.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-domains.module.classpath">
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <pathelement location="${common-dao.output.dir}"/>
+    <pathelement location="${common-dao.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
+    <path refid="library.nask-commons.classpath"/>
+    <path refid="library.jdom.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-domains">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-domains">
+    <patternset refid="excluded.from.module.eiana-domains"/>
+  </patternset>
+  
+  <path id="eiana-domains.module.sourcepath">
+    <dirset dir="${module.eiana-domains.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="eiana-domains.module.test.sourcepath">
+    <dirset dir="${module.eiana-domains.basedir}">
+      <include name="test/conf"/>
+      <include name="test/dao"/>
+      <include name="test/exporter"/>
+      <include name="test/failure"/>
+      <include name="test/hibernate"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-domains" depends="compile.module.eiana-domains.production,compile.module.eiana-domains.tests" description="Compile module eiana-domains"/>
+  
+  <target name="compile.module.eiana-domains.production" depends="compile.module.eiana-util,compile.module.common-dao,compile.module.common-criteria,compile.module.common-dns" description="Compile module eiana-domains; production classes">
+    <mkdir dir="${eiana-domains.output.dir}"/>
+    <javac destdir="${eiana-domains.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-domains}"/>
+      <bootclasspath refid="eiana-domains.module.bootclasspath"/>
+      <classpath refid="eiana-domains.module.classpath"/>
+      <src refid="eiana-domains.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-domains"/>
+    </javac>
+    
+    <copy todir="${eiana-domains.output.dir}">
+      <fileset dir="${module.eiana-domains.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production" description="compile module eiana-domains; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-domains.testoutput.dir}"/>
+    <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-domains}"/>
+      <classpath refid="eiana-domains.module.classpath"/>
+      <classpath location="${eiana-domains.output.dir}"/>
+      <src refid="eiana-domains.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-domains"/>
+    </javac>
+    
+    <copy todir="${eiana-domains.testoutput.dir}">
+      <fileset dir="${module.eiana-domains.basedir}/test/conf">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/test/dao">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/test/exporter">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/test/failure">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-domains.basedir}/test/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.eiana-domains" description="cleanup module">
+    <delete dir="${eiana-domains.output.dir}"/>
+    <delete dir="${eiana-domains.testoutput.dir}"/>
+  </target>
 </project>

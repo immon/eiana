@@ -1,7 +1,5 @@
 package org.iana.rzm.mail;
 
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
 import org.iana.notifications.Notification;
 import org.iana.notifications.NotificationManager;
 import org.iana.objectdiff.DiffConfiguration;
@@ -14,7 +12,6 @@ import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
-import org.iana.rzm.facade.system.trans.TransactionCriteriaFields;
 import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
@@ -63,7 +60,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     private static final String EMAIL_IANA = "iana@no-mail.org";
     private static final String EMAIL_USDOC = "usdoc@no-mail.org";
     private static final String EMAIL_SUBJECT_PREFIX = "Re: ";
-    private static final String EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_CONTACT_CONFIRMATION | [RZM] |";
+    private static final String EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_CONTACT_CONFIRMATION | [RZM] | ";
     private static final String PUBLIC_KEY_AC_FILE_NAME = "tester.pgp.asc";
     private static final String PUBLIC_KEY_TC_FILE_NAME = "tester1.pgp.asc";
     private static final String CONTENT_AC_FILE_NAME = "accept-message.txt.asc";
@@ -75,6 +72,22 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     private static final String PUBLIC_KEY_USDOC_FILE_NAME = "tester.pgp.asc";
     private static final String CONTENT_USDOC_FILE_NAME = "signed-accept-message.txt.asc";
     private static final String USDOC_EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_USDOC_APPROVAL | [RZM] |";
+
+
+    private static final String USDOC_PREFIX = "[Root Change ";
+    private static final String USDOC_NS_SUFIX = ":11] Name server change to ";
+
+    private static final String USDOC_ACCEPT_CONTENT = "Content " +
+            "Authorized: yes\n\n" +
+            "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
+            "Change-change-change " +
+            "[-] End Change Request Summary: DO NOT EDIT ABOVE";
+
+    private static final String USDOC_DECLINE_CONTENT = "Content " +
+            "Authorized: yes\n\n" +
+            "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
+            "Change-change-change " +
+            "[-] End Change Request Summary: DO NOT EDIT ABOVE";
 
     public MailsProcessorTest() {
         super(SpringApplicationContext.CONFIG_FILE_NAME);
@@ -222,8 +235,8 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
             Iterator<String> tokenIterator = tokens.iterator();
 
-            String subject = EMAIL_SUBJECT_PREFIX + transaction.getTicketID() + USDOC_EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | GOV_OVERSIGHT";
-            mailsProcessor.process(EMAIL_USDOC, subject, loadFromFile(CONTENT_USDOC_FILE_NAME));
+            String subject = EMAIL_SUBJECT_PREFIX + USDOC_PREFIX + transaction.getTicketID() + USDOC_NS_SUFIX + "mailrecdomain";
+            mailsProcessor.process(EMAIL_USDOC, subject, USDOC_ACCEPT_CONTENT);
 
             transaction = transSystemTransactionService.get(domainTrId);
             assert transaction != null;
@@ -251,6 +264,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
         }
     }
 
+/*
     @Test(dependsOnMethods = "testProcessTemplateMailNoChange")
     public void testProcessTemplateMail() throws Exception {
         try {
@@ -274,6 +288,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             closeServices();
         }
     }
+*/
 
     protected void cleanUp() throws Exception {
         try {

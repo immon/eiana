@@ -28,6 +28,7 @@
   
   <path id="conf.module.sourcepath">
     <dirset dir="${module.conf.basedir}">
+      <include name="exporter"/>
       <include name="hibernate"/>
       <include name="mail-interface"/>
       <include name="spring"/>
@@ -48,6 +49,10 @@
     </javac>
     
     <copy todir="${conf.output.dir}">
+      <fileset dir="${module.conf.basedir}/exporter">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.conf.basedir}/hibernate">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
