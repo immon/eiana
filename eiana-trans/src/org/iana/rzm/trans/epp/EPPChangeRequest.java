@@ -39,8 +39,10 @@ public class EPPChangeRequest extends EPPCommand {
         );
     }
 
-    public String send() throws EPPFrameworkException, EPPException {
-        ChangeRequest request = getOperationFactory().getChangeRequest(getClientId(), getTransactionId(), ChangePriority.NORMAL, Arrays.asList(getDomainName()));
+    public String[] send() throws EPPFrameworkException, EPPException {
+        String clientID = getClientId();
+        String transactionID = getTransactionId();
+        ChangeRequest request = getOperationFactory().getChangeRequest(clientID, transactionID, ChangePriority.NORMAL, Arrays.asList(getDomainName()));
         collectChanges(request);
         ChangeResponse rsp = client.submit(request);
         if (!rsp.isSuccessful()) {
@@ -50,7 +52,7 @@ public class EPPChangeRequest extends EPPCommand {
                         problem.getErrors()));
             throw ex;
         }
-        return rsp.getReceipt();
+        return new String[]{clientID, rsp.getReceipt()};
     }
 
     public void collectChanges(ChangeRequest req) {
