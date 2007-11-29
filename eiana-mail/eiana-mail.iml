@@ -26,6 +26,7 @@
     <orderEntry type="library" name="log4j" level="project" />
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="module" module-name="facade-admin" />
     <orderEntryProperties />
   </component>
 </module>
