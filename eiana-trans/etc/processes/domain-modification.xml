@@ -71,7 +71,7 @@
 
         <decision name="PENDING_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
-                <doTest>false</doTest>
+                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
@@ -350,7 +350,7 @@
 
         <decision name="PENDING_SUPP_TECH_CHECK">
             <handler class="org.iana.rzm.trans.jbpm.handlers.TechnicalCheck">
-                <doTest>false</doTest>
+                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
