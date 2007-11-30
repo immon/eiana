@@ -18,6 +18,7 @@ public class ProcessStateUpdater extends ActionExceptionHandler {
         TransactionManager transactionManager = (TransactionManager)
                 executionContext.getJbpmContext().getObjectFactory().createObject("transactionManagerBean");
         Transaction transaction = transactionManager.getTransaction(executionContext.getProcessInstance().getId());
+
         ts.updateTicket(new RequestTrackerTicket(transaction));
     }
 }

@@ -4,6 +4,7 @@ import org.iana.criteria.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.common.validators.*;
 import org.iana.rzm.domain.*;
+import org.iana.rzm.domain.exporter.DomainExporter;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
@@ -30,15 +31,18 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
 
     DomainManager domainManager;
 
+    DomainExporter domainExporter;
 
     private void isUserInRole() throws AccessDeniedException {
         isUserInRole(allowedRoles);
     }
 
-    public GuardedAdminDomainServiceBean(UserManager userManager, DomainManager domainManager) {
+    public GuardedAdminDomainServiceBean(UserManager userManager, DomainManager domainManager, DomainExporter domainExporter) {
         super(userManager);
         CheckTool.checkNull(domainManager, "domain manager");
+        CheckTool.checkNull(domainExporter, "domain exporter");
         this.domainManager = domainManager;
+        this.domainExporter = domainExporter;
     }
 
     public IDomainVO getDomain(String domainName) throws AccessDeniedException {
@@ -128,5 +132,11 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
         for (Domain domain : domainManager.find(criteria))
             domainVOs.add(DomainToVOConverter.toSimpleDomainVO(domain));
         return domainVOs;
+    }
+
+
+    public void exportDomainsToXML() throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        domainExporter.exportToXML(domainManager.findAll());
     }
 }
