@@ -528,6 +528,18 @@
         <constructor-arg value="org/jbpm/context/exe/jbpm.varmapping.xml"/>
     </bean>
 
+    <bean name="jbpm.byte.block.size" class="java.lang.Integer">
+        <constructor-arg value="1024"/>
+    </bean>
+
+    <bean name="jbpm.task.instance.factory" class="org.jbpm.taskmgmt.impl.DefaultTaskInstanceFactoryImpl" />
+
+    <bean name="jbpm.variable.resolver" class="org.jbpm.jpdl.el.impl.JbpmVariableResolver" />
+
+    <bean name="jbpm.msg.wait.timout" class="java.lang.Long">
+        <constructor-arg value="5000"/>
+    </bean>
+
     <bean id="jbpmContextFactory"
           class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
         <constructor-arg index="0" ref="jbpmConfiguration"/>
