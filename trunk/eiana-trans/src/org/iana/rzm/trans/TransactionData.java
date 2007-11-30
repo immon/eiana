@@ -60,7 +60,11 @@ public class TransactionData {
     private String comment;
     @Basic
     private int retries;
+
+    private static final int MAX_LEN = 4095;
+
     @Basic
+    @Column(length = 4096)
     private String stateMessage;
 
     public Long getObjId() {
@@ -203,6 +207,9 @@ public class TransactionData {
     }
 
     public void setStateMessage(String stateMessage) {
+        if (stateMessage != null && stateMessage.length() > MAX_LEN) {
+            stateMessage = stateMessage.substring(0, MAX_LEN);
+        }
         this.stateMessage = stateMessage;
     }
 }
