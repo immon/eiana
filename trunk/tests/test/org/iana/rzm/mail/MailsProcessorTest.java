@@ -77,11 +77,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     private static final String USDOC_PREFIX = "[Root Change ";
     private static final String USDOC_NS_SUFIX = ":11] Name server change to ";
 
-    private static final String USDOC_ACCEPT_CONTENT = "Content " +
-            "Authorized: yes\n\n" +
-            "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
-            "Change-change-change " +
-            "[-] End Change Request Summary: DO NOT EDIT ABOVE";
+    private static final String USDOC_ACCEPT_CONTENT_FILE_NAME = "signed-accept-message.txt.asc";
 
     private static final String USDOC_DECLINE_CONTENT = "Content " +
             "Authorized: yes\n\n" +
@@ -236,7 +232,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
             Iterator<String> tokenIterator = tokens.iterator();
 
             String subject = EMAIL_SUBJECT_PREFIX + USDOC_PREFIX + transaction.getTicketID() + USDOC_NS_SUFIX + "mailrecdomain";
-            mailsProcessor.process(EMAIL_USDOC, subject, USDOC_ACCEPT_CONTENT);
+            mailsProcessor.process(EMAIL_USDOC, subject, loadFromFile(USDOC_ACCEPT_CONTENT_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
             assert transaction != null;
