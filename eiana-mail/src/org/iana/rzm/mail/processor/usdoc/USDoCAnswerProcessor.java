@@ -71,7 +71,7 @@ public class USDoCAnswerProcessor extends AbstractEmailProcessor {
 
     private void authenticate(Message msg) throws EmailProcessException {
         try {
-            AuthenticatedUser user = authenticationService.authenticate(new MailAuth(msg.getFrom(), null, msg.getBody()));
+            AuthenticatedUser user = authenticationService.authenticate(new PgpMailAuth(msg.getFrom(), msg.getBody()));
             transactionService.setUser(user);
         } catch (AuthenticationFailedException e) {
             throw new EmailProcessException("Authentication failed.", e);
