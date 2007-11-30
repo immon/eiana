@@ -63,6 +63,7 @@
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="domainManager"/>
+        <constructor-arg index="2" ref="domainExporter"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 

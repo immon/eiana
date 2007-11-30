@@ -14,6 +14,8 @@
                     <element>PENDING_CONTACT_CONFIRMATION</element>
                 </systemStates>
             </action>
+        </event>
+        <event type='node-enter'>
             <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.ProcessStateUpdater"/>
         </event>
 
