@@ -1,13 +1,17 @@
 package org.iana.ticketing.rt;
 
-import org.iana.codevalues.*;
-import org.iana.rt.*;
+import org.iana.codevalues.CodeValuesRetriever;
+import org.iana.rt.RTException;
+import org.iana.rt.RTStore;
 import org.iana.rt.queue.Queue;
+import org.iana.rt.ticket.Comment;
 import org.iana.rt.ticket.Ticket;
-import org.iana.ticketing.*;
+import org.iana.ticketing.TicketingException;
+import org.iana.ticketing.TicketingService;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p/>
@@ -27,7 +31,7 @@ public class RequestTrackerService implements TicketingService {
 
     private RTStore store;
     private CodeValuesRetriever retriever;
-    private Map<String,String> customFields;
+    private Map<String, String> customFields;
 
     public RequestTrackerService(String url, String username, String password) throws TicketingException {
         this(url, username, password, null);
@@ -48,7 +52,7 @@ public class RequestTrackerService implements TicketingService {
         }
     }
 
-    public void setCustomFieldsKeys(Map fields){
+    public void setCustomFieldsKeys(Map fields) {
         customFields.put("tld", (String) fields.get("tld"));
         customFields.put("state", (String) fields.get("state"));
         customFields.put("type", (String) fields.get("type"));
@@ -70,16 +74,21 @@ public class RequestTrackerService implements TicketingService {
             //rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
             rtTicket.customFields().setSingleVal(customFields.get("tld"), ticket.getTld());
             store.tickets().create(rtTicket);
-            String content = ticket.getComment();
+            String content = convertNewLines(ticket.getComment());
             //todo comment out until we discover what is the problem with multi line comments
-            //Comment comment = store.tickets().commentFactory().create(content);
-            //store.tickets().addComment(rtTicket, comment);
+            Comment comment = store.tickets().commentFactory().create(content);
+            store.tickets().addComment(rtTicket, comment);
             return rtTicket.getId();
         } catch (IOException e) {
             throw new TicketingException(e);
         } catch (RTException e) {
             throw new TicketingException(e);
         }
+    }
+
+    // todo: temporary solution of rt-lib bug
+    private String convertNewLines(String s) {
+        return s.replaceAll("\n", "\n\t");
     }
 
     public void updateTicket(org.iana.ticketing.Ticket ticket) throws TicketingException {
