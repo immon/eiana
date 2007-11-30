@@ -145,6 +145,7 @@ public class Domain implements TrackedObject, Cloneable {
         this.nameServers = new ArrayList<Host>();
         this.breakpoints = new HashSet<Breakpoint>();
         this.status = Status.ACTIVE;
+        this.ianaCode = getName();
     }
 
     public Long getObjId() {
