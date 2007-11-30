@@ -24,8 +24,6 @@ public class USDOCApprovalAction extends ActionExceptionHandler {
             notifier.setEppID(rsp[0]);
             notifier.setNotification("usdoc-confirmation-nschange");
         } else {
-            TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-            notifier.setReceipt(DomainChangePrinter.print(td.getDomainChange()));
             notifier.setNotification("usdoc-confirmation");
         }
         notifier.execute(executionContext);

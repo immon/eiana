@@ -199,7 +199,7 @@
             Authorized:
 
             [+] Begin Change Request Summary: DO NOT EDIT BELOW
-            {receipt}
+            {change}
             [-] End Change Request Summary: DO NOT EDIT ABOVE
         </iana:content>
         <iana:signed>true</iana:signed>
@@ -238,6 +238,8 @@
             --
 
             Authorized:
+
+            {change}
 
             [+] Begin Change Request Summary: DO NOT EDIT BELOW
             {receipt}

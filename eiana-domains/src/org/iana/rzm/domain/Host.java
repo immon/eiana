@@ -6,6 +6,7 @@ import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -33,7 +34,7 @@ public class Host implements TrackedObject, Cloneable {
     /**
      * The number of domain names delegated to this host.
      */
-    @Basic
+    @Formula("(select count(*) from Domain_NameServers as dns where dns.Host_objId = objId)")
     private int numDelegations;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
