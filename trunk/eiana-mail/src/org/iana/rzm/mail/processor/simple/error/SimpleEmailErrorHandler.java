@@ -52,7 +52,9 @@ public class SimpleEmailErrorHandler implements EmailErrorHandler {
     }
 
     public void error(String to, String subject, String content, Exception e) {
-        error(to, subject, content, e.getMessage());
+        String msg = e.getMessage();
+        if (msg == null) msg = "Exception " + e.getClass() + " occured.";
+        error(to, subject, content, msg);
     }
 
 }
