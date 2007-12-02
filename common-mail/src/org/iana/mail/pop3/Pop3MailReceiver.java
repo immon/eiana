@@ -153,10 +153,11 @@ public class Pop3MailReceiver implements MailReceiver {
             Message[] msgs = folder.getMessages();
             for (Message msg : msgs) {
                 msg.setFlag(Flags.Flag.DELETED, true);
-                if (msg.getSubject().contains(getSubjectToken())) {
+//                String subject = msg.getSubject();
+//                if (msg.getSubject().contains(getSubjectToken())) {
 //                    msg.setSubject(removeSubjectToken(msg.getSubject()));
                     list.add(new MimeMessage((MimeMessage) msg));
-                }
+//                }
             }
             folder.close(true);
         } catch (Exception e) {
