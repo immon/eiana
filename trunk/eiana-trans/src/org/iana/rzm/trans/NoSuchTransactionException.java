@@ -5,13 +5,17 @@ package org.iana.rzm.trans;
  */
 public class NoSuchTransactionException extends TransactionException {
 
-    private long id;
+    private String id;
 
     public NoSuchTransactionException(long id) {
+        this.id = ""+id;
+    }
+
+    public NoSuchTransactionException(String id) {
         this.id = id;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 }
