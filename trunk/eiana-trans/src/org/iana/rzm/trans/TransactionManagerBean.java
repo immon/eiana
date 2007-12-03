@@ -201,88 +201,69 @@ public class TransactionManagerBean implements TransactionManager {
         return result;
     }
 
-    public void visitDocApproved(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitDocApproved(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
-    public void visitDocApprovalTimeout(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitDocApprovalTimeout(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
-    public void visitDocRejected(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitDocRejected(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
-    public void visitSystemValidated(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitSystemValidated(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
-    public void visitValidationError(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitValidationError(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
-    public void visitHold(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitHold(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
     public void visitGenerated(String eppRequestId) throws TransactionException {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
-        Transaction trans = found.iterator().next();
+        Transaction trans = findByChangeRequestID(eppRequestId);
         if (trans.getState().getName() != TransactionState.Name.PENDING_ZONE_INSERTION)
             throw new IllegalTransactionStateException(trans.getState());
         trans.systemAccept();
     }
 
-    public void visitNsRejected(String eppRequestId) {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
+    public void visitNsRejected(String eppRequestId) throws TransactionException {
+        Transaction trans = findByChangeRequestID(eppRequestId);
         logger.info("Received poll message status: docApproved for transaction id: " +
-                found.iterator().next().getTransactionID());
+                trans.getTransactionID());
     }
 
     public void visitComplete(String eppRequestId) throws TransactionException {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found.isEmpty())
-            logger.info("Nonexistant EPP request id: " + eppRequestId);
-        Transaction trans = found.iterator().next();
+        Transaction trans = findByChangeRequestID(eppRequestId);
         if (trans.getState().getName() != TransactionState.Name.PENDING_ZONE_PUBLICATION)
             throw new IllegalTransactionStateException(trans.getState());
         trans.systemAccept();
+    }
+
+    Transaction findByChangeRequestID(String changeRequestID) throws TransactionException {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", changeRequestID);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found == null || found.isEmpty())
+            throw new NoSuchTransactionException(changeRequestID);
+        if (found.size() > 1)
+            throw new TransactionException(changeRequestID + " non unique");
+        return found.iterator().next();
     }
 }
