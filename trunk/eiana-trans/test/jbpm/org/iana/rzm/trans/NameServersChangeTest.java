@@ -78,6 +78,10 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
             token.signal("accept");
             assert token.getNode().getName().equals("PENDING_USDOC_APPROVAL") : "unexpected state: " + token.getNode().getName();
             token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_ZONE_INSERTION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
+            assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION") : "unexpected state: " + token.getNode().getName();
+            token.signal("accept");
             assert token.getNode().getName().equals("COMPLETED") : "unexpected state: " + token.getNode().getName();
 
 //            assert clonedDomain.equals(domainManager.get("testdomain-ns.org").clone());

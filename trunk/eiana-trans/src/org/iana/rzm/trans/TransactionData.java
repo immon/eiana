@@ -66,6 +66,8 @@ public class TransactionData {
     @Basic
     @Column(length = 4096)
     private String stateMessage;
+    @Basic
+    private String eppRequestId;
 
     public Long getObjId() {
         return objId;
@@ -211,5 +213,13 @@ public class TransactionData {
             stateMessage = stateMessage.substring(0, MAX_LEN);
         }
         this.stateMessage = stateMessage;
+    }
+
+    public String getEppRequestId() {
+        return eppRequestId;
+    }
+
+    public void setEppRequestId(String eppRequestId) {
+        this.eppRequestId = eppRequestId;
     }
 }

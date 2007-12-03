@@ -5,11 +5,16 @@
     </start-state>
 
     <super-state name='LOGGED_STATE'>
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.jbpm.handlers.ticketingservice.ProcessStateUpdater"/>
+        </event>
         <event type='node-leave'>
             <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateLogger">
                 <systemStates>
                     <element>PENDING_TECH_CHECK</element>
                     <element>PENDING_DATABASE_INSERTION</element>
+                    <element>PENDING_ZONE_INSERTION</element>
+                    <element>PENDING_ZONE_PUBLICATION</element>
                     <element>PENDING_ZONE_TESTING</element>
                     <element>PENDING_CONTACT_CONFIRMATION</element>
                 </systemStates>
@@ -468,14 +473,6 @@
                         <element>IANA</element>
                     </roles>
                 </action>
-                <!-- todo wywalic -->
-                <!--
-                <action class="org.iana.rzm.trans.jbpm.handlers.RoleConfirmationCalculator">
-                    <roles>
-                        <element>IANA</element>
-                    </roles>
-                </action>
-                -->
             </event>
             <timer name="7d-time-out" duedate="7 days">
                 <action class="org.iana.rzm.trans.jbpm.handlers.ZoneInsertionAlert">

@@ -2,8 +2,8 @@ package org.iana.rzm.trans;
 
 import org.iana.criteria.Criterion;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.trans.epp.EppChangeRequestPollRspVisitor;
 import org.iana.rzm.user.RZMUser;
-import org.jbpm.graph.exe.ProcessInstance;
 
 import java.util.List;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface TransactionManager {
+public interface TransactionManager extends EppChangeRequestPollRspVisitor {
 
     /**
      * Returns a transaction with a given id.

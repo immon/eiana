@@ -79,7 +79,7 @@ public abstract class CommonGuardedSystemTransaction {
         setUser(user);   //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.moveTransactionToNextState(transId);
-        assert isTransactionInDesiredState("COMPLETED", transId);
+        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
         closeServices();
     }
 
@@ -87,7 +87,7 @@ public abstract class CommonGuardedSystemTransaction {
         setUser(user); //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.moveTransactionToNextState(transId);
-        assert isTransactionInDesiredState("COMPLETED", transId);
+        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
         closeServices();
     }
 

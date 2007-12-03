@@ -183,6 +183,8 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
+        acceptZONE_INSERTION(userIANA, transId);
+        acceptZONE_PUBLICATION(userIANA, transId);
         checkStateLog(userAC, transId, workFlowWithNSChangeLog);
 
         try {

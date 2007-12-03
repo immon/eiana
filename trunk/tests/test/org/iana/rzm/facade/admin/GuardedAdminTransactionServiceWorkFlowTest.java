@@ -208,6 +208,27 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         acceptPENDING_USDOC_APPROVAL();
     }
 
+    @Test(dependsOnMethods = "testAcceptPENDING_USDOC_APPROVAL")
+    public void testAcceptPENDING_ZONE_INSERTION() throws Exception {
+        createDomainModificationProcessNSChage();
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
+        acceptPENDING_USDOC_APPROVALNSCHANGE();
+        acceptPENDING_ZONE_INSERTION();
+    }
+
+    @Test(dependsOnMethods = "testAcceptPENDING_ZONE_INSERTION")
+    public void testAcceptPENDING_ZONE_PUBLICATION() throws Exception {
+        createDomainModificationProcessNSChage();
+        acceptPENDING_CONTACT_CONFIRMATION();
+        acceptMANUAL_REVIEW();
+        acceptPENDING_IANA_CHECK();
+        acceptPENDING_USDOC_APPROVALNSCHANGE();
+        acceptPENDING_ZONE_INSERTION();
+        acceptPENDING_ZONE_PUBLICATION();
+    }
+
     private void createDomainModificationProcess() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminTransactionServ.setUser(testAuthUser);
@@ -331,7 +352,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     private void acceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
         assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
         gAdminTransactionServ.approveByUSDoC(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
+        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
     }
 
     private void acceptPENDING_ZONE_INSERTION() throws Exception {

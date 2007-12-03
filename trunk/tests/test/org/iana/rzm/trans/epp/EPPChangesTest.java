@@ -123,6 +123,16 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
         processDAO.close();
 
         eppClient = VerisignEPPClient.getEPPClient("../conf/epp/epp.rootzone.config");
+
+        /*
+        System.out.println("#############################");
+        while (true) {
+            EppChangeRequestPollRsp pollRsp = new EPPPollRequest(0L, eppClient).send();
+            if (pollRsp == null) break;
+            System.out.println("ack: " + pollRsp.getChangeRequestId());
+        }
+        System.out.println("#############################");
+        */
     }
 
     public static final String ADD_HOST_EXPECTED_RSP_1 = ".*Change Request Id:.*";
@@ -133,7 +143,6 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
                     "Domain Update.*" +
                     "Name:.*COM.*" +
                     "Add:.*NS1.GSTSNEWNAMESERVER.ORG.*";
-    public static final String EXPECTED_POLL_MESSAGE = "The DoC has approved this Change Request.";
 
     public void testAddHost() throws Exception {
         try {
@@ -150,10 +159,18 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(ADD_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             assert rsp.matches(ADD_HOST_EXPECTED_RSP_2);
-            EPPPollRequest eppPollRequest = new EPPPollRequest(trans.getTicketID(), eppClient);
-            rsp = eppPollRequest.send();
-            assert rsp != null;
-            assert rsp.equals(EXPECTED_POLL_MESSAGE);
+            Thread.sleep(2000);
+            while (true) {
+                EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+                EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+                System.out.println("ack: " + pollRsp.getChangeRequestId());
+                /*
+                assert pollRsp != null;
+                assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+                assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                        "unexpected request id: " + pollRsp.getChangeRequestId();
+                */
+            }
         } finally {
             processDAO.close();
         }
@@ -179,10 +196,12 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            EPPPollRequest eppPollRequest = new EPPPollRequest(trans.getTicketID(), eppClient);
-            rsp = eppPollRequest.send();
-            assert rsp != null;
-            assert rsp.equals(EXPECTED_POLL_MESSAGE);
+            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+            EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+            assert pollRsp != null;
+            assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                    "unexpected request id: " + pollRsp.getChangeRequestId();
         } finally {
             processDAO.close();
         }
@@ -207,10 +226,12 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(DELETE_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            EPPPollRequest eppPollRequest = new EPPPollRequest(trans.getTicketID(), eppClient);
-            rsp = eppPollRequest.send();
-            assert rsp != null;
-            assert rsp.equals(EXPECTED_POLL_MESSAGE);
+            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+            EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+            assert pollRsp != null;
+            assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                    "unexpected request id: " + pollRsp.getChangeRequestId();
         } finally {
             processDAO.close();
         }
@@ -236,10 +257,12 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            EPPPollRequest eppPollRequest = new EPPPollRequest(trans.getTicketID(), eppClient);
-            rsp = eppPollRequest.send();
-            assert rsp != null;
-            assert rsp.equals(EXPECTED_POLL_MESSAGE);
+            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+            EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+            assert pollRsp != null;
+            assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                    "unexpected request id: " + pollRsp.getChangeRequestId();
         } finally {
             processDAO.close();
         }

@@ -19,6 +19,7 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -164,6 +165,12 @@ public class Transaction implements TrackedObject {
         getTrackData().setModifiedBy(userName);
     }
 
+    public synchronized void systemAccept() throws TransactionException {
+        setModified(new Timestamp(new Date().getTime()));
+        setModifiedBy("SYSTEM");
+        pi.signal(StateTransition.ACCEPT);
+    }
+
     public synchronized void accept(Identity user) throws TransactionException {
         try {
             Token token = pi.getRootToken();
@@ -297,5 +304,13 @@ public class Transaction implements TrackedObject {
 
     public void setStateMessage(String stateMessage) {
         getTransactionData().setStateMessage(stateMessage);
+    }
+
+    public String getEppRequestId() {
+        return getTransactionData().getEppRequestId();
+    }
+
+    public void setEppRequestId(String eppRequestId) {
+        getTransactionData().setEppRequestId(eppRequestId);
     }
 }

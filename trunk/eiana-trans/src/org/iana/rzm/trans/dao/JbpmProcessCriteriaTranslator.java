@@ -50,6 +50,7 @@ class JbpmProcessCriteriaTranslator {
         criteriaFields.put("redelegation", "td.redelegation");
         criteriaFields.put("submitterEmail", "td.submitterEmail");
         criteriaFields.put("loginName", "user.loginName");
+        criteriaFields.put("eppRequestId", "td.eppRequestId");
         // aliases to joins
         criteriaJoins.put("pd", "inner join pi.processDefinition as pd");
         criteriaJoins.put("node",
