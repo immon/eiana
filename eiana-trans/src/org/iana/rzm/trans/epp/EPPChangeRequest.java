@@ -52,6 +52,7 @@ public class EPPChangeRequest extends EPPCommand {
                         problem.getErrors()));
             throw ex;
         }
+        setEppRequestId(clientID);
         return new String[]{clientID, rsp.getReceipt()};
     }
 

@@ -1,9 +1,11 @@
 package org.iana.rzm.trans;
 
+import org.iana.rzm.trans.epp.EppChangeRequestPollRspVisitorException;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class TransactionException extends Exception {
+public class TransactionException extends EppChangeRequestPollRspVisitorException {
     public TransactionException() {
         super();
     }

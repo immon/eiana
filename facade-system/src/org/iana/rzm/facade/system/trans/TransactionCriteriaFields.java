@@ -21,4 +21,5 @@ public interface TransactionCriteriaFields {
     public static final String REDELEGATION = "redelegation";
     public static final String SUBMITTER_EMAIL = "submitterEmail";
     public static final String LOGIN_NAME = "loginName";
+    public static final String EPP_REQUEST_ID = "eppRequestId";
 }

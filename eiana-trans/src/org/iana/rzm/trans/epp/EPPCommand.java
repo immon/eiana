@@ -68,4 +68,8 @@ public abstract class EPPCommand {
         return new EPPHostAddress(addr.getAddress(), addr.isIPv4() ? EPPHostAddress.Type.IP4 : EPPHostAddress.Type.IP6);
     }
 
+    protected void setEppRequestId(String eppRequestId) {
+        transaction.setEppRequestId(eppRequestId);
+    }
+
 }

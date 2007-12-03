@@ -23,4 +23,8 @@ public class MockPollResponse extends MockResponse implements PollResponse {
     public long getMessageCount() {
         return 0;
     }
+
+    public String getChangeRequestId() {
+        return null;
+    }
 }

@@ -236,7 +236,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 
             transaction = transSystemTransactionService.get(domainTrId);
             assert transaction != null;
-            assert TransactionStateVO.Name.COMPLETED.equals(transaction.getState().getName()) :
+            assert TransactionStateVO.Name.PENDING_ZONE_INSERTION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
         } finally {
             closeServices();

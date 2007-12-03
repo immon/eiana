@@ -74,6 +74,7 @@
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="library" name="epp" level="project" />
+    <orderEntry type="library" name="log4j" level="project" />
     <orderEntryProperties />
   </component>
 </module>

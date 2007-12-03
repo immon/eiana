@@ -1,6 +1,8 @@
 package org.iana.rzm.trans;
 
+import org.apache.log4j.Logger;
 import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
 import org.iana.notifications.NotificationManager;
 import org.iana.notifications.NotificationSender;
 import org.iana.objectdiff.ChangeDetector;
@@ -24,6 +26,8 @@ import java.util.Set;
  * @author Piotr Tkaczyk
  */
 public class TransactionManagerBean implements TransactionManager {
+
+    private Logger logger = Logger.getLogger(TransactionManagerBean.class);
 
     private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
 
@@ -195,5 +199,90 @@ public class TransactionManagerBean implements TransactionManager {
             if (DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
                 result.add(new Transaction(pi));
         return result;
+    }
+
+    public void visitDocApproved(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitDocApprovalTimeout(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitDocRejected(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitSystemValidated(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitValidationError(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitHold(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitGenerated(String eppRequestId) throws TransactionException {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        Transaction trans = found.iterator().next();
+        if (trans.getState().getName() != TransactionState.Name.PENDING_ZONE_INSERTION)
+            throw new IllegalTransactionStateException(trans.getState());
+        trans.systemAccept();
+    }
+
+    public void visitNsRejected(String eppRequestId) {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        logger.info("Received poll message status: docApproved for transaction id: " +
+                found.iterator().next().getTransactionID());
+    }
+
+    public void visitComplete(String eppRequestId) throws TransactionException {
+        Criterion eppRequestIdCriterion = new Equal("eppRequestId", eppRequestId);
+        List<Transaction> found = find(eppRequestIdCriterion);
+        if (found.isEmpty())
+            logger.info("Nonexistant EPP request id: " + eppRequestId);
+        Transaction trans = found.iterator().next();
+        if (trans.getState().getName() != TransactionState.Name.PENDING_ZONE_PUBLICATION)
+            throw new IllegalTransactionStateException(trans.getState());
+        trans.systemAccept();
     }
 }

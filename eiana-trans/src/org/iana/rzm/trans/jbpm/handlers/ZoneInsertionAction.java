@@ -8,6 +8,5 @@ import org.jbpm.graph.exe.ExecutionContext;
  */
 public class ZoneInsertionAction extends ActionExceptionHandler {
     public void doExecute(ExecutionContext executionContext) throws java.lang.Exception {
-        executionContext.leaveNode("accept");
     }
 }
