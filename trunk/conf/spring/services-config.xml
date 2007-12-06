@@ -528,6 +528,7 @@
         <constructor-arg value="org/jbpm/context/exe/jbpm.varmapping.xml"/>
     </bean>
 
+<!--
     <bean name="jbpm.byte.block.size" class="java.lang.Integer">
         <constructor-arg value="1024"/>
     </bean>
@@ -535,10 +536,13 @@
     <bean name="jbpm.task.instance.factory" class="org.jbpm.taskmgmt.impl.DefaultTaskInstanceFactoryImpl" />
 
     <bean name="jbpm.variable.resolver" class="org.jbpm.jpdl.el.impl.JbpmVariableResolver" />
+-->
 
+<!--
     <bean name="jbpm.msg.wait.timout" class="java.lang.Long">
         <constructor-arg value="5000"/>
     </bean>
+-->
 
     <bean id="jbpmContextFactory"
           class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
@@ -584,16 +588,18 @@
 
     <!-- mails processing configuration -->
     <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
-        <constructor-arg index="0" value="m02.icann.org"/>
-        <constructor-arg index="1" value="rzm"/>
-        <constructor-arg index="2" value="upowilgeod"/>
+        <constructor-arg index="0" value="pop3.wp.pl"/>
+        <constructor-arg index="1" value="pwegrzynowicz"/>
+        <constructor-arg index="2" value="mordka1q2w3e"/>
         <constructor-arg index="3" value="[RZM]"/>
         <property name="config">
             <ref bean="parameterManager"/>
         </property>
+<!--
         <property name="port">
             <value>995</value>
         </property>
+-->
         <property name="debug">
             <value>true</value>
         </property>
@@ -638,7 +644,7 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \| ([^\| ]*)</value>
+                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \| ([^\| ]*).*</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>

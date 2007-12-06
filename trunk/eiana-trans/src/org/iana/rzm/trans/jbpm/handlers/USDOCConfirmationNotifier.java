@@ -31,7 +31,9 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
     public List<Notification> getNotifications() {
         String domainName = td.getCurrentDomain().getName();
         List<RZMUser> users = userManager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
-        users.addAll(userManager.findUsersInAdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
+        if (td.isNameServerChange()) {
+            users.addAll(userManager.findUsersInAdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
+        }
         List<Notification> notifications = new ArrayList<Notification>();
 
         for (RZMUser user : users) {
@@ -45,14 +47,25 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             values.put("eppid", eppID);
             values.put("change", DomainChangePrinter.print(td.getDomainChange()));
 
-            Content templateContent = templateContentFactory.createContent(notification, values);
+            List<String> notifs = getNotificationTypes();
+            for (String notif : notifs) {
+                Content templateContent = templateContentFactory.createContent(notif, values);
 
-            Notification notification = new Notification(transactionId);
-            notification.addAddressee(user);
-            notification.setContent(templateContent);
-            notification.setPersistent(true);
-            notifications.add(notification);
+                Notification notification = new Notification(transactionId);
+                notification.addAddressee(user);
+                notification.setContent(templateContent);
+                notification.setPersistent(true);
+                notifications.add(notification);
+            }
         }
         return notifications;
     }
+
+    private List<String> getNotificationTypes() {
+        List<String> ret = new ArrayList<String>();
+        if (td.isNameServerChange()) ret.add("usdoc-confirmation-nschange");
+        if (td.isDatabaseChange()) ret.add("usdoc-confirmation");
+        return ret;
+    }
+
 }

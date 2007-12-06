@@ -49,11 +49,9 @@ public class USDoCAnswerProcessor extends AbstractEmailProcessor {
             TransactionVO transaction = transactions.get(0);
             authenticate(msg);
             validate(transaction, answer);
-            if (answer.isAccept()) {
-                transactionService.approveByUSDoC(transaction.getTransactionID());
-            } else {
-                transactionService.rejectByUSDoC(transaction.getTransactionID());
-            }
+            transactionService.confirmByUSDoC(transaction.getTransactionID(),
+                    answer.isNameserverChange(),
+                    answer.isAccept());
         } catch (NoObjectFoundException e) {
             throw new EmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
         } catch (InfrastructureException e) {
