@@ -62,7 +62,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setUser(user);     //iana
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
-        gsts.moveTransactionToNextState(transId);
+        ats.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
@@ -70,7 +70,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptZONE_INSERTION(RZMUser user, long transId) throws Exception {
         setUser(user); //iana
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
-        gsts.moveTransactionToNextState(transId);
+        ats.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
         closeServices();
     }
@@ -87,7 +87,7 @@ public abstract class CommonGuardedSystemTransaction {
         setUser(user); //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         gsts.moveTransactionToNextState(transId);
-        assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
+        assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
 

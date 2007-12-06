@@ -10,13 +10,17 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationException;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
+import org.apache.log4j.Logger;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -32,6 +36,8 @@ import java.util.Set;
  */
 public class Transaction implements TrackedObject {
 
+    private static final Logger logger = Logger.getLogger(Transaction.class);
+    
     private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
     private ProcessInstance pi;
 
@@ -312,5 +318,44 @@ public class Transaction implements TrackedObject {
 
     public void setEppRequestId(String eppRequestId) {
         getTransactionData().setEppRequestId(eppRequestId);
+    }
+
+    public USDoCConfirmation getUSDoCConfirmation() {
+        return getTransactionData().getUSDoCConfirmation();
+    }
+
+    public void confirmChangeByUSDoC(Identity identity, TransactionChangeType type, boolean accept) throws TransactionException {
+        if (getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) {
+            throw new IllegalTransactionStateException(getState());
+        }
+        USDoCConfirmation confirmation = getUSDoCConfirmation();
+        if (confirmation == null) {
+            throw new IllegalStateException("no usdoc confirmation data setup");
+        }
+        switch (type) {
+            case NAMESERVER_CHANGE:
+                confirmation.setNameserversChangeConfirmation(accept);
+                break;
+            case DATABASE_CHANGE:
+                confirmation.setDatabaseChangeConfirmation(accept);
+                break;
+        }
+        if (confirmation.isReceived()) {
+            if (confirmation.isAccepted()) {
+                transit(identity, "admin-accept");
+            } else {
+                transit(identity, "admin-reject");
+            }
+        } else {
+            logger.info("there still are outstanding confirmation present.");
+        }
+    }
+
+    public boolean isNameServerChange() {
+        return getTransactionData().isNameServerChange();
+    }
+
+    public boolean isDatabaseChange() {
+        return getTransactionData().isDatabaseChange();
     }
 }

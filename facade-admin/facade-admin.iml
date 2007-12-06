@@ -24,6 +24,7 @@
     <orderEntry type="library" name="cobertura" level="project" />
     <orderEntry type="module" module-name="common-objectdiff" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="library" name="log4j" level="project" />
     <orderEntryProperties />
   </component>
 </module>

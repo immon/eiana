@@ -7,8 +7,9 @@ import org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz

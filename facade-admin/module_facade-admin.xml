@@ -40,6 +40,7 @@
     <pathelement location="${common-objectdiff.testoutput.dir}"/>
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
+    <path refid="library.log4j.classpath"/>
   </path>
   
   

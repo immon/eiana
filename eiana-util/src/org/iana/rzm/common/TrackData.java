@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-
+@Embeddable
 public class TrackData implements Cloneable {
 
     @Basic

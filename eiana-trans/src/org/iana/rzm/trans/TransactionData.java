@@ -2,11 +2,13 @@ package org.iana.rzm.trans;
 
 import org.hibernate.annotations.MapKeyManyToMany;
 import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.Change;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 
 import javax.persistence.*;
@@ -69,6 +71,9 @@ public class TransactionData {
     @Basic
     private String eppRequestId;
 
+    @Embedded
+    private USDoCConfirmation confirmation;
+    
     public Long getObjId() {
         return objId;
     }
@@ -221,5 +226,27 @@ public class TransactionData {
 
     public void setEppRequestId(String eppRequestId) {
         this.eppRequestId = eppRequestId;
+    }
+
+    public boolean isNameServerChange() {
+        if (domainChange == null) return false;
+        Map<String, Change> fields = domainChange.getFieldChanges();
+        return fields.containsKey("nameServers");
+    }
+
+    public boolean isDatabaseChange() {
+        if (domainChange == null) return false;
+        Map<String, Change> fields = domainChange.getFieldChanges();
+        int size = fields.size();
+        if (fields.containsKey("nameServers")) --size;
+        return size > 0;
+    }
+
+    public void setupUSDoCConfirmation() {
+        this.confirmation = new USDoCConfirmation(isDatabaseChange(), isNameServerChange());    
+    }
+
+    public USDoCConfirmation getUSDoCConfirmation() {
+        return confirmation;
     }
 }

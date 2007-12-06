@@ -169,10 +169,10 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"gstsignalusdoc", "PENDING_ZONE_INSERTION"},
-            {"gstsignalusdoc", "PENDING_ZONE_PUBLICATION"},
-            {"gstsignalusdoc", "PENDING_ZONE_TESTING"},
-            {"gstsignalusdoc", "PENDING_DATABASE_INSERTION"}
+            {"gstsignaliana", "PENDING_ZONE_INSERTION"},
+            {"gstsignaliana", "PENDING_ZONE_PUBLICATION"},
+            {"gstsignaliana", "PENDING_ZONE_TESTING"},
+            {"gstsignaliana", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})

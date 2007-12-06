@@ -13,8 +13,10 @@ import org.jbpm.graph.exe.ExecutionContext;
  */
 public class USDOCApprovalAction extends ActionExceptionHandler {
     protected void doExecute(ExecutionContext executionContext) throws Exception {
+        TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
+        td.setupUSDoCConfirmation();
         USDOCConfirmationNotifier notifier = new USDOCConfirmationNotifier();
-        if (isNsChange(executionContext)) {
+        if (td.isNameServerChange()) {
             HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
             Transaction trans = new Transaction(executionContext.getProcessInstance());
             EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
@@ -29,9 +31,4 @@ public class USDOCApprovalAction extends ActionExceptionHandler {
         notifier.execute(executionContext);
     }
 
-    private boolean isNsChange(ExecutionContext executionContext) {
-        TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
-        return td != null && td.getDomainChange() != null &&
-                td.getDomainChange().getFieldChanges().containsKey("nameServers");
-    }
 }

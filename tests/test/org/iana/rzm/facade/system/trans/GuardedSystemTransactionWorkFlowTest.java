@@ -291,11 +291,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
-            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"gstsignalusdoc", "PENDING_ZONE_INSERTION"},
-            {"gstsignalusdoc", "PENDING_ZONE_PUBLICATION"},
-            {"gstsignalusdoc", "PENDING_ZONE_TESTING"},
-            {"gstsignalusdoc", "PENDING_DATABASE_INSERTION"}
+            {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
     };
 
     @Test(dependsOnMethods = {"testWorkFlowNoNSChange"})

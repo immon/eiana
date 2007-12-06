@@ -23,9 +23,13 @@ import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationAlreadyReceived;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationMismatch;
+import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
+import org.apache.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +40,8 @@ import java.util.Set;
  */
 public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl implements AdminTransactionService {
 
+    private static Logger logger = Logger.getLogger(GuardedAdminTransactionServiceBean.class);
+    
     private static Set<Role> allowedRoles = new HashSet<Role>();
 
     private static Set<Role> govRoles = new HashSet<Role>();
@@ -276,4 +282,32 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             throw new InfrastructureException(e);
         }
     }
+
+    public void confirmByUSDoC(long id, boolean nsChange, boolean accept) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
+        isUserInRole(govRoles);
+        Transaction transaction = null;
+        try {
+            transaction = transactionManager.getTransaction(id);
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException("transaction", "" + e.getId());
+        }
+        try {
+            if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
+            transaction.confirmChangeByUSDoC(this.getRZMUser(),
+                    nsChange ? TransactionChangeType.NAMESERVER_CHANGE : TransactionChangeType.DATABASE_CHANGE,
+                    accept);
+            markModified(transaction);
+        } catch (USDoCConfirmationAlreadyReceived e) {
+            logger.warn("USDoC confirmation for " + id + " nsChange: " + nsChange + " acceptance: " + accept + " has been already received.");
+        } catch (USDoCConfirmationMismatch e) {
+            try {
+                transaction.transitTo(this.getRZMUser(), TransactionState.Name.EXCEPTION.toString());
+            } catch (TransactionException e1) {
+                throw new InfrastructureException(e);
+            }
+        } catch (TransactionException e) {
+            throw new InfrastructureException(e);
+        }
+    }
+
 }
