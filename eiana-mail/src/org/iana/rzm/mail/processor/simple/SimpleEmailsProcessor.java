@@ -50,6 +50,8 @@ public class SimpleEmailsProcessor implements MailsProcessor {
             error(from, subject, content, e);
         } catch (EmailProcessException e) {
             error(from, subject, content, e);
+        } catch (Exception e) {
+            error(from, subject, content, "Unexptected exception.");
         }
     }
 

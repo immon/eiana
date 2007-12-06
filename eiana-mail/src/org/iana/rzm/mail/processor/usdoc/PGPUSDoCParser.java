@@ -34,7 +34,9 @@ public class PGPUSDoCParser implements EmailParser {
         if (pgp) {
             try {
                 String plainContent = PGPUtils.getSignedMessageContent(content);
-                return plainParser.parse(subject, plainContent);
+                USDoCAnswer answer = (USDoCAnswer) plainParser.parse(subject, plainContent);
+                answer.setPgp(true);
+                return answer;
             } catch (PGPUtilsException e) {
                 throw new EmailParseException(e);
             }

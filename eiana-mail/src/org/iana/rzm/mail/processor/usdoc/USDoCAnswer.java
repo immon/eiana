@@ -17,6 +17,8 @@ public class USDoCAnswer implements MessageData {
 
     private boolean nameserverChange;
 
+    private boolean pgp;
+
     public USDoCAnswer(long ticketID, String eppID, String changeSummary, boolean accept, boolean nameserverChange) {
         this.ticketID = ticketID;
         this.eppID = eppID;
@@ -44,5 +46,12 @@ public class USDoCAnswer implements MessageData {
     public boolean isNameserverChange() {
         return nameserverChange;
     }
-    
+
+    public boolean isPgp() {
+        return pgp;
+    }
+
+    public void setPgp(boolean pgp) {
+        this.pgp = pgp;
+    }
 }
