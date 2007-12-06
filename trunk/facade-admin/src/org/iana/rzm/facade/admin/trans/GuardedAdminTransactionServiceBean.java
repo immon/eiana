@@ -1,5 +1,6 @@
 package org.iana.rzm.facade.admin.trans;
 
+import org.apache.log4j.Logger;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
 import org.iana.criteria.SortCriterion;
@@ -23,13 +24,12 @@ import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationAlreadyReceived;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationMismatch;
-import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
-import org.apache.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -301,6 +301,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             logger.warn("USDoC confirmation for " + id + " nsChange: " + nsChange + " acceptance: " + accept + " has been already received.");
         } catch (USDoCConfirmationMismatch e) {
             try {
+                transaction.setStateMessage("Received both: accept and reject from USDoC");
                 transaction.transitTo(this.getRZMUser(), TransactionState.Name.EXCEPTION.toString());
             } catch (TransactionException e1) {
                 throw new InfrastructureException(e);

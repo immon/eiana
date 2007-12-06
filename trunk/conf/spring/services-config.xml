@@ -16,9 +16,18 @@
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="transactionManagerBean"/>
         <constructor-arg index="2" ref="domainManager"/>
-        <constructor-arg index="3" ref="adminDetectorService"/>
+        <constructor-arg index="3" ref="adminDetectorService2"/>
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedAdminTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="transactionManagerBean"/>
+        <constructor-arg index="2" ref="domainManager"/>
+        <constructor-arg index="3" ref="adminDetectorService2"/>
+        <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
     </bean>
 
     <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl"
@@ -35,6 +44,12 @@
         <constructor-arg index="1" ref="domainManager"/>
         <constructor-arg index="2" ref="adminDiffConfig"/>
         <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="adminDetectorService2" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="domainManager"/>
+        <constructor-arg index="2" ref="adminDiffConfig"/>
     </bean>
 
     <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl"
@@ -713,7 +728,7 @@
 
     <bean id="usdocAnswerProcessor" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerProcessor">
         <constructor-arg ref="authenticationServiceBean"/>
-        <constructor-arg ref="GuardedAdminTransactionServiceBean"/>
+        <constructor-arg ref="guardedAdminTransactionService"/>
     </bean>
 
     <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
@@ -796,6 +811,7 @@
         <aop:pointcut id="transactionalOperation"
                       expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.services.AbstractFinderService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.trans.TransactionDetectorService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
@@ -825,6 +841,7 @@
         <aop:aspect id="jbpmAspect" ref="jbpmAdvisor">
             <aop:pointcut id="jbpmOperation"
                           expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
+                                      execution(* org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
                                       execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
                                       execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..))"/>
             <aop:after method="close" pointcut-ref="jbpmOperation"/>
