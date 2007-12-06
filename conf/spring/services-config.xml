@@ -588,18 +588,16 @@
 
     <!-- mails processing configuration -->
     <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
-        <constructor-arg index="0" value="pop3.wp.pl"/>
-        <constructor-arg index="1" value="pwegrzynowicz"/>
-        <constructor-arg index="2" value="mordka1q2w3e"/>
+        <constructor-arg index="0" value="m02.icann.org"/>
+        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="2" value="upowilgeod"/>
         <constructor-arg index="3" value="[RZM]"/>
         <property name="config">
             <ref bean="parameterManager"/>
         </property>
-<!--
         <property name="port">
             <value>995</value>
         </property>
--->
         <property name="debug">
             <value>true</value>
         </property>
