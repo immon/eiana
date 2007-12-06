@@ -10,9 +10,6 @@ public class USDoCConfirmation {
 
     public static enum Type { REQUIRED, ACCEPTED, REJECTED }
 
-    /**
-     * This field denotes whether the confirmation was
-     */
     Type databaseChangeConfirmation;
 
     Type nameserversChangeConfirmation;
@@ -85,7 +82,7 @@ public class USDoCConfirmation {
         if (isDatabaseChangeConfRequired() &&
                 isDatabaseChangeReceived() &&
                 databaseChangeConfirmation != type) {
-            throw new USDoCConfirmationMismatch(true);
+            throw new USDoCConfirmationMismatch(false);
         }
         nameserversChangeConfirmation = type;
     }
