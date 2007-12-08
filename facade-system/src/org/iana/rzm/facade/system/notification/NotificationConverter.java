@@ -55,6 +55,7 @@ public class NotificationConverter {
         notificationVOType.put("impacted_parties-confirmation", NotificationVO.Type.IMPACTED_PARTIES_CONFIRMATION);
         notificationVOType.put("impacted_parties-confirmation-remainder", NotificationVO.Type.IMPACTED_PARTIES_CONFIRMATION_REMAINDER);
         notificationVOType.put("usdoc-confirmation", NotificationVO.Type.USDOC_CONFIRMATION);
+        notificationVOType.put("usdoc-confirmation-nschange", NotificationVO.Type.USDOC_CONFIRMATION);
         notificationVOType.put("usdoc-confirmation-remainder", NotificationVO.Type.USDOC_CONFIRMATION_REMAINDER);
         notificationVOType.put("zone-insertion-alert", NotificationVO.Type.ZONE_INSERTION_ALERT);
         notificationVOType.put("zone-publication-alert", NotificationVO.Type.ZONE_PUBLICATION_ALERT);
@@ -69,6 +70,10 @@ public class NotificationConverter {
 
         for (Map.Entry<String, NotificationVO.Type> entry : notificationVOType.entrySet())
             notificationType.put(entry.getValue(), entry.getKey());
+    }
+
+    public static boolean isType(String ntype, NotificationVO.Type votype) {
+        return notificationVOType.get(ntype) == votype;
     }
 
     public static String toNotificationType(NotificationVO.Type type) {
