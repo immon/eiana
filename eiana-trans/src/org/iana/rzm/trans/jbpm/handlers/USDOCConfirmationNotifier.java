@@ -2,9 +2,9 @@ package org.iana.rzm.trans.jbpm.handlers;
 
 import org.iana.notifications.Content;
 import org.iana.notifications.Notification;
+import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.trans.change.DomainChangePrinter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +46,7 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             values.put("notes", "");
             values.put("eppid", eppID);
             values.put("change", DomainChangePrinter.print(td.getDomainChange()));
+            values.put("retry", "" + td.getEPPRetries());
 
             List<String> notifs = getNotificationTypes();
             for (String notif : notifs) {
