@@ -75,6 +75,7 @@ public class TransactionConverter {
 
         ret.setComment(trans.getComment());
         ret.setStateMessage(trans.getStateMessage());
+        ret.setUsdocNotes(trans.getUsdocNotes());
 
         return ret;
     }

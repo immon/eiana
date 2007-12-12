@@ -1,15 +1,15 @@
 package org.iana.rzm.trans;
 
 import org.hibernate.annotations.MapKeyManyToMany;
-import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.Change;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.StateConfirmations;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
-import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -70,6 +70,9 @@ public class TransactionData {
     private String stateMessage;
     @Basic
     private String eppRequestId;
+
+    @Basic
+    private String usdocNotes;
 
     @Embedded
     private USDoCConfirmation confirmation;
@@ -248,5 +251,14 @@ public class TransactionData {
 
     public USDoCConfirmation getUSDoCConfirmation() {
         return confirmation;
+    }
+
+
+    public String getUsdocNotes() {
+        return usdocNotes;
+    }
+
+    public void setUsdocNotes(String usdocNotes) {
+        this.usdocNotes = usdocNotes;
     }
 }

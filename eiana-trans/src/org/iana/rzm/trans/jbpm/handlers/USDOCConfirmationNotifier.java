@@ -43,7 +43,7 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             values.put("stateName", stateName);
             values.put("receipt", receipt);
             values.put("ticket", "" + td.getTicketID());
-            values.put("notes", "");
+            values.put("notes", td.getUsdocNotes());
             values.put("eppid", eppID);
             values.put("change", DomainChangePrinter.print(td.getDomainChange()));
             values.put("retry", "" + td.getEPPRetries());

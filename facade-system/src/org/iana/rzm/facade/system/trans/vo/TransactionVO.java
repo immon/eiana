@@ -31,6 +31,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
     private String comment;
     private String stateMessage;
+    private String usdocNotes;
 
     public Long getTransactionID() {
         return transactionID;
@@ -214,5 +215,13 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public void setStateMessage(String stateMessage) {
         this.stateMessage = stateMessage;
+    }
+
+    public String getUsdocNotes() {
+        return usdocNotes;
+    }
+
+    public void setUsdocNotes(String usdocNotes) {
+        this.usdocNotes = usdocNotes;
     }
 }
