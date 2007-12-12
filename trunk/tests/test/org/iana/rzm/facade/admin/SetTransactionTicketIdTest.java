@@ -1,25 +1,25 @@
 package org.iana.rzm.facade.admin;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.springframework.context.ApplicationContext;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 import org.jbpm.graph.exe.ProcessInstance;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author: Piotr Tkaczyk
@@ -77,6 +77,18 @@ public class SetTransactionTicketIdTest {
         TransactionVO retTransactionVO = gAdminTransactionServ.get(transactionID);
         assert retTransactionVO.getTicketID() != transactionVO.getTicketID();
         assert retTransactionVO.getTicketID() == 123L;
+    }
+
+    @Test
+    public void testUpdateUSDoCNotes() throws Exception {
+        String USDOC_NOTES = "USDOC_NOTES";
+        createDomainModificationProcess();
+        TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
+        assert null == transactionVO.getUsdocNotes();
+        transactionVO.setUsdocNotes(USDOC_NOTES);
+        gAdminTransactionServ.updateTransaction(transactionVO);
+        TransactionVO retTransactionVO = gAdminTransactionServ.get(transactionID);
+        assert USDOC_NOTES.equals(retTransactionVO.getUsdocNotes());
     }
 
     private void createDomainModificationProcess() throws Exception {

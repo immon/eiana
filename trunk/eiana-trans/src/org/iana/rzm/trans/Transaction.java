@@ -1,26 +1,25 @@
 package org.iana.rzm.trans;
 
+import org.apache.log4j.Logger;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.auth.Identity;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.TransitionConfirmations;
-import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
-import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationException;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.change.TransactionChangeType;
+import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
-import org.apache.log4j.Logger;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -357,5 +356,14 @@ public class Transaction implements TrackedObject {
 
     public boolean isDatabaseChange() {
         return getTransactionData().isDatabaseChange();
+    }
+
+
+    public void setUsdocNotes(String usdocNotes) {
+        getTransactionData().setUsdocNotes(usdocNotes);
+    }
+
+    public String getUsdocNotes() {
+        return getTransactionData().getUsdocNotes();
     }
 }

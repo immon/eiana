@@ -121,6 +121,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             retTransaction.setTicketID(trans.getTicketID());
             retTransaction.setRedelegation(trans.isRedelegation());
             retTransaction.setComment(trans.getComment());
+            retTransaction.setUsdocNotes(trans.getUsdocNotes());
             markModified(retTransaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
