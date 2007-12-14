@@ -5,42 +5,43 @@
     <body jwcid="$content$">
         <form action="#" name="user" jwcid="userEditor">
             <input type="hidden" jwcid="@Hidden" value="ognl:page.tokenSynchronizer.token"/>
-            <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
+
+            <table class="edit" border="0" cellpadding="5" cellspacing="5" width="100%">
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:username">User Name:</span></td>
-                    <td align="right" valign="top"><input jwcid="username" type="text" name="textfield2" class="field"/></td>
+                    <td align="left" valign="top"><input jwcid="username" type="text" name="textfield2" class="field"/></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:password">Password:</span></td>
-                    <td align="right" valign="top"><input jwcid="password" type="password" name="textfield22" class="field"/></td>
+                    <td align="left" valign="top"><input jwcid="password" type="password" name="textfield22" class="field"/></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:confirmedPassword">Confirm Password:</span></td>
-                    <td align="right" valign="top"><input jwcid="confirmedPassword" type="password" name="textfield23" class="field"/></td>
+                    <td align="left" valign="top"><input jwcid="confirmedPassword" type="password" name="textfield23" class="field"/></td>
                 </tr>
                 <tr>
                     <td width="29%" valign="top" class="label green"><span jwcid="@FieldLabel" field="component:name">Name:</span></td>
-                    <td width="71%" align="right" valign="top"><input jwcid="name" type="text" name="textfield" class="field"/></td>
+                    <td width="71%" align="left" valign="top"><input jwcid="name" type="text" name="textfield" class="field"/></td>
                 </tr>
                 <tr>
                     <td width="29%" valign="top" class="label green"><span jwcid="@FieldLabel" field="component:lastname">Last name:</span></td>
-                    <td width="71%" align="right" valign="top"><input jwcid="lastname" type="text" name="textfield" class="field"/></td>
+                    <td width="71%" align="left" valign="top"><input jwcid="lastname" type="text" name="textfield" class="field"/></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:email">Email Address:</span></td>
-                    <td align="right" valign="top"><input jwcid="email" type="text" name="textfield7" class="field"/></td>
+                    <td align="left" valign="top"><input jwcid="email" type="text" name="textfield7" class="field"/></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:organization">Organization:</span></td>
-                    <td align="right" valign="top"><input jwcid="organization" type="text" name="textfield7" class="field"/></td>
+                    <td align="left" valign="top"><input jwcid="organization" type="text" name="textfield7" class="field"/></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:pgp">PGP Key:</span></td>
-                    <td align="right" valign="top"><span jwcid="pgp" rows="4" class="field"><textarea name="textfield3" rows="4" class="field"></textarea></span></td>
+                    <td align="left" valign="top"><span jwcid="pgp" rows="4" class="field"><textarea name="textfield3" rows="4" class="field"></textarea></span></td>
                 </tr>
                 <tr>
                     <td valign="top" class="label green"><label jwcid="secureidLabel">Use SecureId</label></td>
-                    <td align="left" valign="top"><input type="checkbox" jwcid="secureid"/></td>
+                    <td align="left" valign="top"><input name="secureid" id="secureid" type="checkbox"  jwcid="secureid"/></td>
                 </tr>
                 <tr>
                     <td colspan="2" valign="top" class="label green">&nbsp;</td>
@@ -48,14 +49,17 @@
                 <tr>
                     <td colspan="2" valign="top" class="label green">
 	                    <div class="boxContentHeader">
-	                        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="position: relative; top: -25px;">
+	                        <table style="position: relative; top: -25px;" border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td width="51%" valign="top"><strong>Domain</strong></td>
-                                    <td width="33%" height="20" valign="top"><strong>Role</strong></td>
-                                    <td width="16%" height="20" align="right" valign="top"><strong>Actions</strong></td>
+                                    <td valign="top" width="20%"><strong>Domain</strong></td>
+                                    <td height="20" valign="top" width="27%"><strong>Role</strong></td>
+                                    <td height="20" valign="top" width="9%"><strong>Notify</strong></td>
+                                    <td height="20" nowrap="nowrap" valign="top" width="14%"><strong>Accept From</strong></td>
+                                    <td height="20" nowrap="nowrap" valign="top" width="13%"><strong>Must Accept</strong></td>
+                                    <td align="right" height="20" valign="top" width="17%"><strong>Actions</strong></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">
+                                    <td colspan="6">
                                         <span jwcid="@Image" image="asset:spacer" width="1" height="10">
                                             <img src="../../images/spacer.png" width="1" height="10">
                                         </span></td>
@@ -63,6 +67,9 @@
                                 <tr jwcid="domainsRoles">
                                     <td><span jwcid="domain">US</span></td>
                                     <td><span jwcid="role">Tech</span></td>
+                                    <td><span jwcid="notifyImage"><img src="../../images/checkbox_on.png"/> </span> </td>
+                                    <td><span jwcid="acceptFromImage"><img src="../../images/checkbox_on.png"/></span> </td>
+                                    <td><span jwcid="mustAcceptImage"><img src="../../images/checkbox_off.png"/></span></td>
                                     <td>
                                         <div class="buttonStyle" style="float: right;">
 					                        <b class="leftBlue"></b>
@@ -71,17 +78,16 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">
+                                    <td colspan="6">
                                         <span jwcid="@Image" image="asset:spacer" width="1" height="10">
                                             <img src="../../images/spacer.png" width="1" height="10">
                                         </span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><input jwcid="newdomain" type="text" name="textfield72" style="width: 200px;"/></td>
+                                    <td><input jwcid="newdomain" type="text" name="textfield72" style="width: 120px;"/></td>
                                     <td>
                                         <label>
-                                            <span class="field">
                                                 <span jwcid="roles">
                                                     <select name="select">
                                                         <option>Tech</option>
@@ -89,9 +95,11 @@
                                                         <option>SO</option>
                                                     </select>
                                                 </span>
-                                            </span>
                                         </label>
                                     </td>
+                                    <td><span jwcid="notify"><input type="checkbox"/></span> </td>
+                                    <td><span jwcid="acceptFrom"><input type="checkbox"/></span> </td>
+                                    <td><span jwcid="mustAccept"><input type="checkbox"/></span> </td>
                                     <td>
                                         <div class="buttonStyle" style="float: right;">
                                             <b class="left"></b> <b class="right"><a href="#" jwcid="addRole" class="button">Add</a></b>

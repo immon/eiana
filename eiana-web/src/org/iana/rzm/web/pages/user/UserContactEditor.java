@@ -42,6 +42,11 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
     )
     public abstract IComponent getContactAttributeEditorComponent();
 
+    @Component(id = "soEditor", type = "SoContactEditor",
+            bindings = {"editor=prop:contactEditor", "contactAttributes=prop:contactAttributes"}
+    )
+    public abstract IComponent getSoContactAttributeEditorComponent();
+
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomain();
 
@@ -50,12 +55,10 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
 
     @Persist("client:page")
     public abstract void setContactType(String contactType);
-
     public abstract String getContactType();
 
     @Persist("client:page")
     public abstract void setDomainId(long id);
-
     public abstract long getDomainId();
 
     public abstract void setOriginalContact(ContactVOWrapper contact);
@@ -68,6 +71,10 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
     @Persist("client:page")
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
+
+    public boolean isSo(){
+       return getContactType() != null && getContactType().equals(SystemRoleVOWrapper.SUPPORTING_ORGANIZATION);
+    }
 
     public void pageBeginRender(PageEvent event) {
 

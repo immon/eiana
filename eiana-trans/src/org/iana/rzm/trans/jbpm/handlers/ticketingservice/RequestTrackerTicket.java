@@ -45,10 +45,14 @@ public class RequestTrackerTicket implements Ticket {
     private static Map<TransactionState.Name, String> transactionToIanaState = new HashMap<TransactionState.Name, String>();
 
     static {
+        transactionToIanaState.put(TransactionState.Name.PENDING_IANA_CONFIRMATION, "pre-review");
+        transactionToIanaState.put(TransactionState.Name.PENDING_MANUAL_REVIEW, "pre-review");
         transactionToIanaState.put(TransactionState.Name.PENDING_CONTACT_CONFIRMATION, "AC/TC");
+        transactionToIanaState.put(TransactionState.Name.PENDING_IMPACTED_PARTIES, "AC/TC");
         transactionToIanaState.put(TransactionState.Name.PENDING_TECH_CHECK, "tech-check");
         transactionToIanaState.put(TransactionState.Name.PENDING_TECH_CHECK_REMEDY, "tech-check");
         transactionToIanaState.put(TransactionState.Name.PENDING_EXT_APPROVAL, "wait on letter");
+        transactionToIanaState.put(TransactionState.Name.PENDING_SOENDORSEMENT, "wait on letter");
         transactionToIanaState.put(TransactionState.Name.PENDING_EVALUATION, "prepare IANA Board report");
         transactionToIanaState.put(TransactionState.Name.PENDING_IANA_CHECK, "IANA Review - IN");
         transactionToIanaState.put(TransactionState.Name.PENDING_SUPP_TECH_CHECK, "tech-check");
@@ -61,7 +65,7 @@ public class RequestTrackerTicket implements Ticket {
         transactionToIanaState.put(TransactionState.Name.WITHDRAWN, "withdrawn");
         transactionToIanaState.put(TransactionState.Name.REJECTED, "rejected");
         transactionToIanaState.put(TransactionState.Name.ADMIN_CLOSED, "admin-close");
-        transactionToIanaState.put(TransactionState.Name.PENDING_IANA_CONFIRMATION, "pre-review");
+        transactionToIanaState.put(TransactionState.Name.EXCEPTION, "admin-close");
     }
 
     private Transaction transaction;

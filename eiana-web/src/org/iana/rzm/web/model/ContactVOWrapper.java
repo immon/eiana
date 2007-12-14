@@ -1,8 +1,7 @@
 package org.iana.rzm.web.model;
 
 import org.apache.commons.lang.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.facade.system.domain.vo.ContactVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.web.util.*;
 
 import java.util.*;
@@ -49,7 +48,7 @@ public class ContactVOWrapper extends ValueObject {
     public boolean isNew() {
         return vo.getObjId() == null;
     }
-    
+
     public String getJobTitle() {
         return getValue(vo.getJobTitle(), DEFAULT_VALUE);
     }
@@ -63,7 +62,6 @@ public class ContactVOWrapper extends ValueObject {
     }
 
     private void setOrganization(String org) {
-        CheckTool.checkNull(org, ORGANISATION);
         vo.setOrganization(org);
     }
 
@@ -80,9 +78,7 @@ public class ContactVOWrapper extends ValueObject {
     }
 
     private void setPhone(String phone) {
-        if (StringUtils.isNotBlank(phone)) {
-            vo.setPhoneNumber(phone);
-        }
+        vo.setPhoneNumber(phone);
     }
 
     public String getPhone() {
@@ -126,9 +122,7 @@ public class ContactVOWrapper extends ValueObject {
     }
 
     private void setEmail(String email) {
-        if (StringUtils.isNotBlank(email)) {
-            vo.setPublicEmail(email);
-        }
+        vo.setPublicEmail(email);
     }
 
     public String getPrivateEmail() {
