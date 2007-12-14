@@ -1,12 +1,10 @@
 package org.iana.rzm.common;
 
-import org.iana.dns.validator.DomainNameValidator;
-import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.dns.validator.*;
 
-import javax.persistence.Basic;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-import java.util.Locale;
+import javax.persistence.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -30,6 +28,10 @@ public class Name implements Cloneable, Serializable {
 
     final public String getName() {
         return name;
+    }
+
+    public String getFqdnName(){
+        return name.startsWith(".") ? name : "." + name;
     }
 
     public boolean equals(Object o) {

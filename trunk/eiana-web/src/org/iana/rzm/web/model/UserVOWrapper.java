@@ -158,8 +158,12 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
         List<RoleUserDomain> result = new ArrayList<RoleUserDomain>();
         int id = 0;
         for (SystemRoleVOWrapper systemRoleVOWrapper : list) {
-            result.add(new RoleUserDomain(id, systemRoleVOWrapper.getDomainName(), systemRoleVOWrapper.getTypeAsString(),
-                    null, systemRoleVOWrapper.getId()));
+            RoleUserDomain o = new RoleUserDomain(
+                id, systemRoleVOWrapper.getDomainName(), systemRoleVOWrapper.getTypeAsString(), null, systemRoleVOWrapper.getId());
+            o.setAcceptFrom(systemRoleVOWrapper.isAcceptFrom());
+            o.setNotify(systemRoleVOWrapper.isNotify());
+            o.setMustAccept(systemRoleVOWrapper.isMustAccept());
+            result.add(o);
             id++;
         }
         return result;

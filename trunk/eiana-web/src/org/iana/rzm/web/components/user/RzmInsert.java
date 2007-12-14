@@ -1,5 +1,6 @@
 package org.iana.rzm.web.components.user;
 
+import org.apache.commons.lang.*;
 import org.apache.hivemind.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
@@ -15,6 +16,9 @@ public abstract class RzmInsert extends Insert {
 
     @Parameter(name = "modifiedStyle", required = false, defaultValue = "literal:modified")
     public abstract String getModifiedStyle();
+
+    @Parameter(name = "deletedStyle", required = false, defaultValue = "literal:strikethrough")
+    public abstract String getDeletedStyle();
 
     @Parameter
     public abstract Object getValue();
@@ -34,8 +38,21 @@ public abstract class RzmInsert extends Insert {
 
         Object value = getValue();
 
-        if (value == null)
-            return;
+        boolean hasChange = false;
+        boolean deleted = false;
+
+        if (value == null){
+            if(StringUtils.isNotBlank(getOriginalValue()) ){
+                deleted = true;
+                value = getOriginalValue();
+            }else{
+                return;
+            }
+        }
+
+        if(!deleted){
+            hasChange = valueHsChanged(getValue(), getOriginalValue() == null ? "" : getOriginalValue());
+        }
 
         String insert;
         Format format = getFormat();
@@ -59,16 +76,16 @@ public abstract class RzmInsert extends Insert {
             renderInformalParameters(writer, cycle);
         }
 
-        boolean hasChange = valueHsChanged(getValue(), getOriginalValue() == null ? "" : getOriginalValue());
-        if (hasChange && getModifiedStyle() != null) {
+
+        if (hasChange || deleted) {
             writer.begin("span");
-            writer.attribute("class", getModifiedStyle());
+            writer.attribute("class", deleted ? getDeletedStyle():getModifiedStyle());
             renderInformalParameters(writer, cycle);
         }
 
         writer.print(insert, getRaw());
 
-        if (hasChange && getModifiedStyle() != null) {
+        if (hasChange || deleted) {
             writer.end();
         }
 

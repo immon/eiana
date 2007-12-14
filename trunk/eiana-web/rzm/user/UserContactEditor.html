@@ -23,7 +23,14 @@
             <h4>New Details </h4>
             <span class="grey">bbbbbbbb.</span>
             <div class="mainBox" style="margin: 20px 0 0 0;">
-                <span jwcid="container@GrayContainer"><span jwcid="editor"/></span>
+                <span jwcid="container@GrayContainer">
+                    <span jwcid="@If" condition=prop:so>
+                        <span jwcid="soEditor"/>
+                    </span>
+                    <span jwcid=@Else>
+                        <span jwcid="editor"/>
+                    </span>
+                </span>
             </div>
             <br/><br/>
         </body>

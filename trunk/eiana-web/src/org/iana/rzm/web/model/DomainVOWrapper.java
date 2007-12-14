@@ -102,7 +102,11 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     }
 
     public void setWhoisServer(String server){
-        vo.setWhoisServer(new Name(server));
+        if(server != null){
+            vo.setWhoisServer(new Name(server));
+        }else {
+            vo.setWhoisServer(null);
+        }
     }
 
 

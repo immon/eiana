@@ -333,7 +333,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         }
     }
 
-    private void validateCountryCode(String code) {
+    protected void validateCountryCode(String code) {
         if (code != null) {
             if (!getUserServices().isValidCountryCode(code)) {
                 getEditor().setErrorField(getCountryField(), "Invalid Country Code " + code);
@@ -341,7 +341,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         }
     }
 
-   private void validateEmail(String email, IFormComponent field, String fieldName) {
+   protected void validateEmail(String email, IFormComponent field, String fieldName) {
         EmailValidator validator = EmailValidator.getInstance();
 
         if (StringUtils.isBlank(email)) {
@@ -354,12 +354,12 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
         }
     }
 
-    private void validateReqiredField(Map attributes, String fieldName, IFormComponent field) {
+    protected void validateReqiredField(Map attributes, String fieldName, IFormComponent field) {
         String value = (String) attributes.get(fieldName);
         validateField(value, field, fieldName);
     }
 
-    private void validateField(String value, IFormComponent field, String fieldName) {
+    protected void validateField(String value, IFormComponent field, String fieldName) {
         if (StringUtils.isBlank(value)) {
             getEditor().setErrorField(field, "Please specify value for " + fieldName);
         }

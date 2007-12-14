@@ -1,17 +1,14 @@
 package org.iana.ticketing.rt;
 
-import org.iana.codevalues.CodeValuesRetriever;
-import org.iana.rt.RTException;
-import org.iana.rt.RTStore;
+import org.iana.codevalues.*;
+import org.iana.rt.*;
 import org.iana.rt.queue.Queue;
-import org.iana.rt.ticket.Comment;
+import org.iana.rt.ticket.*;
 import org.iana.rt.ticket.Ticket;
-import org.iana.ticketing.TicketingException;
-import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.*;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * <p/>
@@ -75,7 +72,6 @@ public class RequestTrackerService implements TicketingService {
             rtTicket.customFields().setSingleVal(customFields.get("tld"), ticket.getTld());
             store.tickets().create(rtTicket);
             String content = convertNewLines(ticket.getComment());
-            //todo comment out until we discover what is the problem with multi line comments
             Comment comment = store.tickets().commentFactory().create(content);
             store.tickets().addComment(rtTicket, comment);
             return rtTicket.getId();

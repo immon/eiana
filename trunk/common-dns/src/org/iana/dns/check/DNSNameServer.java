@@ -1,17 +1,13 @@
 package org.iana.dns.check;
 
-import org.apache.log4j.Logger;
-import org.iana.dns.DNSDomain;
-import org.iana.dns.DNSHost;
-import org.iana.dns.DNSIPAddress;
-import org.iana.dns.check.exceptions.DNSCheckIOException;
+import org.apache.log4j.*;
+import org.iana.dns.*;
+import org.iana.dns.check.exceptions.*;
 import org.xbill.DNS.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * A helper class that represents a host which is a name server for a domain. During
@@ -26,6 +22,48 @@ public class DNSNameServer {
     private DNSHost host;
     private DNSSOA soaByUDP;
     private DNSSOA soaByTCP;
+
+    public Record[] getRecords() throws DNSCheckIOException {
+        List<Record> records = new ArrayList<Record>();
+        records.addAll(getRecords(Type.A));
+        records.addAll(getRecords(Type.AAAA));
+        return records.toArray(new Record[0]);
+    }
+
+    private List<Record> getRecords(int type) throws DNSCheckIOException {
+        try {
+            Record question = Record.newRecord(new Name(host.getNameWithDot()), type, DClass.IN);
+            Message query = Message.newQuery(question);
+            Resolver resolver = new SimpleResolver();
+            resolver.setTCP(true);
+            Message message = resolver.send(query);
+            return Arrays.asList(message.getSectionArray(Section.ANSWER));
+        } catch (IOException e) {
+            String output = "io exception: " + host.getName();
+            Logger.getLogger(DNSNameServer.class).error(output, e);
+            throw new DNSCheckIOException(output);
+        }
+    }
+
+    public Record[] getNsRecord() throws DNSCheckIOException {
+
+        try {
+            Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.NS, DClass.IN);
+            Message query = Message.newQuery(question);
+            String[] ips = host.getIPAddressesAsStrings().toArray(new String[0]);
+            InetAddress address = Address.getByAddress(ips[0]);
+            SimpleResolver resolver = new SimpleResolver();
+            resolver.setAddress(address);
+            resolver.setTCP(true);
+            Message message = resolver.send(query);
+            return message.getSectionArray(Section.ANSWER);
+        } catch (IOException e) {
+             String output = "io exception: " + host.getName();
+            Logger.getLogger(DNSNameServer.class).error(output, e);
+            throw new DNSCheckIOException(output);
+        }
+    }
+
 
     private class DNSSOA {
 
@@ -68,8 +106,12 @@ public class DNSNameServer {
     }
 
     public DNSNameServer(DNSDomain domain, DNSHost host) {
-        if (domain == null) throw new IllegalArgumentException("null domain");
-        if (host == null) throw new IllegalArgumentException("null host");
+        if (domain == null) {
+            throw new IllegalArgumentException("null domain");
+        }
+        if (host == null) {
+            throw new IllegalArgumentException("null host");
+        }
         this.domain = domain;
         this.host = host;
         this.soaByUDP = new DNSSOA(false);
@@ -96,12 +138,17 @@ public class DNSNameServer {
     }
 
     public List<Record> getAuthoritySection() throws DNSCheckIOException {
-        return (getSOA() != null) ? Arrays.asList(getSOA().getSectionArray(2)) : new ArrayList<Record>();
+        return (getSOA() != null) ?
+               Arrays.asList(getSOA().getSectionArray(Section.AUTHORITY)) :
+               new ArrayList<Record>();
     }
 
     public List<Record> getAdditionalSection() throws DNSCheckIOException {
-        return (getSOA() != null) ? Arrays.asList(getSOA().getSectionArray(3)) : new ArrayList<Record>();
+        return (getSOA() != null) ?
+               Arrays.asList(getSOA().getSectionArray(Section.ADDITIONAL)) :
+               new ArrayList<Record>();
     }
+
 
     public long getSerialNumber() throws DNSCheckIOException {
         return (getSOA() != null) ? ((SOARecord) getSOA().getSectionArray(1)[0]).getSerial() : -1;

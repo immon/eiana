@@ -8,11 +8,11 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/eiana-deploy.xml">
       <additionalClassPath />
@@ -271,6 +271,7 @@
       </item>
     </group>
   </component>
+  <component name="ProjectFileVersion" converted="false" />
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/build.iml" filepath="$PROJECT_DIR$/build.iml" />
@@ -308,6 +309,13 @@
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ProjectRunConfigurationManager" />
+  <component name="ResourceManagerContainer">
+    <option name="myResourceBundles">
+      <value>
+        <list size="0" />
+      </value>
+    </option>
+  </component>
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
     <option name="DEBUGGING_INFO" value="true" />
@@ -316,7 +324,11 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="StarteamVcsAdapter" />
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="svn" />
+  </component>
   <component name="VssVcs" />
+  <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.intellij.jsf.UserDefinedFacesConfigs">
     <option name="USER_DEFINED_CONFIGS">
       <value>

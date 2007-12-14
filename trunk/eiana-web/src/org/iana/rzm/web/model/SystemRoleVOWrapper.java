@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.user.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +15,6 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
     public static final String ADMINISTRATIVE_CONTACT = "Administrative Contact";
     public static final String THECHNICAL_CONTACT = "Technical Contact";
     public static final String SUPPORTING_ORGANIZATION = "Sponsoring Organization";
-
 
     public enum SystemType implements Type {
         AC("Administrative", ADMINISTRATIVE_CONTACT), TC("Technical", THECHNICAL_CONTACT), SO(SUPPORTING_ORGANIZATION);
@@ -36,7 +35,7 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
             return displayName;
         }
 
-        public String serverName(){
+        public String serverName() {
             return serverName;
         }
 
@@ -80,7 +79,7 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
             throw new IllegalArgumentException(type.toString());
         }
 
-        public SystemRoleVO.Type getServerType(){
+        public SystemRoleVO.Type getServerType() {
             return SystemRoleVO.SystemType.values()[ordinal()];
         }
     }
@@ -95,6 +94,31 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
         super(vo);
     }
 
+    public void setMustAccept(boolean mustAccept) {
+        getVo().setMustAccept(mustAccept);
+    }
+
+    public void setAcceptFrom(boolean acceptFrom) {
+        getVo().setAcceptFrom(acceptFrom);
+    }
+
+    public void setNotify(boolean notify) {
+        getVo().setNotify(notify);
+    }
+
+    public boolean isAcceptFrom() {
+        return getVo().isAcceptFrom();
+    }
+
+    public boolean isNotify() {
+        return getVo().isNotify();
+    }
+
+    public boolean isMustAccept() {
+        return getVo().isMustAccept();
+    }
+
+
     protected SystemRoleVO getVo() {
         return (SystemRoleVO) super.getVo();
     }
@@ -104,7 +128,7 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
     }
 
     public void setId(long roleId) {
-        if(roleId == 0){
+        if (roleId == 0) {
             getVo().setObjId(null);
         }
         getVo().setObjId(roleId);
@@ -114,7 +138,7 @@ public class SystemRoleVOWrapper extends RoleVOWrapper {
         getVo().setName(domainName);
     }
 
-    public String getDomainName(){
+    public String getDomainName() {
         return getVo().getName();
     }
 

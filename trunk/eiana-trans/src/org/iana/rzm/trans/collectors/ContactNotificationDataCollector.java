@@ -1,17 +1,13 @@
 package org.iana.rzm.trans.collectors;
 
-import org.iana.objectdiff.Change;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.SimpleChange;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.DomainChangePrinter;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.objectdiff.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.change.*;
+import org.iana.rzm.trans.confirmation.contact.*;
 import static org.iana.rzm.user.SystemRole.SystemType.AC;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -44,7 +40,7 @@ public class ContactNotificationDataCollector implements NotificationDataCollect
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
             values.put("token", contact.getToken());
-            values.put("domainName", td.getCurrentDomain().getName());
+            values.put("domainName", td.getCurrentDomain().getFqdnName());
             values.put("name", contact.getName());
             values.put("title", getContactJobTitle());
             values.put("changes", DomainChangePrinter.print(td.getDomainChange()));

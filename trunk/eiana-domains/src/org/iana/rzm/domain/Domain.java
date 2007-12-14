@@ -1,14 +1,15 @@
 package org.iana.rzm.domain;
 
-import org.hibernate.annotations.CollectionOfElements;
-import org.iana.dns.validator.InvalidDomainNameException;
-import org.iana.rzm.common.Name;
-import org.iana.rzm.common.TrackData;
-import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.common.validators.CheckTool;
+import org.hibernate.annotations.*;
+import org.iana.dns.validator.*;
+import org.iana.rzm.common.*;
+import org.iana.rzm.common.validators.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -159,6 +160,11 @@ public class Domain implements TrackedObject, Cloneable {
     final public String getName() {
         return name == null ? null : name.getName();
     }
+
+    final public String getFqdnName() {
+        return name == null ? null : name.getFqdnName();
+    }
+
 
     final public void setName(String name) throws InvalidDomainNameException {
         this.name = new Name(name);
