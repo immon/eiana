@@ -587,6 +587,8 @@
             <event type='node-enter'>
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>rejected</notification>
+                    <sendToContacts>true</sendToContacts>
+                    <sendToAdmins>false</sendToAdmins>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>false</start>
@@ -605,6 +607,8 @@
             <event type='node-enter'>
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>withdrawn</notification>
+                    <sendToContacts>true</sendToContacts>
+                    <sendToAdmins>false</sendToAdmins>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>false</start>
@@ -623,6 +627,8 @@
             <event type='node-enter'>
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notification>admin-closed</notification>
+                    <sendToContacts>true</sendToContacts>
+                    <sendToAdmins>false</sendToAdmins>
                 </action>
                 <action class="org.iana.rzm.trans.jbpm.handlers.domainstate.ProcessLifecycle">
                     <start>false</start>
