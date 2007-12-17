@@ -1,13 +1,18 @@
 package org.iana.dns.check;
 
-import org.apache.log4j.*;
-import org.iana.dns.*;
-import org.iana.dns.check.exceptions.*;
+import org.apache.log4j.Logger;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSHost;
+import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.exceptions.DNSCheckIOException;
 import org.xbill.DNS.*;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A helper class that represents a host which is a name server for a domain. During
@@ -32,12 +37,18 @@ public class DNSNameServer {
 
     private List<Record> getRecords(int type) throws DNSCheckIOException {
         try {
-            Record question = Record.newRecord(new Name(host.getNameWithDot()), type, DClass.IN);
-            Message query = Message.newQuery(question);
-            Resolver resolver = new SimpleResolver();
-            resolver.setTCP(true);
-            Message message = resolver.send(query);
-            return Arrays.asList(message.getSectionArray(Section.ANSWER));
+//            Record question = Record.newRecord(new Name(host.getNameWithDot()), type, DClass.IN);
+//            Message query = Message.newQuery(question);
+//            Resolver resolver = new SimpleResolver();
+//            resolver.setTCP(true);
+//            Message message = resolver.send(query);
+//            SimpleResolver resolver = new SimpleResolver();
+//            resolver.setTCP(true);
+//            lookup.setResolver(resolver);
+
+            Lookup lookup = new Lookup(new Name(host.getNameWithDot()), type);
+            Record[] records = lookup.run();
+            return (records == null) ? new ArrayList<Record>() : Arrays.asList(records);
         } catch (IOException e) {
             String output = "io exception: " + host.getName();
             Logger.getLogger(DNSNameServer.class).error(output, e);
@@ -58,7 +69,7 @@ public class DNSNameServer {
             Message message = resolver.send(query);
             return message.getSectionArray(Section.ANSWER);
         } catch (IOException e) {
-             String output = "io exception: " + host.getName();
+            String output = "io exception: " + host.getName();
             Logger.getLogger(DNSNameServer.class).error(output, e);
             throw new DNSCheckIOException(output);
         }
@@ -139,14 +150,14 @@ public class DNSNameServer {
 
     public List<Record> getAuthoritySection() throws DNSCheckIOException {
         return (getSOA() != null) ?
-               Arrays.asList(getSOA().getSectionArray(Section.AUTHORITY)) :
-               new ArrayList<Record>();
+                Arrays.asList(getSOA().getSectionArray(Section.AUTHORITY)) :
+                new ArrayList<Record>();
     }
 
     public List<Record> getAdditionalSection() throws DNSCheckIOException {
         return (getSOA() != null) ?
-               Arrays.asList(getSOA().getSectionArray(Section.ADDITIONAL)) :
-               new ArrayList<Record>();
+                Arrays.asList(getSOA().getSectionArray(Section.ADDITIONAL)) :
+                new ArrayList<Record>();
     }
 
 
