@@ -20,7 +20,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
         } else {
             buffer.append("All name servers have the same AS number (")
                     .append(e.getASNumber()).append(") for domain: ")
-                    .append(e.getDomainName()).append(":\n");
+                    .append(domainTLDName(e.getDomainName())).append(":\n");
             for (DNSHost host : e.getHosts())
                 buffer.append(host.getName()).append("\n");
         }
@@ -29,7 +29,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     public void acceptDuplicatedIPAddressException(DuplicatedIPAddressException e) {
         buffer.append("IP address is duplicated: ")
                 .append(e.getIpAddress().getAddress()).append(" for host: ").append(e.getHostName())
-                .append(" and domain: ").append(e.getDomainName()).append("\n");
+                .append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptEmptyIPAddressListException(EmptyIPAddressListException e) {
@@ -40,34 +40,34 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     public void acceptMaximumPayloadSizeExceededException(MaximumPayloadSizeExceededException e) {
         buffer.append("Response estimated size is greater than 512 bytes: ")
                 .append(e.getEstimatedSize()).append(" for domain: ")
-                .append(e.getDomainName()).append("\n");
+                .append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptNameServerCoherencyException(NameServerCoherencyException e) {
         buffer.append("Supplied name servers names don't match names" +
-                " returned in NS Resource Record for domain: ").append(e.getDomainName());
+                " returned in NS Resource Record for domain: ").append(domainTLDName(e.getDomainName()));
     }
 
     public void acceptNoASNumberException(NoASNumberException e) {
         buffer.append("There is no AS number for IP address: ")
                 .append(e.getIpAddress().getAddress()).append(", host: ")
-                .append(e.getHostName()).append(" and domain: ").append(e.getDomainName()).append("\n");
+                .append(e.getHostName()).append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e) {
         buffer.append("Number of name servers is lower then requested for domain: ")
-                .append(e.getDomainName()).append("\n");
+                .append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptReservedIPv4Exception(ReservedIPv4Exception e) {
         buffer.append("IP address is restricted according to RFC 3330: ")
                 .append(e.getIpAddress().getAddress()).append(" for host: ").append(e.getHostName())
-                .append(" and domain: ").append(e.getDomainName()).append("\n");
+                .append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptSerialNumberNotEqualException(SerialNumberNotEqualException e) {
         buffer.append("There are name servers with more then one serial number for domain: ")
-                .append(e.getDomainName()).append(":\n");
+                .append(domainTLDName(e.getDomainName())).append(":\n");
         for (Map.Entry<Long, List<DNSHost>> entry : e.getSerialsMap().entrySet()) {
             buffer.append("serial number: ").append(entry.getKey()).append("\n");
             for (DNSHost host : entry.getValue())
@@ -101,7 +101,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptNotAuthoritativeNameServerException(NotAuthoritativeNameServerException e) {
         buffer.append("Host is not authoritative: ").append(e.getHostName())
-                .append(" for domain: ").append(e.getDomainName()).append("\n");
+                .append(" for domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptWhoIsIOException(WhoIsIOException e) {
@@ -123,5 +123,9 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public String getMessages() {
         return buffer.toString();
+    }
+
+    private String domainTLDName(String name) {
+        return "." + name.toUpperCase();
     }
 }
