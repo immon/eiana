@@ -26,12 +26,11 @@ public class ProcessStateLogger extends ActionExceptionHandler {
         TransactionState state = transaction.getState();
         state.setEnd(new Date());
         String userName = transaction.getTransactionData().getIdentityName();
-        if (userName == null) {
-            if (systemStates != null && systemStates.contains(state.getName().toString()))
-                userName = SYSTEM_NAME;
-            else if (contactStates != null && contactStates.contains(state.getName().toString()))
-                userName = CONTACT_NAME;
-        }
+        if (contactStates != null && contactStates.contains(state.getName().toString()))
+            userName = CONTACT_NAME;
+        else if (userName == null && systemStates != null && systemStates.contains(state.getName().toString()))
+            userName = SYSTEM_NAME;
         transaction.getTransactionData().addStateLogEntry(new TransactionStateLogEntry(state, userName));
+        transaction.getTransactionData().clearIdentityName();
     }
 }

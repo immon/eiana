@@ -108,7 +108,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] REJECT_CONTACT_CONFIRMATIONLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"}
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test
@@ -122,7 +122,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] CLOSE_CONTACT_CONFIRMATIONLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"gstsignaliana", "PENDING_CONTACT_CONFIRMATION"}
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_CONTACT_CONFIRMATION"})
@@ -136,7 +136,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] ACCEPT_CONTAC_CONFIRMATIONLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"}
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"}
     };
 
     @Test(dependsOnMethods = {"testCLOSE_CONTACT_CONFIRMATION"})
@@ -150,7 +150,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] ACCEPT_MANUAL_REVIEWLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"}
     };
 
@@ -222,10 +222,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] ACCEPT_IANA_CHECKLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"}
+            {"SYSTEM", "PENDING_SUPP_TECH_CHECK"}
     };
 
     @Test(dependsOnMethods = {"testACCEPT_MANUAL_REVIEW"})
@@ -242,10 +242,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] REJECT_USDOC_APPROVALLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
+            {"SYSTEM", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
     };
 
@@ -264,11 +264,11 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     }
 
     private static final String[][] workFlowNoNSChangeLog = {
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"},
-            {"gstsignalusdoc", "PENDING_DATABASE_INSERTION"}
+            {"SYSTEM", "PENDING_DATABASE_INSERTION"}
     };
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
@@ -287,10 +287,10 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private static final String[][] workFlowWithNSChangeLog = {
             {"SYSTEM", "PENDING_TECH_CHECK"},
-            {"SYSTEM", "PENDING_CONTACT_CONFIRMATION"},
+            {"AC/TC", "PENDING_CONTACT_CONFIRMATION"},
             {"gstsignaliana", "PENDING_MANUAL_REVIEW"},
             {"gstsignaliana", "PENDING_IANA_CHECK"},
-            {"gstsignaliana", "PENDING_SUPP_TECH_CHECK"},
+            {"SYSTEM", "PENDING_SUPP_TECH_CHECK"},
             {"gstsignalusdoc", "PENDING_USDOC_APPROVAL"}
     };
 

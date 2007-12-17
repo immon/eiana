@@ -271,107 +271,109 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
 
     private void acceptPENDING_CREATION() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CREATION);
         gAdminTransactionServ.transitTransaction(transactionID, "go-on");
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
     }
 
     private void rejectPENDING_CONTACT_CONFIRMATION() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
         gAdminTransactionServ.rejectTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptPENDING_CONTACT_CONFIRMATION() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-//        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+//        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
     }
 
     private void rejectMANUAL_REVIEW() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
         gAdminTransactionServ.rejectTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptMANUAL_REVIEW() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_MANUAL_REVIEW);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
     }
 
     private void rejectPENDING_IMPACTED_PARTIES() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
         gAdminTransactionServ.rejectTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptPENDING_IMPACTED_PARTIES() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IMPACTED_PARTIES);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
     }
 
     private void rejectPENDING_IANA_CHECK() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
         gAdminTransactionServ.rejectTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptPENDING_IANA_CHECK() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_IANA_CHECK);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
     }
 
     private void rejectPENDING_EXT_APPROVAL() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_EXT_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_EXT_APPROVAL);
         gAdminTransactionServ.rejectTransaction(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptPENDING_EXT_APPROVAL() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_EXT_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_EXT_APPROVAL);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
     }
 
     private void rejectPENDING_USDOC_APPROVAL() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
         gAdminTransactionServ.rejectByUSDoC(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
     }
 
     private void acceptPENDING_USDOC_APPROVAL() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
         gAdminTransactionServ.approveByUSDoC(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
     }
 
     private void acceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
         gAdminTransactionServ.approveByUSDoC(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
     }
 
     private void acceptPENDING_ZONE_INSERTION() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
     }
 
     private void acceptPENDING_ZONE_PUBLICATION() throws Exception {
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_PUBLICATION);
         gAdminTransactionServ.moveTransactionToNextState(transactionID);
-        assert isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
     }
 
-    private boolean isTransactionInDesiredState(Long transactionID, TransactionStateVO.Name transactionStateVOName) throws Exception {
+    private void isTransactionInDesiredState(Long transactionID, TransactionStateVO.Name transactionStateVOName) throws Exception {
         TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
 
         assert transactionVO != null;
-        return transactionVO.getState().getName().equals(transactionStateVOName);
+        assert transactionVO.getState().getName().equals(transactionStateVOName) :
+                "unexpected state: " + transactionVO.getState().getName() +
+                        ", expected: " + transactionStateVOName;
     }
 
     private Domain createTestDomain(String domainName) {
