@@ -4,6 +4,7 @@ import org.iana.notifications.*;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.confirmation.RoleConfirmation;
+import org.iana.rzm.trans.notifications.TransactionContentFactory;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
@@ -20,7 +21,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
 
     protected TransactionData td;
     private NotificationSender notificationSender;
-    protected ContentFactory templateContentFactory;
+    protected TransactionContentFactory transactionTemplateContentFactory;
     protected String notification;
     protected NotificationManager notificationManagerBean;
     protected UserManager userManager;
@@ -40,7 +41,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
         notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("persistentNotificationSender");
-        templateContentFactory = (ContentFactory) executionContext.getJbpmContext().getObjectFactory().createObject("templateContentFactoryBean");
+        transactionTemplateContentFactory = (TransactionContentFactory) executionContext.getJbpmContext().getObjectFactory().createObject("transactionTemplateContentFactoryBean");
         transactionId = executionContext.getProcessInstance().getId();
         stateName = executionContext.getProcessInstance().getRootToken().getNode().getName();
         userManager = (UserManager) executionContext.getJbpmContext().getObjectFactory().createObject("userManager");
@@ -79,7 +80,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
             for (String email : emails)
                 users.add(new EmailAddressee(email, email));
 
-        Content templateContent = templateContentFactory.createContent(notification, new HashMap<String, String>());
+        Content templateContent = transactionTemplateContentFactory.createContent(notification, new HashMap<String, String>(), td);
         Notification notification = new Notification(transactionId);
         notification.setContent(templateContent);
         notification.setAddressee(users);
