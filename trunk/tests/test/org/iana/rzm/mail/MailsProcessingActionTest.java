@@ -74,7 +74,7 @@ public class MailsProcessingActionTest {
 
             domain = new Domain("mailrecdomain");
             domainManager.create(domain);
-            domainTrId = transactionManager.createDomainModificationTransaction(domain).getTransactionID();
+            domainTrId = transactionManager.createDomainModificationTransaction(domain, null).getTransactionID();
         } finally {
             processDAO.close();
         }

@@ -41,16 +41,17 @@ public interface TransactionManager extends EppChangeRequestPollRspVisitor {
      * Creates a new domain modification transaction.
      *
      * @param domain a domain to be created by the end of the transaction
+     * @param creator
      * @return the new domain creation transaction
      * @throws NoModificationException thrown when no modification between the given domain and stored one is discovered
      */
-    Transaction createDomainModificationTransaction(Domain domain) throws NoModificationException;
+    Transaction createDomainModificationTransaction(Domain domain, String creator) throws NoModificationException;
 
-    Transaction createDomainModificationTransaction(Domain domain, boolean performTechnicalCheck) throws NoModificationException;
+    Transaction createDomainModificationTransaction(Domain domain, boolean performTechnicalCheck, String creator) throws NoModificationException;
 
-    Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail) throws NoModificationException;
+    Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail, String creator) throws NoModificationException;
 
-    Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail, boolean performTechnicalCheck) throws NoModificationException;
+    Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail, boolean performTechnicalCheck, String creator) throws NoModificationException;
 
     List<Transaction> findAll();
 

@@ -64,7 +64,7 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
             Domain clonedDomain = domain.clone();
             clonedDomain.addNameServer(secondNameServer);
 
-            Transaction tr = transactionManagerBean.createDomainModificationTransaction(clonedDomain);
+            Transaction tr = transactionManagerBean.createDomainModificationTransaction(clonedDomain, null);
 
             ProcessInstance pi = processDAO.getProcessInstance(tr.getTransactionID());
 

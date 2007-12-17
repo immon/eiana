@@ -20,6 +20,7 @@ import org.jbpm.graph.exe.ProcessInstance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.sql.Timestamp;
 
 /**
  * @author Jakub Laszkiewicz
@@ -77,30 +78,30 @@ public class TransactionManagerBean implements TransactionManager {
         return new Transaction(pi);
     }
 
-    public Transaction createDomainModificationTransaction(Domain modifiedDomain) throws NoModificationException {
-        return createTransaction(modifiedDomain, null);
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain, String creator) throws NoModificationException {
+        return createTransaction(modifiedDomain, null, creator);
     }
 
-    public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail) throws NoModificationException {
-        return createTransaction(modifiedDomain, submitterEmail);
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail, String creator) throws NoModificationException {
+        return createTransaction(modifiedDomain, submitterEmail, creator);
     }
 
-    public Transaction createDomainModificationTransaction(Domain modifiedDomain, boolean performTechnicalCheck) throws NoModificationException {
+    public Transaction createDomainModificationTransaction(Domain modifiedDomain, boolean performTechnicalCheck, String creator) throws NoModificationException {
         if (performTechnicalCheck) {
             technicalCheckHelper.check(modifiedDomain, notificationManager, notificationSender);
         }
-        return createTransaction(modifiedDomain, null);
+        return createTransaction(modifiedDomain, null, creator);
     }
 
     public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail,
-                                                           boolean performTechnicalCheck) throws NoModificationException {
+                                                           boolean performTechnicalCheck, String creator) throws NoModificationException {
         if (performTechnicalCheck) {
             technicalCheckHelper.check(modifiedDomain, submitterEmail, notificationManager, notificationSender);
         }
-        return createTransaction(modifiedDomain, submitterEmail);
+        return createTransaction(modifiedDomain, submitterEmail, creator);
     }
 
-    private Transaction createTransaction(Domain domain, String submitterEmail) throws NoModificationException {
+    private Transaction createTransaction(Domain domain, String submitterEmail, String creator) throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
         //todo: new RT ticket (simplified version)
@@ -108,6 +109,8 @@ public class TransactionManagerBean implements TransactionManager {
         if (domainChange == null) throw new NoModificationException(domain.getName());
         td.setDomainChange(domainChange);
         td.setSubmitterEmail(submitterEmail);
+        td.getTrackData().setCreated(new Timestamp(System.currentTimeMillis()));
+        td.getTrackData().setCreatedBy(creator);
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
         pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
         pi.signal();

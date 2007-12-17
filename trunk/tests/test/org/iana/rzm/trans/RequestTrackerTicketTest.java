@@ -48,7 +48,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.addNameServer(new Host("ns2.rttickettest"));
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             transaction.setTicketID(111L);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             assert rtt.getId() != null;
@@ -71,7 +71,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.addNameServer(new Host("ns2.rttickettest"));
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             assert rtt.getTld() != null;
             assert "rttickettest-tld".equals(rtt.getTld());
@@ -92,7 +92,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.addNameServer(new Host("ns2.rttickettest"));
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -115,7 +115,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.setAdminContact(new Contact("admin1"));
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -138,7 +138,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.getAdminContact().setEmail("admin@admin.org");
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -161,7 +161,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.setTechContact(new Contact("tech1"));
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -184,7 +184,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.getTechContact().setEmail("tech@tech.org");
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -207,7 +207,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.setSupportingOrg(new Contact("supporg1"));
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -230,7 +230,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.getSupportingOrg().setEmail("supporg@supporg.org");
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -253,7 +253,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.setRegistryUrl("regurl1");
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -276,7 +276,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.setWhoisServer("whois1");
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             List<String> rt = rtt.getRequestType();
             assert rt != null;
@@ -299,7 +299,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
             domainManager.create(domain);
             Domain modified = domain.clone();
             modified.setWhoisServer("whois1");
-            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified);
+            Transaction transaction = transactionManagerBean.createDomainModificationTransaction(modified, null);
             transaction.transitTo(new ContactIdentity(""), "ADMIN_CLOSED");
             RequestTrackerTicket rtt = new RequestTrackerTicket(transaction);
             assert rtt.getIanaState() != null;
