@@ -19,4 +19,9 @@ public class MockTicketingService implements TicketingService {
     public void closeTicket(Ticket ticket) throws TicketingException {
         System.out.println("#### closeTicket: " + ticket.getId());
     }
+
+    public void addComment(long ticketID, String comment) throws TicketingException {
+        System.out.println("#### addComment: " + ticketID + " " + comment);
+
+    }
 }

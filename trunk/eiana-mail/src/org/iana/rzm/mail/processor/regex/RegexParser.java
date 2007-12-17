@@ -30,7 +30,7 @@ public class RegexParser {
             if (group == null) return null;
             return matcher.group(group);
         }
-        
+
     }
 
     public RegexParser(Map<String, Integer> tokens, String regex) throws PatternSyntaxException {

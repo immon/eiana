@@ -3,9 +3,9 @@ package org.iana.notifications;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.validators.CheckTool;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Arrays;
 
 /**
  * @author Jakub Laszkiewicz
@@ -20,7 +20,7 @@ public class PersistentNotificationSenderBean implements NotificationSender {
     }
 
     public void send(Addressee addressee, String subject, String body) throws NotificationException {
-        notificationSender.send(addressee, subject, body);
+        send(addressee, new TextContent(subject, body));
     }
 
     public void send(Notification notification) throws NotificationException {

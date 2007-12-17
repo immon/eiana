@@ -20,4 +20,8 @@ public class FakeTicketingService implements TicketingService {
 
     public void closeTicket(Ticket ticket) throws TicketingException {
     }
+
+    public void addComment(long ticketID, String comment) throws TicketingException {
+
+    }
 }
