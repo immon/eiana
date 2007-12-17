@@ -28,7 +28,7 @@ public class ZoneInsertionAlert extends ProcessStateNotifier {
         Map<String, String> values = new HashMap<String, String>();
         values.put("domainName", domainName);
         values.put("period", period);
-        Content templateContent = templateContentFactory.createContent(notification, values);
+        Content templateContent = transactionTemplateContentFactory.createContent(notification, values, td);
         Notification notification = new Notification(transactionId);
         notification.setContent(templateContent);
         notification.setAddressee(users);

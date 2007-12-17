@@ -96,13 +96,14 @@
             <ref bean="testNotificationSender"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="templateContentFactoryBean"/>
+            <ref bean="transactionTemplateContentFactoryBean"/>
         </constructor-arg>
     </bean>
 
     <!-- Content -->
 
-    <bean id="templateContentFactoryBean" class="org.iana.notifications.TemplateContentFactoryBean">
+    <bean id="transactionTemplateContentFactoryBean"
+          class="org.iana.rzm.trans.notifications.TransactionTemplateContentFactoryBean">
         <constructor-arg ref="templateContentConverter"/>
     </bean>
 

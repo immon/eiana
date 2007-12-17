@@ -31,7 +31,7 @@ public class USDOCConfirmationRemainder extends ProcessStateNotifier {
             values.put("period", period);
             values.put("transactionId", "" + transactionId);
             values.put("stateName", stateName);
-            Content templateContent = templateContentFactory.createContent(notification, values);
+            Content templateContent = transactionTemplateContentFactory.createContent(notification, values, td);
 
             Notification notification = new Notification(transactionId);
             notification.addAddressee(user);

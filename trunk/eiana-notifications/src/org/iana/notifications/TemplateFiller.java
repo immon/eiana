@@ -36,6 +36,11 @@ public abstract class TemplateFiller {
     }
 
     private static String formDate(String value) {
-        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date(new Long(value)));
+        try {
+            Long longValue = new Long(value);
+            return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date(longValue));
+        } catch (NumberFormatException e) {
+            return "Wrong date value: " + value;
+        }
     }
 }

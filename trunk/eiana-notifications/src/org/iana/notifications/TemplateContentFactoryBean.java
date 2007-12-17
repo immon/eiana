@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class TemplateContentFactoryBean implements ContentFactory {
 
-    private ContentConverter templateConverter;
+    protected ContentConverter templateConverter;
 
     public TemplateContentFactoryBean(ContentConverter templateConverter) {
         CheckTool.checkNull(templateConverter, "template converter cannot be null");
