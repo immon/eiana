@@ -163,9 +163,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
                 }
             }
         }
-        Transaction trans = transactionManager.createDomainModificationTransaction(md, submitterEmail);
-        trans.setCreated(now());
-        trans.setCreatedBy(user.getUserName());
+        Transaction trans = transactionManager.createDomainModificationTransaction(md, submitterEmail, user.getUserName());
         trans.setComment(comment);
         return TransactionConverter.toTransactionVO(trans);
     }

@@ -113,7 +113,7 @@ public class TransactionManagerTest extends TransactionalSpringContextTests {
     }
 
     private Transaction createTransaction(final Long ticketId, final Domain domain) throws NoModificationException {
-        Transaction transaction = transactionManagerBean.createDomainModificationTransaction(domain);
+        Transaction transaction = transactionManagerBean.createDomainModificationTransaction(domain, null);
         transaction.setTicketID(ticketId);
         return transaction;
     }
