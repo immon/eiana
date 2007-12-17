@@ -15,5 +15,7 @@ public interface TicketingService {
 
     public void updateTicket(Ticket ticket) throws TicketingException;
 
+    public void addComment(long ticketID, String comment) throws TicketingException;
+
     public void closeTicket(Ticket ticket) throws TicketingException;
 }

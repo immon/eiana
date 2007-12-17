@@ -1,14 +1,17 @@
 package org.iana.ticketing.rt;
 
-import org.iana.codevalues.*;
-import org.iana.rt.*;
+import org.iana.codevalues.CodeValuesRetriever;
+import org.iana.rt.RTException;
+import org.iana.rt.RTStore;
 import org.iana.rt.queue.Queue;
-import org.iana.rt.ticket.*;
+import org.iana.rt.ticket.Comment;
 import org.iana.rt.ticket.Ticket;
-import org.iana.ticketing.*;
+import org.iana.ticketing.TicketingException;
+import org.iana.ticketing.TicketingService;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p/>
@@ -122,5 +125,18 @@ public class RequestTrackerService implements TicketingService {
         if (retriever != null) label = retriever.getValueById("cc", tld.toUpperCase());
         if (label == null) label = "";
         return label;
+    }
+
+
+    public void addComment(long ticketID, String msg) throws TicketingException {
+        try {
+            Ticket ticket = store.tickets().load(ticketID);
+            Comment comment = store.tickets().commentFactory().create(msg);
+            store.tickets().addComment(ticket, comment);
+        } catch (IOException e) {
+            throw new TicketingException(e);
+        } catch (RTException e) {
+            throw new TicketingException(e);
+        }
     }
 }
