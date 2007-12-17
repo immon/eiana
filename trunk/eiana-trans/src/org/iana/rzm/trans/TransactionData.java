@@ -76,7 +76,7 @@ public class TransactionData {
 
     @Embedded
     private USDoCConfirmation confirmation;
-    
+
     public Long getObjId() {
         return objId;
     }
@@ -179,6 +179,10 @@ public class TransactionData {
         this.identityName = identityName;
     }
 
+    public void clearIdentityName() {
+        this.identityName = null;
+    }
+
     public boolean isRedelegation() {
         return redelegation;
     }
@@ -246,7 +250,7 @@ public class TransactionData {
     }
 
     public void setupUSDoCConfirmation() {
-        this.confirmation = new USDoCConfirmation(isDatabaseChange(), isNameServerChange());    
+        this.confirmation = new USDoCConfirmation(isDatabaseChange(), isNameServerChange());
     }
 
     public USDoCConfirmation getUSDoCConfirmation() {

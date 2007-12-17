@@ -16,8 +16,11 @@
                     <element>PENDING_ZONE_INSERTION</element>
                     <element>PENDING_ZONE_PUBLICATION</element>
                     <element>PENDING_ZONE_TESTING</element>
-                    <element>PENDING_CONTACT_CONFIRMATION</element>
+                    <element>PENDING_SUPP_TECH_CHECK</element>
                 </systemStates>
+                <contactStates>
+                    <element>PENDING_CONTACT_CONFIRMATION</element>
+                </contactStates>
             </action>
         </event>
         <event type='node-enter'>
