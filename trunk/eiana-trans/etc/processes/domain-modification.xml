@@ -323,6 +323,9 @@
         <state name="PENDING_EVALUATION">
             <event type='node-enter'>
                 <action class="org.iana.rzm.trans.jbpm.handlers.PendingEvaluation"/>
+                <action class="org.iana.rzm.trans.jbpm.handlers.PendingEvaluationNotifier">
+                    <notification>normal_redelegation-processing</notification>
+                </action>
             </event>
             <transition name="accept" to="PENDING_IANA_CHECK"/>
             <transition name="reject" to="REJECTED"/>
