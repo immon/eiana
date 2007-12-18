@@ -52,7 +52,7 @@ public class USDOCConfirmationNotifier extends ProcessStateNotifier {
             for (String notif : notifs) {
                 Content templateContent = transactionTemplateContentFactory.createContent(notif, values, td);
 
-                Notification notification = new Notification(transactionId);
+                Notification notification = new Notification(transactionId, td.getTicketID());
                 notification.addAddressee(user);
                 notification.setContent(templateContent);
                 notification.setPersistent(true);

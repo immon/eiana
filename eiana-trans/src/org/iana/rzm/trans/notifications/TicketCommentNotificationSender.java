@@ -21,12 +21,9 @@ public class TicketCommentNotificationSender implements NotificationSender {
 
     private TicketingService ticketingService;
 
-    private TransactionManager transactionManager;
-
-    public TicketCommentNotificationSender(NotificationSender notificationSender, TicketingService ticketingService, TransactionManager transactionManager) {
+    public TicketCommentNotificationSender(NotificationSender notificationSender, TicketingService ticketingService) {
         this.notificationSender = notificationSender;
         this.ticketingService = ticketingService;
-        this.transactionManager = transactionManager;
     }
 
     public void send(Addressee addressee, String subject, String body) throws NotificationException {
@@ -35,16 +32,11 @@ public class TicketCommentNotificationSender implements NotificationSender {
 
     public void send(Notification notification) throws NotificationException {
         notificationSender.send(notification);
-        if (notification.getTransactionId() != null) {
+        Long ticketID = notification.getTicketId();
+        if (ticketID != null) {
             try {
-                Transaction transaction = transactionManager.getTransaction(notification.getTransactionId());
-                Long ticketID = transaction.getTicketID();
-                if (ticketID != null) {
-                    Notification2Comment conv = new Notification2Comment(notification);
-                    ticketingService.addComment(ticketID, conv.getComment());
-                }
-            } catch (NoSuchTransactionException e) {
-                throw new NotificationException(e);
+                Notification2Comment conv = new Notification2Comment(notification);
+                ticketingService.addComment(ticketID, conv.getComment());
             } catch (TicketingException e) {
                 throw new NotificationException(e);
             }

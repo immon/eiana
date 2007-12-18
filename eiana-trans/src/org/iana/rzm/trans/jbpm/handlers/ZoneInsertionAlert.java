@@ -29,7 +29,7 @@ public class ZoneInsertionAlert extends ProcessStateNotifier {
         values.put("domainName", domainName);
         values.put("period", period);
         Content templateContent = transactionTemplateContentFactory.createContent(notification, values, td);
-        Notification notification = new Notification(transactionId);
+        Notification notification = new Notification(transactionId, td.getTicketID());
         notification.setContent(templateContent);
         notification.setAddressee(users);
         if (td.getSubmitterEmail() != null)

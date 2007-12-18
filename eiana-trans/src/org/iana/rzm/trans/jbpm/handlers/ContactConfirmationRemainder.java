@@ -42,7 +42,7 @@ public class ContactConfirmationRemainder extends ProcessStateNotifier {
                 values.put("stateName", stateName);
 
                 Content templateContent = transactionTemplateContentFactory.createContent(notification, values, td);
-                Notification notification = new Notification(transactionId);
+                Notification notification = new Notification(transactionId, td.getTicketID());
                 notification.addAddressee(user);
                 if (td.getSubmitterEmail() != null)
                     notification.addAddressee(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));

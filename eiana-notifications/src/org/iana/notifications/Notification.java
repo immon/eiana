@@ -41,15 +41,19 @@ public class Notification {
     @Basic
     private Long transactionId;
 
+    @Basic
+    private Long ticketId;
+
     public Notification() {
-        this(null);
+        this(null, null);
     }
 
-    public Notification(Long transactionId) {
+    public Notification(Long transactionId, Long ticketId) {
         this.created = new Timestamp(System.currentTimeMillis());
         this.sent = false;
         this.sentFailures = 0;
         this.transactionId = transactionId;
+        this.ticketId = ticketId;
         this.persistent = false;
     }
 
@@ -127,5 +131,9 @@ public class Notification {
 
     public Long getTransactionId() {
         return transactionId;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
     }
 }
