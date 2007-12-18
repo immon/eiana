@@ -81,7 +81,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
                 users.add(new EmailAddressee(email, email));
 
         Content templateContent = transactionTemplateContentFactory.createContent(notification, new HashMap<String, String>(), td);
-        Notification notification = new Notification(transactionId);
+        Notification notification = new Notification(transactionId, td.getTicketID());
         notification.setContent(templateContent);
         notification.setAddressee(users);
         if (td.getSubmitterEmail() != null)
