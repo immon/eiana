@@ -25,6 +25,7 @@
     <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
         <constructor-arg index="0" ref="notificationDAO"/>
         <constructor-arg index="1" ref="mockContentConverter"/>
+        <constructor-arg index="2" ref="NotificationSenderBean"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">

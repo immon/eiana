@@ -72,6 +72,7 @@
     <bean id="notificationManager" class="org.iana.notifications.NotificationManagerBean">
         <constructor-arg index="0" ref="notificationDAO"/>
         <constructor-arg index="1" ref="templateContentConverter"/>
+        <constructor-arg index="2" ref="testNotificationSender"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">

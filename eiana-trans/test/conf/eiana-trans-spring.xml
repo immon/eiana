@@ -26,6 +26,7 @@
     <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
         <constructor-arg index="0" ref="notificationDAO"/>
         <constructor-arg index="1" ref="mockContentConverter"/>
+        <constructor-arg index="2" ref="NotificationSenderBean"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
@@ -73,7 +74,6 @@
     <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
         <constructor-arg index="0" ref="persistentNotificationSender"/>
         <constructor-arg index="1" ref="ticketingService"/>
-        <constructor-arg index="2" ref="transactionManagerBean"/>
     </bean>
 
     <bean id="domainManagerTarget" class="org.iana.rzm.domain.DomainManagerBean">
@@ -194,7 +194,7 @@
             <ref bean="NotificationManagerBean"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
+            <ref bean="ticketCommentNotificationSender"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="mockTechnicalCheckHelper"/>
@@ -235,7 +235,7 @@
             <ref bean="NotificationManagerBean"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
+            <ref bean="ticketCommentNotificationSender"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="mockTechnicalCheckHelper"/>
@@ -430,28 +430,6 @@
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
-    </bean>
-
-    <bean id="NoificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.notifications.NotificationManager</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="notificationManagerTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
-    </bean>
-
-    <bean id="notificationManagerTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notifDAOTarget"/>
-        <constructor-arg index="1" ref="mockContentConverter"/>
     </bean>
 
     <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>

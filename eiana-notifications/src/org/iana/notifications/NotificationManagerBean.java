@@ -4,6 +4,7 @@ import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
 import org.iana.notifications.dao.NotificationDAO;
+import org.iana.notifications.exception.NotificationException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,11 +17,12 @@ import java.util.Set;
 public class NotificationManagerBean implements NotificationManager {
     private NotificationDAO notificationDAO;
     private ContentConverter templateContentConverter;
+    private NotificationSender notificationSender;
 
-
-    public NotificationManagerBean(NotificationDAO notificationDAO, ContentConverter contentConverter) {
+    public NotificationManagerBean(NotificationDAO notificationDAO, ContentConverter contentConverter, NotificationSender notificationSender) {
         this.notificationDAO = notificationDAO;
         this.templateContentConverter = contentConverter;
+        this.notificationSender = notificationSender;
     }
 
     public Notification get(long id) {
@@ -53,6 +55,21 @@ public class NotificationManagerBean implements NotificationManager {
         for (Notification notification : ret)
             addContentConverter(notification);
         return ret;
+    }
+
+
+    public void sendUnSentNotifications(long maxSentFailures) {
+        for (Notification notification : findUnSentNotifications(maxSentFailures)) {
+            try {
+                notificationSender.send(notification);
+                notification.setSent(true);
+                update(notification);
+                if (!notification.isPersistent()) delete(notification);
+            } catch (NotificationException e) {
+                notification.incSentFailures();
+                update(notification);
+            }
+        }
     }
 
     public List<Notification> findAll() {

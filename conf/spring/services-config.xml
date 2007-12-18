@@ -290,6 +290,7 @@
     <bean id="NotificationManagerBean" class="org.iana.notifications.NotificationManagerBean">
         <constructor-arg index="0" ref="notificationDAO"/>
         <constructor-arg index="1" ref="templateContentConverter"/>
+        <constructor-arg index="2" ref="NotificationSenderBean"/>
     </bean>
 
     <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
@@ -335,7 +336,6 @@
     <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
         <constructor-arg index="0" ref="persistentNotificationSender"/>
         <constructor-arg index="1" ref="ticketingService"/>
-        <constructor-arg index="2" ref="transactionManagerBean"/>
     </bean>
 
     <bean id="logger" class="org.iana.rzm.log.LoggerBean">
@@ -433,7 +433,7 @@
             <ref bean="NotificationManagerBean"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
+            <ref bean="ticketCommentNotificationSender"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="technicalCheckHelperBean"/>
@@ -840,8 +840,7 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
-                                  execution(public * org.iana.rzm.trans.jbpm.handlers.NotificationsReSender.*(..))"/>
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
