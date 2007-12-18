@@ -81,7 +81,7 @@ public class TechnicalCheckHelper implements CheckHelper {
                 if (submitterEmail != null)
                     users.add(new EmailAddressee(submitterEmail, submitterEmail));
 
-                Notification notification = createNotification(transactionId, domainName, messages, period, users);
+                Notification notification = createNotification(transactionId, td.getTicketID(), domainName, messages, period, users);
 
                 sendNotification(notification, notificationManager, notificationSender);
             }
@@ -99,14 +99,14 @@ public class TechnicalCheckHelper implements CheckHelper {
         return check(domain, null, null, null, notificationManager, notificationSender, null);
     }
 
-    private Notification createNotification(Long transactionId, String domainName, String errorMessages, String period, Set<Addressee> to) {
+    private Notification createNotification(Long transactionId, Long ticketId, String domainName, String errorMessages, String period, Set<Addressee> to) {
         Map<String, String> values = new HashMap<String, String>();
         values.put(TEMPLATE_VALUE_DOMAIN_NAME, domainName);
         values.put(TEMPLATE_VALUE_ERROR_LIST, errorMessages);
         values.put(TEMPLATE_VALUE_DAYS, period);
         Content templateContent = templateContentFactory.createContent(
                 (period != null && period.length() > 0) ? TEMPLATE_PERIOD_NAME : TEMPLATE_NAME, values);
-        Notification notification = new Notification(transactionId);
+        Notification notification = new Notification(transactionId, ticketId);
         notification.addAllAddressees(to);
         notification.setContent(templateContent);
         return notification;

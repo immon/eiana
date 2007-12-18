@@ -26,7 +26,7 @@ public class ContactConfirmationNotifier extends ProcessStateNotifier {
             NotificationDataCollector notifiData = new ContactNotificationDataCollector(td, contact, transactionId, stateName);
 
             Content templateContent = transactionTemplateContentFactory.createContent(notification, notifiData.getValuesMap(), td);
-            Notification notification = new Notification(transactionId);
+            Notification notification = new Notification(transactionId, td.getTicketID());
             notification.addAddressee(new EmailAddressee(contact.getEmail(), contact.getName()));
             if (td.getSubmitterEmail() != null)
                 notification.addAddressee(new EmailAddressee(td.getSubmitterEmail(), td.getSubmitterEmail()));
