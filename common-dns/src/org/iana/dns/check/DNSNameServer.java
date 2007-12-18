@@ -5,6 +5,7 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.exceptions.DNSCheckIOException;
+import org.iana.dns.check.exceptions.EmptyIPAddressListException;
 import org.xbill.DNS.*;
 
 import java.io.IOException;
@@ -56,13 +57,14 @@ public class DNSNameServer {
         }
     }
 
-    public Record[] getNsRecord() throws DNSCheckIOException {
+    public Record[] getNsRecord() throws DNSCheckIOException, EmptyIPAddressListException {
 
         try {
             Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.NS, DClass.IN);
             Message query = Message.newQuery(question);
-            String[] ips = host.getIPAddressesAsStrings().toArray(new String[0]);
-            InetAddress address = Address.getByAddress(ips[0]);
+            Set<String> ips = host.getIPAddressesAsStrings();
+            if (ips.isEmpty()) throw new EmptyIPAddressListException(domain, host);
+            InetAddress address = Address.getByAddress(ips.iterator().next());
             SimpleResolver resolver = new SimpleResolver();
             resolver.setAddress(address);
             resolver.setTCP(true);

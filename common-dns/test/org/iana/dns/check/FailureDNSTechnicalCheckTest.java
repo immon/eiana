@@ -1,14 +1,15 @@
 package org.iana.dns.check;
 
+import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.exceptions.*;
-import org.iana.dns.obj.DNSDomainImpl;
-import org.iana.dns.obj.DNSHostImpl;
-import org.iana.dns.obj.DNSIPAddressImpl;
+import org.iana.dns.obj.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -119,7 +120,7 @@ public class FailureDNSTechnicalCheckTest {
         domain.addNameServer(host);
 
         host = new DNSHostImpl("a.nic.de");
-        host.addIPAddress("193.0.7.3");
+        host.addIPAddress("194.0.0.53");
         domain.addNameServer(host);
 
         try {
@@ -153,7 +154,10 @@ public class FailureDNSTechnicalCheckTest {
         } catch (DNSTechnicalCheckException e) {
             MultipleDNSTechnicalCheckException exception = (MultipleDNSTechnicalCheckException) e;
             List<DNSTechnicalCheckException> errors = exception.getExceptions();
-            assert errors.contains(new NameServerIPAddressesNotEqualException(host3));
+            Set<DNSIPAddress> ipAddresses = new HashSet<DNSIPAddress>(2);
+            ipAddresses.add(new DNSIPv6AddressImpl("2001:608:6:0:0:0:0:5"));
+            ipAddresses.add(new DNSIPv4AddressImpl("81.91.164.5"));
+            assert errors.contains(new NameServerIPAddressesNotEqualException(host3, ipAddresses));
             throw e;
         }
     }
