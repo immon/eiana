@@ -56,7 +56,7 @@
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="NotificationManagerBean"/>
-        <constructor-arg index="2" ref="persistentNotificationSender"/>
+        <constructor-arg index="2" ref="ticketCommentNotificationSender"/>
         <constructor-arg index="3" ref="transactionManagerBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -330,6 +330,12 @@
         <constructor-arg>
             <ref bean="NotificationManagerBean"/>
         </constructor-arg>
+    </bean>
+
+    <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
+        <constructor-arg index="0" ref="persistentNotificationSender"/>
+        <constructor-arg index="1" ref="ticketingService"/>
+        <constructor-arg index="2" ref="transactionManagerBean"/>
     </bean>
 
     <bean id="logger" class="org.iana.rzm.log.LoggerBean">
@@ -640,7 +646,7 @@
             <constructor-arg index="1" ref="authenticationServiceBean"/>
             <constructor-arg index="2" ref="transSystemTransactionService"/>
             <constructor-arg index="3" ref="transSystemDomainService"/>
-            <constructor-arg index="4" ref="NotificationSenderBean"/>
+            <constructor-arg index="4" ref="ticketCommentNotificationSender"/>
             <constructor-arg index="5" ref="NotificationManagerBean"/>
             <constructor-arg index="6" ref="userManager"/>
         </bean>
@@ -759,7 +765,7 @@
         </constructor-arg>
         <constructor-arg index="2">
             <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
-                <constructor-arg ref="persistentNotificationSender"/>
+                <constructor-arg ref="ticketCommentNotificationSender"/>
             </bean>
         </constructor-arg>
     </bean>
@@ -991,7 +997,7 @@
             <ref bean="userManager"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="persistentNotificationSender"/>
+            <ref bean="ticketCommentNotificationSender"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="transactionTemplateContentFactoryBean"/>
