@@ -840,6 +840,7 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper.*(..)) ||
                                   execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
