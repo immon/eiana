@@ -1,8 +1,10 @@
 package org.iana.dns.check;
 
 import org.iana.dns.DNSHost;
+import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.exceptions.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -76,9 +78,17 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNameServerIPAddressesNotEqualException(NameServerIPAddressesNotEqualException e) {
-        buffer.append("A and AAAA records of the authoritative name servers don't match " +
-                "the supplied glue records for inclusion in the root zone for host: ")
-                .append(e.getHostName()).append("\n");
+        buffer.append("For ").append(e.getHostName()).append(", the A/AAAA records of the authoritative name servers [");
+        for (Iterator<DNSIPAddress> iterator = e.getReturnedIPAddresses().iterator(); iterator.hasNext();) {
+            buffer.append(iterator.next().getAddress());
+            if (iterator.hasNext()) buffer.append(", ");
+        }
+        buffer.append("] don't match the supplied glue records for inclusion in the root zone [");
+        for (Iterator<String> iterator = e.getHost().getIPAddressesAsStrings().iterator(); iterator.hasNext();) {
+            buffer.append(iterator.next());
+            if (iterator.hasNext()) buffer.append(", ");
+        }
+        buffer.append("].");
     }
 
     public void acceptNameServerTechnicalCheckException(NameServerTechnicalCheckException e) {

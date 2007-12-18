@@ -19,12 +19,13 @@ import java.util.Set;
 public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+        Set<String> domainNameSeverNames = domain.getNameServerNames();
         for (DNSNameServer ns : nameServers) {
             Set<String> retHostNames = new HashSet<String>();
-            for (Record record : ns.getAuthoritySection())
+            for (Record record : ns.getNsRecord())
                 retHostNames.add(removeLastDot(record.getAdditionalName().toString().toLowerCase()));
 
-            if (!retHostNames.equals(domain.getNameServerNames())) throw new NameServerCoherencyException(domain);
+            if (!retHostNames.equals(domainNameSeverNames)) throw new NameServerCoherencyException(domain);
         }
 
 //        List<Record>list = new ArrayList<Record>();
