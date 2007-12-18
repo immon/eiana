@@ -40,7 +40,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
     private void fillDataFromContext(ExecutionContext executionContext) throws NotificationException {
         td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
-        notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("persistentNotificationSender");
+        notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("ticketCommentNotificationSender");
         transactionTemplateContentFactory = (TransactionContentFactory) executionContext.getJbpmContext().getObjectFactory().createObject("transactionTemplateContentFactoryBean");
         transactionId = executionContext.getProcessInstance().getId();
         stateName = executionContext.getProcessInstance().getRootToken().getNode().getName();

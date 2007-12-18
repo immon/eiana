@@ -16,7 +16,7 @@ public class NotificationsReSender extends ActionExceptionHandler {
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
         NotificationManager notificationManagerBean = (NotificationManager) executionContext.getJbpmContext().getObjectFactory().createObject("NotificationManagerBean");
-        NotificationSender notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("persistentNotificationSender");
+        NotificationSender notificationSender = (NotificationSender) executionContext.getJbpmContext().getObjectFactory().createObject("ticketCommentNotificationSender");
 
         List<Notification> unSentNotifications = notificationManagerBean.findUnSentNotifications(maxSendNbr);
         for (Notification notification : unSentNotifications)
