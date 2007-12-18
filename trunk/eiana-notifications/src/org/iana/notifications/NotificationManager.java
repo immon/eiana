@@ -24,6 +24,8 @@ public interface NotificationManager {
 
     public List<Notification> findAll();
 
+    public void sendUnSentNotifications(long maxSentFailures);
+
     public void deleteNotificationsByAddresse(Addressee addressee);
 
     public List<Notification> findPersistentNotifications(Long transactionId);
