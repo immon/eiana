@@ -70,6 +70,12 @@
         </constructor-arg>
     </bean>
 
+    <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
+        <constructor-arg index="0" ref="persistentNotificationSender"/>
+        <constructor-arg index="1" ref="ticketingService"/>
+        <constructor-arg index="2" ref="transactionManagerBean"/>
+    </bean>
+
     <bean id="domainManagerTarget" class="org.iana.rzm.domain.DomainManagerBean">
         <constructor-arg ref="domainDAO"/>
         <constructor-arg ref="hostManager"/>
