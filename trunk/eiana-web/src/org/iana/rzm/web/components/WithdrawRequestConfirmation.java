@@ -8,6 +8,7 @@ import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.*;
 import org.iana.rzm.web.services.*;
@@ -71,6 +72,9 @@ public abstract class WithdrawRequestConfirmation extends BaseComponent  impleme
     @Persist("client:page")
     public abstract void setRequest(TransactionVOWrapper request);
 
+    @InjectState("visit")
+    public abstract Visit getVisit();
+
     public abstract TransactionVOWrapper getRequest();
     public abstract ActionVOWrapper getAction();
     public abstract ChangeVOWrapper getChange();
@@ -122,7 +126,9 @@ public abstract class WithdrawRequestConfirmation extends BaseComponent  impleme
 
     public void delete(long requestId) {
         try {
+            SystemDomainVOWrapper domain = getRzmServices().getDomain(getRequest().getDomainName());
             getRzmServices().withdrawnTransaction(requestId);
+            getVisit().markAsNotVisited(domain.getId());
             MessagePropertyCallback callback = getCallback();
             callback.setInfoMessage("The request was withdrawn Successfully");
             callback.performCallback(getPage().getRequestCycle());

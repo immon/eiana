@@ -18,6 +18,14 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         this.state = new TransactionStateVOWrapper(vo.getState());
     }
 
+    public String getDocNote(){
+        return vo.getUsdocNotes();
+    }
+
+    public void setDocNote(String note){
+        vo.setUsdocNotes(note);
+    }
+
     public String getStateMessage(){
         return vo.getStateMessage();
     }

@@ -4,7 +4,7 @@ import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
 
@@ -61,6 +61,9 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
 
     @Component(id="pendingDoc", type="If", bindings = {"condition=prop:pendingDoc" ,"element=literal:tr"})
     public abstract IComponent getIsPendingDocComponent();
+
+    @Component(id="docNote", type = "TextArea", bindings = {"displayName=literal:DoC Note", "value=prop:request.docNote"})
+    public abstract IComponent  getDocNoteComponent();
 
     @InjectPage("admin/EditDomain")
     public abstract EditDomain getEditDomain();

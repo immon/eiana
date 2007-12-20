@@ -1,19 +1,13 @@
 package org.iana.dns.check;
 
-import org.apache.log4j.Logger;
-import org.iana.dns.DNSDomain;
-import org.iana.dns.DNSHost;
-import org.iana.dns.DNSIPAddress;
-import org.iana.dns.check.exceptions.DNSCheckIOException;
-import org.iana.dns.check.exceptions.EmptyIPAddressListException;
+import org.apache.log4j.*;
+import org.iana.dns.*;
+import org.iana.dns.check.exceptions.*;
 import org.xbill.DNS.*;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * A helper class that represents a host which is a name server for a domain. During
@@ -38,15 +32,6 @@ public class DNSNameServer {
 
     private List<Record> getRecords(int type) throws DNSCheckIOException {
         try {
-//            Record question = Record.newRecord(new Name(host.getNameWithDot()), type, DClass.IN);
-//            Message query = Message.newQuery(question);
-//            Resolver resolver = new SimpleResolver();
-//            resolver.setTCP(true);
-//            Message message = resolver.send(query);
-//            SimpleResolver resolver = new SimpleResolver();
-//            resolver.setTCP(true);
-//            lookup.setResolver(resolver);
-
             Lookup lookup = new Lookup(new Name(host.getNameWithDot()), type);
             Record[] records = lookup.run();
             return (records == null) ? new ArrayList<Record>() : Arrays.asList(records);

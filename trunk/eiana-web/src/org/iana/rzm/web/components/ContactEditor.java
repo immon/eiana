@@ -25,9 +25,8 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     @Component(id = "editContact", type = "Form", bindings = {
             "clientValidationEnabled=literal:false",
             "success=listener:save",
-            //"cancel=listener:revert",
             "delegate=prop:validationDelegate"
-            })
+     })
     public abstract IComponent getEditContactComponent();
 
     @Component(id = "name", type = "TextField", bindings = {
@@ -42,36 +41,28 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             "displayName=message:organisation-label", "value=ognl:contactAttributes.ORGANIZATION"})
     public abstract IComponent getOrganisationComponent();
 
-    @Component(id = "address", type = "TextArea", bindings = {
-            "displayName=message:address-label", "value=ognl:contactAttributes.ADDRESS"})
+    @Component(id = "address", type = "TextArea", bindings = {"displayName=message:address-label", "value=ognl:contactAttributes.ADDRESS"})
     public abstract IComponent getStreetComponent();
 
-        @Component(id = "email", type = "TextField", bindings = {
-            "displayName=message:email-label", "value=ognl:contactAttributes.EMAIL", "validators=validators:email"})
+        @Component(id = "email", type = "TextField", bindings = {"displayName=message:email-label", "value=ognl:contactAttributes.EMAIL", "validators=validators:email"})
     public abstract IComponent getEmailComponent();
 
-    @Component(id = "privateEmail", type = "TextField", bindings = {
-            "displayName=message:alt-email-label", "value=prop:privateEmail", "validators=validators:email"})
+    @Component(id = "privateEmail", type = "TextField", bindings = {"displayName=message:alt-email-label", "value=prop:privateEmail", "validators=validators:email"})
     public abstract IComponent getPrivateEmailComponent();
 
-    @Component(id = "phone", type = "TextField", bindings = {
-            "displayName=message:phone-label", "value=ognl:contactAttributes.PHONE"})
+    @Component(id = "phone", type = "TextField", bindings = {"displayName=message:phone-label", "value=ognl:contactAttributes.PHONE"})
     public abstract IComponent getPhoneComponent();
 
-    @Component(id = "altPhone", type = "TextField", bindings = {
-            "displayName=message:alt-phone-label", "value=prop:alternatePhone"})
+    @Component(id = "altPhone", type = "TextField", bindings = {"displayName=message:alt-phone-label", "value=prop:alternatePhone"})
     public abstract IComponent getAltPhoneComponent();
 
-    @Component(id = "fax", type = "TextField", bindings = {
-            "displayName=message:fax-label", "value=ognl:contactAttributes.FAX"})
+    @Component(id = "fax", type = "TextField", bindings = {"displayName=message:fax-label", "value=ognl:contactAttributes.FAX"})
     public abstract IComponent getFaxComponent();
 
-    @Component(id = "altFax", type = "TextField", bindings = {
-            "displayName=message:alt-fax-label", "value=prop:alternateFax"})
+    @Component(id = "altFax", type = "TextField", bindings = {"displayName=message:alt-fax-label", "value=prop:alternateFax"})
     public abstract IComponent getAltFaxComponent();
 
-    @Component(id = "role", type = "Checkbox", bindings = {
-            "displayName=message:role-label", "value=prop:role"})
+    @Component(id = "role", type = "Checkbox", bindings = {"displayName=message:role-label", "value=prop:role"})
     public abstract IComponent getRoleComponent();
 
     @Component(id = "roleLabel", type = "FieldLabel", bindings = {"field=component:role"})
