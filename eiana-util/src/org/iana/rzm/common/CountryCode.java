@@ -1,13 +1,10 @@
 package org.iana.rzm.common;
 
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.exceptions.*;
 
-import javax.persistence.Basic;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import javax.persistence.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -18,7 +15,7 @@ public class CountryCode implements Cloneable, Serializable {
     private String countryCode;
 
     private static final String[] ISO_CC = {
-            "AF", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM",
+            "AC", "AF", "AG", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM",
             "AW", "AU", "AT", "AZ", "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ",
             "BM", "BT", "BO", "BA", "BW", "BV", "BR", "IO", "BN", "BG", "BF", "BI",
             "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC", "CO",
@@ -36,7 +33,7 @@ public class CountryCode implements Cloneable, Serializable {
             "RO", "RU", "RW", "SH", "KN", "LC", "PM", "VC", "WS", "SM", "ST", "SA",
             "SN", "RS", "SC", "SL", "SG", "SK", "SI", "SB", "SO", "ZA", "GS", "ES",
             "LK", "SD", "SR", "SJ", "SZ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH",
-            "TL", "TG", "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA",
+            "TL", "TG", "TK", "TO", "TP", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA",
             "AE", "GB", "US", "UM", "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF",
             "EH", "YE", "ZM", "ZW"};
     private static List<String> isoCC;
