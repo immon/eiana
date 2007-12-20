@@ -1,12 +1,13 @@
 package org.iana.rzm.common.validators;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
- * <p>
+ * <p/>
  * A simple helper tool that validates given objects against null or empty values.
  * In case of nulliness or emptiness an IllegalArgumentException is raised.
- * </p> 
+ * </p>
  *
  * @author Patrycja Wegrzynowicz
  */
@@ -47,5 +48,10 @@ public class CheckTool {
 
     final public static void checkNoNegative(long value, String field) {
         if (value < 0) throw new IllegalArgumentException(field);
+    }
+
+    final public static boolean isCorrectEmali(String email) {
+        if (email == null || email.trim().length() == 0) return false;
+        return Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+", email);
     }
 }
