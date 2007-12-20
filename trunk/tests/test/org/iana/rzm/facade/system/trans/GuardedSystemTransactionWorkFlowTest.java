@@ -113,7 +113,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
-        Long transId = createTransaction(domainVONS, userAC).getTransactionID();
+        Long transId = createTransaction(domainVONS, userAC, "submitter@not.exist").getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 2);
         rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
         assertPersistentNotifications(transId, 0);
