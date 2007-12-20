@@ -1,6 +1,9 @@
 package org.iana.rzm.init.ant.decorators;
 
 import org.iana.rzm.domain.*;
+import org.iana.rzm.init.ant.SpringInitContext;
+import org.iana.rzm.facade.common.cc.CountryCodes;
+import org.iana.codevalues.Value;
 import pl.nask.util.xml.*;
 
 import java.sql.*;
@@ -21,6 +24,8 @@ public class ContactDecorator {
     String country;
     String postCode;
 
+    static Map<String, String> countries;
+
     private void flushAddressChange() {
         Address address = new Address();
 
@@ -33,11 +38,17 @@ public class ContactDecorator {
             if (!isEmpty(state)) text.append(state).append(" ");
             text.append("\n");
         }
-        if (!isEmpty(country)) text.append(country).append("\n");
-        address.setTextAddress(text.toString());
-
+        //if (!isEmpty(country)) text.append(country).append("\n");
+        if (countries == null) {
+            countries = new HashMap<String, String>();
+            CountryCodes cc = (CountryCodes) SpringInitContext.getContext().getBean("cc");
+            for (Value c : cc.getCountries()) {
+                countries.put(c.getValueName(), c.getValueId());
+            }
+        }
         // warning: country is a full name - not a country code!
-        // set up a correct country code
+        address.setCountryCode(countries.get(country));
+        address.setTextAddress(text.toString());
 
         contact.setAddress(address);
     }
