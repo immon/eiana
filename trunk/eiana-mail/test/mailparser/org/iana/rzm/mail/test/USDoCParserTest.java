@@ -7,9 +7,8 @@ import org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -37,7 +36,7 @@ public class USDoCParserTest {
         Map<String, Integer> contentGroups = new HashMap<String, Integer>();
         contentGroups.put(USDoCAnswerParser.ACCEPT, 1);
         contentGroups.put(USDoCAnswerParser.CHANGE_SUMMARY, 2);
-        String contentPattern = ".+Authorized: (yes|no).+\\[\\+\\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\\[-\\] End Change Request Summary: DO NOT EDIT ABOVE.*";
+        String contentPattern = ".+Authorized:[ \\t]*(yes|no).+\\[\\+\\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\\[-\\] End Change Request Summary: DO NOT EDIT ABOVE.*";
         RegexParser contentParser = new RegexParser(contentGroups, contentPattern);
 
         parser = new USDoCAnswerParser(nsChangeParser, databaseChangeParser, contentParser, "yes");

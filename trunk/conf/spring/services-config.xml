@@ -721,7 +721,7 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>.+Authorized: (yes|no).+\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
+                    <value>.+Authorized:[ \t]*(yes|no).+\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
