@@ -334,6 +334,7 @@
                 haltOnFailure="false" verbose="9" groups="${test.group}" excludedgroups="${test.group.excluded}">
             <classfileset dir="${basedir}/classes/test"/>
             <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser"/>
+            <jvmarg value="-Xmx1g"/>
         </testng>
 
         <mkdir dir="${test.cobertura.output}"/>

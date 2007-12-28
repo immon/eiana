@@ -104,7 +104,7 @@
     <!-- Content -->
 
     <bean id="transactionTemplateContentFactoryBean"
-          class="org.iana.rzm.trans.notifications.TransactionTemplateContentFactoryBean">
+          class="org.iana.notifications.TemplateContentFactoryBean">
         <constructor-arg ref="templateContentConverter"/>
     </bean>
 
