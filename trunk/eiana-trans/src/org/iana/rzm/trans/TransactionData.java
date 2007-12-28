@@ -265,4 +265,22 @@ public class TransactionData {
     public void setUsdocNotes(String usdocNotes) {
         this.usdocNotes = usdocNotes;
     }
+
+    public String getStateStartDate(TransactionState.Name stateName) {
+        TransactionState state = getTransactionState(stateName);
+        return (state == null) ? "" : String.valueOf(state.getStart().getTime());
+    }
+
+    public String getStateEndDate(TransactionState.Name stateName) {
+        TransactionState state = getTransactionState(stateName);
+        return (state == null) ? "" : String.valueOf(state.getEnd().getTime());
+    }
+
+    private TransactionState getTransactionState(TransactionState.Name stateName) {
+        for (TransactionStateLogEntry logEntry : getStateLog()) {
+            if (logEntry.getState().getName().equals(stateName))
+                return logEntry.getState();
+        }
+        return null;
+    }
 }

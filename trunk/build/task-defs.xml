@@ -44,7 +44,7 @@
              classpathref="hibernatetool.classpath"/>
 
     <path id="testng.classpath">
-        <path location="${lib.dir}/testng/testng-5.5-jdk15.jar"/>
+        <path location="${lib.dir}/testng/testng-5.7-jdk15.jar"/>
     </path>
     <taskdef name="testng"
              classname="org.testng.TestNGAntTask"

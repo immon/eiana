@@ -273,8 +273,8 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
-        Long transId = createTransaction(domainVO, userAC).getTransactionID();
-        assertPersistentNotifications(transId, "contact-confirmation", 3);
+        Long transId = createTransaction(domainVO, userAC, "submitter@email.com").getTransactionID();
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);

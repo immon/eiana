@@ -15,20 +15,15 @@ public class USDOCApprovalAction extends ActionExceptionHandler {
     protected void doExecute(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
         td.setupUSDoCConfirmation();
-        USDOCConfirmationNotifier notifier = new USDOCConfirmationNotifier();
         if (td.isNameServerChange()) {
             HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
             Transaction trans = new Transaction(executionContext.getProcessInstance());
             EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
             String[] rsp = eppChangeRequest.send();
-            notifier.setReceipt(rsp[1]);
-            notifier.setEppID(rsp[0]);
-            notifier.setNotification("usdoc-confirmation-nschange");
-        } else {
-            notifier.setNotification("usdoc-confirmation");
+            executionContext.getContextInstance().setVariable("receipt", rsp[1]);
+            executionContext.getContextInstance().setVariable("eppID", rsp[0]);
         }
-        notifier.execute(executionContext);
     }
 
 }
