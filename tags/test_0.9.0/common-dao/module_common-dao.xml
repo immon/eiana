@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_common-dao" default="compile.module.common-dao">
+  <dirname property="module.common-dao.basedir" file="${ant.file.module_common-dao}"/>
+  
+  
+  <property name="compiler.args.common-dao" value="${compiler.args}"/>
+  
+  <property name="common-dao.output.dir" value="${module.common-dao.basedir}/../build/classes/production/common-dao"/>
+  <property name="common-dao.testoutput.dir" value="${module.common-dao.basedir}/../build/classes/test/common-dao"/>
+  
+  <path id="common-dao.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common-dao.module.classpath">
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <path refid="library.ant.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common-dao">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common-dao">
+    <patternset refid="excluded.from.module.common-dao"/>
+  </patternset>
+  
+  <path id="common-dao.module.sourcepath">
+    <dirset dir="${module.common-dao.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="common-dao.module.test.sourcepath">
+    <dirset dir="${module.common-dao.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common-dao" depends="compile.module.common-dao.production,compile.module.common-dao.tests" description="Compile module common-dao"/>
+  
+  <target name="compile.module.common-dao.production" depends="compile.module.common-criteria" description="Compile module common-dao; production classes">
+    <mkdir dir="${common-dao.output.dir}"/>
+    <javac destdir="${common-dao.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-dao}"/>
+      <bootclasspath refid="common-dao.module.bootclasspath"/>
+      <classpath refid="common-dao.module.classpath"/>
+      <src refid="common-dao.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-dao"/>
+    </javac>
+    
+    <copy todir="${common-dao.output.dir}">
+      <fileset dir="${module.common-dao.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.common-dao.tests" depends="compile.module.common-dao.production" description="compile module common-dao; test classes" unless="skip.tests">
+    <mkdir dir="${common-dao.testoutput.dir}"/>
+    <javac destdir="${common-dao.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-dao}"/>
+      <classpath refid="common-dao.module.classpath"/>
+      <classpath location="${common-dao.output.dir}"/>
+      <src refid="common-dao.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-dao"/>
+    </javac>
+    
+    <copy todir="${common-dao.testoutput.dir}">
+      <fileset dir="${module.common-dao.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.common-dao" description="cleanup module">
+    <delete dir="${common-dao.output.dir}"/>
+    <delete dir="${common-dao.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="eiana-util" default="compile">
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+
+  <import file="/../task-defs.xml"/>
+  <import file="module_eiana-util.xml"/>
+
+  <property name="testng.report.dir" location="raports"/>
+
+
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+
+  <target name="clean" depends="clean.module.eiana-util" description="cleanup all"/>
+
+  <target name="compile" depends="init, clean, compile.module.eiana-util" description="build all"/>
+
+  <target name="jar" depends="compile">
+      <jar destfile="${module.eiana-util.basedir}/../assembly/jar/eiana-util.jar">
+          <fileset dir="${eiana-util.output.dir}"/>
+      </jar>
+  </target>
+
+
+  <target name="prepare">
+      <mkdir dir="${testng.report.dir}"/>
+  </target>
+
+  <target name="test.run" depends="prepare,compile">
+      <testng classpathref="run.cp"
+		outputDir="${testng.report.dir}"
+		haltOnFailure="true"M verbose="2">
+	<classfileset dir="${test.build.dir}" includes="**/*.class" />
+    </testng>
+  </target>
+
+</project>

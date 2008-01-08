@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jbpm-configuration>
+    <jbpm-context>
+        <service name='persistence'
+                 factory='org.jbpm.persistence.db.DbPersistenceServiceFactory'/>
+        <service name='scheduler'
+                 factory='org.jbpm.scheduler.db.DbSchedulerServiceFactory'/>
+    </jbpm-context>
+    <string name='resource.business.calendar'
+            value='org/jbpm/calendar/jbpm.business.calendar.properties'/>
+    <string name='resource.default.modules'
+            value='org/jbpm/graph/def/jbpm.default.modules.properties'/>
+    <string name='resource.converter'
+            value='org/jbpm/db/hibernate/jbpm.converter.properties'/>
+    <string name='resource.action.types'
+            value='org/jbpm/graph/action/action.types.xml'/>
+    <string name='resource.node.types'
+            value='org/jbpm/graph/node/node.types.xml'/>
+    <string name='resource.varmapping'
+            value='eiana-trans.jbpm.varmapping.xml'/>
+    <bean name='jbpm.task.instance.factory'
+          class='org.jbpm.taskmgmt.impl.DefaultTaskInstanceFactoryImpl'
+          singleton='true'/>
+</jbpm-configuration>

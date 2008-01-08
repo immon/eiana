@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>Root Zone Management</title>
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/master.css" />
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@AdminBorder" finderListener="prop:finderListener" finderValidator="prop:finderValidator">
+            <span jwcid="@ShowError"/> 
+            <span jwcid="@ShowValidationError"/>
+            <span jwcid="@ShowMessages"/> 
+            <div style="padding: 5px 0 80px 10px;">
+                <span jwcid="activeRequest">
+                    <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
+                        <b class="leftBlack"></b>
+                        <b class="right"><a href="#" class="buttonBlack">Show Active Only </a></b>
+				    </div>
+                </span>
+                <span jwcid="allRequest">
+                    <div class="buttonStyle" style="float: left;">
+	    			    <b class="leftDot"></b>
+					    <b class="right"><a href="#" class="buttonDot">Show All </a></b>
+				    </div>
+                </span>
+                <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
+		    		<b class="leftDot"></b>
+					<b class="right"><a href="#"  jwcid="createNew"  class="buttonDot">Create New </a></b>
+				</div>
+            </div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+			    <tr>
+				    <td width="49%"><h5><span jwcid="@Insert" value="prop:browserTitle">In-Process Requests</span></h5></td>
+                </tr>
+            </table>
+
+            <span jwcid="listRequests">
+                <div class="mainBox">
+                    <div class="containerBoxHeader">
+                        <span class="roundtop">
+                            <span class="roundTop1"></span>
+                            <span class="roundTop2"></span>
+                            <span class="roundTop3"></span>
+                            <span class="roundTop4"></span>
+                        </span>
+                        <div class="boxContentHeader">
+                            <table width="95%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
+                                <tr>
+                                    <td height="20" valign="top"><strong>Reference</strong></td>
+                                    <td height="20" valign="top"><strong>Domain</strong></td>
+                                    <td height="20" valign="top"><strong>Lodged</strong></td>
+                                    <td height="20" valign="top"><strong>Created By</strong></td>
+                                    <td height="20" valign="top" ><strong>Current Status </strong></td>
+                                    <td height="20" valign="top" ><strong>Last Change </strong></td>
+                                    <td height="20" align="right" valign="top"><strong>Actions</strong></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"><img src="../images/spacer.png" width="1" height="10"></td>
+                                </tr>
+                                <tr>
+                                    <td>111</td>
+                                    <td>.US</td>
+                                    <td>9 Sep, 2006</td>
+                                    <td>Admin</td>
+                                    <td>Pending Contact Comfirmation</td>
+                                    <td>9 Sep,2006</td>
+                                    <td>
+                                        <div class="buttonStyle" style="float: right;">
+                                            <b class="left"></b>
+                                            <b class="right">View Details</b>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <span class="roundbottom">
+                            <span class="round4"></span>
+                            <span class="round3"></span>
+                            <span class="round2"></span>
+                            <span class="round1"></span>
+                        </span>
+                    </div>
+                </div>
+            </span>
+            
+        </body>
+    </span>        
+</html>
