@@ -15,6 +15,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.user.*;
 
 import java.util.*;
+import java.sql.Timestamp;
 
 /**
  * @author: Piotr Tkaczyk
@@ -71,6 +72,8 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
         isUserInRole();
         CheckTool.checkNull(domain, "domainVO");
         Domain newDomain = DomainFromVOConverter.toDomain(domain);
+        newDomain.setModified(new Timestamp(System.currentTimeMillis()));
+        newDomain.setModifiedBy(user.getUserName());
         domainManager.update(newDomain);
     }
 
