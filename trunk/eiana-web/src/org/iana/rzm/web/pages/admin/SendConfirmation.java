@@ -6,6 +6,7 @@ import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
 import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.*;
 
@@ -130,7 +131,10 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
             getRequestCycle().activate(page);
         } catch (FacadeTransactionException e) {
             setErrorMessage(e.getMessage());
+        }catch(RzmApplicationError e){
+            setErrorMessage(e.getResion());            
         }
+
     }
 
     public void revert() {

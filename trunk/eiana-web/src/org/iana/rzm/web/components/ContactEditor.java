@@ -30,7 +30,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IComponent getEditContactComponent();
 
     @Component(id = "name", type = "TextField", bindings = {
-            "displayName=message:name-label", "value=ognl:contactAttributes.NAME"})
+            "displayName=message:name-label", "value=prop:contactName"})
     public abstract IComponent getNameComponent();
 
     @Component(id = "jobTitle", type = "TextField", bindings = {
@@ -38,7 +38,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public abstract IComponent getJobTitleComponent();
 
     @Component(id = "organisation", type = "TextField", bindings = {
-            "displayName=message:organisation-label", "value=ognl:contactAttributes.ORGANIZATION"})
+            "displayName=message:organisation-label", "value=prop:orgName"})
     public abstract IComponent getOrganisationComponent();
 
     @Component(id = "address", type = "TextArea", bindings = {"displayName=message:address-label", "value=ognl:contactAttributes.ADDRESS"})
@@ -301,6 +301,41 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
     public String getAltFaxClass() {
         return getDisplayStyle(isAddAltFax());
     }
+
+    public String getContactName(){
+        String s = getContactAttributes().get(ContactVOWrapper.NAME);
+        if(s != null){
+            s = s.replace("\r", " ");
+            s = s.replace("\n", " ");
+        }
+
+        return s;
+    }
+
+    public void setContactName(String name){
+        String oldValue = getContactName();
+        if(!StringUtils.equals(oldValue, name)){
+            getContactAttributes().put(ContactVOWrapper.NAME, name);    
+        }
+    }
+
+    public String getOrgName(){
+        String s = getContactAttributes().get(ContactVOWrapper.ORGANISATION);
+        if(s != null){
+            s = s.replace("\r", " ");
+            s = s.replace("\n", " ");
+        }
+
+        return s;
+    }
+
+    public void setOrgName(String name){
+        String oldValue = getOrgName();
+        if(!StringUtils.equals(oldValue, name)){
+            getContactAttributes().put(ContactVOWrapper.ORGANISATION, name);
+        }
+    }
+
 
     protected void validateInput() {
         Map<String, String> contactAttributes = getContactAttributes();
