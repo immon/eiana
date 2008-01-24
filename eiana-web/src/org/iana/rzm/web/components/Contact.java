@@ -285,7 +285,7 @@ public abstract class Contact extends BaseComponent {
         String originalCountry = getOriginalAttributes().get(ContactVOWrapper.COUNTRY);
         String newAddress = getContactAttributes().get(ContactVOWrapper.ADDRESS);
         String country = getContactAttributes().get(ContactVOWrapper.COUNTRY);
-        return !(StringUtils.equals(originalAddress, newAddress) && StringUtils.equals(originalCountry, country));
+        return !(StringUtils.equals(originalAddress.replace("\r\n", "\n"), newAddress.replace("\r\n", "\n")) && StringUtils.equals(originalCountry, country));
     }
 
     public String getOriginalAddress() {

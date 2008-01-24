@@ -54,6 +54,10 @@ public abstract class RzmInsert extends Insert {
             hasChange = valueHsChanged(getValue(), getOriginalValue() == null ? "" : getOriginalValue());
         }
 
+        if(!hasChange){
+            value = getOriginalValue();
+        }
+
         String insert;
         Format format = getFormat();
 
@@ -94,7 +98,11 @@ public abstract class RzmInsert extends Insert {
     }
 
     private boolean valueHsChanged(Object value, Object originalValue) {
-        return !value.toString().trim().equals(originalValue.toString().trim());
+        String values = value.toString();
+        values = values.replace("\n", " ").replace("\r", " ");
+        String orgs = originalValue.toString();
+        orgs = orgs.replace("\n", " ").replace("\r", " ");        
+        return !values.trim().equals(orgs.trim());
     }
 
 }

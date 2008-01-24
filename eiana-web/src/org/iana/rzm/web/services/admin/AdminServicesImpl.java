@@ -4,6 +4,7 @@ import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.criteria.*;
 import org.iana.dns.check.*;
+import org.iana.notifications.exception.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.domain.*;
 import org.iana.rzm.facade.admin.trans.*;
@@ -283,6 +284,10 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         try {
             notificationService.resendNotification(requestId, notification.getType().voType(), comment, email);
         } catch (InfrastructureException e) {
+            if(NotificationException.class.equals(e.getCause())){
+                LOGGER.warn("Notification Exception", e.getCause());
+                throw new RzmApplicationError(e,e.getCause().getMessage());
+            }
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);
         }
