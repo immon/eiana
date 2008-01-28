@@ -6,9 +6,9 @@
 
     <state name="EPP_POLL_CHECK">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.epp.EPPPollMsgReceiver"/>
+            <action class="org.iana.rzm.trans.epp.EPPPollMsgReceiver"/>
         </event>
-        <timer name="1h-time-out" duedate="1 hour" transition="try"></timer>
+        <timer name="1h-time-out" duedate="5 minutes" transition="try"></timer>
 
         <transition name="try" to="EPP_POLL_CHECK"/>
         <transition name="end" to="END_PROCESS"/>

@@ -70,6 +70,9 @@ public class TransactionData {
     private String stateMessage;
     @Basic
     private String eppRequestId;
+    @Basic
+    @Column(length = 1024)
+    private String eppReceipt;
 
     @Basic
     private String usdocNotes;
@@ -233,6 +236,14 @@ public class TransactionData {
 
     public void setEppRequestId(String eppRequestId) {
         this.eppRequestId = eppRequestId;
+    }
+
+    public String getEppReceipt() {
+        return eppReceipt;
+    }
+
+    public void setEppReceipt(String eppReceipt) {
+        this.eppReceipt = eppReceipt;
     }
 
     public boolean isNameServerChange() {
