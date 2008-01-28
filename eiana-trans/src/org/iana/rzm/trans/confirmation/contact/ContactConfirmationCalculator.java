@@ -66,7 +66,6 @@ public class ContactConfirmationCalculator implements ActionHandler {
             }
             if (trans.isNameServerChange()) {
                 // check if shared...
-                HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
                 DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
                 Set<String> updatedNameServers = trans.getAddedOrUpdatedNameServers();
                 List<Domain> domains = domainManager.findDelegatedTo(updatedNameServers);
