@@ -46,7 +46,7 @@ public class ContactConfirmationCalculator implements ActionHandler {
                     } else {
                         name = contactChange.getId();
                     }
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, name, proposedEmail, generateToken(), true));
+                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, name, proposedEmail, generateToken(), true, false));
                 }
             }
             if (change.getFieldChanges().containsKey("adminContact")) {
@@ -61,7 +61,7 @@ public class ContactConfirmationCalculator implements ActionHandler {
                     } else {
                         name = contactChange.getId();
                     }
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, name, proposedEmail, generateToken(), true));
+                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, name, proposedEmail, generateToken(), true, false));
                 }
             }
             if (trans.isNameServerChange()) {
@@ -74,10 +74,10 @@ public class ContactConfirmationCalculator implements ActionHandler {
                     if (!processed.contains(d.getName())) {
                         processed.add(d.getName());
                         if (d.getTechContact() != null) {
-                            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false));
+                            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false, true));
                         }
                         if (d.getAdminContact() != null) {
-                            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false));
+                            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false, true));
                         }
                     }
                 }
