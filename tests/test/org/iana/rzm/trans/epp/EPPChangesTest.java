@@ -76,58 +76,12 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
         userAC.addRole(new SystemRole(SystemRole.SystemType.AC, DOMAIN_NAMENS, true, true));
         userManager.create(userAC);
 
-        userTC = new RZMUser();
-        userTC.setLoginName("gstsignalseconduser");
-        userTC.setFirstName("TCuser");
-        userTC.setLastName("lastName");
-        userTC.setEmail("email@some.com");
-        userTC.addRole(new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAME, true, true));
-        userTC.addRole(new SystemRole(SystemRole.SystemType.TC, DOMAIN_NAMENS, true, true));
-        userManager.create(userTC);
-
-        userIANA = new RZMUser();
-        userIANA.setLoginName("gstsignaliana");
-        userIANA.setFirstName("IANAuser");
-        userIANA.setLastName("lastName");
-        userIANA.setEmail("email@some.com");
-        userIANA.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        userManager.create(userIANA);
-
-        userUSDoC = new RZMUser();
-        userUSDoC.setLoginName("gstsignalusdoc");
-        userUSDoC.setFirstName("USDoCuser");
-        userUSDoC.setLastName("lastName");
-        userUSDoC.setEmail("email@some.com");
-        userUSDoC.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
-        userManager.create(userUSDoC);
-
-        domain = createDomain(DOMAIN_NAME);
-        domain.addNameServer(setupFirstHost("pr1"));
-        domain.addNameServer(setupSecondHost("pr2"));
-        domain.setEnableEmails(true);
-        domainManager.create(domain);
-
-        domain.setRegistryUrl("newregurl.org");
-        domain.getAdminContact().setEmail("admin@new-email.org");
-
-        domainVO = DomainToVOConverter.toDomainVO(domain);
-
-        domainNS = createDomain(DOMAIN_NAMENS);
-        domainNS.addNameServer(setupFirstHost("pr3"));
-        domainNS.addNameServer(setupSecondHost("pr4"));
-        domainNS.setEnableEmails(true);
-
-        domainManager.create(domainNS);
-
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
-
         eppClient = VerisignEPPClient.getEPPClient("../conf/epp/epp.rootzone.config");
 
         /*
         System.out.println("#############################");
         while (true) {
-            EppChangeRequestPollRsp pollRsp = new EPPPollRequest(0L, eppClient).send();
+            EppChangeRequestPollRsp pollRsp = new EPPPollRequest(eppClient).send();
             if (pollRsp == null) break;
             System.out.println("ack: " + pollRsp.getChangeRequestId());
         }
@@ -159,18 +113,18 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(ADD_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             assert rsp.matches(ADD_HOST_EXPECTED_RSP_2);
-            Thread.sleep(2000);
+            /*
             while (true) {
                 EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
                 EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
                 System.out.println("ack: " + pollRsp.getChangeRequestId());
-                /*
                 assert pollRsp != null;
                 assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
                 assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                         "unexpected request id: " + pollRsp.getChangeRequestId();
-                */
             }
+            */
+            Thread.sleep(2000);
         } finally {
             processDAO.close();
         }
@@ -196,12 +150,14 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+            /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
             EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
             assert pollRsp != null;
             assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
+            */
         } finally {
             processDAO.close();
         }
@@ -226,12 +182,14 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(DELETE_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+            /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
             EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
             assert pollRsp != null;
             assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
+            */
         } finally {
             processDAO.close();
         }
@@ -257,12 +215,14 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+            /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
             EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
             assert pollRsp != null;
             assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
+            */
         } finally {
             processDAO.close();
         }

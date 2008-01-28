@@ -4,13 +4,15 @@ import org.iana.epp.EPPClient;
 import org.iana.rzm.trans.TransactionManager;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
+import org.apache.log4j.Logger;
 
 /**
  * @author Jakub Laszkiewicz
  */
 public class EPPPollMsgReceiver implements ActionHandler {
     public void execute(ExecutionContext executionContext) throws Exception {
-        TransactionManager transactionManager = (TransactionManager) executionContext.getJbpmContext().getObjectFactory().createObject("transactionManager");
+        TransactionManager transactionManager = (TransactionManager)
+                executionContext.getJbpmContext().getObjectFactory().createObject("transactionManagerBean");
         EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
         EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
         EppChangeRequestPollRsp rsp = eppPollRequest.send();

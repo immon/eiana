@@ -12,6 +12,8 @@ import org.iana.epp.response.PollResponse;
 import org.iana.epp.response.Response;
 
 import java.rmi.server.UID;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author Jakub Laszkiewicz
@@ -34,12 +36,13 @@ public class EPPPollRequest {
         PollResponse pollResponse = client.poll(pollRequest);
         checkResponse(pollResponse);
 
-        if (pollResponse.getMessageId() == null)
-            throw new EPPException("message id is null");
-
-        AckRequest ackRequest = operationFactory.getAckRequest(generateTrId(), pollResponse.getMessageId());
-        AckResponse ackResponse = client.ack(ackRequest);
-        checkResponse(ackResponse);
+        if (pollResponse.getMessageCount() > 0) {
+            if (pollResponse.getMessageId() == null)
+                throw new EPPException("message id is null");
+            AckRequest ackRequest = operationFactory.getAckRequest(generateTrId(), pollResponse.getMessageId());
+            AckResponse ackResponse = client.ack(ackRequest);
+            checkResponse(ackResponse);
+        }
 
         return new EppChangeRequestPollRsp(pollResponse.getChangeStatus(), pollResponse.getChangeRequestId());
     }
@@ -57,6 +60,19 @@ public class EPPPollRequest {
     }
 
     private String generateTrId() {
-        return "" + new UID();
+        return encode("" + new UID());
+    }
+
+    private String encode(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte encoded[] = md.digest(input.getBytes());
+            StringBuffer output = new StringBuffer();
+            for (byte anEncoded : encoded)
+                output.append(Integer.toHexString((0xff & anEncoded)));
+            return output.toString();
+        } catch(NoSuchAlgorithmException e) {
+            throw new UnsupportedOperationException(e);
+        }
     }
 }

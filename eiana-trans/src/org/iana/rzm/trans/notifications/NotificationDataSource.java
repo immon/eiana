@@ -5,6 +5,7 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.configuration.ObjectFactory;
 import org.jbpm.JbpmContext;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.trans.TransactionData;
 
 import java.util.Map;
 import java.util.Set;
@@ -66,6 +67,22 @@ public class NotificationDataSource implements Map {
 
             if ("transactionId".equals(key))
                 return processInstance.getId();
+
+            if ("receipt".equals(key)) {
+                if (processInstance.getContextInstance().hasVariable("TRANSACTION_DATA")) {
+                    TransactionData td = (TransactionData)
+                            processInstance.getContextInstance().getVariable("TRANSACTION_DATA");
+                    return td.getEppReceipt();
+                } else return null;
+            }
+
+            if ("eppID".equals(key)) {
+                if (processInstance.getContextInstance().hasVariable("TRANSACTION_DATA")) {
+                    TransactionData td = (TransactionData)
+                            processInstance.getContextInstance().getVariable("TRANSACTION_DATA");
+                    return td.getEppRequestId();
+                } else return null;
+            }
 
             Object obj = executionContext.getContextInstance().getVariable(key);
             if (obj != null) return obj;

@@ -4,7 +4,6 @@ import org.iana.epp.EPPClient;
 import org.iana.rzm.domain.HostManager;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.trans.epp.EPPChangeRequest;
 import org.jbpm.graph.exe.ExecutionContext;
 
@@ -21,8 +20,7 @@ public class USDOCApprovalAction extends ActionExceptionHandler {
             EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
             String[] rsp = eppChangeRequest.send();
-            executionContext.getContextInstance().setVariable("receipt", rsp[1]);
-            executionContext.getContextInstance().setVariable("eppID", rsp[0]);
+            td.setEppReceipt(rsp[1]);
         }
     }
 
