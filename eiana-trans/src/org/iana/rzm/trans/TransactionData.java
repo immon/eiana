@@ -3,6 +3,7 @@ package org.iana.rzm.trans;
 import org.hibernate.annotations.MapKeyManyToMany;
 import org.iana.objectdiff.Change;
 import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.CollectionChange;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.Confirmation;
@@ -13,10 +14,7 @@ import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -252,6 +250,22 @@ public class TransactionData {
         return fields.containsKey("nameServers");
     }
 
+    public Set<String> getAddedOrUpdatedNameServers() {
+        Set<String> ret = new HashSet<String>();
+        if (!isNameServerChange()) return ret;
+        Map<String, Change> fields = domainChange.getFieldChanges();
+        CollectionChange nsChange = (CollectionChange) fields.get("nameServers");
+        for (Change change : nsChange.getModified()) {
+            ObjectChange obj = (ObjectChange) change;
+            ret.add(obj.getId());
+        }
+        for (Change change : nsChange.getAdded()) {
+            ObjectChange obj = (ObjectChange) change;
+            ret.add(obj.getId());
+        }
+        return ret;
+    }
+
     public boolean isDatabaseChange() {
         if (domainChange == null) return false;
         Map<String, Change> fields = domainChange.getFieldChanges();
@@ -294,4 +308,5 @@ public class TransactionData {
         }
         return null;
     }
+
 }

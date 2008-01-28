@@ -354,6 +354,10 @@ public class Transaction implements TrackedObject {
         return getTransactionData().isNameServerChange();
     }
 
+    public Set<String> getAddedOrUpdatedNameServers() {
+        return getTransactionData().getAddedOrUpdatedNameServers();
+    }
+
     public boolean isDatabaseChange() {
         return getTransactionData().isDatabaseChange();
     }
