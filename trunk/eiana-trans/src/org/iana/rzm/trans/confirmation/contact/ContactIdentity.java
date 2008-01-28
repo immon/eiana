@@ -26,6 +26,8 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     private String token;
     @Basic
     private boolean newContact;
+    @Basic
+    private boolean sharedEffect;
 
     private ContactIdentity() {
     }
@@ -35,15 +37,20 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     }
 
     public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact) {
-        this(type, contact.getName(), contact.getEmail(), token, newContact);
+        this(type, contact.getName(), contact.getEmail(), token, newContact, false);
     }
 
-    public ContactIdentity(SystemRole.SystemType type, String name, String email, String token, boolean newContact) {
+    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact, boolean sharedEffect) {
+        this(type, contact.getName(), contact.getEmail(), token, newContact, sharedEffect);
+    }
+
+    public ContactIdentity(SystemRole.SystemType type, String name, String email, String token, boolean newContact, boolean sharedEffect) {
         this.type = type;
         this.name = name;
         this.email = email == null ? "" : email;
         this.token = token;
         this.newContact = newContact;
+        this.sharedEffect = sharedEffect;
     }
 
     public SystemRole.Type getType() {
@@ -88,6 +95,10 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     public ContactIdentity clone() {
         ContactIdentity ret = (ContactIdentity) super.clone();
         ret.setObjId(null);
-        return ret;
+        return ret;        
+    }
+
+    public boolean isSharedEffect() {
+        return sharedEffect;
     }
 }
