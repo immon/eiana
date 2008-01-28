@@ -29,7 +29,8 @@ public class ContactConfirmationTCDataProducer extends DefaultDataProducer imple
         ContactIdentity contactIdentity = null;
 
         for (Identity identity : td.getContactConfirmations().getUsersAbleToAccept()) {
-            if (((ContactIdentity) identity).getType().equals(SystemRole.SystemType.AC))
+            ContactIdentity cid = (ContactIdentity) identity;
+            if (cid.getType() == SystemRole.SystemType.TC && !cid.isSharedEffect())
                 contactIdentity = (ContactIdentity) identity;
         }
 
