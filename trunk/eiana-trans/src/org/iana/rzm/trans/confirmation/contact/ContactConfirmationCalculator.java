@@ -3,16 +3,18 @@ package org.iana.rzm.trans.confirmation.contact;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.HostManager;
+import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
-import pl.nask.util.StringTool;
 
-import java.rmi.server.UID;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Random;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
@@ -60,6 +62,25 @@ public class ContactConfirmationCalculator implements ActionHandler {
                         name = contactChange.getId();
                     }
                     contacts.add(new ContactIdentity(SystemRole.SystemType.AC, name, proposedEmail, generateToken(), true));
+                }
+            }
+            if (trans.isNameServerChange()) {
+                // check if shared...
+                HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
+                DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
+                Set<String> updatedNameServers = trans.getAddedOrUpdatedNameServers();
+                List<Domain> domains = domainManager.findDelegatedTo(updatedNameServers);
+                Set<String> processed = new HashSet<String>();
+                for (Domain d : domains) {
+                    if (!processed.contains(d.getName())) {
+                        processed.add(d.getName());
+                        if (d.getTechContact() != null) {
+                            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false));
+                        }
+                        if (d.getAdminContact() != null) {
+                            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false));
+                        }
+                    }
                 }
             }
         }
