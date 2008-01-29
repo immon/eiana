@@ -62,7 +62,7 @@
         <!--Password-->
     </bean>
 
-    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSenderBean">
+    <bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
         <constructor-arg>
             <ref bean="NotificationSenderBean"/>
         </constructor-arg>
