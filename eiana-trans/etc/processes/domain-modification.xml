@@ -658,6 +658,8 @@
 
         <state name='EXCEPTION'>
             <event type='node-enter'>
+                <action class='org.iana.rzm.trans.jbpm.handlers.ticketingservice.TicketExceptionStateAddComment'>
+                </action>
                 <action class='org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier'>
                     <notificationProducerName>exceptionNotificationProducer</notificationProducerName>
                 </action>
