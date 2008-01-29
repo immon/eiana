@@ -3,18 +3,20 @@ package org.iana.notifications;
 import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.validators.CheckTool;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Arrays;
 
 /**
- * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
-public class PersistentNotificationSenderBean implements NotificationSender {
+
+public class MockPersistentNotificationSenderBean implements NotificationSender {
+
     private NotificationSender notificationSender;
     private NotificationManager notificationManager;
 
-    public PersistentNotificationSenderBean(NotificationSender notificationSender, NotificationManager notificationManager) {
+    public MockPersistentNotificationSenderBean(NotificationSender notificationSender, NotificationManager notificationManager) {
         this.notificationSender = notificationSender;
         this.notificationManager = notificationManager;
     }
@@ -24,14 +26,13 @@ public class PersistentNotificationSenderBean implements NotificationSender {
     }
 
     public void send(Notification notification) throws NotificationException {
-        CheckTool.checkNull(notification, null);                
+        CheckTool.checkNull(notification, null);
         boolean persist = notification.isPersistent();
         try {
             notificationSender.send(notification.getAddressee(), notification.getContent());
         } catch (NotificationException e) {
             notification.incSentFailures();
-            notificationManager.create(notification);
-            throw e;
+            persist = true;
         }
         if (persist) notificationManager.create(notification);
     }
