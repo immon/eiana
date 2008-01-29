@@ -22,7 +22,7 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
     private Map<String, Object> additionalData = new HashMap<String, Object>();
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
-        try {
+
         ObjectFactory objectFactory = executionContext.getJbpmContext().getObjectFactory();
         NotificationSender notificationSender = (NotificationSender) objectFactory.createObject("ticketCommentNotificationSender");
         NotificationProducer notificationProducer = (NotificationProducer) objectFactory.createObject(notificationProducerName);
@@ -32,9 +32,6 @@ public class ProcessStateNotifier extends ActionExceptionHandler {
         for (Notification notification : notificationProducer.produce(dataSource)) {
             if (!notification.getAddressee().isEmpty())
                 notificationSender.send(notification);
-        }
-        }catch(Exception e) {
-            int i=0;
         }
     }
 }
