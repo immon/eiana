@@ -535,6 +535,15 @@
         </constructor-arg>
     </bean>
 
+    <!--<bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+    </bean>-->
+
     <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
         <constructor-arg index="0" ref="persistentNotificationSender"/>
         <constructor-arg index="1" ref="ticketingService"/>
