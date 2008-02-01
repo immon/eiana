@@ -44,7 +44,7 @@ public class EPPPollRequest {
             checkResponse(ackResponse);
         }
 
-        return new EppChangeRequestPollRsp(pollResponse.getChangeStatus(), pollResponse.getChangeRequestId());
+        return new EppChangeRequestPollRsp(pollResponse.getChangeStatus(), pollResponse.getChangeRequestId(), pollResponse.getMessageCount() > 0);
     }
 
     private void checkResponse(Response response) throws EPPException {
