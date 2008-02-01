@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.epp;
 
+import org.apache.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +45,16 @@ public class EppChangeRequestPollRsp {
 
     private Status status;
     private String changeRequestId;
+    private boolean messageAwaiting;
 
-    public EppChangeRequestPollRsp(Status status, String changeRequestId) {
+    public EppChangeRequestPollRsp(Status status, String changeRequestId, boolean messageAwaiting) {
         this.status = status;
         this.changeRequestId = changeRequestId;
+        this.messageAwaiting = messageAwaiting;
     }
 
-    public EppChangeRequestPollRsp(String status, String changeRequestId) {
-        this(Status.forName(status), changeRequestId);
+    public EppChangeRequestPollRsp(String status, String changeRequestId, boolean messageAwaiting) {
+        this(Status.forName(status), changeRequestId, messageAwaiting);
     }
 
     public Status getStatus() {
@@ -61,34 +65,43 @@ public class EppChangeRequestPollRsp {
         return changeRequestId;
     }
 
+    public boolean isMessageAwaiting() {
+        return messageAwaiting;
+    }
+
     public void accept(EppChangeRequestPollRspVisitor visitor) throws EppChangeRequestPollRspVisitorException {
-        switch (status) {
-            case COMPLETE:
-                visitor.visitComplete(changeRequestId);
-                break;
-            case DOC_APPROVAL_TIMEOUT:
-                visitor.visitDocApprovalTimeout(changeRequestId);
-                break;
-            case DOC_APPROVED:
-                visitor.visitDocApproved(changeRequestId);
-                break;
-            case DOC_REJECTED:
-                visitor.visitDocRejected(changeRequestId);
-                break;
-            case GENERATED:
-                visitor.visitGenerated(changeRequestId);
-                break;
-            case HOLD:
-                visitor.visitHold(changeRequestId);
-                break;
-            case NS_REJECTED:
-                visitor.visitNsRejected(changeRequestId);
-                break;
-            case SYSTEM_VALIDATED:
-                visitor.visitSystemValidated(changeRequestId);
-                break;
-            case VALIDATION_ERROR:
-                visitor.visitValidationError(changeRequestId);
+        if (messageAwaiting) {
+            if (status == null)
+                Logger.getLogger(EppChangeRequestPollRsp.class).warn("status is null");
+            else
+                switch (status) {
+                    case COMPLETE:
+                        visitor.visitComplete(changeRequestId);
+                        break;
+                    case DOC_APPROVAL_TIMEOUT:
+                        visitor.visitDocApprovalTimeout(changeRequestId);
+                        break;
+                    case DOC_APPROVED:
+                        visitor.visitDocApproved(changeRequestId);
+                        break;
+                    case DOC_REJECTED:
+                        visitor.visitDocRejected(changeRequestId);
+                        break;
+                    case GENERATED:
+                        visitor.visitGenerated(changeRequestId);
+                        break;
+                    case HOLD:
+                        visitor.visitHold(changeRequestId);
+                        break;
+                    case NS_REJECTED:
+                        visitor.visitNsRejected(changeRequestId);
+                        break;
+                    case SYSTEM_VALIDATED:
+                        visitor.visitSystemValidated(changeRequestId);
+                        break;
+                    case VALIDATION_ERROR:
+                        visitor.visitValidationError(changeRequestId);
+                }
         }
     }
 }

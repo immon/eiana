@@ -206,37 +206,37 @@ public class TransactionManagerBean implements TransactionManager {
 
     public void visitDocApproved(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: DocApproved for transaction id: " +
                 trans.getTransactionID());
     }
 
     public void visitDocApprovalTimeout(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: DocApprovalTimeout for transaction id: " +
                 trans.getTransactionID());
     }
 
     public void visitDocRejected(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: DocRejected for transaction id: " +
                 trans.getTransactionID());
     }
 
     public void visitSystemValidated(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: SystemValidated for transaction id: " +
                 trans.getTransactionID());
     }
 
     public void visitValidationError(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: ValidationError for transaction id: " +
                 trans.getTransactionID());
     }
 
     public void visitHold(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: Hold for transaction id: " +
                 trans.getTransactionID());
     }
 
@@ -249,7 +249,7 @@ public class TransactionManagerBean implements TransactionManager {
 
     public void visitNsRejected(String eppRequestId) throws TransactionException {
         Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: docApproved for transaction id: " +
+        logger.info("Received poll message status: NsRejected for transaction id: " +
                 trans.getTransactionID());
     }
 

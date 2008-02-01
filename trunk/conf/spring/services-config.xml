@@ -771,11 +771,9 @@
         <bean name="jbpm.variable.resolver" class="org.jbpm.jpdl.el.impl.JbpmVariableResolver" />
     -->
 
-    <!--
         <bean name="jbpm.msg.wait.timout" class="java.lang.Long">
             <constructor-arg value="5000"/>
         </bean>
-    -->
 
     <bean id="jbpmContextFactory"
           class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
@@ -1052,7 +1050,8 @@
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
                                   execution(public * org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper.*(..)) ||
-                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
@@ -1061,7 +1060,8 @@
                           expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
                                       execution(* org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
                                       execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..))"/>
+                                      execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
             <aop:after method="close" pointcut-ref="jbpmOperation"/>
         </aop:aspect>
         <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
@@ -1224,4 +1224,9 @@
 
     <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
 
+    <bean id="eppPollMsgProcessorBean" class="org.iana.rzm.trans.epp.EppPollMsgProcessorImpl">
+        <constructor-arg>
+            <ref bean="transactionManagerBean"/>
+        </constructor-arg>
+    </bean>
 </beans>
