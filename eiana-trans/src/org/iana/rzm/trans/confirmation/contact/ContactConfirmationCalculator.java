@@ -68,16 +68,18 @@ public class ContactConfirmationCalculator implements ActionHandler {
                 // check if shared...
                 DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
                 Set<String> updatedNameServers = trans.getAddedOrUpdatedNameServers();
-                List<Domain> domains = domainManager.findDelegatedTo(updatedNameServers);
-                Set<String> processed = new HashSet<String>();
-                for (Domain d : domains) {
-                    if (!processed.contains(d.getName())) {
-                        processed.add(d.getName());
-                        if (d.getTechContact() != null) {
-                            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false, true));
-                        }
-                        if (d.getAdminContact() != null) {
-                            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false, true));
+                if (!updatedNameServers.isEmpty()) {
+                    List<Domain> domains = domainManager.findDelegatedTo(updatedNameServers);
+                    Set<String> processed = new HashSet<String>();
+                    for (Domain d : domains) {
+                        if (!processed.contains(d.getName())) {
+                            processed.add(d.getName());
+                            if (d.getTechContact() != null) {
+                                contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false, true));
+                            }
+                            if (d.getAdminContact() != null) {
+                                contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false, true));
+                            }
                         }
                     }
                 }
