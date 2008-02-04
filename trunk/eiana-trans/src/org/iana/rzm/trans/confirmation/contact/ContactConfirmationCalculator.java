@@ -27,10 +27,10 @@ public class ContactConfirmationCalculator implements ActionHandler {
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
         Domain domain = trans.getCurrentDomain();
         if (domain.getTechContact() != null) {
-            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, domain.getTechContact(), generateToken(), false));
+            contacts.add(new ContactIdentity(SystemRole.SystemType.TC, domain.getTechContact(), generateToken(), false, domain.getName()));
         }
         if (domain.getAdminContact() != null) {
-            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, domain.getAdminContact(), generateToken(), false));
+            contacts.add(new ContactIdentity(SystemRole.SystemType.AC, domain.getAdminContact(), generateToken(), false, domain.getName()));
         }
         ObjectChange change = trans.getTransactionData().getDomainChange();
         if (change != null && change.getFieldChanges() != null) {
@@ -46,7 +46,7 @@ public class ContactConfirmationCalculator implements ActionHandler {
                     } else {
                         name = contactChange.getId();
                     }
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, name, proposedEmail, generateToken(), true, false));
+                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, name, proposedEmail, generateToken(), true, false, domain.getName()));
                 }
             }
             if (change.getFieldChanges().containsKey("adminContact")) {
@@ -61,27 +61,7 @@ public class ContactConfirmationCalculator implements ActionHandler {
                     } else {
                         name = contactChange.getId();
                     }
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, name, proposedEmail, generateToken(), true, false));
-                }
-            }
-            if (trans.isNameServerChange()) {
-                // check if shared...
-                DomainManager domainManager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
-                Set<String> updatedNameServers = trans.getAddedOrUpdatedNameServers();
-                if (!updatedNameServers.isEmpty()) {
-                    List<Domain> domains = domainManager.findDelegatedTo(updatedNameServers);
-                    Set<String> processed = new HashSet<String>();
-                    for (Domain d : domains) {
-                        if (!processed.contains(d.getName())) {
-                            processed.add(d.getName());
-                            if (d.getTechContact() != null) {
-                                contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false, true));
-                            }
-                            if (d.getAdminContact() != null) {
-                                contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false, true));
-                            }
-                        }
-                    }
+                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, name, proposedEmail, generateToken(), true, false, domain.getName()));
                 }
             }
         }

@@ -4,6 +4,7 @@ import org.iana.notifications.Notification;
 import org.iana.notifications.Addressee;
 import org.iana.notifications.Content;
 import org.iana.notifications.ContentFactory;
+import org.iana.rzm.trans.TransactionData;
 
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,9 @@ import java.util.ArrayList;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class AddresseeBasedNotificationProducer extends AbstractNotificationProducer {
+public class AddresseeBasedTransactionNotificationProducer extends AbstractNotificationProducer {
 
-    public AddresseeBasedNotificationProducer(ContentFactory contentFactory, AddresseeProducer addresseeProducer, TemplateProducer templateProducer, DataProducer dataProducer) {
+    public AddresseeBasedTransactionNotificationProducer(ContentFactory contentFactory, AddresseeProducer addresseeProducer, TemplateProducer templateProducer, DataProducer dataProducer) {
         super(contentFactory, addresseeProducer, templateProducer, dataProducer);
     }
 
@@ -37,7 +38,10 @@ public class AddresseeBasedNotificationProducer extends AbstractNotificationProd
     }
 
     protected Notification createNotification(Map<String, Object> dataSource) {
-        return new Notification();
+        TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
+        Notification notification = new Notification((Long) dataSource.get("transactionId"), td.getTicketID());
+        notification.setPersistent(true);
+        return notification;
     }
 
 }

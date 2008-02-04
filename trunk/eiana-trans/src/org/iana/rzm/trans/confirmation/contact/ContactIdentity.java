@@ -28,6 +28,8 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     private boolean newContact;
     @Basic
     private boolean sharedEffect;
+    @Basic
+    private String domainName;
 
     private ContactIdentity() {
     }
@@ -36,21 +38,22 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
         this.token = token;
     }
 
-    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact) {
-        this(type, contact.getName(), contact.getEmail(), token, newContact, false);
+    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact, String domainName) {
+        this(type, contact.getName(), contact.getEmail(), token, newContact, false, domainName);
     }
 
-    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact, boolean sharedEffect) {
-        this(type, contact.getName(), contact.getEmail(), token, newContact, sharedEffect);
+    public ContactIdentity(SystemRole.SystemType type, Contact contact, String token, boolean newContact, boolean sharedEffect, String domainName) {
+        this(type, contact.getName(), contact.getEmail(), token, newContact, sharedEffect, domainName);
     }
 
-    public ContactIdentity(SystemRole.SystemType type, String name, String email, String token, boolean newContact, boolean sharedEffect) {
+    public ContactIdentity(SystemRole.SystemType type, String name, String email, String token, boolean newContact, boolean sharedEffect, String domainName) {
         this.type = type;
         this.name = name;
         this.email = email == null ? "" : email;
         this.token = token;
         this.newContact = newContact;
         this.sharedEffect = sharedEffect;
+        this.domainName = domainName;
     }
 
     public SystemRole.Type getType() {

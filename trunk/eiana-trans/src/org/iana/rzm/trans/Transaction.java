@@ -182,9 +182,7 @@ public class Transaction implements TrackedObject {
             Node node = token.getNode();
             String state = node.getName();
 
-            Confirmation confirmation = "PENDING_CONTACT_CONFIRMATION".equals(state) ?
-                    getTransactionData().getContactConfirmations() :
-                    getTransactionData().getStateConfirmations(node.getName());
+            Confirmation confirmation = getConfirmation(state);
 
             if (confirmation == null) throw new UserConfirmationNotExpected();
             if (!confirmation.accept(user))
@@ -204,9 +202,7 @@ public class Transaction implements TrackedObject {
         Node node = token.getNode();
         String state = node.getName();
 
-        Confirmation confirmation = "PENDING_CONTACT_CONFIRMATION".equals(state) ?
-                getTransactionData().getContactConfirmations() :
-                getTransactionData().getStateConfirmations(node.getName());
+        Confirmation confirmation = getConfirmation(state);
 
         if (confirmation == null) throw new UserConfirmationNotExpected();
         if (confirmation.isAcceptableBy(user)) {
@@ -215,6 +211,19 @@ public class Transaction implements TrackedObject {
             pi.signal(StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
+    }
+
+    static Set<String> contactStates = new HashSet<String>();
+
+    {
+        contactStates.add("PENDING_CONTACT_CONFIRMATION");
+        contactStates.add("PENDING_IMPACTED_PARTIES");
+    }
+
+    private Confirmation getConfirmation(String state) {
+        return contactStates.contains(state) ?
+                getTransactionData().getContactConfirmations() :
+                getTransactionData().getStateConfirmations(state);
     }
 
     public synchronized void transit(Identity user, String transitionName) throws TransactionException {

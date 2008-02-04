@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.notifications.contact_confirmation;
+package org.iana.rzm.trans.notifications.impacted_parties;
 
 import org.iana.rzm.trans.notifications.producer.AbstractTransactionAddresseeProducer;
 import org.iana.rzm.trans.TransactionData;
@@ -18,21 +18,16 @@ import java.util.HashSet;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class SharedNameServerAddresseeProducer extends AbstractTransactionAddresseeProducer {
-
-    private SystemRole.SystemType type;
-
-    public SharedNameServerAddresseeProducer(SystemRole.SystemType type) {
-        this.type = type;
-    }
+public class ImpactedPartiesAddresseeProducer extends AbstractTransactionAddresseeProducer {
 
     protected Set<Addressee> produceAddressee(Map dataSource) {
         Set<Addressee> addressees = new HashSet<Addressee>();
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
         for (Identity identity : td.getContactConfirmations().getUsersAbleToAccept()) {
             ContactIdentity cid = (ContactIdentity) identity;
-            if (cid.getType() == type && cid.isSharedEffect())
+            if (cid.isSharedEffect()) {
                 addressees.add(new EmailAddressee(cid.getEmail(), cid.getName()));
+            }
         }
         return addressees;
     }
