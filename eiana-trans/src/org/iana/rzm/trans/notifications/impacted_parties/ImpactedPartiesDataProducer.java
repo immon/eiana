@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.notifications.contact_confirmation;
+package org.iana.rzm.trans.notifications.impacted_parties;
 
 import org.iana.rzm.trans.notifications.default_producer.DefaultDataProducer;
 import org.iana.rzm.trans.notifications.producer.DataProducer;
@@ -19,13 +19,7 @@ import java.util.HashMap;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class SharedNameServerDataProducer extends DefaultDataProducer implements DataProducer {
-
-    private SystemRole.SystemType type;
-
-    public SharedNameServerDataProducer(SystemRole.SystemType type) {
-        this.type = type;
-    }
+public class ImpactedPartiesDataProducer extends DefaultDataProducer implements DataProducer {
 
     public Map<String, String> getSpecificValuesMap(Map dataSource) {
         Map<String, String> values = new HashMap<String, String>();
@@ -35,8 +29,8 @@ public class SharedNameServerDataProducer extends DefaultDataProducer implements
         ContactIdentity contactIdentity = (ContactIdentity) dataSource.get("addressee");
 
         if (contactIdentity != null) {
-            values.put("roleName", type.toString());
-            values.put("contactType", type == SystemRole.SystemType.TC ? "technical" : "administrative");
+            values.put("roleName", ""+contactIdentity.getType());
+            values.put("contactType", contactIdentity.getType() == SystemRole.SystemType.TC ? "technical" : "administrative");
             values.put("transactionId", "" + dataSource.get("transactionId"));
             values.put("stateName", "" + dataSource.get("stateName"));
             values.put("token", contactIdentity.getToken());
