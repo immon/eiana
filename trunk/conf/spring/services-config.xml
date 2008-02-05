@@ -310,11 +310,11 @@
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
-    <bean id="impactedPartiesNotificationProducer" class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
+    <bean id="impactedPartiesNotificationProducer" class="org.iana.rzm.trans.notifications.producer.AddresseeBasedTransactionNotificationProducer">
         <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
-        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="1" ref="impactedPartiesAddresseeProducer"/>
         <constructor-arg index="2" ref="impactedPartiesTemplateProducer"/>
-        <constructor-arg index="3" ref="defaultDataProducer"/>
+        <constructor-arg index="3" ref="impactedPartiesDataProducer"/>
     </bean>
 
     <bean id="impactedPartiesRemainderNotificationProducer" class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
@@ -378,6 +378,8 @@
     <bean id="contactConfirmationACAddresseeProducer" class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACAddresseeProducer"/>
 
     <bean id="contactConfirmationTCAddresseeProducer" class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCAddresseeProducer"/>
+
+    <bean id="impactedPartiesAddresseeProducer" class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesAddresseeProducer"/>
 
     <bean id="defaultAddresseeProducer" class="org.iana.rzm.trans.notifications.default_producer.DefaultAddresseeProducer">
         <property name="sendToContacts"><value>true</value></property>
@@ -464,6 +466,8 @@
 
     <bean id="contactConfirmationTCDataProducer" class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCDataProducer"/>
 
+    <bean id="impactedPartiesDataProducer" class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesDataProducer"/>
+
     <bean id="defaultDataProducer" class="org.iana.rzm.trans.notifications.default_producer.DefaultDataProducer"/>
 
     <bean id="usdocConfirmationDataProducer" class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationDataProducer"/>
@@ -535,14 +539,16 @@
         </constructor-arg>
     </bean>
 
-    <!--<bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
+<!--
+    <bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
         <constructor-arg>
             <ref bean="NotificationSenderBean"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="NotificationManagerBean"/>
         </constructor-arg>
-    </bean>-->
+    </bean>
+-->
 
     <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
         <constructor-arg index="0" ref="persistentNotificationSender"/>
@@ -625,7 +631,9 @@
         </property>
     </bean>
 
-    <!--<bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>-->
+<!--
+    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
+-->
 
     <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
@@ -892,6 +900,35 @@
         <constructor-arg index="2" value="I ACCEPT"/>
     </bean>
 
+    <bean id="impactedPartyAnswerParser" class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerParser">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="domain_name" value="3"/>
+                        <entry key="token" value="5"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*([\d]*) \| nameserver change for \| ([^\| ]*) \| \[RZM\] \| (AC|TC) \| ([^\| ]*).*</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="accept" value="1"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>\s*(I ACCEPT|I DECLINE).+</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2" value="I ACCEPT"/>
+    </bean>
 
     <bean id="plainUSDoCAnswerParser" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser">
         <constructor-arg index="0">
@@ -951,6 +988,10 @@
         <constructor-arg ref="transSystemTransactionService"/>
     </bean>
 
+    <bean id="impactedPartyAnswerProcessor" class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerProcessor">
+        <constructor-arg ref="transSystemTransactionService"/>
+    </bean>
+
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
         <constructor-arg index="0">
             <bean class="org.iana.rzm.mail.processor.simple.parser.CompositeEmailParser">
@@ -958,6 +999,7 @@
                     <list>
                         <ref bean="contactAnswerParser"/>
                         <ref bean="usdocAnswerParser"/>
+                        <ref bean="impactedPartyAnswerParser"/>
                     </list>
                 </constructor-arg>
             </bean>
@@ -966,6 +1008,7 @@
             <bean class="org.iana.rzm.mail.processor.simple.processor.CompositeEmailProcessor">
                 <constructor-arg>
                     <list>
+                        <ref bean="impactedPartyAnswerProcessor"/>
                         <ref bean="contactAnswerProcessor"/>
                         <ref bean="usdocAnswerProcessor"/>
                     </list>
