@@ -46,10 +46,14 @@ public class ContactAnswerParser implements EmailParser {
             String domainName = subjectTokens.token(DOMAIN_NAME);
             String token = subjectTokens.token(TOKEN);
             String accept = contentTokens.token(ACCEPT);
-            return new ContactAnswer(ticketID, domainName, token, acceptString.equalsIgnoreCase(accept));
+            return createAnswer(ticketID, domainName, token, acceptString.equalsIgnoreCase(accept));
         } catch (NumberFormatException e) {
             throw new EmailParseException(e);
         }
+    }
+
+    protected MessageData createAnswer(long ticketID, String domainName, String token, boolean accept) {
+        return new ContactAnswer(ticketID, domainName, token, accept);
     }
 
     private RegexParser.Tokens parseSubject(String subject) throws EmailParseException {

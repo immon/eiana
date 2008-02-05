@@ -54,7 +54,7 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
         }
     }
 
-    private void validate(TransactionVO transaction, ContactAnswer answer) throws EmailProcessException {
+    protected void validate(TransactionVO transaction, ContactAnswer answer) throws EmailProcessException {
         if (transaction.getState().getName() != TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION) {
             throw new EmailProcessException("Transaction is not in an appropriate state to perform this operation.");
         }

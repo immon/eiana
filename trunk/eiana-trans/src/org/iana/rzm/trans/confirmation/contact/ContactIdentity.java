@@ -104,4 +104,8 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     public boolean isSharedEffect() {
         return sharedEffect;
     }
+
+    public String getDomainName() {
+        return domainName;
+    }
 }

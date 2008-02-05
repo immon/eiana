@@ -34,7 +34,7 @@ public class ImpactedPartiesDataProducer extends DefaultDataProducer implements 
             values.put("transactionId", "" + dataSource.get("transactionId"));
             values.put("stateName", "" + dataSource.get("stateName"));
             values.put("token", contactIdentity.getToken());
-            values.put("domainName", contactIdentity.getName());
+            values.put("domainName", contactIdentity.getDomainName());
             values.put("name", contactIdentity.getName());
             // values.put("title", getContactJobTitle(td));
             values.put("changes", DomainChangePrinter.print(td.getDomainChange()));
