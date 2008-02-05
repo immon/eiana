@@ -202,6 +202,32 @@ public abstract class CommonGuardedSystemTransaction {
         closeServices();
     }
 
+    protected void acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(RZMUser user, long transId, int tokenCount) throws Exception {
+        setUser(user); //userAC
+        TransactionVO trans = gsts.get(transId);
+        List<String> tokens = trans.getTokens();
+        assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
+        for (String token : tokens) {
+            assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
+            gsts.acceptTransaction(transId, token);
+        }
+        assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
+        closeServices();
+    }
+
+    protected void acceptPENDING_IMPACTED_PARTIES(RZMUser user, long transId, int tokenCount) throws Exception {
+        setUser(user); //userAC
+        TransactionVO trans = gsts.get(transId);
+        List<String> tokens = trans.getTokens();
+        assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
+        for (String token : tokens) {
+            assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
+            gsts.acceptTransaction(transId, token);
+        }
+        assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
+        closeServices();
+    }
+
     protected void acceptPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
         setUser(firstUser); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
