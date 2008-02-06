@@ -4,6 +4,7 @@ import org.hibernate.annotations.MapKeyManyToMany;
 import org.iana.objectdiff.Change;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.CollectionChange;
+import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.Confirmation;
@@ -309,4 +310,20 @@ public class TransactionData {
         return null;
     }
 
+    public String getAdminChangedEmail() {
+        return getChangedEmail("adminContact");        
+    }
+
+    public String getTechChangedEmail() {
+        return getChangedEmail("techContact");
+    }
+
+    private String getChangedEmail(String contact) {
+        ObjectChange techChange = (ObjectChange) getDomainChange().getFieldChanges().get(contact);
+        if (techChange != null) {
+            SimpleChange emailChange = (SimpleChange) techChange.getFieldChanges().get("email");
+            if (emailChange != null) return emailChange.getNewValue();
+        }
+        return null;
+    }
 }

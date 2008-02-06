@@ -174,6 +174,13 @@ public class JbpmProcessDAO implements ProcessDAO {
         getContext().deployProcessDefinition(pd);
     }
 
+    public void deployIfProcessDoesNotExist(ProcessDefinition pd) {
+        ProcessDefinition def = getContext().getGraphSession().findLatestProcessDefinition(pd.getName());
+        if (def == null) {
+            getContext().deployProcessDefinition(pd);
+        }
+    }
+
     public void save(ProcessInstance pi) {
         getContext().save(pi);
     }

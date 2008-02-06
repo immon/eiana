@@ -35,6 +35,8 @@ public interface ProcessDAO {
 
     public List<ProcessInstance> find(ProcessCriteria criteria);
 
+    public void deployIfProcessDoesNotExist(ProcessDefinition pd);
+
     public void deploy(final ProcessDefinition pd);
 
     public void save(ProcessInstance pi);

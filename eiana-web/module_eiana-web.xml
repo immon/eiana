@@ -51,7 +51,7 @@
     <pathelement location="${module.eiana-web.basedir}/../lib/jetty/jaxen-1.1-beta-7.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/tapestry/ognl-2.6.9.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/easymock/easymock.jar"/>
-    <pathelement location="${module.eiana-web.basedir}/../../../IntelliJ IDEA 6.0/lib/j2ee.jar"/>
+    <pathelement location="${module.eiana-web.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/j2ee.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar"/>
@@ -69,6 +69,8 @@
     <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${common-config.output.dir}"/>
     <pathelement location="${common-config.testoutput.dir}"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
   </path>
   
   
@@ -89,7 +91,7 @@
   
   <target name="compile.module.eiana-web" depends="compile.module.eiana-web.production,compile.module.eiana-web.tests" description="Compile module eiana-web"/>
   
-  <target name="compile.module.eiana-web.production" depends="compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.conf,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-templates,compile.module.eiana-startup,compile.module.common-criteria,compile.module.common-codevalues,compile.module.common-dns,compile.module.common-config" description="Compile module eiana-web; production classes">
+  <target name="compile.module.eiana-web.production" depends="compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.conf,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-templates,compile.module.eiana-startup,compile.module.common-criteria,compile.module.common-codevalues,compile.module.common-dns,compile.module.common-config,compile.module.eiana-notifications" description="Compile module eiana-web; production classes">
     <mkdir dir="${eiana-web.output.dir}"/>
     <javac destdir="${eiana-web.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-web}"/>

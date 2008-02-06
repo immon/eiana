@@ -12,6 +12,8 @@ import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.notifications.default_producer.DefaultDataProducer;
 import org.iana.rzm.trans.notifications.producer.DataProducer;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.Role;
+import org.iana.notifications.Addressee;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +29,18 @@ public class ContactConfirmationACDataProducer extends DefaultDataProducer imple
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
         ContactIdentity contactIdentity = null;
 
+        Addressee addressee = (Addressee) dataSource.get("addressee");
+
         for (Identity identity : td.getContactConfirmations().getUsersAbleToAccept()) {
             ContactIdentity cid = (ContactIdentity) identity;
-            if (cid.getType() == SystemRole.SystemType.AC && !cid.isSharedEffect())
+            Role.Type type = cid.getType();
+            String email = cid.getEmail();
+            if (type == SystemRole.SystemType.AC &&
+                    !cid.isSharedEffect() &&
+                    email != null && email.equals(addressee.getEmail())) {
                 contactIdentity = (ContactIdentity) identity;
+                break;
+            }
         }
 
         if (contactIdentity != null) {

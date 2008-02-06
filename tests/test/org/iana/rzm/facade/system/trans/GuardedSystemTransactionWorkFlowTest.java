@@ -114,7 +114,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC, "submitter@not.exist").getTransactionID();
-        assertPersistentNotifications(transId, "contact-confirmation", 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 4);
         rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
         assertPersistentNotifications(transId, 0);
         checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
@@ -274,7 +274,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC, "submitter@email.com").getTransactionID();
-        assertPersistentNotifications(transId, "contact-confirmation", 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 5);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
@@ -311,23 +311,6 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private void assertPersistentNotifications(Long transId, int count) {
         assertPersistentNotifications(transId, null, count);
-    }
-
-    private void assertPersistentNotifications(Long transId, String type, int count) {
-        List<Criterion> criteria = new ArrayList<Criterion>();
-        criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transId));
-        criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, true));
-        if (type != null)
-            criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
-        List<Notification> notifications = notificationManagerBean.find(new And(criteria));
-        assert notifications != null : "notifications list is null";
-        assert notifications.size() == count : "unexpected notifications count: " + notifications.size();
-        for (Notification notif : notifications) {
-            if (type != null)
-                assert type.equals(notif.getType()) :
-                        "unexpected notification type: " + notif.getType();
-            assert notif.isPersistent() : "notification is not persistent";
-        }
     }
 
     @AfterClass(alwaysRun = true)
