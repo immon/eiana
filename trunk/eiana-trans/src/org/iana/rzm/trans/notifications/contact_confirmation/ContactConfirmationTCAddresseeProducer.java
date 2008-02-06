@@ -23,8 +23,13 @@ public class ContactConfirmationTCAddresseeProducer extends AbstractTransactionA
             Domain currentDomain = td.getCurrentDomain();
             if (currentDomain != null) {
                 Contact techContact = currentDomain.getTechContact();
-                if (techContact != null)
+                if (techContact != null) {
                     addressees.add(new EmailAddressee(techContact.getEmail(), techContact.getName()));
+                }
+                String email = td.getTechChangedEmail();
+                if (email != null) {
+                    addressees.add(new EmailAddressee(email, email));
+                }
             }
         }
         return addressees;

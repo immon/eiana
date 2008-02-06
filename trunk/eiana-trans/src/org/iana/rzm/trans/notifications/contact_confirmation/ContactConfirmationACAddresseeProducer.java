@@ -6,6 +6,7 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.notifications.producer.AbstractTransactionAddresseeProducer;
+import org.iana.objectdiff.ObjectChange;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -23,8 +24,13 @@ public class ContactConfirmationACAddresseeProducer extends AbstractTransactionA
             Domain currentDomain = td.getCurrentDomain();
             if (currentDomain != null) {
                 Contact adminContact = currentDomain.getAdminContact();
-                if (adminContact != null)
+                if (adminContact != null) {
                     addressees.add(new EmailAddressee(adminContact.getEmail(), adminContact.getName()));
+                }
+                String email = td.getAdminChangedEmail();
+                if (email != null) {
+                    addressees.add(new EmailAddressee(email, email));
+                }
             }
         }
         return addressees;

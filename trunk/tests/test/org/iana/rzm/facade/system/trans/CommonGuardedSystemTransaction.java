@@ -3,11 +3,14 @@ package org.iana.rzm.facade.system.trans;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.notifications.NotificationManager;
+import org.iana.notifications.NotificationCriteriaFields;
+import org.iana.notifications.Notification;
 import org.iana.notifications.dao.EmailAddresseeDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
@@ -22,10 +25,14 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.And;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author: Piotr Tkaczyk
@@ -37,6 +44,8 @@ public abstract class CommonGuardedSystemTransaction {
     protected ProcessDAO processDAO = (ProcessDAO) appCtx.getBean("processDAO");
     protected UserManager userManager = (UserManager) appCtx.getBean("userManager");
     protected DomainManager domainManager = (DomainManager) appCtx.getBean("domainManager");
+    protected AdminNotificationService notificationService =
+            (AdminNotificationService) appCtx.getBean("notificationService");
     protected NotificationManager notificationManagerBean =
             (NotificationManager) appCtx.getBean("NotificationManagerBean");
     protected TransactionManager transactionManagerBean =
@@ -267,6 +276,7 @@ public abstract class CommonGuardedSystemTransaction {
         gsds.setUser(authUser);
         ats.setUser(authUser);
         ads.setUser(authUser);
+        notificationService.setUser(authUser);
     }
 
     protected void setDefaultUser() throws Exception {
@@ -377,4 +387,22 @@ public abstract class CommonGuardedSystemTransaction {
         host.addIPAddress(IPAddress.createIPv6Address("2235:5678::90AB"));
         return host;
     }
+
+    protected void assertPersistentNotifications(Long transId, String type, int count) {
+        List<Criterion> criteria = new ArrayList<Criterion>();
+        criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transId));
+        criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, true));
+        if (type != null)
+            criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
+        List<Notification> notifications = notificationManagerBean.find(new And(criteria));
+        assert notifications != null : "notifications list is null";
+        assert notifications.size() == count : "unexpected notifications count: " + notifications.size();
+        for (Notification notif : notifications) {
+            if (type != null)
+                assert type.equals(notif.getType()) :
+                        "unexpected notification type: " + notif.getType();
+            assert notif.isPersistent() : "notification is not persistent";
+        }
+    }
+
 }
