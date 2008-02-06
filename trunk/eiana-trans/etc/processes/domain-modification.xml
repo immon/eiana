@@ -227,7 +227,7 @@
                         <element>IANA</element>
                     </roles>
                 </action>
-                <action class="org.iana.rzm.trans.jbpm.handlers.ImpactedPartiesCalculator"/>
+                <action class="org.iana.rzm.trans.confirmation.contact.ImpactedPartiesCalculator"/>
                 <action class="org.iana.rzm.trans.jbpm.handlers.ProcessStateNotifier">
                     <notificationProducerName>impactedPartiesNotificationProducer</notificationProducerName>
                 </action>
