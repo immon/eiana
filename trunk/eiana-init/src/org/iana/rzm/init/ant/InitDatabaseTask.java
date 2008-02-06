@@ -82,7 +82,7 @@ public class InitDatabaseTask extends HibernateTask {
         user.setLastName(name + " last name");
         user.setLoginName(name);
         user.setOrganization(name + " organization");
-        user.setPassword(name + "password");
+        user.setPassword(name);
         user.setSecurID(false);
         user.addRole(role);
         return user;

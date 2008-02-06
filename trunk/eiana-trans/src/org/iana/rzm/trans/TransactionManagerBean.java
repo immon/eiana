@@ -1,8 +1,6 @@
 package org.iana.rzm.trans;
 
-import org.apache.log4j.Logger;
 import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
 import org.iana.notifications.NotificationManager;
 import org.iana.notifications.NotificationSender;
 import org.iana.objectdiff.ChangeDetector;
@@ -14,13 +12,12 @@ import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.iana.rzm.user.RZMUser;
-import org.iana.ticketing.TicketingService;
 import org.jbpm.graph.exe.ProcessInstance;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.sql.Timestamp;
 
 /**
  * @author Jakub Laszkiewicz
@@ -28,23 +25,19 @@ import java.sql.Timestamp;
  */
 public class TransactionManagerBean implements TransactionManager {
 
-    private Logger logger = Logger.getLogger(TransactionManagerBean.class);
-
     private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
 
     private ProcessDAO processDAO;
-    private TicketingService ticketingService;
     private DomainDAO domainDAO;
     private DiffConfiguration diffConfiguration;
     private NotificationManager notificationManager;
     private NotificationSender notificationSender;
     private CheckHelper technicalCheckHelper;
 
-    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO, TicketingService ticketingService,
+    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO,
                                   DiffConfiguration diff, NotificationManager notificationManager,
                                   NotificationSender notificationSender, CheckHelper technicalCheckHelper) {
         this.processDAO = processDAO;
-        this.ticketingService = ticketingService;
         this.domainDAO = domainDAO;
         this.diffConfiguration = diff;
         this.notificationManager = notificationManager;
@@ -56,8 +49,7 @@ public class TransactionManagerBean implements TransactionManager {
         ProcessInstance pi = processDAO.getProcessInstance(id);
         if (pi == null || !DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
             throw new NoSuchTransactionException(id);
-        Transaction transaction = new Transaction(pi);
-        return transaction;
+        return new Transaction(pi);
     }
 
     public Transaction createDomainCreationTransaction(Domain domain, boolean performTechnicalCheck) {
@@ -104,7 +96,6 @@ public class TransactionManagerBean implements TransactionManager {
     private Transaction createTransaction(Domain domain, String submitterEmail, String creator) throws NoModificationException {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        //todo: new RT ticket (simplified version)
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, diffConfiguration);
         if (domainChange == null) throw new NoModificationException(domain.getName());
         td.setDomainChange(domainChange);
@@ -202,71 +193,5 @@ public class TransactionManagerBean implements TransactionManager {
             if (DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
                 result.add(new Transaction(pi));
         return result;
-    }
-
-    public void visitDocApproved(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: DocApproved for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitDocApprovalTimeout(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: DocApprovalTimeout for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitDocRejected(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: DocRejected for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitSystemValidated(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: SystemValidated for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitValidationError(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: ValidationError for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitHold(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: Hold for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitGenerated(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        if (trans.getState().getName() != TransactionState.Name.PENDING_ZONE_INSERTION)
-            throw new IllegalTransactionStateException(trans.getState());
-        trans.systemAccept();
-    }
-
-    public void visitNsRejected(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        logger.info("Received poll message status: NsRejected for transaction id: " +
-                trans.getTransactionID());
-    }
-
-    public void visitComplete(String eppRequestId) throws TransactionException {
-        Transaction trans = findByChangeRequestID(eppRequestId);
-        if (trans.getState().getName() != TransactionState.Name.PENDING_ZONE_PUBLICATION)
-            throw new IllegalTransactionStateException(trans.getState());
-        trans.systemAccept();
-    }
-
-    Transaction findByChangeRequestID(String changeRequestID) throws TransactionException {
-        Criterion eppRequestIdCriterion = new Equal("eppRequestId", changeRequestID);
-        List<Transaction> found = find(eppRequestIdCriterion);
-        if (found == null || found.isEmpty())
-            throw new NoSuchTransactionException(changeRequestID);
-        if (found.size() > 1)
-            throw new TransactionException(changeRequestID + " non unique");
-        return found.iterator().next();
     }
 }

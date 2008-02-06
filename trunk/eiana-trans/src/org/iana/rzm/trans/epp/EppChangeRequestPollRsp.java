@@ -2,7 +2,9 @@ package org.iana.rzm.trans.epp;
 
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,15 +48,19 @@ public class EppChangeRequestPollRsp {
     private Status status;
     private String changeRequestId;
     private boolean messageAwaiting;
+    private String message;
+    private List<String> errors = new ArrayList<String>();
 
-    public EppChangeRequestPollRsp(Status status, String changeRequestId, boolean messageAwaiting) {
+    public EppChangeRequestPollRsp(Status status, String changeRequestId, boolean messageAwaiting, String message, List<String> errors) {
         this.status = status;
         this.changeRequestId = changeRequestId;
         this.messageAwaiting = messageAwaiting;
+        this.message = message;
+        this.errors.addAll(errors);
     }
 
-    public EppChangeRequestPollRsp(String status, String changeRequestId, boolean messageAwaiting) {
-        this(Status.forName(status), changeRequestId, messageAwaiting);
+    public EppChangeRequestPollRsp(String status, String changeRequestId, boolean messageAwaiting, String message, List<String> errors) {
+        this(Status.forName(status), changeRequestId, messageAwaiting, message, errors);
     }
 
     public Status getStatus() {
@@ -69,6 +75,14 @@ public class EppChangeRequestPollRsp {
         return messageAwaiting;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
     public void accept(EppChangeRequestPollRspVisitor visitor) throws EppChangeRequestPollRspVisitorException {
         if (messageAwaiting) {
             if (status == null)
@@ -76,31 +90,31 @@ public class EppChangeRequestPollRsp {
             else
                 switch (status) {
                     case COMPLETE:
-                        visitor.visitComplete(changeRequestId);
+                        visitor.visitComplete(this);
                         break;
                     case DOC_APPROVAL_TIMEOUT:
-                        visitor.visitDocApprovalTimeout(changeRequestId);
+                        visitor.visitDocApprovalTimeout(this);
                         break;
                     case DOC_APPROVED:
-                        visitor.visitDocApproved(changeRequestId);
+                        visitor.visitDocApproved(this);
                         break;
                     case DOC_REJECTED:
-                        visitor.visitDocRejected(changeRequestId);
+                        visitor.visitDocRejected(this);
                         break;
                     case GENERATED:
-                        visitor.visitGenerated(changeRequestId);
+                        visitor.visitGenerated(this);
                         break;
                     case HOLD:
-                        visitor.visitHold(changeRequestId);
+                        visitor.visitHold(this);
                         break;
                     case NS_REJECTED:
-                        visitor.visitNsRejected(changeRequestId);
+                        visitor.visitNsRejected(this);
                         break;
                     case SYSTEM_VALIDATED:
-                        visitor.visitSystemValidated(changeRequestId);
+                        visitor.visitSystemValidated(this);
                         break;
                     case VALIDATION_ERROR:
-                        visitor.visitValidationError(changeRequestId);
+                        visitor.visitValidationError(this);
                 }
         }
     }

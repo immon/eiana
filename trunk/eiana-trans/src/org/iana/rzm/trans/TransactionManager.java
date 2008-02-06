@@ -2,7 +2,6 @@ package org.iana.rzm.trans;
 
 import org.iana.criteria.Criterion;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.epp.EppChangeRequestPollRspVisitor;
 import org.iana.rzm.user.RZMUser;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.Set;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface TransactionManager extends EppChangeRequestPollRspVisitor {
+public interface TransactionManager {
 
     /**
      * Returns a transaction with a given id.
@@ -40,7 +39,7 @@ public interface TransactionManager extends EppChangeRequestPollRspVisitor {
     /**
      * Creates a new domain modification transaction.
      *
-     * @param domain a domain to be created by the end of the transaction
+     * @param domain  a domain to be created by the end of the transaction
      * @param creator
      * @return the new domain creation transaction
      * @throws NoModificationException thrown when no modification between the given domain and stored one is discovered
