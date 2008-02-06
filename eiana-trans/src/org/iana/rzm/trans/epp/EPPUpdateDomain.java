@@ -19,8 +19,9 @@ public class EPPUpdateDomain extends EPPCommand {
     }
 
     public void collectChanges(ChangeRequest req) {
-        DomainUpdate update = getOperationFactory().getDomainUpdateRequest(getId(req), getDomainName());
         CollectionChange nsChange = getNameServerChange();
+        if (nsChange.getAdded().isEmpty() && nsChange.getRemoved().isEmpty()) return;
+        DomainUpdate update = getOperationFactory().getDomainUpdateRequest(getId(req), getDomainName());
         for (Change change : nsChange.getAdded()) {
             ObjectChange hostChange = (ObjectChange) change;
             update.addHost(hostChange.getId());

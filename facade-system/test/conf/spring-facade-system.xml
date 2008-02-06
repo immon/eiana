@@ -347,9 +347,6 @@
             <ref bean="domainDAO"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="faketicket"/>
-        </constructor-arg>
-        <constructor-arg>
             <ref bean="diffConfig"/>
         </constructor-arg>
         <constructor-arg>

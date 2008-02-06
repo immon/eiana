@@ -14,6 +14,8 @@ import org.iana.epp.response.Response;
 import java.rmi.server.UID;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz
@@ -44,7 +46,11 @@ public class EPPPollRequest {
             checkResponse(ackResponse);
         }
 
-        return new EppChangeRequestPollRsp(pollResponse.getChangeStatus(), pollResponse.getChangeRequestId(), pollResponse.getMessageCount() > 0);
+        return new EppChangeRequestPollRsp(pollResponse.getChangeStatus(),
+                pollResponse.getChangeRequestId(),
+                pollResponse.getMessageCount() > 0,
+                pollResponse.getMessage(),
+                toStringList(pollResponse.getErrors()));
     }
 
     private void checkResponse(Response response) throws EPPException {
@@ -71,8 +77,19 @@ public class EPPPollRequest {
             for (byte anEncoded : encoded)
                 output.append(Integer.toHexString((0xff & anEncoded)));
             return output.toString();
-        } catch(NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException(e);
         }
+    }
+
+    private List<String> toStringList(List<Problem> problems) {
+        List<String> result = new ArrayList<String>();
+        for (Problem prob : problems) {
+            StringBuffer probString = new StringBuffer();
+            probString.append(prob.getCode()).append(" ").append(prob.getMessage());
+            for (String errString : prob.getErrors())
+                probString.append("\n").append(errString);
+        }
+        return result;
     }
 }
