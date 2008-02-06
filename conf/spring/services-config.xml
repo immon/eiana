@@ -292,16 +292,14 @@
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
-    <bean id="contactConfirmationACNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionPersistentNotificationProducer">
+    <bean id="contactConfirmationACNotificationProducer" class="org.iana.rzm.trans.notifications.producer.AddresseeBasedTransactionNotificationProducer">
         <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
         <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
         <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
         <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
     </bean>
 
-    <bean id="contactConfirmationTCNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionPersistentNotificationProducer">
+    <bean id="contactConfirmationTCNotificationProducer" class="org.iana.rzm.trans.notifications.producer.AddresseeBasedTransactionNotificationProducer">
         <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
         <constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>
         <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
@@ -617,16 +615,16 @@
         </constructor-arg>
     </bean>
 
-    <!--
-        <bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
-            <constructor-arg>
-                <ref bean="NotificationSenderBean"/>
-            </constructor-arg>
-            <constructor-arg>
-                <ref bean="NotificationManagerBean"/>
-            </constructor-arg>
-        </bean>
-    -->
+<!--
+    <bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
+        <constructor-arg>
+            <ref bean="NotificationSenderBean"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="NotificationManagerBean"/>
+        </constructor-arg>
+    </bean>
+-->
 
     <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
         <constructor-arg index="0" ref="persistentNotificationSender"/>
@@ -1069,8 +1067,7 @@
         <constructor-arg ref="transSystemTransactionService"/>
     </bean>
 
-    <bean id="impactedPartyAnswerProcessor"
-          class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerProcessor">
+    <bean id="impactedPartyAnswerProcessor" class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerProcessor">
         <constructor-arg ref="transSystemTransactionService"/>
     </bean>
 
