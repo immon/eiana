@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@UserBorder">
+            <form jwcid="form">
+                <h1 style="margin-top: 40px;">Review Proposed Changes </h1>
+                <span jwcid="@ShowMessages"/>
+                <span jwcid="@ShowError"/>
+                <span jwcid="@ShowValidationError"/>
+                <div class="mainBox">
+                    <span jwcid="@GrayContainer">
+                        <table width="95%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <span class="domainLabelBig"><strong><span jwcid="domainName">.AU</span></strong></span>
+                                    <span class="domainLabelSmall"><span jwcid="country">country</span></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </span>
+                </div>
+                <div style="margin: 20px 0 40px 0;">
+                    Please review the changes you have proposed for this domain. If you are satisfied with the changes,
+                    choose to proceed. If these changes are not correct, click &quot;Make more changes&quot; and then you can correct,
+                    or cancel, your request.
+                </div>
+                <div class="mainBox">
+                    <span jwcid="@GrayContainer">
+                        <table width="95%" border="0" cellspacing="0" cellpadding="0" class="numList">
+                            <span jwcid="actionlist">
+                                <tr>
+                                    <td><strong><span jwcid="title">Technical Contact - Kim Davies</span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table>
+                                            <span jwcid="changeList">
+                                                <tr>
+                                                    <td>&nbsp; &nbsp; &nbsp; &nbsp;</td>
+                                                    <td><span jwcid="message">Add a new organisiation name of "ICANN"</span></td>
+                                                </tr>
+                                            </span>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </span>
+                        </table>
+                    </span>
+                </div>
+                <div style="margin: 20px 0 40px 0;">
+                    If you would like to be notified on request state changes, please provide your email in the field below
+                </div>
+                <div class="mainBox">
+                    <span jwcid="@GrayContainer">
+                        <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
+                            <tr>
+                                <td width="29%" valign="top" class="label green"><span jwcid="@FieldLabel" field="component:submitter">Email:</span></td>
+                                <td width="71%" align="right" valign="top"><input jwcid="submitter" type="text" name="submitterEmail" class="field" onkeypress="return submitOnEnter(event);"/>
+                            </tr>
+                        </table>
+                    </span>
+                </div>
+                <div style="margin: 20px 0 0 0;">
+                        <div class="buttonStyle" style="float: right;">
+                            <b class="leftGreen"></b>
+                            <b class="right"><a href="#" jwcid="proceed"  class="buttonGreen" style="padding-left: 5px;">Proceed with Request &gt;</a></b>
+                        </div>
+                    <div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+                        <b class="left"></b>
+                        <b class="right"><a href="#" jwcid="continueEdit" class="button" style="padding-left: 3px;"> &lt; Make More Changes</a></b>
+                    </div>
+                </div>
+            </form>
+        </body>
+    </span>
+</html>

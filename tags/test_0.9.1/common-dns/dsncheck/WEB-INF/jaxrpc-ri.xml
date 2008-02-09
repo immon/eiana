@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webServices
+        xmlns="http://java.sun.com/xml/ns/jax-rpc/ri/dd"
+        version="1.0"
+        targetNamespaceBase="http://java.sun.com/xml/ns/jax-rpc/wsi/wsdl"
+        typeNamespaceBase="http://java.sun.com/xml/ns/jax-rpc/wsi/types"
+        urlPatternBase="/ws">
+
+    <endpoint
+            name="DNSCheck"
+            displayName="DNS Technical Check"
+            description="DNS Technical Check"
+            interface="org.iana.dns.check.remote.RPCTechnicalCheck"
+            implementation="org.iana.dns.check.remote.RPCTechnicalCheckImpl"
+            model="/WEB-INF/model.xml.gz"/>
+
+    <endpointMapping
+            endpointName="DNSCheck"
+            urlPattern="/dnscheck"/>
+
+</webServices>

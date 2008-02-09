@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>Root Zone Management</title>
+        <link rel="stylesheet" type="text/css" href="css/master.css"/>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@ExceptionBorder">
+            <table style="{ padding-left: 4px }">
+                <tr>
+                    <td>
+                        <span jwcid="@If" condition="prop:rzmApplicationException">
+                            <h1>Root Zone Management application is temporarily unavailable</h1>
+                            <p>The Root Zone Management application is temporarily unavailable due to
+                                system errors. You may attempt to
+                                <a jwcid="@ServiceLink" service="restart" href="#">restart the application</a>.
+                            </p>
+                        </span>
+                        <span jwcid="@If" condition="prop:pageNotFoundException">
+                            <h1>Sorry, the page you requested was not found.</h1>
+                            <p>Please check the URL for proper spelling and capitalization.</p>
+                            <p>&nbsp;</p>
+                            <p>You may attempt to <a jwcid="@ServiceLink" service="restart" href="#">restart the application</a>.
+                        </span>
+                        <span jwcid="@If" condition="prop:otherException">
+                            <div style="margin: 10px 0 10px 0; padding: 10px; display: block;" class="errorMessageBox">
+                                <strong><span jwcid="@Insert" value="prop:error">-----Error------</span></strong>
+                            </div>
+                        </span>
+                        <span jwcid="@If" condition="ognl:global.debugEnabled">
+                            <span jwcid="@ExceptionDisplay" exceptions="ognl:exceptions"/>
+                            <span jwcid="@RequestDisplay"/>
+                            <span jwcid="@contrib:InspectorButton"/>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </body>
+    </span>
+</html>

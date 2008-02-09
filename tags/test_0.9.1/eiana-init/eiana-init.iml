@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="JAVA_MODULE">
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/etc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="ant" level="project" />
+    <orderEntry type="library" name="hibernate" level="project" />
+    <orderEntry type="module" module-name="eiana-domains" />
+    <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="library" exported="" name="javaee" level="project" />
+    <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="module" module-name="eiana-util" />
+    <orderEntry type="library" name="cobertura" level="project" />
+    <orderEntry type="module" module-name="tests" />
+    <orderEntry type="module" module-name="eiana-trans" exported="" />
+    <orderEntry type="library" name="jbpm" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="module" module-name="eiana-mail" />
+    <orderEntry type="module" module-name="facade-admin" />
+    <orderEntry type="module" module-name="facade-common" />
+    <orderEntry type="module" module-name="facade-system" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../conf/hibernate" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../conf/spring" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="common-pgp" />
+    <orderEntry type="library" name="mail" level="project" />
+    <orderEntry type="module" module-name="common-codevalues" />
+    <orderEntry type="library" name="nask-commons" level="project" />
+    <orderEntry type="library" name="jdom" level="project" />
+    <orderEntry type="module" module-name="common-dao" />
+    <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module" module-name="common-config" />
+    <orderEntryProperties />
+  </component>
+</module>
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-util" default="compile.module.eiana-util">
+  <dirname property="module.eiana-util.basedir" file="${ant.file.module_eiana-util}"/>
+  
+  
+  <property name="compiler.args.eiana-util" value="${compiler.args}"/>
+  
+  <property name="eiana-util.output.dir" value="${module.eiana-util.basedir}/../build/classes/production/eiana-util"/>
+  <property name="eiana-util.testoutput.dir" value="${module.eiana-util.basedir}/../build/classes/test/eiana-util"/>
+  
+  <path id="eiana-util.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-util.module.classpath">
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-util">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-util">
+    <patternset refid="excluded.from.module.eiana-util"/>
+  </patternset>
+  
+  <path id="eiana-util.module.sourcepath">
+    <dirset dir="${module.eiana-util.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-util" depends="compile.module.eiana-util.production,compile.module.eiana-util.tests" description="Compile module eiana-util"/>
+  
+  <target name="compile.module.eiana-util.production" depends="compile.module.common-dns" description="Compile module eiana-util; production classes">
+    <mkdir dir="${eiana-util.output.dir}"/>
+    <javac destdir="${eiana-util.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-util}"/>
+      <bootclasspath refid="eiana-util.module.bootclasspath"/>
+      <classpath refid="eiana-util.module.classpath"/>
+      <src refid="eiana-util.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-util"/>
+    </javac>
+    
+    <copy todir="${eiana-util.output.dir}">
+      <fileset dir="${module.eiana-util.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-util.tests" depends="compile.module.eiana-util.production" description="compile module eiana-util; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.eiana-util" description="cleanup module">
+    <delete dir="${eiana-util.output.dir}"/>
+    <delete dir="${eiana-util.testoutput.dir}"/>
+  </target>
+</project>
