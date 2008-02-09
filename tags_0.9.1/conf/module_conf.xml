@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_conf" default="compile.module.conf">
+  <dirname property="module.conf.basedir" file="${ant.file.module_conf}"/>
+  
+  
+  <property name="compiler.args.conf" value="${compiler.args}"/>
+  
+  <property name="conf.output.dir" value="${module.conf.basedir}/../build/classes/production/conf"/>
+  <property name="conf.testoutput.dir" value="${module.conf.basedir}/../build/classes/test/conf"/>
+  
+  <path id="conf.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="conf.module.classpath">
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.javaee.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.conf">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.conf">
+    <patternset refid="excluded.from.module.conf"/>
+  </patternset>
+  
+  <path id="conf.module.sourcepath">
+    <dirset dir="${module.conf.basedir}">
+      <include name="exporter"/>
+      <include name="hibernate"/>
+      <include name="mail-interface"/>
+      <include name="spring"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.conf" depends="compile.module.conf.production,compile.module.conf.tests" description="Compile module conf"/>
+  
+  <target name="compile.module.conf.production" description="Compile module conf; production classes">
+    <mkdir dir="${conf.output.dir}"/>
+    <javac destdir="${conf.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.conf}"/>
+      <bootclasspath refid="conf.module.bootclasspath"/>
+      <classpath refid="conf.module.classpath"/>
+      <src refid="conf.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.conf"/>
+    </javac>
+    
+    <copy todir="${conf.output.dir}">
+      <fileset dir="${module.conf.basedir}/exporter">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.conf.basedir}/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.conf.basedir}/mail-interface">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.conf.basedir}/spring">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.conf.tests" depends="compile.module.conf.production" description="compile module conf; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.conf" description="cleanup module">
+    <delete dir="${conf.output.dir}"/>
+    <delete dir="${conf.testoutput.dir}"/>
+  </target>
+</project>

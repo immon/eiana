@@ -1,0 +1,29 @@
+package org.iana.rzm.init.ant.decorators;
+
+import org.iana.rzm.domain.Host;
+
+import java.util.List;
+
+/**
+ * @author: Piotr Tkaczyk
+ */
+public class HostDecorator {
+    private Host host = new Host();
+
+    public Host getHost() {
+        return host;
+    }
+
+    public void setName(String name) {
+        host.setName(name);
+    }
+    
+    public void setIpaddress(String value) {
+        host.addIPAddress(value);
+    }
+
+    public void setIpaddress(List<String> values) {
+        for (String value : values)
+            host.addIPAddress(value);
+    }
+}

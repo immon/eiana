@@ -1,0 +1,20 @@
+<process-definition name="EPP Poll Process">
+
+    <start-state>
+        <transition to="EPP_POLL_CHECK"></transition>
+    </start-state>
+
+    <state name="EPP_POLL_CHECK">
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.epp.EPPPollMsgReceiver"/>
+        </event>
+        <timer name="1h-time-out" duedate="1 hour" transition="try"></timer>
+
+        <transition name="try" to="EPP_POLL_CHECK"/>
+        <transition name="end" to="END_PROCESS"/>
+    </state>
+
+    <end-state name='END_PROCESS'>
+    </end-state>
+
+</process-definition>
