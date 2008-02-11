@@ -2,7 +2,7 @@ package org.iana.notifications.refactored.simple;
 
 import static org.easymock.EasyMock.*;
 import org.iana.dao.DataAccessObject;
-import org.iana.notifications.refactored.*;
+import org.iana.notifications.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;

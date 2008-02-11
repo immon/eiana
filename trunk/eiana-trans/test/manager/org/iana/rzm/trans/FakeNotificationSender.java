@@ -1,8 +1,8 @@
 package org.iana.rzm.trans;
 
-import org.iana.notifications.refactored.NotificationSender;
-import org.iana.notifications.refactored.PNotification;
-import org.iana.notifications.refactored.NotificationSenderException;
+import org.iana.notifications.NotificationSender;
+import org.iana.notifications.PNotification;
+import org.iana.notifications.NotificationSenderException;
 import org.iana.dao.DataAccessObject;
 
 /**

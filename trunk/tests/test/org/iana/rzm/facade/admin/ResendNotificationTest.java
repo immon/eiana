@@ -1,7 +1,7 @@
 package org.iana.rzm.facade.admin;
 
 import org.iana.dao.DataAccessObject;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.PNotification;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;

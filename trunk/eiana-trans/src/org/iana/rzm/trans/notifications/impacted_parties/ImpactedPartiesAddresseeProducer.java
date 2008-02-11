@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.notifications.impacted_parties;
 
-import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.PAddressee;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.Identity;

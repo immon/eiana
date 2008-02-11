@@ -1,7 +1,7 @@
 package org.iana.rzm.trans.notifications.jbpm;
 
-import org.iana.notifications.refactored.PNotification;
-import org.iana.notifications.refactored.producers.NotificationProducer;
+import org.iana.notifications.PNotification;
+import org.iana.notifications.producers.NotificationProducer;
 import org.iana.rzm.trans.notifications.TransactionNotificationSender;
 import org.iana.rzm.trans.process.general.ctx.NotificationContext;
 import org.iana.rzm.trans.process.general.handlers.ActionExceptionHandler;

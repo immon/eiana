@@ -1,7 +1,7 @@
 package org.iana.rzm.trans.notifications.contact_confirmation;
 
-import org.iana.notifications.refactored.PAddressee;
-import org.iana.notifications.refactored.producers.DataProducer;
+import org.iana.notifications.PAddressee;
+import org.iana.notifications.producers.DataProducer;
 import org.iana.objectdiff.Change;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;

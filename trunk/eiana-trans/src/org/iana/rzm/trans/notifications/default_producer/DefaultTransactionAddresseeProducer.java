@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.notifications.default_producer;
 
-import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.PAddressee;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.TransactionData;

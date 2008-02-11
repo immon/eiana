@@ -65,7 +65,7 @@
     </bean>
 
     <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
-        <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
+        <constructor-arg value="org.iana.notifications.PNotification" type="java.lang.Class"/>
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -85,28 +85,28 @@
         <constructor-arg ref="userManager"/>
         <constructor-arg ref="testNotificationSender"/>
         <constructor-arg>
-            <bean class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
                 <constructor-arg ref="templateFactory"/>
                 <constructor-arg>
-                    <bean class="org.iana.notifications.refactored.producers.defaults.DefaultAddresseeProducer"/>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
                 </constructor-arg>
                 <constructor-arg value="password-change"/>
                 <constructor-arg>
-                    <bean class="org.iana.notifications.refactored.producers.defaults.DefaultDataProducer"/>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
                 </constructor-arg>
             </bean>
         </constructor-arg>
     </bean>
 
-    <bean id="templateFactory" class="org.iana.notifications.refactored.template.factory.DefaultTemplateFactory">
+    <bean id="templateFactory" class="org.iana.notifications.template.factory.DefaultTemplateFactory">
         <constructor-arg index="0">
-            <bean class="org.iana.notifications.refactored.template.def.XMLTemplateDefLoader">
+            <bean class="org.iana.notifications.template.def.XMLTemplateDefLoader">
                 <constructor-arg value="iana-templates.properties"/>
                 <constructor-arg value="templates.xml"/>
             </bean>
         </constructor-arg>
         <constructor-arg index="1">
-            <bean class="org.iana.notifications.refactored.template.simple.DefaultStringTemplateAlgorithm"/>
+            <bean class="org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm"/>
         </constructor-arg>
     </bean>
 

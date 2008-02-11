@@ -2,7 +2,7 @@ package org.iana.notifications.refactored.simple;
 
 import static org.easymock.EasyMock.reportMatcher;
 import org.easymock.IArgumentMatcher;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.PNotification;
 
 /**
  * @author Patrycja Wegrzynowicz

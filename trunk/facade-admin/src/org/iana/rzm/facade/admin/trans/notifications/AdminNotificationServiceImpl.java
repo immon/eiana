@@ -1,9 +1,9 @@
 package org.iana.rzm.facade.admin.trans.notifications;
 
-import org.iana.notifications.refactored.NotificationSender;
-import org.iana.notifications.refactored.NotificationSenderException;
-import org.iana.notifications.refactored.PAddressee;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.NotificationSender;
+import org.iana.notifications.NotificationSenderException;
+import org.iana.notifications.*;
+import org.iana.notifications.PNotification;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;

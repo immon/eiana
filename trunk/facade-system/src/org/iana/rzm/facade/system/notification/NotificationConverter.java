@@ -1,7 +1,7 @@
 package org.iana.rzm.facade.system.notification;
 
-import org.iana.notifications.refactored.PNotification;
-import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.PNotification;
+import org.iana.notifications.PAddressee;
 
 import java.util.*;
 

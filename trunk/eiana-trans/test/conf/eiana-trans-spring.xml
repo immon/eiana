@@ -7,7 +7,7 @@
     <!-- dao configuration -->
 
     <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
-        <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
+        <constructor-arg value="org.iana.notifications.PNotification" type="java.lang.Class"/>
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -25,7 +25,7 @@
         </property>
     </bean>
 
-    <bean id="NotificationSenderBean" class="org.iana.notifications.refactored.email.EmailSender">
+    <bean id="NotificationSenderBean" class="org.iana.notifications.email.EmailSender">
         <constructor-arg value="MailHost"/>
         <constructor-arg value="mailer"/>
         <constructor-arg value="fromAddress"/>
@@ -43,7 +43,7 @@
     <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
         <constructor-arg>
               <bean class="org.iana.dao.hibernate.HibernateDAO">
-                  <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
+                  <constructor-arg value="org.iana.notifications.PNotification" type="java.lang.Class"/>
                   <property name="sessionFactory" ref="sessionFactory"/>
               </bean>
           </constructor-arg>
@@ -59,7 +59,7 @@
     <!-- Notification producers -->
 
     <bean id="adminClosedNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="adminClosedTemplateProducer"/>
@@ -67,17 +67,17 @@
     </bean>
 
     <bean id="emptyNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.EmptyNotificationProducer"/>
+          class="org.iana.notifications.producers.defaults.EmptyNotificationProducer"/>
 
     <bean id="completedNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="completedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
-    <bean id="contactConfirmationACNotificationProducer" class="org.iana.notifications.refactored.producers.defaults.SplittedByAddresseeProducer">
+    <bean id="contactConfirmationACNotificationProducer" class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
         <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
@@ -85,7 +85,7 @@
         <property name="persistent" value="true"/>
     </bean>
 
-    <bean id="contactConfirmationTCNotificationProducer" class="org.iana.notifications.refactored.producers.defaults.SplittedByAddresseeProducer">
+    <bean id="contactConfirmationTCNotificationProducer" class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>
         <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
@@ -94,7 +94,7 @@
     </bean>
 
     <bean id="exceptionNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="exceptionAddresseeProducer"/>
         <constructor-arg index="2" ref="exceptionTemplateProducer"/>
@@ -102,7 +102,7 @@
     </bean>
 
     <bean id="impactedPartiesNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SplittedByAddresseeProducer">
+          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="impactedPartiesAddresseeProducer"/>
         <constructor-arg index="2" value="impacted_parties-confirmation"/>
@@ -111,7 +111,7 @@
     </bean>
 
     <bean id="impactedPartiesRemainderNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" value="impacted_parties-confirmation-remainder"/>
@@ -120,7 +120,7 @@
     </bean>
 
     <bean id="pendingEvaluationNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="pendingEvaluationTemplateProducer"/>
@@ -128,7 +128,7 @@
     </bean>
 
     <bean id="rejectedNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="rejectedTemplateProducer"/>
@@ -136,7 +136,7 @@
     </bean>
 
     <bean id="usdocConfirmationNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="usdocConfirmationAddresseeProducer"/>
         <constructor-arg index="2" ref="usdocConfirmationTemplateProducer"/>
@@ -145,7 +145,7 @@
     </bean>
 
     <bean id="usdocConfirmationRemainderNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="usdocConfirmationRemainderAddresseeProducer"/>
         <constructor-arg index="2" ref="usdocConfirmationRemainderTemplateProducer"/>
@@ -153,7 +153,7 @@
     </bean>
 
     <bean id="withdrawnNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="withdrawnTemplateProducer"/>
@@ -161,7 +161,7 @@
     </bean>
 
     <bean id="zoneInsertionAlertNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="zoneInsertionAlertAddresseeProducer"/>
         <constructor-arg index="2" ref="zoneInsertionAlertTemplateProducer"/>
@@ -169,7 +169,7 @@
     </bean>
 
     <bean id="zonePublicationAlertNotificationProducer"
-          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="zonePublicationAlertAddresseeProducer"/>
         <constructor-arg index="2" ref="zonePublicationAlertTemplateProducer"/>
@@ -232,42 +232,42 @@
     <!-- Template producers -->
 
     <bean id="adminClosedTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>admin-closed</value>
         </property>
     </bean>
 
     <bean id="completedTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>completed</value>
         </property>
     </bean>
 
     <bean id="contactConfirmationTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>contact-confirmation</value>
         </property>
     </bean>
 
     <bean id="exceptionTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>exception</value>
         </property>
     </bean>
 
     <bean id="pendingEvaluationTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>normal_redelegation-processing</value>
         </property>
     </bean>
 
     <bean id="rejectedTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>rejected</value>
         </property>
@@ -277,28 +277,28 @@
           class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationTemplateNameProducer"/>
 
     <bean id="usdocConfirmationRemainderTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>usdoc-confirmation-remainder</value>
         </property>
     </bean>
 
     <bean id="withdrawnTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>withdrawn</value>
         </property>
     </bean>
 
     <bean id="zoneInsertionAlertTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>zone-insertion-alert</value>
         </property>
     </bean>
 
     <bean id="zonePublicationAlertTemplateProducer"
-          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>zone-publication-alert</value>
         </property>

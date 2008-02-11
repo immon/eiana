@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.process.general.ctx;
 
-import org.iana.notifications.refactored.producers.NotificationProducer;
+import org.iana.notifications.producers.NotificationProducer;
 import org.iana.rzm.trans.notifications.NotificationDataSource;
 import org.iana.rzm.trans.notifications.TransactionNotificationSender;
 import org.jbpm.graph.exe.ExecutionContext;
