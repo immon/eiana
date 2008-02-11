@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.notifications.zone_insertion;
 
-import org.iana.notifications.refactored.producers.DataProducer;
+import org.iana.notifications.producers.DataProducer;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
 

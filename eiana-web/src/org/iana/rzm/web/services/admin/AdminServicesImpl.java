@@ -27,7 +27,7 @@ import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.services.*;
 import org.iana.rzm.web.util.*;
-import org.iana.notifications.refactored.NotificationSenderException;
+import org.iana.notifications.NotificationSenderException;
 
 import java.io.*;
 import java.util.*;

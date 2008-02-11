@@ -6,10 +6,10 @@ import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
-import org.iana.notifications.refactored.NotificationSender;
-import org.iana.notifications.refactored.NotificationSenderException;
-import org.iana.notifications.refactored.PAddressee;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.NotificationSender;
+import org.iana.notifications.NotificationSenderException;
+import org.iana.notifications.PAddressee;
+import org.iana.notifications.PNotification;
 
 /**
  * A notification-based implementation of EmailService.

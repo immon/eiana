@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.notifications.zone_insertion;
 
-import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.PAddressee;
 import org.iana.rzm.trans.notifications.producer.AbstractTransactionAddresseeProducer;
 import org.iana.rzm.user.AdminRole;
 

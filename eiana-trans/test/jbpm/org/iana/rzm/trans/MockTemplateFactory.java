@@ -1,10 +1,9 @@
 package org.iana.rzm.trans;
 
-import org.iana.notifications.refactored.template.factory.TemplateFactory;
-import org.iana.notifications.refactored.template.Template;
-import org.iana.notifications.refactored.template.simple.SimpleTemplate;
-import org.iana.notifications.refactored.template.simple.DefaultStringTemplateAlgorithm;
-import org.hibernate.reflection.java.xml.XMLContext;
+import org.iana.notifications.template.factory.TemplateFactory;
+import org.iana.notifications.template.Template;
+import org.iana.notifications.template.simple.SimpleTemplate;
+import org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm;
 
 /**
  * @author Patrycja Wegrzynowicz

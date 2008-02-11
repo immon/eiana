@@ -1,8 +1,8 @@
 package org.iana.notifications.refactored.simple;
 
-import org.iana.notifications.refactored.PAddressee;
-import org.iana.notifications.refactored.PContent;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.PAddressee;
+import org.iana.notifications.PContent;
+import org.iana.notifications.PNotification;
 import org.testng.annotations.Test;
 
 import java.util.HashSet;

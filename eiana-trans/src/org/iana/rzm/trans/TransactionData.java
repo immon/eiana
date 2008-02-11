@@ -1,7 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.hibernate.annotations.Cascade;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.PNotification;
 import org.iana.objectdiff.Change;
 import org.iana.objectdiff.CollectionChange;
 import org.iana.objectdiff.ObjectChange;

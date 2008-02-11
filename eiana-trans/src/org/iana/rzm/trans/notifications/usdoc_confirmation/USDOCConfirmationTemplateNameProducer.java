@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.notifications.usdoc_confirmation;
 
-import org.iana.notifications.refactored.producers.TemplateNameProducer;
+import org.iana.notifications.producers.TemplateNameProducer;
 import org.iana.rzm.trans.TransactionData;
 
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package org.iana.rzm.trans;
 
 import org.apache.log4j.Logger;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.PNotification;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;

@@ -2,10 +2,10 @@ package org.iana.rzm.mail.processor.simple.error;
 
 import org.apache.log4j.Logger;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.notifications.refactored.NotificationSender;
-import org.iana.notifications.refactored.PNotification;
-import org.iana.notifications.refactored.PAddressee;
-import org.iana.notifications.refactored.NotificationSenderException;
+import org.iana.notifications.NotificationSender;
+import org.iana.notifications.PAddressee;
+import org.iana.notifications.NotificationSenderException;
+import org.iana.notifications.PNotification;
 
 import java.util.StringTokenizer;
 

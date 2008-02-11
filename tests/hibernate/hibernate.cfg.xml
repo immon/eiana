@@ -63,8 +63,8 @@
         <mapping class="org.iana.rzm.trans.confirmation.contact.ContactConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.contact.ContactIdentity"/>
 
-        <mapping class="org.iana.notifications.refactored.PNotification" />
-        <mapping class="org.iana.notifications.refactored.PAddressee" />
+        <mapping class="org.iana.notifications.PNotification" />
+        <mapping class="org.iana.notifications.PAddressee" />
 
         <mapping class="org.iana.config.impl.AbstractParameter"/>
         <mapping class="org.iana.config.impl.SingleParameter"/>

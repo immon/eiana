@@ -30,8 +30,8 @@
         <mapping class="org.iana.rzm.user.SystemRole"/>
         <mapping class="org.iana.rzm.user.RZMUser"/>
 
-        <mapping class="org.iana.notifications.refactored.PNotification" />
-        <mapping class="org.iana.notifications.refactored.PAddressee" />
+        <mapping class="org.iana.notifications.PNotification" />
+        <mapping class="org.iana.notifications.PAddressee" />
 
     </session-factory>
 </hibernate-configuration>

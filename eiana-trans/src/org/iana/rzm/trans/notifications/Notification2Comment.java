@@ -1,7 +1,7 @@
 package org.iana.rzm.trans.notifications;
 
-import org.iana.notifications.refactored.PAddressee;
-import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.PAddressee;
+import org.iana.notifications.PNotification;
 
 /**
  * @author Patrycja Wegrzynowicz

@@ -1,6 +1,6 @@
 package org.iana.rzm.trans.notifications.default_producer;
 
-import org.iana.notifications.refactored.producers.DataProducer;
+import org.iana.notifications.producers.DataProducer;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.TransactionState;
