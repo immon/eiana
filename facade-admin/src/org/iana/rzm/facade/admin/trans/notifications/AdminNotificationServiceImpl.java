@@ -1,16 +1,13 @@
 package org.iana.rzm.facade.admin.trans.notifications;
 
-import org.iana.criteria.And;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.notifications.*;
-import org.iana.notifications.exception.NotificationException;
+import org.iana.notifications.refactored.NotificationSender;
+import org.iana.notifications.refactored.NotificationSenderException;
+import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.refactored.PNotification;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
-import org.iana.rzm.facade.system.notification.NotificationAddresseeVO;
 import org.iana.rzm.facade.system.notification.NotificationConverter;
-import org.iana.rzm.facade.system.notification.NotificationCriteriaConverter;
 import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
@@ -21,20 +18,17 @@ import org.iana.rzm.user.UserManager;
 import java.util.*;
 
 /**
- *
  * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
 public class AdminNotificationServiceImpl extends AbstractRZMStatefulService implements AdminNotificationService {
 
-    NotificationManager notificationManager;
     NotificationSender notificationSender;
+
     TransactionManager transactionManager;
 
-
-    public AdminNotificationServiceImpl(UserManager userManager, NotificationManager notificationManager, NotificationSender notificationSender, TransactionManager transactionManager) {
+    public AdminNotificationServiceImpl(UserManager userManager, NotificationSender notificationSender, TransactionManager transactionManager) {
         super(userManager);
-        this.notificationManager = notificationManager;
         this.notificationSender = notificationSender;
         this.transactionManager = transactionManager;
     }
@@ -46,39 +40,10 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
     public List<NotificationVO> getNotifications(long transactionId) throws InfrastructureException {
         isUserInRole();
         try {
-            List<Notification> found = getSavedNotifications(transactionId);
-            return NotificationConverter.toNotificationVOList(found);
-        } catch (NotificationException e) {
-            throw new InfrastructureException(e);
-        }
-    }
-
-    private List<Notification> getSavedNotifications(long transactionId) throws NotificationException {
-        List<Criterion> criteria = new ArrayList<Criterion>();
-        criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
-        criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, Boolean.TRUE));
-        Criterion notificationsForTrans = new And(criteria);
-        return notificationManager.find(notificationsForTrans);
-    }
-
-    public List<NotificationVO> getNotifications(Criterion criteria) throws InfrastructureException {
-        isUserInRole();
-        try {
-            return NotificationConverter.toNotificationVOList(notificationManager.find(
-                    convertNotificationCriteria(criteria)));
-        } catch (NotificationException e) {
-            throw new InfrastructureException(e);
-        }
-    }
-
-    public void resendNotification(Set<NotificationAddresseeVO> addressees, long notificationId, String comment) throws InfrastructureException {
-        isUserInRole();
-        try {
-            Notification notification = notificationManager.get(notificationId);
-            notificationSender.send(NotificationConverter.toAddresseeSet(addressees),
-                    notification.getContent().getSubject(),
-                    comment(notification.getContent().getBody(), comment));
-        } catch (NotificationException e) {
+            Transaction trans = transactionManager.getTransaction(transactionId);
+            Set<PNotification> saved = trans.getNotifications();
+            return NotificationConverter.toNotificationVOList(saved);
+        } catch (NoSuchTransactionException e) {
             throw new InfrastructureException(e);
         }
     }
@@ -86,26 +51,22 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
     public void resendNotification(long transactionId, NotificationVO.Type type, String comment) throws InfrastructureException, FacadeTransactionException {
         isUserInRole();
         try {
+            Transaction transaction = transactionManager.getTransaction(transactionId);
+            List<PNotification> notifications = findNotifications(transaction, type);
             if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
-                Transaction transaction = transactionManager.getTransaction(transactionId);
-
                 Set<ContactIdentity> identities = transaction.getIdentitiesSupposedToAccept();
-                Set<String> outstendingEmails = extractEmails(identities);
-
-                List<Criterion> criteria = new ArrayList<Criterion>();
-                criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
-                criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
-                List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
-
-                for (Notification notif : notifications) {
-                    Set<String> addresseeEmails = extractEmails(notif.getAddressee());
+                Set<String> outstendingEmails = new HashSet<String>();
+                for (ContactIdentity identity : identities) {
+                    outstendingEmails.add(identity.getEmail());
+                }
+                for (PNotification notif : notifications) {
+                    Set<String> addresseeEmails = extractEmails(notif.getAddressees());
                     if (!Collections.disjoint(addresseeEmails, outstendingEmails)) {
                         resend(notif, comment);
                     }
                 }
             } else if (type == NotificationVO.Type.USDOC_CONFIRMATION) {
-                List<Notification> notifications = findUSDoCNotifications(transactionId);
-                for (Notification notif : notifications) {
+                for (PNotification notif : notifications) {
                     resend(notif, comment);
                 }
             } else {
@@ -113,7 +74,7 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
             }
         } catch (NoSuchTransactionException e) {
             throw new InfrastructureException(e);
-        } catch (NotificationException e) {
+        } catch (NotificationSenderException e) {
             throw new InfrastructureException(e);
         }
     }
@@ -127,47 +88,40 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
         try {
             Set<String> addressee = new HashSet<String>();
             addressee.add(addresseeEmail);
-
-            if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
-                List<Criterion> criteria = new ArrayList<Criterion>();
-                criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transactionId));
-                criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
-                List<Notification> notifications = notificationManager.find(convertNotificationCriteria(new And(criteria)));
-                for (Notification notif : notifications) {
-                    resend(notif, addressee, comment);
-                }
-            } else if (type == NotificationVO.Type.USDOC_CONFIRMATION) {
-                List<Notification> notifications = findUSDoCNotifications(transactionId);
-                for (Notification notif : notifications) {
+            if (type == NotificationVO.Type.CONTACT_CONFIRMATION ||
+                    type == NotificationVO.Type.USDOC_CONFIRMATION) {
+                Transaction trans = transactionManager.getTransaction(transactionId);
+                List<PNotification> notifs = findNotifications(trans, type);
+                for (PNotification notif : notifs) {
                     resend(notif, addressee, comment);
                 }
             } else {
                 throw new FacadeTransactionException("unsupported notification type: " + type);
             }
-        } catch (NotificationException e) {
+        } catch (NotificationSenderException e) {
+            throw new InfrastructureException(e);
+        } catch (NoSuchTransactionException e) {
             throw new InfrastructureException(e);
         }
     }
 
-    private List<Notification> findUSDoCNotifications(long transactionID) throws NotificationException {
-        List<Notification> ret = new ArrayList<Notification>();
-        for (Notification notif : getSavedNotifications(transactionID)) {
-            if (NotificationConverter.isType(notif.getType(), NotificationVO.Type.USDOC_CONFIRMATION)) {
+    private List<PNotification> findNotifications(Transaction trans, NotificationVO.Type voType) {
+        List<PNotification> ret = new ArrayList<PNotification>();
+        for (PNotification notif : trans.getNotifications()) {
+            if (NotificationConverter.isType(notif.getType(), voType)) {
                 ret.add(notif);
             }
         }
         return ret;
     }
 
-    private Set<String> extractEmails(Set<? extends Addressee> addressees) {
+    private Set<String> extractEmails(Set<PAddressee> addressees) {
         Set<String> result = new HashSet<String>();
-
-        for (Addressee addr : addressees){
-            if(addr.getEmail() != null){
+        for (PAddressee addr : addressees) {
+            if (addr.getEmail() != null) {
                 result.add(addr.getEmail());
             }
         }
-        
         return result;
     }
 
@@ -179,18 +133,19 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
         return buffer.toString();
     }
 
-    private Criterion convertNotificationCriteria(Criterion criteria) {
-        criteria.accept(new NotificationCriteriaConverter());
-        return criteria;
+    private void resend(PNotification notification, Set<String> set, String comment) throws NotificationSenderException {
+        Set<PAddressee> addressees = new HashSet<PAddressee>();
+        for (String email : set) addressees.add(new PAddressee(email, email));
+        PNotification tosend = new PNotification(addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
+        notificationSender.send(tosend);
     }
 
-    private void resend(Notification notification, Set<String> set, String comment) throws NotificationException {
-        Set<Addressee> addressees = new HashSet<Addressee>();
-        for (String email : set) addressees.add(new EmailAddressee(email, email));
-        notificationSender.send(addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
-    }
-
-    private void resend(Notification notification, String comment) throws NotificationException {
-        notificationSender.send(notification.getAddressee(), notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
+    private void resend(PNotification notification, String comment) throws NotificationSenderException {
+        Set<PAddressee> addressees = new HashSet<PAddressee>();
+        for (PAddressee addr : notification.getAddressees()) {
+            addressees.add(new PAddressee(addr.getName(), addr.getEmail()));
+        }
+        PNotification tosend = new PNotification(addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
+        notificationSender.send(tosend);
     }
 }

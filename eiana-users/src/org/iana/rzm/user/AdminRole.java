@@ -47,6 +47,7 @@ public class AdminRole extends Role implements Cloneable {
         return true;
     }
 
+
     public boolean equals(Object object) {
         return object instanceof AdminRole && super.equals(object);
     }

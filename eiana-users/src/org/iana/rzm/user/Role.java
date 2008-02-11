@@ -42,7 +42,7 @@ public abstract class Role implements TrackedObject, Cloneable {
     }
 
     public abstract boolean isAdmin();
-    
+
     public abstract Type getType();
 
     public abstract void setType(Type type);

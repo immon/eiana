@@ -1,9 +1,9 @@
 package org.iana.rzm.facade.admin.trans;
 
-import org.iana.rzm.trans.change.DomainDiffConfiguration;
-import org.iana.rzm.domain.HostManager;
-import org.iana.rzm.domain.Domain;
 import org.iana.objectdiff.ObjectConfiguration;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.HostManager;
+import org.iana.rzm.trans.change.DomainDiffConfiguration;
 
 /**
  * The configuration to detect changes in a domain object made via the admin interface.

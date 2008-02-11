@@ -1,25 +1,19 @@
 package org.iana.rzm.trans.notifications.impacted_parties;
 
-import org.iana.rzm.trans.notifications.default_producer.DefaultDataProducer;
-import org.iana.rzm.trans.notifications.producer.DataProducer;
+import org.iana.notifications.refactored.producers.DataProducer;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.auth.Identity;
+import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
-import org.iana.objectdiff.Change;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.SimpleChange;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class ImpactedPartiesDataProducer extends DefaultDataProducer implements DataProducer {
+public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer implements DataProducer {
 
     public Map<String, String> getSpecificValuesMap(Map dataSource) {
         Map<String, String> values = new HashMap<String, String>();

@@ -1,8 +1,5 @@
 package org.iana.rzm.trans;
 
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.confirmation.StateConfirmations;
-import org.iana.rzm.trans.confirmation.RoleConfirmation;
 import org.iana.rzm.user.AdminRole;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.def.Node;
@@ -29,11 +26,13 @@ public class TestRoleCalculator implements ActionHandler {
     public void execute(ExecutionContext executionContext) throws Exception {
         TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
 
+/*
         StateConfirmations sc = new StateConfirmations();
         sc.addConfirmation(new RoleConfirmation(new AdminRole(getType(role))));
+*/
 
         Token token = executionContext.getProcessInstance().getRootToken();
         Node node = token.getNode();
-        td.setStateConfirmations(node.getName(), sc);
+        // td.setStateConfirmations(node.getName(), sc);
     }
 }

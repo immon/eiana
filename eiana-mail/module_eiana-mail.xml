@@ -14,11 +14,11 @@
   
   <path id="eiana-mail.module.classpath">
     <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.javaee.classpath"/>
     <path refid="library.jbpm.classpath"/>
     <pathelement location="${common-mail.output.dir}"/>
     <pathelement location="${common-mail.testoutput.dir}"/>
     <path refid="library.mail.classpath"/>
-    <path refid="library.javaee.classpath"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
@@ -41,6 +41,7 @@
     <pathelement location="${common-criteria.testoutput.dir}"/>
     <pathelement location="${facade-admin.output.dir}"/>
     <pathelement location="${facade-admin.testoutput.dir}"/>
+    <path refid="library.hibernate.classpath"/>
   </path>
   
   

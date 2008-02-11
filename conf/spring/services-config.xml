@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
-       default-lazy-init="true">
+       default-lazy-init="false">
 
     <!-- facade services configuration -->
 
@@ -55,9 +55,8 @@
     <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl"
           scope="session">
         <constructor-arg index="0" ref="userManager"/>
-        <constructor-arg index="1" ref="NotificationManagerBean"/>
-        <constructor-arg index="2" ref="ticketCommentNotificationSender"/>
-        <constructor-arg index="3" ref="transactionManagerBean"/>
+        <constructor-arg index="1" ref="persistentNotificationSender"/>
+        <constructor-arg index="2" ref="transactionManagerBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -214,7 +213,7 @@
         <constructor-arg index="1" ref="userManager"/>
     </bean>
 
-    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
+    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.process.general.springsupport.JbpmInterceptor">
         <property name="processDAO">
             <ref bean="processDAO"/>
         </property>
@@ -249,138 +248,146 @@
 
     <!-- Technical Check Helper -->
 
-    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper">
-        <constructor-arg ref="transactionTemplateContentFactoryBean"/>
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
+        <constructor-arg ref="templateFactory"/>
     </bean>
 
     <!-- Content -->
 
-    <bean id="transactionTemplateContentFactoryBean" class="org.iana.notifications.TemplateContentFactoryBean">
-        <constructor-arg ref="templateContentConverter"/>
+    <bean id="templateFactory" class="org.iana.notifications.refactored.template.factory.DefaultTemplateFactory">
+        <constructor-arg index="0">
+            <bean class="org.iana.notifications.refactored.template.def.XMLTemplateDefLoader">
+                <constructor-arg value="iana-templates.properties"/>
+                <constructor-arg value="templates.xml"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.refactored.template.simple.DefaultStringTemplateAlgorithm"/>
+        </constructor-arg>
     </bean>
 
-    <bean id="templateContentConverter" class="org.iana.notifications.TemplateContentConverter">
-        <constructor-arg ref="notificationTemplateManager"/>
-    </bean>
+    <!-- transaction notification sender -->
 
-    <bean id="notificationTemplateManager" class="org.iana.notifications.NotificationTemplateManager">
-        <constructor-arg index="0" value="iana-templates.properties"/>
-        <constructor-arg index="1" value="templates.xml"/>
-        <property name="config">
-            <ref bean="parameterManager"/>
-        </property>
+    <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSender">
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>         
     </bean>
 
     <!-- Notification producers -->
 
     <bean id="adminClosedNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="adminClosedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
     <bean id="emptyNotificationProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.EmptyNotificationProducer"/>
+          class="org.iana.notifications.refactored.producers.defaults.EmptyNotificationProducer"/>
 
     <bean id="completedNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="completedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
-    <bean id="contactConfirmationACNotificationProducer" class="org.iana.rzm.trans.notifications.producer.AddresseeBasedTransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+    <bean id="contactConfirmationACNotificationProducer" class="org.iana.notifications.refactored.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
         <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
         <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
+        <property name="persistent" value="true"/>
     </bean>
 
-    <bean id="contactConfirmationTCNotificationProducer" class="org.iana.rzm.trans.notifications.producer.AddresseeBasedTransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+    <bean id="contactConfirmationTCNotificationProducer" class="org.iana.notifications.refactored.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>
         <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
         <constructor-arg index="3" ref="contactConfirmationTCDataProducer"/>
+        <property name="persistent" value="true"/>
     </bean>
 
     <bean id="exceptionNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="exceptionAddresseeProducer"/>
         <constructor-arg index="2" ref="exceptionTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
     <bean id="impactedPartiesNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.AddresseeBasedTransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="impactedPartiesAddresseeProducer"/>
-        <constructor-arg index="2" ref="impactedPartiesTemplateProducer"/>
+        <constructor-arg index="2" value="impacted_parties-confirmation"/>
         <constructor-arg index="3" ref="impactedPartiesDataProducer"/>
+        <property name="persistent" value="true"/>
     </bean>
 
     <bean id="impactedPartiesRemainderNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
-        <constructor-arg index="2" ref="impactedPartiesRemainderTemplateProducer"/>
+        <constructor-arg index="2" value="impacted_parties-confirmation-remainder"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
+        <property name="persistent" value="true"/>
     </bean>
 
     <bean id="pendingEvaluationNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="pendingEvaluationTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
     <bean id="rejectedNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="rejectedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
     <bean id="usdocConfirmationNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionPersistentNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="usdocConfirmationAddresseeProducer"/>
         <constructor-arg index="2" ref="usdocConfirmationTemplateProducer"/>
         <constructor-arg index="3" ref="usdocConfirmationDataProducer"/>
+        <property name="persistent" value="true"/>
     </bean>
 
     <bean id="usdocConfirmationRemainderNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="usdocConfirmationRemainderAddresseeProducer"/>
         <constructor-arg index="2" ref="usdocConfirmationRemainderTemplateProducer"/>
         <constructor-arg index="3" ref="usdocConfirmationRemainderDataProducer"/>
     </bean>
 
     <bean id="withdrawnNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="defaultAddresseeProducer"/>
         <constructor-arg index="2" ref="withdrawnTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
     <bean id="zoneInsertionAlertNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="zoneInsertionAlertAddresseeProducer"/>
         <constructor-arg index="2" ref="zoneInsertionAlertTemplateProducer"/>
         <constructor-arg index="3" ref="zoneInsertionAlertDataProducer"/>
     </bean>
 
     <bean id="zonePublicationAlertNotificationProducer"
-          class="org.iana.rzm.trans.notifications.producer.TransactionNotificationProducer">
-        <constructor-arg index="0" ref="transactionTemplateContentFactoryBean"/>
+          class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="zonePublicationAlertAddresseeProducer"/>
         <constructor-arg index="2" ref="zonePublicationAlertTemplateProducer"/>
         <constructor-arg index="3" ref="zonePublicationAlertDataProducer"/>
@@ -398,7 +405,7 @@
           class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesAddresseeProducer"/>
 
     <bean id="defaultAddresseeProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultAddresseeProducer">
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
         <property name="sendToContacts">
             <value>true</value>
         </property>
@@ -442,87 +449,73 @@
     <!-- Template producers -->
 
     <bean id="adminClosedTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>admin-closed</value>
         </property>
     </bean>
 
     <bean id="completedTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>completed</value>
         </property>
     </bean>
 
     <bean id="contactConfirmationTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>contact-confirmation</value>
         </property>
     </bean>
 
     <bean id="exceptionTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>exception</value>
         </property>
     </bean>
 
-    <bean id="impactedPartiesTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
-        <property name="template">
-            <value>impacted_parties-confirmation</value>
-        </property>
-    </bean>
-
-    <bean id="impactedPartiesRemainderTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
-        <property name="template">
-            <value>impacted_parties-confirmation-remainder</value>
-        </property>
-    </bean>
-
     <bean id="pendingEvaluationTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>normal_redelegation-processing</value>
         </property>
     </bean>
 
     <bean id="rejectedTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>rejected</value>
         </property>
     </bean>
 
     <bean id="usdocConfirmationTemplateProducer"
-          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationTemplateProducer"/>
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationTemplateNameProducer"/>
 
     <bean id="usdocConfirmationRemainderTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>usdoc-confirmation-remainder</value>
         </property>
     </bean>
 
     <bean id="withdrawnTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>withdrawn</value>
         </property>
     </bean>
 
     <bean id="zoneInsertionAlertTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>zone-insertion-alert</value>
         </property>
     </bean>
 
     <bean id="zonePublicationAlertTemplateProducer"
-          class="org.iana.rzm.trans.notifications.default_producer.DefaultTemplateProducer">
+          class="org.iana.notifications.refactored.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>zone-publication-alert</value>
         </property>
@@ -540,7 +533,7 @@
     <bean id="impactedPartiesDataProducer"
           class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesDataProducer"/>
 
-    <bean id="defaultDataProducer" class="org.iana.rzm.trans.notifications.default_producer.DefaultDataProducer"/>
+    <bean id="defaultDataProducer" class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer"/>
 
     <bean id="usdocConfirmationDataProducer"
           class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationDataProducer"/>
@@ -553,6 +546,7 @@
 
     <bean id="zonePublicationAlertDataProducer"
           class="org.iana.rzm.trans.notifications.zone_publication.ZonePublicationAlertDataProducer"/>
+
 
     <!-- Technical checks -->
 
@@ -569,19 +563,14 @@
 
     <!-- end of technical checks-->
 
-    <bean id="NotificationManagerBean" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO"/>
-        <constructor-arg index="1" ref="templateContentConverter"/>
-        <constructor-arg index="2" ref="NotificationSenderBean"/>
-    </bean>
-
-    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+    <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
     </bean>
 
-    <bean id="NotificationSenderBean" class="org.iana.notifications.NotificationSenderBean">
+    <bean id="NotificationSenderBean" class="org.iana.notifications.refactored.email.EmailSender">
         <constructor-arg index="0" value="localhost"/>
         <constructor-arg index="1" value="[RZM]"/>
         <constructor-arg index="2" value="rzm@iana.org"/>
@@ -606,29 +595,20 @@
         -->
     </bean>
 
-    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSenderBean">
-        <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="NotificationManagerBean"/>
-        </constructor-arg>
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
+        <constructor-arg ref="notificationSenderBean"/>
+        <constructor-arg ref="notificationDAO"/>
     </bean>
 
 <!--
-    <bean id="persistentNotificationSender" class="org.iana.notifications.MockPersistentNotificationSenderBean">
-        <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="NotificationManagerBean"/>
-        </constructor-arg>
+    <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+        <constructor-arg ref="notificationDAO"/>
     </bean>
 -->
 
-    <bean id="ticketCommentNotificationSender" class="org.iana.rzm.trans.notifications.TicketCommentNotificationSender">
-        <constructor-arg index="0" ref="persistentNotificationSender"/>
-        <constructor-arg index="1" ref="ticketingService"/>
+    <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <bean id="logger" class="org.iana.rzm.log.LoggerBean">
@@ -685,6 +665,7 @@
         </constructor-arg>
     </bean>
 
+<!--
     <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
         <constructor-arg index="0" value="http://208.77.191.164"/>
         <constructor-arg index="1" value="rzm"/>
@@ -712,10 +693,9 @@
             </map>
         </property>
     </bean>
+-->
 
-    <!--
-        <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
-    -->
+    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
 
     <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
@@ -726,15 +706,6 @@
         </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="NotificationManagerBean"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="ticketCommentNotificationSender"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="technicalCheckHelperBean"/>
         </constructor-arg>
     </bean>
 
@@ -784,10 +755,10 @@
     <!-- jBPM configuration -->
 
     <bean id="jbpmObjectFactory"
-          class="org.iana.rzm.trans.jbpm.JbpmSpringObjectFactory">
+          class="org.iana.rzm.trans.process.general.springsupport.JbpmSpringObjectFactory">
     </bean>
 
-    <bean id="dbService" class="org.iana.rzm.trans.jbpm.SpringDbPersistenceServiceFactory">
+    <bean id="dbService" class="org.iana.rzm.trans.process.general.springsupport.SpringDbPersistenceServiceFactory">
         <property name="sessionFactory">
             <ref local="sessionFactory"/>
         </property>
@@ -863,7 +834,7 @@
     </bean>
 
     <bean id="jbpmContextFactory"
-          class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
+          class="org.iana.rzm.trans.process.general.springsupport.JbpmContextFactoryBean">
         <constructor-arg index="0" ref="jbpmConfiguration"/>
     </bean>
 
@@ -879,16 +850,9 @@
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg index="0" ref="userDAO"/>
-        <constructor-arg index="1" ref="NotificationManagerBean"/>
     </bean>
 
     <bean id="userDAO" class="org.iana.rzm.user.dao.HibernateUserDAO">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
-    </bean>
-
-    <bean id="emailAddresseeDAO" class="org.iana.notifications.dao.HibernateEmailAddresseeDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -1096,7 +1060,7 @@
         </constructor-arg>
         <constructor-arg index="2">
             <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
-                <constructor-arg ref="ticketCommentNotificationSender"/>
+                <constructor-arg ref="persistentNotificationSender"/>
             </bean>
         </constructor-arg>
     </bean>
@@ -1160,7 +1124,6 @@
                                   execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
-                                  execution(public * org.iana.notifications.NotificationManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.log.LoggerBean.*(..)) ||
                                   execution(public * org.iana.rzm.domain.DomainManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.domain.dao.HibernateDomainDAO.*(..)) ||
@@ -1171,7 +1134,7 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(public * org.iana.rzm.trans.technicalcheck.TechnicalCheckHelper.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
                                   execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
                                   execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
@@ -1242,7 +1205,7 @@
 
     <!-- advisors -->
 
-    <bean id="jbpmAdvisor" class="org.iana.rzm.trans.jbpm.JbpmAdvisor">
+    <bean id="jbpmAdvisor" class="org.iana.rzm.trans.process.general.springsupport.JbpmAdvisor">
         <property name="order" value="2"/>
         <property name="processDAO">
             <ref bean="processDAO"/>
@@ -1326,14 +1289,20 @@
     </bean>
 
     <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="persistentNotificationSender"/>
         <constructor-arg>
-            <ref bean="userManager"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="ticketCommentNotificationSender"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="transactionTemplateContentFactoryBean"/>
+            <bean class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.refactored.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value
+                        ="password-change"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.refactored.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
         </constructor-arg>
     </bean>
 

@@ -1,21 +1,20 @@
 package org.iana.rzm.facade.admin.users;
 
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.admin.users.AdminUserService;
-import org.iana.rzm.facade.services.AbstractFinderService;
-import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.user.*;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.criteria.Criterion;
 
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
-import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk

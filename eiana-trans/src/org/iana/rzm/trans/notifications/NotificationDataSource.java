@@ -1,16 +1,15 @@
 package org.iana.rzm.trans.notifications;
 
-import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.configuration.ObjectFactory;
-import org.jbpm.JbpmContext;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.TransactionData;
+import org.jbpm.configuration.ObjectFactory;
+import org.jbpm.graph.exe.ExecutionContext;
+import org.jbpm.graph.exe.ProcessInstance;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk

@@ -1,17 +1,14 @@
 package org.iana.rzm.facade.passwd;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.facade.accuracy.SpringCommonApplicationContext;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.passwd.*;
-import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.test.spring.TransactionalSpringContextTests;
-import org.testng.annotations.Test;
+import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.springframework.context.ApplicationContext;
+import org.testng.annotations.Test;
 
 /**
  * @author Jakub Laszkiewicz

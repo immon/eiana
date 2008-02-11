@@ -1,14 +1,15 @@
 package org.iana.rzm.facade.common.email;
 
-import org.iana.notifications.NotificationSender;
-import org.iana.notifications.EmailAddressee;
-import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.RZMUser;
+import org.iana.notifications.refactored.NotificationSender;
+import org.iana.notifications.refactored.NotificationSenderException;
+import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.refactored.PNotification;
 
 /**
  * A notification-based implementation of EmailService.
@@ -18,6 +19,7 @@ import org.iana.rzm.user.RZMUser;
 public class EmailServiceBean implements EmailService {
 
     private UserManager userManager;
+
     private NotificationSender sender;
 
     public EmailServiceBean(NotificationSender sender, UserManager userManager) {
@@ -34,8 +36,11 @@ public class EmailServiceBean implements EmailService {
     public void sendEmail(String addresseeEmail, String addresseeName, String subject, String body) throws InfrastructureException {
         CheckTool.checkNull(addresseeEmail, "null addressee email");
         try {
-            sender.send(new EmailAddressee(addresseeEmail, addresseeName), subject, body);
-        } catch (NotificationException e) {
+            sender.send(new PNotification(
+                    new PAddressee(addresseeName, addresseeEmail),
+                    subject,
+                    body));
+        } catch (NotificationSenderException e) {
             throw new InfrastructureException("sending email", e);
         }
     }
@@ -50,8 +55,11 @@ public class EmailServiceBean implements EmailService {
         RZMUser user = userManager.get(userName);
         if (user == null) throw new NoObjectFoundException(userName, "user");
         try {
-            sender.send(user, subject, body);
-        } catch (NotificationException e) {
+            sender.send(new PNotification(
+                    new PAddressee(user.getName(), user.getEmail()),
+                    subject,
+                    body));
+        } catch (NotificationSenderException e) {
             throw new InfrastructureException("sending email to user " + userName, e);
         }
     }

@@ -1,6 +1,5 @@
 package org.iana.rzm.trans.confirmation.test.accuracy;
 
-import org.iana.rzm.auth.Identity;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
@@ -11,6 +10,7 @@ import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -92,11 +92,11 @@ public class ConfirmationTest extends TransactionalSpringContextTests {
             assert tokens.size() == 2;
             Iterator<String> tokenIterator = tokens.iterator();
 
-            transaction.accept(new ContactIdentity(tokenIterator.next()));
+            transaction.accept(tokenIterator.next());
             assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName())
                     : "unexpected state: " + transaction.getState().getName();
 
-            transaction.accept(new ContactIdentity(tokenIterator.next()));
+            transaction.accept(tokenIterator.next());
 
             assert TransactionState.Name.PENDING_IANA_CONFIRMATION.equals(transaction.getState().getName())
                     : "unexpected state: " + transaction.getState().getName();
@@ -118,11 +118,11 @@ public class ConfirmationTest extends TransactionalSpringContextTests {
             assert tokens.size() == 2;
             Iterator<String> tokenIterator = tokens.iterator();
 
-            transaction.accept(new ContactIdentity(tokenIterator.next()));
+            transaction.accept(tokenIterator.next());
             assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName())
                     : "unexpected state: " + transaction.getState().getName();
 
-            transaction.accept(new ContactIdentity(tokenIterator.next()));
+            transaction.accept(tokenIterator.next());
 
             assert TransactionState.Name.PENDING_IANA_CONFIRMATION.equals(transaction.getState().getName())
                     : "unexpected state: " + transaction.getState().getName();

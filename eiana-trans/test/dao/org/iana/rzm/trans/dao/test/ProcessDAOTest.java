@@ -238,7 +238,7 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             Domain domain = new Domain("potestdomain3");
             domainDAO.create(domain);
             ProcessInstance pi = createTransaction(101L, domain);
-            long piId = pi.getId();
+            long piId = pi.getObjId();
             // rollback
             ProcessInstance dbPi = processDAO.getProcessInstance(piId);
             assert dbPi == null;

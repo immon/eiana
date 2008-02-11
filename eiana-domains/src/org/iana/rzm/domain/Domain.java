@@ -1,15 +1,15 @@
 package org.iana.rzm.domain;
 
-import org.hibernate.annotations.*;
-import org.iana.dns.validator.*;
-import org.iana.rzm.common.*;
-import org.iana.rzm.common.validators.*;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.Cascade;
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.rzm.common.Name;
+import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.TrackedObject;
+import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -42,66 +42,13 @@ public class Domain implements TrackedObject, Cloneable {
 
     @Embedded
     private Name name;
-    @Embedded
-    @AttributeOverrides({
-    @AttributeOverride(name = "name", column = @Column(name = "so_name")),
-    @AttributeOverride(name = "organization", column = @Column(name = "so_org")),
-    @AttributeOverride(name = "jobTitle", column = @Column(name = "so_job_title")),
-    @AttributeOverride(name = "address.textAddress", column = @Column(name = "so_address")),
-    @AttributeOverride(name = "address.countryCode.countryCode", column = @Column(name = "so_cc")),
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "so_phone")),
-    @AttributeOverride(name = "altPhoneNumber", column = @Column(name = "so_alt_phone")),
-    @AttributeOverride(name = "faxNumber", column = @Column(name = "so_fax")),
-    @AttributeOverride(name = "altFaxNumber", column = @Column(name = "so_alt_fax")),
-    @AttributeOverride(name = "publicEmail.email", column = @Column(name = "so_pub_email")),
-    @AttributeOverride(name = "privateEmail.email", column = @Column(name = "so_priv_email")),
-    @AttributeOverride(name = "role", column = @Column(name = "so_role")),
-    @AttributeOverride(name = "trackData.created", column = @Column(name = "so_created")),
-    @AttributeOverride(name = "trackData.createdBy", column = @Column(name = "so_createdby")),
-    @AttributeOverride(name = "trackData.modified", column = @Column(name = "so_modified")),
-    @AttributeOverride(name = "trackData.modifiedBy", column = @Column(name = "so_modifiedby"))
-            })
-    private Contact supportingOrg;
-    @Embedded
-    @AttributeOverrides({
-    @AttributeOverride(name = "name", column = @Column(name = "ac_name")),
-    @AttributeOverride(name = "organization", column = @Column(name = "ac_org")),
-    @AttributeOverride(name = "jobTitle", column = @Column(name = "ac_job_title")),
-    @AttributeOverride(name = "address.textAddress", column = @Column(name = "ac_address")),
-    @AttributeOverride(name = "address.countryCode.countryCode", column = @Column(name = "ac_cc")),
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "ac_phone")),
-    @AttributeOverride(name = "altPhoneNumber", column = @Column(name = "ac_alt_phone")),
-    @AttributeOverride(name = "faxNumber", column = @Column(name = "ac_fax")),
-    @AttributeOverride(name = "altFaxNumber", column = @Column(name = "ac_alt_fax")),
-    @AttributeOverride(name = "publicEmail.email", column = @Column(name = "ac_pub_email")),
-    @AttributeOverride(name = "privateEmail.email", column = @Column(name = "ac_priv_email")),
-    @AttributeOverride(name = "role", column = @Column(name = "ac_role")),
-    @AttributeOverride(name = "trackData.created", column = @Column(name = "ac_created")),
-    @AttributeOverride(name = "trackData.createdBy", column = @Column(name = "ac_createdby")),
-    @AttributeOverride(name = "trackData.modified", column = @Column(name = "ac_modified")),
-    @AttributeOverride(name = "trackData.modifiedBy", column = @Column(name = "ac_modifiedby"))
-            })
-    private Contact adminContact;
-    @Embedded
-    @AttributeOverrides({
-    @AttributeOverride(name = "name", column = @Column(name = "tc_name")),
-    @AttributeOverride(name = "organization", column = @Column(name = "tc_org")),
-    @AttributeOverride(name = "jobTitle", column = @Column(name = "tc_job_title")),
-    @AttributeOverride(name = "address.textAddress", column = @Column(name = "tc_address")),
-    @AttributeOverride(name = "address.countryCode.countryCode", column = @Column(name = "tc_cc")),
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "tc_phone")),
-    @AttributeOverride(name = "altPhoneNumber", column = @Column(name = "tc_alt_phone")),
-    @AttributeOverride(name = "faxNumber", column = @Column(name = "tc_fax")),
-    @AttributeOverride(name = "altFaxNumber", column = @Column(name = "tc_alt_fax")),
-    @AttributeOverride(name = "publicEmail.email", column = @Column(name = "tc_pub_email")),
-    @AttributeOverride(name = "privateEmail.email", column = @Column(name = "tc_priv_email")),
-    @AttributeOverride(name = "role", column = @Column(name = "tc_role")),
-    @AttributeOverride(name = "trackData.created", column = @Column(name = "tc_created")),
-    @AttributeOverride(name = "trackData.createdBy", column = @Column(name = "tc_createdby")),
-    @AttributeOverride(name = "trackData.modified", column = @Column(name = "tc_modified")),
-    @AttributeOverride(name = "trackData.modifiedBy", column = @Column(name = "tc_modifiedby"))
-            })
-    private Contact techContact;
+
+    @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL)
+    @MapKey(name = "domainRole")
+    @Cascade(value = {org.hibernate.annotations.CascadeType.ALL,
+            org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+    Map<Contact.Role,  Contact> contacts = new HashMap<Contact.Role, Contact>();
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Domain_NameServers",
             inverseJoinColumns = @JoinColumn(name = "Host_objId"))
@@ -139,6 +86,8 @@ public class Domain implements TrackedObject, Cloneable {
     private String ianaCode;
 
     protected Domain() {
+        this.nameServers = new ArrayList<Host>();
+        this.breakpoints = new HashSet<Breakpoint>();
     }
 
     public Domain(String name) throws InvalidDomainNameException {
@@ -171,27 +120,51 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public Contact getSupportingOrg() {
-        return supportingOrg;
+        return contacts.get(Contact.Role.SO);
     }
 
     final public void setSupportingOrg(Contact supportingOrg) {
-        this.supportingOrg = supportingOrg;
+        setContact(supportingOrg, Contact.Role.SO);
     }
 
     final public Contact getAdminContact() {
-        return adminContact;
+        return contacts.get(Contact.Role.AC);
     }
 
     final public void setAdminContact(Contact contact) {
-        this.adminContact = contact;
+        setContact(contact, Contact.Role.AC);
     }
 
     final public Contact getTechContact() {
-        return techContact;
+        return contacts.get(Contact.Role.TC);
     }
 
     final public void setTechContact(Contact contact) {
-        this.techContact = contact;
+        setContact(contact, Contact.Role.TC);
+    }
+
+    private void setContact(Contact contact, Contact.Role role) {
+        Contact found = contacts.get(role);
+        if (contact == null && found == null) {
+            // nothing to do: return
+            return;
+        }
+        if (contact != null && found == null) {
+            contact.setDomainRole(role);
+            contact.setDomain(this);
+            contacts.put(role, contact);
+            return;
+        }
+        if (contact != null && found != null) {
+            contact.setDomainRole(role);
+            contact.setDomain(this);
+            contact.setId(found.getObjId());
+            contacts.put(role, contact);
+            return;
+        }
+        // contact == null && found != null
+        found.setDomain(null);
+        contacts.remove(role);
     }
 
     final public List<Host> getNameServers() {
@@ -324,6 +297,7 @@ public class Domain implements TrackedObject, Cloneable {
                 : State.NO_ACTIVITY;
     }
 
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -332,18 +306,20 @@ public class Domain implements TrackedObject, Cloneable {
 
         if (openProcesses != domain.openProcesses) return false;
         if (thirdPartyPendingProcesses != domain.thirdPartyPendingProcesses) return false;
-        if (adminContact != null ? !adminContact.equals(domain.adminContact) : domain.adminContact != null)
-            return false;
         if (breakpoints != null ? !breakpoints.equals(domain.breakpoints) : domain.breakpoints != null) return false;
+/*
+        for (Contact.Role role : contacts.keySet()) {
+            Object c1 = contacts.get(role), c2 = domain.contacts.get(role);
+            if (c1 != c2 && !c1.equals(c2)) return false; 
+        }
+*/
+        if (contacts != null ? !contacts.equals(domain.contacts) : domain.contacts != null) return false;
         if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
         if (nameServers != null ? !nameServers.equals(domain.nameServers) : domain.nameServers != null) return false;
         if (registryUrl != null ? !registryUrl.equals(domain.registryUrl) : domain.registryUrl != null) return false;
         if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
             return false;
         if (status != domain.status) return false;
-        if (supportingOrg != null ? !supportingOrg.equals(domain.supportingOrg) : domain.supportingOrg != null)
-            return false;
-        if (techContact != null ? !techContact.equals(domain.techContact) : domain.techContact != null) return false;
         if (whoisServer != null ? !whoisServer.equals(domain.whoisServer) : domain.whoisServer != null) return false;
 
         return true;
@@ -352,9 +328,7 @@ public class Domain implements TrackedObject, Cloneable {
     public int hashCode() {
         int result;
         result = (name != null ? name.hashCode() : 0);
-        result = 31 * result + (supportingOrg != null ? supportingOrg.hashCode() : 0);
-        result = 31 * result + (adminContact != null ? adminContact.hashCode() : 0);
-        result = 31 * result + (techContact != null ? techContact.hashCode() : 0);
+        result = 31 * result + (contacts != null ? contacts.hashCode() : 0);
         result = 31 * result + (nameServers != null ? nameServers.hashCode() : 0);
         result = 31 * result + (registryUrl != null ? registryUrl.hashCode() : 0);
         result = 31 * result + (whoisServer != null ? whoisServer.hashCode() : 0);
@@ -405,12 +379,12 @@ public class Domain implements TrackedObject, Cloneable {
             newDomain.nameServers = newHosts;
 
             newDomain.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
-            if (adminContact != null)
-                newDomain.adminContact = adminContact.clone();
-            if (techContact != null)
-                newDomain.techContact = techContact.clone();
-            if (supportingOrg != null)
-                newDomain.supportingOrg = supportingOrg.clone();
+            if (contacts != null) {
+                newDomain.contacts = new HashMap<Contact.Role, Contact>();
+                for (Contact.Role role : contacts.keySet()) {
+                    newDomain.contacts.put(role, contacts.get(role).clone());
+                }
+            }
             if (whoisServer != null)
                 newDomain.whoisServer = (Name) whoisServer.clone();
             newDomain.registryUrl = registryUrl;
@@ -494,9 +468,9 @@ public class Domain implements TrackedObject, Cloneable {
     public void modify(long timestamp, String modifiedBy) {
         setModified(new Timestamp(timestamp));
         setModifiedBy(modifiedBy);
-        if (adminContact != null) adminContact.checkModification(timestamp, modifiedBy);
-        if (techContact != null) techContact.checkModification(timestamp, modifiedBy);
-        if (supportingOrg != null) supportingOrg.checkModification(timestamp, modifiedBy);
+        for (Contact contact : contacts.values()) {
+            contact.checkModification(timestamp, modifiedBy);
+        }
         for (Host host : nameServers) {
             host.checkModification(timestamp, modifiedBy);
         }

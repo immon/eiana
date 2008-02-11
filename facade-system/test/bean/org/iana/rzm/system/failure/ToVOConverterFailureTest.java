@@ -92,7 +92,6 @@ public class ToVOConverterFailureTest {
         assert contactVO.getFaxNumber() == null;
         assert contactVO.getEmail() == null;
         assert contactVO.isRole() == false;
-        assert contactVO.getObjId() == 0L;
         assert contactVO.getCreated().equals(contact.getCreated());
         assert contactVO.getCreatedBy() == null;
         assert contactVO.getModified() == null;

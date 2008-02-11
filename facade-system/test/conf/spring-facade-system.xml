@@ -5,30 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
     <!-- dao configuration -->
-    <bean id="NotificationManagerBean" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <list>
-                <value>org.iana.notifications.NotificationManager</value>
-            </list>
-        </property>
-        <property name="target">
-            <ref bean="NotificationManagerBeanTarget"/>
-        </property>
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource"/>
-        </property>
-    </bean>
 
-    <bean id="NotificationManagerBeanTarget" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO"/>
-        <constructor-arg index="1" ref="mockContentConverter"/>
-        <constructor-arg index="2" ref="NotificationSenderBean"/>
-    </bean>
-
-    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+    <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -309,7 +288,7 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
-    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.jbpm.JbpmInterceptor">
+    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.process.general.springsupport.JbpmInterceptor">
         <property name="processDAO">
             <ref bean="processDAO"/>
         </property>
@@ -349,20 +328,6 @@
         <constructor-arg>
             <ref bean="diffConfig"/>
         </constructor-arg>
-        <constructor-arg>
-            <ref bean="NotificationManagerBean"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="NotificationSenderBean"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="mockTechnicalCheckHelper"/>
-        </constructor-arg>
-    </bean>
-
-    <!-- Mock Content Converter -->
-
-    <bean id="mockContentConverter" class="org.iana.rzm.trans.MockContentConverter">
     </bean>
 
     <!-- Mock Technical Check Helper-->
@@ -376,10 +341,10 @@
     <!-- jBPM configuration -->
 
     <bean id="jbpmObjectFactory"
-          class="org.iana.rzm.trans.jbpm.JbpmSpringObjectFactory">
+          class="org.iana.rzm.trans.process.general.springsupport.JbpmSpringObjectFactory">
     </bean>
 
-    <bean id="dbService" class="org.iana.rzm.trans.jbpm.SpringDbPersistenceServiceFactory">
+    <bean id="dbService" class="org.iana.rzm.trans.process.general.springsupport.SpringDbPersistenceServiceFactory">
         <property name="sessionFactory">
             <ref local="sessionFactory"/>
         </property>
@@ -436,7 +401,7 @@
     </bean>
 
     <bean id="jbpmContextFactory"
-          class="org.iana.rzm.trans.jbpm.JbpmContextFactoryBean">
+          class="org.iana.rzm.trans.process.general.springsupport.JbpmContextFactoryBean">
         <constructor-arg index="0" ref="jbpmConfiguration"/>
     </bean>
 
@@ -444,5 +409,4 @@
         <constructor-arg index="0" ref="jbpmContextFactory"/>
     </bean>
 
-    <bean id="NotificationSenderBean" class="org.iana.rzm.system.accuracy.FakeNotificationSenderBean"/>
 </beans>

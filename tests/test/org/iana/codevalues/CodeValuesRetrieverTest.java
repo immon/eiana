@@ -1,16 +1,15 @@
 package org.iana.codevalues;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
+import org.iana.rzm.conf.SpringApplicationContext;
 import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

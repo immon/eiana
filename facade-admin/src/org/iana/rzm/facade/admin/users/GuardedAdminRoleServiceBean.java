@@ -1,23 +1,22 @@
 package org.iana.rzm.facade.admin.users;
 
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.rzm.facade.admin.users.AdminRoleService;
-import org.iana.rzm.facade.services.AbstractFinderService;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.user.Role;
 import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.Role;
 import org.iana.rzm.user.RoleManager;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.criteria.Criterion;
 
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk

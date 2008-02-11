@@ -34,7 +34,7 @@ public class NotificationVO implements Serializable {
     //private Timestamp created;
     //private boolean sent;
     //private long sentFailures;
-    //private boolean persistent;
+    //private boolean simple;
     //private Long transactionId;
 
     public NotificationVO(Long objId, Set<NotificationAddresseeVO> addressees, String subject, String body, Type type) {

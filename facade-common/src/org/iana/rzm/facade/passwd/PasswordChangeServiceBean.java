@@ -3,11 +3,13 @@ package org.iana.rzm.facade.passwd;
 import org.iana.criteria.And;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
-import org.iana.notifications.Content;
-import org.iana.notifications.ContentFactory;
-import org.iana.notifications.Notification;
-import org.iana.notifications.NotificationSender;
-import org.iana.notifications.exception.NotificationException;
+import org.iana.notifications.refactored.NotificationSender;
+import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.refactored.NotificationSenderException;
+import org.iana.notifications.refactored.producers.NotificationProducer;
+import org.iana.notifications.refactored.producers.NotificationProducerException;
+import org.iana.notifications.refactored.producers.defaults.DefaultAddresseeProducer;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -32,15 +34,15 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
 
     private UserManager userManager;
     private NotificationSender notificationSender;
-    private ContentFactory templateContentFactory;
+    private NotificationProducer notificationProducer;
 
-    public PasswordChangeServiceBean(UserManager userManager, NotificationSender notificationSender, ContentFactory templateContentFactory) {
-        CheckTool.checkNull(userManager, "passwdUserManager");
-        CheckTool.checkNull(notificationSender, "notificationSender");
-        CheckTool.checkNull(templateContentFactory, "templateContentFactory");
+    public PasswordChangeServiceBean(UserManager userManager, NotificationSender notificationSender, NotificationProducer notificationProducer) {
+        CheckTool.checkNull(userManager, "user manager");
+        CheckTool.checkNull(notificationSender, "notification sender");
+        CheckTool.checkNull(notificationProducer,  "notification producer");
         this.userManager = userManager;
         this.notificationSender = notificationSender;
-        this.templateContentFactory = templateContentFactory;
+        this.notificationProducer = notificationProducer;
     }
 
     public void changePassword(String userName, String oldPassword, String newPwd, String newPwd2) throws PasswordChangeException {
@@ -67,14 +69,19 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
             RZMUser user = userManager.get(userName);
             if (user == null) throw new UserNotFoundException(userName);
             user.setPasswordChangeToken(token);
-            Map<String, String> values = new HashMap<String, String>();
-            values.put("userName", userName);
-            values.put("link", link);
-            Content templateContent = templateContentFactory.createContent(PASSWORD_CHANGE_TEMPLATE_NAME, values);
-            Notification notification = new Notification();
-            notification.setContent(templateContent);
-            notificationSender.send(user, notification.getContent());
-        } catch (NotificationException e) {
+
+            Map<String, Object> dataSource = new HashMap<String, Object>();
+            dataSource.put("userName", userName);
+            dataSource.put("link", link);
+            PAddressee addr = new PAddressee(user.getName(), user.getEmail());
+            dataSource.put(DefaultAddresseeProducer.ADDRESSEE, addr);
+            List<PNotification> notifications = notificationProducer.produce(dataSource);
+            for (PNotification notification : notifications) {
+                notificationSender.send(notification);
+            }
+        } catch (NotificationProducerException e) {
+            throw new InfrastructureException(e);
+        } catch (NotificationSenderException e) {
             throw new InfrastructureException(e);
         }
     }

@@ -11,10 +11,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
+    <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="library" name="jbpm" level="project" />
     <orderEntry type="module" module-name="common-mail" />
     <orderEntry type="library" name="mail" level="project" />
-    <orderEntry type="library" name="javaee" level="project" />
     <orderEntry type="module" module-name="facade-common" />
     <orderEntry type="module" module-name="facade-system" />
     <orderEntry type="module" module-name="eiana-util" />
@@ -27,6 +27,7 @@
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="module" module-name="common-criteria" />
     <orderEntry type="module" module-name="facade-admin" />
+    <orderEntry type="library" name="hibernate" level="project" />
     <orderEntryProperties />
   </component>
 </module>

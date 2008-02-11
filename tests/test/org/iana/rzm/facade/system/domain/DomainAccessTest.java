@@ -1,19 +1,19 @@
 package org.iana.rzm.facade.system.domain;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
 import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.List;
 

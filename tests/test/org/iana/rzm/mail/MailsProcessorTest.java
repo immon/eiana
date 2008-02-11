@@ -1,9 +1,6 @@
 package org.iana.rzm.mail;
 
-import org.iana.notifications.Notification;
-import org.iana.notifications.NotificationManager;
 import org.iana.objectdiff.DiffConfiguration;
-import org.iana.rzm.auth.Identity;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
@@ -24,6 +21,7 @@ import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dao.ProcessDAO;
@@ -49,7 +47,6 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     protected DomainManager domainManager;
     protected MailsProcessor mailsProcessor;
     protected DiffConfiguration diffConfig;
-    protected NotificationManager NotificationManagerBean;
     protected AuthenticationService authenticationServiceBean;
     protected TransactionService transSystemTransactionService;
     protected SystemDomainService transSystemDomainService;
@@ -294,8 +291,6 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
                 userManager.delete(user);
             for (Domain domain : domainManager.findAll())
                 domainManager.delete(domain.getName());
-            for (Notification notif : NotificationManagerBean.findAll())
-                NotificationManagerBean.delete(notif);
         } finally {
             processDAO.close();
         }

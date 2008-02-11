@@ -1,19 +1,17 @@
 package org.iana.rzm.trans;
 
+import org.iana.criteria.Criterion;
+import org.iana.criteria.IsNull;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.TransactionCriteriaFields;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Not;
-import org.iana.criteria.Equal;
-import org.iana.criteria.IsNull;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;

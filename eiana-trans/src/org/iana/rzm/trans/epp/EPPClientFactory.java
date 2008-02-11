@@ -1,9 +1,9 @@
 package org.iana.rzm.trans.epp;
 
-import org.iana.epp.*;
-import org.iana.epp.internal.verisign.*;
+import org.iana.epp.EPPClient;
+import org.iana.epp.internal.verisign.VerisignEPPClient;
 
-import java.io.*;
+import java.io.File;
 
 public class EPPClientFactory {
 

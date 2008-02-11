@@ -77,6 +77,18 @@ public class DomainManagerBean implements DomainManager {
     public void update(Domain domain) {
         Domain old = dao.get(domain.getObjId());
         updateNameServers(domain);
+        if (old.getAdminContact() != null) {
+            Contact contact = old.getAdminContact();
+            domain.getAdminContact().setId(contact.getObjId());
+        }
+        if (old.getTechContact() != null) {
+            Contact contact = old.getTechContact();
+            domain.getTechContact().setId(contact.getObjId());
+        }
+        if (old.getSupportingOrg() != null) {
+            Contact contact = old.getSupportingOrg();
+            domain.getSupportingOrg().setId(contact.getObjId());
+        }
         domain.setOpenProcesses(old.getOpenProcesses());
         domain.setThirdPartyPendingProcesses(old.getThirdPartyPendingProcesses());
         dao.update(domain);
@@ -85,12 +97,16 @@ public class DomainManagerBean implements DomainManager {
 
     public void delete(Domain domain) {
         CheckTool.checkNull(domain, "domain");
+        domain.setAdminContact(null);
+        domain.setTechContact(null);
+        domain.setSupportingOrg(null);
         List<Host> hosts = new ArrayList<Host>(domain.getNameServers());
         for (Host host : hosts) {
             domain.removeNameServer(host);
             if (!host.isNameServer()) hostManager.delete(host);
             else hostManager.update(host);
         }
+        //dao.update(domain);
         dao.delete(domain);
     }
 

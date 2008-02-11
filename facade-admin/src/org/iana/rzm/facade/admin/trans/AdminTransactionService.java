@@ -1,13 +1,10 @@
 package org.iana.rzm.facade.admin.trans;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.domain.vo.DomainVO;
-import org.iana.rzm.facade.system.trans.NoDomainSystemUsersException;
-import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 
@@ -17,10 +14,6 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
  * @author Jakub Laszkiewicz
  */
 public interface AdminTransactionService extends TransactionService {
-
-    TransactionVO createCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException;
-
-    TransactionVO createCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException;
 
     void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoObjectFoundException, FacadeTransactionException, AccessDeniedException;
 

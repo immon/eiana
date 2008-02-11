@@ -5,25 +5,23 @@ import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.exceptions.InvalidEmailException;
 
-import javax.persistence.Basic;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-@Embeddable
+@Entity
 public class Contact implements TrackedObject, Cloneable {
 
-    final private static List<Address> ADDR_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<Address>());
-    final private static List<String> STRING_EMPTY_LIST = Collections.unmodifiableList(new ArrayList<String>());
+    public enum Role { AC, TC, SO }
 
+    @Id
+    @GeneratedValue
+    Long id;
     @Basic
     private String name;
     @Basic
@@ -40,14 +38,23 @@ public class Contact implements TrackedObject, Cloneable {
     private String faxNumber;
     @Basic
     private String altFaxNumber;
-    @Embedded
+    @Embedded @AttributeOverrides(value =
+            {@AttributeOverride(name="email", column=@Column(name="pub_email"))}
+    )
     private EmailAddress publicEmail;
-    @Embedded
+    @Embedded @AttributeOverrides(value =
+            {@AttributeOverride(name="email", column=@Column(name="priv_email"))}
+    )
     private EmailAddress privateEmail;
     @Basic
     private boolean role;
     @Embedded
     private TrackData trackData = new TrackData();
+
+    @Basic
+    private Role domainRole;
+    @ManyToOne  
+    private Domain domain;
 
     public Contact() {
         this("");
@@ -73,7 +80,7 @@ public class Contact implements TrackedObject, Cloneable {
     }
 
     public Long getObjId() {
-        return 0L;
+        return id;
     }
 
     final public String getName() {
@@ -204,44 +211,6 @@ public class Contact implements TrackedObject, Cloneable {
     }
 
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Contact contact = (Contact) o;
-
-        if (role != contact.role) return false;
-        if (address != null ? !address.equals(contact.address) : contact.address != null) return false;
-        if (altFaxNumber != null ? !altFaxNumber.equals(contact.altFaxNumber) : contact.altFaxNumber != null)
-            return false;
-        if (altPhoneNumber != null ? !altPhoneNumber.equals(contact.altPhoneNumber) : contact.altPhoneNumber != null)
-            return false;
-        if (faxNumber != null ? !faxNumber.equals(contact.faxNumber) : contact.faxNumber != null) return false;
-        if (name != null ? !name.equals(contact.name) : contact.name != null) return false;
-        if (organization != null ? !organization.equals(contact.organization) : contact.organization != null)
-            return false;
-        if (phoneNumber != null ? !phoneNumber.equals(contact.phoneNumber) : contact.phoneNumber != null) return false;
-        if (privateEmail != null ? !privateEmail.equals(contact.privateEmail) : contact.privateEmail != null)
-            return false;
-        if (publicEmail != null ? !publicEmail.equals(contact.publicEmail) : contact.publicEmail != null) return false;
-
-        return true;
-    }
-
-    public int hashCode() {
-        int result;
-        result = (name != null ? name.hashCode() : 0);
-        result = 31 * result + (organization != null ? organization.hashCode() : 0);
-        result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
-        result = 31 * result + (altPhoneNumber != null ? altPhoneNumber.hashCode() : 0);
-        result = 31 * result + (faxNumber != null ? faxNumber.hashCode() : 0);
-        result = 31 * result + (altFaxNumber != null ? altFaxNumber.hashCode() : 0);
-        result = 31 * result + (publicEmail != null ? publicEmail.hashCode() : 0);
-        result = 31 * result + (privateEmail != null ? privateEmail.hashCode() : 0);
-        result = 31 * result + (role ? 1 : 0);
-        return result;
-    }
 
     public Timestamp getCreated() {
         return trackData.getCreated();
@@ -274,16 +243,6 @@ public class Contact implements TrackedObject, Cloneable {
         contact.address = address == null ? new Address() : address.clone();
         return contact;
     }
-
-    private List<String> listOfStringCopy(List<String> oldStringCollection) {
-        List<String> newList = new ArrayList<String>();
-        if (oldStringCollection != null) {
-            for (String s : oldStringCollection)
-                newList.add(s);
-        }
-        return newList;
-    }
-
 
     public void setCreated(Timestamp created) {
         trackData.setCreated(created);
@@ -324,4 +283,67 @@ public class Contact implements TrackedObject, Cloneable {
         }
     }
 
+    public Role getDomainRole() {
+        return domainRole;
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
+
+    void setId(Long id) {
+        this.id = id;
+    }
+
+    void setDomainRole(Role domainRole) {
+        this.domainRole = domainRole;
+    }
+
+    void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contact contact = (Contact) o;
+
+        if (role != contact.role) return false;
+        if (address != null ? !address.equals(contact.address) : contact.address != null) return false;
+        if (altFaxNumber != null ? !altFaxNumber.equals(contact.altFaxNumber) : contact.altFaxNumber != null)
+            return false;
+        if (altPhoneNumber != null ? !altPhoneNumber.equals(contact.altPhoneNumber) : contact.altPhoneNumber != null)
+            return false;
+        if (domainRole != contact.domainRole) return false;
+        if (faxNumber != null ? !faxNumber.equals(contact.faxNumber) : contact.faxNumber != null) return false;
+        if (jobTitle != null ? !jobTitle.equals(contact.jobTitle) : contact.jobTitle != null) return false;
+        if (name != null ? !name.equals(contact.name) : contact.name != null) return false;
+        if (organization != null ? !organization.equals(contact.organization) : contact.organization != null)
+            return false;
+        if (phoneNumber != null ? !phoneNumber.equals(contact.phoneNumber) : contact.phoneNumber != null) return false;
+        if (privateEmail != null ? !privateEmail.equals(contact.privateEmail) : contact.privateEmail != null)
+            return false;
+        if (publicEmail != null ? !publicEmail.equals(contact.publicEmail) : contact.publicEmail != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (organization != null ? organization.hashCode() : 0);
+        result = 31 * result + (jobTitle != null ? jobTitle.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (altPhoneNumber != null ? altPhoneNumber.hashCode() : 0);
+        result = 31 * result + (faxNumber != null ? faxNumber.hashCode() : 0);
+        result = 31 * result + (altFaxNumber != null ? altFaxNumber.hashCode() : 0);
+        result = 31 * result + (publicEmail != null ? publicEmail.hashCode() : 0);
+        result = 31 * result + (privateEmail != null ? privateEmail.hashCode() : 0);
+        result = 31 * result + (role ? 1 : 0);
+        result = 31 * result + (domainRole != null ? domainRole.hashCode() : 0);
+        return result;
+    }
 }

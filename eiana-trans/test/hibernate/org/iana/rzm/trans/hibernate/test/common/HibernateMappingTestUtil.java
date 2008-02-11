@@ -1,18 +1,15 @@
 package org.iana.rzm.trans.hibernate.test.common;
 
-import org.iana.objectdiff.Change;
-import org.iana.rzm.common.TrackData;
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.trans.StateTransition;
-import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.TransactionState;
-import org.iana.dns.validator.InvalidDomainNameException;
 
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -96,9 +93,4 @@ public class HibernateMappingTestUtil {
         return HibernateMappingTestUtil.setupState(new TransactionState(), name, transitions);
     }
 
-    public static TransactionAction setupAction(TransactionAction action, TransactionAction.Name name, List<Change> change) {
-        action.setName(name);
-        action.setChange(change);
-        return action;
-    }
 }

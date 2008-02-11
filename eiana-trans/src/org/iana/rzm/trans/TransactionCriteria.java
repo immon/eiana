@@ -1,8 +1,8 @@
 package org.iana.rzm.trans;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Represents a set of filters.

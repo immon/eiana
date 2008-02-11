@@ -1,21 +1,19 @@
 package org.iana.rzm.trans.confirmation.contact;
 
-import org.iana.notifications.AbstractAddressee;
-import org.iana.notifications.Addressee;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.auth.Identity;
+import org.iana.rzm.trans.confirmation.Identity;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 @Entity
-public class ContactIdentity extends AbstractAddressee implements Identity, Cloneable {
+public class ContactIdentity implements Identity, Cloneable {
 
+    @Id @GeneratedValue
+    private Long objId;
     @Enumerated
     private SystemRole.SystemType type;
     @Basic
@@ -31,7 +29,7 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     @Basic
     private String domainName;
 
-    private ContactIdentity() {
+    protected ContactIdentity() {
     }
 
     public ContactIdentity(String token) {
@@ -54,6 +52,10 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
         this.newContact = newContact;
         this.sharedEffect = sharedEffect;
         this.domainName = domainName;
+    }
+
+    public Long getObjId() {
+        return objId;
     }
 
     public SystemRole.Type getType() {
@@ -96,9 +98,13 @@ public class ContactIdentity extends AbstractAddressee implements Identity, Clon
     }
 
     public ContactIdentity clone() {
-        ContactIdentity ret = (ContactIdentity) super.clone();
-        ret.setObjId(null);
-        return ret;        
+        try {
+            ContactIdentity ret = (ContactIdentity) super.clone();
+            ret.objId = null;
+            return ret;
+        } catch (CloneNotSupportedException e) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public boolean isSharedEffect() {

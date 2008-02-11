@@ -3,9 +3,8 @@ package org.iana.rzm.trans.dns;
 import org.iana.dns.check.*;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz

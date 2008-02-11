@@ -1,20 +1,5 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
-import org.iana.rzm.facade.system.domain.vo.ContactVO;
-import org.iana.rzm.facade.system.domain.vo.DomainVO;
-import org.iana.rzm.facade.system.domain.vo.HostVO;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -22,6 +7,7 @@ import org.testng.annotations.Test;
  */
 @Test(sequential = true, groups = {"facade-system", "DomainCreationTransactionWorkFlowTest"})
 public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
+/*
     private final static String DOMAIN_NAME_BASE = "createtranstest";
 
     private RZMUser userAC;
@@ -262,4 +248,5 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
         closeServices();
         return transaction;
     }
+*/
 }

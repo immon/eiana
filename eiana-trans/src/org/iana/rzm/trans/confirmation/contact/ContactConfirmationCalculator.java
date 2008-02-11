@@ -3,18 +3,14 @@ package org.iana.rzm.trans.confirmation.contact;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.HostManager;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Random;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jakub Laszkiewicz

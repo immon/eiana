@@ -1,12 +1,12 @@
 package org.iana.rzm.facade.admin.domain.loggers;
 
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.services.RZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.log.Logger;
 import org.springframework.core.Ordered;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
  * @author Jakub Laszkiewicz

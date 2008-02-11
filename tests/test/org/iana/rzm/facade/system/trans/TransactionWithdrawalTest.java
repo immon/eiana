@@ -1,20 +1,16 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.vo.HostVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
-
-import java.util.List;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Patrycja Wegrzynowicz

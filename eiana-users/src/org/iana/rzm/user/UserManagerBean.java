@@ -1,9 +1,8 @@
 package org.iana.rzm.user;
 
-import org.iana.notifications.NotificationManager;
-import org.iana.rzm.user.dao.UserDAO;
-import org.iana.rzm.common.validators.CheckTool;
 import org.iana.criteria.Criterion;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.user.dao.UserDAO;
 
 import java.util.List;
 
@@ -15,15 +14,9 @@ import java.util.List;
 public class UserManagerBean implements UserManager {
 
     private UserDAO dao;
-    private NotificationManager notificationManager;
 
     public UserManagerBean(UserDAO dao) {
         this.dao = dao;
-    }
-
-    public UserManagerBean(UserDAO dao, NotificationManager notificationManager) {
-        this.dao = dao;
-        this.notificationManager = notificationManager;
     }
 
     public RZMUser get(String name) {
@@ -32,12 +25,12 @@ public class UserManagerBean implements UserManager {
 
     public RZMUser getCloned(long id) throws CloneNotSupportedException {
         RZMUser user = dao.get(id);
-        return (RZMUser) (user == null ? null : user.clone());
+        return (user == null ? null : user.clone());
     }
 
     public RZMUser getCloned(String loginName) throws CloneNotSupportedException {
         RZMUser user = dao.get(loginName);
-        return (RZMUser) (user == null ? null : user.clone());
+        return (user == null ? null : user.clone());
     }
 
     public RZMUser get(long id) {
@@ -53,13 +46,7 @@ public class UserManagerBean implements UserManager {
     }
 
     public void delete(RZMUser user) {
-        if (notificationManager != null) {
-            notificationManager.deleteNotificationsByAddresse(user);
-            RZMUser tempUser = dao.get(user.getObjId());
-            dao.delete(tempUser);
-        } else {
-            dao.delete(user);
-        }
+        dao.delete(user);
     }
 
     public void delete(String loginName) {

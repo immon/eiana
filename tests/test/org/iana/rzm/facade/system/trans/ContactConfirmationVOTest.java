@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.auth.Identity;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.vo.ContactVO;
@@ -11,6 +10,7 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
