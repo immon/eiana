@@ -4,9 +4,6 @@ import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.epp.EPPClient;
 import org.iana.epp.internal.verisign.VerisignEPPClient;
-import org.iana.notifications.EmailAddressee;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.dao.EmailAddresseeDAO;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
@@ -21,9 +18,7 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
@@ -45,11 +40,9 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
     protected UserManager userManager;
     protected DomainManager domainManager;
     protected HostManager hostManager;
-    protected NotificationManager NotificationManagerBean;
     protected TransactionManager transactionManagerBean;
     protected TransactionService GuardedSystemTransactionService;
     protected AdminTransactionService GuardedAdminTransactionServiceBean;
-    protected EmailAddresseeDAO emailAddresseeDAO;
 
     private RZMUser userAC, userTC, userIANA, userUSDoC;
     private DomainVO domainVONS, domainVO;
@@ -234,10 +227,6 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
                 processDAO.delete(pi);
         } finally {
             processDAO.close();
-        }
-        for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
-            NotificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
-            emailAddresseeDAO.delete(emailAddressee);
         }
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

@@ -17,6 +17,7 @@ import java.util.HashSet;
  * @author Marcin Zajaczkowski
  * @author Jakub Laszkiewicz
  */
+@SuppressWarnings("unchecked")
 public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
 
     public HibernateUserDAO() {
@@ -26,10 +27,6 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
     public RZMUser get(String loginName) {
         System.out.println("name = " + loginName);
         List<RZMUser> list = (List<RZMUser>) getHibernateTemplate().find("from RZMUser u where u.loginName = ?", loginName);
-        // todo bug in spring or hibernate
-        // todo iterate returns object but all values are set to null
-        //Iterator<Domain> it = getHibernateTemplate().iterate("from Domain d where d.name.name = ?", name);
-        //Domain ret = (it == null || !it.hasNext()) ? null : it.next();
         RZMUser ret = (list.size() < 1) ? null : list.get(0);
         System.out.println("retrieved = " + ((ret == null) ? null : ret.getLoginName()));
         return ret;

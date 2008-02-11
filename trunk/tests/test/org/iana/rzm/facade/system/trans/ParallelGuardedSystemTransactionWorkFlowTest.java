@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.notifications.EmailAddressee;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
@@ -162,10 +161,6 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
                 processDAO.delete(pi);
         } finally {
             processDAO.close();
-        }
-        for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
-            notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
-            emailAddresseeDAO.delete(emailAddressee);
         }
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

@@ -1,16 +1,12 @@
 package org.iana.rzm.trans;
 
 import org.iana.criteria.Criterion;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.NotificationSender;
 import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.trans.dao.ProcessCriteria;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
 
@@ -30,19 +26,12 @@ public class TransactionManagerBean implements TransactionManager {
     private ProcessDAO processDAO;
     private DomainDAO domainDAO;
     private DiffConfiguration diffConfiguration;
-    private NotificationManager notificationManager;
-    private NotificationSender notificationSender;
-    private CheckHelper technicalCheckHelper;
 
     public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO,
-                                  DiffConfiguration diff, NotificationManager notificationManager,
-                                  NotificationSender notificationSender, CheckHelper technicalCheckHelper) {
+                                  DiffConfiguration diff) {
         this.processDAO = processDAO;
         this.domainDAO = domainDAO;
         this.diffConfiguration = diff;
-        this.notificationManager = notificationManager;
-        this.notificationSender = notificationSender;
-        this.technicalCheckHelper = technicalCheckHelper;
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
@@ -50,13 +39,6 @@ public class TransactionManagerBean implements TransactionManager {
         if (pi == null || !DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
             throw new NoSuchTransactionException(id);
         return new Transaction(pi);
-    }
-
-    public Transaction createDomainCreationTransaction(Domain domain, boolean performTechnicalCheck) {
-        if (performTechnicalCheck) {
-            technicalCheckHelper.check(domain, notificationManager, notificationSender);
-        }
-        return createDomainCreationTransaction(domain);
     }
 
     public Transaction createDomainCreationTransaction(Domain domain) {
@@ -75,21 +57,6 @@ public class TransactionManagerBean implements TransactionManager {
     }
 
     public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail, String creator) throws NoModificationException {
-        return createTransaction(modifiedDomain, submitterEmail, creator);
-    }
-
-    public Transaction createDomainModificationTransaction(Domain modifiedDomain, boolean performTechnicalCheck, String creator) throws NoModificationException {
-        if (performTechnicalCheck) {
-            technicalCheckHelper.check(modifiedDomain, notificationManager, notificationSender);
-        }
-        return createTransaction(modifiedDomain, null, creator);
-    }
-
-    public Transaction createDomainModificationTransaction(Domain modifiedDomain, String submitterEmail,
-                                                           boolean performTechnicalCheck, String creator) throws NoModificationException {
-        if (performTechnicalCheck) {
-            technicalCheckHelper.check(modifiedDomain, submitterEmail, notificationManager, notificationSender);
-        }
         return createTransaction(modifiedDomain, submitterEmail, creator);
     }
 
@@ -125,12 +92,6 @@ public class TransactionManagerBean implements TransactionManager {
 
     public int count(Criterion criteria) {
         return processDAO.count(criteria);
-    }
-
-    public List<Transaction> find(TransactionCriteria criteria) {
-        ProcessCriteria processCriteria = TransactionToProcessCriteriaConverter.convert(criteria);
-        List<ProcessInstance> processInstances = processDAO.find(processCriteria);
-        return toTransactions(processInstances);
     }
 
     public List<Transaction> findTransactions(String domainName) {

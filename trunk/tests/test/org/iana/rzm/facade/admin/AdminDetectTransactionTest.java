@@ -1,22 +1,22 @@
 package org.iana.rzm.facade.admin;
 
-import org.springframework.context.ApplicationContext;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
-import org.iana.rzm.facade.system.trans.TransactionDetectorService;
-import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.testng.annotations.BeforeClass;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
+import org.iana.rzm.facade.admin.trans.AdminTransactionService;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.TransactionDetectorService;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
+import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**

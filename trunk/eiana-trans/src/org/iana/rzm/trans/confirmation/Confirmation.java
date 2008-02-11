@@ -1,7 +1,5 @@
 package org.iana.rzm.trans.confirmation;
 
-import org.iana.rzm.auth.Identity;
-
 import java.util.Set;
 
 /**

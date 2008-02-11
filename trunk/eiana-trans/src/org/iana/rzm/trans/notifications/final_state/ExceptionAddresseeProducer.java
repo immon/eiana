@@ -1,8 +1,7 @@
 package org.iana.rzm.trans.notifications.final_state;
 
-import org.iana.notifications.Addressee;
-import org.iana.notifications.EmailAddressee;
-import org.iana.rzm.trans.notifications.default_producer.DefaultAddresseeProducer;
+import org.iana.notifications.refactored.PAddressee;
+import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,17 +11,17 @@ import java.util.Set;
 /**
  * @author Piotr Tkaczyk
  */
-public class ExceptionAddresseeProducer extends DefaultAddresseeProducer {
+public class ExceptionAddresseeProducer extends DefaultTransactionAddresseeProducer {
     List<String> additionalEmails = new ArrayList<String>();
 
     public void setAdditionalEmails(List<String> additionalEmails) {
         this.additionalEmails = additionalEmails;
     }
 
-    public Set<Addressee> produceAddressee(Map dataSource) {
-        Set<Addressee> retAddressees = super.produceAddressee(dataSource);
+    public Set<PAddressee> produceAddressee(Map dataSource) {
+        Set<PAddressee> retAddressees = super.produceAddressee(dataSource);
         for (String email : additionalEmails)
-            retAddressees.add(new EmailAddressee(email, email));
+            retAddressees.add(new PAddressee(email, email));
 
         return retAddressees;
     }

@@ -9,15 +9,11 @@ import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
-import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.NoDomainSystemUsersException;
 import org.iana.rzm.facade.system.trans.TransactionDetectorService;
 import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
@@ -73,6 +69,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         }
     }
 
+/*
     public TransactionVO createCreationTransaction(DomainVO domainVO) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
         return createCreationTransaction(domainVO, false);
     }
@@ -87,6 +84,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         trans = transactionManager.createDomainCreationTransaction(DomainFromVOConverter.toDomain(domainVO), performTechnicalCheck);
         return TransactionConverter.toTransactionVO(trans);
     }
+*/
 
     public void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoObjectFoundException, FacadeTransactionException, AccessDeniedException {
         transitTransactionToState(id, targetStateName.toString());
@@ -286,7 +284,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
     public void confirmByUSDoC(long id, boolean nsChange, boolean accept) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
         isUserInRole(govRoles);
-        Transaction transaction = null;
+        Transaction transaction;
         try {
             transaction = transactionManager.getTransaction(id);
         } catch (NoSuchTransactionException e) {

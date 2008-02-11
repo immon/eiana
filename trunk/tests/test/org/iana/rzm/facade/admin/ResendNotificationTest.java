@@ -1,8 +1,7 @@
 package org.iana.rzm.facade.admin;
 
-import org.iana.notifications.Notification;
-import org.iana.notifications.NotificationManager;
-import org.iana.rzm.auth.Identity;
+import org.iana.dao.DataAccessObject;
+import org.iana.notifications.refactored.PNotification;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
@@ -19,6 +18,7 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
@@ -31,8 +31,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
 /**
  * @author Jakub Laszkiewicz
  */
@@ -43,7 +41,7 @@ public class ResendNotificationTest {
     private AdminTransactionService ats;
     private UserManager userManager;
     private DomainManager domainManager;
-    private NotificationManager notificationManager;
+    private DataAccessObject<PNotification> notificationManager;
     protected TransactionService sts;
     private ProcessDAO processDAO;
     private RZMUser iana, usdoc;
@@ -64,7 +62,7 @@ public class ResendNotificationTest {
         userManager = (UserManager) appCtx.getBean("userManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
-        notificationManager = (NotificationManager) appCtx.getBean("NotificationManagerBean");
+        notificationManager = (DataAccessObject<PNotification>) appCtx.getBean("notificationDAO");
 
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
@@ -119,20 +117,6 @@ public class ResendNotificationTest {
         domain.setEnableEmails(true);
         domainManager.create(domain);
         return domain;
-    }
-
-    public void testResendContactConfirmationNotification() throws Exception {
-        ats.setUser(new TestAuthenticatedUser(UserConverter.convert(iana)).getAuthUser());
-        Long transactionID = createDomainModificationProcess();
-        assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
-
-        List<NotificationVO> notifications = nts.getNotifications(transactionID);
-
-        assert notifications != null;
-        assert notifications.size() == 2;
-
-        for (NotificationVO notif : notifications)
-            nts.resendNotification(notif.getAddressees(), notif.getObjId(), NOTIFICATION_COMMENT);
     }
 
     public void testResendContactOutstandingConfirmationNotification() throws Exception {
@@ -223,7 +207,7 @@ public class ResendNotificationTest {
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())
             domainManager.delete(domain.getName());
-        for (Notification notification : notificationManager.findAll())
+        for (PNotification notification : notificationManager.find())
             notificationManager.delete(notification);
     }
 }

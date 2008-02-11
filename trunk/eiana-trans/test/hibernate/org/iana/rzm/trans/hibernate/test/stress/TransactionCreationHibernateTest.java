@@ -1,12 +1,11 @@
 package org.iana.rzm.trans.hibernate.test.stress;
 
+import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.NameServerAlreadyExistsException;
-import org.iana.rzm.trans.TransactionAction;
 import org.iana.rzm.trans.hibernate.test.common.HibernateMappingTestUtil;
 import org.iana.rzm.trans.hibernate.test.common.HibernateOperationStressTest;
-import org.iana.dns.validator.InvalidDomainNameException;
 import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
@@ -25,8 +24,8 @@ public class TransactionCreationHibernateTest extends HibernateOperationStressTe
     }
 
     protected void operation(Object o) throws Exception {
-        List<TransactionAction> actions = new ArrayList<TransactionAction>();
 /*
+        List<TransactionAction> actions = new ArrayList<TransactionAction>();
         actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.CREATE_NEW_TLD));
         actions.add(HibernateMappingTestUtil.createAction(TransactionAction.Name.MODIFY_NAMESERVER));
 */

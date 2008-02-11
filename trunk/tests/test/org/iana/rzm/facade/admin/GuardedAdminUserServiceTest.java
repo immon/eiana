@@ -1,16 +1,29 @@
 package org.iana.rzm.facade.admin;
 
 import org.iana.criteria.*;
-import org.iana.rzm.conf.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.rzm.facade.user.converter.*;
+import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.admin.users.AdminUserService;
-import org.iana.rzm.user.*;
-import org.springframework.context.*;
-import org.testng.annotations.*;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.user.AdminRoleVO;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.MD5Password;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk

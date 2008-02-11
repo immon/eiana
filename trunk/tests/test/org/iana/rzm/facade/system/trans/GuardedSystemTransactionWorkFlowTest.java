@@ -1,11 +1,5 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.criteria.And;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.notifications.EmailAddressee;
-import org.iana.notifications.Notification;
-import org.iana.notifications.NotificationCriteriaFields;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
@@ -18,9 +12,6 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -309,7 +300,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         checkStateLog(userIANA, transId, workFlowWithNSChangeLog);
     }
 
-    private void assertPersistentNotifications(Long transId, int count) {
+    private void assertPersistentNotifications(Long transId, int count) throws Exception {
         assertPersistentNotifications(transId, null, count);
     }
 
@@ -321,10 +312,12 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         } finally {
             processDAO.close();
         }
+/*
         for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
             notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
             emailAddresseeDAO.delete(emailAddressee);
         }
+*/
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

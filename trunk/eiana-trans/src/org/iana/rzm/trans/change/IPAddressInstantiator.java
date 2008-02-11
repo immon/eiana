@@ -1,8 +1,8 @@
 package org.iana.rzm.trans.change;
 
-import org.iana.objectdiff.ObjectInstantiator;
 import org.iana.objectdiff.Change;
 import org.iana.objectdiff.ObjectChange;
+import org.iana.objectdiff.ObjectInstantiator;
 import org.iana.rzm.domain.IPAddress;
 
 /**

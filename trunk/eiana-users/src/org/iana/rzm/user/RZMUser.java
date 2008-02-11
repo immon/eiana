@@ -1,12 +1,8 @@
 package org.iana.rzm.user;
 
-import org.iana.notifications.AbstractAddressee;
-import org.iana.notifications.Addressee;
+import org.hibernate.annotations.Cascade;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.auth.Identity;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -23,8 +19,10 @@ import java.util.*;
  */
 
 @Entity
-public class RZMUser extends AbstractAddressee implements Identity, TrackedObject, Cloneable {
+public class RZMUser  implements TrackedObject, Cloneable {
 
+    @Id @GeneratedValue
+    Long objId;
     @Basic
     private String firstName;
     @Basic
@@ -46,11 +44,11 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
     private boolean securID;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "RZMUser_Roles",
-            inverseJoinColumns = @JoinColumn(name = "Role_objId"))
+    @JoinColumn(name = "user_id")
+//    @JoinTable(name = "RZMUser_Roles",
+//            inverseJoinColumns = @JoinColumn(name = "Role_objId"))
 //    @Fetch(FetchMode.SUBSELECT)
-    //@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    // todo delete orphan does not work (Hibernate bug)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private List<Role> roles;
 
     @Embedded
@@ -72,6 +70,14 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
         this.password = new MD5Password(password);
         this.securID = securID;
         this.roles = new ArrayList<Role>();
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     public String getFirstName() {
@@ -200,7 +206,7 @@ public class RZMUser extends AbstractAddressee implements Identity, TrackedObjec
     }
 
     final public void setRoles(List<Role> roles) {
-        this.roles = new ArrayList<Role>();
+        this.roles.clear();
         this.roles.addAll(roles);
     }
 

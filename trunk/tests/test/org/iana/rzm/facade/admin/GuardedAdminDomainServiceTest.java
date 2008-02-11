@@ -1,33 +1,33 @@
 package org.iana.rzm.facade.admin;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Not;
+import org.iana.criteria.Or;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
-import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
-import org.iana.rzm.facade.admin.domain.AdminDomainService;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.criteria.Equal;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Or;
-import org.iana.criteria.Not;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk

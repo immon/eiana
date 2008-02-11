@@ -1,7 +1,6 @@
 package org.iana.rzm.trans.notifications.usdoc_confirmation;
 
-import org.iana.notifications.Addressee;
-import org.iana.notifications.EmailAddressee;
+import org.iana.notifications.refactored.PAddressee;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.notifications.producer.AbstractTransactionAddresseeProducer;
@@ -26,16 +25,16 @@ public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddre
         this.userManager = userManager;
     }
 
-    public Set<Addressee> produceAddressee(Map dataSource) {
+    public Set<PAddressee> produceAddressee(Map dataSource) {
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
         List<RZMUser> users = userManager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
         if (td.isNameServerChange()) {
             users.addAll(userManager.findUsersInAdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         }
 
-        Set<Addressee> addressees = new HashSet<Addressee>(users.size());
+        Set<PAddressee> addressees = new HashSet<PAddressee>(users.size());
         for (RZMUser user : users)
-            addressees.add(new EmailAddressee(user.getEmail(), user.getName()));
+            addressees.add(new PAddressee(user.getName(), user.getEmail()));
 
         return addressees;
     }

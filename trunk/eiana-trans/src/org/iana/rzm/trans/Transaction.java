@@ -1,8 +1,8 @@
 package org.iana.rzm.trans;
 
 import org.apache.log4j.Logger;
+import org.iana.notifications.refactored.PNotification;
 import org.iana.objectdiff.ObjectChange;
-import org.iana.rzm.auth.Identity;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
@@ -11,7 +11,6 @@ import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
-import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.user.RZMUser;
@@ -22,10 +21,7 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class represents a domain modification transaction.
@@ -36,7 +32,7 @@ import java.util.Set;
 public class Transaction implements TrackedObject {
 
     private static final Logger logger = Logger.getLogger(Transaction.class);
-    
+
     private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
     private ProcessInstance pi;
 
@@ -176,19 +172,27 @@ public class Transaction implements TrackedObject {
         pi.signal(StateTransition.ACCEPT);
     }
 
-    public synchronized void accept(Identity user) throws TransactionException {
+    public synchronized void accept(RZMUser user) throws TransactionException {
+        getTransactionData().setIdentityName(user.getLoginName());
+        pi.signal(StateTransition.ACCEPT);
+    }
+
+    public synchronized void reject(RZMUser user) throws TransactionException {
+        getTransactionData().setIdentityName(user.getLoginName());
+        pi.signal(StateTransition.REJECT);
+    }
+
+    public synchronized void accept(String acceptToken) throws TransactionException {
         try {
-            Token token = pi.getRootToken();
-            Node node = token.getNode();
-            String state = node.getName();
-
-            Confirmation confirmation = getConfirmation(state);
-
-            if (confirmation == null) throw new UserConfirmationNotExpected();
-            if (!confirmation.accept(user))
+            ContactIdentity user = new ContactIdentity(acceptToken);
+            Confirmation confirmation = getTransactionData().getContactConfirmations();
+            if (confirmation == null) {
+                throw new UserConfirmationNotExpected();
+            }
+            if (!confirmation.accept(user)) {
                 return;
-            if (user instanceof RZMUser)
-                getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+            }
+            getTransactionData().setIdentityName("AC/TC");
             pi.signal(StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
@@ -197,62 +201,30 @@ public class Transaction implements TrackedObject {
         }
     }
 
-    public synchronized void reject(Identity user) throws TransactionException {
-        Token token = pi.getRootToken();
-        Node node = token.getNode();
-        String state = node.getName();
-
-        Confirmation confirmation = getConfirmation(state);
-
-        if (confirmation == null) throw new UserConfirmationNotExpected();
+    public synchronized void reject(String acceptToken) throws TransactionException {
+        ContactIdentity user = new ContactIdentity(acceptToken);
+        Confirmation confirmation = getTransactionData().getContactConfirmations();
+        if (confirmation == null) {
+            throw new UserConfirmationNotExpected();
+        }
         if (confirmation.isAcceptableBy(user)) {
-            if (user instanceof RZMUser)
-                getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+            getTransactionData().setIdentityName("AC/TC");
             pi.signal(StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
     }
 
-    static Set<String> contactStates = new HashSet<String>();
-
-    {
-        contactStates.add("PENDING_CONTACT_CONFIRMATION");
-        contactStates.add("PENDING_IMPACTED_PARTIES");
+    public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
+        getTransactionData().setIdentityName(user.getLoginName());
+        pi.signal(transitionName);
     }
 
-    private Confirmation getConfirmation(String state) {
-        return contactStates.contains(state) ?
-                getTransactionData().getContactConfirmations() :
-                getTransactionData().getStateConfirmations(state);
-    }
-
-    public synchronized void transit(Identity user, String transitionName) throws TransactionException {
-//        if (transitionName.equals(StateTransition.ACCEPT)) accept(user);
-        Token token = pi.getRootToken();
-        Node node = token.getNode();
-        TransitionConfirmations tc = getTransactionData().getTransitionConfirmations(node.getName());
-        if (tc == null) {
-            String s =
-                    "User " + user.getName() + "  " + user.getEmail() + " is not Authorized to move request to " + transitionName;
-            throw new UserNotAuthorizedToTransit(s);
-        }
-        if (tc.isAcceptableBy(transitionName, user)) {
-            if (user instanceof RZMUser) {
-                getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
-            }
-            pi.signal(transitionName);
-        } else {
-            throw new UserNotAuthorizedToTransit();
-        }
-    }
-
-    public synchronized void transitTo(Identity user, String stateName) throws TransactionException {
+    public synchronized void transitTo(RZMUser user, String stateName) throws TransactionException {
         Token token = pi.getRootToken();
         Node destinationNode = pi.getProcessDefinition().getNode(stateName);
         if (destinationNode == null || !TransactionState.Name.nameStrings.contains(stateName))
             throw new TransactionException("no such state: " + stateName);
-        if (user instanceof RZMUser)
-            getTransactionData().setIdentityName(((RZMUser) user).getLoginName());
+        getTransactionData().setIdentityName(user.getLoginName());
         token.signal("TRANSITION_" + stateName);
     }
 
@@ -332,7 +304,7 @@ public class Transaction implements TrackedObject {
         return getTransactionData().getUSDoCConfirmation();
     }
 
-    public void confirmChangeByUSDoC(Identity identity, TransactionChangeType type, boolean accept) throws TransactionException {
+    public void confirmChangeByUSDoC(RZMUser identity, TransactionChangeType type, boolean accept) throws TransactionException {
         if (getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) {
             throw new IllegalTransactionStateException(getState());
         }
@@ -363,6 +335,18 @@ public class Transaction implements TrackedObject {
         return getTransactionData().isNameServerChange();
     }
 
+    public boolean isAdminContactChange() {
+        return getTransactionData().isAdminContactChange();
+    }
+
+    public boolean isTechContactChange() {
+        return getTransactionData().isTechContactChange();
+    }
+
+    public boolean isSupportingChange() {
+        return getTransactionData().isSupportingChange();
+    }
+
     public Set<String> getAddedOrUpdatedNameServers() {
         return getTransactionData().getAddedOrUpdatedNameServers();
     }
@@ -378,5 +362,38 @@ public class Transaction implements TrackedObject {
 
     public String getUsdocNotes() {
         return getTransactionData().getUsdocNotes();
+    }
+
+    public boolean areEmailsEnabled() {
+        return getCurrentDomain().isEnableEmails();
+    }
+
+    public void addNotification(PNotification notification) {
+        getTransactionData().addNotification(notification);
+    }
+
+    public Set<PNotification> getNotifications() {
+        return getTransactionData().getNotifications();
+    }
+
+    public void deleteAllNotifications() {
+        getNotifications().clear();
+    }
+
+    public void deleteNotifications(Collection<String> types) {
+        if (types != null) {
+            Set<PNotification> notifications = getNotifications();
+            Set<PNotification> toRemove = new HashSet<PNotification>();
+            for (PNotification notification : notifications) {
+                if (types.contains(notification.getType())) {
+                    toRemove.add(notification);
+                }
+            }
+            notifications.removeAll(toRemove);
+        }
+    }
+
+    public void resetConfirmation() {
+        getTransactionData().resetConfirmation();
     }
 }

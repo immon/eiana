@@ -1,8 +1,8 @@
 package org.iana.rzm.trans.dao;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * @author Jakub Laszkiewicz

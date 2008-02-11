@@ -1,8 +1,8 @@
 package org.iana.rzm.trans.change;
 
-import org.iana.rzm.domain.*;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectConfiguration;
+import org.iana.rzm.domain.*;
 
 /**
  * @author Patrycja Wegrzynowicz

@@ -3,7 +3,6 @@ package org.iana.rzm.domain.hibernate.test.accuracy;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.hibernate.test.common.HibernateMappingUnitTest;
 import org.iana.rzm.domain.hibernate.test.common.HibernateMappingTestUtil;
-import org.testng.annotations.Test;
 
 import java.io.Serializable;
 

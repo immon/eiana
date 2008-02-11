@@ -2,7 +2,7 @@ package org.iana.rzm.trans.dao;
 
 import org.hibernate.Query;
 import org.iana.criteria.Criterion;
-import org.iana.rzm.trans.jbpm.JbpmContextFactory;
+import org.iana.rzm.trans.process.general.springsupport.JbpmContextFactory;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.JbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;

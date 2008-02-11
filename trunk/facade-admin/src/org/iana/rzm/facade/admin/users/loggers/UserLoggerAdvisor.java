@@ -1,9 +1,6 @@
 package org.iana.rzm.facade.admin.users.loggers;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.facade.services.RZMStatefulService;
-import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.log.Logger;
 import org.iana.rzm.user.UserManager;
 import org.springframework.core.Ordered;
@@ -33,6 +30,7 @@ public class UserLoggerAdvisor implements Ordered {
     }
 
     public Object log(ProceedingJoinPoint call) throws Throwable {
+/*
         RZMStatefulService service = (RZMStatefulService) call.getThis();
         Object user = call.getArgs()[0];
         TrackedObject oldObject;
@@ -57,5 +55,8 @@ public class UserLoggerAdvisor implements Ordered {
         logger.addLog(service.getAuthenticatedUser().getUserName(), "sessionId", call.getSignature().getName(),
                 object, oldObject);
         return result;
+*/
+
+        return call.proceed();
     }
 }

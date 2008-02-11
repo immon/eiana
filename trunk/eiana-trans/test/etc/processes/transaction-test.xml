@@ -15,10 +15,7 @@
 
     <state name="PENDING_IANA_CONFIRMATION">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.jbpm.handlers.RoleCalculator">
-                <roles>
-                    <element>IANA</element>
-                </roles>
+            <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
             </action>
         </event>
         <transition name="normal" to="COMPLETED"/>

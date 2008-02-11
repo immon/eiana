@@ -21,7 +21,6 @@ import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dns.DNSConverter;
 import org.iana.rzm.user.UserManager;
 
@@ -270,7 +269,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
-            trans.accept(new ContactIdentity(token));
+            trans.accept(token);
             trans.setModified(now());
             // set to the role
             trans.setModifiedBy(token);
@@ -288,7 +287,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
-            trans.reject(new ContactIdentity(token));
+            trans.reject(token);
             // set to the role
             trans.setModified(now());
             trans.setModifiedBy(token);

@@ -1,10 +1,9 @@
 package org.iana.rzm.trans.epp;
 
+import org.apache.log4j.Logger;
 import org.iana.epp.EPPClient;
-import org.iana.epp.exceptions.EPPFrameworkException;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.apache.log4j.Logger;
 
 /**
  * @author Jakub Laszkiewicz

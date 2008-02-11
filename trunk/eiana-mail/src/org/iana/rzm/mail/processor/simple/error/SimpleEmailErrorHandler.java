@@ -1,10 +1,11 @@
 package org.iana.rzm.mail.processor.simple.error;
 
 import org.apache.log4j.Logger;
-import org.iana.notifications.EmailAddressee;
-import org.iana.notifications.NotificationSender;
-import org.iana.notifications.exception.NotificationException;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.notifications.refactored.NotificationSender;
+import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.refactored.PAddressee;
+import org.iana.notifications.refactored.NotificationSenderException;
 
 import java.util.StringTokenizer;
 
@@ -29,8 +30,9 @@ public class SimpleEmailErrorHandler implements EmailErrorHandler {
             String subject = RESPONSE_PREFIX + originalSubject;
             String quotedContent = originalContent != null ? quote(originalContent) + "\n" : "";
             String content = quotedContent + message;
-            notifier.send(new EmailAddressee(to, ""), subject, content);
-        } catch (NotificationException e) {
+            PNotification notification = new PNotification(new PAddressee(to, to), subject, content);
+            notifier.send(notification);
+        } catch (NotificationSenderException e) {
             logger.error("Unexpected notifier exception", e);
         }
     }

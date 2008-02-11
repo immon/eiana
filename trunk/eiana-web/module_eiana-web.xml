@@ -177,21 +177,6 @@
     <copy file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-message-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cryptix-message-api.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-jce-provider.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cryptix-jce-provider.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/cobertura/cobertura.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cobertura.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-lang-2.3.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-validator.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-pool-1.3.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-api.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-1.0.4.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-io-1.2.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-fileupload-1.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-el.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-dbcp-1.2.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-collections-3.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-codec-1.3.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-core.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-bean-collections.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/tapestry-spring-1.0.0.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/tapestry-prop-1.0.0.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/tapestry-contrib-4.0.2.jar"/>
@@ -211,6 +196,21 @@
     <copy todir="${j2ee.dir.exploded}/WEB-INF/classes">
       <fileset dir="${module.eiana-web.basedir}/../conf/hibernate"/>
     </copy>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-lang-2.3.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-validator.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-pool-1.3.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-api.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-io-1.2.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-fileupload-1.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-el.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-dbcp-1.2.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-collections-3.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-codec-1.3.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-core.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-bean-collections.jar"/>
     <copy todir="${j2ee.dir.exploded}/WEB-INF/classes">
       <fileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-securid"/>
     </copy>
@@ -327,21 +327,6 @@
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-system" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-rt" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-securid" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../conf/hibernate" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../conf/jbpm" prefix="WEB-INF/classes"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-1.1.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-lib-1.1.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/javassist.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/ognl-2.6.9.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/oro-2.0.8.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-4.0.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" prefix="WEB-INF/lib"/>
@@ -357,6 +342,21 @@
       <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset dir="${module.eiana-web.basedir}/../conf/hibernate" prefix="WEB-INF/classes"/>
+      <zipfileset dir="${module.eiana-web.basedir}/../conf/jbpm" prefix="WEB-INF/classes"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-1.1.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-lib-1.1.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/javassist.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/ognl-2.6.9.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/oro-2.0.8.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-4.0.2.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/cobertura/cobertura.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-jce-provider.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-message-api.jar" prefix="WEB-INF/lib"/>

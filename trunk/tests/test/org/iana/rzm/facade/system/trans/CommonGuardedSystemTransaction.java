@@ -1,11 +1,9 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.dao.DataAccessObject;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.NotificationCriteriaFields;
-import org.iana.notifications.Notification;
-import org.iana.notifications.dao.EmailAddresseeDAO;
+import org.iana.notifications.refactored.PNotification;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
@@ -17,6 +15,8 @@ import org.iana.rzm.facade.auth.PasswordAuth;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.notification.NotificationConverter;
+import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
@@ -25,14 +25,10 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.criteria.And;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @author: Piotr Tkaczyk
@@ -46,8 +42,8 @@ public abstract class CommonGuardedSystemTransaction {
     protected DomainManager domainManager = (DomainManager) appCtx.getBean("domainManager");
     protected AdminNotificationService notificationService =
             (AdminNotificationService) appCtx.getBean("notificationService");
-    protected NotificationManager notificationManagerBean =
-            (NotificationManager) appCtx.getBean("NotificationManagerBean");
+    protected DataAccessObject<PNotification> notificationManagerBean =
+            (DataAccessObject<PNotification>) appCtx.getBean("notificationDAO");
     protected TransactionManager transactionManagerBean =
             (TransactionManager) appCtx.getBean("transactionManagerBean");
     protected TransactionService gsts =
@@ -56,7 +52,6 @@ public abstract class CommonGuardedSystemTransaction {
             (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
     protected AdminDomainService ads =
             (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
-    protected EmailAddresseeDAO emailAddresseeDAO = (EmailAddresseeDAO) appCtx.getBean("emailAddresseeDAO");
     protected RZMUser defaultIana;
     protected AdminTransactionService ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
     protected AuthenticationService authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
@@ -388,20 +383,15 @@ public abstract class CommonGuardedSystemTransaction {
         return host;
     }
 
-    protected void assertPersistentNotifications(Long transId, String type, int count) {
-        List<Criterion> criteria = new ArrayList<Criterion>();
-        criteria.add(new Equal(NotificationCriteriaFields.TRANSACTION_ID, transId));
-        criteria.add(new Equal(NotificationCriteriaFields.PERSISTENT, true));
-        if (type != null)
-            criteria.add(new Equal(NotificationCriteriaFields.TYPE, type));
-        List<Notification> notifications = notificationManagerBean.find(new And(criteria));
+    protected void assertPersistentNotifications(Long transId, String type, int count) throws Exception {
+        List<NotificationVO> notifications = notificationService.getNotifications(transId);
         assert notifications != null : "notifications list is null";
         assert notifications.size() == count : "unexpected notifications count: " + notifications.size();
-        for (Notification notif : notifications) {
+        for (NotificationVO notif : notifications) {
             if (type != null)
-                assert type.equals(notif.getType()) :
+                assert NotificationConverter.isType(type, notif.getType()) :
                         "unexpected notification type: " + notif.getType();
-            assert notif.isPersistent() : "notification is not persistent";
+            // assert notif.isPersistent() : "notification is not simple";
         }
     }
 

@@ -64,18 +64,8 @@
         </property>
     </bean>
 
-    <bean id="passwdUserManager" class="org.iana.rzm.user.UserManagerBean">
-        <constructor-arg index="0" ref="userDAO"/>
-        <constructor-arg index="1" ref="notificationManager"/>
-    </bean>
-
-    <bean id="notificationManager" class="org.iana.notifications.NotificationManagerBean">
-        <constructor-arg index="0" ref="notificationDAO"/>
-        <constructor-arg index="1" ref="templateContentConverter"/>
-        <constructor-arg index="2" ref="testNotificationSender"/>
-    </bean>
-
-    <bean id="notificationDAO" class="org.iana.notifications.dao.HibernateNotificationDAO">
+    <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.notifications.refactored.PNotification" type="java.lang.Class"/>
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -87,37 +77,37 @@
         </property>
     </bean>
 
-    <bean id="testNotificationSender" class="org.iana.rzm.facade.passwd.FakeNotificationSenderBean"/>
+    <bean id="testNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+        <constructor-arg ref="notificationDAO"/>
+    </bean>
 
     <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="testNotificationSender"/>
         <constructor-arg>
-            <ref bean="passwdUserManager"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="testNotificationSender"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="transactionTemplateContentFactoryBean"/>
+            <bean class="org.iana.notifications.refactored.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.refactored.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="password-change"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.refactored.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
         </constructor-arg>
     </bean>
 
-    <!-- Content -->
-
-    <bean id="transactionTemplateContentFactoryBean"
-          class="org.iana.notifications.TemplateContentFactoryBean">
-        <constructor-arg ref="templateContentConverter"/>
-    </bean>
-
-    <bean id="templateContentConverter" class="org.iana.notifications.TemplateContentConverter">
-        <constructor-arg ref="notificationTemplateManager"/>
-    </bean>
-
-    <bean id="notificationTemplateManager" class="org.iana.notifications.NotificationTemplateManager">
-        <constructor-arg index="0" value="iana-templates.properties"/>
-        <constructor-arg index="1" value="templates.xml"/>
-        <property name="config">
-            <ref bean="parameterManager"/>
-        </property>
+    <bean id="templateFactory" class="org.iana.notifications.refactored.template.factory.DefaultTemplateFactory">
+        <constructor-arg index="0">
+            <bean class="org.iana.notifications.refactored.template.def.XMLTemplateDefLoader">
+                <constructor-arg value="iana-templates.properties"/>
+                <constructor-arg value="templates.xml"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.refactored.template.simple.DefaultStringTemplateAlgorithm"/>
+        </constructor-arg>
     </bean>
 
     <!--  Config DAO -->

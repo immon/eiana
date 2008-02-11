@@ -1,15 +1,13 @@
 package org.iana.rzm.trans;
 
-import org.hibernate.annotations.MapKeyManyToMany;
+import org.hibernate.annotations.Cascade;
+import org.iana.notifications.refactored.PNotification;
 import org.iana.objectdiff.Change;
-import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.CollectionChange;
+import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.confirmation.Confirmation;
-import org.iana.rzm.trans.confirmation.StateConfirmations;
-import org.iana.rzm.trans.confirmation.TransitionConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 
@@ -25,40 +23,47 @@ public class TransactionData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objId;
+
     @Basic
     private Long ticketID;
+
+    @OneToMany(cascade=CascadeType.REMOVE)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinColumn(name="td_id")
+    private Set<PNotification> notifications = new HashSet<PNotification>();
+
     @ManyToOne
     @JoinColumn(name = "currentDomain_objId")
     private Domain currentDomain;
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "domainChange_objId")
     private ObjectChange domainChange;
+
     @ManyToOne(cascade = CascadeType.ALL)
     private ContactConfirmations contactConfirmations;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "TransactionData_stateConfirmations",
-            inverseJoinColumns = @JoinColumn(name = "stateConfirmations_objId"))
-    @MapKeyManyToMany
-    private Map<String, StateConfirmations> stateConfirmations = new HashMap<String, StateConfirmations>();
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "TransactionData_transitionConfirmations",
-            inverseJoinColumns = @JoinColumn(name = "transitionConfirmations_objId"))
-    @MapKeyManyToMany
-    private Map<String, TransitionConfirmations> transitionConfirmations = new HashMap<String, TransitionConfirmations>();
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "TransactionData_transactionStateLog",
             inverseJoinColumns = @JoinColumn(name = "transactionStateLog_objId"))
     private List<TransactionStateLogEntry> stateLog = new ArrayList<TransactionStateLogEntry>();
+
     @Embedded
     protected TrackData trackData = new TrackData();
+
     @Basic
     private String identityName;
+
     @Basic
     private boolean redelegation; // contact redelegation!
+
     @Basic
     private String submitterEmail;
+
     @Basic
+    @Column(length = 4096)
     private String comment;
+
     @Basic
     private int retries;
 
@@ -67,13 +72,16 @@ public class TransactionData {
     @Basic
     @Column(length = 4096)
     private String stateMessage;
+
     @Basic
     private String eppRequestId;
+
     @Basic
-    @Column(length = 1024)
+    @Column(length = 4096)
     private String eppReceipt;
 
     @Basic
+    @Column(length = 4096)
     private String usdocNotes;
 
     @Embedded
@@ -109,27 +117,6 @@ public class TransactionData {
 
     public void setDomainChange(ObjectChange domainChange) {
         this.domainChange = domainChange;
-    }
-
-    public Confirmation getStateConfirmations(String name) {
-        return stateConfirmations.get(name);
-    }
-
-    public void setStateConfirmations(String state, StateConfirmations stateConfirmations) {
-        this.stateConfirmations.put(state, stateConfirmations);
-    }
-
-    public TransitionConfirmations getTransitionConfirmations(String stateName) {
-        return transitionConfirmations.get(stateName);
-    }
-
-    public void addTransitionConfirmation(String stateName, String transitionName, Confirmation confirmation) {
-        TransitionConfirmations tc = transitionConfirmations.get(stateName);
-        if (tc == null) {
-            tc = new TransitionConfirmations();
-            this.transitionConfirmations.put(stateName, tc);
-        }
-        tc.addConfirmation(transitionName, confirmation);
     }
 
     public List<TransactionStateLogEntry> getStateLog() {
@@ -246,9 +233,25 @@ public class TransactionData {
     }
 
     public boolean isNameServerChange() {
+        return isChange("nameServers");
+    }
+
+    public boolean isAdminContactChange() {
+        return isChange("adminContact");
+    }
+
+    public boolean isTechContactChange() {
+        return isChange("techContact");
+    }
+
+    public boolean isSupportingChange() {
+        return isChange("supportingChange");
+    }
+
+    private boolean isChange(String change) {
         if (domainChange == null) return false;
         Map<String, Change> fields = domainChange.getFieldChanges();
-        return fields.containsKey("nameServers");
+        return fields.containsKey(change);
     }
 
     public Set<String> getAddedOrUpdatedNameServers() {
@@ -319,11 +322,28 @@ public class TransactionData {
     }
 
     private String getChangedEmail(String contact) {
-        ObjectChange techChange = (ObjectChange) getDomainChange().getFieldChanges().get(contact);
-        if (techChange != null) {
-            SimpleChange emailChange = (SimpleChange) techChange.getFieldChanges().get("email");
-            if (emailChange != null) return emailChange.getNewValue();
+        ObjectChange domainChange = getDomainChange();
+        if (domainChange != null) {
+            ObjectChange techChange = (ObjectChange) domainChange.getFieldChanges().get(contact);
+            if (techChange != null) {
+                SimpleChange emailChange = (SimpleChange) techChange.getFieldChanges().get("email");
+                if (emailChange != null) return emailChange.getNewValue();
+            }
         }
         return null;
+    }
+
+    public void addNotification(PNotification notification) {
+        if (notification != null && notification.isPersistent()) {
+            notifications.add(notification);
+        }
+    }
+
+    public Set<PNotification> getNotifications() {
+        return notifications;
+    }
+
+    public void resetConfirmation() {
+        this.contactConfirmations = null;
     }
 }

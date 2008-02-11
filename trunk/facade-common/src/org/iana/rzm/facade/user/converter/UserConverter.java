@@ -84,11 +84,13 @@ public class UserConverter {
 
         convertUser(rzmUser, user);
 
+/*
         List<Role> roles = new ArrayList<Role>();
         for (RoleVO roleVO : user.getRoles()) {
             roles.add(RoleConverter.convertRole(roleVO));
         }
         rzmUser.setRoles(roles);
+*/
 
         return rzmUser;
     }

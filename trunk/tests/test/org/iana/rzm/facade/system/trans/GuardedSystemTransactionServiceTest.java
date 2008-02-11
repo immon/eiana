@@ -7,7 +7,6 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
-import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -122,12 +121,12 @@ public class GuardedSystemTransactionServiceTest {
         Criterion open = new IsNull(TransactionCriteriaFields.END);
         List<TransactionVO> foundTransactions = gsts.find(open);
         assert foundTransactions != null;
-        assert foundTransactions.size() == 1;
+        assert foundTransactions.size() == 1 : "found " + foundTransactions.size();
 //        assert transaction.equals(foundTransactions.iterator().next());
         assert compareTransactionVOs(transaction, foundTransactions.iterator().next());
     }
 
-    @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")
+    @Test(dependsOnMethods = "testFindOpenTransactions")
     public void testAcceptTransaction() throws Exception {
         gsts.setUser(userAc);
 
@@ -156,8 +155,7 @@ public class GuardedSystemTransactionServiceTest {
 //        assert "PENDING_IMPACTED_PARTIES".equals(transaction.getState().getName().toString()); todo
     }
 
-    @Test(dependsOnMethods = "testAcceptTransaction",
-            expectedExceptions = AccessDeniedException.class)
+    @Test(dependsOnMethods = "testAcceptTransaction")
     public void testTransitTransaction() throws InfrastructureException, NoObjectFoundException {
         gsts.setUser(userTc);
         gsts.transitTransaction(transaction.getTransactionID(), "close");
@@ -198,7 +196,7 @@ public class GuardedSystemTransactionServiceTest {
     /*
     @Test(threadPoolSize = 10, invocationCount = 600)
     public void testSetUserSimultaneously() throws Exception {
-        System.out.println(">>>> thread id = " + Thread.currentThread().getId());
+        System.out.println(">>>> thread id = " + Thread.currentThread().getObjId());
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getConcurrentContext();
         SystemTransactionService svc = (SystemTransactionService) appCtx.getBean("GuardedSystemTransactionService");
         svc.setUser(userTc);

@@ -1,23 +1,14 @@
 package org.iana.rzm.trans.confirmation.contact;
 
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.jbpm.handlers.*;
-import org.iana.rzm.trans.confirmation.StateConfirmations;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.user.SystemRole;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.SimpleChange;
-import org.jbpm.graph.def.Node;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.graph.exe.Token;
 
-import java.util.Set;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz

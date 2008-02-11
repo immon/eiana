@@ -48,7 +48,6 @@
         <mapping class="org.iana.objectdiff.SimpleChange"/>
         <mapping class="org.iana.objectdiff.FieldChange"/>
 
-        <mapping class="org.iana.rzm.trans.TransactionAction"/>
         <mapping class="org.iana.rzm.trans.TransactionState"/>
         <mapping class="org.iana.rzm.trans.TransactionStateLogEntry"/>
         <mapping class="org.iana.rzm.trans.Transaction"/>
@@ -56,21 +55,11 @@
         <mapping class="org.iana.rzm.trans.TransactionData"/>
 
         <mapping class="org.iana.rzm.trans.confirmation.AbstractConfirmation"/>
-        <mapping class="org.iana.rzm.trans.confirmation.ConfirmationSet"/>
-        <mapping class="org.iana.rzm.trans.confirmation.MandatoryRoleConfirmations"/>
-        <mapping class="org.iana.rzm.trans.confirmation.RoleConfirmation"/>
-        <mapping class="org.iana.rzm.trans.confirmation.StateConfirmations"/>
-        <mapping class="org.iana.rzm.trans.confirmation.TransitionConfirmations"/>
-        <mapping class="org.iana.rzm.trans.confirmation.UserConfirmation"/>
         <mapping class="org.iana.rzm.trans.confirmation.contact.ContactConfirmations"/>
         <mapping class="org.iana.rzm.trans.confirmation.contact.ContactIdentity"/>
 
-        <mapping class="org.iana.notifications.Content"/>
-        <mapping class="org.iana.notifications.AbstractAddressee"/>
-        <mapping class="org.iana.notifications.EmailAddressee"/>
-        <mapping class="org.iana.notifications.Notification"/>
-        <mapping class="org.iana.notifications.TemplateContent"/>
-        <mapping class="org.iana.notifications.TextContent"/>
+        <mapping class="org.iana.notifications.refactored.PNotification" />
+        <mapping class="org.iana.notifications.refactored.PAddressee" />
 
         <mapping class="org.iana.config.impl.AbstractParameter"/>
         <mapping class="org.iana.config.impl.SingleParameter"/>

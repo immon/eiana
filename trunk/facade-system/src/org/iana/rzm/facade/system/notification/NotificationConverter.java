@@ -1,9 +1,7 @@
 package org.iana.rzm.facade.system.notification;
 
-import org.iana.notifications.Addressee;
-import org.iana.notifications.EmailAddressee;
-import org.iana.notifications.Notification;
-import org.iana.notifications.exception.NotificationException;
+import org.iana.notifications.refactored.PNotification;
+import org.iana.notifications.refactored.PAddressee;
 
 import java.util.*;
 
@@ -11,39 +9,33 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  */
 public class NotificationConverter {
-    public static NotificationAddresseeVO toNotificationAddresseeVO(Addressee addressee) {
+    public static NotificationAddresseeVO toNotificationAddresseeVO(PAddressee addressee) {
         return new NotificationAddresseeVO(addressee.getName(), addressee.getEmail());
     }
 
-    public static Set<NotificationAddresseeVO> toNotificationAddresseeVOSet(Set<Addressee> addresseeSet) {
+    public static Set<NotificationAddresseeVO> toNotificationAddresseeVOSet(Set<PAddressee> addresseeSet) {
         Set<NotificationAddresseeVO> result = new HashSet<NotificationAddresseeVO>();
-        for (Addressee addressee : addresseeSet)
+        for (PAddressee addressee : addresseeSet)
             result.add(toNotificationAddresseeVO(addressee));
         return result;
     }
 
-    public static Addressee toAddressee(NotificationAddresseeVO addressee) {
-        return new EmailAddressee(addressee.getName(), addressee.getEmail());
-    }
-
-    public static Set<Addressee> toAddresseeSet(Set<NotificationAddresseeVO> addresseeSet) {
-        Set<Addressee> result = new HashSet<Addressee>();
-        for (NotificationAddresseeVO addressee : addresseeSet)
-            result.add(toAddressee(addressee));
-        return result;
-    }
-
-    public static NotificationVO toNotificationVO(Notification notification) throws NotificationException {
-        return new NotificationVO(notification.getObjId(), toNotificationAddresseeVOSet(notification.getAddressee()),
-                notification.getContent().getSubject(), notification.getContent().getBody(),
+    public static NotificationVO toNotificationVO(PNotification notification) {
+        return new NotificationVO(notification.getId(),
+                toNotificationAddresseeVOSet(notification.getAddressees()),
+                notification.getContent().getSubject(),
+                notification.getContent().getBody(),
                 notificationVOType.get(notification.getType()));
     }
 
-    public static List<NotificationVO> toNotificationVOList(List<Notification> notificationList) throws NotificationException {
+    public static List<NotificationVO> toNotificationVOList(Collection<PNotification> notifications) {
         List<NotificationVO> result = new ArrayList<NotificationVO>();
-        for (Notification notification : notificationList)
-            result.add(toNotificationVO(notification));
-         return result;
+        if (notifications != null) {
+            for (PNotification notification : notifications) {
+                result.add(toNotificationVO(notification));
+            }
+        }
+        return result;
     }
 
     private static Map<String, NotificationVO.Type> notificationVOType = new HashMap<String, NotificationVO.Type>();

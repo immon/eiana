@@ -1,14 +1,11 @@
 package org.iana.rzm.trans;
 
-import org.iana.notifications.NotificationManager;
-import org.iana.notifications.NotificationSender;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.TransactionTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.technicalcheck.CheckHelper;
 import org.jbpm.graph.exe.ProcessInstance;
 
 /**
@@ -19,9 +16,8 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     private DomainDAO domainDAO;
 
     public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO,
-                                      DiffConfiguration diffConfig, NotificationManager notificationManager,
-                                      NotificationSender notificationSender, CheckHelper technicalCheckHelper) {
-        super(processDAO, domainDAO, diffConfig, notificationManager, notificationSender, technicalCheckHelper);
+                                      DiffConfiguration diffConfig) {
+        super(processDAO, domainDAO, diffConfig);
         this.processDAO = processDAO;
         this.domainDAO = domainDAO;
     }

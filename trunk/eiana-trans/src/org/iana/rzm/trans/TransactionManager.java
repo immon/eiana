@@ -34,8 +34,6 @@ public interface TransactionManager {
      */
     Transaction createDomainCreationTransaction(Domain domain);
 
-    Transaction createDomainCreationTransaction(Domain domain, boolean performTechnicalCheck);
-
     /**
      * Creates a new domain modification transaction.
      *
@@ -46,11 +44,7 @@ public interface TransactionManager {
      */
     Transaction createDomainModificationTransaction(Domain domain, String creator) throws NoModificationException;
 
-    Transaction createDomainModificationTransaction(Domain domain, boolean performTechnicalCheck, String creator) throws NoModificationException;
-
     Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail, String creator) throws NoModificationException;
-
-    Transaction createDomainModificationTransaction(Domain domain, String sumbitterEmail, boolean performTechnicalCheck, String creator) throws NoModificationException;
 
     List<Transaction> findAll();
 
@@ -59,8 +53,6 @@ public interface TransactionManager {
     List<Transaction> find(Criterion criteria, int offset, int limit);
 
     int count(Criterion criteria);
-
-    List<Transaction> find(TransactionCriteria criteria);
 
     public List<Transaction> findOpenTransactions(String domainName);
 

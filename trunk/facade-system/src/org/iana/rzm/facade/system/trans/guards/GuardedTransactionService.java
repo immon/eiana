@@ -16,10 +16,7 @@ import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
 import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,17 +30,10 @@ import java.util.Set;
  */
 public class GuardedTransactionService extends AbstractRZMStatefulService implements TransactionService {
 
-    private static Set<Role> allowedRoles = new HashSet<Role>();
-    private static Set<Role> allowedCreateTransactionRoles = new HashSet<Role>();
+    private static Set<Role.Type> allowedCreateTypes = new HashSet<Role.Type>();
 
     static {
-        allowedCreateTransactionRoles.add(new AdminRole(AdminRole.AdminType.IANA));
-        allowedCreateTransactionRoles.add(new SystemRole(SystemRole.SystemType.AC));
-        allowedCreateTransactionRoles.add(new SystemRole(SystemRole.SystemType.TC));
-        allowedCreateTransactionRoles.add(new SystemRole(SystemRole.SystemType.SO));
-
-        allowedRoles.addAll(allowedCreateTransactionRoles);
-        allowedRoles.add(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+        allowedCreateTypes.add(AdminRole.AdminType.IANA);
     }
 
     private TransactionService delegate;
@@ -54,12 +44,35 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         this.delegate = delegate;
     }
 
-    private void isUserInRole() throws AccessDeniedException {
-        isUserInRole(allowedRoles);
+    private void isUserInRole(long transactionId) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        TransactionVO trans = delegate.get(transactionId);
+        isUserInRole(trans.getDomainName());
     }
 
-    private void isUserInCreateTransactionRole() throws AccessDeniedException {
-        isUserInRole(allowedCreateTransactionRoles);
+    private void isUserInRole(String domainName) throws AccessDeniedException {
+        isUserInRole(domainName, null);
+    }
+
+    private void isUserInRole(String domainName, Set<Role.Type> types) throws AccessDeniedException {
+        if (user == null) throw new AccessDeniedException("no authenticated user");
+        RZMUser rzmUser = getRZMUser();
+        for (Role role : rzmUser.getRoles()) {
+            if (role.isAdmin()) {
+                if (types == null || types.contains(role.getType())) return;
+            } else {
+                SystemRole sys = (SystemRole) role;
+                if (domainName != null && domainName.equals(sys.getName())) return;
+            }
+        }
+        throw new AccessDeniedException("no role found for " + domainName);
+    }
+
+    private void isUserInRole() throws AccessDeniedException {
+        if (user == null) throw new AccessDeniedException("no authenticated user");
+    }
+    
+    private void isUserInCreateTransactionRole(String domainName) throws AccessDeniedException {
+        isUserInRole(domainName, allowedCreateTypes);
     }
 
 
@@ -69,63 +82,63 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
-        isUserInCreateTransactionRole();
+        isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain);
     }
 
     public List<TransactionVO> getByTicketID(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         return delegate.getByTicketID(id);
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
-        isUserInCreateTransactionRole();
+        isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
-        isUserInCreateTransactionRole();
+        isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException {
-        isUserInCreateTransactionRole();
+        isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }
 
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.acceptTransaction(id, token);
     }
 
     public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.rejectTransaction(id, token);
     }
 
     public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, IllegalTransactionStateException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.moveTransactionToNextState(id);
     }
 
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.rejectTransaction(id);
     }
 
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.rejectTransaction(id);
     }
 
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.transitTransaction(id, transitionName);
     }
 
 
     public TransactionVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        isUserInRole();
+        isUserInRole(id);
         return delegate.get(id);
     }
 
@@ -160,7 +173,7 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
     }
 
     public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        isUserInRole();
+        isUserInRole(id);
         delegate.withdrawTransaction(id);
     }
 }

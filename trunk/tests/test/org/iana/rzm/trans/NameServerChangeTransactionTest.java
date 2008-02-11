@@ -1,5 +1,6 @@
 package org.iana.rzm.trans;
 
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
@@ -9,12 +10,14 @@ import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
-import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.NoDomainModificationException;
+import org.iana.rzm.facade.system.trans.TransactionDetectorService;
+import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
 import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
@@ -22,7 +25,6 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.dns.validator.InvalidIPAddressException;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
@@ -145,6 +147,7 @@ public class NameServerChangeTransactionTest {
         user.setPassword(name + "gsts");
         user.setSecurID(false);
         user.addRole(new SystemRole(role, "gsts", true, false));
+        user.addRole(new SystemRole(role, "gstsNSC", true, false));
         userManager.create(user);
         return UserConverter.convert(user);
     }

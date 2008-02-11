@@ -1,12 +1,8 @@
 package org.iana.rzm.conf;
 
-import org.testng.annotations.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.hibernate.SessionFactory;
-
-import java.io.File;
+import org.springframework.context.ApplicationContext;
+import org.testng.annotations.Test;
 
 /**
  * Tests a syntax of spring services configuration.
