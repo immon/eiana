@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
-       default-lazy-init="false">
+       default-lazy-init="true">
 
     <!-- facade services configuration -->
 
@@ -595,20 +595,15 @@
         -->
     </bean>
 
-    <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
-        <constructor-arg ref="notificationSenderBean"/>
-        <constructor-arg ref="notificationDAO"/>
-    </bean>
-
 <!--
-    <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
+        <constructor-arg ref="NotificationSenderBean"/>
         <constructor-arg ref="notificationDAO"/>
     </bean>
 -->
 
-    <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
-        <constructor-arg value="org.iana.notifications.PNotification" type="java.lang.Class"/>
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+        <constructor-arg ref="notificationDAO"/>
     </bean>
 
     <bean id="logger" class="org.iana.rzm.log.LoggerBean">
