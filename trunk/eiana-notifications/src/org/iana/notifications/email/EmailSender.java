@@ -177,7 +177,7 @@ public class EmailSender implements NotificationSender {
 
     public void send(PNotification notification) throws EmailSenderException {
         CheckTool.checkNull(notification, "notification");
-        CheckTool.checkCollectionNullOrEmpty(notification.getAddressees(), "notification addressees");
+        CheckTool.checkNull(notification.getAddressees(), "notification addressees");
         CheckTool.checkNull(notification.getContent(), "notification content");
 
         Set<PAddressee> addressees = notification.getAddressees();
@@ -190,8 +190,7 @@ public class EmailSender implements NotificationSender {
             address.append(">");
             address.append(",");
         }
-        // there always is at least one addressee 
-        address.deleteCharAt(address.length()-1);
+        if (address.length() > 0) address.deleteCharAt(address.length()-1);
         sendMail(address.toString(), content.getSubject(), content.getBody());
     }
 
