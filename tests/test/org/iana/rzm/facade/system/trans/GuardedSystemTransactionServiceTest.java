@@ -17,10 +17,7 @@ import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.*;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
@@ -105,9 +102,14 @@ public class GuardedSystemTransactionServiceTest {
 
     @Test(dependsOnMethods = "testCreateTransaction")
     public void testFindOpenTransactionsByCriterion() throws Exception {
-        //todo
         gsts.setUser(userAc);
-        Criterion crit = new SortCriterion(new IsNull("end"), new Order("currentDomain.name.name"));
+        Set<String> userDomains = new HashSet<String>();
+        userDomains.add("gsts");
+        And openTransactionForUser = new And(
+                new IsNull(TransactionCriteriaFields.END),
+                new In(TransactionCriteriaFields.CURRENT_DOMAIN_NAME, userDomains)
+            );
+        Criterion crit = new SortCriterion(openTransactionForUser, new Order("currentDomain.name.name"));
         List<TransactionVO> foundTransactions = gsts.find(crit);
         assert foundTransactions != null;
         assert foundTransactions.size() == 1;
@@ -118,8 +120,13 @@ public class GuardedSystemTransactionServiceTest {
     @Test(dependsOnMethods = "testFindOpenTransactionsByCriterion")
     public void testFindOpenTransactions() throws Exception {
         gsts.setUser(userAc);
-        Criterion open = new IsNull(TransactionCriteriaFields.END);
-        List<TransactionVO> foundTransactions = gsts.find(open);
+        Set<String> userDomains = new HashSet<String>();
+        userDomains.add("gsts");
+        And openTransactionForUser = new And(
+                new IsNull(TransactionCriteriaFields.END),
+                new In(TransactionCriteriaFields.CURRENT_DOMAIN_NAME, userDomains)
+            );
+        List<TransactionVO> foundTransactions = gsts.find(openTransactionForUser);
         assert foundTransactions != null;
         assert foundTransactions.size() == 1 : "found " + foundTransactions.size();
 //        assert transaction.equals(foundTransactions.iterator().next());
