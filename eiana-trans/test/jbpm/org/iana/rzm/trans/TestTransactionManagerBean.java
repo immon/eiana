@@ -2,6 +2,7 @@ package org.iana.rzm.trans;
 
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.TransactionTestProcess;
@@ -15,9 +16,9 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     private ProcessDAO processDAO;
     private DomainDAO domainDAO;
 
-    public TestTransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO,
-                                      DiffConfiguration diffConfig) {
-        super(processDAO, domainDAO, diffConfig);
+
+    public TestTransactionManagerBean(ProcessDAO processDAO, DomainManager domainManager, DiffConfiguration diffConfiguration, DomainDAO domainDAO) {
+        super(processDAO, domainManager, diffConfiguration);
         this.processDAO = processDAO;
         this.domainDAO = domainDAO;
     }

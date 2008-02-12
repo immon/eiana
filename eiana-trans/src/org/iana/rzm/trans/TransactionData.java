@@ -7,6 +7,7 @@ import org.iana.objectdiff.CollectionChange;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
@@ -32,10 +33,15 @@ public class TransactionData {
     @JoinColumn(name="td_id")
     private Set<PNotification> notifications = new HashSet<PNotification>();
 
-    @ManyToOne
+    @ManyToOne(cascade = {})
     @JoinColumn(name = "currentDomain_objId")
     private Domain currentDomain;
     
+    @ManyToMany(cascade = {})
+    @JoinTable(name = "impacted_domains",
+        inverseJoinColumns = @JoinColumn(name = "impacted_domain_id"))
+    private Set<Domain> impactedDomains = new HashSet<Domain>();
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "domainChange_objId")
     private ObjectChange domainChange;
@@ -345,5 +351,14 @@ public class TransactionData {
 
     public void resetConfirmation() {
         this.contactConfirmations = null;
+    }
+
+    public Set<Domain> getImpactedDomains() {
+        return impactedDomains;
+    }
+
+    public void setImpactedDomains(Set<Domain> impactedDomains) {
+        CheckTool.checkNull(impactedDomains, "impacted domains");
+        this.impactedDomains = impactedDomains;
     }
 }

@@ -323,7 +323,7 @@
             <ref bean="processDAO"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="domainDAO"/>
+            <ref bean="domainManager"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>

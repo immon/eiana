@@ -20,11 +20,11 @@ public class DomainChangeApplicatorTest {
         src.setRegistryUrl("old.url");
         Domain dst = DomainChangeDetectorTest.createDomain();
         dst.setRegistryUrl("new.url");
-        assert !src.equals(dst);
+        assert !src.equalsTotal(dst);
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null;
         ChangeApplicator.applyChange(src, (ObjectChange) change, config);
-        assert src.equals(dst);
+        assert src.equalsTotal(dst);
     }
 
     @Test
@@ -33,11 +33,11 @@ public class DomainChangeApplicatorTest {
         src.setWhoisServer("old.whois");
         Domain dst = DomainChangeDetectorTest.createDomain();
         dst.setWhoisServer("new.whois");
-        assert !src.equals(dst);
+        assert !src.equalsTotal(dst);
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null;
         ChangeApplicator.applyChange(src, (ObjectChange) change, config);
-        assert src.equals(dst);
+        assert src.equalsTotal(dst);
     }
 
     @Test
@@ -47,11 +47,11 @@ public class DomainChangeApplicatorTest {
         dst.getSupportingOrg().setName("new-supporting-org");
         dst.getSupportingOrg().setPhoneNumber("new-email");
         dst.getSupportingOrg().setEmail("new-email@post.org");
-        assert !src.equals(dst);
+        assert !src.equalsTotal(dst);
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null;
         ChangeApplicator.applyChange(src, (ObjectChange) change, config);
-        assert src.equals(dst);
+        assert src.equalsTotal(dst);
     }
 
     @Test
@@ -60,11 +60,11 @@ public class DomainChangeApplicatorTest {
         Domain dst = DomainChangeDetectorTest.createDomain();
         dst.getAdminContact().setFaxNumber("new-fax");
         dst.setAdminContact(DomainChangeDetectorTest.createContact("new-ac"));
-        assert !src.equals(dst);
+        assert !src.equalsTotal(dst);
         Change change = ChangeDetector.diff(src, dst, config);
         assert change != null;
         ChangeApplicator.applyChange(src, (ObjectChange) change, config);
-        assert src.equals(dst);
+        assert src.equalsTotal(dst);
     }
 
     @Test

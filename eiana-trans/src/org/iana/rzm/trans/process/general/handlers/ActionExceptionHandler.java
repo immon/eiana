@@ -23,6 +23,7 @@ public abstract class ActionExceptionHandler implements ActionHandler {
         try {
             doExecute(executionContext);
         } catch (Exception e) {
+            e.printStackTrace();
             Logger.getLogger(getClass()).error("in jbpm action", e);
             TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
             td.setStateMessage(e.getMessage());

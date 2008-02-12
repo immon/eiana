@@ -1,11 +1,14 @@
 package org.iana.rzm.trans.notifications.impacted_parties;
 
 import org.iana.notifications.producers.DataProducer;
+import org.iana.notifications.PAddressee;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.Role;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +23,20 @@ public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer 
 
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
 
-        ContactIdentity contactIdentity = (ContactIdentity) dataSource.get("addressee");
+        ContactIdentity contactIdentity = null;
+        PAddressee addressee = (PAddressee) dataSource.get("addressee");
+
+        for (Identity identity : td.getContactConfirmations().getUsersAbleToAccept()) {
+            ContactIdentity cid = (ContactIdentity) identity;
+            Role.Type type = cid.getType();
+            String email = cid.getEmail();
+            if (type == contactIdentity.getType() &&
+                    contactIdentity.getName() != null && contactIdentity.getName().equals(addressee.getName()) &&
+                    email != null && email.equals(addressee.getEmail())) {
+                contactIdentity = (ContactIdentity) identity;
+                break;
+            }
+        }
 
         if (contactIdentity != null) {
             values.put("roleName", ""+contactIdentity.getType());

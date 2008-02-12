@@ -396,4 +396,9 @@ public class Transaction implements TrackedObject {
     public void resetConfirmation() {
         getTransactionData().resetConfirmation();
     }
+
+
+    public Set<Domain> getImpactedDomains() {
+        return getTransactionData().getImpactedDomains();
+    }
 }

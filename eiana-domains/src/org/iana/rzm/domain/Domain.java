@@ -298,48 +298,6 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Domain domain = (Domain) o;
-
-        if (openProcesses != domain.openProcesses) return false;
-        if (thirdPartyPendingProcesses != domain.thirdPartyPendingProcesses) return false;
-        if (breakpoints != null ? !breakpoints.equals(domain.breakpoints) : domain.breakpoints != null) return false;
-/*
-        for (Contact.Role role : contacts.keySet()) {
-            Object c1 = contacts.get(role), c2 = domain.contacts.get(role);
-            if (c1 != c2 && !c1.equals(c2)) return false; 
-        }
-*/
-        if (contacts != null ? !contacts.equals(domain.contacts) : domain.contacts != null) return false;
-        if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
-        if (nameServers != null ? !nameServers.equals(domain.nameServers) : domain.nameServers != null) return false;
-        if (registryUrl != null ? !registryUrl.equals(domain.registryUrl) : domain.registryUrl != null) return false;
-        if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
-            return false;
-        if (status != domain.status) return false;
-        if (whoisServer != null ? !whoisServer.equals(domain.whoisServer) : domain.whoisServer != null) return false;
-
-        return true;
-    }
-
-    public int hashCode() {
-        int result;
-        result = (name != null ? name.hashCode() : 0);
-        result = 31 * result + (contacts != null ? contacts.hashCode() : 0);
-        result = 31 * result + (nameServers != null ? nameServers.hashCode() : 0);
-        result = 31 * result + (registryUrl != null ? registryUrl.hashCode() : 0);
-        result = 31 * result + (whoisServer != null ? whoisServer.hashCode() : 0);
-        result = 31 * result + (breakpoints != null ? breakpoints.hashCode() : 0);
-        result = 31 * result + (specialInstructions != null ? specialInstructions.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + openProcesses;
-        result = 31 * result + thirdPartyPendingProcesses;
-        return result;
-    }
-
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
@@ -544,5 +502,45 @@ public class Domain implements TrackedObject, Cloneable {
         this.ianaCode = ianaCode;
     }
 
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Domain domain = (Domain) o;
+
+        if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        return (name != null ? name.hashCode() : 0);
+    }
+
+    public boolean equalsTotal(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Domain domain = (Domain) o;
+
+        if (enableEmails != domain.enableEmails) return false;
+        if (openProcesses != domain.openProcesses) return false;
+        if (thirdPartyPendingProcesses != domain.thirdPartyPendingProcesses) return false;
+        if (breakpoints != null ? !breakpoints.equals(domain.breakpoints) : domain.breakpoints != null) return false;
+        if (contacts != null ? !contacts.equals(domain.contacts) : domain.contacts != null) return false;
+        if (description != null ? !description.equals(domain.description) : domain.description != null) return false;
+        if (ianaCode != null ? !ianaCode.equals(domain.ianaCode) : domain.ianaCode != null) return false;
+        if (name != null ? !name.equals(domain.name) : domain.name != null) return false;
+        if (nameServers != null ? !nameServers.equals(domain.nameServers) : domain.nameServers != null) return false;
+        if (registryUrl != null ? !registryUrl.equals(domain.registryUrl) : domain.registryUrl != null) return false;
+        if (specialInstructions != null ? !specialInstructions.equals(domain.specialInstructions) : domain.specialInstructions != null)
+            return false;
+        if (status != domain.status) return false;
+        if (type != null ? !type.equals(domain.type) : domain.type != null) return false;
+        if (whoisServer != null ? !whoisServer.equals(domain.whoisServer) : domain.whoisServer != null) return false;
+
+        return true;
+    }
 
 }

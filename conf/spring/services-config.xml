@@ -595,16 +595,16 @@
         -->
     </bean>
 
-<!--
     <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
         <constructor-arg ref="NotificationSenderBean"/>
         <constructor-arg ref="notificationDAO"/>
     </bean>
--->
 
+<!--
     <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
         <constructor-arg ref="notificationDAO"/>
     </bean>
+-->
 
     <bean id="logger" class="org.iana.rzm.log.LoggerBean">
         <constructor-arg index="0" ref="diffConfig"/>
@@ -660,7 +660,6 @@
         </constructor-arg>
     </bean>
 
-<!--
     <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
         <constructor-arg index="0" value="http://208.77.191.164"/>
         <constructor-arg index="1" value="rzm"/>
@@ -688,16 +687,17 @@
             </map>
         </property>
     </bean>
--->
 
+<!--
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
+-->
 
     <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
         <constructor-arg>
             <ref bean="processDAO"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="domainDAO"/>
+            <ref bean="domainManager"/>
         </constructor-arg>
         <constructor-arg>
             <ref bean="diffConfig"/>
@@ -1306,9 +1306,11 @@
     <!--<property name="path" value="conf/epp/epp.rootzone.config"/>-->
     <!--</bean>-->
 
-    <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
+    <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
 
+<!--
     <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+-->
 
     <bean id="eppPollMsgProcessorBean" class="org.iana.rzm.trans.epp.EppPollMsgProcessorImpl">
         <constructor-arg>

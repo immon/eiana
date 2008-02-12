@@ -120,6 +120,7 @@ public class DomainManagerBean implements DomainManager {
     }
 
     public List<Domain> findDelegatedTo(Set<String> hostNames) {
+        if (hostNames == null || hostNames.isEmpty()) return new ArrayList<Domain>();
         return dao.findDelegatedTo(hostNames);
     }
 
