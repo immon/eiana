@@ -33,7 +33,6 @@ public class ProcessDeployment {
             // deploy new processes
             jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition());
             jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.MAILS_RECEIVER));
-            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.NOTIFICATION_RESENDER));
             jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.EPP_POLL_PROCESS));
 
             // run new instances
