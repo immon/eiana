@@ -40,7 +40,7 @@
         <!--Password-->
     </bean>
 
-    <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSender">
         <constructor-arg>
               <bean class="org.iana.dao.hibernate.HibernateDAO">
                   <constructor-arg value="org.iana.notifications.PNotification" type="java.lang.Class"/>

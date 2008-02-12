@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
-       default-lazy-init="true">
+       default-lazy-init="false">
 
     <!-- facade services configuration -->
 
@@ -601,7 +601,7 @@
     </bean>
 
 <!--
-    <bean id="persistentNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSender">
         <constructor-arg ref="notificationDAO"/>
     </bean>
 -->
@@ -1302,15 +1302,13 @@
     </bean>
 
 
-    <!--<bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">-->
-    <!--<property name="path" value="conf/epp/epp.rootzone.config"/>-->
-    <!--</bean>-->
+    <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
+    <property name="path" value="conf/epp/epp.rootzone.config"/>
+    </bean>
 
     <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
 
-<!--
-    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
--->
+    <!--<bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
 
     <bean id="eppPollMsgProcessorBean" class="org.iana.rzm.trans.epp.EppPollMsgProcessorImpl">
         <constructor-arg>

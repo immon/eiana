@@ -10,19 +10,19 @@ import java.util.Collections;
  */
 public class In extends FieldCriterion {
 
-    private Set<Object> values;
+    private Set<? extends Object> values;
 
-    public In(String fieldName, Set<Object> values) {
+    public In(String fieldName, Set<? extends Object> values) {
         super(fieldName);
         CheckTool.checkCollectionNull(values, "null in criterion values");
         this.values = values;
     }
 
-    public Set<Object> getValues() {
+    public Set<? extends Object> getValues() {
         return Collections.unmodifiableSet(values);
     }
 
-    public void setValues(Set<Object> values) {
+    public void setValues(Set<? extends Object> values) {
         this.values = values;
     }
 

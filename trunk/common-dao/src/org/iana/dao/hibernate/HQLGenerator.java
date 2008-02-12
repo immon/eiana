@@ -131,7 +131,7 @@ public class HQLGenerator implements CriteriaVisitor {
         return crit.getValue();
     }
 
-    protected Set<Object> getValues(In crit) {
+    protected Set<? extends Object> getValues(In crit) {
         return crit.getValues();
     }
 

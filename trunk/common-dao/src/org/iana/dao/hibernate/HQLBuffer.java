@@ -46,7 +46,7 @@ public class HQLBuffer {
         return sp();
     }
 
-    public HQLBuffer in(String fieldName, Set<Object> values) {
+    public HQLBuffer in(String fieldName, Set<? extends Object> values) {
         buf.append(getName(fieldName)).append(" ").append("in ").append('(');
         for (Object value : values) {
             buf.append("?,");

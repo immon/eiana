@@ -51,11 +51,13 @@ class JbpmProcessCriteriaTranslator {
         criteriaFields.put("submitterEmail", "td.submitterEmail");
         criteriaFields.put("loginName", "user.loginName");
         criteriaFields.put("eppRequestId", "td.eppRequestId");
+        criteriaFields.put("impactedDomain", "impactedDomain.name.name");
         // aliases to joins
         criteriaJoins.put("pd", "inner join pi.processDefinition as pd");
         criteriaJoins.put("node",
                 "inner join pi.rootToken as rt\n" +
                         "inner join rt.node as node");
+        criteriaJoins.put("impactedDomain", "left outer join td.impactedDomains as impactedDomain");
     }
 
     private HQLBuffer buff;
@@ -69,6 +71,8 @@ class JbpmProcessCriteriaTranslator {
             fieldNames = ext.getNames();
         } else fieldNames = Collections.emptySet();
         StringBuffer from = new StringBuffer(JOIN_ROOT);
+        from.append(",\n").append(DOMAIN_JOIN);
+        joinConditions = DOMAIN_JOIN_CONDITIONS;
         Set<String> addedAliases = new HashSet<String>();
         for (String name : fieldNames) {
             String alias = name.split("\\.", 2)[0];
@@ -79,8 +83,6 @@ class JbpmProcessCriteriaTranslator {
                 addedAliases.add(alias);
             }
         }
-        from.append(",\n").append(DOMAIN_JOIN);
-        joinConditions = DOMAIN_JOIN_CONDITIONS;
         if (addedAliases.contains("user")) {
             from.append(",\n").append(USER_JOIN);
             joinConditions += "\nand " + USER_JOIN_CONDITIONS;
@@ -98,7 +100,7 @@ class JbpmProcessCriteriaTranslator {
     }
 
     public String getHQL() {
-        return getHQL("select pi ");
+        return getHQL("select distinct pi ");
     }
 
     public String getHQL(String select) {
