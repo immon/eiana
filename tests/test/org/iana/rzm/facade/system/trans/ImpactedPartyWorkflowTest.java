@@ -1,5 +1,9 @@
 package org.iana.rzm.facade.system.trans;
 
+import org.iana.criteria.Criterion;
+import org.iana.criteria.IsNull;
+import org.iana.criteria.Not;
+import org.iana.criteria.In;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
@@ -11,10 +15,13 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -90,14 +97,53 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         acceptPENDING_IMPACTED_PARTIES(userIANA, t2.getTransactionID(), 2);
     }
 
-    @AfterClass(alwaysRun = true)
-    public void cleanUp() {
+    @Test
+    public void testFindTransactionsByCriteriaNotNullName() throws Exception {
+        IDomainVO domain = getDomain("impactedpartytest");
+        domain.getNameServers().add(new HostVO("impactedhost-test1"));
+        domain.getNameServers().add(new HostVO("impactedhost-test2"));
+        domain.getNameServers().add(new HostVO("notimpactedhost-test"));
+        domain.setRegistryUrl("impactedpartytest.registry.url");
+
+        setDefaultUser();
+        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        Criterion impactOnDomains = new Not(new IsNull(TransactionCriteriaFields.IMPACTED_DOMAIN));
+        List<TransactionVO> found = gsts.find(impactOnDomains);
+        assert found.size() == 2;
+        closeServices();
+    }
+
+    @Test
+    public void testFindTransactionsByCriteriaInNames() throws Exception {
+        IDomainVO domain = getDomain("impactedpartytest");
+        domain.getNameServers().add(new HostVO("impactedhost-test1"));
+        domain.getNameServers().add(new HostVO("impactedhost-test2"));
+        domain.getNameServers().add(new HostVO("notimpactedhost-test"));
+        domain.setRegistryUrl("impactedpartytest.registry.url");
+
+        setDefaultUser();
+        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        Set<String> names = new HashSet<String>();
+        names.add("impacteddomain-test1");
+        names.add("impacteddomain-test2");
+        Criterion impactOnDomains = new In(TransactionCriteriaFields.IMPACTED_DOMAIN, names);
+        List<TransactionVO> found = gsts.find(impactOnDomains);
+        assert found.size() == 1;
+        closeServices();
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
         try {
             for (ProcessInstance pi : processDAO.findAll())
                 processDAO.delete(pi);
         } finally {
             processDAO.close();
         }
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void cleanUp() {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

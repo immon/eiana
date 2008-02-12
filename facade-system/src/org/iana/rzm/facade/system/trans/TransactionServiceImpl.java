@@ -254,7 +254,9 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     }
 
     public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        List<TransactionVO> ret = new ArrayList<TransactionVO>();
+        return TransactionConverter.toTransactionVOList(transactionManager.find(criteria));
+ /*
+       List<TransactionVO> ret = new ArrayList<TransactionVO>();
         Set<String> domainNames = getRoleDomainNames();
         for (Transaction trans : transactionManager.find(criteria)) {
             if (domainNames.contains(trans.getCurrentDomain().getName())) {
@@ -263,6 +265,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
             }
         }
         return ret;
+ */
     }
 
 
@@ -326,7 +329,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     }
 
 
-    static Set allowToWithdraw = new HashSet();
+    static Set<TransactionState.Name> allowToWithdraw = new HashSet<TransactionState.Name>();
 
     static {
         allowToWithdraw.addAll(Arrays.asList(

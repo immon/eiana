@@ -77,7 +77,7 @@
         </property>
     </bean>
 
-    <bean id="testNotificationSender" class="org.iana.rzm.trans.FakeNotificationSender">
+    <bean id="testNotificationSender" class="org.iana.notifications.PersistentNotificationSender">
         <constructor-arg ref="notificationDAO"/>
     </bean>
 

@@ -128,7 +128,7 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
                 return crit.getValue();
             }
 
-            protected Set<Object> getValues(In crit) {
+            protected Set<? extends Object> getValues(In crit) {
                 String name = crit.getFieldName();
                 if ("role.type".equals(name)) {
                     Set<Object> ret = new HashSet<Object>();
