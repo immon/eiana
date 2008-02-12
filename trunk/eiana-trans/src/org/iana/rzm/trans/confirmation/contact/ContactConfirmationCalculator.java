@@ -4,8 +4,8 @@ import org.iana.objectdiff.ObjectChange;
 import org.iana.objectdiff.SimpleChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.process.general.handlers.ActionExceptionHandler;
 import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 
 import java.util.HashSet;
@@ -16,9 +16,9 @@ import java.util.Set;
  * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
-public class ContactConfirmationCalculator implements ActionHandler {
+public class ContactConfirmationCalculator extends ActionExceptionHandler {
 
-    public void execute(ExecutionContext executionContext) throws Exception {
+    public void doExecute(ExecutionContext executionContext) throws Exception {
         Transaction trans = new Transaction(executionContext.getProcessInstance());
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
         Domain domain = trans.getCurrentDomain();

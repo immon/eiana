@@ -57,7 +57,7 @@ public class DomainHibernateMappingTest extends HibernateMappingUnitTest<Domain>
         runInTransaction(new HibernateSeq() {
             public void run(Session session) throws HibernateException {
                 Domain object1 = (Domain) session.get(Domain.class, domainID);
-                assert create().equals(object1.clone());
+                assert create().equalsTotal(object1.clone());
             }
         });
     }

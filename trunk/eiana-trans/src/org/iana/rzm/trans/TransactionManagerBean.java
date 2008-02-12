@@ -5,15 +5,17 @@ import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
+import static org.iana.rzm.common.validators.CheckTool.*;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Jakub Laszkiewicz
@@ -24,14 +26,18 @@ public class TransactionManagerBean implements TransactionManager {
     private static final String DOMAIN_MODIFICATION_PROCESS = "Domain Modification Transaction (Unified Workflow)";
 
     private ProcessDAO processDAO;
-    private DomainDAO domainDAO;
+
+    private DomainManager domainManager;
+
     private DiffConfiguration diffConfiguration;
 
-    public TransactionManagerBean(ProcessDAO processDAO, DomainDAO domainDAO,
-                                  DiffConfiguration diff) {
+    public TransactionManagerBean(ProcessDAO processDAO, DomainManager domainManager, DiffConfiguration diffConfiguration) {
+        checkNull(processDAO, "process dao");
+        checkNull(domainManager, "domain manager");
+        checkNull(diffConfiguration, "diff configuration");
         this.processDAO = processDAO;
-        this.domainDAO = domainDAO;
-        this.diffConfiguration = diff;
+        this.domainManager = domainManager;
+        this.diffConfiguration = diffConfiguration;
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
@@ -43,7 +49,7 @@ public class TransactionManagerBean implements TransactionManager {
 
     public Transaction createDomainCreationTransaction(Domain domain) {
         TransactionData td = new TransactionData();
-        td.setCurrentDomain(domainDAO.get(domain.getName()));
+        td.setCurrentDomain(domainManager.get(domain.getName()));
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(new Domain(domain.getName()), domain, diffConfiguration);
         td.setDomainChange(domainChange);
         ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
@@ -62,10 +68,13 @@ public class TransactionManagerBean implements TransactionManager {
 
     private Transaction createTransaction(Domain domain, String submitterEmail, String creator) throws NoModificationException {
         TransactionData td = new TransactionData();
-        td.setCurrentDomain(domainDAO.get(domain.getName()));
+        td.setCurrentDomain(domainManager.get(domain.getName()));
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(td.getCurrentDomain(), domain, diffConfiguration);
         if (domainChange == null) throw new NoModificationException(domain.getName());
         td.setDomainChange(domainChange);
+        Set<String> nameServers = td.getAddedOrUpdatedNameServers();
+        List<Domain> impactedDomains = domainManager.findDelegatedTo(nameServers);
+        td.setImpactedDomains(new HashSet<Domain>(impactedDomains));
         td.setSubmitterEmail(submitterEmail);
         td.getTrackData().setCreated(new Timestamp(System.currentTimeMillis()));
         td.getTrackData().setCreatedBy(creator);
@@ -139,7 +148,7 @@ public class TransactionManagerBean implements TransactionManager {
         if (pi == null) throw new NoSuchTransactionException(transaction.getTransactionID());
         Domain domain = transaction.getCurrentDomain();
         processDAO.delete(pi);
-        if (Domain.Status.NEW.equals(domain.getStatus())) domainDAO.delete(domain);
+        if (Domain.Status.NEW == domain.getStatus()) domainManager.delete(domain);
     }
 
     public void deleteTransaction(Long transactionId) throws NoSuchTransactionException {
