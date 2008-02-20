@@ -1,14 +1,12 @@
 package org.iana.rzm.trans.notifications.impacted_parties;
 
-import org.iana.notifications.producers.DataProducer;
 import org.iana.notifications.PAddressee;
+import org.iana.notifications.producers.DataProducer;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.Role;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,24 +18,10 @@ public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer 
 
     public Map<String, String> getSpecificValuesMap(Map dataSource) {
         Map<String, String> values = new HashMap<String, String>();
-
-        TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
-
-        ContactIdentity contactIdentity = null;
+        Map<PAddressee, ContactIdentity> identities = (Map<PAddressee, ContactIdentity>) dataSource.get("identities");
         PAddressee addressee = (PAddressee) dataSource.get("addressee");
-
-        for (Identity identity : td.getContactConfirmations().getUsersAbleToAccept()) {
-            ContactIdentity cid = (ContactIdentity) identity;
-            Role.Type type = cid.getType();
-            String email = cid.getEmail();
-            if (type == cid.getType() &&
-                    cid.getName() != null && cid.getName().equals(addressee.getName()) &&
-                    email != null && email.equals(addressee.getEmail())) {
-                contactIdentity = cid;
-                break;
-            }
-        }
-
+        ContactIdentity contactIdentity = identities != null ? identities.get(addressee) : null;
+        TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
         if (contactIdentity != null) {
             values.put("roleName", ""+contactIdentity.getType());
             values.put("contactType", contactIdentity.getType() == SystemRole.SystemType.TC ? "technical" : "administrative");

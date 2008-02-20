@@ -10,10 +10,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,22 +24,11 @@ public class ContactConfirmationACDataProducer extends DefaultTransactionDataPro
         Map<String, String> values = new HashMap<String, String>();
 
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
-        ContactIdentity contactIdentity = null;
 
         PAddressee addressee = (PAddressee) dataSource.get("addressee");
-
-        for (Identity identity : td.getContactConfirmations().getUsersAbleToAccept()) {
-            ContactIdentity cid = (ContactIdentity) identity;
-            Role.Type type = cid.getType();
-            String email = cid.getEmail();
-            if (type == SystemRole.SystemType.AC &&
-                    !cid.isSharedEffect() &&
-                    email != null && email.equals(addressee.getEmail())) {
-                contactIdentity = (ContactIdentity) identity;
-                break;
-            }
-        }
-
+        Map<PAddressee, ContactIdentity> identities = (Map<PAddressee, ContactIdentity>) dataSource.get("identities");
+        ContactIdentity contactIdentity = identities != null ? identities.get(addressee) : null;
+        
         if (contactIdentity != null) {
             values.put("roleName", "AC");
             values.put("contactType", "administrative");
@@ -53,8 +39,8 @@ public class ContactConfirmationACDataProducer extends DefaultTransactionDataPro
             values.put("name", contactIdentity.getName());
             values.put("title", getContactJobTitle(td));
             values.put("changes", DomainChangePrinter.print(td.getDomainChange()));
-            values.put("currentOrNewContact", isNewContact(td) ? "proposed new administrative contact" : "current administrative contact");
-            values.put("newContactOnly", isNewContact(td) ? newContactInfo(td) : "");
+            values.put("currentOrNewContact", contactIdentity.isNewContact() ? "proposed new administrative contact" : "current administrative contact");
+            values.put("newContactOnly", contactIdentity.isNewContact() ? newContactInfo(td) : "");
             values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", "" + td.getTicketID());
             values.put("subbmiter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());

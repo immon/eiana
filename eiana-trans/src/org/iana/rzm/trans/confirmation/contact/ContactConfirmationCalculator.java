@@ -61,7 +61,7 @@ public class ContactConfirmationCalculator extends ActionExceptionHandler {
                 }
             }
         }
-        trans.getTransactionData().setContactConfirmations(new ContactConfirmations(contacts));
+        trans.setContactConfirmations(new ContactConfirmations(contacts));
     }
 
     public String generateToken() {

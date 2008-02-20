@@ -1,10 +1,11 @@
 package org.iana.rzm.trans.confirmation.contact;
 
 import org.hibernate.annotations.Cascade;
+import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.confirmation.AbstractConfirmation;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
-import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.Identity;
+import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.user.SystemRole;
 
 import javax.persistence.*;
@@ -16,6 +17,9 @@ import java.util.Set;
  */
 @Entity
 public class ContactConfirmations extends AbstractConfirmation {
+
+    @Basic
+    private TransactionState.Name stateName;
 
     @OneToMany(cascade = CascadeType.ALL,
             targetEntity = ContactIdentity.class)
@@ -77,5 +81,12 @@ public class ContactConfirmations extends AbstractConfirmation {
         }
         return ret;
     }
-    
+
+    public TransactionState.Name getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(TransactionState.Name stateName) {
+        this.stateName = stateName;
+    }
 }

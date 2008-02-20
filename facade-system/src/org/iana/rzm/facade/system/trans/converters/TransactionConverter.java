@@ -60,12 +60,20 @@ public class TransactionConverter {
         ret.setRedelegation(trans.isRedelegation());
         ret.setSubmitterEmail(trans.getSubmitterEmail());
 
-        Set<ContactIdentity> received = trans.getIdentitiesThatAccepted();
+        Set<ContactIdentity> received = trans.getIdentitiesThatAccepted(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
         for (ContactIdentity cid : received)
-            ret.addConfirmation(new ConfirmationVO(RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact()));
-        Set<ContactIdentity> outstanding = trans.getIdentitiesSupposedToAccept();
+            ret.addConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact()));
+        Set<ContactIdentity> outstanding = trans.getIdentitiesSupposedToAccept(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
         for (ContactIdentity cid : outstanding)
-            ret.addConfirmation(new ConfirmationVO(RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
+            ret.addConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
+
+        Set<ContactIdentity> impactedPartyReceived = trans.getIdentitiesThatAccepted(TransactionState.Name.PENDING_IMPACTED_PARTIES);
+        for (ContactIdentity cid : impactedPartyReceived)
+            ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact()));
+        Set<ContactIdentity> impactedPartyOutstanding = trans.getIdentitiesSupposedToAccept(TransactionState.Name.PENDING_IMPACTED_PARTIES);
+        for (ContactIdentity cid : impactedPartyOutstanding)
+            ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
+
         Set<Domain> impactedDomains = trans.getImpactedDomains();
         if (impactedDomains != null) {
             for (Domain domain : impactedDomains) {
@@ -257,7 +265,7 @@ public class TransactionConverter {
 
     private static List<String> getTokens(Transaction transaction) {
         List<String> result = new ArrayList<String>();
-        ContactConfirmations cc = transaction.getTransactionData().getContactConfirmations();
+        ContactConfirmations cc = transaction.getContactConfirmations();
         if (cc != null)
             for (Identity identity : cc.getUsersAbleToAccept())
                 if (identity instanceof ContactIdentity) {

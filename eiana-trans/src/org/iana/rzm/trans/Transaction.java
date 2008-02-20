@@ -12,6 +12,7 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
@@ -185,7 +186,7 @@ public class Transaction implements TrackedObject {
     public synchronized void accept(String acceptToken) throws TransactionException {
         try {
             ContactIdentity user = new ContactIdentity(acceptToken);
-            Confirmation confirmation = getTransactionData().getContactConfirmations();
+            Confirmation confirmation = getContactConfirmations();
             if (confirmation == null) {
                 throw new UserConfirmationNotExpected();
             }
@@ -203,7 +204,7 @@ public class Transaction implements TrackedObject {
 
     public synchronized void reject(String acceptToken) throws TransactionException {
         ContactIdentity user = new ContactIdentity(acceptToken);
-        Confirmation confirmation = getTransactionData().getContactConfirmations();
+        Confirmation confirmation = getContactConfirmations();
         if (confirmation == null) {
             throw new UserConfirmationNotExpected();
         }
@@ -230,26 +231,37 @@ public class Transaction implements TrackedObject {
 
     public Set<SystemRole.SystemType> getReceivedContactConfirmations() {
         Set<SystemRole.SystemType> ret = new HashSet<SystemRole.SystemType>();
-        if (getTransactionData().getContactConfirmations() != null) {
-            ret.addAll(getTransactionData().getContactConfirmations().getContactsThatAccepted());
+        if (getContactConfirmations() != null) {
+            ret.addAll(getContactConfirmations().getContactsThatAccepted());
         }
         return ret;
     }
 
-    public Set<ContactIdentity> getIdentitiesThatAccepted() {
+    public Set<ContactIdentity> getIdentitiesThatAccepted(TransactionState.Name stateName) {
         Set<ContactIdentity> ret = new HashSet<ContactIdentity>();
-        if (getTransactionData().getContactConfirmations() != null) {
-            ret.addAll(getTransactionData().getContactConfirmations().getIdentitiesThatAccepted());
+        ContactConfirmations confirmations = getContactConfirmations(stateName);
+        if (confirmations != null) {
+            ret.addAll(confirmations.getIdentitiesThatAccepted());
         }
         return ret;
     }
 
-    public Set<ContactIdentity> getIdentitiesSupposedToAccept() {
+    public Set<ContactIdentity> getIdentitiesSupposedToAccept(TransactionState.Name stateName) {
         Set<ContactIdentity> ret = new HashSet<ContactIdentity>();
-        if (getTransactionData().getContactConfirmations() != null) {
-            ret.addAll(getTransactionData().getContactConfirmations().getIdentitiesSupposedToAccept());
+        ContactConfirmations confirmations = getContactConfirmations(stateName);
+        if (confirmations != null) {
+            ret.addAll(confirmations.getIdentitiesSupposedToAccept());
         }
         return ret;
+    }
+
+    public ContactConfirmations getContactConfirmations() {
+        TransactionState.Name stateName = getState().getName();
+        return getContactConfirmations(stateName);
+    }
+
+    public ContactConfirmations getContactConfirmations(TransactionState.Name stateName) {
+        return getTransactionData().getContactConfirmations(stateName);
     }
 
     public boolean isRedelegation() {
@@ -400,5 +412,12 @@ public class Transaction implements TrackedObject {
 
     public Set<Domain> getImpactedDomains() {
         return getTransactionData().getImpactedDomains();
+    }
+
+    public void setContactConfirmations(ContactConfirmations conf) {
+        if (conf == null) return;
+        System.out.println("====== setting conf: " + getState().getName());
+        conf.setStateName(getState().getName());
+        getTransactionData().setContactConfirmations(conf);
     }
 }

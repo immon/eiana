@@ -20,6 +20,7 @@ import org.iana.rzm.mail.processor.MailsProcessor;
 import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
+import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
@@ -326,7 +327,7 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
         try {
             Transaction transaction = transactionManagerBean.getTransaction(transactionId);
             List<String> result = new ArrayList<String>();
-            ContactConfirmations cc = transaction.getTransactionData().getContactConfirmations();
+            ContactConfirmations cc = transaction.getContactConfirmations(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
             assert cc != null : "contact confirmations not found";
             for (Identity identity : cc.getUsersAbleToAccept()) {
                 if (identity instanceof ContactIdentity) {

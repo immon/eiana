@@ -16,16 +16,15 @@ public class ImpactedPartiesCalculator extends ContactConfirmationCalculator {
     public void doExecute(ExecutionContext executionContext) throws Exception {
         Transaction trans = new Transaction(executionContext.getProcessInstance());
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
-        if (!trans.getImpactedDomains().isEmpty()) {
-            for (Domain d : trans.getImpactedDomains()) {
-                if (d.getTechContact() != null) {
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false, true, d.getName()));
-                }
-                if (d.getAdminContact() != null) {
-                    contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false, true, d.getName()));
-                }
+        for (Domain d : trans.getImpactedDomains()) {
+            if (d.getTechContact() != null) {
+                contacts.add(new ContactIdentity(SystemRole.SystemType.TC, d.getTechContact(), generateToken(), false, true, d.getName()));
+            }
+            if (d.getAdminContact() != null) {
+                contacts.add(new ContactIdentity(SystemRole.SystemType.AC, d.getAdminContact(), generateToken(), false, true, d.getName()));
             }
         }
-        trans.getTransactionData().setContactConfirmations(new ContactConfirmations(contacts));
+        System.out.println("====== impacted parties calculator");
+        trans.setContactConfirmations(new ContactConfirmations(contacts));
     }
 }
