@@ -8,7 +8,11 @@ import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.HostManager;
 import org.iana.rzm.domain.IPAddress;
+import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.Transaction;
+
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * An abstract command to generate epp command based on a transaction data.
@@ -56,6 +60,15 @@ public abstract class EPPCommand {
     protected String getDomainName() {
         String domainName = transaction.getCurrentDomain().getName();
         return domainName.toUpperCase();
+    }
+
+    protected List<String> getEffectedDomains() {
+        List<String> ret = new ArrayList<String>();
+        ret.add(getDomainName());
+        for (Domain impacted : transaction.getImpactedDomains()) {
+            ret.add(impacted.getName().toUpperCase());
+        }
+        return ret;
     }
 
     protected CollectionChange getNameServerChange() {

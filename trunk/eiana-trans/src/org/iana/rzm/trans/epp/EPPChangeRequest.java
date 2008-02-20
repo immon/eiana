@@ -42,7 +42,7 @@ public class EPPChangeRequest extends EPPCommand {
     public String[] send() throws EPPFrameworkException, EPPException {
         String clientID = getClientId();
         String transactionID = getTransactionId();
-        ChangeRequest request = getOperationFactory().getChangeRequest(clientID, transactionID, ChangePriority.NORMAL, Arrays.asList(getDomainName()));
+        ChangeRequest request = getOperationFactory().getChangeRequest(clientID, transactionID, ChangePriority.NORMAL, getEffectedDomains());
         collectChanges(request);
         ChangeResponse rsp = client.submit(request);
         if (!rsp.isSuccessful()) {
