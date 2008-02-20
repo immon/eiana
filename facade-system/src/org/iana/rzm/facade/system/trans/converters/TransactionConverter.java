@@ -13,6 +13,7 @@ import org.iana.rzm.trans.TransactionStateLogEntry;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.Identity;
+import org.iana.rzm.domain.Domain;
 
 import java.util.*;
 
@@ -65,6 +66,12 @@ public class TransactionConverter {
         Set<ContactIdentity> outstanding = trans.getIdentitiesSupposedToAccept();
         for (ContactIdentity cid : outstanding)
             ret.addConfirmation(new ConfirmationVO(RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
+        Set<Domain> impactedDomains = trans.getImpactedDomains();
+        if (impactedDomains != null) {
+            for (Domain domain : impactedDomains) {
+                ret.addImpactedDomain(domain.getName());
+            }
+        }
 
         ret.setCreated(trans.getCreated());
         ret.setCreatedBy(trans.getCreatedBy());

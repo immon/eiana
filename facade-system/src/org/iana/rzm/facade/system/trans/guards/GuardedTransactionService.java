@@ -46,7 +46,17 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
 
     private void isUserInRole(long transactionId) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         TransactionVO trans = delegate.get(transactionId);
-        isUserInRole(trans.getDomainName());
+        try {
+            isUserInRole(trans.getDomainName());
+        } catch (AccessDeniedException e) {
+            for (String domainName : trans.getImpactedDomains()) {
+                try {
+                    isUserInRole(domainName);
+                } catch (AccessDeniedException e1) {
+                }
+            }
+            throw new AccessDeniedException("no role found for transaction " + trans.getDomainName() + " : " + trans.getImpactedDomains());
+        }
     }
 
     private void isUserInRole(String domainName) throws AccessDeniedException {
