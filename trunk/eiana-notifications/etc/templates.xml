@@ -441,7 +441,7 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation</iana:type>
-<iana:subject>Domain modification</iana:subject>
+<iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
 <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.
 </iana:content>
 <iana:signed>false</iana:signed>
@@ -449,7 +449,7 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation-remainder</iana:type>
-<iana:subject>Domain modification</iana:subject>
+<iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
 <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have
 only {period} days left.
 </iana:content>
