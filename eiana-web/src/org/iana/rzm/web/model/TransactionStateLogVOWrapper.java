@@ -1,6 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
+import org.iana.rzm.facade.system.trans.vo.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +9,7 @@ import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
  * Time: 2:45:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TransactionStateLogVOWrapper extends ValueObject {
+public class TransactionStateLogVOWrapper extends ValueObject implements Comparable<TransactionStateLogVOWrapper> {
 
     private TransactionStateVOWrapper state;
     private String userName;
@@ -33,5 +33,9 @@ public class TransactionStateLogVOWrapper extends ValueObject {
 
     public String getApprovedBy(){
         return userName;
+    }
+
+    public int compareTo(TransactionStateLogVOWrapper o) {
+        return o.state.getEndDate().compareTo(state.getEndDate());
     }
 }

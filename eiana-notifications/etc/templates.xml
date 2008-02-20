@@ -66,7 +66,6 @@ changes requested are as follows:
 As a listed contact, or proposed new contact, for this domain you
 must consent to this change.
 
-As a {currentOrNewContact}, for this domain you must consent to this change.
 {newContactOnly}
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
@@ -281,10 +280,6 @@ This is an update regarding the IANA Root Zone Management request
 We have been requested to withdraw this request, and therefore this
 request has been closed without prejudice.
 
-The request has been withdrawn for the following reason:
-
-{reason}
-
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not
 modify the subject as we need the reference number intact to ensure
@@ -314,10 +309,7 @@ Hello,
 This is an update regarding the IANA Root Zone Management request
 {ticket}.
 
-We have administratively closed this request without prejudice, for
-the following reason:
-
-{reason}
+We have administratively closed this request without prejudice
 
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not
@@ -449,7 +441,7 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation</iana:type>
-<iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
+<iana:subject>Domain modification</iana:subject>
 <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.
 </iana:content>
 <iana:signed>false</iana:signed>
@@ -457,7 +449,7 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation-remainder</iana:type>
-<iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
+<iana:subject>Domain modification</iana:subject>
 <iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have
 only {period} days left.
 </iana:content>

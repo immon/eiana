@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-web" default="compile.module.eiana-web">
   <dirname property="module.eiana-web.basedir" file="${ant.file.module_eiana-web}"/>
-  
+   <import file="../build/eiana.xml"/>    
   
   <property name="compiler.args.eiana-web" value="${compiler.args}"/>
   
@@ -298,12 +298,13 @@
     <mkdir dir="${jar.dir}"/>
     <jar destfile="${j2ee.path.jar}" duplicate="preserve">
       <manifest>
-        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Created-By" value="IANA"/>
         <attribute name="Manifest-Version" value="1.0"/>
       </manifest>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-web" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/rzm" prefix=""/>
       <zipfileset dir="${module.eiana-web.basedir}/rzm/WEB-INF" prefix="WEB-INF"/>
+      <zipfileset dir="${module.eiana-web.basedir}/../conf/epp" prefix="conf/epp"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-codevalues" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-config" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-criteria" prefix="WEB-INF/classes"/>

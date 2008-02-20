@@ -1,7 +1,9 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.*;
 import org.iana.rzm.web.util.*;
+
+import java.util.*;
 
 public class TransactionStateVOWrapper extends ValueObject {
     private TransactionStateVO vo;
@@ -65,6 +67,10 @@ public class TransactionStateVOWrapper extends ValueObject {
 
     public String getEnd(){
         return DateUtil.formatDate(vo.getEnd());
+    }
+
+    public Date getEndDate(){
+        return vo.getEnd();
     }
 
 
