@@ -30,10 +30,10 @@ public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer 
             ContactIdentity cid = (ContactIdentity) identity;
             Role.Type type = cid.getType();
             String email = cid.getEmail();
-            if (type == contactIdentity.getType() &&
-                    contactIdentity.getName() != null && contactIdentity.getName().equals(addressee.getName()) &&
+            if (type == cid.getType() &&
+                    cid.getName() != null && cid.getName().equals(addressee.getName()) &&
                     email != null && email.equals(addressee.getEmail())) {
-                contactIdentity = (ContactIdentity) identity;
+                contactIdentity = cid;
                 break;
             }
         }
