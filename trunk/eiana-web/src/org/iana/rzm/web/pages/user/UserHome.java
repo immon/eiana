@@ -73,6 +73,17 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
     )
     public abstract IComponent getListRequestComponent();
 
+    @Component(id = "listImpactedpartRequests", type = "ImpactedPartiesListRequest", bindings = {
+            "entityQuery=prop:impactedPartyEntityQuery",
+            "usePagination=literal:false",
+            "noRequestMsg=literal:'There are no outstanding requests.'",
+            "listener=listener:viewRequestDetails"
+            }
+    )
+    public abstract IComponent getListImpactedPartyRequestComponent();
+
+
+
     @InjectPage("user/UserRequestsPerspective")
     public abstract UserRequestsPerspective getRequestsPerspective();
 
@@ -98,10 +109,17 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
             Collections.sort(list);
             setUserDomains(list);
             int count = getEntityQuery().getResultCount();
-            Browser browser = ((ListRequests) getComponent("listRequests")).getRecords();
+            Browser browser = ((ListRecords) getComponent("listRequests")).getRecords();
             if (count != browser.getResultCount()) {
                 browser.initializeForResultCount(count);
             }
+
+            count = getImpactedPartyEntityQuery().getResultCount();
+            browser = ((ListRecords) getComponent("listImpactedpartRequests")).getRecords();
+            if (count != browser.getResultCount()) {
+                browser.initializeForResultCount(count);
+            }
+
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         }catch(AccessDeniedException e){
@@ -132,6 +150,18 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
         return entityQuery;
     }
 
+    public EntityQuery getImpactedPartyEntityQuery() {
+        PaginatedEntityQuery entityQuery = new PaginatedEntityQuery();
+        List<String>domains = new ArrayList<String>();
+        for (UserDomain domain : getUserDomains()) {
+            if(!domains.contains(domain.getDomainName())){
+                domains.add(domain.getDomainName());
+            }
+        }
+        entityQuery.setFetcher(new ImpactedPartyTransactionFetcher(domains, getUserServices()));
+        return entityQuery;
+    }
+
     public void viewRequestDetails(long requestId) {
         RequestInformation info = getRequestDetails();
         info.setRequestId(requestId);
@@ -157,16 +187,16 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
         for (UserDomain userDomain : list) {
             domainNames.add(userDomain.getDomainName());
         }
-        page.setEntityFetcher(new CloseTransactionsForDomains(domainNames, getUserServices()));
+        page.setEntityFetcher(new ClosedTransactionsForDomains(domainNames, getUserServices()));
         getRequestCycle().activate(page);
     }
 
-    private static class CloseTransactionsForDomains implements EntityFetcher{
+    private static class ClosedTransactionsForDomains implements EntityFetcher{
         private UserServices services;
         private Criterion criterion;
         private SortOrder sortOrder;
 
-        public CloseTransactionsForDomains(List<String>domains, UserServices services) {
+        public ClosedTransactionsForDomains(List<String>domains, UserServices services) {
             criterion = CriteriaBuilder.closeTransactionForDomains(domains);
             this.services = services;
             sortOrder = new SortOrder();
@@ -183,5 +213,31 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
         public void applySortOrder(SortOrder sortOrder) {
             this.sortOrder = sortOrder;
         }
+    }
+
+    private static class ImpactedPartyTransactionFetcher implements EntityFetcher{
+
+        private UserServices services;
+        private Criterion criterion;
+        private SortOrder sortOrder;
+
+        public ImpactedPartyTransactionFetcher(List<String>domains, UserServices services) {
+            criterion = CriteriaBuilder.impactedParty(domains);
+            this.services = services;
+            sortOrder = new SortOrder();
+        }
+
+        public int getTotal() throws NoObjectFoundException {
+            return services.getTransactionCount(criterion);
+        }
+
+        public PaginatedEntity[] get(int offset, int length) throws NoObjectFoundException {
+            return services.getTransactions(criterion, offset, length, sortOrder).toArray(new PaginatedEntity[0]);
+        }
+
+        public void applySortOrder(SortOrder sortOrder) {
+            this.sortOrder = sortOrder;
+        }
+
     }
 }

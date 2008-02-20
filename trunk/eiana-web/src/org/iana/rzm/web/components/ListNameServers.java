@@ -12,7 +12,7 @@ import java.util.*;
 public abstract class ListNameServers extends BaseComponent {
 
     @Component(id = "list", type = "For", bindings = {
-            "element=literal:tr", "source=prop:nameServers", "value=prop:nameServer"})
+            "element=literal:tr", "source=prop:sortedNameServers", "value=prop:nameServer"})
     public abstract IComponent getListComponent();
 
     @Component(id = "hostname", type = "Insert", bindings = {"value=prop:nameServer.hostName", "class=prop:style"})
@@ -63,6 +63,17 @@ public abstract class ListNameServers extends BaseComponent {
     public abstract Visit getVisitState();
 
     public abstract NameServerValue getNameServer();
+
+    public List<NameServerValue>getSortedNameServers(){
+        List<NameServerValue>list = new ArrayList<NameServerValue>(getNameServers());
+         Collections.sort(list, new Comparator<NameServerValue>(){
+            public int compare(NameServerValue o1, NameServerValue o2) {
+                return o1.getHostName().compareTo(o2.getHostName());
+            }
+        });
+
+        return list;
+    }
 
     public String getIpList() {
         return getNameServer().getIps();

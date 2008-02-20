@@ -72,4 +72,8 @@ public class CriteriaBuilder {
 
        return new Or(new ArrayList<Criterion>(Arrays.asList(DoC,verisign)));
     }
+
+    public static Criterion impactedParty(List<String> domains) {
+        return new And(new In(TransactionCriteriaFields.IMPACTED_DOMAIN, new HashSet<String>(domains)),  openTransactions());
+    }
 }

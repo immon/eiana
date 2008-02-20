@@ -106,6 +106,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
             history.add(new TransactionStateLogVOWrapper(stateLog));
         }
 
+        Collections.sort(history);
         return history;
     }
 

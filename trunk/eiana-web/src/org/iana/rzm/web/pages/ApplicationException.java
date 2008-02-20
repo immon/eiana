@@ -46,10 +46,6 @@ public abstract class ApplicationException extends Exception {
         return exceptionName != null && exceptionName.contains("RzmApplicationException");
     }
 
-//    @InjectObject("service:rzm.EmailService")
-//    public abstract EmailService getEmailService();
-//
-
     public abstract void setError(String error);
     public abstract String getError();
 
