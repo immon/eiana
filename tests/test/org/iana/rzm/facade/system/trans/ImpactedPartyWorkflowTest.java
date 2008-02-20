@@ -13,6 +13,7 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -30,6 +31,8 @@ import java.util.HashSet;
 public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
 
     RZMUser userIANA;
+
+    RZMUser userAC;
 
     @BeforeClass
     public void init() {
@@ -71,6 +74,13 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         userIANA.addRole(new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(userIANA);
 
+        userAC = new RZMUser();
+        userAC.setLoginName("acuser");
+        userAC.setFirstName("ac");
+        userAC.setLastName("lastName");
+        userAC.setEmail("email@some.com");
+        userAC.addRole(new SystemRole(SystemRole.SystemType.AC, "impacteddomain-test1", true, false));
+        userManager.create(userAC);
     }
 
     @Test
@@ -90,7 +100,7 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         // 3 group/trans -> notimpactedhost + registry url
         TransactionVO t1 = trans.get(0);
         acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(userIANA, t1.getTransactionID(), 2);
-        acceptPENDING_IMPACTED_PARTIES(userIANA, t1.getTransactionID(), 4);
+        acceptPENDING_IMPACTED_PARTIES(userAC, t1.getTransactionID(), 4);
 
         TransactionVO t2 = trans.get(1);
         acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(userIANA, t2.getTransactionID(), 2);
