@@ -1,12 +1,14 @@
 package org.iana.rzm.trans.notifications.contact_confirmation;
 
 import org.iana.notifications.PAddressee;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.notifications.producer.AbstractTransactionAddresseeProducer;
+import org.iana.rzm.user.SystemRole;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,21 +18,18 @@ import java.util.Set;
 public class ContactConfirmationTCAddresseeProducer extends AbstractTransactionAddresseeProducer {
 
     public Set<PAddressee> produceAddressee(Map dataSource) {
-        Set<PAddressee> addressees = new HashSet<PAddressee>();
+        Map<PAddressee, ContactIdentity> identities = new HashMap<PAddressee, ContactIdentity>();
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
-        if (td != null) {
-            Domain currentDomain = td.getCurrentDomain();
-            if (currentDomain != null) {
-                Contact techContact = currentDomain.getTechContact();
-                if (techContact != null) {
-                    addressees.add(new PAddressee(techContact.getName(), techContact.getEmail()));
-                }
-                String email = td.getTechChangedEmail();
-                if (email != null) {
-                    addressees.add(new PAddressee(email, email));
-                }
+        ContactConfirmations confirmations = td.getContactConfirmations(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
+        for (ContactIdentity cid : confirmations.getIdentitiesSupposedToAccept()) {
+            if (cid.getType() == SystemRole.SystemType.TC) {
+                identities.put(
+                        new PAddressee(cid.getName(), cid.getEmail()),
+                        cid
+                );
             }
         }
-        return addressees;
+        dataSource.put("identities", identities);
+        return identities.keySet();
     }
 }

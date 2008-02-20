@@ -46,8 +46,12 @@ public class TransactionData {
     @JoinColumn(name = "domainChange_objId")
     private ObjectChange domainChange;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private ContactConfirmations contactConfirmations;
+    @OneToMany(cascade = CascadeType.ALL)
+    @MapKey(name = "stateName")
+    @Cascade(value = {org.hibernate.annotations.CascadeType.ALL,
+            org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+    private Map<TransactionState.Name, ContactConfirmations> contactConfirmations =
+            new HashMap<TransactionState.Name, ContactConfirmations>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "TransactionData_transactionStateLog",
@@ -158,12 +162,12 @@ public class TransactionData {
         return trackData;
     }
 
-    public ContactConfirmations getContactConfirmations() {
-        return contactConfirmations;
+    public ContactConfirmations getContactConfirmations(TransactionState.Name stateName) {
+        return contactConfirmations.get(stateName);
     }
 
-    public void setContactConfirmations(ContactConfirmations contactConfirmations) {
-        this.contactConfirmations = contactConfirmations;
+    public void setContactConfirmations(ContactConfirmations conf) {
+        this.contactConfirmations.put(conf.getStateName(), conf);
     }
 
     public String getIdentityName() {

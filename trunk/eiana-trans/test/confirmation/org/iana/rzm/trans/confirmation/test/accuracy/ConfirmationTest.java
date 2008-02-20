@@ -151,7 +151,7 @@ public class ConfirmationTest extends TransactionalSpringContextTests {
 
     private List<String> getTokens(Transaction transaction) {
         List<String> result = new ArrayList<String>();
-        ContactConfirmations cc = transaction.getTransactionData().getContactConfirmations();
+        ContactConfirmations cc = transaction.getContactConfirmations();
         assert cc != null : "contact confirmations not found";
         for (Identity identity : cc.getUsersAbleToAccept()) {
             if (identity instanceof ContactIdentity) {

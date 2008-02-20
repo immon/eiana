@@ -12,6 +12,7 @@ import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
+import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.UserManager;
 
@@ -54,7 +55,7 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
             Transaction transaction = transactionManager.getTransaction(transactionId);
             List<PNotification> notifications = findNotifications(transaction, type);
             if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
-                Set<ContactIdentity> identities = transaction.getIdentitiesSupposedToAccept();
+                Set<ContactIdentity> identities = transaction.getIdentitiesSupposedToAccept(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
                 Set<String> outstendingEmails = new HashSet<String>();
                 for (ContactIdentity identity : identities) {
                     outstendingEmails.add(identity.getEmail());

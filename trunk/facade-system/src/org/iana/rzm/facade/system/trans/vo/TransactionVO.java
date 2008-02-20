@@ -27,8 +27,8 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private List<String> tokens;
     private boolean redelegation;
     private String submitterEmail;
-    //private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
     private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
+    private Set<ConfirmationVO> impactedPartyConfirmations = new HashSet<ConfirmationVO>();
     private Set<String> impactedDomains = new HashSet<String>();
     private String comment;
     private String stateMessage;
@@ -198,8 +198,31 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     }
 
     public void addConfirmation(ConfirmationVO confirmation) {
-        if (confirmation == null) confirmations = new HashSet<ConfirmationVO>();
+        if (confirmation == null) return;
+        if (confirmations == null) confirmations = new HashSet<ConfirmationVO>();
         confirmations.add(confirmation);
+    }
+
+    public Set<ConfirmationVO> getContactConfirmations() {
+        return getConfirmations();
+    }
+
+    public void addContactConfirmation(ConfirmationVO confirmation) {
+        addConfirmation(confirmation);
+    }
+
+    public Set<ConfirmationVO> getImpactedPartyConfirmations() {
+        return impactedPartyConfirmations;
+    }
+
+    public void setImpactedPartyConfirmations(Set<ConfirmationVO> impactedPartyConfirmations) {
+        this.impactedPartyConfirmations = impactedPartyConfirmations;
+    }
+
+    public void addImpactedPartyConfirmation(ConfirmationVO confirmation) {
+        if (confirmation == null) return;
+        if (impactedPartyConfirmations == null) impactedPartyConfirmations = new HashSet<ConfirmationVO>();
+        impactedPartyConfirmations.add(confirmation);
     }
 
     public String getComment() {

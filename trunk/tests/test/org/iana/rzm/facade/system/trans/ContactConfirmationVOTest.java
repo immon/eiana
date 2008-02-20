@@ -8,7 +8,7 @@ import org.iana.rzm.facade.system.trans.vo.ConfirmationVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
@@ -49,10 +49,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -72,10 +72,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -95,10 +95,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -118,10 +118,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -141,10 +141,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -166,10 +166,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -191,10 +191,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -216,10 +216,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -241,10 +241,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -269,10 +269,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -300,10 +300,10 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
         assert trans.getState().getName() == TransactionStateVO.Name.PENDING_MANUAL_REVIEW;
         Set<ConfirmationVO> expectedConfirmations = new HashSet<ConfirmationVO>();
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name", false));
-        expectedConfirmations.add(new ConfirmationVO(SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
+        expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
         assert expectedConfirmations.equals(trans.getConfirmations());
 
         closeServices();
@@ -325,9 +325,9 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
     private String getToken(long transID, String name) {
         ProcessInstance pi = processDAO.getProcessInstance(transID);
-        TransactionData td = (TransactionData) pi.getContextInstance().getVariable("TRANSACTION_DATA");
-        if (td.getContactConfirmations() == null) return null;
-        for (Identity id : td.getContactConfirmations().getUsersAbleToAccept()) {
+        Transaction trans = new Transaction(pi);
+        if (trans.getContactConfirmations() == null) return null;
+        for (Identity id : trans.getContactConfirmations().getUsersAbleToAccept()) {
             ContactIdentity cid = (ContactIdentity) id;
             if (name.equals(cid.getName())) {
                 return cid.getToken();

@@ -5,7 +5,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
@@ -141,9 +141,9 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
 
     private String getToken(long transID, SystemRole.SystemType role) {
         ProcessInstance pi = processDAO.getProcessInstance(transID);
-        TransactionData td = (TransactionData) pi.getContextInstance().getVariable("TRANSACTION_DATA");
-        if (td.getContactConfirmations() == null) return null;
-        for (Identity id : td.getContactConfirmations().getUsersAbleToAccept()) {
+        Transaction trans = new Transaction(pi);
+        if (trans.getContactConfirmations() == null) return null;
+        for (Identity id : trans.getContactConfirmations().getUsersAbleToAccept()) {
             ContactIdentity cid = (ContactIdentity) id;
             if (cid.getType() == role) {
                 return cid.getToken();

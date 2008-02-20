@@ -8,6 +8,7 @@ import java.io.Serializable;
  * @author Jakub Laszkiewicz
  */
 public class ConfirmationVO implements Serializable {
+    private String domainName;
     private SystemRoleVO.SystemType role;
     private boolean confirmed;
     private String contactName;
@@ -16,7 +17,8 @@ public class ConfirmationVO implements Serializable {
     public ConfirmationVO() {
     }
 
-    public ConfirmationVO(SystemRoleVO.SystemType role, boolean confirmed, String contactName, boolean newContact) {
+    public ConfirmationVO(String domainName, SystemRoleVO.SystemType role, boolean confirmed, String contactName, boolean newContact) {
+        this.domainName = domainName;
         this.role = role;
         this.confirmed = confirmed;
         this.contactName = contactName;
@@ -76,5 +78,13 @@ public class ConfirmationVO implements Serializable {
         result = 31 * result + (contactName != null ? contactName.hashCode() : 0);
         result = 31 * result + (newContact ? 1 : 0);
         return result;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 }

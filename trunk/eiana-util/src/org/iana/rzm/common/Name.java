@@ -31,7 +31,7 @@ public class Name implements Cloneable, Serializable {
     }
 
     public String getFqdnName(){
-        return name.startsWith(".") ? name : "." + name;
+        return name.startsWith(".") ? name.toUpperCase(Locale.ENGLISH) : "." + name.toUpperCase(Locale.ENGLISH);
     }
 
     public boolean equals(Object o) {
