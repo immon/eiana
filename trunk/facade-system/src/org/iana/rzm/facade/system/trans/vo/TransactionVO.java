@@ -29,6 +29,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private String submitterEmail;
     //private Set<SystemRoleVO.SystemType> confirmations = new HashSet<SystemRoleVO.SystemType>();
     private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
+    private Set<String> impactedDomains = new HashSet<String>();
     private String comment;
     private String stateMessage;
     private String usdocNotes;
@@ -223,5 +224,18 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public void setUsdocNotes(String usdocNotes) {
         this.usdocNotes = usdocNotes;
+    }
+
+    public Set<String> getImpactedDomains() {
+        return impactedDomains;
+    }
+
+    public void setImpactedDomains(Set<String> impactedDomains) {
+        this.impactedDomains = impactedDomains;
+    }
+
+    public void addImpactedDomain(String domainName) {
+        if (this.impactedDomains == null) this.impactedDomains = new HashSet<String>();
+        this.impactedDomains.add(domainName);
     }
 }
