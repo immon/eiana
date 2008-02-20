@@ -52,6 +52,7 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
             for (String domainName : trans.getImpactedDomains()) {
                 try {
                     isUserInRole(domainName);
+                    return;
                 } catch (AccessDeniedException e1) {
                 }
             }
