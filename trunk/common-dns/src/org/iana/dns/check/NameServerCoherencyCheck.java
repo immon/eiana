@@ -22,10 +22,11 @@ public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
         Set<String> domainNameSeverNames = domain.getNameServerNames();
         for (DNSNameServer ns : nameServers) {
             Set<String> retHostNames = new HashSet<String>();
-            for (Record record : ns.getNsRecord())
+            for (Record record : ns.getNsRecord()) {
                 retHostNames.add(removeLastDot(record.getAdditionalName().toString().toLowerCase()));
+            }
 
-            if (!retHostNames.equals(domainNameSeverNames)) throw new NameServerCoherencyException(domain);
+            if (!retHostNames.equals(domainNameSeverNames)) throw new NameServerCoherencyException(domain, ns.getHost(), domainNameSeverNames, retHostNames);
         }
 
 //        List<Record>list = new ArrayList<Record>();

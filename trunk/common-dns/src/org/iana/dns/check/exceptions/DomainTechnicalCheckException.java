@@ -20,7 +20,7 @@ public class DomainTechnicalCheckException extends DNSTechnicalCheckException {
     }
 
     public String getDomainName() {
-        return domain.getName();
+        return domain != null ? domain.getName() : null;
     }
 
     public DNSDomain getDomain() {
@@ -28,7 +28,7 @@ public class DomainTechnicalCheckException extends DNSTechnicalCheckException {
     }
 
     public String getHostName() {
-        return host.getName();
+        return host != null ? host.getName() : null;
     }
 
     public DNSHost getHost() {
