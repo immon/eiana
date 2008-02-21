@@ -46,8 +46,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNameServerCoherencyException(NameServerCoherencyException e) {
-        buffer.append("Supplied name servers names don't match names" +
-                " returned in NS Resource Record for domain: ").append(domainTLDName(e.getDomainName()));
+        buffer.append("Supplied name servers names: " + e.getDomain().getNameServerNames() + " don't match names" +
+                " returned by: " + e.getHostName() + " in NS Resource Record: " + e.getReceivedNameServers() + " for domain: ").append(domainTLDName(e.getDomainName()));
     }
 
     public void acceptNoASNumberException(NoASNumberException e) {
