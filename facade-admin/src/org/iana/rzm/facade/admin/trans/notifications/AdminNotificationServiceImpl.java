@@ -55,17 +55,9 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
             Transaction transaction = transactionManager.getTransaction(transactionId);
             List<PNotification> notifications = findNotifications(transaction, type);
             if (type == NotificationVO.Type.CONTACT_CONFIRMATION) {
-                Set<ContactIdentity> identities = transaction.getIdentitiesSupposedToAccept(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
-                Set<String> outstendingEmails = new HashSet<String>();
-                for (ContactIdentity identity : identities) {
-                    outstendingEmails.add(identity.getEmail());
-                }
-                for (PNotification notif : notifications) {
-                    Set<String> addresseeEmails = extractEmails(notif.getAddressees());
-                    if (!Collections.disjoint(addresseeEmails, outstendingEmails)) {
-                        resend(notif, comment);
-                    }
-                }
+                resendConfirmations(transaction, notifications, comment, TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
+            } else if (type == NotificationVO.Type.IMPACTED_PARTIES_CONFIRMATION) {
+                resendConfirmations(transaction, notifications, comment, TransactionState.Name.PENDING_IMPACTED_PARTIES);
             } else if (type == NotificationVO.Type.USDOC_CONFIRMATION) {
                 for (PNotification notif : notifications) {
                     resend(notif, comment);
@@ -77,6 +69,20 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
             throw new InfrastructureException(e);
         } catch (NotificationSenderException e) {
             throw new InfrastructureException(e);
+        }
+    }
+
+    private void resendConfirmations(Transaction transaction, List<PNotification> notifications, String comment, TransactionState.Name nType) throws NotificationSenderException {
+        Set<ContactIdentity> identities = transaction.getIdentitiesSupposedToAccept(nType);
+        Set<String> outstendingEmails = new HashSet<String>();
+        for (ContactIdentity identity : identities) {
+            outstendingEmails.add(identity.getEmail());
+        }
+        for (PNotification notif : notifications) {
+            Set<String> addresseeEmails = extractEmails(notif.getAddressees());
+            if (!Collections.disjoint(addresseeEmails, outstendingEmails)) {
+                resend(notif, comment);
+            }
         }
     }
 
