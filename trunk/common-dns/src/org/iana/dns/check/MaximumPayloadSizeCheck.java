@@ -33,7 +33,7 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
 
         int estimatedSize = SZ_HEADER + SZ_QUERY + domainNameSize;
         int constSize = SZ_PTR + SZ_TYPE + SZ_CLASS + SZ_TTL + SZ_RDLEN;
-        suffixes.add(domain.getName());
+        suffixes.add("." + domain.getName());
 
         //section 0 of SOA Record
         estimatedSize += domainNameSize;
@@ -72,9 +72,6 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
         StringBuffer buff = new StringBuffer("");
 
         for (int i=from; i<labels.length; i++) {
-            if (buff.length() == 0)
-                buff.append(labels[i]);
-            else
                 buff.append(".").append(labels[i]);
         }
 
