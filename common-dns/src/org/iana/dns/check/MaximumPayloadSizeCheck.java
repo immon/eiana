@@ -4,8 +4,7 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.exceptions.MaximumPayloadSizeExceededException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -27,7 +26,7 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 
-        List<String> suffixes = new ArrayList<String>();
+        Set<String> suffixes = new HashSet<String>();
         int ns_set_size = 0;
         boolean needs_v4_glue = false;
         boolean needs_v6_glue = false;
@@ -59,7 +58,7 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
         if (packet_size > MAX_SIZE) throw new MaximumPayloadSizeExceededException(domain, packet_size);
     }
 
-    private int compress_domain(String nsName, List<String> suffixes) {
+    private int compress_domain(String nsName, Set<String> suffixes) {
         String[] labels = nsName.split("\\.");
 
         for (int i=0; i<labels.length; i++) {
@@ -88,6 +87,7 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
     private boolean in_bailiwick(String child, String parent) {
         if (parent.length() == 0) return true;
 
+        parent = "." + parent;
         int childLen = child.length();
         if (child.substring(childLen - parent.length(), childLen).equals(parent))
             return true;
