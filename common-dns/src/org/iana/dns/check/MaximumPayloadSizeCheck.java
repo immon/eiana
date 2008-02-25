@@ -25,17 +25,17 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
 
     private static final int SZ_PTR = 2;
 
-    private List<String> suffixes = new ArrayList<String>();
-
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+
+        List<String> suffixes = new ArrayList<String>();
         int ns_set_size = 0;
         boolean needs_v4_glue = false;
         boolean needs_v6_glue = false;
 
-        compress_domain(domain.getName());
+        compress_domain(domain.getName(), suffixes);
 
         for (DNSNameServer ns : nameServers) {
-            int domainLen = compress_domain(ns.getName());
+            int domainLen = compress_domain(ns.getName(), suffixes);
             ns_set_size += NS_SIZE + domainLen;
 
             for (DNSIPAddress ipAddress : ns.getIPAddresses()) {
@@ -59,13 +59,13 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
         if (packet_size > MAX_SIZE) throw new MaximumPayloadSizeExceededException(domain, packet_size);
     }
 
-    private int compress_domain(String nsName) {
+    private int compress_domain(String nsName, List<String> suffixes) {
         String[] labels = nsName.split("\\.");
 
         for (int i=0; i<labels.length; i++) {
             String suffix = joinLabels(i, labels);
             if (suffixes.contains(suffix))
-                return (nsName.length() - (suffix.length() -1)) + SZ_PTR;
+                return (nsName.length() - suffix.length()) + SZ_PTR;
 
             suffixes.add(suffix);
         }
@@ -77,7 +77,9 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
         StringBuffer buff = new StringBuffer("");
 
         for (int i=from; i<labels.length; i++) {
-                buff.append(".").append(labels[i]);
+                buff.append(labels[i]);
+                if (i<labels.length - 1)
+                    buff.append(".");
         }
 
         return buff.toString();
