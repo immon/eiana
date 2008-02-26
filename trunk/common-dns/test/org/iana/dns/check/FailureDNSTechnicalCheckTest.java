@@ -128,8 +128,15 @@ public class FailureDNSTechnicalCheckTest {
         } catch (DNSTechnicalCheckException e) {
             MultipleDNSTechnicalCheckException exception = (MultipleDNSTechnicalCheckException) e;
             List<DNSTechnicalCheckException> errors = exception.getExceptions();
-            assert errors.contains(new NameServerCoherencyException(domain));
-            throw e;
+            for (DNSTechnicalCheckException error : errors) {
+                if (error instanceof NameServerCoherencyException) {
+                    DNSExceptionMessagesVisitor v = new DNSExceptionMessagesVisitor();
+                    error.accept(v);
+                    System.out.println(v.getMessages());
+                    throw e;
+                }
+            }
+            assert false : "name server coherency DID NOT fail";
         }
     }
 
