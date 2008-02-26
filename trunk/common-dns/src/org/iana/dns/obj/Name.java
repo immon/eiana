@@ -6,7 +6,7 @@ import org.iana.dns.validator.DomainNameValidator;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class Name {
+public class Name implements Comparable<Name> {
 
     private String name;
 
@@ -29,6 +29,11 @@ public class Name {
         return name + ".";
     }
 
+    public String getNameWithDots() {
+        if (name.length() == 0) return ".";
+        return "." + name + ".";
+    }
+
     public String[] getLabels() {
         return name.split("\\.");
     }
@@ -46,5 +51,9 @@ public class Name {
 
     public int hashCode() {
         return (name != null ? name.hashCode() : 0);
+    }
+
+    public int compareTo(Name o) {
+        return name.compareTo(o.name);
     }
 }

@@ -32,7 +32,7 @@ public class DNSNameServer {
 
     private List<Record> getRecords(int type) throws DNSCheckIOException {
         try {
-            Lookup lookup = new Lookup(new Name(host.getNameWithDot()), type);
+            Lookup lookup = new Lookup(new Name(host.getFullyQualifiedName()), type);
             Record[] records = lookup.run();
             return (records == null) ? new ArrayList<Record>() : Arrays.asList(records);
         } catch (IOException e) {
@@ -45,7 +45,7 @@ public class DNSNameServer {
     public Record[] getNsRecord() throws DNSCheckIOException, EmptyIPAddressListException {
 
         try {
-            Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.NS, DClass.IN);
+            Record question = Record.newRecord(new Name(domain.getFullyQualifiedName()), Type.NS, DClass.IN);
             Message query = Message.newQuery(question);
             Set<String> ips = host.getIPAddressesAsStrings();
             if (ips.isEmpty()) throw new EmptyIPAddressListException(domain, host);
@@ -90,7 +90,7 @@ public class DNSNameServer {
 
         private Message sendSOAQuery(boolean byTCP) throws DNSCheckIOException {
             try {
-                Record question = Record.newRecord(new Name(domain.getNameWithDot()), Type.SOA, DClass.IN);
+                Record question = Record.newRecord(new Name(domain.getFullyQualifiedName()), Type.SOA, DClass.IN);
                 Message query = Message.newQuery(question);
                 Resolver resolver = new SimpleResolver(host.getName());
                 resolver.setTCP(byTCP);
@@ -165,7 +165,7 @@ public class DNSNameServer {
     }
 
     public String getNameWithDot() {
-        return host.getNameWithDot();
+        return host.getFullyQualifiedName();
     }
 
     public Set<DNSIPAddress> getIPAddresses() {

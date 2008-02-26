@@ -2,10 +2,13 @@ package org.iana.dns.obj;
 
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSVisitor;
 import org.iana.dns.validator.InvalidIPAddressException;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -13,7 +16,7 @@ import java.util.HashSet;
 public class DNSHostImpl implements DNSHost {
 
     private Name name;
-    private Set<DNSIPAddress> addresses = new HashSet<DNSIPAddress>();
+    private Set<DNSIPAddress> addresses = new TreeSet<DNSIPAddress>();
 
     public DNSHostImpl(String name) {
         this.name = new Name(name);
@@ -23,7 +26,7 @@ public class DNSHostImpl implements DNSHost {
         return name.getName();
     }
 
-    public String getNameWithDot() {
+    public String getFullyQualifiedName() {
         return name.getNameWithDot();
     }
 
@@ -83,5 +86,20 @@ public class DNSHostImpl implements DNSHost {
 
     public int hashCode() {
         return (name != null ? name.hashCode() : 0);
+    }
+
+    public boolean isInDomain(DNSDomain domain) {
+        if (domain == null) return false;
+        String hostName = getFullyQualifiedName();
+        String domainSuffix = domain.getNameAsFullyQualifiedSuffix();
+        return hostName.endsWith(domainSuffix);
+    }
+
+    public void accept(DNSVisitor visitor) {
+        visitor.visitHost(this);
+    }
+
+    public int compareTo(DNSHost o) {
+        return getName().compareTo(o.getName());
     }
 }

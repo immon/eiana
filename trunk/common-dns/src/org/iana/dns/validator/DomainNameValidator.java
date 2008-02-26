@@ -18,6 +18,9 @@ public class DomainNameValidator {
     public static void validateName(String name) throws InvalidDomainNameException {
         if (name == null) throw new InvalidDomainNameException(name, NULL_NAME);
 
+        // root 
+        if (name.length() == 0) return;
+
         if (name.endsWith(".")) name = name.substring(0, name.length()-1);
 
         if (!name.matches(DOMAIN_PATTERN)) throw new InvalidDomainNameException(name, PATTERN_MISMATCH);

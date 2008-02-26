@@ -29,6 +29,7 @@ public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
             if (!retHostNames.equals(domainNameSeverNames)) throw new NameServerCoherencyException(domain, ns.getHost(), domainNameSeverNames, retHostNames);
         }
 
+        
 //        List<Record>list = new ArrayList<Record>();
 //        for (DNSNameServer ns : nameServers) {
 //            Record[] records =  ns.getNsRecord();

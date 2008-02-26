@@ -2,6 +2,7 @@ package org.iana.dns.obj;
 
 import static org.iana.dns.DNSIPAddress.Type.IPv4;
 import org.iana.dns.DNSIPv4Address;
+import org.iana.dns.DNSVisitor;
 import org.iana.dns.validator.IPAddressValidator;
 import org.iana.dns.validator.InvalidIPv4AddressException;
 import org.iana.dns.validator.ReservedIPAddressChecker;
@@ -34,5 +35,9 @@ public class DNSIPv4AddressImpl extends DNSIPAddressImpl implements DNSIPv4Addre
 
     public String getCompressedAddress() {
         return getAddress();
+    }
+
+    public void accept(DNSVisitor visitor) {
+        visitor.visitIPv4Address(this);
     }
 }

@@ -8,7 +8,7 @@ import java.util.Set;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface DNSDomain {
+public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
 
     /**
      * Returns the name of this domain. The returned name is lower-cased and is a valid name according to RFC 1034.
@@ -19,12 +19,22 @@ public interface DNSDomain {
     String getName();
 
     /**
-     * Returns the name of this domain with a trailing dot. The returned name is lower-cased.
+     * Returns the name of this domain in a fully qualified form (with a trailing dot).
+     * The returned name is lower-cased.
      * Examples: <code>com.</code> <code>nask.pl.</code>
      *
      * @return the name of this domain with a trailing dot.
      */
-    String getNameWithDot();
+    String getFullyQualifiedName();
+
+    /**
+     * Returns the name of this domain name as fully qualified suffix i.e. with a leading and trailing dot. The returned
+     * name is lower-cased.
+     * Examples: <code>.com.</code> <code>.nask.pl.</code>.
+     *
+     * @return the name of this domain with a leading and trailing dot.
+     */
+    String getNameAsFullyQualifiedSuffix();
 
     /**
      * Returns an array of labels of this domain name.

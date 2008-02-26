@@ -2,6 +2,7 @@ package org.iana.dns.obj;
 
 import static org.iana.dns.DNSIPAddress.Type.IPv6;
 import org.iana.dns.DNSIPv6Address;
+import org.iana.dns.DNSVisitor;
 import org.iana.dns.validator.IPAddressValidator;
 import org.iana.dns.validator.InvalidIPv6AddressException;
 
@@ -73,5 +74,9 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
             if (c == ':') ++ret;
         }
         return ret;
+    }
+
+    public void accept(DNSVisitor visitor) {
+        visitor.visitIPv6Address(this);
     }
 }
