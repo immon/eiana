@@ -5,7 +5,7 @@ package org.iana.dns;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface DNSIPAddress {
+public interface DNSIPAddress extends DNSObject, Comparable<DNSIPAddress> {
 
     enum Type { IPv4, IPv6 }
 

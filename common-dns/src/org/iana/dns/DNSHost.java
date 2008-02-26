@@ -9,7 +9,7 @@ import java.util.Set;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface DNSHost {
+public interface DNSHost extends DNSObject, Comparable<DNSHost> {
 
     /**
      * Returns the name of this domain. The returned name is lower-cased and is a valid name according to RFC 1034.
@@ -25,7 +25,7 @@ public interface DNSHost {
      *
      * @return the name of this domain with a trailing dot.
      */
-    String getNameWithDot();
+    String getFullyQualifiedName();
 
     /**
      * Returns a set of IP addresses configured for this host.
@@ -57,4 +57,12 @@ public interface DNSHost {
      * @return true if this host has this IP address configured; false otherwise.
      */
     boolean hasIPAddress(String addr) throws InvalidIPAddressException;
+
+    /**
+     * Determines whether this host is in a given domain.
+     *
+     * @param domain the domain object
+     * @return true if this host is in a given domain; false otherwise.
+     */
+    boolean isInDomain(DNSDomain domain);
 }

@@ -62,4 +62,13 @@ public abstract class DNSIPAddressImpl implements DNSIPAddress {
     public int hashCode() {
         return (address != null ? address.hashCode() : 0);
     }
+
+    public int compareTo(DNSIPAddress o) {
+        Type thisType = getType();
+        Type thatType = o.getType();
+        if (thisType != thatType) {
+            return thisType == Type.IPv4 ? -1 : 1;
+        }
+        return getAddress().compareTo(o.getAddress());
+    }
 }

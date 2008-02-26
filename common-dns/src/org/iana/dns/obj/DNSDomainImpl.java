@@ -2,11 +2,9 @@ package org.iana.dns.obj;
 
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
+import org.iana.dns.DNSVisitor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -14,6 +12,7 @@ import java.util.Set;
 public class DNSDomainImpl implements DNSDomain {
 
     private Name name;
+
     private Map<String, DNSHost> nameServers = new HashMap<String, DNSHost>();
 
     public DNSDomainImpl(String name) {
@@ -24,8 +23,12 @@ public class DNSDomainImpl implements DNSDomain {
         return name.getName();
     }
 
-    public String getNameWithDot() {
+    public String getFullyQualifiedName() {
         return name.getNameWithDot();
+    }
+
+    public String getNameAsFullyQualifiedSuffix() {
+        return name.getNameWithDots();
     }
 
     public String[] getLabels() {
@@ -42,7 +45,7 @@ public class DNSDomainImpl implements DNSDomain {
     }
 
     public Set<DNSHost> getNameServers() {
-        return new HashSet<DNSHost>(nameServers.values());
+        return new TreeSet<DNSHost>(nameServers.values());
     }
 
     public Map<String, DNSHost> getNameServerMap() {
@@ -56,5 +59,13 @@ public class DNSDomainImpl implements DNSDomain {
     public DNSHost getNameServer(String name) {
         if (name != null) name = name.toLowerCase();
         return nameServers.get(name);
+    }
+
+    public void accept(DNSVisitor visitor) {
+        visitor.visitDomain(this);
+    }
+
+    public int compareTo(DNSDomain o) {
+        return getName().compareTo(o.getName());
     }
 }
