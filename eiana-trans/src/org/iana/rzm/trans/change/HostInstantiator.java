@@ -25,4 +25,8 @@ public class HostInstantiator implements ObjectInstantiator {
         Host host = hostManager.get(hostName);
         return host != null ? host : new Host(hostName);
     }
+
+    public Object get(String id) {
+        return hostManager.get(id);
+    }
 }

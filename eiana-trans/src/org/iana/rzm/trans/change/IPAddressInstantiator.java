@@ -15,4 +15,8 @@ public class IPAddressInstantiator implements ObjectInstantiator {
         System.out.println("ip address id " + objectChange.getId());
         return IPAddress.createIPAddress(objectChange.getId());
     }
+
+    public Object get(String id) {
+        return null;
+    }
 }

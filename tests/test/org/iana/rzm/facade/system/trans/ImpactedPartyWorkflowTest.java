@@ -43,21 +43,25 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         domainManager.create(domain1);
 
         Domain domain2 = new Domain("impacteddomain-test1");
-        domain2.addNameServer(new Host("impactedhost-test1"));
+        Host h1 = new Host("impactedhost-test1");
+        h1.addIPAddress("1.1.1.1");
+        domain2.addNameServer(h1);
         domain2.setSupportingOrg(new Contact("so-name"));
         domain2.setAdminContact(new Contact("ac-name", "org", null, "", "", "a@x.pl", true));
         domain2.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));
         domainManager.create(domain2);
 
         Domain domain3 = new Domain("impacteddomain-test2");
-        domain3.addNameServer(new Host("impactedhost-test1"));
+        domain3.addNameServer(h1);
         domain3.setSupportingOrg(new Contact("so-name"));
         domain3.setAdminContact(new Contact("ac-name", "org", null, "", "", "a@x.pl", true));
         domain3.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));
         domainManager.create(domain3);
 
         Domain domain4 = new Domain("impacteddomain-test3");
-        domain4.addNameServer(new Host("impactedhost-test2"));
+        Host h2 = new Host("impactedhost-test2");
+        h2.addIPAddress("2.2.2.2");
+        domain4.addNameServer(h2);
         domain4.setSupportingOrg(new Contact("so-name"));
         domain4.setAdminContact(new Contact("ac-name", "org", null, "", "", "a@x.pl", true));
         domain4.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));

@@ -150,14 +150,12 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
             } else if (TransactionActionVO.MODIFY_NAME_SERVERS.equals(action.getName())) {
                 for (ChangeVO vo : action.getChange()) {
                     ObjectValueVO val = (ObjectValueVO) vo.getValue();
-                    if (ChangeVO.Type.ADDITION.equals(vo.getType())) {
+                    if (ChangeVO.Type.ADDITION.equals(vo.getType()) || vo.isAddition()) {
                         md.addNameServer(modifiedDomain.getNameServer(val.getName()));
                     } else if (ChangeVO.Type.REMOVAL.equals(vo.getType())) {
                         md.removeNameServer(val.getName());
                     } else if (ChangeVO.Type.UPDATE.equals(vo.getType())) {
-                        {
-                            md.setNameServer(modifiedDomain.getNameServer(val.getName()));
-                        }
+                        md.setNameServer(modifiedDomain.getNameServer(val.getName()));
                     }
                 }
             }

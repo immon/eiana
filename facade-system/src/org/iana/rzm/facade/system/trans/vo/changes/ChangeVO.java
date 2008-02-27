@@ -9,6 +9,7 @@ public class ChangeVO implements Serializable {
 
     public enum Type { ADDITION, REMOVAL, UPDATE } 
 
+    private boolean addition;
     private String fieldName;
     private Type type;
     private ValueVO value;
@@ -35,6 +36,14 @@ public class ChangeVO implements Serializable {
 
     public void setValue(ValueVO value) {
         this.value = value;
+    }
+
+    public boolean isAddition() {
+        return addition;
+    }
+
+    public void setAddition(boolean addition) {
+        this.addition = addition;
     }
 
     public boolean equals(Object o) {

@@ -275,7 +275,9 @@ public class TransactionData {
         }
         for (Change change : nsChange.getAdded()) {
             ObjectChange obj = (ObjectChange) change;
-            ret.add(obj.getId());
+            if (obj.isModification()) {
+                ret.add(obj.getId());
+            }
         }
         return ret;
     }
