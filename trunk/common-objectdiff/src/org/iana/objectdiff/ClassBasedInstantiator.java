@@ -18,4 +18,8 @@ public class ClassBasedInstantiator implements ObjectInstantiator {
             throw new RuntimeException("cannot instantiate class " + clazz.getName(), e);
         }
     }
+
+    public Object get(String id) {
+        return null;
+    }
 }

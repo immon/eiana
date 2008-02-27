@@ -15,6 +15,15 @@ public class IPAddressVO implements Serializable {
     private String address;
     private Type type;
 
+
+    public IPAddressVO() {
+    }
+
+    public IPAddressVO(String address, Type type) {
+        this.address = address;
+        this.type = type;
+    }
+
     public String getAddress() {
         return address;
     }

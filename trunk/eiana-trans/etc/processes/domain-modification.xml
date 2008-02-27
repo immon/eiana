@@ -78,7 +78,7 @@
 
         <decision name="PENDING_TECH_CHECK">
             <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
-                <doTest>true</doTest>
+                <doTest>false</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
@@ -213,7 +213,8 @@
 
         <state name="PENDING_IMPACTED_PARTIES">
             <event type='node-enter'>
-                <action class="org.iana.rzm.trans.confirmation.contact.ImpactedPartiesCalculator"/>
+                <action class="org.iana.rzm.trans.confirmation.contact.ImpactedPartiesCalculator">
+                </action>
                 <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
                     <notificationProducerName>impactedPartiesNotificationProducer</notificationProducerName>
                 </action>
@@ -342,7 +343,7 @@
 
         <decision name="PENDING_SUPP_TECH_CHECK">
             <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
-                <doTest>true</doTest>
+                <doTest>false</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>

@@ -157,6 +157,14 @@ public class TransactionConverter {
         return actions;
     }
 
+    private static List<ChangeVO> toChangeVO(String fieldName, Change change, boolean addition) {
+        List<ChangeVO> ret = ChangeConverter.toChangeVO(fieldName, change);
+        if (ret != null) {
+            for (ChangeVO vo : ret) vo.setAddition(addition);
+        }
+        return ret;
+    }
+
     private static List<ChangeVO> toChangeVO(String fieldName, Change change) {
         return ChangeConverter.toChangeVO(fieldName, change);
     }
@@ -193,7 +201,7 @@ public class TransactionConverter {
         List<ChangeVO> ret = new ArrayList<ChangeVO>();
         if (change.getAdded() != null) {
             for (Change add : change.getAdded()) {
-                ret.addAll(toChangeVO(field, add));
+                ret.addAll(toChangeVO(field, add, true));
             }
         }
         if (change.getRemoved() != null) {

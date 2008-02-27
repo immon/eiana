@@ -77,8 +77,7 @@ public class TransactionDetectorImpl extends AbstractRZMStatefulService implemen
             if ("nameServers".equals(change.getFieldName())) {
                 ObjectValueVO value = (ObjectValueVO) change.getValue();
                 String hostName = value.getName();
-                if (change.getType() == ChangeVO.Type.ADDITION ||
-                        change.getType() == ChangeVO.Type.UPDATE) {
+                if (change.getType() == ChangeVO.Type.UPDATE) {
                     Set<String> domainNames = findDelegatedTo(hostName);
                     domainNames.remove(domainName);
                     if (!domainNames.isEmpty()) {

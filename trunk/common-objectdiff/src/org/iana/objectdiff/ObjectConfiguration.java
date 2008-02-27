@@ -10,6 +10,7 @@ public class ObjectConfiguration {
     private List<String> fields = new ArrayList();
     private Map<String, ObjectInstantiator> classes = new HashMap<String, ObjectInstantiator>();
     private String id;
+    private ObjectInstantiator instantiator;
 
     public ObjectConfiguration(String[] fields, String id) {
         for (String field : fields) this.fields.add(field);
@@ -44,5 +45,13 @@ public class ObjectConfiguration {
 
     public String getFieldId() {
         return id;
+    }
+
+    public ObjectInstantiator getInstantiator() {
+        return instantiator;
+    }
+
+    public void setInstantiator(ObjectInstantiator instantiator) {
+        this.instantiator = instantiator;
     }
 }

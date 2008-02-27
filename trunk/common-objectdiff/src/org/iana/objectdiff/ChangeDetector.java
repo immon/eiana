@@ -1,10 +1,9 @@
 package org.iana.objectdiff;
 
 import org.iana.rzm.common.validators.CheckTool;
+import pl.nask.util.ReflectionTool;
 
 import java.util.*;
-
-import pl.nask.util.ReflectionTool;
 
 /**
  * This class detects changes between two entities.
@@ -100,7 +99,17 @@ public class ChangeDetector {
     static private List<Change> diffAdded(Collection c, DiffConfiguration config) {
         List<Change> ret = new ArrayList<Change>();
         for (Object object : c) {
-            Change change = diff(null, object, config);
+            Object src = null;
+            if (object != null) {
+                Class clazz = object.getClass();
+                ObjectConfiguration oc = config.getObjectConfig(clazz);
+                if (oc != null && oc.getInstantiator() != null) {
+                    String id = getId(object, oc.getFieldId());
+                    src = oc.getInstantiator().get(id);
+                }
+            }
+            Change change = diff(src, object, config);
+            if (change == null && src != null) change = diff(null, object, config);
             if (change != null) ret.add(change);
         }
         return ret;
