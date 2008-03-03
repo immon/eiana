@@ -19,17 +19,26 @@ import java.util.Set;
  */
 public abstract class AbstractTransactionAddresseeProducer implements AddresseeProducer {
 
+    private boolean sendToSubmitter = false;
+
     public Set<PAddressee> produce(Map dataSource) {
         Set<PAddressee> addressees = new HashSet<PAddressee>();
-        TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
-
-        String submitterEmail = td.getSubmitterEmail();
-        if (CheckTool.isCorrectEmali(submitterEmail))
-            addressees.add(new PAddressee(submitterEmail, submitterEmail));
-
+        if (sendToSubmitter) {
+            TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
+            String submitterEmail = td.getSubmitterEmail();
+            if (CheckTool.isCorrectEmali(submitterEmail))
+                addressees.add(new PAddressee(submitterEmail, submitterEmail));
+        }
         addressees.addAll(produceAddressee(dataSource));
-
         return addressees;
+    }
+
+    public boolean isSendToSubmitter() {
+        return sendToSubmitter;
+    }
+
+    public void setSendToSubmitter(boolean sendToSubmitter) {
+        this.sendToSubmitter = sendToSubmitter;
     }
 
     protected Set<PAddressee> getAddressees(AdminRole.AdminType adminType) {
