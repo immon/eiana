@@ -79,13 +79,17 @@ public class DNSHostImpl implements DNSHost {
 
         DNSHostImpl dnsHost = (DNSHostImpl) o;
 
+        if (addresses != null ? !addresses.equals(dnsHost.addresses) : dnsHost.addresses != null) return false;
         if (name != null ? !name.equals(dnsHost.name) : dnsHost.name != null) return false;
 
         return true;
     }
 
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
+        return result;
     }
 
     public boolean isInDomain(DNSDomain domain) {
