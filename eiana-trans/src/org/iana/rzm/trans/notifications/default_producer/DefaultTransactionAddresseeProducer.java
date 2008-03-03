@@ -6,6 +6,7 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.notifications.producer.AbstractTransactionAddresseeProducer;
 import org.iana.rzm.user.AdminRole;
+import org.apache.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -16,9 +17,13 @@ import java.util.Set;
  */
 public class DefaultTransactionAddresseeProducer extends AbstractTransactionAddresseeProducer {
 
-    private boolean sendToContacts;
-    private boolean sendToAdmins;
+    static Logger logger = Logger.getLogger(DefaultTransactionAddresseeProducer.class);
 
+    private boolean sendToContacts = false;
+
+    private boolean sendToAdmins = false;
+
+    private boolean sendToImpactedParties = false;
 
     public void setSendToContacts(boolean sendToContacts) {
         this.sendToContacts = sendToContacts;
@@ -28,36 +33,49 @@ public class DefaultTransactionAddresseeProducer extends AbstractTransactionAddr
         this.sendToAdmins = sendToAddmins;
     }
 
+    public void setSendToImpactedParties(boolean sendToImpactedParties) {
+        this.sendToImpactedParties = sendToImpactedParties;
+    }
+
     public Set<PAddressee> produceAddressee(Map dataSource) {
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
 
-        Domain currentDomain = td.getCurrentDomain();
         Set<PAddressee> addressees = new HashSet<PAddressee>();
 
-        // bug: selection: all users in any role for a given domain name!
         if (sendToContacts) {
-            Contact adminContact = currentDomain.getAdminContact();
-            if (adminContact != null)
-                addressees.add(new PAddressee(adminContact.getName(), adminContact.getEmail()));
-
-            Contact techContact = currentDomain.getTechContact();
-            if (techContact != null)
-                addressees.add(new PAddressee(techContact.getName(), techContact.getEmail()));
-
-            if (td.isRedelegation()) {
-                Contact supportingContact = currentDomain.getSupportingOrg();
-                if (supportingContact != null)
-                    addressees.add(new PAddressee(supportingContact.getName(), supportingContact.getEmail()));
-            }
+            Domain currentDomain = td.getCurrentDomain();
+            addContacts(addressees, currentDomain);
         }
 
         if (sendToAdmins) {
-            addressees.addAll(getAddressees(AdminRole.AdminType.GOV_OVERSIGHT));
+            //addressees.addAll(getAddressees(AdminRole.AdminType.GOV_OVERSIGHT));
             addressees.addAll(getAddressees(AdminRole.AdminType.IANA));
-            addressees.addAll(getAddressees(AdminRole.AdminType.ZONE_PUBLISHER));
+            //addressees.addAll(getAddressees(AdminRole.AdminType.ZONE_PUBLISHER));
         }
 
+        if (sendToImpactedParties) {
+            for (Domain domain : td.getImpactedDomains()) {
+                addContacts(addressees, domain);
+            }
+        }
         return addressees;
+    }
+
+    public void addContacts(Set<PAddressee> addressees, Domain domain) {
+        addContact(addressees, domain.getAdminContact());
+        addContact(addressees, domain.getTechContact());
+    }
+
+    public void addContact(Set<PAddressee> addressees, Contact contact) {
+        if (contact != null) {
+            if (contact.getEmail() != null) {
+                addressees.add(new PAddressee(contact.getName(), contact.getEmail()));
+            } else {
+                logger.warn("null email for contact " + contact.getName() + " " + contact.getDomainRole());
+            }
+        } else {
+            logger.warn("null contact");
+        }
     }
 
 }

@@ -425,6 +425,9 @@
         <property name="sendToSubmitter">
             <value>true</value>
         </property>
+        <property name="sendToImpactedParties">
+            <value>true</value>
+        </property>
     </bean>
 
     <bean id="exceptionAddresseeProducer"
