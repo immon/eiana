@@ -6,6 +6,8 @@ import org.iana.dns.obj.DNSHostImpl;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author Piotr Tkaczyk
@@ -59,19 +61,21 @@ public class RootServersPropagationCheckTest {
             List<DNSDomainTechnicalCheck> domainChecks = new ArrayList<DNSDomainTechnicalCheck>();
 
             RootServersPropagationCheck check = new RootServersPropagationCheck();
-            check.addHost("a.root-servers.net", "198.41.0.4");
-            check.addHost("b.root-servers.net", "192.228.79.201");
-            check.addHost("c.root-servers.net", "192.33.4.12");
-            check.addHost("d.root-servers.net", "128.8.10.90");
-            check.addHost("e.root-servers.net", "192.203.230.10");
-            check.addHost("f.root-servers.net", "192.5.5.241");
-            check.addHost("g.root-servers.net", "192.112.36.4");
-            check.addHost("h.root-servers.net", "128.63.2.53");
-            check.addHost("i.root-servers.net", "192.36.148.17");
-            check.addHost("j.root-servers.net", "192.58.128.30");
-            check.addHost("k.root-servers.net", "193.0.14.129");
-            check.addHost("l.root-servers.net", "199.7.83.42");
-            check.addHost("m.root-servers.net", "202.12.27.33");
+            Map<String, String> rootServers = new HashMap<String, String>();
+            rootServers.put("a.root-servers.net", "198.41.0.4");
+            rootServers.put("b.root-servers.net", "192.228.79.201");
+            rootServers.put("c.root-servers.net", "192.33.4.12");
+            rootServers.put("d.root-servers.net", "128.8.10.90");
+            rootServers.put("e.root-servers.net", "192.203.230.10");
+            rootServers.put("f.root-servers.net", "192.5.5.241");
+            rootServers.put("g.root-servers.net", "192.112.36.4");
+            rootServers.put("h.root-servers.net", "128.63.2.53");
+            rootServers.put("i.root-servers.net", "192.36.148.17");
+            rootServers.put("j.root-servers.net", "192.58.128.30");
+            rootServers.put("k.root-servers.net", "193.0.14.129");
+            rootServers.put("l.root-servers.net", "199.7.83.42");
+            rootServers.put("m.root-servers.net", "202.12.27.33");
+            check.setRootServers(rootServers);
             domainChecks.add(check);
 
             dnsTechnicalCheck.setDomainChecks(domainChecks);

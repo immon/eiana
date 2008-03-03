@@ -15,17 +15,19 @@ import java.util.*;
  */
 public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
 
-    Set<DNSHost> dnsHosts = new HashSet<DNSHost>();
+    Set<DNSHost> rootServers = new HashSet<DNSHost>();
 
-    public void addHost(String name, String ipAddress) {
-        DNSHostImpl dnsHost = new DNSHostImpl(name);
-        dnsHost.addIPAddress(ipAddress);
-        dnsHosts.add(dnsHost);
+    public void setRootServers(Map<String, String> rootServers) {
+        for(String name : rootServers.keySet()) {
+            DNSHostImpl dnsHost = new DNSHostImpl(name);
+            dnsHost.addIPAddress(rootServers.get(name));
+            this.rootServers.add(dnsHost);
+        }
     }
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 
-        for( DNSHost dnsHost : dnsHosts) {
+        for( DNSHost dnsHost : rootServers) {
             DNSNameServer nameServer = new DNSNameServer(domain, dnsHost);
             Set<DNSHost> retRecords = convertToDNSHosts(nameServer.getAdditionalSection());
 
