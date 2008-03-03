@@ -278,7 +278,7 @@
     <bean id="adminClosedNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
         <constructor-arg index="2" ref="adminClosedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -289,7 +289,7 @@
     <bean id="completedNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
         <constructor-arg index="2" ref="completedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -347,7 +347,7 @@
     <bean id="rejectedNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
         <constructor-arg index="2" ref="rejectedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -372,7 +372,7 @@
     <bean id="withdrawnNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
         <constructor-arg index="2" ref="withdrawnTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -414,6 +414,18 @@
         </property>
     </bean>
 
+    <bean id="submitterAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToAdmins">
+            <value>false</value>
+        </property>
+        <property name="sendToSubmitter">
+            <value>true</value>
+        </property>
+    </bean>
 
     <bean id="exceptionAddresseeProducer"
           class="org.iana.rzm.trans.notifications.final_state.ExceptionAddresseeProducer">
