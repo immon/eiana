@@ -1,12 +1,11 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.*;
+import pl.nask.util.xml.*;
 
-import java.text.ParseException;
-import java.sql.Timestamp;
-import java.util.List;
-
-import pl.nask.util.xml.XMLDateTime;
+import java.sql.*;
+import java.text.*;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -15,6 +14,10 @@ import pl.nask.util.xml.XMLDateTime;
 public class DomainDecorator {
 
     private Domain domain;
+    private static final String INT = "int";
+    private static final String KIM_DAVIES_ICANN_ORG = "kim.davies@icann.org";
+    private static final String SIMON_RAVEH_ICANN_ORG = "simon.raveh@icann.org";
+    private static final String NAELA_SARRAS_ICANN_ORG = "naela.sarras@icann.org";
 
     public Domain getDomain() {
         return domain;
@@ -25,6 +28,7 @@ public class DomainDecorator {
     }
 
     public void setSupportingOrg(ContactDecorator contact) {
+        updateContactEmail(contact, "Admin");
         domain.setSupportingOrg(contact.getContact());
     }
 
@@ -33,19 +37,26 @@ public class DomainDecorator {
     }
 
     public void setAdminContacts(List<ContactDecorator> adminContacts) {
-        for (ContactDecorator contact : adminContacts)
-            if (contact != null)
+        for (ContactDecorator contact : adminContacts) {
+            if (contact != null) {
+                updateContactEmail(contact, "Admin");
                 domain.setAdminContact(contact.getContact());
+            }
+        }
     }
 
     public void setTechContacts(ContactDecorator contact) {
+        updateContactEmail(contact, "Tech");
         domain.setTechContact(contact.getContact());
     }
 
     public void setTechContacts(List<ContactDecorator> techContacts) {
-        for (ContactDecorator contact : techContacts)
-            if (contact != null)
+        for (ContactDecorator contact : techContacts) {
+            if (contact != null) {
+                updateContactEmail(contact, "Tech");
                 domain.setTechContact(contact.getContact());
+            }
+        }
     }
 
     public void setRegistryUrl(String registryUrl) {
@@ -56,24 +67,39 @@ public class DomainDecorator {
         if (whoisServer != null) {
             int idx = whoisServer.lastIndexOf('/');
             if (idx > -1) {
-                whoisServer = whoisServer.substring(idx+1);
+                whoisServer = whoisServer.substring(idx + 1);
             }
         }
         domain.setWhoisServer(whoisServer);
     }
 
     public void setNameservers(HostsListDecorator hostsListDecorator) {
-        for(HostDecorator hostDecorator : hostsListDecorator.getHosts())
+        for (HostDecorator hostDecorator : hostsListDecorator.getHosts()) {
             domain.addNameServer(hostDecorator.getHost());
+        }
     }
 
     public void setCreated(String value) throws ParseException {
-        if (value != null && !value.equals("None"))
+        if (value != null && !value.equals("None")) {
             domain.setCreated(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
+        }
     }
 
     public void setModified(String value) {
-        if (value != null && !value.equals("None"))
+        if (value != null && !value.equals("None")) {
             domain.setModified(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
+        }
+    }
+
+    private void updateContactEmail(ContactDecorator contact, String s) {
+        if (domain.getName().equals(INT)) {
+            contact.setEmail(SIMON_RAVEH_ICANN_ORG);
+        }
+
+        //if (domain.getName().toLowerCase().startsWith("xn--")) {
+        //    contact.setEmail(SIMON_RAVEH_ICANN_ORG);
+        //    contact.setName(domain.getName() + "-" + s);
+        //}
+        
     }
 }

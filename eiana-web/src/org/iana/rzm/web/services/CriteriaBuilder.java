@@ -76,4 +76,8 @@ public class CriteriaBuilder {
     public static Criterion impactedParty(List<String> domains) {
         return new And(new In(TransactionCriteriaFields.IMPACTED_DOMAIN, new HashSet<String>(domains)),  openTransactions());
     }
+
+    public static Criterion domainsByName(String entity) {
+        return new Like(new DomainFieldNameResolver().resolve("domainName"), entity);
+    }
 }

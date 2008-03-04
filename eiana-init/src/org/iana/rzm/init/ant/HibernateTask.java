@@ -1,12 +1,7 @@
 package org.iana.rzm.init.ant;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.cfg.Configuration;
+import org.apache.tools.ant.*;
+import org.hibernate.*;
 
 /**
  * @author Jakub Laszkiewicz

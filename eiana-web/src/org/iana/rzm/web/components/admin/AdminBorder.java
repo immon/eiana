@@ -71,6 +71,11 @@ public abstract class AdminBorder extends Border {
 
         return getPageScriptDeligator();
     }
+
+    public Object[]getWhoIsParameters(){
+        AdminPage adminPage = (AdminPage) getPage();
+        return new Object[]{adminPage.getAdminServices()};
+    }
     
     public void changePassword() {
         AdminPasswordChange myPasswordChange = getPasswordChangePage();

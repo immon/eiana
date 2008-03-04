@@ -1,24 +1,23 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
-import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.ChangeFields;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ChangeBuilder {
 
-    public Change buildChange(StringValueVO vo, String name, ChangeVO.Type type){
+    public Change buildChange(StringValueVO vo, String name, ChangeVO.Type type) {
         ChangeDictionary changeDictionary = new ChangeDictionary();
         String field = changeDictionary.getName(name);
-        return new Change(field, vo.getOldValue(), vo.getNewValue(), type);
+        Change change = new Change(field, vo.getOldValue(), vo.getNewValue(), type);
+        change.setNameServer(changeDictionary.isNameServer(name));
+        return change;
     }
 
 
-    private static class ChangeDictionary{
+    private static class ChangeDictionary {
 
-        private static Map<String,String> dictionary = new HashMap<String,String>();
+        private static Map<String, String> dictionary = new HashMap<String, String>();
 
         private static final String CONTACT_ADDRESS = "Contact Address";
         private static final String CONTACT_COUNTRY = "Contact Country";
@@ -36,13 +35,14 @@ public class ChangeBuilder {
         private static final String HOST_NAME = "Host name";
         private static final String NAME_SERVER = "Name Server";
 
-        static{
+        static {
             initMap();
         }
 
-        private static void initMap(){
+        private static void initMap() {
             add(ChangeFields.AC_ADDRESS, CONTACT_ADDRESS);
             add(ChangeFields.AC_CC, CONTACT_COUNTRY);
+
             add(ChangeFields.AC_EMAIL, CONTACT_EMAIL);
             add(ChangeFields.AC_PRIVATE_EMAIL, CONTACT_PRIVATE_EMAIL);
             add(ChangeFields.AC_PHONENUMBER, CONTACT_PHONE);
@@ -87,23 +87,30 @@ public class ChangeBuilder {
 
         }
 
+        public boolean isNameServer(String name) {
+            return name != null
+                   && (name.equals(ChangeFields.NS_IP) ||
+                                    name.equals(ChangeFields.NS_IPS) ||
+                                    name.equals(ChangeFields.NS_IPTYPE) ||
+                                    name.equals(ChangeFields.NS_NAME) ||
+                                    name.equals("nameServers"));
 
+        }
 
-
-        public String getName(String value){
-            if(value == null){
+        public String getName(String value) {
+            if (value == null) {
                 return value;
             }
 
             String s = dictionary.get(value);
-            if(s == null){
+            if (s == null) {
                 return value;
             }
 
             return s;
         }
 
-        private static void add(String key, String value){
+        private static void add(String key, String value) {
             dictionary.put(key, value);
         }
     }

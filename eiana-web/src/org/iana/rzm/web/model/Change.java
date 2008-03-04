@@ -1,7 +1,7 @@
 package org.iana.rzm.web.model;
 
-import org.apache.commons.lang.StringUtils;
-import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
+import org.apache.commons.lang.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
 
 public class Change extends ValueObject {
 
@@ -10,10 +10,12 @@ public class Change extends ValueObject {
     private String newValue;
     private String action;
     private static final String BLANK = "Blank";
+    private boolean nameServer;
 
     enum ChangeType{
         ADDITION("Add"), REMOVAL("Remove"), UPDATE("Update");
         private String displayName;
+        
 
         ChangeType(String displayName) {
             this.displayName = displayName;
@@ -29,6 +31,14 @@ public class Change extends ValueObject {
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.action = ChangeType.values()[action.ordinal()].getDisplayName();
+    }
+
+     public void setNameServer(boolean nameServer) {
+        this.nameServer = nameServer;
+    }
+
+    public boolean isNameServer(){
+        return nameServer;
     }
 
     public String getAction(){

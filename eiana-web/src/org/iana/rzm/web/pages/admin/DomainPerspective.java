@@ -38,8 +38,8 @@ public abstract class DomainPerspective extends AdminPage implements PageBeginRe
     @Bean(PaginatedEntityQuery.class)
     public abstract PaginatedEntityQuery getPaginatedEntityBean();
 
+    @Persist("client")
     public abstract void setEntityFetcher(EntityFetcher entityFetcher);
-
     public abstract EntityFetcher getEntityFetcher();
 
     public void pageBeginRender(PageEvent event) {

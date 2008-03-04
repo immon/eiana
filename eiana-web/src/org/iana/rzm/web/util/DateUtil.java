@@ -1,11 +1,9 @@
 package org.iana.rzm.web.util;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 
-import java.sql.Timestamp;
-import java.text.Format;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.*;
+import java.text.*;
 import java.util.Date;
 
 public final class DateUtil {
@@ -52,4 +50,8 @@ public final class DateUtil {
         }
     }
 
+    public static String todayDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(new java.util.Date());
+    }
 }

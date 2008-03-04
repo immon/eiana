@@ -1,6 +1,6 @@
 package org.iana.rzm.web.common.admin;
 
-import org.iana.dns.validator.*;
+import org.apache.commons.lang.*;
 import org.iana.rzm.web.common.*;
 
 /**
@@ -14,10 +14,14 @@ public class DomainFinderValidator implements FinderValidator {
 
     public void validate(String term) throws FinderValidationException {
 
-        try{
-            DomainNameValidator.validateName(term);
-        }catch(InvalidDomainNameException e){
-            throw new FinderValidationException(e.getMessage());
+        //try{
+        //    DomainNameValidator.validateName(term);
+        //}catch(InvalidDomainNameException e){
+        //    throw new FinderValidationException(e.getMessage());
+        //}
+
+        if(StringUtils.isBlank(term)){
+            throw new FinderValidationException("Domain Name can't be empty");            
         }
     }
 }

@@ -8,6 +8,8 @@ import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.pages.user.*;
 import org.iana.rzm.web.services.user.*;
 
+import java.util.*;
+
 @ComponentClass
 public abstract class UserRequestDetails extends RequestDetails {
 
@@ -21,6 +23,8 @@ public abstract class UserRequestDetails extends RequestDetails {
             })
     public abstract IComponent getRequestDeclineComponent();
 
+    @Component(id="impactedPartiesConfirmations", type="ListRequestConfirmations", bindings = {"confirmations=prop:impactedpartiesConfirmations"})
+    public abstract IComponent getImpactedPartiesConfirmations();
 
     @InjectPage("user/RequestConfirmation")
     public abstract RequestConfirmation getRequestConfirmation();
@@ -43,6 +47,10 @@ public abstract class UserRequestDetails extends RequestDetails {
     public void pageBeginRender(PageEvent event) {
         super.pageBeginRender(event);
         setUser(getUserServices().getUser());
+    }
+
+    public List<ConfirmationVOWrapper> getImpactedpartiesConfirmations() {
+        return getRequest().getImpactedPartiesConfirmations();
     }
 
     public String getSpaceerColspan(){

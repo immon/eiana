@@ -1,9 +1,9 @@
 package org.iana.rzm.init.ant.decorators;
 
+import org.iana.codevalues.*;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.init.ant.SpringInitContext;
-import org.iana.rzm.facade.common.cc.CountryCodes;
-import org.iana.codevalues.Value;
+import org.iana.rzm.facade.common.cc.*;
+import org.iana.rzm.init.ant.*;
 import pl.nask.util.xml.*;
 
 import java.sql.*;
@@ -47,7 +47,8 @@ public class ContactDecorator {
             }
         }
         // warning: country is a full name - not a country code!
-        address.setCountryCode(countries.get(country));
+        String code = countries.get(country);
+        address.setCountryCode(code);
         address.setTextAddress(text.toString());
 
         contact.setAddress(address);

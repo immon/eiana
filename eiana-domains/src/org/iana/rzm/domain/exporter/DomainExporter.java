@@ -1,14 +1,14 @@
 package org.iana.rzm.domain.exporter;
 
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.Domain;
-import pl.nask.xml.dynamic.DynaXMLParser;
-import pl.nask.xml.dynamic.config.DPConfig;
-import pl.nask.xml.dynamic.env.Environment;
-import pl.nask.xml.dynamic.exceptions.DynaXMLException;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.domain.*;
+import pl.nask.xml.dynamic.*;
+import pl.nask.xml.dynamic.config.*;
+import pl.nask.xml.dynamic.env.*;
+import pl.nask.xml.dynamic.exceptions.*;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -41,6 +41,12 @@ public class DomainExporter {
             } catch (IOException e) {
                 throw new DomainExporterException(e);
             }
+    }
+
+    public String saveToXML(List<Domain> domains) {
+        StringWriter stringWriter = new StringWriter();
+        parseToXML(domains, stringWriter);
+        return stringWriter.toString();
     }
 
     protected void parseToXML(List<Domain> domains, Writer writer) {

@@ -1,14 +1,12 @@
 package org.iana.rzm.facade.admin.domain;
 
-import org.iana.criteria.Criterion;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.services.FinderService;
-import org.iana.rzm.facade.services.RZMStatefulService;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.criteria.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.services.*;
+import org.iana.rzm.facade.system.domain.vo.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -32,5 +30,7 @@ public interface AdminDomainService extends RZMStatefulService, FinderService<ID
     public List<IDomainVO> findDomains(Criterion criteira) throws AccessDeniedException;
 
     public void exportDomainsToXML() throws AccessDeniedException, InfrastructureException;
+
+    public String saveDomainsToXML() throws AccessDeniedException, InfrastructureException;
 
 }

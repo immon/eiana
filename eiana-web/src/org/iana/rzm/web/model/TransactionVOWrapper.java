@@ -58,6 +58,11 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return vo.getDomainName();
     }
 
+
+    public Set<String>getImpactedDomains(){
+        return vo.getImpactedDomains();
+    }
+
     public String getRtIdAsString(){
         return getRtId() == 0 ? "Unassigned" : String.valueOf(getRtId());
     }
@@ -80,9 +85,19 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return vo.tcConfirmed();
     }
 
-    public List<ConfirmationVOWrapper> getConfirmations() {
+    public List<ConfirmationVOWrapper> getContactConfirmations() {
         List<ConfirmationVOWrapper> list = new ArrayList<ConfirmationVOWrapper>();
-        for (ConfirmationVO confirmationVO : vo.getConfirmations()) {
+        for (ConfirmationVO confirmationVO : vo.getContactConfirmations()) {
+            if (!confirmationVO.getRole().equals(SystemRoleVO.SystemType.SO)) {
+                list.add(new ConfirmationVOWrapper(confirmationVO));
+            }
+        }
+        return list;
+    }
+
+    public List<ConfirmationVOWrapper> getImpactedPartiesConfirmations() {
+        List<ConfirmationVOWrapper> list = new ArrayList<ConfirmationVOWrapper>();
+        for (ConfirmationVO confirmationVO : vo.getImpactedPartyConfirmations()) {
             if (!confirmationVO.getRole().equals(SystemRoleVO.SystemType.SO)) {
                 list.add(new ConfirmationVOWrapper(confirmationVO));
             }

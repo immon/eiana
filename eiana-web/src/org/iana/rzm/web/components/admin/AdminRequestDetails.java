@@ -24,6 +24,9 @@ public abstract class AdminRequestDetails extends RequestDetails  {
     @Component(id="stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
 
+     @Component(id="impactedPartiesConfirmations", type="ListRequestConfirmations", bindings = {"confirmations=prop:impactedPartiesConfirmations"})
+    public abstract IComponent getImpactedPartiesConfirmationsComponent();
+
     @Asset(value = "WEB-INF/admin/AdminRequestDetails.html")
     public abstract IAsset get$template();
 
@@ -42,6 +45,10 @@ public abstract class AdminRequestDetails extends RequestDetails  {
     @Persist("client:page")
     public abstract void setNotifications(List<NotificationVOWrapper> list);
     public abstract List<NotificationVOWrapper> getNotifications();
+
+    public List<ConfirmationVOWrapper>getImpactedPartiesConfirmations(){
+        return getRequest().getImpactedPartiesConfirmations();
+    }
 
     public boolean isEnabled(){
         return getNotifications() != null && getNotifications().size() > 0;

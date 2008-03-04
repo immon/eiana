@@ -32,4 +32,7 @@ public class ChangeVOWrapper extends ValueObject {
     }
 
 
+    public boolean isNameServer() {
+        return change.isNameServer();
+    }
 }

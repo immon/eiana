@@ -70,4 +70,8 @@ public interface AdminServices extends RzmServices {
     void approveByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
 
     void rejectByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
+
+    List<DomainVOWrapper> getDomains(Criterion criterion);
+
+    String getWhoIsData();
 }

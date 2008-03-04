@@ -1,13 +1,14 @@
 package org.iana.rzm.web.model;
 
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang.*;
+
+import java.text.*;
+import java.util.*;
 
 
 public class ChangeMessageBuilder {
 
-    private static final String ADD_MESSAGE = "Add a  {0} with value {1}";
+    private static final String ADD_MESSAGE = "Add  {0} with value {1}";
     private static final String MODIFY_MESSAGE = "{0} {1} from {2} to {3}";
     private static final String DELETE_MESSAGE = "Remove {0} {1}";
 
@@ -16,7 +17,14 @@ public class ChangeMessageBuilder {
     }
 
     private MessageBuilder getMessageBuilder(ChangeVOWrapper change) {
-        return new DefaultMessageBuilder();
+        DefaultMessageBuilder builder = new DefaultMessageBuilder();
+
+        if(change.isNameServer()
+           && StringUtils.isNotBlank(change.getChangeTitle())
+           && (!change.getAction().equals(Change.ChangeType.UPDATE.getDisplayName()))){
+            return new UpdateNameServerMessageBuilder(builder);
+        }
+        return builder;
     }
 
 
@@ -32,14 +40,15 @@ public class ChangeMessageBuilder {
             messageMap.put(Change.ChangeType.ADDITION.getDisplayName(), ADD_MESSAGE);
             messageMap.put(Change.ChangeType.REMOVAL.getDisplayName(), DELETE_MESSAGE);
             messageMap.put(Change.ChangeType.UPDATE.getDisplayName(), MODIFY_MESSAGE);
+
         }
 
         public String message(ChangeVOWrapper change) {
-            return buildMessage(change.getAction(), getParametersForAction(change));
+            return buildMessage(change, getParametersForAction(change));
         }
 
-        protected String buildMessage(String action, String[] params) {
-            return new MessageFormat(messageMap.get(action)).format(params);
+        protected String buildMessage(ChangeVOWrapper change, String[] params) {
+            return new MessageFormat(messageMap.get(change.getAction())).format(params);
         }
 
         protected String[] getParametersForAction(ChangeVOWrapper change) {
@@ -56,6 +65,15 @@ public class ChangeMessageBuilder {
         }
     }
 
+    private static class UpdateNameServerMessageBuilder implements MessageBuilder {
+        private DefaultMessageBuilder messageBuilder;
 
+        UpdateNameServerMessageBuilder(DefaultMessageBuilder messageBuilder){
+            this.messageBuilder = messageBuilder;
+        }
 
+        public String message(ChangeVOWrapper change) {
+            return "Update Name Server " + change.getChangeTitle() + " " + messageBuilder.message(change);
+        }
+    }
 }
