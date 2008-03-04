@@ -226,6 +226,16 @@
                    class="org.iana.rzm.web.tapestry.validator.WebCountryCodeValidator"/>
     </contribution>
 
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="whoisValidator" configurable="false"
+                   class="org.iana.rzm.web.tapestry.validator.WebWhoisValidator"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="registryUrlValidator" configurable="false"
+                   class="org.iana.rzm.web.tapestry.validator.WebRegistryUrlValidator"/>
+    </contribution>
+
 
     <service-point id="TokenizedRequestFilter" interface="org.apache.tapestry.services.WebRequestServicerFilter">
         <invoke-factory>

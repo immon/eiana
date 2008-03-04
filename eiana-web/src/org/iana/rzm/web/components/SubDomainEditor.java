@@ -15,11 +15,11 @@ public abstract class SubDomainEditor extends BaseComponent {
        public abstract IComponent getEditDomainComponent();
 
     @Component(id = "registryUrl", type = "TextField", bindings = {"value=prop:registryUrl",
-        "displayName=message:registryUrl-label"})
+        "displayName=message:registryUrl-label", "validators=validators:registryUrlValidator"})
     public abstract IComponent getRegistryUrlComponent();
 
     @Component(id = "whois", type = "TextField", bindings = {"value=prop:whoisServer",
-        "displayName=message:whoisServer-label"})
+        "displayName=message:whoisServer-label", "validators=validators:whoisValidator" })
     public abstract IComponent getWhoisServerComponent();
 
     @Component(id = "save", type = "LinkSubmit")
@@ -47,6 +47,7 @@ public abstract class SubDomainEditor extends BaseComponent {
 
     public void save() {
         getEditor().preventResubmission();
+
         getEditor().save(getRegistryUrl(), getWhoisServer());
     }
 
