@@ -1,28 +1,19 @@
 package org.iana.rzm.facade.admin.domain;
 
-import org.iana.criteria.Criterion;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.exporter.DomainExporter;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.services.AbstractFinderService;
-import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
-import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.UserManager;
+import org.iana.criteria.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.domain.exporter.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.services.*;
+import org.iana.rzm.facade.system.domain.converters.*;
+import org.iana.rzm.facade.system.domain.vo.*;
+import org.iana.rzm.user.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -148,5 +139,10 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
     public void exportDomainsToXML() throws AccessDeniedException, InfrastructureException {
         isUserInRole();
         domainExporter.exportToXML(domainManager.findAll());
+    }
+
+    public String saveDomainsToXML() throws AccessDeniedException, InfrastructureException {
+        isUserInRole();
+        return domainExporter.saveToXML(domainManager.findAll());
     }
 }

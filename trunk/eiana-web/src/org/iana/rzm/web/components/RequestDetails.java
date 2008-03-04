@@ -105,7 +105,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     }
 
     public List<ConfirmationVOWrapper>getConfirmations(){
-        return getRequest().getConfirmations();
+        return getRequest().getContactConfirmations();
     }
 
     public String getCountry() {

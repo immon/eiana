@@ -22,9 +22,7 @@
                 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
                     <tr>
                         <td height="20" valign="top"><strong>Reference</strong></td>
-                        <td height="20" valign="top"><strong>Domain</strong></td>
                         <td height="20" valign="top"><strong>Lodged</strong></td>
-                        <td height="20" valign="top"><strong>Created By</strong></td>
                         <td height="20" valign="top" ><strong>Current Status </strong></td>
                         <td height="20" valign="top" ><strong>Last Change </strong></td>
                         <td jwcid="@If" element="literal:td" condition="prop:actionEnabled" height="20" valign="top" align="right"><strong>Actions</strong></td>
@@ -34,9 +32,7 @@
                     </tr>
                     <tr>
                         <td><span jwcid="rt">111</span></td>
-                        <td><span jwcid="requestDomain">.US</span></td>
                         <td><span jwcid="created">9 Sep, 2006</span></td>
-                        <td><span jwcid="createdBy">Admin</span> </td>
                         <td><span jwcid="state">Pending Contact Comfirmation</span></td>
                         <td><span jwcid="modified"/></td>
                         <td jwcid="@If" condition="prop:actionEnabled" element="literal:td">
@@ -73,7 +69,7 @@
             </span>
         </div>
 
-        <h4>Confirmations</h4>
+        <h4>Impacted Parties Confirmations</h4>
         <div class="mainBox">
              <span jwcid="@GrayContainer">
                  <span jwcid="confirmations">
@@ -96,53 +92,30 @@
              </span>
          </div>
 
-        <h4>Impacted Parties Confirmations </h4>
-        <div class="mainBox">
-             <span jwcid="@GrayContainer">
-                 <span jwcid="impactedPartiesConfirmations">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="numList">
-                        <tr>
-                            <td><strong>Confirmations recived</strong></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table align="center">
-                                    <tr>
-                                        <td>&nbsp; &nbsp; &nbsp; &nbsp;</td>
-                                        <td><img src="../../images/checkbox_on.png"/> TC - vvvvv</td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </span>
-             </span>
-         </div>
-        
-        <h4 style="margin-top: 40px;">Request History</h4>
-         <div class="mainBox" style="margin-bottom: 40px;">
-            <span jwcid="@GrayHeaderContainer">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
-                    <tr>
-                        <td height="20" valign="top"><strong>State</strong></td>
-                        <td height="20" valign="top"><strong>Start</strong></td>
-                        <td height="20" valign="top"><strong>End</strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4"><img src="../../images/spacer.png" width="1" height="10"></td>
-                    </tr>
-                    <span jwcid="@If" condition="ognl:states.size == 0">
-                        <tr><td colspan="4" align="center">No History Available for request</td></tr>
-                    </span>
-                    <span jwcid="@If" condition="ognl:states.size > 0">
-                        <tr jwcid="states">
-                            <td><span jwcid="stateName">Pending Contact Confirmation</span></td>
-                            <td><span jwcid="start">6 Jan, 2007</span></td>
-                            <td><span jwcid="end"></span></td>
-                        </tr>
-                   </span>     
-                </table>
-            </span>
-        </div>
+        <!--<h4 style="margin-top: 40px;">Request History</h4>-->
+         <!--<div class="mainBox" style="margin-bottom: 40px;">-->
+            <!--<span jwcid="@GrayHeaderContainer">-->
+                <!--<table width="100%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">-->
+                    <!--<tr>-->
+                        <!--<td height="20" valign="top"><strong>State</strong></td>-->
+                        <!--<td height="20" valign="top"><strong>Start</strong></td>-->
+                        <!--<td height="20" valign="top"><strong>End</strong></td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td colspan="4"><img src="../../images/spacer.png" width="1" height="10"></td>-->
+                    <!--</tr>-->
+                    <!--<span jwcid="@If" condition="ognl:states.size == 0">-->
+                        <!--<tr><td colspan="4" align="center">No History Available for request</td></tr>-->
+                    <!--</span>-->
+                    <!--<span jwcid="@If" condition="ognl:states.size > 0">-->
+                        <!--<tr jwcid="states">-->
+                            <!--<td><span jwcid="stateName">Pending Contact Confirmation</span></td>-->
+                            <!--<td><span jwcid="start">6 Jan, 2007</span></td>-->
+                            <!--<td><span jwcid="end"></span></td>-->
+                        <!--</tr>-->
+                   <!--</span>-->
+                <!--</table>-->
+            <!--</span>-->
+        <!--</div>-->
     </body>
 </html>

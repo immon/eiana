@@ -1,7 +1,6 @@
 package org.iana.rzm.init.ant.decorators;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk

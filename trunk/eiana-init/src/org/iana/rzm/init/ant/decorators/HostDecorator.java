@@ -1,8 +1,8 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.rzm.domain.Host;
+import org.iana.rzm.domain.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk

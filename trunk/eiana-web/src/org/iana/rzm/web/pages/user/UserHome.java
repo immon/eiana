@@ -77,7 +77,7 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
             "entityQuery=prop:impactedPartyEntityQuery",
             "usePagination=literal:false",
             "noRequestMsg=literal:'There are no outstanding requests.'",
-            "listener=listener:viewRequestDetails"
+            "listener=listener:viewThirdPartyRequestDetails"
             }
     )
     public abstract IComponent getListImpactedPartyRequestComponent();
@@ -164,6 +164,14 @@ public abstract class UserHome extends UserPage implements PageBeginRenderListen
 
     public void viewRequestDetails(long requestId) {
         RequestInformation info = getRequestDetails();
+        info.setImpactedThirdPartyView(false);
+        info.setRequestId(requestId);
+        getRequestCycle().activate(info);
+    }
+
+    public void viewThirdPartyRequestDetails(long requestId) {
+        RequestInformation info = getRequestDetails();
+        info.setImpactedThirdPartyView(true);
         info.setRequestId(requestId);
         getRequestCycle().activate(info);
     }

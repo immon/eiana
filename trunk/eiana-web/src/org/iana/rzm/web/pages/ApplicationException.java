@@ -57,6 +57,12 @@ public abstract class ApplicationException extends Exception {
         return exceptionName != null && exceptionName.contains("PageNotFoundException");
     }
 
+    public boolean isAccessDeniedException() {
+        String exceptionName = getExceptionName();
+        return exceptionName != null && exceptionName.contains("AccessDeniedException");
+    }
+
+
     public boolean isOtherException(){
         return !isPageNotFoundException() && (!isRzmApplicationException());
     }
