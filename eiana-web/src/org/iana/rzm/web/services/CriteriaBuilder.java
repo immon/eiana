@@ -28,6 +28,11 @@ public class CriteriaBuilder {
     }
 
     public static Criterion openTransactionForDomains(List<String> domains) {
+
+        if(domains == null || domains.isEmpty()){
+            return empty();
+        }
+
         List<Criterion> orList = new ArrayList<Criterion>();
         for (String domain : domains) {
             orList.add(new Equal(TransactionCriteriaFields.CURRENT_DOMAIN_NAME, domain));

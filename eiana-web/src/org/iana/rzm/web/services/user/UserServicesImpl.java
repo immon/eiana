@@ -46,6 +46,10 @@ public class UserServicesImpl implements UserServices {
     }
 
     public String getCountryName(String name) {
+        if(name == null){
+            LOGGER.warn("Calling UserServicesImpl.getCountryName with  null");
+            return "";
+        }
         String code = countryCodeService.getCountryName(name.toUpperCase());
         if (code == null) {
             return "Top Level Domain";
