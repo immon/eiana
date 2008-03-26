@@ -1,7 +1,7 @@
 package org.iana.rzm.trans.notifications;
 
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.process.general.ctx.TransactionContext;
 import org.jbpm.configuration.ObjectFactory;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -28,7 +28,7 @@ public class NotificationDataSource implements Map {
 
 
     public NotificationDataSource(ExecutionContext executionContext) {
-        new NotificationDataSource(executionContext, new HashMap<String, Object>());
+        this(executionContext, new HashMap<String, Object>());
     }
 
     public int size() {
@@ -60,7 +60,6 @@ public class NotificationDataSource implements Map {
 
             ProcessInstance processInstance = executionContext.getProcessInstance();
 
-            if (processInstance.getRootToken() == null) return null;
             if ("stateName".equals(key))
                 return processInstance.getRootToken().getNode().getName();
 
@@ -68,19 +67,18 @@ public class NotificationDataSource implements Map {
                 return processInstance.getId();
 
             if ("receipt".equals(key)) {
-                if (processInstance.getContextInstance().hasVariable("TRANSACTION_DATA")) {
-                    TransactionData td = (TransactionData)
-                            processInstance.getContextInstance().getVariable("TRANSACTION_DATA");
-                    return td.getEppReceipt();
-                } else return null;
+                TransactionContext ctx = new TransactionContext(executionContext);
+                return ctx.getTransaction().getData().getEppReceipt();
             }
 
             if ("eppID".equals(key)) {
-                if (processInstance.getContextInstance().hasVariable("TRANSACTION_DATA")) {
-                    TransactionData td = (TransactionData)
-                            processInstance.getContextInstance().getVariable("TRANSACTION_DATA");
-                    return td.getEppRequestId();
-                } else return null;
+                TransactionContext ctx = new TransactionContext(executionContext);
+                return ctx.getTransaction().getData().getEppRequestId();
+            }
+
+            if ("TRANSACTION_DATA".equals(key)) {
+                TransactionContext ctx = new TransactionContext(executionContext);
+                return ctx.getTransaction().getData();
             }
 
             Object obj = executionContext.getContextInstance().getVariable(key);
