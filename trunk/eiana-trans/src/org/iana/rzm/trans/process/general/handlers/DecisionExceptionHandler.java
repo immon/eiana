@@ -1,6 +1,8 @@
 package org.iana.rzm.trans.process.general.handlers;
 
 import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.process.general.ctx.TransactionContext;
 import org.iana.rzm.trans.dns.CheckHelper;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.node.DecisionHandler;
@@ -27,6 +29,14 @@ public abstract class DecisionExceptionHandler implements DecisionHandler {
             executionContext.getToken().setNode(executionContext.getProcessDefinition().getNode("EXCEPTION"));
         }
         return "TRANSITION_EXCEPTION";
+    }
+
+    final protected TransactionData getData(ExecutionContext ctx) {
+        return getTransaction(ctx).getData();
+    }
+
+    final protected Transaction getTransaction(ExecutionContext ctx) {
+        return new TransactionContext(ctx).getTransaction();
     }
 
     public abstract String doDecide(ExecutionContext executionContext) throws Exception;

@@ -10,7 +10,7 @@
 <iana:type>contact-confirmation-newTLD</iana:type>
 <iana:subject>{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}</iana:subject>
 <iana:content>
-Dear {name}{title},
+Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to delegate
@@ -191,7 +191,7 @@ listed as a party to this request.
 <iana:type>third_party-consultation</iana:type>
 <iana:subject>{ticket} | [RZM] | {domainName}</iana:subject>
 <iana:content>
-Dear {name}{title},
+Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to alter the

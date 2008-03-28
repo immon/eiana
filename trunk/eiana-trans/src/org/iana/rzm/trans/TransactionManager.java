@@ -3,6 +3,7 @@ package org.iana.rzm.trans;
 import org.iana.criteria.Criterion;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,10 @@ public interface TransactionManager {
      * @throws NoSuchTransactionException thrown when no transaction found
      */
     Transaction getTransaction(long id) throws NoSuchTransactionException;
+
+    String getTransactionToken(long id, String name) throws NoSuchTransactionException;
+
+    String getTransactionToken(long id, SystemRole.SystemType type) throws NoSuchTransactionException;
 
     // Transaction createTransaction(List<TransactionAction> actions);
 

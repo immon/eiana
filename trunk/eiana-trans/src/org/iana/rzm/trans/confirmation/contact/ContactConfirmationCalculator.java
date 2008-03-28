@@ -19,7 +19,7 @@ import java.util.Set;
 public class ContactConfirmationCalculator extends ActionExceptionHandler {
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
-        Transaction trans = new Transaction(executionContext.getProcessInstance());
+        Transaction trans = getTransaction(executionContext);
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
         Domain domain = trans.getCurrentDomain();
         if (domain.getTechContact() != null) {
@@ -28,7 +28,7 @@ public class ContactConfirmationCalculator extends ActionExceptionHandler {
         if (domain.getAdminContact() != null) {
             contacts.add(new ContactIdentity(SystemRole.SystemType.AC, domain.getAdminContact(), generateToken(), false, domain.getName()));
         }
-        ObjectChange change = trans.getTransactionData().getDomainChange();
+        ObjectChange change = trans.getData().getDomainChange();
         if (change != null && change.getFieldChanges() != null) {
             if (change.getFieldChanges().containsKey("techContact")) {
                 ObjectChange contactChange = (ObjectChange) change.getFieldChanges().get("techContact");

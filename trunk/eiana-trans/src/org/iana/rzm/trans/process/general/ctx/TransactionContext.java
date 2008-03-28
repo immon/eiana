@@ -2,6 +2,7 @@ package org.iana.rzm.trans.process.general.ctx;
 
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.ticketing.TicketingService;
 import org.jbpm.configuration.ObjectFactory;
 import org.jbpm.graph.exe.ExecutionContext;
@@ -21,7 +22,11 @@ public class TransactionContext {
     }
 
     public Transaction getTransaction() {
-        return new Transaction(ctx.getProcessInstance());
+        return new Transaction(ctx.getProcessInstance(), getProcessDAO());
+    }
+
+    public ProcessDAO getProcessDAO() {
+        return (ProcessDAO) getObjectFactory().createObject("processDAO");
     }
 
     public TicketingService getTicketingService() {

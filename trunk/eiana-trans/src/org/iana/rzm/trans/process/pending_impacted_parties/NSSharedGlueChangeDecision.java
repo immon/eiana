@@ -13,7 +13,7 @@ import java.util.Set;
 public class NSSharedGlueChangeDecision extends DecisionExceptionHandler {
 
     public String doDecide(ExecutionContext executionContext) throws Exception {
-        Transaction trans = new Transaction(executionContext.getProcessInstance());
+        Transaction trans = getTransaction(executionContext);
         Set<Domain> impactedDomains = trans.getImpactedDomains();
         return impactedDomains != null && !impactedDomains.isEmpty() ?
                 "yes" : "no";

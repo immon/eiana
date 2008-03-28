@@ -8,7 +8,6 @@ import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -105,7 +104,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test
     public void testREJECT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC, "submitter@not.exist").getTransactionID();
-        assertPersistentNotifications(transId, "contact-confirmation", 4);
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
         rejectPENDING_CONTACT_CONFIRMATION(userAC, transId);
         assertPersistentNotifications(transId, 0);
         checkStateLog(userAC, transId, REJECT_CONTACT_CONFIRMATIONLog);
@@ -265,7 +264,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     @Test(dependsOnMethods = {"testREJECT_USDOC_APPROVAL"})
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC, "submitter@email.com").getTransactionID();
-        assertPersistentNotifications(transId, "contact-confirmation", 5);
+        assertPersistentNotifications(transId, "contact-confirmation", 3);
         acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
@@ -306,12 +305,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
 /*
         for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
             notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);

@@ -10,10 +10,10 @@ import org.jbpm.graph.exe.ExecutionContext;
 public class EPPNameServerChange extends ActionExceptionHandler {
 
     protected void doExecute(ExecutionContext executionContext) throws Exception {
-        Transaction transaction = new Transaction(executionContext.getProcessInstance());
+        Transaction trans = getTransaction(executionContext);
         HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
         EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
-        EPPChangeRequest req = new EPPChangeRequest(transaction, hostManager, eppClient);
+        EPPChangeRequest req = new EPPChangeRequest(trans, hostManager, eppClient);
         req.send();
     }
 

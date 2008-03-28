@@ -23,7 +23,6 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -222,12 +221,7 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

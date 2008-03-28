@@ -9,7 +9,6 @@ import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.RZMUser;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -122,12 +121,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
 
     @AfterClass (alwaysRun = true)
     public void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

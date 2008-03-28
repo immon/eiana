@@ -17,7 +17,6 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -26,6 +25,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Piotr Tkaczyk
@@ -53,29 +53,33 @@ public class TransitTransactionToStateTest {
 
     @BeforeClass
     public void init() {
-        appCtx = SpringApplicationContext.getInstance().getContext();
-        gAdminTransactionServ = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
-        userManager = (UserManager) appCtx.getBean("userManager");
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
+        try {
+            appCtx = SpringApplicationContext.getInstance().getContext();
+            gAdminTransactionServ = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
+            userManager = (UserManager) appCtx.getBean("userManager");
+            processDAO = (ProcessDAO) appCtx.getBean("processDAO");
+            domainManager = (DomainManager) appCtx.getBean("domainManager");
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
+            processDAO.deploy(DefinedTestProcess.getDefinition());
+            processDAO.close();
 
-        fillStates();
+            fillStates();
 
-        user = new RZMUser();
-        user.setLoginName("gatsadminuser");
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setEmail("email@some.com");
-        user.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        this.userManager.create(user);
+            user = new RZMUser();
+            user.setLoginName("gatsadminuser");
+            user.setFirstName("firstName");
+            user.setLastName("lastName");
+            user.setEmail("email@some.com");
+            user.addRole(new AdminRole(AdminRole.AdminType.IANA));
+            this.userManager.create(user);
 
-        Domain domain = createTestDomain(DOMAIN_NAME_1);
-        domainManager.create(domain);
-        domain = createTestDomain(DOMAIN_NAME_2);
-        domainManager.create(domain);
+            Domain domain = createTestDomain(DOMAIN_NAME_1);
+            domainManager.create(domain);
+            domain = createTestDomain(DOMAIN_NAME_2);
+            domainManager.create(domain);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -98,14 +102,10 @@ public class TransitTransactionToStateTest {
 
     @Test
     public void testTransitTransactionToState() throws Exception {
-        createDomainModificationProcess(DOMAIN_NAME_2);
-
-        TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
-        assert transactionVO.getState().getName().equals(TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION);
-
         for (String state : states.keySet()) {
+            createDomainModificationProcess(DOMAIN_NAME_2);
             gAdminTransactionServ.transitTransactionToState(transactionID, state);
-            transactionVO = gAdminTransactionServ.get(transactionID);
+            TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
             String expectedState = states.get(state);
             assert expectedState != null;
             assert expectedState.equals(transactionVO.getState().getName().name()) :
@@ -119,7 +119,7 @@ public class TransitTransactionToStateTest {
         gAdminTransactionServ.setUser(testAuthUser);
 
         Domain domain = createTestDomain(domainName);
-        domain.setRegistryUrl("newregurl");
+        domain.setRegistryUrl("newregurl" + new Random().nextInt());
 
         List<TransactionVO> transactionList = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain), false);
         assert transactionList.size() == 1;
@@ -142,12 +142,7 @@ public class TransitTransactionToStateTest {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

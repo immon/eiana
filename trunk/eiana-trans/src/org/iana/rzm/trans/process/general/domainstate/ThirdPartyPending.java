@@ -13,7 +13,7 @@ public class ThirdPartyPending extends ActionExceptionHandler {
     public boolean start;
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
-        Transaction trans = new Transaction(executionContext.getProcessInstance());
+        Transaction trans = getTransaction(executionContext);
         DomainManager manager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
         manager.updateThirdPartyPendingProcesses(trans.getCurrentDomain().getName(), start);
     }

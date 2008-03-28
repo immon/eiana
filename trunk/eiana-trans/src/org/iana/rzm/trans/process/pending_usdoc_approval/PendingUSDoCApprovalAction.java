@@ -17,7 +17,7 @@ public class PendingUSDoCApprovalAction extends ActionExceptionHandler {
         td.setupUSDoCConfirmation();
         if (td.isNameServerChange()) {
             HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
-            Transaction trans = new Transaction(executionContext.getProcessInstance());
+            Transaction trans = getTransaction(executionContext);
             EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
             EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
             String[] rsp = eppChangeRequest.send();

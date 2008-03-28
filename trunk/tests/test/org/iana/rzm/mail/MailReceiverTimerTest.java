@@ -12,8 +12,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
 /**
  * @author Patrycja Wegrzynowicz
  */
@@ -59,12 +57,6 @@ public class MailReceiverTimerTest {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() throws Exception {
-        try {
-            List<ProcessInstance> processInstances = processDAO.findAll();
-            for (ProcessInstance processInstance : processInstances)
-                processDAO.delete(processInstance);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
     }
 }

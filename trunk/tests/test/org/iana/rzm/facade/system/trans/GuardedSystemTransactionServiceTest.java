@@ -21,7 +21,6 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -215,12 +214,7 @@ public class GuardedSystemTransactionServiceTest {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() throws Exception {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

@@ -2,6 +2,8 @@ package org.iana.rzm.trans.process.general.handlers;
 
 import org.apache.log4j.Logger;
 import org.iana.rzm.trans.TransactionData;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.process.general.ctx.TransactionContext;
 import org.iana.rzm.trans.dns.CheckHelper;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
@@ -29,6 +31,14 @@ public abstract class ActionExceptionHandler implements ActionHandler {
             td.setStateMessage(e.getMessage());
             executionContext.getToken().setNode(executionContext.getProcessDefinition().getNode("EXCEPTION"));
         }
+    }
+
+    final protected TransactionData getData(ExecutionContext ctx) {
+        return getTransaction(ctx).getData();
+    }
+
+    final protected Transaction getTransaction(ExecutionContext ctx) {
+        return new TransactionContext(ctx).getTransaction();
     }
 
     protected abstract void doExecute(ExecutionContext executionContext) throws Exception;

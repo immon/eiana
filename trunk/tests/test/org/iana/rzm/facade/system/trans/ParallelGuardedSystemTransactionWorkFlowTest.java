@@ -9,7 +9,6 @@ import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -156,12 +155,7 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

@@ -52,16 +52,11 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() throws Exception {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-            for (RZMUser user : userDAO.findAll())
-                userDAO.delete(user);
-            for (Domain domain : domainDAO.findAll())
-                domainDAO.delete(domain);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
+        for (RZMUser user : userDAO.findAll())
+            userDAO.delete(user);
+        for (Domain domain : domainDAO.findAll())
+            domainDAO.delete(domain);
     }
 
     private void generateTestData() throws InvalidDomainNameException, InterruptedException {
@@ -123,7 +118,6 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
 
     private ProcessInstance createTransaction(final Long ticketId, final Domain domain) {
         try {
-            ProcessInstance pi = processDAO.newProcessInstance(DefinedTestProcess.getProcessName());
             TransactionData td = new TransactionData();
             td.setTicketID(ticketId);
             td.setCurrentDomain(domain);
@@ -134,8 +128,8 @@ public class ProcessDAOTest extends TransactionalSpringContextTests {
             td.getTrackData().setModified(new Timestamp(cal.getTimeInMillis()));
             td.getTrackData().setCreatedBy(ticketId + "-creator");
             td.getTrackData().setModifiedBy(ticketId + "-modifier");
-            pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-            pi.signal();
+            ProcessInstance pi = processDAO.newProcessInstance(DefinedTestProcess.getProcessName(), td);
+            processDAO.signal(pi);
             return pi;
         } finally {
             processDAO.close();

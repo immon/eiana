@@ -16,16 +16,14 @@ import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.NoSuchTransactionException;
+import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.confirmation.Identity;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -41,6 +39,7 @@ public class ResendNotificationTest {
     private AdminTransactionService ats;
     private UserManager userManager;
     private DomainManager domainManager;
+    private TransactionManager transactionManager;
     private DataAccessObject<PNotification> notificationManager;
     protected TransactionService sts;
     private ProcessDAO processDAO;
@@ -63,6 +62,7 @@ public class ResendNotificationTest {
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
         notificationManager = (DataAccessObject<PNotification>) appCtx.getBean("notificationDAO");
+        transactionManager = (TransactionManager) appCtx.getBean("transactionManagerBean");
 
         try {
             processDAO.deploy(DefinedTestProcess.getDefinition());
@@ -178,31 +178,13 @@ public class ResendNotificationTest {
                 "unexpected transaction state: " + transactionVO.getState().getName();
     }
 
-    private String getToken(long transID, SystemRole.SystemType role) {
-        try {
-            ProcessInstance pi = processDAO.getProcessInstance(transID);
-            Transaction trans = new Transaction(pi);
-            if (trans.getContactConfirmations() == null) return null;
-            for (Identity id : trans.getContactConfirmations().getUsersAbleToAccept()) {
-                ContactIdentity cid = (ContactIdentity) id;
-                if (cid.getType() == role) {
-                    return cid.getToken();
-                }
-            }
-            throw new IllegalArgumentException("no role to confirm found: " + role);
-        } finally {
-            processDAO.close();
-        }
+    private String getToken(long transID, SystemRole.SystemType role) throws NoSuchTransactionException {
+        return transactionManager.getTransactionToken(transID, role);
     }
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

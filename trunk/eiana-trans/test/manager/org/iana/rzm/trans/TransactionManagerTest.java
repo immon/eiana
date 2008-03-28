@@ -14,7 +14,6 @@ import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -58,23 +57,16 @@ public class TransactionManagerTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() throws Exception {
-        try {
-            List<ProcessInstance> pis = processDAO.findAll();
-            for (ProcessInstance pi : pis) {
-                processDAO.delete(pi);
-            }
+        processDAO.deleteAll();
 
-            List<RZMUser> users = userManager.findAll();
-            for (RZMUser user : users) {
-                userManager.delete(user);
-            }
+        List<RZMUser> users = userManager.findAll();
+        for (RZMUser user : users) {
+            userManager.delete(user);
+        }
 
-            List<Domain> domains = domainManager.findAll();
-            for (Domain domain : domains) {
-                domainManager.delete(domain);
-            }
-        } finally {
-            processDAO.close();
+        List<Domain> domains = domainManager.findAll();
+        for (Domain domain : domains) {
+            domainManager.delete(domain);
         }
     }
 
