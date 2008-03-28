@@ -31,7 +31,6 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -285,16 +284,11 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 */
 
     protected void cleanUp() throws Exception {
-        try {
-            for (ProcessInstance processInstance : processDAO.findAll())
-                processDAO.delete(processInstance);
-            for (RZMUser user : userManager.findAll())
-                userManager.delete(user);
-            for (Domain domain : domainManager.findAll())
-                domainManager.delete(domain.getName());
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain.getName());
     }
 
     private String loadFromFile(String fileName) throws IOException {

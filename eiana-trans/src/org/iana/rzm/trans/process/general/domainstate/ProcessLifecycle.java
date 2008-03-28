@@ -13,7 +13,7 @@ public class ProcessLifecycle extends ActionExceptionHandler {
     public boolean start;
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
-        Transaction trans = new Transaction(executionContext.getProcessInstance());
+        Transaction trans = getTransaction(executionContext);
         DomainManager manager = (DomainManager) executionContext.getJbpmContext().getObjectFactory().createObject("domainManager");
         manager.updateOpenProcesses(trans.getCurrentDomain().getName(), start);
     }

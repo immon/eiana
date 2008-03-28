@@ -632,4 +632,8 @@
     </bean>
 
     <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+
+    <bean id="zoneTestingCheck" class="org.iana.dns.check.EmptyDNSTechnicalCheck">
+    </bean>
+    
 </beans>

@@ -14,7 +14,7 @@ import java.util.Set;
 public class ImpactedPartiesCalculator extends ContactConfirmationCalculator {
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
-        Transaction trans = new Transaction(executionContext.getProcessInstance());
+        Transaction trans = getTransaction(executionContext);
         Set<ContactIdentity> contacts = new HashSet<ContactIdentity>();
         for (Domain d : trans.getImpactedDomains()) {
             if (d.getTechContact() != null) {

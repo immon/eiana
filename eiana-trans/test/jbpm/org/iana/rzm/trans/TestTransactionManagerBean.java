@@ -26,18 +26,16 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
     public Transaction createTransactionTestTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        ProcessInstance pi = processDAO.newProcessInstance(TransactionTestProcess.getProcessName());
-        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.signal();
-        return new Transaction(pi);
+        ProcessInstance pi = processDAO.newProcessInstance(TransactionTestProcess.getProcessName(), td);
+        processDAO.signal(pi);
+        return new Transaction(pi, processDAO);
     }
 
     public Transaction createConfirmationTestTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainDAO.get(domain.getName()));
-        ProcessInstance pi = processDAO.newProcessInstance(ConfirmationTestProcess.getProcessName());
-        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.signal();
-        return new Transaction(pi);
+        ProcessInstance pi = processDAO.newProcessInstance(ConfirmationTestProcess.getProcessName(), td);
+        processDAO.signal(pi);
+        return new Transaction(pi, processDAO);
     }
 }

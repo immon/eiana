@@ -8,12 +8,8 @@ import org.iana.rzm.facade.system.trans.vo.ConfirmationVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.trans.confirmation.Identity;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -311,29 +307,15 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())
             domainManager.delete(domain.getName());
     }
 
-    private String getToken(long transID, String name) {
-        ProcessInstance pi = processDAO.getProcessInstance(transID);
-        Transaction trans = new Transaction(pi);
-        if (trans.getContactConfirmations() == null) return null;
-        for (Identity id : trans.getContactConfirmations().getUsersAbleToAccept()) {
-            ContactIdentity cid = (ContactIdentity) id;
-            if (name.equals(cid.getName())) {
-                return cid.getToken();
-            }
-        }
-        throw new IllegalArgumentException("no name to confirm found: " + name);
+    private String getToken(long transID, String name) throws Exception {
+        return transactionManagerBean.getTransactionToken(transID, name);
     }
 
     private TransactionVO createTransaction() throws Exception {

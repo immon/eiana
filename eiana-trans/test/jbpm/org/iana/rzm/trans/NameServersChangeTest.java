@@ -11,8 +11,6 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
 /**
  * @author Piotr Tkaczyk
  * @author Jakub Laszkiewicz
@@ -37,15 +35,8 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() throws Exception {
-        try {
-            List<ProcessInstance> pis = processDAO.findAll();
-            for (ProcessInstance pi : pis) {
-                processDAO.delete(pi);
-            }
-            domainManager.delete("testdomain-ns.org");
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
+        domainManager.delete("testdomain-ns.org");
     }
 
     @Test
@@ -71,17 +62,17 @@ public class NameServersChangeTest extends TransactionalSpringContextTests {
 
             Token token = pi.getRootToken();
             assert token.getNode().getName().equals("PENDING_CONTACT_CONFIRMATION") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+            processDAO.signal(pi, "accept");
             assert token.getNode().getName().equals("PENDING_MANUAL_REVIEW") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+            processDAO.signal(pi, "accept");
             assert token.getNode().getName().equals("PENDING_IANA_CHECK") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+            processDAO.signal(pi, "accept");
             assert token.getNode().getName().equals("PENDING_USDOC_APPROVAL") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+            processDAO.signal(pi, "accept");
             assert token.getNode().getName().equals("PENDING_ZONE_INSERTION") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+            processDAO.signal(pi, "accept");
             assert token.getNode().getName().equals("PENDING_ZONE_PUBLICATION") : "unexpected state: " + token.getNode().getName();
-            token.signal("accept");
+            processDAO.signal(pi, "accept");
             assert token.getNode().getName().equals("COMPLETED") : "unexpected state: " + token.getNode().getName();
 
 //            assert clonedDomain.equals(domainManager.get("testdomain-ns.org").clone());

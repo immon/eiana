@@ -7,7 +7,10 @@ import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.confirmation.Identity;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
 import static org.iana.rzm.common.validators.CheckTool.*;
 import org.jbpm.graph.exe.ProcessInstance;
 
@@ -44,18 +47,42 @@ public class TransactionManagerBean implements TransactionManager {
         ProcessInstance pi = processDAO.getProcessInstance(id);
         if (pi == null || !DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
             throw new NoSuchTransactionException(id);
-        return new Transaction(pi);
+        return new Transaction(pi, processDAO);
     }
 
-    public Transaction createDomainCreationTransaction(Domain domain) {
+    public String getTransactionToken(long transId, String name) throws NoSuchTransactionException {
+        Transaction trans = getTransaction(transId);
+        if (trans.getContactConfirmations() == null) return null;
+        for (Identity id : trans.getContactConfirmations().getUsersAbleToAccept()) {
+            ContactIdentity cid = (ContactIdentity) id;
+            if (name.equals(cid.getName())) {
+                return cid.getToken();
+            }
+        }
+        throw new IllegalArgumentException("no name to confirm found: " + name);
+    }
+
+
+    public String getTransactionToken(long transId, SystemRole.SystemType role) throws NoSuchTransactionException {
+        Transaction trans = getTransaction(transId);
+        if (trans.getContactConfirmations() == null) return null;
+        for (Identity id : trans.getContactConfirmations().getUsersAbleToAccept()) {
+            ContactIdentity cid = (ContactIdentity) id;
+            if (cid.getType() == role) {
+                return cid.getToken();
+            }
+        }
+        throw new IllegalArgumentException("no role to confirm found: " + role);
+   }
+
+   public Transaction createDomainCreationTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainManager.get(domain.getName()));
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(new Domain(domain.getName()), domain, diffConfiguration);
         td.setDomainChange(domainChange);
-        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
-        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.signal();
-        return new Transaction(pi);
+        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS, td);
+        processDAO.signal(pi);
+        return new Transaction(pi, processDAO);
     }
 
     public Transaction createDomainModificationTransaction(Domain modifiedDomain, String creator) throws NoModificationException {
@@ -86,11 +113,10 @@ public class TransactionManagerBean implements TransactionManager {
         td.getTrackData().setCreated(new Timestamp(System.currentTimeMillis()));
         td.getTrackData().setCreatedBy(creator);
 
-        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS);
-        pi.getContextInstance().setVariable("TRANSACTION_DATA", td);
-        pi.signal();
+        ProcessInstance pi = processDAO.newProcessInstance(DOMAIN_MODIFICATION_PROCESS, td);
+        processDAO.signal(pi);
 
-        return new Transaction(pi);
+        return new Transaction(pi, processDAO);
     }
 
     public List<Transaction> findAll() {
@@ -170,7 +196,7 @@ public class TransactionManagerBean implements TransactionManager {
         List<Transaction> result = new ArrayList<Transaction>();
         for (ProcessInstance pi : processInstances)
             if (DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
-                result.add(new Transaction(pi));
+                result.add(new Transaction(pi, processDAO));
         return result;
     }
 }

@@ -10,7 +10,6 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.process.general.ticketingservice.RequestTrackerTicket;
 import org.iana.rzm.user.RZMUser;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -310,12 +309,7 @@ public class RequestTrackerTicketTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() throws Exception {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
         for (Domain domain : domainManager.findAll())
             domainManager.delete(domain.getName());
     }

@@ -1,27 +1,26 @@
 package org.iana.rzm.trans;
 
+import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Contact;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
 import org.iana.rzm.trans.conf.TransactionTestProcess;
-import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.Identity;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 
 /**
  * @author Jakub Laszkiewicz
@@ -82,7 +81,7 @@ public class TransactionTest extends TransactionalSpringContextTests {
     @Test
     public void testTransactionCreation() throws Exception {
         try {
-            Transaction transaction = testTransactionManager.createTransactionTestTransaction(domain);
+           Transaction transaction = testTransactionManager.createTransactionTestTransaction(domain);
             ticketId1 = 123L;
             transaction.setTicketID(ticketId1);
             transactionId1 = transaction.getTransactionID();
@@ -216,21 +215,14 @@ public class TransactionTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() throws Exception {
-        try {
-            List<ProcessInstance> pis = processDAO.findAll();
-            for (ProcessInstance pi : pis) {
-                processDAO.delete(pi);
-            }
-            List<RZMUser> users = userManager.findAll();
-            for (RZMUser user : users) {
-                userManager.delete(user);
-            }
-            List<Domain> domains = domainManager.findAll();
-            for (Domain domain : domains) {
-                domainManager.delete(domain);
-            }
-        } finally {
-            processDAO.close();
+        processDAO.deleteAll();
+        List<RZMUser> users = userManager.findAll();
+        for (RZMUser user : users) {
+            userManager.delete(user);
+        }
+        List<Domain> domains = domainManager.findAll();
+        for (Domain domain : domains) {
+            domainManager.delete(domain);
         }
     }
 

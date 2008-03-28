@@ -8,9 +8,9 @@ import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.SpringTransApplicationContext;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -18,7 +18,6 @@ import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.iana.test.spring.TransactionalSpringContextTests;
-import org.jbpm.graph.exe.ProcessInstance;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -137,16 +136,11 @@ public class ConfirmationTest extends TransactionalSpringContextTests {
     }
 
     protected void cleanUp() throws Exception {
-        try {
-            for (ProcessInstance pi : processDAO.findAll())
-                processDAO.delete(pi);
-            for (RZMUser user : userManager.findAll())
-                userManager.delete(user);
-            for (Domain domain : domainManager.findAll())
-                domainManager.delete(domain);
-        } finally {
-            processDAO.close();
-        }
+        processDAO.deleteAll();
+        for (RZMUser user : userManager.findAll())
+            userManager.delete(user);
+        for (Domain domain : domainManager.findAll())
+            domainManager.delete(domain);
     }
 
     private List<String> getTokens(Transaction transaction) {

@@ -14,6 +14,7 @@ import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
@@ -34,22 +35,33 @@ public class Transaction implements TrackedObject {
 
     private static final Logger logger = Logger.getLogger(Transaction.class);
 
-    private static final String TRANSACTION_DATA = "TRANSACTION_DATA";
+    public static final String TRANSACTION_DATA = "TRANSACTION_DATA";
     private ProcessInstance pi;
 
+    private ProcessDAO processDAO;
+
+    private TransactionData data;
+
     public Transaction(ProcessInstance pi) {
-        CheckTool.checkNull(pi, "process instance");
-        this.pi = pi;
-        if (!this.pi.getContextInstance().hasVariable(TRANSACTION_DATA))
-            this.pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
+        this(pi, null);
     }
 
-    public TransactionData getTransactionData() {
-        return (TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA);
+    public Transaction(ProcessInstance pi, ProcessDAO dao) {
+        CheckTool.checkNull(pi, "process instance");
+        this.pi = pi;
+        if (!this.pi.getContextInstance().hasVariable(TRANSACTION_DATA)) {
+            this.pi.getContextInstance().setVariable(TRANSACTION_DATA, new TransactionData());
+        }
+        this.data = (TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA);
+        this.processDAO = dao;
+    }
+
+    public TransactionData getData() {
+        return data;
     }
 
     private TrackData getTrackData() {
-        return ((TransactionData) pi.getContextInstance().getVariable(TRANSACTION_DATA)).getTrackData();
+        return getData().getTrackData();
     }
 
     public Long getObjId() {
@@ -61,11 +73,11 @@ public class Transaction implements TrackedObject {
     }
 
     public Long getTicketID() {
-        return getTransactionData().getTicketID();
+        return getData().getTicketID();
     }
 
     public void setTicketID(Long ticketID) {
-        getTransactionData().setTicketID(ticketID);
+        getData().setTicketID(ticketID);
     }
 
     public String getName() {
@@ -73,19 +85,19 @@ public class Transaction implements TrackedObject {
     }
 
     public Domain getCurrentDomain() {
-        return getTransactionData().getCurrentDomain();
+        return getData().getCurrentDomain();
     }
 
     public void setCurrentDomain(Domain currentDomain) {
-        getTransactionData().setCurrentDomain(currentDomain);
+        getData().setCurrentDomain(currentDomain);
     }
 
     public ObjectChange getDomainChange() {
-        return getTransactionData().getDomainChange();
+        return getData().getDomainChange();
     }
 
     public void setDomainChange(ObjectChange change) {
-        getTransactionData().setDomainChange(change);
+        getData().setDomainChange(change);
     }
 
     public TransactionState getState() {
@@ -109,7 +121,7 @@ public class Transaction implements TrackedObject {
     }
 
     public List<TransactionStateLogEntry> getStateLog() {
-        return getTransactionData().getStateLog();
+        return getData().getStateLog();
     }
 
     public Timestamp getStart() {
@@ -170,17 +182,17 @@ public class Transaction implements TrackedObject {
     public synchronized void systemAccept() throws TransactionException {
         setModified(new Timestamp(new Date().getTime()));
         setModifiedBy("SYSTEM");
-        pi.signal(StateTransition.ACCEPT);
+        processDAO.signal(pi, StateTransition.ACCEPT);
     }
 
     public synchronized void accept(RZMUser user) throws TransactionException {
-        getTransactionData().setIdentityName(user.getLoginName());
-        pi.signal(StateTransition.ACCEPT);
+        getData().setIdentityName(user.getLoginName());
+        processDAO.signal(pi, StateTransition.ACCEPT);
     }
 
     public synchronized void reject(RZMUser user) throws TransactionException {
-        getTransactionData().setIdentityName(user.getLoginName());
-        pi.signal(StateTransition.REJECT);
+        getData().setIdentityName(user.getLoginName());
+        processDAO.signal(pi, StateTransition.REJECT);
     }
 
     public synchronized void accept(String acceptToken) throws TransactionException {
@@ -193,8 +205,8 @@ public class Transaction implements TrackedObject {
             if (!confirmation.accept(user)) {
                 return;
             }
-            getTransactionData().setIdentityName("AC/TC");
-            pi.signal(StateTransition.ACCEPT);
+            getData().setIdentityName("AC/TC");
+            processDAO.signal(pi, StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
         } catch (NotAcceptableByUser e) {
@@ -209,24 +221,24 @@ public class Transaction implements TrackedObject {
             throw new UserConfirmationNotExpected();
         }
         if (confirmation.isAcceptableBy(user)) {
-            getTransactionData().setIdentityName("AC/TC");
-            pi.signal(StateTransition.REJECT);
+            getData().setIdentityName("AC/TC");
+            processDAO.signal(pi, StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
     }
 
     public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
-        getTransactionData().setIdentityName(user.getLoginName());
-        pi.signal(transitionName);
+        getData().setIdentityName(user.getLoginName());
+        processDAO.signal(pi, transitionName);
     }
 
     public synchronized void transitTo(RZMUser user, String stateName) throws TransactionException {
-        Token token = pi.getRootToken();
+        // hm? Token token = pi.getRootToken();
         Node destinationNode = pi.getProcessDefinition().getNode(stateName);
         if (destinationNode == null || !TransactionState.Name.nameStrings.contains(stateName))
             throw new TransactionException("no such state: " + stateName);
-        getTransactionData().setIdentityName(user.getLoginName());
-        token.signal("TRANSITION_" + stateName);
+        getData().setIdentityName(user.getLoginName());
+        processDAO.signal(pi, "TRANSITION_" + stateName);
     }
 
     public Set<SystemRole.SystemType> getReceivedContactConfirmations() {
@@ -261,59 +273,59 @@ public class Transaction implements TrackedObject {
     }
 
     public ContactConfirmations getContactConfirmations(TransactionState.Name stateName) {
-        return getTransactionData().getContactConfirmations(stateName);
+        return getData().getContactConfirmations(stateName);
     }
 
     public boolean isRedelegation() {
-        return getTransactionData().isRedelegation();
+        return getData().isRedelegation();
     }
 
     public void setRedelegation(boolean redelegation) {
-        getTransactionData().setRedelegation(redelegation);
+        getData().setRedelegation(redelegation);
     }
 
     public String getSubmitterEmail() {
-        return getTransactionData().getSubmitterEmail();
+        return getData().getSubmitterEmail();
     }
 
     public void setSubmitterEmail(String submitterEmail) {
-        getTransactionData().setSubmitterEmail(submitterEmail);
+        getData().setSubmitterEmail(submitterEmail);
     }
 
     public String getComment() {
-        return getTransactionData().getComment();
+        return getData().getComment();
     }
 
     public void setComment(String comment) {
-        getTransactionData().setComment(comment);
+        getData().setComment(comment);
     }
 
     public int getEPPRetries() {
-        return getTransactionData().getEPPRetries();
+        return getData().getEPPRetries();
     }
 
     public void setEPPRetries(int retries) {
-        getTransactionData().setEPPRetries(retries);
+        getData().setEPPRetries(retries);
     }
 
     public String getStateMessage() {
-        return getTransactionData().getStateMessage();
+        return getData().getStateMessage();
     }
 
     public void setStateMessage(String stateMessage) {
-        getTransactionData().setStateMessage(stateMessage);
+        getData().setStateMessage(stateMessage);
     }
 
     public String getEppRequestId() {
-        return getTransactionData().getEppRequestId();
+        return getData().getEppRequestId();
     }
 
     public void setEppRequestId(String eppRequestId) {
-        getTransactionData().setEppRequestId(eppRequestId);
+        getData().setEppRequestId(eppRequestId);
     }
 
     public USDoCConfirmation getUSDoCConfirmation() {
-        return getTransactionData().getUSDoCConfirmation();
+        return getData().getUSDoCConfirmation();
     }
 
     public void confirmChangeByUSDoC(RZMUser identity, TransactionChangeType type, boolean accept) throws TransactionException {
@@ -344,36 +356,36 @@ public class Transaction implements TrackedObject {
     }
 
     public boolean isNameServerChange() {
-        return getTransactionData().isNameServerChange();
+        return getData().isNameServerChange();
     }
 
     public boolean isAdminContactChange() {
-        return getTransactionData().isAdminContactChange();
+        return getData().isAdminContactChange();
     }
 
     public boolean isTechContactChange() {
-        return getTransactionData().isTechContactChange();
+        return getData().isTechContactChange();
     }
 
     public boolean isSupportingChange() {
-        return getTransactionData().isSupportingChange();
+        return getData().isSupportingChange();
     }
 
     public Set<String> getAddedOrUpdatedNameServers() {
-        return getTransactionData().getAddedOrUpdatedNameServers();
+        return getData().getAddedOrUpdatedNameServers();
     }
 
     public boolean isDatabaseChange() {
-        return getTransactionData().isDatabaseChange();
+        return getData().isDatabaseChange();
     }
 
 
     public void setUsdocNotes(String usdocNotes) {
-        getTransactionData().setUsdocNotes(usdocNotes);
+        getData().setUsdocNotes(usdocNotes);
     }
 
     public String getUsdocNotes() {
-        return getTransactionData().getUsdocNotes();
+        return getData().getUsdocNotes();
     }
 
     public boolean areEmailsEnabled() {
@@ -381,11 +393,11 @@ public class Transaction implements TrackedObject {
     }
 
     public void addNotification(PNotification notification) {
-        getTransactionData().addNotification(notification);
+        getData().addNotification(notification);
     }
 
     public Set<PNotification> getNotifications() {
-        return getTransactionData().getNotifications();
+        return getData().getNotifications();
     }
 
     public void deleteAllNotifications() {
@@ -406,18 +418,18 @@ public class Transaction implements TrackedObject {
     }
 
     public void resetConfirmation() {
-        getTransactionData().resetConfirmation();
+        getData().resetConfirmation();
     }
 
 
     public Set<Domain> getImpactedDomains() {
-        return getTransactionData().getImpactedDomains();
+        return getData().getImpactedDomains();
     }
 
     public void setContactConfirmations(ContactConfirmations conf) {
         if (conf == null) return;
         System.out.println("====== setting conf: " + getState().getName());
         conf.setStateName(getState().getName());
-        getTransactionData().setContactConfirmations(conf);
+        getData().setContactConfirmations(conf);
     }
 }
