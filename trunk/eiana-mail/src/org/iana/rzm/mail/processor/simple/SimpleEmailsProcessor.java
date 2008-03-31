@@ -44,7 +44,7 @@ public class SimpleEmailsProcessor implements MailsProcessor {
 
     public void process(String from, String subject, String content) throws MailsProcessorException {
         try {
-            MessageData data = parser.parse(subject, content);
+            MessageData data = parser.parse(from, subject, content);
             processor.process(new Message(from, subject, content, data));
         } catch (EmailParseException e) {
             error(from, subject, content, e);

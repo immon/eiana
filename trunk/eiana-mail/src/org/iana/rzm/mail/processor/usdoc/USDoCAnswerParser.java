@@ -42,7 +42,7 @@ public class USDoCAnswerParser implements EmailParser {
         this.acceptString = acceptString;
     }
 
-    public MessageData parse(String subject, String content) throws EmailParseException {
+    public MessageData parse(String from, String subject, String content) throws EmailParseException {
         try {
             Object[] tokens = parseSubject(subject);
             boolean nameserver = (Boolean) tokens[1];

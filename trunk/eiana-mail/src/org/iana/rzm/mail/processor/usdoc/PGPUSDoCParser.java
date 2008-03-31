@@ -30,18 +30,18 @@ public class PGPUSDoCParser implements EmailParser {
         this.pgp = pgp;
     }
 
-    public MessageData parse(String subject, String content) throws EmailParseException {
+    public MessageData parse(String from, String subject, String content) throws EmailParseException {
         if (pgp) {
             try {
                 String plainContent = PGPUtils.getSignedMessageContent(content);
-                USDoCAnswer answer = (USDoCAnswer) plainParser.parse(subject, plainContent);
+                USDoCAnswer answer = (USDoCAnswer) plainParser.parse(from, subject, plainContent);
                 answer.setPgp(true);
                 return answer;
             } catch (PGPUtilsException e) {
                 throw new EmailParseException(e);
             }
         } else {
-            return plainParser.parse(subject, content);
+            return plainParser.parse(from, subject, content);
         }
     }
 }
