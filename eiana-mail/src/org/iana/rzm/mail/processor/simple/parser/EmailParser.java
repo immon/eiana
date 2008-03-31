@@ -7,6 +7,6 @@ import org.iana.rzm.mail.processor.simple.data.MessageData;
  */
 public interface EmailParser {
 
-    MessageData parse(String subject, String content) throws EmailParseException;
+    MessageData parse(String from, String subject, String content) throws EmailParseException;
 
 }

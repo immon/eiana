@@ -19,10 +19,10 @@ public class CompositeEmailParser implements EmailParser {
         this.parsers = parsers;
     }
 
-    public MessageData parse(String subject, String content) throws EmailParseException {
+    public MessageData parse(String from, String subject, String content) throws EmailParseException {
         for (EmailParser parser : parsers) {
             try {
-                return parser.parse(subject, content);
+                return parser.parse(from, subject, content);
             } catch (EmailParseException e) {
                 // try next parser
             }

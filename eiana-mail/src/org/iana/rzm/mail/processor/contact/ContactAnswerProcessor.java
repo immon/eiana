@@ -11,6 +11,7 @@ import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.processor.AbstractEmailProcessor;
 import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
 import org.iana.rzm.mail.processor.simple.processor.IllegalMessageDataException;
+import org.iana.rzm.mail.processor.MailLogger;
 
 import java.util.List;
 
@@ -21,9 +22,13 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
 
     private TransactionService transactionService;
 
-    public ContactAnswerProcessor(TransactionService transactionService) {
+    private MailLogger mailLogger;
+
+    public ContactAnswerProcessor(TransactionService transactionService, MailLogger logger) {
         CheckTool.checkNull(transactionService, "transaction service");
+        CheckTool.checkNull(mailLogger, "mail logger");
         this.transactionService = transactionService;
+        this.mailLogger = logger;
     }
 
     protected void _acceptable(MessageData data) throws IllegalMessageDataException {
@@ -47,6 +52,7 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
             } else {
                 transactionService.rejectTransaction(transaction.getTransactionID(), answer.getToken());
             }
+            mailLogger.logMail(answer.getTicketID(), msg.getFrom(), msg.getSubject(), msg.getBody());
         } catch (NoObjectFoundException e) {
             throw new EmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
         } catch (InfrastructureException e) {

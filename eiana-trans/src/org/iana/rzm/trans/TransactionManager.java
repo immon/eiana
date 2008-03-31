@@ -28,9 +28,8 @@ public interface TransactionManager {
 
     String getTransactionToken(long id, SystemRole.SystemType type) throws NoSuchTransactionException;
 
-    // Transaction createTransaction(List<TransactionAction> actions);
-
-
+    void addCommentToTransaction(long id, String comment) throws NoSuchTransactionException, TransactionException;
+    
     /**
      * Creates a new domain creation transaction.
      *

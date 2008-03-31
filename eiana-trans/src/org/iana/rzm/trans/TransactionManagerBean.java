@@ -12,6 +12,8 @@ import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import static org.iana.rzm.common.validators.CheckTool.*;
+import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.TicketingException;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.sql.Timestamp;
@@ -33,6 +35,8 @@ public class TransactionManagerBean implements TransactionManager {
     private DomainManager domainManager;
 
     private DiffConfiguration diffConfiguration;
+
+    private TicketingService ticketingService;
 
     public TransactionManagerBean(ProcessDAO processDAO, DomainManager domainManager, DiffConfiguration diffConfiguration) {
         checkNull(processDAO, "process dao");
@@ -75,7 +79,19 @@ public class TransactionManagerBean implements TransactionManager {
         throw new IllegalArgumentException("no role to confirm found: " + role);
    }
 
-   public Transaction createDomainCreationTransaction(Domain domain) {
+
+    public void addCommentToTransaction(long id, String comment) throws NoSuchTransactionException, TransactionException {
+        try {
+            Transaction trans = getTransaction(id);
+            Long ticketID = trans.getTicketID();
+            if (ticketID == null) throw new NoTicketIDException("transaction: " + id);
+            ticketingService.addComment(ticketID, comment);
+        } catch (TicketingException e) {
+            throw new TransactionException(e);
+        }
+    }
+
+    public Transaction createDomainCreationTransaction(Domain domain) {
         TransactionData td = new TransactionData();
         td.setCurrentDomain(domainManager.get(domain.getName()));
         ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(new Domain(domain.getName()), domain, diffConfiguration);
