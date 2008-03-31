@@ -8,14 +8,15 @@ import org.iana.rzm.mail.processor.simple.processor.IllegalMessageDataException;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.contact.ContactAnswerProcessor;
 import org.iana.rzm.mail.processor.contact.ContactAnswer;
+import org.iana.rzm.mail.processor.MailLogger;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 public class ImpactedPartyAnswerProcessor extends ContactAnswerProcessor {
 
-    public ImpactedPartyAnswerProcessor(TransactionService transactionService) {
-        super(transactionService);
+    public ImpactedPartyAnswerProcessor(TransactionService transactionService, MailLogger logger) {
+        super(transactionService, logger);
     }
 
     protected void _acceptable(MessageData data) throws IllegalMessageDataException {
