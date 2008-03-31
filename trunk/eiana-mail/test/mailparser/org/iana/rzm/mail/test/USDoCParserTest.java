@@ -50,7 +50,7 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse(from, subject, content);
+        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
         assert 11 == answer.getTicketID();
         assert "22".equals(answer.getEppID());
         assert "Change-change-change ".equals(answer.getChangeSummary());
@@ -66,7 +66,7 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse(from, subject, content);
+        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
         assert 11 == answer.getTicketID();
         assert "22".equals(answer.getEppID());
         assert "Change-change-change ".equals(answer.getChangeSummary());
@@ -82,7 +82,7 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse(from, subject, content);
+        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse(from, subject, content);
+        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
         assert 11 == answer.getTicketID();
         assert null == answer.getEppID();
         assert "Change-change-change ".equals(answer.getChangeSummary());
@@ -109,7 +109,7 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse(from, subject, content);
+        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
         assert 11 == answer.getTicketID();
         assert null == answer.getEppID();
         assert "Change-change-change ".equals(answer.getChangeSummary());
@@ -125,7 +125,7 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse(from, subject, content);
+        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
     }
 
 }
