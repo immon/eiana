@@ -953,6 +953,10 @@
 
     -->
 
+    <bean id="mailLogger" class="org.iana.rzm.mail.processor.simple.logger.RTLogger">
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
     <bean id="contactAnswerParser" class="org.iana.rzm.mail.processor.contact.ContactAnswerParser">
         <constructor-arg index="0">
             <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
@@ -1069,10 +1073,12 @@
 
     <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
         <constructor-arg ref="transSystemTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
     </bean>
 
     <bean id="impactedPartyAnswerProcessor" class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerProcessor">
         <constructor-arg ref="transSystemTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
     </bean>
 
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
