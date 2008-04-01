@@ -20,31 +20,45 @@ public class DNSTechnicalCheckTest {
     public void testDNSTechnicalCheck4DE() throws DNSTechnicalCheckException {
 
         try {
-            DNSDomainImpl domain = new DNSDomainImpl("int");
+            DNSDomainImpl domain = new DNSDomainImpl("de");
 
             DNSHostImpl host;
             Set<DNSHost> hosts = new HashSet<DNSHost>();
             Set<String> ipAddresses = new HashSet<String>();
 
-            host = new DNSHostImpl("m1.ns.cynosure.com.au");
+            host = new DNSHostImpl("z.nic.de");
             ipAddresses.clear();
-            ipAddresses.add("64.34.174.8");
+            ipAddresses.add("194.246.96.1");
+            ipAddresses.add("2001:628:453:4905::53");
             host.setIPAddressesAsStrings(ipAddresses);
             hosts.add(host);
 
-            host = new DNSHostImpl("m2.ns.cynosure.com.au");
+            host = new DNSHostImpl("a.nic.de");
             ipAddresses.clear();
-            ipAddresses.add("72.51.41.201");
-            host.setIPAddressesAsStrings(ipAddresses);
-            hosts.add(host);
-
-            host = new DNSHostImpl("trantor.virtualized.org");
-            ipAddresses.clear();
-            ipAddresses.add("204.152.189.190");
+            ipAddresses.add("194.0.0.53");
             host.setIPAddressesAsStrings(ipAddresses);
             hosts.add(host);
 
             domain.setNameServers(hosts);
+
+            host = new DNSHostImpl("f.nic.de");
+            ipAddresses.clear();
+            ipAddresses.add("81.91.164.5");
+            ipAddresses.add("2001:608:6:6::10");
+            host.setIPAddressesAsStrings(ipAddresses);
+            domain.addNameServer(host);
+
+            host = new DNSHostImpl("c.de.net");
+            host.addIPAddress("208.48.81.43");
+            domain.addNameServer(host);
+
+            host = new DNSHostImpl("l.de.net");
+            host.addIPAddress("89.213.253.189");
+            domain.addNameServer(host);
+
+            host = new DNSHostImpl("s.de.net");
+            host.addIPAddress("195.243.137.26");
+            domain.addNameServer(host);
 
 
             DNSTechnicalCheck dnsTechnicalCheck = new DNSTechnicalCheck();

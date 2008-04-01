@@ -132,7 +132,7 @@ public class DNSNameServer {
     }
 
     public boolean isAuthoritative() throws DNSCheckIOException {
-        return ((getSOA() != null) && (getSOA().getHeader().getFlag(Flags.AA)));
+        return ((getSOAByUDP() != null) && (getSOAByUDP().getHeader().getFlag(Flags.AA)));
     }
 
     public List<Record> getAuthoritySection() throws DNSCheckIOException {
