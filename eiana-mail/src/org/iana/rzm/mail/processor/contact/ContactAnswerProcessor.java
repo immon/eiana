@@ -1,19 +1,15 @@
 package org.iana.rzm.mail.processor.contact;
 
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.TransactionService;
-import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.mail.processor.simple.data.Message;
-import org.iana.rzm.mail.processor.simple.data.MessageData;
-import org.iana.rzm.mail.processor.simple.processor.AbstractEmailProcessor;
-import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
-import org.iana.rzm.mail.processor.simple.processor.IllegalMessageDataException;
-import org.iana.rzm.mail.processor.MailLogger;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.mail.processor.*;
+import org.iana.rzm.mail.processor.simple.data.*;
+import org.iana.rzm.mail.processor.simple.processor.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -26,7 +22,7 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
 
     public ContactAnswerProcessor(TransactionService transactionService, MailLogger logger) {
         CheckTool.checkNull(transactionService, "transaction service");
-        CheckTool.checkNull(mailLogger, "mail logger");
+        CheckTool.checkNull(logger, "mail logger");
         this.transactionService = transactionService;
         this.mailLogger = logger;
     }
