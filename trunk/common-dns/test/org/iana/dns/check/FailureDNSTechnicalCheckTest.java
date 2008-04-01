@@ -89,10 +89,12 @@ public class FailureDNSTechnicalCheckTest {
         DNSDomainImpl domain = new DNSDomainImpl("de");
         DNSHostImpl host1 = new DNSHostImpl("z.nic.de");
         host1.addIPAddress("10.0.0.1");
+        host1.addIPAddress("192.168.0.3");
         host1.addIPAddress("193.0.7.3");
         domain.addNameServer(host1);
 
         DNSHostImpl host2 = new DNSHostImpl("a.nic.de");
+        host2.addIPAddress("10.0.0.1");
         host2.addIPAddress("192.168.0.3");
         host2.addIPAddress("193.0.7.3");
         domain.addNameServer(host2);
@@ -105,8 +107,8 @@ public class FailureDNSTechnicalCheckTest {
             List<DNSTechnicalCheckException> errors = exception.getExceptions();
             assert errors.contains(new ReservedIPv4Exception(domain, host1, DNSIPAddressImpl.createIPAddress("10.0.0.1")));
             assert errors.contains(new ReservedIPv4Exception(domain, host2, DNSIPAddressImpl.createIPAddress("192.168.0.3")));
-            assert errors.contains(new DuplicatedIPAddressException(domain, host1, DNSIPAddressImpl.createIPAddress("193.0.7.3"))) ||
-                    errors.contains(new DuplicatedIPAddressException(domain, host2, DNSIPAddressImpl.createIPAddress("193.0.7.3")));
+            assert errors.contains(new NotUniqueIPAddressException(domain, host1)) ||
+                    errors.contains(new NotUniqueIPAddressException(domain, host2));
             throw e;
         }
     }

@@ -4,15 +4,12 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSIPAddress;
 import static org.iana.dns.DNSIPAddress.Type.IPv4;
 import org.iana.dns.DNSIPv4Address;
-import org.iana.dns.check.exceptions.DuplicatedIPAddressException;
+import org.iana.dns.check.exceptions.NotUniqueIPAddressException;
 import org.iana.dns.check.exceptions.EmptyIPAddressListException;
 import org.iana.dns.check.exceptions.NotEnoughNameServersException;
 import org.iana.dns.check.exceptions.ReservedIPv4Exception;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * (Test 1, 11)
@@ -34,32 +31,45 @@ public class MinimumNameServersAndNoReservedIPsCheck implements DNSDomainTechnic
     }
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+
         MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
 
-        if ((nameServers == null) || (nameServers.size() < minNameServersNumber))
+        Set<String> uniqueIPv4Addresses = new HashSet<String>();
+        int uniqueDiff = 0;
+
+        if (nameServers == null || nameServers.isEmpty())
             throw new NotEnoughNameServersException(domain);
 
-        List<String> ipAddresses = new ArrayList<String>();
-
-        for (DNSNameServer ns : nameServers) {
-            if (isEmpty(ns.getIPAddresses())) {
-                e.addException(new EmptyIPAddressListException(domain, ns.getHost()));
+        for (DNSNameServer currentNs : nameServers) {
+            Set<DNSIPAddress> currentIps = currentNs.getIPAddresses();
+            if (currentIps.isEmpty()) {
+                e.addException(new EmptyIPAddressListException(domain, currentNs.getHost()));
             } else {
-                for (DNSIPAddress ipAddress : ns.getIPAddresses()) {
-                    if (ipAddresses.contains(ipAddress.getAddress())) {
-                        e.addException(new DuplicatedIPAddressException(domain, ns.getHost(), ipAddress));
-                    } else {
-                        if ((ipAddress.getType() == IPv4) && ((DNSIPv4Address) ipAddress).isReserved())
-                            e.addException(new ReservedIPv4Exception(domain, ns.getHost(), ipAddress));
+                int uniqueSize = uniqueIPv4Addresses.size();
+                for (DNSIPAddress ipAddress : currentIps) {
+                    if ((ipAddress.getType() == IPv4)) {
+                        if (((DNSIPv4Address) ipAddress).isReserved()) {
+                            e.addException(new ReservedIPv4Exception(domain, currentNs.getHost(), ipAddress));
+                        } else {
+                            uniqueIPv4Addresses.add(ipAddress.getAddress());
+                        }
                     }
                 }
-                ipAddresses.addAll(ns.getIPAddressesAsStrings());
+                if (uniqueSize < uniqueIPv4Addresses.size())
+                    uniqueDiff++;
+
+                for (DNSNameServer otherNs : nameServers) {
+                    if (!otherNs.getName().equals(currentNs.getName())) {
+                        Set<DNSIPAddress> otherIps = otherNs.getIPAddresses();
+                        if (otherIps.containsAll(currentIps))
+                            e.addException(new NotUniqueIPAddressException(domain, currentNs.getHost()));
+                    }
+                }
             }
         }
-        if (!e.isEmpty()) throw e;
-    }
+        if (uniqueDiff < minNameServersNumber)
+            e.addException(new NotEnoughNameServersException(domain));
 
-    private boolean isEmpty(Collection<?> col) {
-        return col == null || col.isEmpty();
+        if (!e.isEmpty()) throw e;
     }
 }

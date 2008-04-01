@@ -28,9 +28,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
         }
     }
 
-    public void acceptDuplicatedIPAddressException(DuplicatedIPAddressException e) {
-        buffer.append("IP address is duplicated: ")
-                .append(e.getIpAddress().getAddress()).append(" for host: ").append(e.getHostName())
+    public void acceptNotUniqueIPAddressException(NotUniqueIPAddressException e) {
+        buffer.append("IP addresses are duplicated for host: ").append(e.getHostName())
                 .append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
@@ -46,8 +45,9 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNameServerCoherencyException(NameServerCoherencyException e) {
-        buffer.append("Supplied name servers names: " + e.getDomain().getNameServerNames() + " don't match names" +
-                " returned by: " + e.getHostName() + " in NS Resource Record: " + e.getReceivedNameServers() + " for domain: ").append(domainTLDName(e.getDomainName()));
+        buffer.append("Supplied name servers names: ").append(e.getDomain().getNameServerNames()).append(" don't match names")
+                .append(" returned by: ").append(e.getHostName()).append(" in NS Resource Record: ")
+                .append(e.getReceivedNameServers()).append(" for domain: ").append(domainTLDName(e.getDomainName()));
     }
 
     public void acceptNoASNumberException(NoASNumberException e) {
@@ -57,7 +57,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e) {
-        buffer.append("Number of name servers is lower then requested for domain: ")
+        buffer.append("Number of IPv4 name servers is lower then requested for domain: ")
                 .append(domainTLDName(e.getDomainName())).append("\n");
     }
 

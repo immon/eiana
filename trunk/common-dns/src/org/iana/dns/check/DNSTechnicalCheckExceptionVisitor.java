@@ -12,7 +12,7 @@ public interface DNSTechnicalCheckExceptionVisitor {
 
     public void acceptMinimumNetworkDiversityException(MinimumNetworkDiversityException e);
 
-    public void acceptDuplicatedIPAddressException(DuplicatedIPAddressException e);
+    public void acceptNotUniqueIPAddressException(NotUniqueIPAddressException e);
 
     public void acceptEmptyIPAddressListException(EmptyIPAddressListException e);
 
