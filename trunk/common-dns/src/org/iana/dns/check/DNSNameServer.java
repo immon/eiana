@@ -18,10 +18,13 @@ import java.util.*;
  */
 public class DNSNameServer {
 
+    private static final int DEFAULT_NUMBER_OF_RETRIES = 3;
+
     private DNSDomain domain;
     private DNSHost host;
     private DNSSOA soaByUDP;
     private DNSSOA soaByTCP;
+    private int retries;
 
     public Record[] getRecords() throws DNSCheckIOException {
         List<Record> records = new ArrayList<Record>();
@@ -53,7 +56,10 @@ public class DNSNameServer {
             SimpleResolver resolver = new SimpleResolver();
             resolver.setAddress(address);
             resolver.setTCP(true);
-            Message message = resolver.send(query);
+            Resolver[] resolvers = {resolver};
+            ExtendedResolver exResolver = new ExtendedResolver(resolvers);
+            exResolver.setRetries(retries);
+            Message message = exResolver.send(query);
             return message.getSectionArray(Section.ANSWER);
         } catch (IOException e) {
             String output = "io exception: " + host.getName();
@@ -94,7 +100,10 @@ public class DNSNameServer {
                 Message query = Message.newQuery(question);
                 Resolver resolver = new SimpleResolver(host.getName());
                 resolver.setTCP(byTCP);
-                return resolver.send(query);
+                Resolver[] resolvers = {resolver};
+                ExtendedResolver exResolver = new ExtendedResolver(resolvers);
+                exResolver.setRetries(retries);
+                return exResolver.send(query);
             } catch (IOException e) {
                 String output = "io exception: " + host.getName();
                 Logger.getLogger(DNSNameServer.class).error(output, e);
@@ -103,13 +112,18 @@ public class DNSNameServer {
         }
     }
 
-    public DNSNameServer(DNSDomain domain, DNSHost host) {
+    public DNSNameServer(DNSDomain domain, DNSHost host, int retries) {
         if (domain == null) {
             throw new IllegalArgumentException("null domain");
         }
         if (host == null) {
             throw new IllegalArgumentException("null host");
         }
+        if (retries > 0)
+            this.retries = retries;
+        else
+            this.retries = DEFAULT_NUMBER_OF_RETRIES;
+
         this.domain = domain;
         this.host = host;
         this.soaByUDP = new DNSSOA(false);

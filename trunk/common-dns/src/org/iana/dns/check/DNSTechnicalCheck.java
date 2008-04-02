@@ -23,6 +23,7 @@ public class DNSTechnicalCheck {
 
     private List<DNSDomainTechnicalCheck> domainChecks;
     private List<DNSNameServerTechnicalCheck> nameServerChecks;
+    private int dnsCheckRetries;
 
     public void setDomainChecks(List<DNSDomainTechnicalCheck> domainChecks) {
         this.domainChecks = domainChecks;
@@ -32,12 +33,16 @@ public class DNSTechnicalCheck {
         this.nameServerChecks = nameServerChecks;
     }
 
+    public void setDnsCheckRetries(int dnsCheckRetries) {
+        this.dnsCheckRetries = dnsCheckRetries;
+    }
+
     public void check(DNSDomain domain) throws DNSTechnicalCheckException {
         if (domain == null) throw new IllegalArgumentException("null domain");
         if (!isEmpty(domainChecks) || !isEmpty(nameServerChecks)) {
             Set<DNSNameServer> nameServers = new HashSet<DNSNameServer>();
             for (DNSHost host : domain.getNameServers()) {
-                nameServers.add(new DNSNameServer(domain, host));
+                nameServers.add(new DNSNameServer(domain, host, dnsCheckRetries));
             }
 
             MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
