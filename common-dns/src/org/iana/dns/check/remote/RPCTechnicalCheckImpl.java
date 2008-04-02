@@ -20,12 +20,18 @@ import java.util.List;
  */
 public class RPCTechnicalCheckImpl implements RPCTechnicalCheck {
 
+    private static final int DEFAULT_NUMBERS_OF_RETRIES = 3;
+
     public SOA[] querySOA(String domainName, String[] nameServers, String[][] ipAddresses) throws RemoteException, RPCTechnicalCheckException {
+        return querySOA(domainName, nameServers, ipAddresses, DEFAULT_NUMBERS_OF_RETRIES);
+    }
+
+    public SOA[] querySOA(String domainName, String[] nameServers, String[][] ipAddresses, int dnsCheckRetries) throws RemoteException, RPCTechnicalCheckException {
         try {
             DNSDomain domain = toDomain(domainName, nameServers, ipAddresses);
             List<SOA> ret = new ArrayList<SOA>();
             for (DNSHost host : domain.getNameServers()) {
-                DNSNameServer ns = new DNSNameServer(domain, host);
+                DNSNameServer ns = new DNSNameServer(domain, host, dnsCheckRetries);
                 ret.add(new SOA(host.getName(), ns.getSOAByUDP(), true));
                 ret.add(new SOA(host.getName(), ns.getSOAByTCP(), false));
             }

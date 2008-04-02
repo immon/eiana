@@ -278,6 +278,9 @@
                 <entry><key><value>m.root-servers.net</value></key><value>202.12.27.33</value></entry>
             </map>
         </property>
+        <property name="dnsCheckRetries">
+            <value>3</value>
+        </property>
     </bean>
 
     <!-- Content -->
@@ -598,6 +601,9 @@
             <list>
                 <ref bean="minimumNameServersAndNoReservedIPsCheck"/>
             </list>
+        </property>
+        <property name="dnsCheckRetries">
+            <value>3</value>
         </property>
     </bean>
 

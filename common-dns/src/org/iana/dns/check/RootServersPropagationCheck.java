@@ -16,6 +16,7 @@ import java.util.*;
 public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
 
     Set<DNSHost> rootServers = new HashSet<DNSHost>();
+    private int dnsCheckRetries;
 
     public void setRootServers(Map<String, String> rootServers) {
         for(String name : rootServers.keySet()) {
@@ -25,10 +26,14 @@ public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
         }
     }
 
+    public void setDnsCheckRetries(int dnsCheckRetries) {
+        this.dnsCheckRetries = dnsCheckRetries;
+    }
+
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 
         for( DNSHost dnsHost : rootServers) {
-            DNSNameServer nameServer = new DNSNameServer(domain, dnsHost);
+            DNSNameServer nameServer = new DNSNameServer(domain, dnsHost, dnsCheckRetries);
             Set<DNSHost> retRecords = convertToDNSHosts(nameServer.getAdditionalSection());
 
             Set<DNSHost> domainNameServers = domain.getNameServers();
