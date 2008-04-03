@@ -51,6 +51,17 @@ public class JbpmProcessDAO implements ProcessDAO {
         }
     }
 
+    public ProcessInstance newProcessInstanceAndSignal(final String name) {
+        JbpmContext ctx = jbpmContextFactory.getJbpmContext();
+        try {
+            ProcessInstance pi = ctx.newProcessInstance(name);
+            pi.signal();
+            return pi;
+        } finally {
+            ctx.close();
+        }
+    }
+
     public ProcessInstance newProcessInstance(final String name, final TransactionData data) {
         JbpmContext ctx = jbpmContextFactory.getJbpmContext();
         try {
@@ -70,6 +81,8 @@ public class JbpmProcessDAO implements ProcessDAO {
             ctx.close();
         }
     }
+
+
 
     public List<ProcessInstance> findAll() {
         JbpmContext ctx = jbpmContextFactory.getJbpmContext();

@@ -16,6 +16,8 @@ public interface ProcessDAO {
 
     public ProcessInstance newProcessInstance(final String name);
 
+    public ProcessInstance newProcessInstanceAndSignal(final String name);
+
     public ProcessInstance newProcessInstance(final String name, final TransactionData data);
 
     public ProcessInstance newProcessInstanceForUpdate(final String name);
