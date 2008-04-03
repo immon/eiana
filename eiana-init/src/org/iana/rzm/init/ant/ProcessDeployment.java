@@ -1,14 +1,8 @@
 package org.iana.rzm.init.ant;
 
 import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
-import org.jbpm.db.GraphSession;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.graph.exe.ProcessInstance;
+import org.iana.rzm.trans.dao.ProcessDAO;
 import org.springframework.context.ApplicationContext;
-
-import java.util.List;
 
 /**
  * It deploys all the needed jBPM process definitions.
@@ -19,33 +13,17 @@ import java.util.List;
 public class ProcessDeployment {
     public static void main(String[] args) {
         ApplicationContext context = SpringInitContext.getContext();
-        JbpmConfiguration jbpmCfg = (JbpmConfiguration) context.getBean("jbpmConfiguration");
-        JbpmContext jbpmCtx = jbpmCfg.createJbpmContext();
-        try {
-            // delete all process instances
-            GraphSession graph = jbpmCtx.getGraphSession();
-            for (ProcessDefinition pd : (List<ProcessDefinition>) graph.findAllProcessDefinitions()) {
-                for (ProcessInstance pi : (List<ProcessInstance>) graph.findProcessInstances(pd.getId())) {
-                    graph.deleteProcessInstance(pi.getId());
-                }
-            }
+        ProcessDAO processDAO = (ProcessDAO) context.getBean("processDAO");
 
-            // deploy new processes
-            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition());
-            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.MAILS_RECEIVER));
-            jbpmCtx.deployProcessDefinition(DefinedTestProcess.getDefinition(DefinedTestProcess.EPP_POLL_PROCESS));
+        processDAO.deleteAll();
 
-            // run new instances
-            ProcessInstance pi = jbpmCtx.newProcessInstance("Mails Receiver");
-            pi.signal();
+        processDAO.deploy(DefinedTestProcess.getDefinition());
+        processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.MAILS_RECEIVER));
+        processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.EPP_POLL_PROCESS));
 
-            pi = jbpmCtx.newProcessInstance("Notifications reSender");
-            pi.signal();            
+        processDAO.newProcessInstanceAndSignal("Mails Receiver");
+        processDAO.newProcessInstanceAndSignal("Notifications reSender");
+        processDAO.newProcessInstanceAndSignal("EPP Poll Process");
 
-            pi = jbpmCtx.newProcessInstance("EPP Poll Process");
-            pi.signal();
-        } finally {
-            jbpmCtx.close();
-        }
     }
 }
