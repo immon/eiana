@@ -5,6 +5,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/hibernate" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/spring" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/cobertura_code_coverage" />
       <excludeFolder url="file://$MODULE_DIR$/reports" />
