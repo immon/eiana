@@ -484,9 +484,31 @@
             </fileset>
         </cobertura-report>
     </target>
+       
+    <target name="replace.services">
+        <delete file="${tests}/spring/services-test-config.xml" />
+        <copy file="${conf.dir}/spring/services-config.xml" tofile="${tests}/spring/services-test-config.xml" />
+        <replace file="${tests}/spring/services-test-config.xml">
+            <replacetoken><![CDATA[<!-- beans to replace during tests -->]]></replacetoken>
+            <replacevalue><![CDATA[<!-- beans to replace during tests]]></replacevalue>
+        </replace>
 
-    <target name="all.test" depends="clean,all.compile,database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+        <replace file="${tests}/spring/services-test-config.xml">
+            
+            <replacetoken><![CDATA[<!-- end of test bean section -->]]></replacetoken>
+            <replacevalue><![CDATA[end of test bean section -->
+            <import resource="test-beans-config.xml" />]]></replacevalue>
+        </replace>
+
+        <replace file="${tests}/test/org/iana/rzm/conf/SpringApplicationContext.java">
+            <replacetoken><![CDATA[file:../conf/spring/services-config.xml]]></replacetoken>
+            <replacevalue><![CDATA[file:../tests/spring/services-test-config.xml]]></replacevalue>
+        </replace>
+    </target>
+
+    <target name="all.test" depends="clean, replace.services, all.compile, database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
+
         <condition property="test.group.excluded" value="">
             <not>
                 <isset property="test.group.excluded"/>
