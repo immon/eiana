@@ -7,6 +7,7 @@ import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
 import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.ticket.TicketData;
+import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 
@@ -14,6 +15,8 @@ import java.text.ParseException;
  * @author Patrycja Wegrzynowicz
  */
 public class USDoCAnswerParser implements EmailParser {
+
+    private static Logger logger = Logger.getLogger(USDoCAnswerParser.class);
 
     public static final String TICKET_ID = "ticket_id";
 
@@ -58,6 +61,7 @@ public class USDoCAnswerParser implements EmailParser {
                 String accept = contentTokens.token(ACCEPT);
                 return new USDoCAnswer(ticketID, eppID, changeSummary, answerParser.check(accept), nameserver);
             } catch (EmailParseException e) {
+                logger.error("cannot parse USDoC email content", e);
                 return new TicketData(ticketID);
             }
         } catch (NumberFormatException e) {

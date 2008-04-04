@@ -31,7 +31,7 @@ public class ContactParserTest {
 
         Map<String, Integer> contentGroups = new HashMap<String, Integer>();
         contentGroups.put(ContactAnswerParser.ACCEPT, 1);
-        String contentPattern = "\\s*(I ACCEPT|I DECLINE).+";
+        String contentPattern = "(.+)Dear.+";
         RegexParser contentParser = new RegexParser(contentGroups, contentPattern);
 
         parser = new ContactAnswerParser(subjectParser, contentParser, "I ACCEPT", "I DECLINE");
@@ -40,7 +40,7 @@ public class ContactParserTest {
     @Test
     public void testValidAccept() throws Exception {
         String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
-        String content = "  I accept \n content...";
+        String content = "  I accept \n > Dear content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
         assert 1 == answer.getTicketID();
         assert "us".equals(answer.getDomainName());
@@ -51,7 +51,7 @@ public class ContactParserTest {
     @Test
     public void testValidDecline() throws Exception {
         String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
-        String content = "  I decline content...";
+        String content = "  I decline Dear content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
         assert 1 == answer.getTicketID();
         assert "us".equals(answer.getDomainName());
@@ -62,7 +62,7 @@ public class ContactParserTest {
     @Test
     public void testValidRePrefix() throws Exception {
         String subject = "Re: Odp: 1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
-        String content = "  I accept content...";
+        String content = "  I accept \n > Dear content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
         assert 1 == answer.getTicketID();
         assert "us".equals(answer.getDomainName());
@@ -73,19 +73,28 @@ public class ContactParserTest {
     @Test
     public void testInvalidAccept() throws Exception {
         String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
-        String content = "  I'm trying to accept content...";
+        String content = "  I'm trying to accept content... Dear sdadas";
+        TicketData data = (TicketData) parser.parse("a@example.tld",  subject, content);
+        assert 1 == data.getTicketID();
+        assert !(data instanceof ContactAnswer);
+    }
+
+    @Test
+    public void testInvalidDecline() throws Exception {
+        String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String content = " I'm trying to decline content... Dear sdsdsd";
         MessageData data = parser.parse("a@example.tld",  subject, content);
         assert !(data instanceof ContactAnswer);
         assert data instanceof TicketData;
     }
 
     @Test
-    public void testInvalidDecline() throws Exception {
-        String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
-        String content = " I'm trying to decline content...";
-        MessageData data = parser.parse("a@example.tld",  subject, content);
+    public void testAcceptAndDeclinePresent() throws Exception {
+        String subject = "Re: Odp: 1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String content = "  I accept I decline \n > Dear content...";
+        TicketData data = (TicketData) parser.parse("a@example.tld",  subject, content);
+        assert 1 == data.getTicketID();
         assert !(data instanceof ContactAnswer);
-        assert data instanceof TicketData;
     }
 
     @Test(expectedExceptions = EmailParseException.class)

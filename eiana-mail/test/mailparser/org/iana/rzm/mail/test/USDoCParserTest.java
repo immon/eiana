@@ -1,11 +1,10 @@
 package org.iana.rzm.mail.test;
 
 import org.iana.rzm.mail.processor.regex.RegexParser;
-import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 import org.iana.rzm.mail.processor.usdoc.USDoCAnswer;
 import org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser;
-import org.iana.rzm.mail.processor.ticket.TicketData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,7 +37,7 @@ public class USDoCParserTest {
         Map<String, Integer> contentGroups = new HashMap<String, Integer>();
         contentGroups.put(USDoCAnswerParser.ACCEPT, 1);
         contentGroups.put(USDoCAnswerParser.CHANGE_SUMMARY, 2);
-        String contentPattern = ".+Authorized:[ \\t]*(yes|no).+\\[\\+\\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\\[-\\] End Change Request Summary: DO NOT EDIT ABOVE.*";
+        String contentPattern = ".+Authorized:(.+)\\[\\+\\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\\[-\\] End Change Request Summary: DO NOT EDIT ABOVE.*";
         RegexParser contentParser = new RegexParser(contentGroups, contentPattern);
 
         parser = new USDoCAnswerParser(nsChangeParser, databaseChangeParser, contentParser, "yes", "no");
@@ -77,6 +76,19 @@ public class USDoCParserTest {
     }
 
     @Test
+    public void testInvalidNameserverAcceptAndDecline() throws Exception {
+        String subject = "Re: [Root change 11:22] Name server change to us";
+        String content = "Content " +
+                "Authorized: no yes\n\n" +
+                "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
+                "Change-change-change " +
+                "[-] End Change Request Summary: DO NOT EDIT ABOVE";
+        TicketData answer = (TicketData) parser.parse("a@example.tld",  subject, content);
+        assert 11 == answer.getTicketID();
+        assert !(answer instanceof USDoCAnswer);
+    }
+
+    @Test
     public void testInvalidNameserverAccept() throws Exception {
         String subject = "Re: [Root change 11:22] Name server change to us";
         String content = "Content " +
@@ -84,9 +96,9 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        MessageData data = (MessageData) parser.parse("a@example.tld",  subject, content);
-        assert !(data instanceof USDoCAnswer);
-        assert data instanceof TicketData;
+        TicketData answer = (TicketData) parser.parse("a@example.tld",  subject, content);
+        assert 11 == answer.getTicketID();
+        assert !(answer instanceof USDoCAnswer);
     }
 
     @Test
