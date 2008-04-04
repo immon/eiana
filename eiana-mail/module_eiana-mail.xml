@@ -42,6 +42,8 @@
     <pathelement location="${facade-admin.output.dir}"/>
     <pathelement location="${facade-admin.testoutput.dir}"/>
     <path refid="library.hibernate.classpath"/>
+    <pathelement location="${integration-rt.output.dir}"/>
+    <pathelement location="${integration-rt.testoutput.dir}"/>
   </path>
   
   
@@ -69,7 +71,7 @@
   
   <target name="compile.module.eiana-mail" depends="compile.module.eiana-mail.production,compile.module.eiana-mail.tests" description="Compile module eiana-mail"/>
   
-  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-templates,compile.module.common-pgp,compile.module.eiana-notifications,compile.module.eiana-users,compile.module.common-dns,compile.module.common-criteria,compile.module.facade-admin" description="Compile module eiana-mail; production classes">
+  <target name="compile.module.eiana-mail.production" depends="compile.module.common-mail,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-templates,compile.module.common-pgp,compile.module.eiana-notifications,compile.module.eiana-users,compile.module.common-dns,compile.module.common-criteria,compile.module.facade-admin,compile.module.integration-rt" description="Compile module eiana-mail; production classes">
     <mkdir dir="${eiana-mail.output.dir}"/>
     <javac destdir="${eiana-mail.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-mail}"/>

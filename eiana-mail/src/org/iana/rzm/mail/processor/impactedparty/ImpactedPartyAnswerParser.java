@@ -8,9 +8,8 @@ import org.iana.rzm.mail.processor.simple.data.MessageData;
  * @author Patrycja Wegrzynowicz
  */
 public class ImpactedPartyAnswerParser extends ContactAnswerParser {
-
-    public ImpactedPartyAnswerParser(RegexParser subjectPattern, RegexParser contentPattern, String acceptString) {
-        super(subjectPattern, contentPattern, acceptString);
+    public ImpactedPartyAnswerParser(RegexParser subjectPattern, RegexParser contentPattern, String acceptString, String declineString) {
+        super(subjectPattern, contentPattern, acceptString, declineString);
     }
 
     protected MessageData createAnswer(long ticketID, String domainName, String token, boolean accept) {
