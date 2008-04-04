@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-web" default="compile.module.eiana-web">
   <dirname property="module.eiana-web.basedir" file="${ant.file.module_eiana-web}"/>
-   <import file="../build/eiana.xml"/>    
+  
   
   <property name="compiler.args.eiana-web" value="${compiler.args}"/>
   
@@ -65,12 +65,12 @@
     <pathelement location="${common-codevalues.testoutput.dir}"/>
     <path refid="library.xerces.classpath"/>
     <pathelement location="${module.eiana-web.basedir}/../lib/javaee/javaee.jar"/>
-    <pathelement location="${common-dns.output.dir}"/>
-    <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${common-config.output.dir}"/>
     <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${eiana-notifications.output.dir}"/>
     <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
   </path>
   
   
@@ -91,7 +91,7 @@
   
   <target name="compile.module.eiana-web" depends="compile.module.eiana-web.production,compile.module.eiana-web.tests" description="Compile module eiana-web"/>
   
-  <target name="compile.module.eiana-web.production" depends="compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.conf,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-templates,compile.module.eiana-startup,compile.module.common-criteria,compile.module.common-codevalues,compile.module.common-dns,compile.module.common-config,compile.module.eiana-notifications" description="Compile module eiana-web; production classes">
+  <target name="compile.module.eiana-web.production" depends="compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.conf,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-templates,compile.module.eiana-startup,compile.module.common-criteria,compile.module.common-codevalues,compile.module.common-config,compile.module.eiana-notifications,compile.module.common-dns" description="Compile module eiana-web; production classes">
     <mkdir dir="${eiana-web.output.dir}"/>
     <javac destdir="${eiana-web.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-web}"/>
@@ -177,6 +177,21 @@
     <copy file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-message-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cryptix-message-api.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-jce-provider.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cryptix-jce-provider.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/cobertura/cobertura.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cobertura.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-lang-2.3.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-validator.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-pool-1.3.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-api.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-io-1.2.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-fileupload-1.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-el.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-dbcp-1.2.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-collections-3.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-codec-1.3.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-core.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-bean-collections.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/tapestry-spring-1.0.0.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/tapestry-prop-1.0.0.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/tapestry-contrib-4.0.2.jar"/>
@@ -196,21 +211,6 @@
     <copy todir="${j2ee.dir.exploded}/WEB-INF/classes">
       <fileset dir="${module.eiana-web.basedir}/../conf/hibernate"/>
     </copy>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-lang-2.3.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-validator.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-pool-1.3.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-api.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-logging-1.0.4.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-io-1.2.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-fileupload-1.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-el.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-dbcp-1.2.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-collections-3.1.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-codec-1.3.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-core.jar"/>
-    <copy file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-beanutils-bean-collections.jar"/>
     <copy todir="${j2ee.dir.exploded}/WEB-INF/classes">
       <fileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-securid"/>
     </copy>
@@ -298,13 +298,12 @@
     <mkdir dir="${jar.dir}"/>
     <jar destfile="${j2ee.path.jar}" duplicate="preserve">
       <manifest>
-        <attribute name="Created-By" value="IANA"/>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
         <attribute name="Manifest-Version" value="1.0"/>
       </manifest>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-web" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/rzm" prefix=""/>
       <zipfileset dir="${module.eiana-web.basedir}/rzm/WEB-INF" prefix="WEB-INF"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../conf/epp" prefix="conf/epp"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-codevalues" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-config" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-criteria" prefix="WEB-INF/classes"/>
@@ -328,21 +327,6 @@
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-system" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-rt" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-securid" prefix="WEB-INF/classes"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
       <zipfileset dir="${module.eiana-web.basedir}/../conf/hibernate" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web.basedir}/../conf/jbpm" prefix="WEB-INF/classes"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
@@ -358,6 +342,21 @@
       <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/cobertura/cobertura.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-jce-provider.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-message-api.jar" prefix="WEB-INF/lib"/>

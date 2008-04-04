@@ -3,7 +3,9 @@ package org.iana.rzm.mail.test;
 import org.iana.rzm.mail.processor.contact.ContactAnswer;
 import org.iana.rzm.mail.processor.contact.ContactAnswerParser;
 import org.iana.rzm.mail.processor.regex.RegexParser;
+import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -68,18 +70,22 @@ public class ContactParserTest {
         assert answer.isAccept();
     }
 
-    @Test(expectedExceptions = EmailParseException.class)
+    @Test
     public void testInvalidAccept() throws Exception {
         String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
         String content = "  I'm trying to accept content...";
-        ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
+        MessageData data = parser.parse("a@example.tld",  subject, content);
+        assert !(data instanceof ContactAnswer);
+        assert data instanceof TicketData;
     }
 
-    @Test(expectedExceptions = EmailParseException.class)
+    @Test
     public void testInvalidDecline() throws Exception {
         String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
         String content = " I'm trying to decline content...";
-        ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
+        MessageData data = parser.parse("a@example.tld",  subject, content);
+        assert !(data instanceof ContactAnswer);
+        assert data instanceof TicketData;
     }
 
     @Test(expectedExceptions = EmailParseException.class)

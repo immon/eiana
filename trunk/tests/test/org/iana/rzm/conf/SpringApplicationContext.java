@@ -14,7 +14,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * @author Piotr Tkaczyk
  */
 public class SpringApplicationContext {
-    public static final String CONFIG_FILE_NAME = "file:../conf/spring/services-config.xml";
+    public static final String CONFIG_FILE_NAME = "file:../tests/spring/services-test-config.xml";
 
     private static SpringApplicationContext instance;
     private ApplicationContext appCtx;

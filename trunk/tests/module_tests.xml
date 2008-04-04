@@ -81,6 +81,7 @@
   <path id="tests.module.test.sourcepath">
     <dirset dir="${module.tests.basedir}">
       <include name="hibernate"/>
+      <include name="spring"/>
       <include name="test"/>
     </dirset>
   </path>
@@ -102,6 +103,10 @@
     
     <copy todir="${tests.testoutput.dir}">
       <fileset dir="${module.tests.basedir}/hibernate">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.tests.basedir}/spring">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
