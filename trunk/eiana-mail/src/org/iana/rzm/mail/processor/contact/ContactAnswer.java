@@ -1,13 +1,12 @@
 package org.iana.rzm.mail.processor.contact;
 
 import org.iana.rzm.mail.processor.simple.data.MessageData;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class ContactAnswer implements MessageData {
-
-    private long ticketID;
+public class ContactAnswer extends TicketData implements MessageData {
 
     private String domainName;
 
@@ -16,7 +15,7 @@ public class ContactAnswer implements MessageData {
     private boolean accept;
 
     public ContactAnswer(long ticketID, String domainName, String token, boolean accept) {
-        this.ticketID = ticketID;
+        super(ticketID);
         this.domainName = domainName;
         this.token = token;
         this.accept = accept;

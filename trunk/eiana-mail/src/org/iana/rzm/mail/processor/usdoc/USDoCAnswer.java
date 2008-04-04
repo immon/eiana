@@ -1,13 +1,12 @@
 package org.iana.rzm.mail.processor.usdoc;
 
 import org.iana.rzm.mail.processor.simple.data.MessageData;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class USDoCAnswer implements MessageData {
-
-    private long ticketID;
+public class USDoCAnswer extends TicketData implements MessageData {
 
     private String eppID;
 
@@ -20,7 +19,7 @@ public class USDoCAnswer implements MessageData {
     private boolean pgp;
 
     public USDoCAnswer(long ticketID, String eppID, String changeSummary, boolean accept, boolean nameserverChange) {
-        this.ticketID = ticketID;
+        super(ticketID);
         this.eppID = eppID;
         this.changeSummary = changeSummary;
         this.accept = accept;
