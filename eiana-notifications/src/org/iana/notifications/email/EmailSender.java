@@ -160,12 +160,12 @@ public class EmailSender implements NotificationSender {
         return emailUseTLS;
     }
 
-    private void sendMail(String address, String subject, String body) throws EmailSenderException {
+    private void sendMail(String address, String cc, String subject, String body) throws EmailSenderException {
         try {
             MailSender mailer = new SmtpMailSender(getEmailMailer(), getEmailMailhost(), getEmailMailhostPort(), getEmailUserName(), getEmailUserPassword(), isEmailUseSSL(), isEmailUseTLS());
             String configParam = config.getParameter("mailSmtpFrom");
             ((SmtpMailSender) mailer).setMailSmtpFrom(configParam == null ? mailSmtpFrom : configParam);
-            mailer.sendMail(getEmailFromAddress(), address, subject, body);
+            mailer.sendMail(getEmailFromAddress(), address, cc, subject, body);
         } catch (MailSenderException e) {
             logger.warn("Unable to send notification to '" + address + "'. Reason: " + e.getMessage(), e);
             throw new EmailSenderException("Unable to send notification " + e.getMessage());
@@ -182,16 +182,20 @@ public class EmailSender implements NotificationSender {
 
         Set<PAddressee> addressees = notification.getAddressees();
         PContent content = notification.getContent();
+        StringBuilder ccAddress = new StringBuilder();
         StringBuilder address = new StringBuilder();
         for (PAddressee addr : addressees) {
-            address.append(addr.getName());
-            address.append("<");
-            address.append(addr.getEmail());
-            address.append(">");
-            address.append(",");
-        }
-        if (address.length() > 0) address.deleteCharAt(address.length()-1);
-        sendMail(address.toString(), content.getSubject(), content.getBody());
-    }
+            if (addr.isCCEmailAddressee()) {
+                ccAddress.append(addr.toEmailAddressForm());
+            } else {
+                address.append(addr.toEmailAddressForm());
+            }
 
+        }
+
+        if (address.length() > 0) address.deleteCharAt(address.length()-1);
+        if (ccAddress.length() > 0) ccAddress.deleteCharAt(ccAddress.length()-1);
+
+        sendMail(address.toString(), ccAddress.toString(), content.getSubject(), content.getBody());
+    }
 }

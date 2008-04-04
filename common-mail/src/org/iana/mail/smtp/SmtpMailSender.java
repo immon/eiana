@@ -11,6 +11,7 @@ import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 public class SmtpMailSender implements MailSender {
     private String mailer;
@@ -85,10 +86,16 @@ public class SmtpMailSender implements MailSender {
     private MimeMessage createMessage(Session session,
                                       String from,
                                       String to,
+                                      String cc,
                                       String subject) throws MessagingException {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(from));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, true));
+
+        if (cc != null && cc.trim().length() > 0) {
+            message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc, true));
+        }
+
         message.setSubject(subject);
         message.setHeader("X-Mailer", mailer);
         message.setSentDate(new Date());
@@ -115,10 +122,10 @@ public class SmtpMailSender implements MailSender {
         mailSmtpFrom = value;
     }
 
-    public void sendMail(String from, String to, String subject, String body) throws MailSenderException {
+    public void sendMail(String from, String to, String cc, String subject, String body) throws MailSenderException {
         Session session = init();
         try {
-            MimeMessage message = createMessage(session, from, to, subject);
+            MimeMessage message = createMessage(session, from, to, cc, subject);
             message.setText(body);
             sendMessage(session, message);
         } catch (MessagingException e) {
@@ -126,14 +133,14 @@ public class SmtpMailSender implements MailSender {
         }
     }
 
-    public void sendMail(String from, String to, String subject, String body, File attachment) throws MailSenderException {
+    public void sendMail(String from, String to, String cc, String subject, String body, File attachment) throws MailSenderException {
         if (attachment == null) {
-            sendMail(from, to, subject, body);
+            sendMail(from, to, cc, subject, body);
             return;
         }
         Session session = init();
         try {
-            MimeMessage message = createMessage(session, from, to, subject);
+            MimeMessage message = createMessage(session, cc, from, to, subject);
             MimeMultipart multipart = new MimeMultipart();
             if (body != null) {
                 MimeBodyPart part = new MimeBodyPart();
