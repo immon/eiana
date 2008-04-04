@@ -5,6 +5,7 @@ import org.iana.rzm.mail.processor.regex.RegexParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 
 import java.text.ParseException;
 
@@ -41,12 +42,16 @@ public class ContactAnswerParser implements EmailParser {
     public MessageData parse(String from, String subject, String content) throws EmailParseException {
         try {
             RegexParser.Tokens subjectTokens = parseSubject(subject);
-            RegexParser.Tokens contentTokens = parseContent(content);
             long ticketID = Long.parseLong(subjectTokens.token(TICKET_ID));
-            String domainName = subjectTokens.token(DOMAIN_NAME);
-            String token = subjectTokens.token(TOKEN);
-            String accept = contentTokens.token(ACCEPT);
-            return createAnswer(ticketID, domainName, token, acceptString.equalsIgnoreCase(accept));
+            try {
+                RegexParser.Tokens contentTokens = parseContent(content);
+                String domainName = subjectTokens.token(DOMAIN_NAME);
+                String token = subjectTokens.token(TOKEN);
+                String accept = contentTokens.token(ACCEPT);
+                return createAnswer(ticketID, domainName, token, acceptString.equalsIgnoreCase(accept));
+            } catch (EmailParseException e) {
+                return new TicketData(ticketID);
+            }
         } catch (NumberFormatException e) {
             throw new EmailParseException(e);
         }

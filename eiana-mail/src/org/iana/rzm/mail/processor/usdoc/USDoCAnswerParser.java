@@ -5,6 +5,7 @@ import org.iana.rzm.mail.processor.regex.RegexParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 
 import java.text.ParseException;
 
@@ -48,13 +49,17 @@ public class USDoCAnswerParser implements EmailParser {
             boolean nameserver = (Boolean) tokens[1];
 
             RegexParser.Tokens subjectTokens = (RegexParser.Tokens) tokens[0];
-            RegexParser.Tokens contentTokens = parseContent(content);
-
             long ticketID = Long.parseLong(subjectTokens.token(TICKET_ID));
-            String eppID = subjectTokens.token(EPP_ID);
-            String changeSummary = contentTokens.token(CHANGE_SUMMARY);
-            String accept = contentTokens.token(ACCEPT);
-            return new USDoCAnswer(ticketID, eppID, changeSummary, acceptString.equalsIgnoreCase(accept), nameserver);
+
+            try {
+                RegexParser.Tokens contentTokens = parseContent(content);
+                String eppID = subjectTokens.token(EPP_ID);
+                String changeSummary = contentTokens.token(CHANGE_SUMMARY);
+                String accept = contentTokens.token(ACCEPT);
+                return new USDoCAnswer(ticketID, eppID, changeSummary, acceptString.equalsIgnoreCase(accept), nameserver);
+            } catch (EmailParseException e) {
+                return new TicketData(ticketID);
+            }
         } catch (NumberFormatException e) {
             throw new EmailParseException(e);
         }
