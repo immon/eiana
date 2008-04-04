@@ -5,6 +5,7 @@ import org.iana.rzm.mail.processor.regex.RegexParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
+import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.ticket.TicketData;
 
 import java.text.ParseException;
@@ -28,15 +29,16 @@ public class ContactAnswerParser implements EmailParser {
 
     private RegexParser contentPattern;
 
-    private String acceptString;
+    private AnswerParser answerParser;
 
-    public ContactAnswerParser(RegexParser subjectPattern, RegexParser contentPattern, String acceptString) {
+    public ContactAnswerParser(RegexParser subjectPattern, RegexParser contentPattern, String acceptString, String declineString) {
         CheckTool.checkNull(subjectPattern, "subject pattern");
         CheckTool.checkNull(contentPattern, "content pattern");
         CheckTool.checkNull(acceptString, "accept string");
+        CheckTool.checkNull(declineString, "decline string");
         this.subjectPattern = subjectPattern;
         this.contentPattern = contentPattern;
-        this.acceptString = acceptString;
+        this.answerParser = new AnswerParser(acceptString, declineString);
     }
 
     public MessageData parse(String from, String subject, String content) throws EmailParseException {
@@ -48,7 +50,7 @@ public class ContactAnswerParser implements EmailParser {
                 String domainName = subjectTokens.token(DOMAIN_NAME);
                 String token = subjectTokens.token(TOKEN);
                 String accept = contentTokens.token(ACCEPT);
-                return createAnswer(ticketID, domainName, token, acceptString.equalsIgnoreCase(accept));
+                return createAnswer(ticketID, domainName, token, answerParser.check(accept));
             } catch (EmailParseException e) {
                 return new TicketData(ticketID);
             }
