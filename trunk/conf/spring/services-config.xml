@@ -986,11 +986,12 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>\s*(I ACCEPT|I DECLINE).+</value>
+                    <value>(.+)Dear.+</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg index="2" value="I ACCEPT"/>
+        <constructor-arg index="3" value="I DECLINE"/>
     </bean>
 
     <bean id="impactedPartyAnswerParser" class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerParser">
@@ -1016,11 +1017,12 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>\s*(I ACCEPT|I DECLINE).+</value>
+                    <value>(.+)Dear.+</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg index="2" value="I ACCEPT"/>
+        <constructor-arg index="3" value="I DECLINE"/>
     </bean>
 
     <bean id="plainUSDoCAnswerParser" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser">
@@ -1060,11 +1062,12 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>.+Authorized:[ \t]*(yes|no).+\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
+                    <value>.+Authorized:(.+)\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg index="3" value="yes"/>
+        <constructor-arg index="4" value="no"/>
     </bean>
 
     <bean id="usdocAnswerParser" class="org.iana.rzm.mail.processor.usdoc.PGPUSDoCParser">
