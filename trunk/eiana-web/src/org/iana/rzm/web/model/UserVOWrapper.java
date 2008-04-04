@@ -166,6 +166,8 @@ public class UserVOWrapper extends ValueObject implements PaginatedEntity {
             result.add(o);
             id++;
         }
+
+        Collections.sort(result);
         return result;
     }
 

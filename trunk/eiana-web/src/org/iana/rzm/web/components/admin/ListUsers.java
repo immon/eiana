@@ -6,6 +6,8 @@ import org.iana.rzm.web.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.model.*;
 
+import java.util.*;
+
 @ComponentClass(allowBody = true)
 public abstract class ListUsers extends ListRecords {
 
@@ -15,8 +17,14 @@ public abstract class ListUsers extends ListRecords {
     @Asset(value = "images/spacer.png")
     public abstract IAsset getSpacer();
 
+    //@Component(id = "user", type = "Insert", bindings = {"value=prop:user"})
+    //public abstract IComponent getUserComponent();
+
     @Component(id = "userName", type = "Insert", bindings = {"value=prop:record.userName"})
-    public abstract IComponent getDomainNameComponent();
+    public abstract IComponent getUserNameComponent();
+
+    @Component(id = "domains", type = "Insert", bindings = {"value=prop:domains"})
+    public abstract IComponent getDomainsComponent();
 
     @Component(id = "modified", type = "Insert", bindings = {
         "value=prop:record.modified"})
@@ -32,14 +40,55 @@ public abstract class ListUsers extends ListRecords {
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getDeleteListenerComponent();
 
-    @Component(id="deleteEnabled", type="If", bindings = {"condition=prop:deleteEnabled"})
+    @Component(id = "deleteEnabled", type = "If", bindings = {"condition=prop:deleteEnabled"})
     public abstract IComponent getDisplayDeleteComponent();
+
+    @Component(id = "tooltip", type = "man:Tooltip",
+               bindings = {"tooltipContent=prop:tooltipContent", "xoffset=literal:30", "yoffset=literal:-30"})
+    public abstract IComponent getToolTipComponent();
+
+    @Component(id = "tooltip1", type = "man:Tooltip",
+               bindings = {"tooltipContent=prop:tooltipUserContent", "xoffset=literal:30", "yoffset=literal:-30"})
+    public abstract IComponent getToolTipUserComponent();
 
     @InjectState("visit")
     public abstract Visit getVisit();
 
     @Parameter
     public abstract IActionListener getDeleteListener();
+
+    public String getUser() {
+        return getRecord().getFirstName() + " " + getRecord().getLastName();
+    }
+
+    public String getTooltipUserContent(){
+        return "<span class='tooltip'> " +getUser() + " </span>";        
+    }
+
+    public String getDomains() {
+        List<RoleUserDomain> list = getRecord().getUserDomains();
+        if(list.size() > 1){
+            return list.get(0).getDomainName() + " ...";
+        }
+
+        if(list.size() == 1){
+            return list.get(0).getDomainName();
+        }
+
+        return "";
+
+    }
+
+    public String getTooltipContent() {
+
+        List<RoleUserDomain> list = getRecord().getUserDomains();
+        StringBuilder builder = new StringBuilder();
+        for (RoleUserDomain userDomain : list) {
+            builder.append(userDomain.getDomainName()).append(" ");
+        }
+
+        return "<span class='tooltip'> " +builder.toString() + " </span>";
+    }
 
     public boolean isDeleteEnabled() {
         return !getRecord().getUserName().equals(getVisit().getUser().getUserName());

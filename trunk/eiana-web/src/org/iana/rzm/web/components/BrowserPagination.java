@@ -1,14 +1,9 @@
 package org.iana.rzm.web.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.Tapestry;
-import org.apache.tapestry.annotations.Asset;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.ComponentClass;
-import org.apache.tapestry.annotations.Parameter;
-import org.apache.tapestry.components.Insert;
-import org.apache.tapestry.link.DirectLink;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.components.*;
+import org.apache.tapestry.link.*;
 
 
 @ComponentClass(allowBody = true, allowInformalParameters = true)
@@ -17,8 +12,8 @@ public abstract class BrowserPagination extends BaseComponent {
     @Parameter(required = true)
     public abstract Browser getBrowser();
 
-    @Component(id = "range", type = "Insert", bindings = {"value=prop:browser.range"})
-    public abstract Insert getRangeComponent();
+    //@Component(id = "range", type = "Insert", bindings = {"value=prop:browser.range"})
+    //public abstract Insert getRangeComponent();
 
     @Component(id = "currentPage", type = "Insert", bindings = {"value=prop:browser.currentPage"})
     public abstract Insert getCurrentPageComponent();

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-web" default="compile.module.eiana-web">
-  <dirname property="module.eiana-web.basedir" file="${ant.file.module_eiana-web}"/>
-  
+
+    <dirname property="module.eiana-web.basedir" file="${ant.file.module_eiana-web}"/>
+    <import file="../build/eiana.xml"/>
   
   <property name="compiler.args.eiana-web" value="${compiler.args}"/>
   
@@ -202,6 +203,7 @@
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/javassist.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/javassist.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-lib-1.1.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/hivemind-lib-1.1.1.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-1.1.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/hivemind-1.1.1.jar"/>
+    <copy file="${module.eiana-web.basedir}/../lib/tapestry/manTap4Library-1.8.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib"/>
     <copy file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/spring-tomcat-weaver.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/spring-agent.jar"/>
     <copy file="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/bsh-2.0b2.jar"/>
@@ -291,119 +293,125 @@
     </copy>
   </target>
   
-  <!-- Call the target to build war archive for module 'eiana-web'.
+    <!-- Call the target to build war archive for module 'eiana-web'.
        Path to the archive file is specified by parameter 'j2ee.path.jar' -->
-  <target name="j2ee.build.jar.eiana-web" description="Build Java EE archive for module 'eiana-web'">
-    <dirname property="jar.dir" file="${j2ee.path.jar}"/>
-    <mkdir dir="${jar.dir}"/>
-    <jar destfile="${j2ee.path.jar}" duplicate="preserve">
-      <manifest>
-        <attribute name="Created-By" value="IntelliJ IDEA"/>
-        <attribute name="Manifest-Version" value="1.0"/>
-      </manifest>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-web" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/rzm" prefix=""/>
-      <zipfileset dir="${module.eiana-web.basedir}/rzm/WEB-INF" prefix="WEB-INF"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-codevalues" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-config" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-criteria" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-dao" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-dns" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-mail" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-objectdiff" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-pgp" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-templates" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/conf" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-domains" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-logs" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-mail" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-notifications" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-startup" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-trans" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-users" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-util" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-admin" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-common" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-system" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-rt" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-securid" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../conf/hibernate" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web.basedir}/../conf/jbpm" prefix="WEB-INF/classes"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-1.1.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-lib-1.1.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/javassist.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/ognl-2.6.9.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/oro-2.0.8.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-4.0.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/cobertura/cobertura.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-jce-provider.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-message-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-openpgp-provider.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-pki-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/dnscheck/dnscheck-client.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/dnsjava/dnsjava-2.0.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/dom4j/dom4j-1.6.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/epp/epp-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/epp/epp-rootzone.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/epp/poolman-2.1-b1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/fastinfoset/FastInfoset.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/antlr-2.7.6.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/asm.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/cglib-2.1.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/ehcache-1.2.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/hibernate-annotations.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/hibernate-tools.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jaxrpc/jaxrpc-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jaxrpc/jaxrpc-impl.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jaxrpc/jaxrpc-spi.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jbpm/antlr-2.7.5H3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jbpm/jbpm-3.1.4.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/jdom/jdom.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/log4j/log4j-1.2.14.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/mail/activation.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/mail/mail.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/mysql/mysql-connector-java-5.0.4-bin.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/nask-commons/dynaxml.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/nask-commons/util.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/nask-commons/common-cache.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/rt/rt-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/saaj/saaj-api.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/saaj/saaj-impl.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/spring-aspects.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/spring-mock.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/spring/spring.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/aspectj/aspectjrt.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/aspectj/aspectjweaver.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/resolver.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/serializer.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xercesImpl.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xercesSamples.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xml-apis.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web.basedir}/rzm/WEB-INF/web.xml" prefix="WEB-INF"/>
+    <target name="j2ee.build.jar.eiana-web" description="Build Java EE archive for module 'eiana-web'">
+        <dirname property="jar.dir" file="${j2ee.path.jar}"/>
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${j2ee.path.jar}" duplicate="preserve">
+            <manifest>
+                <attribute name="Created-By" value="IntelliJ IDEA"/>
+                <attribute name="Manifest-Version" value="1.0"/>
+            </manifest>
+        
+            <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-web" prefix="WEB-INF/classes"/>
+            <zipfileset dir="${module.eiana-web.basedir}/rzm" prefix=""/>
+            <zipfileset dir="${module.eiana-web.basedir}/rzm/WEB-INF" prefix="WEB-INF"/>
+            <zipfileset dir="${module.eiana-web.basedir}/../conf/epp" prefix="conf/epp"/>
+            <zipfileset dir="${module.eiana-web.basedir}/../conf/hibernate" prefix="WEB-INF/classes"/>
+            <zipfileset dir="${module.eiana-web.basedir}/../conf/jbpm" prefix="WEB-INF/classes"/>
+
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-codevalues" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-config" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-criteria" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-dao" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-dns" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-mail" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-objectdiff" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-pgp" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/common-templates" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/conf" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-domains" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-logs" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-mail" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-notifications" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-startup" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-trans" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-users" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/eiana-util" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-admin" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-common" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/facade-system" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-rt" prefix="WEB-INF/classes"/>
+          <zipfileset dir="${module.eiana-web.basedir}/../build/classes/production/integration-securid" prefix="WEB-INF/classes"/>
+
+          <zipfileset file="${module.eiana-web.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-agent.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/spring/weavers/spring-tomcat-weaver.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-1.1.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/hivemind-lib-1.1.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/javassist.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/ognl-2.6.9.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/oro-2.0.8.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-4.0.2.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-contrib-4.0.2.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-prop-1.0.0.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils-core.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-beanutils.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-codec-1.3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-collections-3.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-dbcp-1.2.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-el.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-fileupload-1.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-io-1.2.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-1.0.4.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-logging-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-pool-1.3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-validator.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-lang-2.3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/tapestry/manTap4Library-1.8.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/cobertura/cobertura.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-jce-provider.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-message-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-openpgp-provider.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/cryptix/cryptix-pki-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/dnscheck/dnscheck-client.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/dnsjava/dnsjava-2.0.3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/dom4j/dom4j-1.6.1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/epp/epp-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/epp/epp-rootzone.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/epp/poolman-2.1-b1.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/fastinfoset/FastInfoset.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/antlr-2.7.6.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/asm.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/cglib-2.1.3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/ehcache-1.2.3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/hibernate-annotations.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/hibernate-tools.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/hibernate/c3p0-0.9.1.2" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jaxrpc/jaxrpc-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jaxrpc/jaxrpc-impl.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jaxrpc/jaxrpc-spi.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jbpm/antlr-2.7.5H3.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jbpm/jbpm-3.1.4.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/jdom/jdom.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/log4j/log4j-1.2.14.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/mail/activation.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/mail/mail.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/mysql/mysql-connector-java-5.0.4-bin.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/nask-commons/dynaxml.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/nask-commons/util.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/nask-commons/common-cache.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/rt/rt-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/saaj/saaj-api.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/saaj/saaj-impl.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/spring/spring-aspects.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/spring/spring-mock.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/spring/spring.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/aspectj/aspectjrt.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/aspectj/aspectjweaver.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/resolver.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/serializer.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xercesImpl.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xercesSamples.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xml-apis.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/rzm/WEB-INF/web.xml" prefix="WEB-INF"/>
     </jar>
   </target>
 </project>

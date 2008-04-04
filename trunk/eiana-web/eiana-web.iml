@@ -272,6 +272,15 @@
     <orderEntry type="module" module-name="common-config" />
     <orderEntry type="module" module-name="eiana-notifications" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/tapestry/manTap4Library-1.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -282,7 +291,7 @@
     <setting name="SYNC_EXPLODED_DIR" value="false" />
     <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
     <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
-    <setting name="RUN_JASPER_VALIDATION" value="true" />
+    <setting name="RUN_JASPER_VALIDATION" value="false" />
   </component>
   <component name="WebModuleProperties">
     <containerElement type="module" name="common-codevalues">
@@ -512,6 +521,11 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/manTap4Library-1.8.jar" />
+      <url>jar://$MODULE_DIR$/../lib/tapestry/manTap4Library-1.8.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/ognl-2.6.9.jar" />
       <url>jar://$MODULE_DIR$/../lib/tapestry/ognl-2.6.9.jar!/</url>
     </containerElement>
@@ -592,6 +606,10 @@
     <containerElement type="library" name="hibernate" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="1" />

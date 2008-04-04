@@ -77,7 +77,6 @@ public abstract class SystemUserEditor extends UserEditor implements PageBeginRe
 
     @Persist("client:page")
     public abstract void setUserDomains(List<RoleUserDomain> userDomains);
-
     public abstract List<RoleUserDomain> getUserDomains();
 
     public abstract void setUserDomain(RoleUserDomain domain);
