@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 
 /**
  * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 @Test(groups = "excluded")
 public class SmtpMailSenderTest {
@@ -20,41 +21,41 @@ public class SmtpMailSenderTest {
 
     public void testSendMessage() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_USER, MAIL_PASSWORD);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message", "test body");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message", "test body");
     }
 
     public void testSendMessagePort() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message port", "test body port");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message port", "test body port");
     }
 
     public void testSendMessageSSL() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_USER, MAIL_PASSWORD, true, false, true);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message ssl", "test body ssl");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message ssl", "test body ssl");
     }
 
     public void testSendMessagePortSSL() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, true, false, true);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message port ssl", "test body port ssl");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message port ssl", "test body port ssl");
     }
 
     public void testSendMessageTLS() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_USER, MAIL_PASSWORD, false, true, true);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message tls", "test body tls");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message tls", "test body tls");
     }
 
     public void testSendMessagePortTLS() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, false, true, true);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message port tls", "test body port tls");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message port tls", "test body port tls");
     }
 
     public void testSendMessageSSLTLS() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_USER, MAIL_PASSWORD, true, true, true);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message ssl/tls", "test body ssl/tls");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message ssl/tls", "test body ssl/tls");
     }
 
     public void testSendMessagePortSSLTLS() throws MailSenderException {
         MailSender sender = new SmtpMailSender(MAILER, MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, true, true, true);
-        sender.sendMail(MAIL_FROM, MAIL_TO, "test message port ssl/tls", "test body port ssl/tls");
+        sender.sendMail(MAIL_FROM, MAIL_TO, "", "test message port ssl/tls", "test body port ssl/tls");
     }
 }

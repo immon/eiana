@@ -33,9 +33,10 @@ public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddre
         }
 
         Set<PAddressee> addressees = new HashSet<PAddressee>(users.size());
-        for (RZMUser user : users)
-            addressees.add(new PAddressee(user.getName(), user.getEmail()));
-
+        for (RZMUser user : users) {
+            boolean isZonePublisher = user.isInRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER), roleComparator);
+            addressees.add(new PAddressee(user.getName(), user.getEmail(), isZonePublisher));
+        }
         return addressees;
     }
 }

@@ -7,12 +7,14 @@ import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.Role;
 import org.jbpm.JbpmContext;
 import org.jbpm.configuration.ObjectFactory;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Comparator;
 
 /**
  * @author Piotr Tkaczyk
@@ -52,4 +54,15 @@ public abstract class AbstractTransactionAddresseeProducer implements AddresseeP
     }
 
     abstract protected Set<PAddressee> produceAddressee(Map dataSource);
+
+    protected static RoleComparator roleComparator = new RoleComparator();
+
+    public static class RoleComparator implements Comparator<Role> {
+        public int compare(Role o1, Role o2) {
+            if (o1.getClass() != o2.getClass()) {
+                return o1.getClass().getName().compareTo(o2.getClass().getName());
+            }
+            return o1.getType().toString().compareTo(o2.getType().toString());
+        }
+    }
 }
