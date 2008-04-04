@@ -7,15 +7,17 @@ import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
 import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.ticket.TicketData;
+import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 
 /**
- * todo: recognize whether both decline and accept present
  *
  * @author Patrycja Wegrzynowicz
  */
 public class ContactAnswerParser implements EmailParser {
+
+    private static Logger logger = Logger.getLogger(ContactAnswerParser.class);
 
     public static final String TICKET_ID = "ticket_id";
 
@@ -52,6 +54,7 @@ public class ContactAnswerParser implements EmailParser {
                 String accept = contentTokens.token(ACCEPT);
                 return createAnswer(ticketID, domainName, token, answerParser.check(accept));
             } catch (EmailParseException e) {
+                logger.error("cannot parse contact/impacted party email content", e);
                 return new TicketData(ticketID);
             }
         } catch (NumberFormatException e) {
