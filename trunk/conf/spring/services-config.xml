@@ -1075,6 +1075,22 @@
         <property name="pgp" value="false"/>
     </bean>
 
+    <bean id="verisignMailParser" class="org.iana.rzm.mail.processor.verisign.VeriSignMailParser">
+        <constructor-arg index="0" value="rzmsdev@lnxdev-rz163.vrsn.com"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="domain_name" value="1"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>.+\.([^\s]+)\s*</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
     <bean id="usdocAnswerProcessor" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerProcessor">
         <constructor-arg ref="authenticationServiceBean"/>
         <constructor-arg ref="guardedAdminTransactionService"/>
@@ -1090,6 +1106,11 @@
         <constructor-arg ref="mailLogger"/>
     </bean>
 
+    <bean id="verisignMailProcessor" class="org.iana.rzm.mail.processor.verisign.VeriSignMailProcessor">
+        <constructor-arg ref="transSystemTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
+    </bean>
+
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
         <constructor-arg index="0">
             <bean class="org.iana.rzm.mail.processor.simple.parser.CompositeEmailParser">
@@ -1098,6 +1119,7 @@
                         <ref bean="contactAnswerParser"/>
                         <ref bean="usdocAnswerParser"/>
                         <ref bean="impactedPartyAnswerParser"/>
+                        <ref bean="verisignMailParser"/>
                     </list>
                 </constructor-arg>
             </bean>
@@ -1109,6 +1131,7 @@
                         <ref bean="impactedPartyAnswerProcessor"/>
                         <ref bean="contactAnswerProcessor"/>
                         <ref bean="usdocAnswerProcessor"/>
+                        <ref bean="verisignMailProcessor"/>
                     </list>
                 </constructor-arg>
             </bean>
