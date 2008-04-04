@@ -36,4 +36,12 @@ public class Message {
         return data;
     }
 
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("from: ").append(from).append("\n\n");
+        buf.append("subject: ").append(subject).append("\n\n");
+        buf.append("body: ").append(body).append("\n\n");
+        buf.append("data: ").append(data).append("\n");
+        return buf.toString();
+    }
 }
