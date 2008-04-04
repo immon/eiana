@@ -1,14 +1,19 @@
 package org.iana.rzm.mail.processor.verisign;
 
 import org.iana.rzm.mail.processor.simple.data.MessageData;
-import org.iana.rzm.mail.processor.ticket.TicketData;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class VeriSignMail extends TicketData implements MessageData {
+public class VeriSignMail implements MessageData {
 
-    public VeriSignMail(long ticketID) {
-        super(ticketID);
+    private String domainName;
+
+    public VeriSignMail(String domainName) {
+        this.domainName = domainName;
+    }
+
+    public String getDomainName() {
+        return domainName;
     }
 }

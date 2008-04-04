@@ -13,7 +13,7 @@ import java.text.ParseException;
  */
 public class VeriSignMailParser implements EmailParser {
 
-    public static final String TICKET_ID = "ticket_id";
+    public static final String DOMAIN_NAME = "domain_name";
 
     private String verisignAddress;
 
@@ -28,13 +28,9 @@ public class VeriSignMailParser implements EmailParser {
 
     public MessageData parse(String from, String subject, String content) throws EmailParseException {
         if (!verisignAddress.equals(from)) throw new EmailParseException("The from address [" + from + "] does not match the verisign address [" + verisignAddress + "]");
-        try {
-            RegexParser.Tokens subjectTokens = parseSubject(subject);
-            long ticketID = Long.parseLong(subjectTokens.token(TICKET_ID));
-            return new VeriSignMail(ticketID);
-        } catch (NumberFormatException e) {
-            throw new EmailParseException(e);
-        }
+        RegexParser.Tokens subjectTokens = parseSubject(subject);
+        String domainName = subjectTokens.token(DOMAIN_NAME);
+        return new VeriSignMail(domainName);
     }
 
     private RegexParser.Tokens parseSubject(String subject) throws EmailParseException {
