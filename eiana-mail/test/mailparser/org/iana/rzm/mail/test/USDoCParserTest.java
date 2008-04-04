@@ -1,9 +1,11 @@
 package org.iana.rzm.mail.test;
 
 import org.iana.rzm.mail.processor.regex.RegexParser;
+import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.usdoc.USDoCAnswer;
 import org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser;
+import org.iana.rzm.mail.processor.ticket.TicketData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -74,7 +76,7 @@ public class USDoCParserTest {
         assert answer.isNameserverChange();
     }
 
-    @Test(expectedExceptions = EmailParseException.class)
+    @Test
     public void testInvalidNameserverAccept() throws Exception {
         String subject = "Re: [Root change 11:22] Name server change to us";
         String content = "Content " +
@@ -82,7 +84,9 @@ public class USDoCParserTest {
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW" +
                 "Change-change-change " +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE";
-        USDoCAnswer answer = (USDoCAnswer) parser.parse("a@example.tld",  subject, content);
+        MessageData data = (MessageData) parser.parse("a@example.tld",  subject, content);
+        assert !(data instanceof USDoCAnswer);
+        assert data instanceof TicketData;
     }
 
     @Test
