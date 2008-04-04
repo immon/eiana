@@ -5,6 +5,7 @@ import org.iana.rzm.mail.processor.regex.RegexParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
+import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.ticket.TicketData;
 
 import java.text.ParseException;
@@ -30,17 +31,16 @@ public class USDoCAnswerParser implements EmailParser {
 
     private RegexParser contentPattern;
 
-    private String acceptString;
+    private AnswerParser answerParser;
 
-    public USDoCAnswerParser(RegexParser nsChangePattern, RegexParser databaseChangePattern, RegexParser contentPattern, String acceptString) {
+    public USDoCAnswerParser(RegexParser nsChangePattern, RegexParser databaseChangePattern, RegexParser contentPattern, String acceptString, String declineString) {
         CheckTool.checkNull(nsChangePattern, "ns change pattern");
         CheckTool.checkNull(databaseChangePattern, "database change pattern");
         CheckTool.checkNull(contentPattern, "content pattern");
-        CheckTool.checkNull(acceptString, "accept string");
         this.nsChangePattern = nsChangePattern;
         this.databaseChangePattern = databaseChangePattern;
         this.contentPattern = contentPattern;
-        this.acceptString = acceptString;
+        this.answerParser = new AnswerParser(acceptString, declineString);
     }
 
     public MessageData parse(String from, String subject, String content) throws EmailParseException {
@@ -56,7 +56,7 @@ public class USDoCAnswerParser implements EmailParser {
                 String eppID = subjectTokens.token(EPP_ID);
                 String changeSummary = contentTokens.token(CHANGE_SUMMARY);
                 String accept = contentTokens.token(ACCEPT);
-                return new USDoCAnswer(ticketID, eppID, changeSummary, acceptString.equalsIgnoreCase(accept), nameserver);
+                return new USDoCAnswer(ticketID, eppID, changeSummary, answerParser.check(accept), nameserver);
             } catch (EmailParseException e) {
                 return new TicketData(ticketID);
             }
