@@ -39,7 +39,7 @@ public class USDoCParserTest {
         String contentPattern = ".+Authorized:[ \\t]*(yes|no).+\\[\\+\\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\\[-\\] End Change Request Summary: DO NOT EDIT ABOVE.*";
         RegexParser contentParser = new RegexParser(contentGroups, contentPattern);
 
-        parser = new USDoCAnswerParser(nsChangeParser, databaseChangeParser, contentParser, "yes");
+        parser = new USDoCAnswerParser(nsChangeParser, databaseChangeParser, contentParser, "yes", "no");
     }
 
     @Test

@@ -32,7 +32,7 @@ public class ContactParserTest {
         String contentPattern = "\\s*(I ACCEPT|I DECLINE).+";
         RegexParser contentParser = new RegexParser(contentGroups, contentPattern);
 
-        parser = new ContactAnswerParser(subjectParser, contentParser, "I ACCEPT");
+        parser = new ContactAnswerParser(subjectParser, contentParser, "I ACCEPT", "I DECLINE");
     }
 
     @Test
