@@ -19,7 +19,7 @@ public class VeriSignMailParser implements EmailParser {
 
     private RegexParser subjectPattern;
 
-    public VeriSignMailParser(String verisignAddress, RegexParser subjectPattern, RegexParser contentPattern) {
+    public VeriSignMailParser(String verisignAddress, RegexParser subjectPattern) {
         CheckTool.checkNull(verisignAddress, "verisign address");
         CheckTool.checkNull(subjectPattern, "subject pattern");
         this.verisignAddress = verisignAddress;
