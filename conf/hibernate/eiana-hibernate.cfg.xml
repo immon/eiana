@@ -6,12 +6,21 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <!--<property name="hibernate.connection.url">jdbc:mysql://localhost/eiana</property>-->
-        <property name="hibernate.connection.url">jdbc:mysql://localhost/eianatest</property>
-        <!--<property name="hibernate.connection.username">eiana</property>-->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/eianatest?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://localhost/eiana?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>-->
         <property name="hibernate.connection.username">testng</property>
         <property name="hibernate.connection.password">1q2w3e</property>
-        <property name="connection.pool_size">2</property>
+        <!--<property name="hibernate.connection.username">rzm</property>-->
+        <!--<property name="hibernate.connection.password">names&amp;numbers</property>-->
+        <property name="hibernate.connection.useUnicode">true</property>
+        <property name="hibernate.connection.characterEncoding">UTF-8</property>
+        <!--<property name="connection.pool_size">2</property>-->
+        <property name="hibernate.c3p0.max_size">15</property>
+        <property name="hibernate.c3p0.min_size">3</property>
+        <property name="hibernate.c3p0.timeout">5000</property>
+        <property name="hibernate.c3p0.idle_test period">300</property>
+        <property name="hibernate.c3p0.acquire_increment">2</property>
+
         <property name="cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
         <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
         <property name="current_session_context_class">thread</property>

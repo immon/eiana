@@ -7,7 +7,9 @@
             <span jwcid="@GrayHeaderContainer">
                 <table width="95%" border="0" cellspacing="0" cellpadding="0" style="position: relative; top: -27px;">
                     <tr>
+                        <!--<td width="10" height="20" valign="top"><strong>Name</strong></td>-->
                         <td height="20" valign="top"><strong>User</strong></td>
+                        <td height="20" valign="top"><strong>Domains</strong></td>
                         <td height="20" valign="top" ><strong>Last Change </strong></td>
                         <td height="20" valign="top"><strong>Actions</strong></td>
                     </tr>
@@ -24,7 +26,9 @@
                         </tr>
                     </span>
                     <tr jwcid="records">
-                        <td><span jwcid="userName">User</span></td>
+                        <!--<td nowrap><span jwcid="user">User</span></td>-->
+                        <td><span jwcid="tooltip1"><span jwcid="userName">User</span></span></td>
+                        <td><span jwcid="tooltip"> <span jwcid="domains">User</span> </span></td>
                         <td><span jwcid="modified"/></td>
                         <td>
                             <div class="buttonStyle" style="float: inherit;">
