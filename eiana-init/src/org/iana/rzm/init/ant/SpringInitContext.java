@@ -16,7 +16,7 @@ public class SpringInitContext {
     public static ApplicationContext getContext() {
         if (context == null) {
             context = new XmlWebApplicationContext();
-            String[] config = new String[]{"file:../conf/spring/services-config.xml"};
+            String[] config = new String[]{"file:../tests/spring/services-test-config.xml"};
             MockServletContext mockServletContext = new MockServletContext(new FileSystemResourceLoader());
 
             context.setConfigLocations(config);
