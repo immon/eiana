@@ -176,7 +176,7 @@
         </java>
     </target>
 
-    <target name="jbpm.init" depends="database.create.test, all.jar">
+    <target name="jbpm.init" depends="database.create.test, all.jar, replace.services">
         <java classname="org.iana.rzm.init.ant.ProcessDeployment">
             <arg value="domain-modification.xml"/>
             <classpath refid="inittools.classpath"/>
