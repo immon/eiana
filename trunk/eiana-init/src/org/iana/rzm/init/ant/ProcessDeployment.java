@@ -21,7 +21,8 @@ public class ProcessDeployment {
         processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.MAILS_RECEIVER));
         processDAO.deploy(DefinedTestProcess.getDefinition(DefinedTestProcess.EPP_POLL_PROCESS));
 
-        processDAO.newProcessInstanceAndSignal(DefinedTestProcess.MAILS_RECEIVER);
-        processDAO.newProcessInstanceAndSignal(DefinedTestProcess.EPP_POLL_PROCESS);
+        processDAO.newProcessInstanceAndSignal("Mails Receiver");
+        processDAO.newProcessInstanceAndSignal("EPP Poll Process");
+
     }
 }
