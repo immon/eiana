@@ -60,7 +60,7 @@ public class JbpmSchedulerThread extends Thread implements JbpmThread {
      */
     public long executeTimers() {
         try {
-            return jbpmTimerExecutor.execute();
+            return jbpmTimerExecutor.execute(null);
         } catch (Exception e) {
             log.error("executeTimers", e);
             return -1;
