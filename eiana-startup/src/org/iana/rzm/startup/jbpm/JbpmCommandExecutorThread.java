@@ -85,7 +85,7 @@ public class JbpmCommandExecutorThread extends Thread implements JbpmThread, Ser
                 }
             }
         } finally {
-            log.warn("jBPM command executor STOPPED");
+            log.warn("jBPM command executor STOPPED " + keepRunning);
         }
     }
 
