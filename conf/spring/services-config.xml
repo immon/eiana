@@ -819,6 +819,31 @@
         <constructor-arg index="0" ref="jbpmObjectFactory"/>
     </bean>
 
+    <bean id="jbpmCommandExecutor"
+          class="org.iana.rzm.startup.jbpm.JbpmCommandExecutorThread">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.startup.jbpm.JbpmCommandExecutor">
+                <constructor-arg index="0" ref="jbpmConfiguration"/>                
+            </bean>
+        </constructor-arg>
+        <property name="interval" value="5000"/>
+        <property name="priority" value="1"/>
+    </bean>
+
+    <bean id="jbpmScheduler"
+          class="org.iana.rzm.startup.jbpm.JbpmSchedulerThread">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.startup.jbpm.JbpmTimerExecutor">
+                <constructor-arg index="0" ref="jbpmConfiguration"/>
+                <property name="maxResultCount" value="1"/>
+            </bean>
+        </constructor-arg>
+        <property name="interval" value="5000"/>
+        <property name="priority" value="1"/>
+    </bean>
+
     <bean id="services" class="org.jbpm.svc.Services" scope="prototype">
         <constructor-arg index="0">
             <map>
@@ -1213,13 +1238,15 @@
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
-                                  execution(public * org.jbpm.msg.command.CommandExecutorThread.executeCommand(..)) ||
+                                  execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
+                                  execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
                                   execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
                                   execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
+
         <aop:aspect id="jbpmAspect" ref="jbpmAdvisor">
             <aop:pointcut id="jbpmOperation"
                           expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
