@@ -32,11 +32,15 @@ public class JbpmTimerExecutor implements JbpmCommand {
         this.jbpmConfiguration = jbpmConfiguration;
     }
 
+    public void setJbpmContextName(String jbpmContextName) {
+        this.jbpmContextName = jbpmContextName;
+    }
+
     public void setMaxResultCount(int maxResultCount) {
         this.maxResultCount = maxResultCount;
     }
 
-    public long execute() throws Exception {
+    public long execute(Object arg) throws Exception {
         long millisTillNextTimerIsDue = -1;
         boolean isDueDateInPast = true;
 

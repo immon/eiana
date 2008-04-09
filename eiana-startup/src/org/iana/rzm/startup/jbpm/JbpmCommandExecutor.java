@@ -24,7 +24,15 @@ public class JbpmCommandExecutor implements JbpmCommand {
         this.jbpmConfiguration = jbpmConfiguration;
     }
 
-    public long execute() throws Exception  {
+    public void setJbpmContextName(String jbpmContextName) {
+        this.jbpmContextName = jbpmContextName;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public long execute(Object arg) throws Exception  {
         long checkForMoreMessages = 0;
         Message message = null;
         JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext(jbpmContextName);

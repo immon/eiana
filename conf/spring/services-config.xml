@@ -827,6 +827,11 @@
                 <constructor-arg index="0" ref="jbpmConfiguration"/>                
             </bean>
         </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="org.iana.rzm.startup.jbpm.JbpmExceptionHandler">
+                <constructor-arg index="0" ref="jbpmConfiguration"/>
+            </bean>
+        </constructor-arg>
         <property name="interval" value="5000"/>
         <property name="priority" value="1"/>
     </bean>
@@ -1240,6 +1245,7 @@
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
+                                  execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
                                   execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
                                   execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
