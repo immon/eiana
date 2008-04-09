@@ -21,6 +21,7 @@
     <path refid="library.log4j.classpath"/>
     <path refid="library.jbpm.classpath"/>
     <path refid="library.jdom.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
   </path>
   
   

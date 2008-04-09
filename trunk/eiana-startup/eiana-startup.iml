@@ -16,6 +16,8 @@
     <orderEntry type="library" name="log4j" level="project" />
     <orderEntry type="library" name="jbpm" level="project" />
     <orderEntry type="library" name="jdom" level="project" />
+    <orderEntry type="library" name="apache-commons" level="project" />
+    <orderEntry type="library" name="jbpm" level="project" />
     <orderEntryProperties />
   </component>
 </module>

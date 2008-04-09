@@ -21,80 +21,43 @@
  */
 package org.iana.rzm.startup.jbpm;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
-import org.jbpm.msg.command.CommandExecutorThread;
-import org.jbpm.scheduler.impl.SchedulerThread;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * the jBPM servlet.
  */
 public class JbpmScheduler extends HttpServlet {
 
-    public static String DEFAULT_JBPM_CFG_NAME = "jbpmConfiguration";
+    public static String DEFAULT_JBPM_CMD_EXECUTOR_NAME = "jbpmCommandExecutor";
 
-    private static Logger log = Logger.getLogger(JbpmScheduler.class);
+    public static String DEFAULT_JBPM_SCHEDULER_NAME = "jbpmScheduler";
 
     private static final long serialVersionUID = 1L;
 
-    String jbpmConfigurationName = null;
-    String jbpmContextName = null;
+    String jbpmCommandExecutorName = null;
+    String jbpmSchedulerName = null;
 
-    JbpmConfiguration jbpmConfiguration = null;
-    CommandExecutorThread commandExecutorThread = null;
-    SchedulerThread schedulerThread = null;
+    JbpmThread commandExecutorThread = null;
+    JbpmThread schedulerThread = null;
 
     public void init() throws ServletException {
-
         ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 
-        // get the jbpm configuration resource
-        this.jbpmConfigurationName = getInitParameter("jbpm.configuration.name");
+        this.jbpmCommandExecutorName = getInitParameter("jbpm.context.name", DEFAULT_JBPM_CMD_EXECUTOR_NAME);
+        this.jbpmSchedulerName = getInitParameter("jbpm.context.name", DEFAULT_JBPM_SCHEDULER_NAME);
 
-        if (jbpmConfigurationName == null) {
-            this.jbpmConfigurationName = DEFAULT_JBPM_CFG_NAME;
-            log.debug("using default jbpm cfg name: " + DEFAULT_JBPM_CFG_NAME);
-        } else {
-            log.debug("using jbpm cfg resource: '" + jbpmConfigurationName + "'");
-        }
-
-        // get the jbpm context to be used from the jbpm configuration
-        this.jbpmContextName = getInitParameter("jbpm.context.name");
-
-        if (jbpmContextName == null) {
-            log.debug("using default jbpm context");
-            jbpmContextName = JbpmContext.DEFAULT_JBPM_CONTEXT_NAME;
-        } else {
-            log.debug("using jbpm context: '" + jbpmContextName + "'");
-        }
-
-        int commandExecutorInterval = Integer.parseInt(getInitParameter("commandExecutorInterval", "5000"));
-        int schedulerInterval = Integer.parseInt(getInitParameter("schedulerInterval", "5000"));
-        int priority = Integer.parseInt(getInitParameter("priority", "1"));
-        int maxResultCount = Integer.parseInt(getInitParameter("maxResultCount", "1"));
-
-        JbpmConfiguration jbpmConfiguration = (JbpmConfiguration) context.getBean(jbpmConfigurationName);
-
-        commandExecutorThread = new CommandExecutorThread(jbpmConfiguration);
-        commandExecutorThread.setInterval(commandExecutorInterval);
-        commandExecutorThread.setPriority(priority);
+        commandExecutorThread = (JbpmThread) context.getBean(jbpmCommandExecutorName);
         commandExecutorThread.start();
 
-        schedulerThread = new SchedulerThread(jbpmConfiguration);
-        schedulerThread.setPriority(priority);
-        schedulerThread.setInterval(schedulerInterval);
-        schedulerThread.setMaxResultCount(maxResultCount);
+        schedulerThread = (JbpmThread) context.getBean(jbpmSchedulerName);
         schedulerThread.start();
     }
 
@@ -117,14 +80,10 @@ public class JbpmScheduler extends HttpServlet {
 
     public void destroy() {
         super.destroy();
-        if ((schedulerThread != null)
-                && (schedulerThread.isAlive())
-                ) {
+        if (schedulerThread != null) {
             schedulerThread.quit();
         }
-        if ((commandExecutorThread != null)
-                && (commandExecutorThread.isAlive())
-                ) {
+        if (commandExecutorThread != null) {
             commandExecutorThread.quit();
         }
     }
