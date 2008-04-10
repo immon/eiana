@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -17,6 +18,8 @@ class BindExport {
     private static final String SOA = "SOA";
 
     private static final String NS = "NS";
+
+    private static final String DS = "DS";
 
     private static final String A = "A";
 
@@ -105,6 +108,18 @@ class BindExport {
             _println(host.getFullyQualifiedName());
             // if (host.isInDomain(domain))
             glueHosts.add(host);
+        }
+        exportDSs(domainName, domain.getDSRecords());
+    }
+
+    private void exportDSs(String domainName, List<DNSDelegationSigner> list) {
+        for (DNSDelegationSigner ds : list) {
+            _prints(domainName);
+            _prints(DS);
+            _prints(""+ds.getKeyTag());
+            _prints(""+ds.getAlg());
+            _prints(""+ds.getDigestType());
+            _println(""+ds.getDigest());
         }
     }
 
