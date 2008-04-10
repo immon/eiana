@@ -314,6 +314,7 @@
             <transition name="reject" to="REJECTED"/>
             <transition name="close" to="ADMIN_CLOSED"/>
             <transition name="withdraw" to="WITHDRAWN"/>
+            <transition name="admin-accept" to="PENDING_IANA_CHECK"/>
         </state>
 
         <state name="PENDING_IANA_CHECK">
