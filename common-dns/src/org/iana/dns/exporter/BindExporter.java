@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class DNSExporterImpl implements DNSExporter {
+public class BindExporter implements DNSExporter {
 
     public void export(DNSZone zone, File output) throws IOException {
         FileWriter writer = new FileWriter(output);

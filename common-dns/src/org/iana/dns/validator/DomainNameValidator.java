@@ -15,13 +15,20 @@ public class DomainNameValidator {
 
     private static String DOMAIN_PATTERN = "([A-Za-z0-9\\-]+\\.)*[A-Za-z0-9\\-]+";
 
-    public static void validateName(String name) throws InvalidDomainNameException {
+    public static String normalizeName(String name) throws InvalidDomainNameException {
+        if (name == null) return null;
+        name = name.toLowerCase();
+        if (name.endsWith(".")) name = name.substring(0, name.length()-1);
+        return name;
+    }
+
+    public static String validateName(String name) throws InvalidDomainNameException {
+        name = normalizeName(name);
+
         if (name == null) throw new InvalidDomainNameException(name, NULL_NAME);
 
         // root 
-        if (name.length() == 0) return;
-
-        if (name.endsWith(".")) name = name.substring(0, name.length()-1);
+        if (name.length() == 0) return name;
 
         if (!name.matches(DOMAIN_PATTERN)) throw new InvalidDomainNameException(name, PATTERN_MISMATCH);
 
@@ -38,5 +45,7 @@ public class DomainNameValidator {
             if (!Character.isLetterOrDigit(piece.charAt(piece.length() - 1)))
                 throw new InvalidDomainNameException(name, LABEL_LAST_CHAR_NOT_LETTER_OR_DIGIT);
         }
+        
+        return name;
     }
 }

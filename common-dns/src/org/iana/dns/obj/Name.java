@@ -16,8 +16,7 @@ public class Name implements Comparable<Name> {
 
     public void setName(String name) throws InvalidDomainNameException {
         if (name == null) throw new IllegalArgumentException("null name");
-        name = name.toLowerCase();
-        DomainNameValidator.validateName(name);
+        name = DomainNameValidator.validateName(name);
         this.name = name;
     }
 

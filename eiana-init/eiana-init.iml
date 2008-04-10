@@ -51,6 +51,25 @@
     <orderEntry type="module" module-name="common-dao" />
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="module" module-name="common-config" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/quartz/quartz-all-1.6.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/mchange/c3p0-0.9.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="eiana-startup" />
     <orderEntryProperties />
   </component>
 </module>

@@ -1,12 +1,14 @@
 package org.iana.rzm.domain;
 
+import org.hibernate.annotations.Formula;
+import org.iana.dns.obj.DNSHostImpl;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.dns.DNSHost;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
 import org.iana.rzm.common.TrackedObject;
 import org.iana.rzm.common.validators.CheckTool;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -264,5 +266,13 @@ public class Host implements TrackedObject, Cloneable {
         } else if (modified != null && modified.getTime() >= timestamp) {
             setModifiedBy(modifiedBy);
         }
+    }
+
+    public DNSHost toDNSHost() {
+        DNSHostImpl ret = new DNSHostImpl(getName());
+        for (IPAddress ip : getAddresses()) {
+            ret.addIPAddress(ip.getAddress());
+        }
+        return ret;
     }
 }
