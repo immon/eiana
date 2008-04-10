@@ -2,6 +2,7 @@ package org.iana.dns;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 
 /**
  * This interface models a domain configured in DNS.
@@ -46,7 +47,7 @@ public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
     String[] getLabels();
 
     /**
-     * Returns a set of name servers to which this domain is delegated. Each host is uniquely
+     * Returns the set of name servers to which this domain is delegated. Each host is uniquely
      * identified by its name.
      *
      * @return the name servers of this domain.
@@ -54,24 +55,32 @@ public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
     Set<DNSHost> getNameServers();
 
     /**
-     * Returns a map of name server names to name server objects to which this domain is delegated to.
+     * Returns the map of name server names to name server objects to which this domain is delegated to.
      *
      * @return the map of name server names to name server objects of this domain.
      */
     Map<String, DNSHost> getNameServerMap();
 
     /**
-     * Returns a set of names of name servers to which this domain is delegated. Names are lower-cased.
+     * Returns the set of names of name servers to which this domain is delegated. Names are lower-cased.
      *
      * @return the set of names of the name servers of this domain.
      */
     Set<String> getNameServerNames();
 
     /**
-     * Returns a name server object that represents a name server with a given name to which this domain is delegated.
+     * Returns the name server object that represents a name server with a given name to which this domain is delegated.
      *
      * @param name the name of the name server to be found
      * @return the name server of this domain identified by the given name; null if not found.
      */
     DNSHost getNameServer(String name);
+
+    /**
+     * Returns the list of DS records of this domain.
+     *
+     * @return the list of DS records; empty list if none ds records available.
+     */
+    List<DNSDelegationSigner> getDSRecords();
+
 }
