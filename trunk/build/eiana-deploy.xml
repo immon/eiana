@@ -137,17 +137,18 @@
         <fileset dir="${lib.dir}/mysql">
             <include name="**/*.jar"/>
         </fileset>
-
         <fileset dir="${lib.dir}/rt">
             <include name="**/*.jar"/>
         </fileset>
-
         <fileset dir="${lib.dir}/epp">
             <include name="**/*.jar"/>
         </fileset>
-
-
-
+        <fileset dir="${lib.dir}/mchange">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}/quartz">
+            <include name="**/*.jar"/>
+        </fileset>
         <path location="${eiana-init.output.dir}"/>
         <path refid="eiana-init.module.classpath"/>
     </path>

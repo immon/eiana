@@ -1,7 +1,9 @@
 package org.iana.rzm.domain;
 
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CollectionOfElements;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.rzm.common.Name;
 import org.iana.rzm.common.TrackData;
@@ -543,4 +545,11 @@ public class Domain implements TrackedObject, Cloneable {
         return true;
     }
 
+    public DNSDomain toDNSDomain() {
+        DNSDomainImpl ret = new DNSDomainImpl(getName());
+        for (Host ns : getNameServers()) {
+            ret.addNameServer(ns.toDNSHost());
+        }
+        return ret;
+    }
 }

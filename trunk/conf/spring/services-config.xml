@@ -1243,6 +1243,7 @@
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
@@ -1424,4 +1425,165 @@
             <ref bean="transactionManagerBean"/>
         </constructor-arg>
     </bean>
+
+    <!-- DNS Export Configuration -->
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="dnsTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dnsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+       <property name="jobDetail" ref="dnsExport"/>
+       <!-- 10s delay -->
+       <property name="startDelay" value="10000"/>
+        <!-- every 12h -->
+       <property name="repeatInterval" value="43200000"/>
+   </bean>
+
+    <bean id="dnsExport" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="dnsService"/>
+        <property name="targetMethod" value="exportAll"/>
+    </bean>
+
+    <bean id="dnsService" class="org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl">
+        <constructor-arg ref="zoneProducer"/>
+        <constructor-arg ref="zoneExporter"/>
+        <property name="exportDirectory" value="/dnsexport/"/>
+        <property name="exportFilenamePrefix" value="export"/>
+    </bean>
+
+    <bean id="zoneProducer" class="org.iana.rzm.facade.admin.domain.dns.DNSZoneProducerImpl">
+        <constructor-arg ref="domainManager"/>
+        <property name="TTL1" value="518400"/>
+        <property name="TTL2" value="172800"/>
+        <property name="refresh" value="1800"/>
+        <property name="retry" value="900"/>
+        <property name="expire" value="604800"/>
+        <property name="minimum" value="86400"/>
+        <property name="adminAddress" value="NSTLD.VERISIGN-GRS.COM."/>
+
+        <property name="nameServers">
+            <list>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="A.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>198.41.0.4</value>
+                            <value>2001:503:BA3E:0:0:0:2:30</value>    
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="H.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>128.63.2.53</value>
+                            <value>2001:500:1:0:0:0:803F:235</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="C.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.33.4.12</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="G.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.112.36.4</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="F.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.5.5.241</value>
+                            <value>2001:500:2F:0:0:0:0:F</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="B.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.228.79.201</value>
+                            <value>2001:500:2F:0:0:0:0:F</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="J.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.58.128.30</value>
+                            <value>2001:503:C27:0:0:0:2:30</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="K.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>193.0.14.129</value>
+                            <value>2001:7FD:0:0:0:0:0:1</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="L.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>199.7.83.42</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="M.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>202.12.27.33</value>
+                            <value>2001:DC3:0:0:0:0:0:35</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="I.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.36.148.17</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="E.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.203.230.10</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="D.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>128.8.10.90</value>
+                        </set>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="description" value="empty description"/>
+    </bean>
+
+    <bean id="zoneExporter" class="org.iana.dns.exporter.BindExporter"/>
+
 </beans>

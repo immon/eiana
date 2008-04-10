@@ -281,6 +281,24 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/mchange/c3p0-0.9.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/quartz/quartz-all-1.6.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -390,6 +408,14 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
+    <containerElement type="library" name="ant" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="apache-commons" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
@@ -430,9 +456,10 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/hibernate/hibernate3.jar!/</url>
     </containerElement>
-    <containerElement type="library" name="javaee" level="project">
+    <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -470,6 +497,11 @@
       <url>jar://$MODULE_DIR$/../lib/jetty/org.mortbay.jmx.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/c3p0-0.9.1.2.jar" />
+      <url>jar://$MODULE_DIR$/../lib/mchange/c3p0-0.9.1.2.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/nask-commons/dynaxml.jar!/</url>
@@ -478,6 +510,11 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib" />
       <url>jar://$MODULE_DIR$/../lib/nask-commons/util.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/quartz-all-1.6.0.jar" />
+      <url>jar://$MODULE_DIR$/../lib/quartz/quartz-all-1.6.0.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -558,14 +595,6 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/tapestry-spring-1.0.0.jar" />
       <url>jar://$MODULE_DIR$/../lib/tapestry/tapestry-spring-1.0.0.jar!/</url>
-    </containerElement>
-    <containerElement type="library" name="ant" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib" />
-    </containerElement>
-    <containerElement type="library" name="apache-commons" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="cobertura" level="project">
       <attribute name="method" value="1" />

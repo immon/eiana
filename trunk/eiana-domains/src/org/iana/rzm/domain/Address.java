@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Embeddable
 public class Address implements Cloneable{
 
-    @Basic
+    @Basic 
+    @Column(length = 4096)
     private String textAddress;
     @Embedded
     private CountryCode countryCode;
@@ -30,6 +31,11 @@ public class Address implements Cloneable{
     }
 
     public void setTextAddress(String textAddress) {
+        System.out.println(textAddress);
+        if (textAddress != null && textAddress.length() > 4000) {
+            System.out.println(textAddress);
+            textAddress = textAddress.substring(0, 4000);
+        }
         this.textAddress = textAddress;
     }
 
