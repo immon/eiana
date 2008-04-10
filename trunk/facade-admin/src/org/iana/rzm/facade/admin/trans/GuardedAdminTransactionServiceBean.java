@@ -133,7 +133,11 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
             if (TransactionState.Name.PENDING_USDOC_APPROVAL == transaction.getState().getName()) {
                 throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(id, ""+transaction.getState().getName());
             }
-            transaction.transit(this.getRZMUser(), "admin-accept");
+            String transition = "admin-accept";
+            if (TransactionState.Name.PENDING_EVALUATION == transaction.getState().getName()) {
+                transition = "accept";
+            }
+            transaction.transit(this.getRZMUser(), transition);
             markModified(transaction);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
