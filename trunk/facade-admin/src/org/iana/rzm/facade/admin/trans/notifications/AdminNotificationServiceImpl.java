@@ -35,7 +35,7 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
     }
 
     void isUserInRole() {
-
+        // isAdmin();
     }
 
     public List<NotificationVO> getNotifications(long transactionId) throws InfrastructureException {

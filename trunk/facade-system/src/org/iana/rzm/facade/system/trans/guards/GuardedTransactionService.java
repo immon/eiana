@@ -13,11 +13,15 @@ import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.user.*;
+import org.iana.rzm.trans.NoSuchTransactionException;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionManager;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A guarded version of <code>SystemTransactionService</code> which provides a role checking before calling
@@ -27,28 +31,26 @@ import java.util.Set;
  */
 public class GuardedTransactionService extends AbstractRZMStatefulService implements TransactionService {
 
-    private static Set<Role.Type> allowedCreateTypes = new HashSet<Role.Type>();
-
-    static {
-        allowedCreateTypes.add(AdminRole.AdminType.IANA);
-    }
-
     private TransactionService delegate;
 
-    public GuardedTransactionService(UserManager userManager, TransactionService delegate) {
+    private TransactionManager manager;
+
+    public GuardedTransactionService(UserManager userManager, TransactionService delegate, TransactionManager manager) {
         super(userManager);
         CheckTool.checkNull(delegate, "system transaction service");
+        CheckTool.checkNull(manager, "transaction manager");
         this.delegate = delegate;
+        this.manager = manager;
     }
 
     private void isUserInRole(long transactionId) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         TransactionVO trans = delegate.get(transactionId);
         try {
-            isUserInRole(trans.getDomainName());
+            isUserInIanaGovOrDomainRole(trans.getDomainName());
         } catch (AccessDeniedException e) {
             for (String domainName : trans.getImpactedDomains()) {
                 try {
-                    isUserInRole(domainName);
+                    isUserInIanaGovOrDomainRole(domainName);
                     return;
                 } catch (AccessDeniedException e1) {
                 }
@@ -57,30 +59,24 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         }
     }
 
-    private void isUserInRole(String domainName) throws AccessDeniedException {
-        isUserInRole(domainName, null);
-    }
-
-    private void isUserInRole(String domainName, Set<Role.Type> types) throws AccessDeniedException {
-        if (user == null) throw new AccessDeniedException("no authenticated user");
-        RZMUser rzmUser = getRZMUser();
-        for (Role role : rzmUser.getRoles()) {
-            if (role.isAdmin()) {
-                if (types == null || types.contains(role.getType())) return;
-            } else {
-                SystemRole sys = (SystemRole) role;
-                if (domainName != null && domainName.equals(sys.getName())) return;
-            }
+    private void isUserInRole(long transactionId, String token) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
+        try {
+            Transaction trans = manager.getTransaction(transactionId);
+            ContactConfirmations contactConfirmations = trans.getContactConfirmations();
+            if (contactConfirmations == null) throw new AccessDeniedException("no contact confirmation pending");
+            SystemRole role = contactConfirmations.getRoleForToken(token);
+            if (role == null) throw new AccessDeniedException("no contact confirmation pending for the token: " + token);
+            RZMUser user = getRZMUser();
+            if (user.isAdmin()) return;
+            if (user.isInRole(role)) return;
+            throw new AccessDeniedException("user " + user.getName() + " does not have the admin role or the following role: " + role + " (token: " + token + ")");
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException(transactionId, "transaction");
         }
-        throw new AccessDeniedException("no role found for " + domainName);
     }
 
-    private void isUserInRole() throws AccessDeniedException {
-        if (user == null) throw new AccessDeniedException("no authenticated user");
-    }
-    
     private void isUserInCreateTransactionRole(String domainName) throws AccessDeniedException {
-        isUserInRole(domainName, allowedCreateTypes);
+        isUserInIanaOrDomainRole(domainName);
     }
 
 
@@ -115,12 +111,12 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
     }
 
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id);
+        isUserInRole(id, token);
         delegate.acceptTransaction(id, token);
     }
 
     public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id);
+        isUserInRole(id, token);
         delegate.rejectTransaction(id, token);
     }
 
@@ -152,27 +148,22 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
 
 
     public int count(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
         return delegate.count(criteria);
     }
 
     public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
         return delegate.find(criteria);
     }
 
     public List<TransactionVO> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
         return delegate.find(order, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
         return delegate.find(criteria, offset, limit);
     }
 
     public List<TransactionVO> find(Criterion criteria, Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
         return delegate.find(criteria, order, offset, limit);
     }
 

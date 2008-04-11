@@ -4,6 +4,9 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -12,6 +15,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+
+import java.util.List;
 
 
 /**
@@ -134,7 +139,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testACCEPT_CONTACT_CONFIRMATION() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 2);
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         checkStateLog(userAC, transId, ACCEPT_CONTAC_CONFIRMATIONLog);
     }
@@ -149,7 +154,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testACCEPT_MANUAL_REVIEW() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 2);
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         checkStateLog(userIANA, transId, ACCEPT_MANUAL_REVIEWLog);
@@ -223,7 +228,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testACCEPT_IANA_CHECK() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 2);
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
@@ -244,7 +249,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testREJECT_USDOC_APPROVAL() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 2);
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
@@ -266,7 +271,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testWorkFlowNoNSChange() throws Exception {
         Long transId = createTransaction(domainVO, userAC, "submitter@email.com").getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 3);
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 3);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 3);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
@@ -289,7 +294,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testWorkFlowWithNSChange() throws Exception {
         Long transId = createTransaction(domainVONS, userAC).getTransactionID();
         assertPersistentNotifications(transId, "contact-confirmation", 2);
-        acceptPENDING_CONTACT_CONFIRMATION(userAC, transId, 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 2);
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
@@ -302,6 +307,24 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
 
     private void assertPersistentNotifications(Long transId, int count) throws Exception {
         assertPersistentNotifications(transId, null, count);
+    }
+
+    @Test(expectedExceptions = {AccessDeniedException.class})
+    public void testAccessDeniedWhenAcceptByWrongUser() throws Exception {
+        TransactionVO transactionVO = createTransactions(domainVO, false).get(0);
+        setUser(userTC);
+        transactionVO = gsts.get(transactionVO.getTransactionID());
+        List<String> tokens = transactionVO.getTokens(SystemRoleVO.SystemType.AC);
+        gsts.acceptTransaction(transactionVO.getTransactionID(), tokens.get(0));
+    }
+
+    @Test(expectedExceptions = {AccessDeniedException.class})
+    public void testAccessDeniedWhenRejectByWrongUser() throws Exception {
+        TransactionVO transactionToReject = createTransactions(domainVO, false).get(0);
+        setUser(userTC);
+        transactionToReject = gsts.get(transactionToReject.getTransactionID());
+        List<String> tokens = transactionToReject.getTokens(SystemRoleVO.SystemType.AC);
+        gsts.rejectTransaction(transactionToReject.getTransactionID(), tokens.get(0));
     }
 
     @AfterMethod(alwaysRun = true)

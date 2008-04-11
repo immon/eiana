@@ -13,16 +13,22 @@ public class ConfirmationVO implements Serializable {
     private boolean confirmed;
     private String contactName;
     private boolean newContact;
+    private String token;
 
     public ConfirmationVO() {
     }
 
     public ConfirmationVO(String domainName, SystemRoleVO.SystemType role, boolean confirmed, String contactName, boolean newContact) {
+        this(domainName, role, confirmed, contactName, newContact, "");
+    }
+
+    public ConfirmationVO(String domainName, SystemRoleVO.SystemType role, boolean confirmed, String contactName, boolean newContact, String token) {
         this.domainName = domainName;
         this.role = role;
         this.confirmed = confirmed;
         this.contactName = contactName;
         this.newContact = newContact;
+        this.token = token;
     }
 
     public SystemRoleVO.SystemType getRole() {
@@ -86,5 +92,13 @@ public class ConfirmationVO implements Serializable {
 
     public void setDomainName(String domainName) {
         this.domainName = domainName;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

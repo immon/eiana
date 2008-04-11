@@ -282,6 +282,7 @@
           class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService" scope="session">
         <constructor-arg ref="userManager"/>
         <constructor-arg ref="SystemTransactionServiceBean"/>
+        <constructor-arg ref="transactionManagerBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 

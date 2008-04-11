@@ -1,19 +1,13 @@
 package org.iana.rzm.facade.services;
 
-import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.user.*;
 
-import java.util.Set;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * A helper implementation of <code>RZMStatefulService</code>. It contains
@@ -25,6 +19,7 @@ import java.util.Collection;
 abstract public class AbstractRZMStatefulService implements RZMStatefulService {
 
     protected UserManager userManager;
+    
     protected AuthenticatedUser user;
 
     protected AbstractRZMStatefulService() {
@@ -48,8 +43,12 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         this.user = null;
     }
 
-    protected RZMUser getRZMUser() {
-        return userManager.get(user.getObjId());
+    protected RZMUser getRZMUser() throws AccessDeniedException {
+        if (user == null) throw new AccessDeniedException("no authenticated user");
+        RZMUser ret = userManager.get(user.getObjId());
+        if (ret == null) throw new AccessDeniedException("rzm user not found");
+        if (!ret.isActive()) throw new AccessDeniedException("user " + ret.getName() + " is not active");
+        return ret;
     }
 
     protected Set<String> getRoleDomainNames() {
@@ -63,28 +62,56 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
         return ret;
     }
 
-    protected void isUserInRole(Role role) throws AccessDeniedException {
-        if (user == null) throw new AccessDeniedException("no authenticated user");
-        RZMUser rzmUser = getRZMUser();
-        if (!rzmUser.isInRole(role, roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + role);            
+    public static final Role IANA = new AdminRole(AdminRole.AdminType.IANA);
+
+    public static final Role GOV = new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
+
+    public static final List<Role> IANA_GOV = Arrays.asList(IANA, GOV);
+
+    final protected void isIanaOrGOV() throws AccessDeniedException {
+        isUserInRole(IANA_GOV);
     }
 
-    protected void isUserInRole(Collection<Role> roles) throws AccessDeniedException {
-        if (user == null) throw new AccessDeniedException("no authenticated user");
+    final protected void isIana() throws AccessDeniedException {
         RZMUser rzmUser = getRZMUser();
-        if (!rzmUser.isInAnyRole(new HashSet<Role>(roles), roleComparator)) throw new AccessDeniedException("authenticated user not in role: " + roles);
+        if (!rzmUser.isInRole(IANA)) throw new AccessDeniedException("authenticated user not in the role IANA");
     }
 
-    static RoleComparator roleComparator = new RoleComparator();
+    final protected void isGov() throws AccessDeniedException {
+        RZMUser rzmUser = getRZMUser();
+        if (!rzmUser.isInRole(GOV)) throw new AccessDeniedException("authenticated user not in the role GOV_OVERSIGHT");
+    }
 
-    public static class RoleComparator implements Comparator<Role> {
-        public int compare(Role o1, Role o2) {
-            if (o1.getClass() != o2.getClass()) {
-                return o1.getClass().getName().compareTo(o2.getClass().getName());
-            }
-            return o1.getType().toString().compareTo(o2.getType().toString());
-            //return ret == 0 ? Boolean.valueOf(o1.isEnabled()).compareTo(o2.isEnabled()) : ret;
-        }
+    final protected void isAdmin() throws AccessDeniedException {
+        RZMUser rzmUser = getRZMUser();
+        if (!rzmUser.isAdmin()) throw new AccessDeniedException("authenticated user not in the admin role");
+    }
+
+
+    final protected void isUserInIanaOrDomainRole(String domainName) throws AccessDeniedException {
+        if (domainName == null) throw new AccessDeniedException("null domain");
+        List<Role> roles = new ArrayList<Role>();
+        roles.add(IANA);
+        roles.add(new SystemRole(SystemRole.SystemType.AC, domainName));
+        roles.add(new SystemRole(SystemRole.SystemType.TC, domainName));
+        roles.add(new SystemRole(SystemRole.SystemType.SO, domainName));
+        isUserInRole(roles);
+    }
+
+    final protected void isUserInIanaGovOrDomainRole(String domainName) throws AccessDeniedException {
+        if (domainName == null) throw new AccessDeniedException("null domain");
+        List<Role> roles = new ArrayList<Role>();
+        roles.add(IANA);
+        roles.add(GOV);
+        roles.add(new SystemRole(SystemRole.SystemType.AC, domainName));
+        roles.add(new SystemRole(SystemRole.SystemType.TC, domainName));
+        roles.add(new SystemRole(SystemRole.SystemType.SO, domainName));
+        isUserInRole(roles);
+    }
+
+    final protected void isUserInRole(Collection<Role> roles) throws AccessDeniedException {
+        RZMUser rzmUser = getRZMUser();
+        if (!rzmUser.isInAnyRole(roles)) throw new AccessDeniedException("authenticated user not in the role: " + roles);
     }
 
     public AuthenticatedUser getAuthenticatedUser() {

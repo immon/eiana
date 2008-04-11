@@ -46,6 +46,10 @@ public class SystemRole extends Role implements Cloneable {
         super(type);
     }
 
+    public SystemRole(Type type, String name) {
+        this(type, name, true, false);
+    }
+
     public SystemRole(Type type, String name, boolean acceptFrom, boolean mustAccept) {
         super(type);
         this.name = new Name(name);
@@ -123,10 +127,7 @@ public class SystemRole extends Role implements Cloneable {
 
         SystemRole that = (SystemRole) o;
 
-        if (acceptFrom != that.acceptFrom) return false;
         if (accessToDomain != that.accessToDomain) return false;
-        if (mustAccept != that.mustAccept) return false;
-        if (notify != that.notify) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
 
         return true;
@@ -135,9 +136,6 @@ public class SystemRole extends Role implements Cloneable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (notify ? 1 : 0);
-        result = 31 * result + (acceptFrom ? 1 : 0);
-        result = 31 * result + (mustAccept ? 1 : 0);
         result = 31 * result + (accessToDomain ? 1 : 0);
         return result;
     }

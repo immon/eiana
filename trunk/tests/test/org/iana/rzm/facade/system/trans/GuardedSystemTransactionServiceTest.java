@@ -13,6 +13,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.conf.DefinedTestProcess;
@@ -28,7 +29,6 @@ import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -142,11 +142,10 @@ public class GuardedSystemTransactionServiceTest {
         transaction = gsts.get(transaction.getTransactionID());
         gsts.setUser(userIANA);
         transaction = gsts.get(transaction.getTransactionID());
-        List<String> tokens = transaction.getTokens();
-        assert tokens.size() == 2;
-        Iterator<String> tokenIterator = tokens.iterator();
+        List<String> tokens = transaction.getTokens(SystemRoleVO.SystemType.AC);
+        assert tokens.size() == 1;
 
-        gsts.acceptTransaction(transaction.getTransactionID(), tokenIterator.next());
+        gsts.acceptTransaction(transaction.getTransactionID(), tokens.get(0));
         transaction = gsts.get(transaction.getTransactionID());
         assert transaction != null;
         assert transaction.getState() != null;
@@ -155,7 +154,10 @@ public class GuardedSystemTransactionServiceTest {
 
         gsts.setUser(userTc);
 
-        gsts.acceptTransaction(transaction.getTransactionID(), tokenIterator.next());
+        tokens = transaction.getTokens(SystemRoleVO.SystemType.TC);
+        assert tokens.size() == 1;
+
+        gsts.acceptTransaction(transaction.getTransactionID(), tokens.get(0));
         transaction = gsts.get(transaction.getTransactionID());
         assert transaction != null;
         assert transaction.getState() != null;
@@ -176,7 +178,7 @@ public class GuardedSystemTransactionServiceTest {
         TransactionVO transactionToReject = gsts.createTransactions(domain, false).get(0);
         gsts.setUser(userTc);
         transactionToReject = gsts.get(transactionToReject.getTransactionID());
-        List<String> tokens = transactionToReject.getTokens();
+        List<String> tokens = transactionToReject.getTokens(SystemRoleVO.SystemType.TC);
         assert tokens.size() > 0;
         gsts.rejectTransaction(transactionToReject.getTransactionID(), tokens.iterator().next());
         transactionToReject = gsts.get(transactionToReject.getTransactionID());

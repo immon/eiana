@@ -20,6 +20,7 @@ import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
@@ -131,7 +132,7 @@ public abstract class CommonGuardedSystemTransaction {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
         TransactionVO trans = gsts.get(transId);
-        List<String> tokens = trans.getTokens();
+        List<String> tokens = trans.getTokens(SystemRoleVO.SystemType.AC);
         assert tokens.size() > 0;
         gsts.rejectTransaction(transId, tokens.iterator().next());
         assert isTransactionInDesiredState("REJECTED", transId);
@@ -194,7 +195,7 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId, int tokenCount) throws Exception {
-        setUser(user); //userAC
+        setUser(user);
         TransactionVO trans = gsts.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
@@ -207,7 +208,7 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(RZMUser user, long transId, int tokenCount) throws Exception {
-        setUser(user); //userAC
+        setUser(user);
         TransactionVO trans = gsts.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
@@ -267,6 +268,10 @@ public abstract class CommonGuardedSystemTransaction {
 
     protected void setUser(String loginName) throws Exception {
         AuthenticatedUser authUser = authService.authenticate(new PasswordAuth(loginName, ""));
+        setUser(authUser);
+    }
+
+    protected void setUser(AuthenticatedUser authUser) {
         gsts.setUser(authUser);
         gsds.setUser(authUser);
         ats.setUser(authUser);

@@ -1,20 +1,19 @@
 package org.iana.rzm.system.failure;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.dao.DomainDAO;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.domain.dao.DomainDAO;
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.system.conf.SpringSystemApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class GuardedSystemDomainServiceFailureTest {
         DomainVO domainVO = (DomainVO) gsds.getDomain(domainId2);
     }
 
-    @Test (expectedExceptions = {NoObjectFoundException.class},
+    @Test (expectedExceptions = {AccessDeniedException.class},
             dependsOnMethods = {"testGetDomainByWrongId"})
     public void testGetDomainByWrongName() throws Exception {
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(generateUser());

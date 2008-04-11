@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -152,6 +153,18 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
         this.tokens = tokens;
     }
 
+    public List<String> getTokens(SystemRoleVO.SystemType type) {
+        List<String> ret = new ArrayList<String>();
+        for (ConfirmationVO conf : getLastConfirmations()) {
+            if (conf.getRole() == type) ret.add(conf.getToken());
+        }
+        return ret;
+    }
+
+    public Set<ConfirmationVO> getLastConfirmations() {
+        return impactedPartyConfirmations.size() > 0 ? impactedPartyConfirmations : confirmations;
+    }
+
     public boolean isRedelegation() {
         return redelegation;
     }
@@ -169,24 +182,25 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     }
 
     public boolean acConfirmed() {
-        for (ConfirmationVO conf : confirmations)
-            if (conf.getRole() == SystemRoleVO.SystemType.AC && conf.isConfirmed())
-                return true;
-        return false;
+        return confirmed(SystemRoleVO.SystemType.AC);
     }
 
     public boolean tcConfirmed() {
-        for (ConfirmationVO conf : confirmations)
-            if (conf.getRole() == SystemRoleVO.SystemType.TC && conf.isConfirmed())
-                return true;
-        return false;
+        return confirmed(SystemRoleVO.SystemType.TC);
     }
 
     public boolean soConfirmed() {
+        return confirmed(SystemRoleVO.SystemType.SO);
+    }
+
+    private boolean confirmed(SystemRoleVO.SystemType role) {
+        boolean ret = false;
         for (ConfirmationVO conf : confirmations)
-            if (conf.getRole() == SystemRoleVO.SystemType.SO && conf.isConfirmed())
-                return true;
-        return false;
+            if (conf.getRole() == role) {
+                if (!conf.isConfirmed()) return false;
+                else ret = true;
+            }
+        return ret;
     }
 
     public Set<ConfirmationVO> getConfirmations() {

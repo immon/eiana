@@ -7,6 +7,7 @@ import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -77,7 +78,7 @@ public class ContactConfirmations extends AbstractConfirmation {
     public Set<SystemRole.SystemType> getContactsThatAccepted() {
         Set<SystemRole.SystemType> ret = new HashSet<SystemRole.SystemType>();
         for (ContactIdentity id : receivedConfirmations) {
-            ret.add((SystemRole.SystemType) id.getType());
+            ret.add(id.getType());
         }
         return ret;
     }
@@ -88,5 +89,21 @@ public class ContactConfirmations extends AbstractConfirmation {
 
     public void setStateName(TransactionState.Name stateName) {
         this.stateName = stateName;
+    }
+
+    public SystemRole getRoleForToken(String token) {
+        CheckTool.checkNull(token, "token");
+        SystemRole ret = find(token, outstandingConfirmations);
+        if (ret == null) ret = find(token, receivedConfirmations);
+        return ret;
+    }
+
+    private SystemRole find(String token, Set<ContactIdentity> confirmations) {
+        for (ContactIdentity id : confirmations) {
+            if (token.equals(id.getToken())) {
+                return new SystemRole(id.getType(), id.getDomainName());
+            }
+        }
+        return null;
     }
 }

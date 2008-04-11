@@ -85,7 +85,12 @@ public class UserServicesImpl implements UserServices {
     }
 
     public void setAccessToDomain(long domainId, long userId, boolean access) {
-        domainService.setAccessToDomain(userId, domainId, access);
+        try {
+            domainService.setAccessToDomain(userId, domainId, access);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
     }
 
     public UserVOWrapper getUser() {

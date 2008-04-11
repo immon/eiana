@@ -10,6 +10,8 @@ import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -44,7 +46,10 @@ public class DomainAccessTest {
         user2.setLoginName("domainaccess-user2");
         user2.addRole(new SystemRole(SystemRole.SystemType.AC, "domainaccess1", true, true));
         userManager.create(user2);
-
+        RZMUser user3 = new RZMUser();
+        user3.setLoginName("iana");
+        user3.addRole(new AdminRole(AdminRole.AdminType.IANA));
+        userManager.create(user3);
         domainManager.create(new Domain("domainaccess1"));
         domainManager.create(new Domain("domainaccess2"));
     }
@@ -62,68 +67,76 @@ public class DomainAccessTest {
     }
 
     public void testFindUserDomainsAllAccess() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", true);
         setAccessToDomain("domainaccess-user1", "domainaccess2", true);
+        setUser("domainaccess-user1");
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 2;
     }
 
     public void testUserAllAccess() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", true);
         setAccessToDomain("domainaccess-user1", "domainaccess2", true);
+        setUser("domainaccess-user1");
         UserVO user = domainService.getUser();
         assert user.hasAccessToDomain("domainaccess1");
         assert user.hasAccessToDomain("domainaccess2");
     }
 
     public void testFindUserDomainsAccess1() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", true);
         setAccessToDomain("domainaccess-user1", "domainaccess2", false);
+        setUser("domainaccess-user1");
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 1;
     }
 
     public void testUserAccess1() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", true);
         setAccessToDomain("domainaccess-user1", "domainaccess2", false);
+        setUser("domainaccess-user1");
         UserVO user = domainService.getUser();
         assert user.hasAccessToDomain("domainaccess1");
         assert !user.hasAccessToDomain("domainaccess2");
     }
 
     public void testFindUserDomainsAccess2() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", false);
         setAccessToDomain("domainaccess-user1", "domainaccess2", true);
+        setUser("domainaccess-user1");
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 1;
     }
 
     public void testUserAccess2() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", false);
         setAccessToDomain("domainaccess-user1", "domainaccess2", true);
+        setUser("domainaccess-user1");
         UserVO user = domainService.getUser();
         assert !user.hasAccessToDomain("domainaccess1");
         assert user.hasAccessToDomain("domainaccess2");
     }
 
     public void testFindUserDomainsNoAccess() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", false);
         setAccessToDomain("domainaccess-user1", "domainaccess2", false);
+        setUser("domainaccess-user1");
         List<SimpleDomainVO> domains = domainService.findUserDomains();
         assert domains.size() == 0;
     }
 
     public void testUserNoAccess() throws Exception {
-        setUser("domainaccess-user1");
+        setUser("iana");
         setAccessToDomain("domainaccess-user1", "domainaccess1", false);
         setAccessToDomain("domainaccess-user1", "domainaccess2", false);
+        setUser("domainaccess-user1");
         UserVO user = domainService.getUser();
         assert !user.hasAccessToDomain("domainaccess1");
         assert !user.hasAccessToDomain("domainaccess2");
@@ -133,7 +146,7 @@ public class DomainAccessTest {
         domainService.setUser(authService.authenticate(new PasswordAuth(userName, "")));
     }
 
-    private void setAccessToDomain(String userName, String domainName, boolean access) {
+    private void setAccessToDomain(String userName, String domainName, boolean access) throws InfrastructureException {
         domainService.setAccessToDomain(userManager.get(userName).getObjId(), domainManager.get(domainName).getObjId(), access);
     }
 
