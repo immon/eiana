@@ -1,16 +1,13 @@
 package org.iana.rzm.trans;
 
 import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionDetectorService;
 import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
@@ -75,7 +72,7 @@ public class NameServerChangeTransactionTest {
     }
 
     @Test
-    public void testNameServersChange() throws InfrastructureException, NoDomainModificationException, NoObjectFoundException {
+    public void testNameServersChange() throws Exception {
         TransactionVO transaction = null;
 
         List<HostVO> ns = domain.getNameServers();

@@ -1,30 +1,17 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
-import org.iana.rzm.facade.system.domain.vo.ContactVO;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-
 /**
+ * Excluded: at this moment parallel transactions can be only the result of a split.
+ *
  * @author: Piotr Tkaczyk
  */
 
 @Test(sequential = true, groups = {"facade-system", "ParallelGuardedSystemTransactionWorkFlowTest"})
 public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
 
+/*
     RZMUser userAC, userTC, userIANA, userUSDoC;
     IDomainVO firstModificationVO, secondModificationVO;
     Domain domain;
@@ -153,9 +140,13 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
 
     }
 
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
+        processDAO.deleteAll();
+    }
+
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())
@@ -170,4 +161,5 @@ public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedS
             return o1.getName().compareTo(o2.getName());
         }
     }
+*/
 }

@@ -11,6 +11,7 @@ import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
 
 
 /**
@@ -303,9 +304,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, null, count);
     }
 
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransaction() {
+        processDAO.deleteAll();
+    }
+
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
 /*
         for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
             notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);

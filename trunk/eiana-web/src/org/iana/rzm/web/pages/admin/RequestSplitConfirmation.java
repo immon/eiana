@@ -144,6 +144,8 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
+        } catch (TransactionExistsException e) {
+            // todo: properly handle in the UI
         }
     }
 

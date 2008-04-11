@@ -12,6 +12,7 @@ import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -122,9 +123,13 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
         closeServices();
     }
 
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
+        processDAO.deleteAll();
+    }
+    
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

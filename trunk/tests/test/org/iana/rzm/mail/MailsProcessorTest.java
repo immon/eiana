@@ -32,6 +32,7 @@ import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.iana.test.spring.TransactionalSpringContextTests;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
 
 import java.io.*;
 import java.util.*;
@@ -283,8 +284,12 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
     }
 */
 
-    protected void cleanUp() throws Exception {
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
         processDAO.deleteAll();
+    }
+    
+    protected void cleanUp() throws Exception {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

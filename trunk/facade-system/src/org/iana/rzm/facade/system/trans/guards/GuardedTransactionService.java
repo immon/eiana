@@ -11,10 +11,7 @@ import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
-import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.user.*;
 
@@ -92,7 +89,7 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         delegate.setUser(user);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
         isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain);
     }
@@ -102,17 +99,17 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
         return delegate.getByTicketID(id);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
         isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain, splitNameServerChange);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
         isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException {
         isUserInCreateTransactionRole(domain.getName());
         return delegate.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }
