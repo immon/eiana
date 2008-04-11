@@ -8,32 +8,22 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.RoleManager;
 import org.iana.rzm.user.UserManager;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk
  */
 public class GuardedAdminRoleServiceBean extends AbstractFinderService<RoleVO> implements AdminRoleService {
 
-    private static Set<Role> allowedRoles = new HashSet<Role>();
-
-    static {
-        allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
-    }
-
     RoleManager roleManager;
 
-
     private void isUserInRole() throws AccessDeniedException {
-        isUserInRole(allowedRoles);
+        isIana();
     }
 
     public GuardedAdminRoleServiceBean(UserManager userManager, RoleManager roleManager) {

@@ -62,17 +62,17 @@ public class TransactionConverter {
 
         Set<ContactIdentity> received = trans.getIdentitiesThatAccepted(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
         for (ContactIdentity cid : received)
-            ret.addConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact()));
+            ret.addConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact(), cid.getToken()));
         Set<ContactIdentity> outstanding = trans.getIdentitiesSupposedToAccept(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
         for (ContactIdentity cid : outstanding)
-            ret.addConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
+            ret.addConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact(), cid.getToken()));
 
         Set<ContactIdentity> impactedPartyReceived = trans.getIdentitiesThatAccepted(TransactionState.Name.PENDING_IMPACTED_PARTIES);
         for (ContactIdentity cid : impactedPartyReceived)
-            ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact()));
+            ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), true, cid.getName(), cid.isNewContact(), cid.getToken()));
         Set<ContactIdentity> impactedPartyOutstanding = trans.getIdentitiesSupposedToAccept(TransactionState.Name.PENDING_IMPACTED_PARTIES);
         for (ContactIdentity cid : impactedPartyOutstanding)
-            ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact()));
+            ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact(), cid.getToken()));
 
         Set<Domain> impactedDomains = trans.getImpactedDomains();
         if (impactedDomains != null) {

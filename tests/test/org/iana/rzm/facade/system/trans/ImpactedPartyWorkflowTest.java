@@ -103,7 +103,7 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         // 3 group/trans -> notimpactedhost + registry url
         TransactionVO t1 = trans.get(0);
         acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(userIANA, t1.getTransactionID(), 2);
-        acceptPENDING_IMPACTED_PARTIES(userAC, t1.getTransactionID(), 4);
+        acceptPENDING_IMPACTED_PARTIES(userIANA, t1.getTransactionID(), 4);
 
         TransactionVO t2 = trans.get(1);
         acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(userIANA, t2.getTransactionID(), 2);

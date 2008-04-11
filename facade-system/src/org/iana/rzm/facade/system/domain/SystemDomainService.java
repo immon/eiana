@@ -78,7 +78,7 @@ public interface SystemDomainService extends RZMStatefulService {
      * @param domainId domain identifier
      * @param access access to be set
      */
-    void setAccessToDomain(long userId, long domainId, boolean access) throws AccessDeniedException;
+    void setAccessToDomain(long userId, long domainId, boolean access) throws AccessDeniedException, InfrastructureException;
 
     /**
      * <p>Returns a list of users, who have a role for the domain <code>domainName</code>,

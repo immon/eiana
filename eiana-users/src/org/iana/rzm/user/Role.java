@@ -53,7 +53,6 @@ public abstract class Role implements TrackedObject, Cloneable {
 
         Role role = (Role) o;
 
-        if (trackData != null ? !trackData.equals(role.trackData) : role.trackData != null) return false;
         if (getType() != null ? !getType().equals(role.getType()) : role.getType() != null) return false;
 
         return true;
@@ -62,7 +61,6 @@ public abstract class Role implements TrackedObject, Cloneable {
     public int hashCode() {
         int result;
         result = (getType() != null ? getType().hashCode() : 0);
-        result = 31 * result + (trackData != null ? trackData.hashCode() : 0);
         return result;
     }
 

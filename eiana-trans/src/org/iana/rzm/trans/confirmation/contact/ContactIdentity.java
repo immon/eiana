@@ -58,7 +58,7 @@ public class ContactIdentity implements Identity, Cloneable {
         return objId;
     }
 
-    public SystemRole.Type getType() {
+    public SystemRole.SystemType getType() {
         return type;
     }
 

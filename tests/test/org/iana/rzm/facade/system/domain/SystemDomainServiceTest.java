@@ -75,7 +75,7 @@ public class SystemDomainServiceTest extends TransactionalSpringContextTests {
     }
 
     @Test
-    public void testSetAccessToDomain() {
+    public void testSetAccessToDomain() throws Exception {
         RZMUser[] users = getUsers();
         Domain domain1 = domainManager.get(DOMAIN_NAME_1);
         Domain domain2 = domainManager.get(DOMAIN_NAME_2);

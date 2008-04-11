@@ -255,6 +255,7 @@
           class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService">
         <constructor-arg ref="userManager"/>
         <constructor-arg ref="SystemTransactionServiceBean"/>
+        <constructor-arg ref="transactionManagerBean"/>
     </bean>
 
     <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.TransactionServiceImpl">

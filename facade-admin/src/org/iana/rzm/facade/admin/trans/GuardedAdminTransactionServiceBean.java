@@ -15,8 +15,8 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionDetectorService;
-import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
 import org.iana.rzm.facade.system.trans.TransactionExistsException;
+import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
@@ -24,13 +24,9 @@ import org.iana.rzm.trans.*;
 import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationAlreadyReceived;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationMismatch;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.Role;
 import org.iana.rzm.user.UserManager;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author: Piotr Tkaczyk
@@ -39,25 +35,13 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
     private static Logger logger = Logger.getLogger(GuardedAdminTransactionServiceBean.class);
     
-    private static Set<Role> allowedRoles = new HashSet<Role>();
-
-    private static Set<Role> govRoles = new HashSet<Role>();
-
-    static {
-        allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
-
-        govRoles.addAll(allowedRoles);
-        govRoles.add(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
-    }
-
     public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck) {
         super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck);
     }
 
     private void isUserInRole() throws AccessDeniedException {
-        isUserInRole(allowedRoles);
+        isIana();
     }
-
 
     public TransactionVO getTransaction(long id) throws NoObjectFoundException, AccessDeniedException {
         isUserInRole();
@@ -76,7 +60,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
     }
 
     public TransactionVO createCreationTransaction(DomainVO domainVO, boolean performTechnicalCheck) throws NoDomainSystemUsersException, InvalidCountryCodeException, AccessDeniedException {
-        isUserInRole();
+        isUserInIanaOrDomainRole();
         if (userManager.findUsersInSystemRole(domainVO.getName(), null, true, false).isEmpty())
             throw new NoDomainSystemUsersException(domainVO.getName());
         domainManager.create(new Domain(domainVO.getName()));
@@ -260,7 +244,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
 
     public void approveByUSDoC(long id) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
-        isUserInRole(govRoles);
+        isIanaOrGOV();
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
@@ -274,7 +258,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
     }
 
     public void rejectByUSDoC(long id) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
-        isUserInRole(govRoles);
+        isIanaOrGOV();
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
@@ -288,7 +272,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
     }
 
     public void confirmByUSDoC(long id, boolean nsChange, boolean accept) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {
-        isUserInRole(govRoles);
+        isIanaOrGOV();
         Transaction transaction;
         try {
             transaction = transactionManager.getTransaction(id);

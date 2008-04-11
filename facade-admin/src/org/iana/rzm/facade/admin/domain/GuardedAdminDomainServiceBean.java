@@ -22,18 +22,12 @@ import java.util.*;
 
 public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomainVO> implements AdminDomainService {
 
-    private static Set<Role> allowedRoles = new HashSet<Role>();
-
-    static {
-        allowedRoles.add(new AdminRole(AdminRole.AdminType.IANA));
-    }
-
     DomainManager domainManager;
 
     DomainExporter domainExporter;
 
     private void isUserInRole() throws AccessDeniedException {
-        isUserInRole(allowedRoles);
+        isIana();
     }
 
     public GuardedAdminDomainServiceBean(UserManager userManager, DomainManager domainManager, DomainExporter domainExporter) {

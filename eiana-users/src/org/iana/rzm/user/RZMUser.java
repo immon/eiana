@@ -205,6 +205,14 @@ public class RZMUser  implements TrackedObject, Cloneable {
         return Collections.unmodifiableList(roles);
     }
 
+    final public List<Role> getActiveRoles() {
+        List<Role> ret = new ArrayList<Role>();
+        for (Role role : roles) {
+            if (role.isEnabled()) ret.add(role);
+        }
+        return ret;
+    }
+
     final public void setRoles(List<Role> roles) {
         this.roles.clear();
         this.roles.addAll(roles);
@@ -231,7 +239,7 @@ public class RZMUser  implements TrackedObject, Cloneable {
         return false;
     }
     
-    final public boolean isInAnyRole(Set<Role> roles, Comparator<? super Role> comparator) {
+    final public boolean isInAnyRole(Collection<Role> roles, Comparator<? super Role> comparator) {
         if (roles != null) {
             for (Role role : roles) {
                 if (isInRole(role, comparator)) return true;
@@ -241,12 +249,27 @@ public class RZMUser  implements TrackedObject, Cloneable {
     }
 
     final public boolean isInRole(Role role, Comparator<? super Role> comparator) {
-        for (Role r : roles) {
+        for (Role r : getActiveRoles()) {
             if (comparator.compare(r, role) == 0) return true;
         }
         return false;
     }
 
+    final public boolean isInAnyRole(Collection<Role> roles) {
+        if (roles != null) {
+            for (Role role : roles) {
+                if (isInRole(role)) return true;
+            }
+        }
+        return false;
+    }
+
+    final public boolean isInRole(Role role) {
+        for (Role r : getActiveRoles()) {
+            if (r.equals(role)) return true;
+        }
+        return false;
+    }
 
     public void setCreated(Timestamp created) {
         trackData.setCreated(created);
