@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
 
 /**
  * @author: Piotr Tkaczyk
@@ -114,9 +115,13 @@ public class SetTransactionTicketIdTest {
         return newDomain;
     }
 
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
+        processDAO.deleteAll();
+    }
+    
     @AfterClass (alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

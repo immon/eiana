@@ -10,6 +10,7 @@ import org.iana.rzm.user.RZMUser;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
 
 import java.util.List;
 
@@ -62,9 +63,13 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
         closeServices();
     }
 
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
+        processDAO.deleteAll();
+    }
+
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

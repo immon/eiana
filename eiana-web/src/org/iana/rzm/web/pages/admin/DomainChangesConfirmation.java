@@ -137,6 +137,8 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
             setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
+        } catch (TransactionExistsException e) {
+            // todo: properly handle this exception in the UI
         }
     }
 

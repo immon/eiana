@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,7 @@ public class TransitTransactionToStateTest {
     @Test
     public void testTransitTransactionToState() throws Exception {
         for (String state : states.keySet()) {
+            processDAO.deleteAll();
             createDomainModificationProcess(DOMAIN_NAME_2);
             gAdminTransactionServ.transitTransactionToState(transactionID, state);
             TransactionVO transactionVO = gAdminTransactionServ.get(transactionID);
@@ -140,9 +142,13 @@ public class TransitTransactionToStateTest {
         return newDomain;
     }
 
+    @AfterMethod(alwaysRun = true)
+    public void deleteTransactions() {
+        processDAO.deleteAll();
+    }
+
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())

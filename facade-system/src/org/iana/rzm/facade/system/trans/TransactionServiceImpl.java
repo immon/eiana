@@ -67,7 +67,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         return TransactionConverter.toTransactionVOList(trans);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
         try {
             return createTransactions(domain, false, null, false, null);
         } catch (DNSTechnicalCheckException e) {
@@ -76,7 +76,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
         try {
             return createTransactions(domain, splitNameServerChange, null, false, null);
         } catch (DNSTechnicalCheckException e) {
@@ -85,7 +85,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
         try {
             return createTransactions(domain, splitNameServerChange, submitterEmail, false, null);
         } catch (DNSTechnicalCheckException e) {
@@ -94,9 +94,10 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException {
         CheckTool.checkNull(domain, "null domain");
 
+        existsTransaction(domain.getName());
         try {
             Domain currentDomain = domainManager.get(domain.getName());
             if (currentDomain == null) throw new NoObjectFoundException(domain.getName(), "domain");
@@ -132,6 +133,11 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         } catch (CloneNotSupportedException e) {
             throw new InfrastructureException(e);
         }
+    }
+
+    private void existsTransaction(String domainName) throws TransactionExistsException {
+        List<Transaction> list = transactionManager.findOpenTransactions(domainName);
+        if (list.size() > 0) throw new TransactionExistsException(domainName);
     }
 
     private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, boolean performTechnicalCheck, String comment) throws NoModificationException, CloneNotSupportedException {

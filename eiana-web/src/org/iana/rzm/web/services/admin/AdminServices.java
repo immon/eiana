@@ -25,12 +25,12 @@ import java.util.*;
 public interface AdminServices extends RzmServices {
 
     List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
-        throws
-        AccessDeniedException,
-        NoObjectFoundException,
-        NoDomainModificationException,
-        InvalidCountryCodeException,
-        DNSTechnicalCheckExceptionWrapper;
+            throws
+            AccessDeniedException,
+            NoObjectFoundException,
+            NoDomainModificationException,
+            InvalidCountryCodeException,
+            DNSTechnicalCheckExceptionWrapper, TransactionExistsException;
 
 
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException;

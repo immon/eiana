@@ -235,6 +235,8 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
+        } catch (TransactionExistsException e) {
+            // todo: properly handle this exception in the UI
         }
     }
 }

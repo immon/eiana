@@ -327,7 +327,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         }
 
         public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle)
-            throws NoObjectFoundException, NoDomainModificationException {
+                throws NoObjectFoundException, NoDomainModificationException, TransactionExistsException {
 
             TransactionActionsVOWrapper changes = services.getChanges(domainVOWrapper);
             if (changes.offerSeparateRequest() || changes.mustSplitrequest()) {
