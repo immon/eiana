@@ -10,6 +10,14 @@ import java.util.List;
  */
 public class IPAddressValidator {
 
+    public void validate(String address) throws InvalidIPAddressException {
+        try {
+            validateIPv4(address);
+        } catch (InvalidIPv4AddressException e) {
+            validateIPv6(address);
+        }
+    }
+    
     public void validateIPv4(String address) throws InvalidIPv4AddressException {
         if (address == null) throw new IllegalArgumentException("empty ipv4 address");
         List<String> pieces = Arrays.asList(address.split("\\."));

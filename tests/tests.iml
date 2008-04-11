@@ -45,6 +45,7 @@
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="library" name="epp" level="project" />
     <orderEntry type="library" name="xerces" level="project" />
+    <orderEntry type="module" module-name="eiana-startup" />
     <orderEntryProperties />
   </component>
 </module>

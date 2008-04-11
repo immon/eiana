@@ -39,6 +39,7 @@
         <mapping class="org.iana.rzm.domain.Contact"/>
         <mapping class="org.iana.rzm.domain.Domain"/>
         <mapping class="org.iana.rzm.domain.Host"/>
+        <mapping class="org.iana.rzm.domain.WhoisName"/>
         <mapping class="org.iana.rzm.domain.IPv4Address"/>
         <mapping class="org.iana.rzm.domain.IPv6Address"/>
 
