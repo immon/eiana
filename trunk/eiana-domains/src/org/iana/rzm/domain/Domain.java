@@ -60,7 +60,7 @@ public class Domain implements TrackedObject, Cloneable {
     @Embedded
     @AttributeOverride(name = "name",
             column = @Column(name = "whoisServer"))
-    private Name whoisServer;
+    private WhoisName whoisServer;
     @CollectionOfElements
     @JoinTable(name = "Domain_Breakpoints")
     @Column(name = "breakpoint", nullable = false)
@@ -246,7 +246,7 @@ public class Domain implements TrackedObject, Cloneable {
     }
 
     final public void setWhoisServer(String whoisServer) throws InvalidDomainNameException {
-        this.whoisServer = whoisServer == null ? null : new Name(whoisServer);
+        this.whoisServer = whoisServer == null ? null : new WhoisName(whoisServer);
     }
 
     final public Set<Breakpoint> getBreakpoints() {
@@ -346,7 +346,7 @@ public class Domain implements TrackedObject, Cloneable {
                 }
             }
             if (whoisServer != null)
-                newDomain.whoisServer = (Name) whoisServer.clone();
+                newDomain.whoisServer = (WhoisName) whoisServer.clone();
             newDomain.registryUrl = registryUrl;
 
             Set<Breakpoint> newBreakpoints = new HashSet<Breakpoint>();
