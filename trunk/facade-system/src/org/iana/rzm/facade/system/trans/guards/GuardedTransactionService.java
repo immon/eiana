@@ -1,27 +1,21 @@
 package org.iana.rzm.facade.system.trans.guards;
 
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.services.AbstractRZMStatefulService;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.criteria.*;
+import org.iana.dns.check.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.services.*;
+import org.iana.rzm.facade.system.domain.vo.*;
+import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.user.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * A guarded version of <code>SystemTransactionService</code> which provides a role checking before calling
@@ -69,7 +63,7 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
             RZMUser user = getRZMUser();
             if (user.isAdmin()) return;
             if (user.isInRole(role)) return;
-            throw new AccessDeniedException("user " + user.getName() + " does not have the admin role or the following role: " + role + " (token: " + token + ")");
+            throw new AccessDeniedException("User " + user.getName() + " is not an  " + role.getType().name() + " for domain " + role.getName() + "  (token: " + token + ")");
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(transactionId, "transaction");
         }

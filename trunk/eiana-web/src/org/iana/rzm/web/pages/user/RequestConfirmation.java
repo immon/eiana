@@ -1,21 +1,14 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Bean;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.web.model.ActionVOWrapper;
-import org.iana.rzm.web.model.ChangeMessageBuilder;
-import org.iana.rzm.web.model.ChangeVOWrapper;
-import org.iana.rzm.web.model.TransactionVOWrapper;
-import org.iana.rzm.web.util.CounterBean;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.util.*;
 
-import java.util.List;
+import java.util.*;
 
 public abstract class RequestConfirmation extends UserPage implements PageBeginRenderListener {
 
@@ -100,7 +93,8 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         } catch (AccessDeniedException e) {
-            getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
+            setErrorMessage("Invalid token or " + e.getMessage());
+            //getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
 
     }

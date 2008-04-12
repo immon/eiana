@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.system.domain.converters;
 
-import org.iana.rzm.common.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.common.validators.*;
 import org.iana.rzm.domain.*;
@@ -66,7 +65,7 @@ public class DomainToVOConverter {
 
         toDomainVO.setRegistryUrl(fromDomain.getRegistryUrl());
 
-        if (fromDomain.getWhoisServer() != null) toDomainVO.setWhoisServer(new Name(fromDomain.getWhoisServer()));
+        if (fromDomain.getWhoisServer() != null) toDomainVO.setWhoisServer(fromDomain.getWhoisServer());
 
         toDomainVO.setBreakpoints(toBreakpointVOSet(fromDomain.getBreakpoints()));
 

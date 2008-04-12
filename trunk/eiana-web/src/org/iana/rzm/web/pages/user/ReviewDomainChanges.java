@@ -8,6 +8,7 @@ import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.util.*;
 
@@ -58,6 +59,18 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Component(id="isNotNameServer", type = "If", bindings = {"condition=prop:notNameServer"})
     public abstract IComponent getIsNotNameServerComponent();
 
+    @Component(id="noTransactionPending", type = "If", bindings = {"condition=prop:noTransaction"})
+    public abstract IComponent getNoTransactionPendingComponent();
+
+    @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:transactionPending"})
+    public abstract IComponent getPendingRequestsComponent();
+
+    @Component(id = "pendingRequestsMessage", type = "ShowPendingRequestsMessage",
+            bindings = {"listener=listener:viewPendingRequests"}
+    )
+    public abstract IComponent getPendingRequestsMessageComponent();
+
+
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
 
@@ -73,51 +86,53 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomainPage();
 
+    @InjectPage("user/UserRequestsPerspective")
+    public abstract UserRequestsPerspective getRequestsPerspective();
+
     @Persist("client:page")
     public abstract long getDomainId();
-
     public abstract void setDomainId(long id);
 
     @Persist("client:page")
     public abstract List<ActionVOWrapper> getActionList();
-
     public abstract void setActionList(List<ActionVOWrapper> list);
 
     @Persist("client:page")
     @InitialValue("literal:false")
     public abstract void setSeparateRequest(boolean value);
-
     public abstract boolean isSeparateRequest();
 
     @Persist("client:page")
     public abstract DomainVOWrapper getModifiedDomain();
-
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
     @Persist("client:page")
     @InitialValue("literal:false")
     public abstract void setMustSplitRequest(boolean value);
-
     public abstract boolean isMustSplitRequest();
 
-    public abstract ActionVOWrapper getAction();
+    @InitialValue("literal:false")
+    public abstract void setTransactionPending(boolean value);
+    public abstract boolean isTransactionPending();
 
+    public abstract ActionVOWrapper getAction();
     public abstract ChangeVOWrapper getChange();
 
     public abstract String getDomainName();
-
     public abstract String getSubmitterEmail();
 
     public abstract void setSubmitterEmail(String email);
-
     public abstract void setDomainName(String domainName);
 
     public abstract void setCountryName(String name);
-
     public abstract String getCountryName();
 
     public abstract void setNameServerChange(boolean nameServerChange);
     public abstract boolean isNameServerChange();
+
+    public  boolean isNoTransaction(){
+        return  !isTransactionPending();
+    }
 
     public String getChangeTitle() {
         return getAction().getTitle();
@@ -141,6 +156,8 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         setDomainName(currentDomain.getName());
         setSubmitterEmail(getVisitState().getSubmitterEmail());
         try {
+            SystemDomainVOWrapper domain = getUserServices().getDomain(currentDomain.getId());
+            setTransactionPending(domain.isOperationPending());
             if (getActionList() == null) {
                 TransactionActionsVOWrapper transactionActions = getUserServices().getChanges(currentDomain);
                 setActionList(transactionActions.getChanges());
@@ -236,8 +253,14 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
-            // todo: properly handle this exception in the UI
+            setTransactionPending(true);
         }
+    }
+
+    public UserRequestsPerspective viewPendingRequests() {
+        UserRequestsPerspective page = getRequestsPerspective();
+        page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
+        return page;
     }
 }
 

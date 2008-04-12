@@ -1,6 +1,5 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.common.*;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.web.util.*;
 
@@ -94,19 +93,11 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     }
 
     public String getWhoisServer(){
-        Name server = vo.getWhoisServer();
-        if(server == null){
-            return null;
-        }
-        return server.getName();
+       return vo.getWhoisServer();
     }
 
     public void setWhoisServer(String server){
-        if(server != null){
-            vo.setWhoisServer(new Name(server));
-        }else {
-            vo.setWhoisServer(null);
-        }
+        vo.setWhoisServer(server);
     }
 
 
