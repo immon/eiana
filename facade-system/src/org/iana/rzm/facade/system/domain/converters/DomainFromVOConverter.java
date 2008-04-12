@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.system.domain.converters;
 
-import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.dns.validator.*;
 import org.iana.rzm.common.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.common.validators.*;
@@ -69,7 +69,7 @@ public class DomainFromVOConverter {
             tDomain.setSupportingOrg(toContact(fDomainVO.getSupportingOrg()));
             tDomain.setTechContact(toContact(fDomainVO.getTechContact()));
             if (fDomainVO.getWhoisServer() != null)
-                tDomain.setWhoisServer(fDomainVO.getWhoisServer().getName());
+                tDomain.setWhoisServer(fDomainVO.getWhoisServer());
 
             TrackData trackData = new TrackData();
             trackData.setCreated(fDomainVO.getCreated());

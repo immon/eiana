@@ -1,20 +1,14 @@
 package org.iana.rzm.system.accuracy;
 
-import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.rzm.common.Name;
+import org.iana.dns.validator.*;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
-import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
+import org.iana.rzm.facade.system.domain.converters.*;
 import org.iana.rzm.facade.system.domain.vo.*;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
-import java.net.MalformedURLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -223,7 +217,7 @@ public class FromVOConverterAccuracyTest {
         domainVO.setStatus(IDomainVO.Status.NEW);
         domainVO.setSupportingOrg(contactVO);
         domainVO.setTechContact(contactVO);
-        domainVO.setWhoisServer(new Name("whois"));
+        domainVO.setWhoisServer("whois");
 
         domainVO.setCreated(created);
         domainVO.setCreatedBy("somebody");

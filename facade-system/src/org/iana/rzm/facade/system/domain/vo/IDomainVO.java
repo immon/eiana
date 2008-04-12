@@ -1,12 +1,10 @@
 package org.iana.rzm.facade.system.domain.vo;
 
-import org.iana.rzm.common.Name;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.Trackable;
-import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.user.*;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -61,9 +59,9 @@ public interface IDomainVO extends Trackable {
 
     void setRegistryUrl(String registryUrl);
 
-    Name getWhoisServer();
+    String getWhoisServer();
 
-    void setWhoisServer(Name whoisServer);
+    void setWhoisServer(String whoisServer);
 
     Set<Breakpoint> getBreakpoints() throws AccessDeniedException;
 

@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.system.domain.vo;
 
-import org.iana.rzm.common.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.user.*;
 
@@ -178,11 +177,11 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         throw new UnsupportedOperationException();
     }
 
-    public Name getWhoisServer() {
+    public String getWhoisServer() {
         throw new UnsupportedOperationException();
     }
 
-    public void setWhoisServer(Name whoisServer) {
+    public void setWhoisServer(String whoisServer) {
         throw new UnsupportedOperationException();
     }
 

@@ -1,10 +1,7 @@
 package org.iana.rzm.facade.system.domain.vo;
 
-import org.iana.rzm.common.Name;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -16,7 +13,7 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
     private ContactVO techContact;
     private List<HostVO> nameServers;
     private String registryUrl;
-    private Name whoisServer;
+    private String whoisServer;
     private Set<Breakpoint> breakpoints;
     private String specialInstructions;
     private Status status;
@@ -74,11 +71,11 @@ public class DomainVO extends SimpleDomainVO implements IDomainVO, Serializable 
         this.registryUrl = registryUrl;
     }
 
-    public Name getWhoisServer() {
+    public String getWhoisServer() {
         return whoisServer;
     }
 
-    public void setWhoisServer(Name whoisServer) {
+    public void setWhoisServer(String whoisServer) {
         this.whoisServer = whoisServer;
     }
 

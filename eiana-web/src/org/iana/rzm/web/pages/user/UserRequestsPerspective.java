@@ -14,7 +14,7 @@ import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.user.*;
 
 
-public abstract class UserRequestsPerspective extends UserPage implements PageBeginRenderListener, SortFactory {
+public abstract class UserRequestsPerspective extends UserPage implements PageBeginRenderListener, SortFactory, IExternalPage {
 
     public static final String PAGE_NAME = "user/UserRequestsPerspective";
 
@@ -35,13 +35,31 @@ public abstract class UserRequestsPerspective extends UserPage implements PageBe
     @InjectPage("user/ReviewDomain")
     public abstract ReviewDomain getReviewDomainPage();
 
-    @Persist("client:page")
+    @Persist
     public abstract EntityFetcher getEntityFetcher();
     public abstract void setEntityFetcher(EntityFetcher fetcher);
 
-    @Persist("client:page")
+    @Persist
     public abstract void setSortField(SortOrder sortOrder);
     public abstract SortOrder getSortField();
+
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+        if (parameters.length == 0 || parameters.length < 2) {
+            getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        EntityFetcher entityFetcher = (EntityFetcher) parameters[0];
+        SortOrder sortOrder = (SortOrder) parameters[1];
+        setEntityFetcher(entityFetcher);
+        setSortField(sortOrder);
+    }
+
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getEntityFetcher(), getSortField()
+        };
+    }
 
     public SortFactory getSortFactory(){
         return this;

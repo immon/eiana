@@ -1,20 +1,17 @@
 package org.iana.rzm.web.pages.user;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.web.model.UserVOWrapper;
-import org.iana.rzm.web.model.ValueObject;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.web.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public abstract class UserAccess extends UserPage implements PageBeginRenderListener {
+public abstract class UserAccess extends UserPage implements PageBeginRenderListener, IExternalPage {
 
-    @Component(id = "userList", type = "For", bindings = {"source=prop:userList", "value=ognl:userAccess", "element=literal:tr"})
+    @Component(id = "userList",
+               type = "For",
+               bindings = {"source=prop:userList", "value=ognl:userAccess", "element=literal:tr"})
     public abstract IComponent getUsersListComponent();
 
     @Component(id = "userName", type = "Insert", bindings = {"value=ognl:userName"})
@@ -36,13 +33,14 @@ public abstract class UserAccess extends UserPage implements PageBeginRenderList
     public abstract IComponent getCountryNameComponent();
 
     @Component(id = "changeStatus", type = "DirectLink", bindings = {
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
-            "listener=listener:changeAccess",
-            "parameters={components.userList.value.userId,components.userList.value.enabled}"})
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+        "listener=listener:changeAccess",
+        "disabled=prop:linkDisabled",
+        "parameters={components.userList.value.userId,components.userList.value.enabled}"})
     public abstract IComponent getEnabledComponent();
 
     @Component(id = "back", type = "OverviewLink", bindings = {
-            "title=literal:User Access Settings", "page=prop:home", "actionTitle=literal:Back to Overview >"})
+        "title=literal:User Access Settings", "page=prop:home", "actionTitle=literal:Back to Overview >"})
     public abstract IComponent getBackComponent();
 
     @InjectPage("user/UserHome")
@@ -64,17 +62,28 @@ public abstract class UserAccess extends UserPage implements PageBeginRenderList
 
     public abstract void setCountryName(String countryName);
 
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
+        if (parameters.length == 0 || parameters.length < 2) {
+            getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        Long id = Long.parseLong(parameters[0].toString());
+        String domainName = parameters[1].toString();
+        setDomainId(id);
+        setDomainName(domainName);
+    }
+
     public void pageBeginRender(PageEvent event) {
         List<UserVOWrapper> usersForDomain = getUserServices().getUsersForDomain(getDomainName());
-        List<UserAccessValue> users = new ArrayList<UserAccessValue>();
+        Set<UserAccessValue> users = new HashSet<UserAccessValue>();
         for (UserVOWrapper userVOWrapper : usersForDomain) {
             users.add(new UserAccessValue(
-                    userVOWrapper.getId(),
-                    userVOWrapper.getUserName(),
-                    userVOWrapper.listSystemRolesForDomain(getDomainName()),
-                    userVOWrapper.isAccessEnabled(getDomainName())));
+                userVOWrapper.getId(),
+                userVOWrapper.getUserName(),
+                userVOWrapper.listSystemRolesForDomain(getDomainName()),
+                userVOWrapper.isAccessEnabled(getDomainName())));
         }
-        setUserList(users);
+        setUserList(new ArrayList<UserAccessValue>(users));
         setCountryName("(" + getUserServices().getCountryName(getDomainName()) + ")");
     }
 
@@ -88,7 +97,7 @@ public abstract class UserAccess extends UserPage implements PageBeginRenderList
         int index = 0;
         for (String o : getUserAccess().getRoleNames()) {
             builder.append(o);
-            if (getUserAccess().getRoleNames().size() > 0 && index < getUserAccess().getRoleNames().size() ) {
+            if (getUserAccess().getRoleNames().size() > 0 && index < getUserAccess().getRoleNames().size()) {
                 builder.append(" ");
             }
 
@@ -99,15 +108,38 @@ public abstract class UserAccess extends UserPage implements PageBeginRenderList
     }
 
     public String getActionTitle() {
-        return getUserAccess().isEnabled() ? "Disable" : "Enable";
+        return getUserAccess().getUserId() == getVisitState().getUserId() ? "" :
+               getUserAccess().isEnabled() ? "Disable" : "Enable";
     }
 
     public String getUserName() {
         return getUserAccess().getUserName();
     }
 
+    public boolean isLinkDisabled(){
+        return getUserAccess().getUserId() == getVisitState().getUserId();
+    }
+
     public void changeAccess(long userId, boolean currentState) {
         getUserServices().setAccessToDomain(getDomainId(), userId, !currentState);
+    }
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{
+            getDomainId(), getDomainName()
+        };
+    }
+
+    public String getLinkClass(){
+        return getUserAccess().getUserId() == getVisitState().getUserId() ?  "buttonDisabled" : "button";
+    }
+
+    public String getButtonRightClass(){
+        return getUserAccess().getUserId() == getVisitState().getUserId() ?  "" : "right";
+    }
+
+    public String getButtonLeftClass(){
+        return getUserAccess().getUserId() == getVisitState().getUserId() ?  "" : "left";
     }
 
 }
