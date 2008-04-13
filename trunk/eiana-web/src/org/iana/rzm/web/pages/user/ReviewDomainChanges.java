@@ -211,7 +211,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             LOGGER.warn("NoObjectFoundException ", e);
         }
 
-        getVisitState().setSubmitterEmail(parameters[4].toString());
+        getVisitState().setSubmitterEmail(parameters[4] != null ? parameters[4].toString() : null);
     }
 
 

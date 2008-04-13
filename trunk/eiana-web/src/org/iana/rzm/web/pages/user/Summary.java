@@ -54,17 +54,16 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
 
     @Persist("client:page")
     public abstract List<TransactionVOWrapper> getTikets();
+    public abstract void setTikets(List<TransactionVOWrapper> transactions);
 
     @Persist("client:page")
     public abstract void setSummaryList(List<SummaryBean> list);
 
+    @Persist("client:page")
     public abstract void setDomainName(String domainName);
     public abstract String getDomainName();
 
-    public abstract void setTikets(List<TransactionVOWrapper> transactions);
-
     public abstract void setCountryName(String name);
-
     public abstract String getCountryName();
 
     public abstract ActionVOWrapper getAction();
