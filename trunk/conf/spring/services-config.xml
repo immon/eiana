@@ -56,7 +56,10 @@
     <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
 
 <!-- end of test bean section -->
-    
+
+        <!--<bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
+        <!--<bean id="ticketingService"  class="org.iana.ticketing.MockTicketingService"/>-->
+
     <!-- facade services configuration -->
 
     <bean id="GuardedAdminTransactionServiceBean"
@@ -1453,7 +1456,7 @@
     <bean id="dnsService" class="org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl">
         <constructor-arg ref="zoneProducer"/>
         <constructor-arg ref="zoneExporter"/>
-        <property name="exportDirectory" value="/dnsexport/"/>
+        <property name="exportDirectory" value="dnsexport"/>
         <property name="exportFilenamePrefix" value="export"/>
     </bean>
 
@@ -1474,7 +1477,7 @@
                     <property name="IPAddressesAsStrings">
                         <set>
                             <value>198.41.0.4</value>
-                            <value>2001:503:BA3E:0:0:0:2:30</value>    
+                            <value>2001:503:BA3E:0:0:0:2:30</value>
                         </set>
                     </property>
                 </bean>
