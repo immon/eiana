@@ -29,7 +29,7 @@ public interface DomainManager {
 
     public void create(Domain domain);
 
-    public void update(Domain domain);
+    public void update(Domain domain, String updater);
 
     public void delete(Domain domain);
 

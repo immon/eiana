@@ -47,6 +47,14 @@ public class ObjectChange extends Change {
         return fieldChanges;
     }
 
+    public boolean containsFieldChange(String field) {
+        return fieldChanges.containsKey(field);
+    }
+
+    public Change getFieldChange(String field) {
+        return fieldChanges.get(field);
+    }
+
     public void accept(ChangeVisitor v) {
         v.visitObject(this);
     }

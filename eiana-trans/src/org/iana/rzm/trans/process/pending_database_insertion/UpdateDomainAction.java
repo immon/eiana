@@ -27,7 +27,7 @@ public class UpdateDomainAction extends ActionExceptionHandler {
                 long now = System.currentTimeMillis();
                 ChangeApplicator.applyChange(retrievedDomain, change, diffConfig);
                 retrievedDomain.modify(now, requestor);
-                domainManager.update(retrievedDomain);
+                domainManager.update(retrievedDomain, "system");
             }
         }
     }

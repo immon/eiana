@@ -9,15 +9,20 @@ import org.iana.rzm.domain.*;
  */
 public class DomainDiffConfiguration extends DiffConfiguration {
 
+    public static final String TECH_CONTACT = "techContact";
+    public static final String ADMIN_CONTACT = "adminContact";
+    public static final String SPONSORING_ORG = "supportingOrg";
+    public static final String NAME_SERVERS = "nameServers";
+
     public DomainDiffConfiguration(HostManager hostManager) {
 
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
-            "supportingOrg", "adminContact", "techContact", "whoisServer", "registryUrl", "nameServers", "status"
+                SPONSORING_ORG, ADMIN_CONTACT, TECH_CONTACT, "whoisServer", "registryUrl", NAME_SERVERS, "status"
         }, "name");
-        domainConfig.addFieldClass("supportingOrg", Contact.class);
-        domainConfig.addFieldClass("adminContact", Contact.class);
-        domainConfig.addFieldClass("techContact", Contact.class);
-        domainConfig.addFieldInstantiator("nameServers", new HostInstantiator(hostManager));
+        domainConfig.addFieldClass(SPONSORING_ORG, Contact.class);
+        domainConfig.addFieldClass(ADMIN_CONTACT, Contact.class);
+        domainConfig.addFieldClass(TECH_CONTACT, Contact.class);
+        domainConfig.addFieldInstantiator(NAME_SERVERS, new HostInstantiator(hostManager));
         addObjectConfiguration(Domain.class, domainConfig);
         addSimpleClass(Domain.Status.class);
 
