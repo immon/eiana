@@ -43,4 +43,12 @@ public class MockEPPOperationFactory implements EPPOperationFactory {
     public DeleteChange getDeleteChangeRequest(String string, ChangeRef changeRef) {
         return new MockDeleteChange();
     }
+
+    public ChangeInfoRequest getChangeInfoRequest(String string, ChangeRef changeRef) {
+        return null;
+    }
+
+    public ChangeRef getChangeRef(String string, boolean b) {
+        return null;
+    }
 }

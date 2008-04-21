@@ -10,12 +10,16 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  * @author Patrycja Wegrzynowicz
  */
 public class DomainManagerBean implements DomainManager {
 
     private DomainDAO dao;
+
     private HostManager hostManager;
+
     private DomainExporter domainExporter;
 
     public DomainManagerBean(DomainDAO dao, HostManager hostManager, DomainExporter domainExporter) {
@@ -74,8 +78,10 @@ public class DomainManagerBean implements DomainManager {
         domain.setNameServers(newHosts);
     }
 
-    public void update(Domain domain) {
+    public void update(Domain domain, String updater) {
+        CheckTool.checkNull(domain, "modified domain");
         Domain old = dao.get(domain.getObjId());
+        CheckTool.checkNull(old, "existing domain");
         updateNameServers(domain);
         if (old.getAdminContact() != null) {
             Contact contact = old.getAdminContact();
@@ -91,6 +97,7 @@ public class DomainManagerBean implements DomainManager {
         }
         domain.setOpenProcesses(old.getOpenProcesses());
         domain.setThirdPartyPendingProcesses(old.getThirdPartyPendingProcesses());
+        domain.setModifiedBy(updater);
         dao.update(domain);
         domainExporter.exportToXML(dao.findAll());
     }

@@ -1319,6 +1319,14 @@
                                       execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..))"/>
             <aop:around method="proceed" pointcut-ref="hibernateExceptionOperation"/>
         </aop:aspect>
+
+        <aop:aspect id="updateDomainAspect" ref="updateDomainAdvisor">
+            <aop:pointcut id="updateDomain"
+                expression="execution(public * org.iana.rzm.domain.DomainManagerBean.update(..))"/>
+            <aop:around
+              pointcut-ref="updateDomain"
+              method="setUpdateDate"/>
+        </aop:aspect>
     </aop:config>
 
     <!-- advisors -->
@@ -1404,6 +1412,11 @@
     <bean id="hibernateExceptionAdvisor"
           class="org.iana.rzm.facade.common.HibernateExceptionAdvisor">
         <property name="order" value="4"/>
+    </bean>
+
+    <bean id="updateDomainAdvisor"
+        class="org.iana.rzm.trans.change.DomainUpdateAdvisor">
+        <constructor-arg ref="diffConfig"/>
     </bean>
 
     <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">

@@ -210,8 +210,6 @@ public class Contact implements TrackedObject, Cloneable {
         this.role = Boolean.valueOf(role);
     }
 
-
-
     public Timestamp getCreated() {
         return trackData.getCreated();
     }
