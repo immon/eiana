@@ -5,11 +5,16 @@
     <body jwcid="$content$">
         <h4><span jwcid="title">Thecnical</span> </h4>
                 <span jwcid="isnew">
-                    <span class="grey"><span jwcid="noContactMessage">Thecnical Contact does not exist. please create one</span></span>
-                    <div class="buttonStyle" style="float: right; margin-bottom: 15px;">
-                        <b class="left"></b>
-                        <b class="right"><a jwcid="new" href="#" class="button">New Contact ></a></b>
-                    </div>
+                    <span jwcid="isempty">
+                        <span class="grey"><span jwcid="noContactMessage">Thecnical Contact does not exist. please create one</span></span>
+                            <div class="buttonStyle" style="float: right; margin-bottom: 15px;">
+                                <b class="left"></b>
+                                <b class="right"><a jwcid="new" href="#" class="button">New Contact ></a></b>
+                            </div>
+                    </span>
+                    <span jwcid="@Else">
+                        <span jwcid="newCurrentDetails"/>
+                    </span>
                 </span>
                 <span jwcid="@Else">
                     <span jwcid="currentDetails"/>

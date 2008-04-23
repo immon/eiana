@@ -120,6 +120,10 @@ class SystemDomainVO implements IDomainVO, Serializable {
         return domain.getName();
     }
 
+    public void setName(String name) {
+        domain.setName(name);
+    }
+
     public Set<RoleVO.Type> getRoles() {
         return domain.getRoles();
     }

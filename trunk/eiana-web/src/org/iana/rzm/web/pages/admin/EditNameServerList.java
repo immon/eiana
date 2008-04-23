@@ -14,6 +14,8 @@ import org.iana.rzm.web.util.*;
 import java.util.*;
 
 public abstract class EditNameServerList extends AdminPage implements PageBeginRenderListener, NameServerAttributesEditor, IExternalPage {
+    
+    public static final String PAGE_NAME = "admin/EditNameServerList";
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:isRequestPending"})
     public abstract IComponent getPendingRequestsComponent();

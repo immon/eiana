@@ -37,6 +37,12 @@ public abstract class Contact extends BaseComponent {
         "value=prop:address", "raw=literal:true", "mode=@org.apache.tapestry.html.InsertTextMode@PARAGRAPH"})
     public abstract IComponent getAddressComponent();
 
+    @Component(id = "country", type = "RzmInsert", bindings = {
+        "value=prop:country", "raw=literal:true", "originalValue=prop:originalCountry", "modifiedStyle=literal:edited"}
+    )
+    public abstract IComponent getCountryComponent();
+
+
     @Component(id = "email", type = "RzmInsert", bindings = {
         "value=prop:email", "originalValue=prop:originalEmail", "modifiedStyle=literal:edited"})
     public abstract IComponent getEmailComponent();
@@ -121,6 +127,9 @@ public abstract class Contact extends BaseComponent {
     @Parameter(required = false)
     public abstract IActionListener getListener();
 
+    @Parameter(required = false, defaultValue = "false")
+    public abstract boolean isNew();
+
     public abstract void setContactAttributes(Map<String, String> attributes);
 
     @InjectObject("service:rzm.ObjectNotFoundHandler")
@@ -137,6 +146,8 @@ public abstract class Contact extends BaseComponent {
     public abstract Map<String, String> getOriginalAttributes();
 
     public abstract void setAddress(String address);
+
+    public abstract void setCountry(String country) ;
 
     public abstract void setLastUpdated(String value);
 
@@ -179,6 +190,7 @@ public abstract class Contact extends BaseComponent {
 
         if (!cycle.isRewinding()) {
             setAddress(buildAddress(getContactAttributes()));
+            setCountry(getContactAttributes().get(ContactVOWrapper.COUNTRY));
             setLastUpdated("Last updated " + getContactAttributes().get(ContactVOWrapper.LAST_UPDATED));
             setPhone(getContactAttributes().get(ContactVOWrapper.PHONE));
             setFax(getContactAttributes().get(ContactVOWrapper.FAX));
@@ -192,16 +204,19 @@ public abstract class Contact extends BaseComponent {
         }
 
         try {
-            SystemDomainVOWrapper domain = (SystemDomainVOWrapper) getRzmServices().getDomain(getDomainId());
-            long id = Long.parseLong(getContactAttributes().get(ContactVOWrapper.ID));
-            setOriginalAttributes(domain.getContact(id, getType()).getMap());
-            setUserRole("");
-            List<SystemRoleVOWrapper> roles = domain.getRoles();
-
-            for (RoleVOWrapper role : roles) {
-                if (role.getType().serverName().equals(getType())) {
-                    setUserRole("<br><span class=\"grey small-text\">(this is you)</span>");
+            if(!isNew()){
+                SystemDomainVOWrapper domain = (SystemDomainVOWrapper) getRzmServices().getDomain(getDomainId());
+                long id = Long.parseLong(getContactAttributes().get(ContactVOWrapper.ID));
+                setOriginalAttributes(domain.getContact(id, getType()).getMap());
+                setUserRole("");
+                List<SystemRoleVOWrapper> roles = domain.getRoles();
+                for (RoleVOWrapper role : roles) {
+                    if (role.getType().serverName().equals(getType())) {
+                        setUserRole("<br><span class=\"grey small-text\">(this is you)</span>");
+                    }
                 }
+            } else{
+                setOriginalAttributes(new HashMap<String, String>());
             }
 
             super.renderComponent(writer, cycle);
@@ -212,15 +227,12 @@ public abstract class Contact extends BaseComponent {
         }
     }
 
+
+
     protected String buildAddress(Map<String, String> attributes) {
         StringBuilder builder = new StringBuilder();
         String address = attributes.get(ContactVOWrapper.ADDRESS);
         builder.append(address).append(" ");
-        String country = attributes.get(ContactVOWrapper.COUNTRY);
-        if (!StringUtils.isEmpty(country)) {
-            builder.append(country);
-        }
-
         return builder.toString();
     }
 
@@ -282,14 +294,16 @@ public abstract class Contact extends BaseComponent {
 
     public boolean isAddressModified() {
         String originalAddress = getOriginalAttributes().get(ContactVOWrapper.ADDRESS);
-        String originalCountry = getOriginalAttributes().get(ContactVOWrapper.COUNTRY);
         String newAddress = getContactAttributes().get(ContactVOWrapper.ADDRESS);
-        String country = getContactAttributes().get(ContactVOWrapper.COUNTRY);
-        return !(StringUtils.equals(originalAddress.replace("\r\n", "\n"), newAddress.replace("\r\n", "\n")) && StringUtils.equals(originalCountry, country));
+        return originalAddress == null || !StringUtils.equals(originalAddress.replace("\r\n", "\n"), newAddress.replace("\r\n", "\n"));
     }
 
     public String getOriginalAddress() {
         return buildAddress(getOriginalAttributes());
+    }
+
+    public String getOriginalCountry(){
+        return getOriginalAttributes().get(ContactVOWrapper.COUNTRY);
     }
 
     public String getOriginalEmail() {
@@ -342,6 +356,11 @@ public abstract class Contact extends BaseComponent {
 
 
     private String getAlternateStyle(String value, String originalValue) {
+
+        if(StringUtils.isBlank(value) && StringUtils.isBlank(originalValue)){
+            return "hidden";
+        }
+
         if (StringUtils.equals(value, originalValue) && StringUtils.isBlank(value)) {
             return "hidden";
         }

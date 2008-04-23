@@ -28,11 +28,18 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
     )
     public abstract IComponent getListRequestComponent();
 
+    @Component(id = "createNew", type = "DirectLink", bindings = { "listener=listener:createNew",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getCreateNewComponent();
+
     @InjectPage("admin/DomainPerspective")
     public abstract DomainPerspective getDomainPerspective();
 
     @InjectPage("admin/EditDomain")
     public abstract EditDomain getEditDomainPage();
+
+    @InjectPage(NewDomainSelection.PAGE_NAME)
+    public abstract NewDomainSelection getNewDomainSelectionPage();
 
     public FinderValidator getFinderValidator() {
         return new DomainFinderValidator();
@@ -60,6 +67,11 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
         EditDomain editDomainPage = getEditDomainPage();
         editDomainPage.setDomainId(domainId);
         getRequestCycle().activate(editDomainPage);
+    }
+
+    public void createNew(){
+        NewDomainSelection page = getNewDomainSelectionPage();
+        getRequestCycle().activate(page);
     }
 
     public EntityQuery getEntityQuery() {

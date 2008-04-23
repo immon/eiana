@@ -27,7 +27,9 @@ public abstract class SoContactEditor extends ContactEditor {
     public void save() {
         getEditor().preventResubmission();
         Map<String, String> attributes = getContactAttributes();
-        attributes.put(ContactVOWrapper.NAME, attributes.get(ContactVOWrapper.ORGANISATION));
+        if(attributes.get(ContactVOWrapper.NAME) == null){
+            attributes.put(ContactVOWrapper.NAME, attributes.get(ContactVOWrapper.ORGANISATION));
+        }
 
         if (isValidationRequired()) {
             validateInput();

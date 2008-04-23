@@ -1,8 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.vo.ContactVO;
-import org.iana.rzm.facade.system.domain.vo.DomainVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.user.*;
 
 import java.util.*;
@@ -15,6 +13,8 @@ public class SystemDomainVOWrapper extends DomainVOWrapper {
         getDomainVO().setAdminContact(new ContactVO());
         getDomainVO().setTechContact(new ContactVO());
         getDomainVO().setStatus(IDomainVO.Status.NEW);
+        getDomainVO().setNameServers(new ArrayList<HostVO>());
+        getDomainVO().setState(IDomainVO.State.NO_ACTIVITY);
     }
 
     public SystemDomainVOWrapper(IDomainVO vo) {

@@ -32,6 +32,10 @@ public class ContactVOWrapper extends ValueObject {
         this.type = type;
     }
 
+    public ContactVOWrapper(String type) {
+        this(new ContactVO(), SystemRoleVOWrapper.SystemType.fromString(type));
+    }
+
     public long getId() {
         Long id = vo.getObjId();
         return id == null ? 0 : id;
@@ -152,29 +156,38 @@ public class ContactVOWrapper extends ValueObject {
     }
 
     public String getAddress() {
-        return vo.getAddress().getTextAddress();
+        AddressVO address = vo.getAddress();
+        return address == null ? null : address.getTextAddress();
     }
 
     public void setAddress(String address) {
         if (StringUtils.isNotBlank(address)) {
+            AddressVO voAddress = vo.getAddress();
+            if(voAddress == null){
+                vo.setAddress(new AddressVO());
+            }
             vo.getAddress().setTextAddress(address);
         }
     }
 
 
     public String getCountry() {
-        return vo.getAddress().getCountryCode();
+        return vo.getAddress() == null ? null :vo.getAddress().getCountryCode();
     }
 
     public void setCountry(String country) {
         if (StringUtils.isNotBlank(country)) {
+            AddressVO voAddress = vo.getAddress();
+            if(voAddress == null){
+                vo.setAddress(new AddressVO());
+            }
             vo.getAddress().setCountryCode(country);
         }
     }
 
     public Map<String, String> getMap() {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(ID, String.valueOf(vo.getObjId()));
+        map.put(ID, String.valueOf(getId()));
         map.put(LAST_UPDATED, getLastUpdated());
         map.put(NAME, vo.getName());
         map.put(JOB_TITLE, vo.getJobTitle());
@@ -211,4 +224,7 @@ public class ContactVOWrapper extends ValueObject {
         setRole(Boolean.valueOf(role));
     }
 
+    public boolean isEmpty() {
+        return getName() == null && getOrganization() == null && getAddress() == null;
+    }
 }
