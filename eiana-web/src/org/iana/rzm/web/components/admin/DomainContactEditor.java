@@ -9,7 +9,10 @@ import org.iana.rzm.web.services.admin.*;
 public abstract class DomainContactEditor extends BaseComponent {
 
     @Component(id = "isnew", type = "If", bindings = {"condition=prop:new"})
-    public abstract IComponent getIsnewComponent();
+    public abstract IComponent getIsNewComponent();
+
+     @Component(id = "isempty", type = "If", bindings = {"condition=prop:contactEmpty"})
+    public abstract IComponent getIsEmptyComponent();
 
     @Component(id="title", type="Insert", bindings = {"value=prop:title"})
     public abstract IComponent getTitleComponent();
@@ -29,8 +32,24 @@ public abstract class DomainContactEditor extends BaseComponent {
     )
     public abstract IComponent getCurrentDetailsComponent();
 
+    @Component(
+        id = "newCurrentDetails", type = "Contact",
+        bindings = {
+            "type=prop:contactType",
+            "domainId=prop:domainId",
+            "originalAttributes=prop:originalContact.map",
+            "contactAttributes=prop:contact.map",
+            "listener=prop:contactListener",
+            "editible=literal:true",
+            "new=literal:true",
+            "rzmServices=prop:rzmServices",
+            "errorPage=prop:errorPage"
+            }
+    )
+    public abstract IComponent getNewCurrentDetailsComponent();
+
     @Component(id = "new", type = "DirectLink", bindings = {
-        "listener=listener:newContact", "parameters=prop:contactType",
+        "listener=prop:contactListener", "parameters=prop:contactType",
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getNewLinkComponent();
 
@@ -65,8 +84,12 @@ public abstract class DomainContactEditor extends BaseComponent {
         return getContact().isNew();
     }
 
+    public boolean isContactEmpty(){
+        return getContact().isEmpty();
+    }
+
     public String getMessage(){
-        return getContactType() + "Is not assign";
+        return getContactType() + " Is not assign";
     }
 
     public String getTitle(){

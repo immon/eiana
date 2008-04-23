@@ -9,4 +9,9 @@ public class InvalidCountryCodeException extends RuntimeException {
     public InvalidCountryCodeException(String cc) {
         this.cc = cc;
     }
+
+    public String getCountryCode(){
+        return cc;
+    }
+
 }

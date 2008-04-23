@@ -1,12 +1,10 @@
 package org.iana.rzm.trans.epp.mock;
 
-import org.iana.epp.ChangePriority;
-import org.iana.epp.EPPHostAddress;
-import org.iana.epp.EPPOperationFactory;
+import org.iana.epp.*;
 import org.iana.epp.request.*;
 import org.iana.rzm.trans.epp.mock.request.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -49,6 +47,6 @@ public class MockEPPOperationFactory implements EPPOperationFactory {
     }
 
     public ChangeRef getChangeRef(String string, boolean b) {
-        return null;
+        return new MockChangeRef();
     }
 }

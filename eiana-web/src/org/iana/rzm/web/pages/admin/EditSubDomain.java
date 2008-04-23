@@ -14,6 +14,8 @@ import java.util.*;
 public abstract class EditSubDomain extends AdminPage
     implements SubDomainAttributeEditor, PageBeginRenderListener, IExternalPage {
 
+    public static final String PAGE_NAME = "admin/EditSubDomain";
+
     @Component(id = "editor", type = "SubDomainEditor", bindings = {
         "editor=prop:editor", "registryUrl=prop:registryUrl", "whoisServer=prop:whoisServer"
         })
@@ -90,15 +92,15 @@ public abstract class EditSubDomain extends AdminPage
 
     public void pageBeginRender(PageEvent event) {
         setModifiedDomain(getVisitState().getMmodifiedDomain());
-        try {
-            if (getOriginalRegistryUrl() == null || getOriginalWhoisServer() == null) {
-                SystemDomainVOWrapper domain = getAdminServices().getDomain(getDomainId());
-                setOriginalRegistryUrl(domain.getRegistryUrl());
-                setOriginalWhoisServer(domain.getWhoisServer());
-            }
-        } catch (NoObjectFoundException e) {
-            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
-        }
+        //try {
+        //    if (getOriginalRegistryUrl() == null || getOriginalWhoisServer() == null) {
+        //        SystemDomainVOWrapper domain = getAdminServices().getDomain(getDomainId());
+        //        setOriginalRegistryUrl(domain.getRegistryUrl());
+        //        setOriginalWhoisServer(domain.getWhoisServer());
+        //    }
+        //} catch (NoObjectFoundException e) {
+        //    getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        //}
     }
 
     public SubDomainAttributeEditor getEditor() {

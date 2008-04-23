@@ -412,6 +412,7 @@
           <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xercesImpl.jar" prefix="WEB-INF/lib"/>
           <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xercesSamples.jar" prefix="WEB-INF/lib"/>
           <zipfileset file="${module.eiana-web.basedir}/../lib/xerces/xml-apis.jar" prefix="WEB-INF/lib"/>
+          <zipfileset file="${module.eiana-web.basedir}/../lib/quartz/quartz-all-1.6.0.jar" prefix="WEB-INF/lib"/>
           <zipfileset file="${module.eiana-web.basedir}/rzm/WEB-INF/web.xml" prefix="WEB-INF"/>
     </jar>
   </target>

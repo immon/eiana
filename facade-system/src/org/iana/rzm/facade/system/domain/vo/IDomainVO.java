@@ -81,6 +81,8 @@ public interface IDomainVO extends Trackable {
 
     String getName();
 
+    void setName(String name);
+
     Set<RoleVO.Type> getRoles();
 
     boolean isEnableEmails();

@@ -42,23 +42,20 @@ public abstract class EditContact extends AdminPage
 
     public abstract long getDomainId();
 
-    @Persist("client:page")
+    @Persist()
     public abstract ICallback getCallback();
 
     public abstract void setCallback(ICallback callback);
 
     public abstract void setOriginalContact(ContactVOWrapper contact);
-
     public abstract ContactVOWrapper getOriginalContact();
 
-    @Persist("client:page")
+    @Persist()
     public abstract void setContactAttributes(Map<String, String> attributes);
-
     public abstract Map<String, String> getContactAttributes();
 
-    @Persist("client:page")
+    @Persist()
     public abstract DomainVOWrapper getModifiedDomain();
-
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
 

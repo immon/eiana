@@ -244,6 +244,10 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         domainService.updateDomain(domain.getDomainVO());
     }
 
+    public void createDomain(DomainVOWrapper domain) {
+        domainService.createDomain(domain.getDomainVO());
+    }
+
     public List<UserVOWrapper> getUsers(Criterion criterion, int offset, int length) {
         try {
             List<UserVO> list = userService.find(criterion, new Order("loginName", true), offset, length);

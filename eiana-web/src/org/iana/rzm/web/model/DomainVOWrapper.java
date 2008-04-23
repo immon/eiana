@@ -49,11 +49,15 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     }
 
     public long getId() {
-        return vo.getObjId();
+        return vo.getObjId() == null ? 0 : vo.getObjId();
     }
 
     public String getName() {
         return vo.getName();
+    }
+
+    public void setName(String name){
+        vo.setName(name);
     }
 
     public String getNameWithDot(){
