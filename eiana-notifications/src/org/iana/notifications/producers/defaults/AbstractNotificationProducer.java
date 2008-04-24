@@ -7,6 +7,8 @@ import org.iana.notifications.producers.TemplateNameProducer;
 import org.iana.notifications.template.factory.TemplateFactory;
 import org.iana.rzm.common.validators.CheckTool;
 
+import java.util.List;
+
 /**
  * @author Piotr Tkaczyk
  */
@@ -21,6 +23,10 @@ abstract class AbstractNotificationProducer implements NotificationProducer {
     protected DataProducer dataProducer;
 
     protected boolean persistent = false;
+
+    public AbstractNotificationProducer(TemplateFactory contentFactory, List<String> addressees, String templateName, DataProducer dataProducer) {
+        this(contentFactory, new ListAddresseeProducer(addressees), new DefaultTemplateNameProducer(templateName), dataProducer);
+    }
 
     public AbstractNotificationProducer(TemplateFactory contentFactory, AddresseeProducer addresseeProducer, String templateName, DataProducer dataProducer) {
         this(contentFactory, addresseeProducer, new DefaultTemplateNameProducer(templateName), dataProducer);
