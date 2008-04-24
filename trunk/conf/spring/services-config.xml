@@ -1603,4 +1603,18 @@
 
     <bean id="zoneExporter" class="org.iana.dns.exporter.BindExporter"/>
 
+    <!-- epp error -->
+    <bean id="eppErrorHandler" class="org.iana.rzm.trans.errors.AdminErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg index="0" ref="templateFactory"/>
+                <constructor-arg index="1">
+                    <list><value>system-errors@iana.org</value></list>
+                </constructor-arg>
+                <constructor-arg index="2" value="epp-error"/>
+                <constructor-arg index="3" ref="defaultDataProducer"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="NotificationSenderBean"/>
+    </bean>
 </beans>

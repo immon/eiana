@@ -21,6 +21,10 @@ import java.util.Set;
  */
 public class SinglePerTemplateProducer extends AbstractNotificationProducer {
 
+    public SinglePerTemplateProducer(TemplateFactory contentFactory, List<String> addressees, String templateName, DataProducer dataProducer) {
+        super(contentFactory, addressees, templateName, dataProducer);
+    }
+
     public SinglePerTemplateProducer(TemplateFactory contentFactory, AddresseeProducer addresseeProducer, String templateName, DataProducer dataProducer) {
         super(contentFactory, addresseeProducer, templateName, dataProducer);
     }

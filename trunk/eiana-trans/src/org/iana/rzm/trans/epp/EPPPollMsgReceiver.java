@@ -2,8 +2,10 @@ package org.iana.rzm.trans.epp;
 
 import org.apache.log4j.Logger;
 import org.iana.epp.EPPClient;
+import org.iana.rzm.trans.errors.ErrorHandler;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
+import org.jbpm.configuration.ObjectFactory;
 
 /**
  * @author Jakub Laszkiewicz
@@ -13,9 +15,10 @@ public class EPPPollMsgReceiver implements ActionHandler {
 
     public void execute(ExecutionContext executionContext) throws Exception {
         try {
-            EppPollMsgProcessor eppPollMsgProcessor = (EppPollMsgProcessor)
-                    executionContext.getJbpmContext().getObjectFactory().createObject("eppPollMsgProcessorBean");
-            EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
+            ObjectFactory objectFactory = executionContext.getJbpmContext().getObjectFactory();
+            EppPollMsgProcessor eppPollMsgProcessor = (EppPollMsgProcessor) objectFactory.createObject("eppPollMsgProcessorBean");
+            EPPClient eppClient = (EPPClient) objectFactory.createObject("eppClient");
+            ErrorHandler errorHandler = (ErrorHandler) objectFactory.createObject("eppErrorHandler");
             EppChangeRequestPollRsp rsp;
             do {
                 EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
@@ -24,6 +27,7 @@ public class EPPPollMsgReceiver implements ActionHandler {
                     rsp.accept(eppPollMsgProcessor);
                 } catch (Exception e) {
                     logger.error("while processing message", e);
+                    errorHandler.handleException(e);
                 }
             } while (rsp.isMessageAwaiting());
         } catch (Exception e) {

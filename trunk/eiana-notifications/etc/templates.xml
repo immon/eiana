@@ -607,4 +607,15 @@ period: {period}
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
+
+<iana:template>
+<iana:type>epp-error</iana:type>
+<iana:subject>EPP Poll Exception</iana:subject>
+<iana:content>
+The following exception happened:
+{exception}
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
 </iana:templates>
