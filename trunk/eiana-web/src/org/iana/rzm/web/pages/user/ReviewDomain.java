@@ -106,9 +106,11 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             })
     public abstract IComponent getShowPendingMessageComponent();
 
-
     @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
     public abstract IComponent getCountryNameComponent();
+
+    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domain.name"})
+    public abstract IComponent getDomainHeaderComponentComponent();
 
 
     @InjectPage("user/UserContactEditor")
@@ -270,7 +272,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     }
 
     public String getCountry() {
-        return "(" + getUserServices().getCountryName(getDomain().getName()) + ")";
+        return getUserServices().getCountryName(getDomain().getName());
     }
 
     public DomainVOWrapper getDomain() {

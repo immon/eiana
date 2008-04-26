@@ -21,8 +21,14 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
 
     public static final String PAGE_NAME = "admin/DomainView";
 
+    @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domain.name"})
+    public abstract IComponent getDomainNameComponent();
+
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryNameComponent();
+
+     @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domain.name"})
+    public abstract IComponent getDomainHeaderComponentComponent();
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:requestPending"})
     public abstract IComponent getPendingRequestsComponent();
@@ -36,8 +42,6 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getHomeLinkComponent();
 
-    @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domain.name"})
-    public abstract IComponent getDomainNameComponent();
 
     @Component(id = "subDomain", type = "SubDomain", bindings = {
         "registryUrl=prop:domain.registryUrl",

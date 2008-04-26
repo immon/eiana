@@ -32,6 +32,9 @@ public abstract class WithdrawRequestConfirmation extends BaseComponent  impleme
     @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
     public abstract IComponent getCountryComponent();
 
+    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domainName"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @Component(id = "delete", type = "DirectLink", bindings = {"listener=listener:delete",
         "parameters=prop:requestId", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getSubmitComponent();
@@ -80,7 +83,7 @@ public abstract class WithdrawRequestConfirmation extends BaseComponent  impleme
     public abstract ChangeVOWrapper getChange();
 
      public String getCountry() {
-        return "(" + getRzmServices().getCountryName(getRequest().getDomainName()) + ")";
+        return getRzmServices().getCountryName(getRequest().getDomainName());
     }
 
     public List<ActionVOWrapper> getActionlist() {

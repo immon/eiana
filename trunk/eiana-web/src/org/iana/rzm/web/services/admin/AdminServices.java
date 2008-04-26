@@ -76,4 +76,6 @@ public interface AdminServices extends RzmServices {
     List<DomainVOWrapper> getDomains(Criterion criterion);
 
     String getWhoIsData();
+
+    String getZoneFile();
 }

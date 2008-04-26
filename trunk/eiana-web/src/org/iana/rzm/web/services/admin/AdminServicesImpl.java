@@ -7,6 +7,7 @@ import org.iana.dns.check.*;
 import org.iana.notifications.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.domain.*;
+import org.iana.rzm.facade.admin.domain.dns.*;
 import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.admin.trans.notifications.*;
 import org.iana.rzm.facade.admin.users.*;
@@ -43,6 +44,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private TransactionDetectorService detectorService;
     private CountryCodes countryCodeService;
     private DomainTypes domainTypesService;
+    private AdminDNSService dnsServices;
+
     private PasswordChangeService changePasswordService;
 
     public AdminServicesImpl(ServiceInitializer initializer) {
@@ -54,6 +57,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
         domainTypesService = initializer.getBean("domainTypes", DomainTypes.class);
         changePasswordService = initializer.getBean("passwordChangeService", PasswordChangeService.class);
+        dnsServices = initializer.getBean("dnsService", AdminDNSService.class);
     }
 
     public int getTransactionCount(Criterion criterion) {
@@ -390,6 +394,16 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         try {
             return domainService.saveDomainsToXML();
         } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public String getZoneFile() {
+        try {
+            return dnsServices.exportZoneFile();
+        }
+         catch (InfrastructureException e) {
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);
         }

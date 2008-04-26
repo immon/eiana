@@ -20,6 +20,9 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
     public abstract IComponent getDomainNameComponent();
 
+     @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @Component(id = "summary", type = "For", bindings = {"source=ognl:summaryList", "value=ognl:summaryValue"})
     public abstract IComponent getSummaryForComponent();
 
@@ -69,7 +72,6 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
     public abstract void setTikets(List<TransactionVOWrapper> transactions);
 
     public abstract void setCountryName(String name);
-
     public abstract String getCountryName();
 
     public abstract ActionVOWrapper getAction();
@@ -86,7 +88,7 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
 
     public void pageBeginRender(PageEvent event) {
         getVisitState().markAsNotVisited(getDomainId());
-        setCountryName("(" + getAdminServices().getCountryName(getDomainName()) + ")");
+        setCountryName(getAdminServices().getCountryName(getDomainName()));
         List<TransactionVOWrapper> tickets = getTikets();
         List<SummaryBean> list = new ArrayList<SummaryBean>();
 

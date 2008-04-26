@@ -1,8 +1,8 @@
 package org.iana.rzm.facade.admin.domain.dns;
 
-import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.*;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * This service provides the DNS-related functionality to the administrators of RZM.
@@ -12,5 +12,6 @@ import java.io.IOException;
 public interface AdminDNSService {
 
     public void exportAll() throws IOException, InfrastructureException;
+    public String exportZoneFile() throws  InfrastructureException;
 
 }

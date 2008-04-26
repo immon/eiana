@@ -29,6 +29,9 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryComponent();
 
+     @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @Component(id = "splitRequest", type = "RadioGroup", bindings = {"selected=prop:splitRequest", "disabled=prop:mustSplit"})
     public abstract IComponent getSplitRequestComponent();
 

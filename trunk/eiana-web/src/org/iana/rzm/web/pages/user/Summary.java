@@ -21,6 +21,9 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
     public abstract IComponent getDomainNameComponent();
 
+    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @Component(id = "summary", type = "For", bindings = {"source=ognl:summaryList", "value=ognl:summaryValue"})
     public abstract IComponent getSummaryForComponent();
 
@@ -79,7 +82,7 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     public abstract void setShowTiketingErrorMessage(boolean flag);
 
     public void pageBeginRender(PageEvent event) {
-        setCountryName("(" + getUserServices().getCountryName(getDomainName()) + ")");
+        setCountryName(getUserServices().getCountryName(getDomainName()));
         List<TransactionVOWrapper> tickets = getTikets();
         List<SummaryBean> list = new ArrayList<SummaryBean>();
 

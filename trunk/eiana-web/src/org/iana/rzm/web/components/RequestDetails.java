@@ -23,6 +23,9 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
     public abstract IComponent getCountryComponent();
 
+     @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domainName"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @Component(id = "actionlist", type = "For", bindings = {"source=prop:actionlist", "value=prop:action"})
     public abstract IComponent getActionForComponent();
 
@@ -109,7 +112,7 @@ public abstract class RequestDetails extends BaseComponent implements PageBeginR
     }
 
     public String getCountry() {
-        return "(" + getRzmServices().getCountryName(getDomainName()) + ")";
+        return getRzmServices().getCountryName(getDomainName());
     }
 
     public String getMessage() {

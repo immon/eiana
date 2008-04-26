@@ -18,6 +18,10 @@ public class WebRegistryUrlValidator implements Validator {
             }
 
             String regestryurl = object.toString();
+            if(!regestryurl.startsWith("http")||regestryurl.startsWith("https") ){
+                throw new ValidatorException("registry URL should use HTTP or HTTPS protocol", ValidationConstraint.URL_FORMAT);
+            }
+
             URL url = new URL(regestryurl);
             new BufferedReader(new InputStreamReader(url.openStream()));
         } catch (MalformedURLException e) {
