@@ -44,6 +44,9 @@ public abstract class EditDomain extends AdminPage
     @Component(id = "country", type = "Insert", bindings = {"value=prop:countryName"})
     public abstract IComponent getCountryComponent();
 
+    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domain.name"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @InjectObject("infrastructure:applicationStateManager")
     public abstract ApplicationStateManager getApplicationStateManager();
 

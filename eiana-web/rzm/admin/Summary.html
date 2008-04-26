@@ -3,21 +3,23 @@
        <link rel="stylesheet" type="text/css" href="../css/master.css"/>
        <title>Root Zone Management</title>
    </head>
-   <span jwcid="$content$">
-       <body jwcid="border@AdminBorder">
-           <h1 style="margin-top: 40px;">Change Request(s) Lodged</h1>
-           <div class="mainBox">
-               <span jwcid="@GrayContainer">
-                   <table width="95%" border="0" cellspacing="0" cellpadding="0">
-                       <tr>
-                           <td>
-                               <span class="domainLabelBig"><strong><span jwcid="domainName">.au</span></strong></span>
-                               <span class="domainLabelSmall"><span jwcid="country">(country)</span></span>
-                           </td>
-                       </tr>
-                   </table>
-               </span>
-           </div>
+    <span jwcid="$content$">
+        <body jwcid="border@AdminBorder">
+            <h1 style="margin-top: 40px;">Change Request(s) Lodged</h1>
+            <div class="mainBox">
+                <span jwcid="@GrayContainer">
+                    <span jwcid="domainHeader">
+                        <table width="95%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <span class="domainLabelBig"><strong><span jwcid="domainName">.au</span></strong></span>
+                                    <span class="domainLabelSmall"><span jwcid="country">(country)</span></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </span>
+                </span>
+            </div>
 
            <div jwcid="@If" condition="prop:showTiketingErrorMessage" element="literal:div"  style="margin: 10px 0 0 0; padding: 10px; border: 1px solid #F8EC00; display: block;" class="grey">
                    <strong>

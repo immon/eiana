@@ -24,6 +24,10 @@
         <service name="whoisService" object="service:WhoisService"/>
     </contribution>
 
+    <contribution configuration-id="tapestry.services.ApplicationServices">
+        <service name="zoneFileService" object="service:ZoneFileService"/>
+    </contribution>
+
     <service-point id="ApplicationLifecycle" interface="org.iana.rzm.web.services.ApplicationLifecycle">
         Controls lifecycle operations; specifically logging out.
         <invoke-factory model="threaded">
@@ -54,6 +58,16 @@
     <service-point id="WhoisService" interface="org.apache.tapestry.engine.IEngineService">
         <invoke-factory>
             <construct class="org.iana.rzm.web.tapestry.services.WhoisService">
+                <set-object property="linkFactory" value="infrastructure:linkFactory"/>
+                <set-object property="response" value="infrastructure:response"/>
+                <set-object property="adminServices" value="service:rzm.AdminServices"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="ZoneFileService" interface="org.apache.tapestry.engine.IEngineService">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.tapestry.services.ZoneFileService">
                 <set-object property="linkFactory" value="infrastructure:linkFactory"/>
                 <set-object property="response" value="infrastructure:response"/>
                 <set-object property="adminServices" value="service:rzm.AdminServices"/>

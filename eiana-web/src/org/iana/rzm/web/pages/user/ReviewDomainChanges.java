@@ -25,6 +25,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
     public abstract IComponent getDomainNameComponent();
 
+    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
+
     @Component(id = "actionlist", type = "For", bindings = {"source=prop:actionList", "value=prop:action"})
     public abstract IComponent getActionForComponent();
 
