@@ -234,7 +234,7 @@ listed as a party to this request.
 <!--=====================================================================-->
 
 <iana:template>
-<iana:type>completed</iana:type>
+<iana:type>completed-nschange</iana:type>
 <iana:subject>{ticket} | [RZM] | {domainName} | COMPLETED</iana:subject>
 <iana:content>
 Hello,
@@ -270,6 +270,40 @@ listed as a party to this request.
 <iana:signed>false</iana:signed>
 </iana:template>
 
+<iana:template>
+<iana:type>completed</iana:type>
+<iana:subject>{ticket} | [RZM] | {domainName} | COMPLETED</iana:subject>
+<iana:content>
+Hello,
+
+This is an update regarding the IANA Root Zone Management request
+{ticket}, lodged on {requestDate}.
+
+This request has now been completed!
+
+Please verify that your request has been properly implemented, and
+if you notice any errors please contact IANA Root Zone Management at
+root-mgmt@iana.org.
+
+Please note: It can take up to a day for all public databases and
+name servers to be fully updated.
+
+For your information, this is the chronology of the request:
+
+* Request was first received: {requestDate}
+* All contact conformations were received: {confirmationDate}
+* The request was sent for USDOC/VRSN implementation: {docVrsnDate}
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message, sent to you as you are
+listed as a party to this request.
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
 <!--=====================================================================-->
 <!--9. Notification to impacted parties: WITHDRAWN-->
 <!--=====================================================================-->
