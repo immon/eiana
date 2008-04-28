@@ -549,10 +549,9 @@
     </bean>
 
     <bean id="completedTemplateProducer"
-          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
-        <property name="template">
-            <value>completed</value>
-        </property>
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.ChangeTypeBasedTemplateNameProducer">
+        <constructor-arg value="completed-nschange"/>
+        <constructor-arg value="completed"/>
     </bean>
 
     <bean id="contactConfirmationTemplateProducer"
@@ -584,7 +583,10 @@
     </bean>
 
     <bean id="usdocConfirmationTemplateProducer"
-          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationTemplateNameProducer"/>
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.ChangeTypeBasedTemplateNameProducer">
+        <constructor-arg value="usdoc-confirmation-nschange"/>
+        <constructor-arg value="usdoc-confirmation"/>
+    </bean>
 
     <bean id="usdocConfirmationRemainderTemplateProducer"
           class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
