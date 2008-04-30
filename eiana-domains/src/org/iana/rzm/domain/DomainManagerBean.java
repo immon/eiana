@@ -122,6 +122,12 @@ public class DomainManagerBean implements DomainManager {
         if (domain != null) delete(domain);
     }
 
+    public void deleteAll() {
+        for (Domain domain : findAll()) {
+            delete(domain);
+        }
+    }
+
     public List<Domain> findAll() {
         return dao.findAll();
     }

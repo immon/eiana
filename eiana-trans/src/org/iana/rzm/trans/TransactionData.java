@@ -325,6 +325,10 @@ public class TransactionData {
         return null;
     }
 
+    public String getSponsoringOrgChangedEmail() {
+        return getChangedEmail("supportingOrg");
+    }
+
     public String getAdminChangedEmail() {
         return getChangedEmail("adminContact");        
     }
@@ -336,9 +340,9 @@ public class TransactionData {
     private String getChangedEmail(String contact) {
         ObjectChange domainChange = getDomainChange();
         if (domainChange != null) {
-            ObjectChange techChange = (ObjectChange) domainChange.getFieldChanges().get(contact);
-            if (techChange != null) {
-                SimpleChange emailChange = (SimpleChange) techChange.getFieldChanges().get("email");
+            ObjectChange contactChange = (ObjectChange) domainChange.getFieldChanges().get(contact);
+            if (contactChange != null) {
+                SimpleChange emailChange = (SimpleChange) contactChange.getFieldChanges().get("email");
                 if (emailChange != null) return emailChange.getNewValue();
             }
         }

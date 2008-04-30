@@ -10,6 +10,10 @@ public class TrackDataVO implements Trackable, Serializable {
     private String createdBy;
     private String modifiedBy;
 
+    public TrackDataVO() {
+        setCreated(new Timestamp(System.currentTimeMillis()));
+    }
+
     public Timestamp getCreated() {
         return created;
     }

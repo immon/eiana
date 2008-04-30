@@ -8,14 +8,13 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
-import org.iana.rzm.facade.system.domain.vo.DomainVO;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -28,6 +27,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * @author: Piotr Tkaczyk
@@ -38,6 +38,7 @@ public class GuardedAdminDomainServiceTest {
     ApplicationContext appCtx;
     AdminDomainService gAdminServ;
 
+    DomainManager domainManager;
     UserManager userManager;
     RZMUser user, wrongUser;
     long domainId;
@@ -50,6 +51,7 @@ public class GuardedAdminDomainServiceTest {
         appCtx = SpringApplicationContext.getInstance().getContext();
         gAdminServ = (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
         userManager = (UserManager) appCtx.getBean("userManager");
+        domainManager = (DomainManager) appCtx.getBean("domainManager");
 
         user = new RZMUser();
         user.setLoginName("gadstestuser");
@@ -94,6 +96,30 @@ public class GuardedAdminDomainServiceTest {
 
         gAdminServ.close();
 
+    }
+
+    @Test
+    public void testFacadeCreateTwoDomainsWithSharedNameserver() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminServ.setUser(testAuthUser);
+
+        DomainVO d1 = new DomainVO();
+        d1.setName("domain1");
+        HostVO ns1 = new HostVO();
+        ns1.setName("name1.domain1");
+        ns1.setAddress(new IPAddressVO("1.1.1.1", IPAddressVO.Type.IPv4));
+        d1.setNameServers(Arrays.asList(ns1));
+        d1.setStatus(DomainVO.Status.ACTIVE);
+        gAdminServ.createDomain(d1);
+
+        DomainVO d2 = new DomainVO();
+        d2.setName("domain2");
+        HostVO ns2 = new HostVO();
+        ns2.setName("name1.domain1");
+        ns2.setAddress(new IPAddressVO("2.2.2.2", IPAddressVO.Type.IPv4));
+        d2.setNameServers(Arrays.asList(ns1));
+        d2.setStatus(DomainVO.Status.ACTIVE);
+        gAdminServ.createDomain(d2);
     }
 
     @Test (dependsOnMethods = {"testFacadeCreateDomain"})
@@ -187,6 +213,7 @@ public class GuardedAdminDomainServiceTest {
 
     @AfterClass (alwaysRun = true)
     public void cleanUp() {
+        domainManager.deleteAll();
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
     }

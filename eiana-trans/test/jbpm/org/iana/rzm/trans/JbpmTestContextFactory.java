@@ -28,12 +28,12 @@ public class JbpmTestContextFactory {
                     "  <string name='resource.node.types' " +
                     "          value='org/jbpm/graph/node/node.types.xml' />" +
                     "  <string name='resource.varmapping' " +
-                    "          value='eiana-trans.jbpm.varmapping.xml'/>" +                                                         
+                    "          value='eiana-trans.jbpm.varmapping.xml'/>" +
                     "</jbpm-configuration>";
 
     private static JbpmConfiguration jbpmConfiguration =
             JbpmConfiguration.parseXmlString(jbpmConfigurationXml);
-    
+
     public static JbpmContext getJbpmContext() {
         return (jbpmConfiguration == null ? JbpmConfiguration.getInstance(jbpmConfigurationXml) : jbpmConfiguration).createJbpmContext();
     }

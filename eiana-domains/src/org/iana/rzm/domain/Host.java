@@ -214,6 +214,7 @@ public class Host implements TrackedObject, Cloneable {
     }
 
     public void setTrackData(TrackData trackData) {
+        CheckTool.checkNull(trackData, "track data");
         this.trackData = trackData;
     }
 

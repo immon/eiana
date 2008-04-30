@@ -356,7 +356,7 @@
     <bean id="adminClosedNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
         <constructor-arg index="2" ref="adminClosedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -367,7 +367,7 @@
     <bean id="completedNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
         <constructor-arg index="2" ref="completedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -425,7 +425,7 @@
     <bean id="rejectedNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
         <constructor-arg index="2" ref="rejectedTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -450,7 +450,7 @@
     <bean id="withdrawnNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="submitterAddresseeProducer"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
         <constructor-arg index="2" ref="withdrawnTemplateProducer"/>
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
@@ -495,6 +495,25 @@
     <bean id="submitterAddresseeProducer"
           class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
         <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToAdmins">
+            <value>false</value>
+        </property>
+        <property name="sendToSubmitter">
+            <value>true</value>
+        </property>
+        <property name="sendToImpactedParties">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="allAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToNewContacts">
             <value>true</value>
         </property>
         <property name="sendToAdmins">
@@ -1445,16 +1464,57 @@
         </constructor-arg>
     </bean>
 
-    <!-- DNS Export Configuration -->
-    
+    <!-- quartz scheduler -->
+
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
                 <ref bean="dnsTrigger"/>
+                <ref bean="mailsReceiverTrigger"/>
+                <ref bean="eppReceiverTrigger"/>
             </list>
         </property>
     </bean>
 
+    <bean id="mailsReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+       <property name="jobDetail" ref="mailsReceiver"/>
+       <!-- 10s delay -->
+       <property name="startDelay" value="10000"/>
+        <!-- every 5min -->
+       <property name="repeatInterval" value="360000"/>
+   </bean>
+
+    <bean id="mailsReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="mailsReceiverAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="mailsReceiverAction" class="org.iana.rzm.mail.MailsProcessingAction">
+        <constructor-arg ref="mailReceiver"/>
+        <constructor-arg ref="mailsProcessor"/>
+    </bean>
+
+    <bean id="eppReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+       <property name="jobDetail" ref="eppReceiver"/>
+       <!-- 10s delay -->
+       <property name="startDelay" value="10000"/>
+        <!-- every 5min -->
+       <property name="repeatInterval" value="360000"/>
+   </bean>
+
+    <bean id="eppReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="eppReceiverAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.EPPPollMsgAction">
+        <constructor-arg ref="eppPollMsgProcessorBean"/>   
+        <constructor-arg ref="eppClient"/>
+        <constructor-arg ref="eppErrorHandler"/>
+    </bean>
+
+    <!-- DNS Export Configuration -->
+    
     <bean id="dnsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
        <property name="jobDetail" ref="dnsExport"/>
        <!-- 10s delay -->
@@ -1606,6 +1666,7 @@
     <bean id="zoneExporter" class="org.iana.dns.exporter.BindExporter"/>
 
     <!-- epp error -->
+    
     <bean id="eppErrorHandler" class="org.iana.rzm.trans.errors.AdminErrorHandler">
         <constructor-arg>
             <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
