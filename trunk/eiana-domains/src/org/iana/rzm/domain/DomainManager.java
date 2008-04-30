@@ -35,6 +35,8 @@ public interface DomainManager {
 
     public void delete(String name);
 
+    public void deleteAll();
+
     public List<Domain> findAll();
 
     public List<Domain> find(Criterion criteria);

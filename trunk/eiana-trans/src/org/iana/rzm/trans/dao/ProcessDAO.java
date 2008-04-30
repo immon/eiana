@@ -2,7 +2,6 @@ package org.iana.rzm.trans.dao;
 
 import org.iana.criteria.Criterion;
 import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.trans.TransactionData;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
@@ -18,7 +17,7 @@ public interface ProcessDAO {
 
     public ProcessInstance newProcessInstanceAndSignal(final String name);
 
-    public ProcessInstance newProcessInstance(final String name, final TransactionData data);
+    public ProcessInstance newProcessInstance(final String name, final Object data);
 
     public ProcessInstance newProcessInstanceForUpdate(final String name);
 
@@ -31,6 +30,8 @@ public interface ProcessDAO {
     public List<ProcessInstance> findAll();
 
     public void deleteAll();
+
+    public void deleteHelperProcesses();
 
     public List<ProcessInstance> findOpenProcessInstances(final String domainName);
 

@@ -21,6 +21,8 @@ public class DefaultTransactionAddresseeProducer extends AbstractTransactionAddr
 
     private boolean sendToContacts = false;
 
+    private boolean sendToNewContacts = false;
+
     private boolean sendToAdmins = false;
 
     private boolean sendToImpactedParties = false;
@@ -37,6 +39,11 @@ public class DefaultTransactionAddresseeProducer extends AbstractTransactionAddr
         this.sendToImpactedParties = sendToImpactedParties;
     }
 
+
+    public void setSendToNewContacts(boolean sendToNewContacts) {
+        this.sendToNewContacts = sendToNewContacts;
+    }
+
     public Set<PAddressee> produceAddressee(Map dataSource) {
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
 
@@ -45,6 +52,12 @@ public class DefaultTransactionAddresseeProducer extends AbstractTransactionAddr
         if (sendToContacts) {
             Domain currentDomain = td.getCurrentDomain();
             addContacts(addressees, currentDomain);
+        }
+
+        if (sendToNewContacts) {
+            addAddressee(addressees, td.getSponsoringOrgChangedEmail());
+            addAddressee(addressees, td.getAdminChangedEmail());
+            addAddressee(addressees, td.getTechChangedEmail());
         }
 
         if (sendToAdmins) {
@@ -59,6 +72,12 @@ public class DefaultTransactionAddresseeProducer extends AbstractTransactionAddr
             }
         }
         return addressees;
+    }
+
+    public void addAddressee(Set<PAddressee> addressees, String email) {
+        if (email != null) {
+            addressees.add(new PAddressee(email, email));
+        }
     }
 
     public void addContacts(Set<PAddressee> addressees, Domain domain) {

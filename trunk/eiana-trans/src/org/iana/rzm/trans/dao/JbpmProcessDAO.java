@@ -62,7 +62,7 @@ public class JbpmProcessDAO implements ProcessDAO {
         }
     }
 
-    public ProcessInstance newProcessInstance(final String name, final TransactionData data) {
+    public ProcessInstance newProcessInstance(final String name, final Object data) {
         JbpmContext ctx = jbpmContextFactory.getJbpmContext();
         try {
             ProcessInstance instance =  ctx.newProcessInstance(name);
@@ -99,6 +99,23 @@ public class JbpmProcessDAO implements ProcessDAO {
             List<ProcessInstance> list = ctx.getSession().createQuery("from ProcessInstance").list();
             for (ProcessInstance inst : list) {
                 deleteProcessInstance(inst, ctx);
+            }
+        } finally {
+            ctx.close();
+        }
+    }
+
+    public void deleteHelperProcesses() {
+        JbpmContext ctx = jbpmContextFactory.getJbpmContext();
+        try {
+            List<ProcessInstance> list = ctx.getSession().createQuery("from ProcessInstance").list();
+            for (ProcessInstance inst : list) {
+                String processName = inst.getProcessDefinition().getName();
+                long id = inst.getId();
+                if (!"Domain Modification Transaction (Unified Workflow)".equals(processName)) {
+                    System.out.println("Deleting process: " + processName + " id: " + id);
+                    deleteProcessInstance(inst, ctx);
+                }
             }
         } finally {
             ctx.close();
