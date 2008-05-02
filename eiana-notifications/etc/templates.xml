@@ -482,7 +482,41 @@ listed as a party to this request.
 <iana:template>
 <iana:type>impacted_parties-confirmation</iana:type>
 <iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
-<iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications.
+<iana:content>
+Dear {name} {title},
+
+The Internet Assigned Numbers Authority (IANA), in its role as
+manager of the DNS root zone, has received a request to alter the
+information associated with the {domainName} domain. The changes
+requested are as follows:
+
+{changes}
+We have marked in our database a "special instruction" that your
+or your organisation must consent to this change before it can
+proceed.
+
+Please review this change to ensure it is correct, and then indicate
+your approval or disapproval by visiting the following link:
+
+{url}
+
+For your reference, this request has been assigned ticket number
+{ticket}. Current administrative and technical contacts for a domain
+can review the status of this request at any time at our website at
+{url}
+
+If you have any questions regarding this request, please reply to
+this email and we will try to assist you. Please ensure you do not
+modify the subject as we need the reference number intact to ensure
+the speediest processing of your enquiry.
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message, sent to you as you are
+listed as a party to this request.
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
@@ -490,8 +524,41 @@ listed as a party to this request.
 <iana:template>
 <iana:type>impacted_parties-confirmation-remainder</iana:type>
 <iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
-<iana:content>You are in role {roleName} for {domainName} and you {mustAccept} accept modifications. You have
-only {period} days left.
+<iana:content>
+Dear {name} {title},
+
+The Internet Assigned Numbers Authority (IANA), in its role as
+manager of the DNS root zone, has received a request to alter the
+information associated with the {domainName} domain. The changes
+requested are as follows:
+
+{changes}
+We have marked in our database a "special instruction" that your
+or your organisation must consent to this change before it can
+proceed.
+
+Please review this change to ensure it is correct, and then indicate
+your approval or disapproval by visiting the following link:
+
+{url}
+
+For your reference, this request has been assigned ticket number
+{ticket}. Current administrative and technical contacts for a domain
+can review the status of this request at any time at our website at
+{url}
+
+If you have any questions regarding this request, please reply to
+this email and we will try to assist you. Please ensure you do not
+modify the subject as we need the reference number intact to ensure
+the speediest processing of your enquiry.
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message, sent to you as you are
+listed as a party to this request.
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>

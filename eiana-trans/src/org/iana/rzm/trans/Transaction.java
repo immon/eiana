@@ -36,6 +36,9 @@ public class Transaction implements TrackedObject {
     private static final Logger logger = Logger.getLogger(Transaction.class);
 
     public static final String TRANSACTION_DATA = "TRANSACTION_DATA";
+
+    public static final String EXCEPTION = "TRANSITION_EXCEPTION";
+
     private ProcessInstance pi;
 
     private ProcessDAO processDAO;
@@ -225,6 +228,33 @@ public class Transaction implements TrackedObject {
             processDAO.signal(pi, StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
+    }
+
+    public synchronized void generated() throws TransactionException {
+        TransactionState.Name state = getState().getName();
+        if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
+            systemAccept();
+        } else {
+            logger.warn("Transaction " + getTransactionID() + " cannot process generated verisign message");
+        }
+    }
+
+    public synchronized void complete() throws TransactionException {
+        TransactionState.Name state = getState().getName();
+        if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
+            systemAccept();
+            systemAccept();
+        } else if (state == TransactionState.Name.PENDING_ZONE_PUBLICATION) {
+            systemAccept();
+        } else {
+            logger.warn("Transaction " + getTransactionID() + " cannot process generated verisign message");
+        }
+    }
+
+    public synchronized void exception(String message) throws TransactionException {
+        getData().setComment(message);
+        getData().setIdentityName("SYSTEM");
+        processDAO.signal(pi, EXCEPTION);
     }
 
     public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {

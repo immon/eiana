@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.epp;
+package org.iana.rzm.trans.epp.poll;
 
 import org.apache.log4j.Logger;
 import org.iana.criteria.Criterion;
@@ -18,43 +18,43 @@ public class EppPollMsgProcessorImpl implements EppPollMsgProcessor {
         this.transactionManager = transactionManager;
     }
 
-    public void visitDocApproved(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitDocApproved(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: DocApproved for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitDocApprovalTimeout(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitDocApprovalTimeout(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: DocApprovalTimeout for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitDocRejected(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitDocRejected(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: DocRejected for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitSystemValidated(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitSystemValidated(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: SystemValidated for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitValidationError(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitValidationError(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: ValidationError for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitHold(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitHold(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: Hold for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitGenerated(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitGenerated(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: visitGenerated for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
@@ -63,13 +63,13 @@ public class EppPollMsgProcessorImpl implements EppPollMsgProcessor {
         trans.systemAccept();
     }
 
-    public void visitNsRejected(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitNsRejected(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: NsRejected for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
     }
 
-    public void visitComplete(EppChangeRequestPollRsp pollRsp) throws TransactionException {
+    public void visitComplete(EppPollResponse pollRsp) throws TransactionException {
         Transaction trans = findByChangeRequestID(pollRsp.getChangeRequestId());
         logger.info("Received poll message status: visitComplete for transaction id: " +
                 trans.getTransactionID() + ":\n" + pollRsp.getMessage() + "\n" + pollRsp.getErrors());
