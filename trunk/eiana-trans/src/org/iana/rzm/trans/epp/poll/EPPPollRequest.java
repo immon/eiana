@@ -1,4 +1,4 @@
-package org.iana.rzm.trans.epp;
+package org.iana.rzm.trans.epp.poll;
 
 import org.iana.epp.EPPClient;
 import org.iana.epp.EPPOperationFactory;
@@ -10,6 +10,8 @@ import org.iana.epp.request.PollRequest;
 import org.iana.epp.response.AckResponse;
 import org.iana.epp.response.PollResponse;
 import org.iana.epp.response.Response;
+import org.iana.rzm.trans.epp.EPPCompositeException;
+import org.iana.rzm.trans.epp.EPPException;
 
 import java.rmi.server.UID;
 import java.security.MessageDigest;
@@ -33,7 +35,7 @@ public class EPPPollRequest {
         operationFactory = client.getEppOperationFactory();
     }
 
-    public EppChangeRequestPollRsp send() throws EPPFrameworkException, EPPException {
+    public EppPollResponse send() throws EPPFrameworkException, EPPException {
         PollRequest pollRequest = operationFactory.getPollRequest(generateTrId());
         PollResponse pollResponse = client.poll(pollRequest);
         checkResponse(pollResponse);
@@ -46,7 +48,7 @@ public class EPPPollRequest {
             checkResponse(ackResponse);
         }
 
-        return new EppChangeRequestPollRsp(pollResponse.getChangeStatus(),
+        return new EppPollResponse(pollResponse.getChangeStatus(),
                 pollResponse.getChangeRequestId(),
                 pollResponse.getMessageCount() > 0,
                 pollResponse.getMessage(),

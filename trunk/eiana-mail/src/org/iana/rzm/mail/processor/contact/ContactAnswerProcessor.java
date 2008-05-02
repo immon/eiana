@@ -33,6 +33,7 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
 
     protected void _process(Message msg) throws EmailProcessException {
         ContactAnswer answer = (ContactAnswer) msg.getData();
+        mailLogger.logMail(answer.getTicketID(), msg.getFrom(), msg.getSubject(), msg.getBody());
         try {
             List<TransactionVO> transactions = transactionService.getByTicketID(answer.getTicketID());
             if (transactions == null || transactions.isEmpty()) {
@@ -48,7 +49,6 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
             } else {
                 transactionService.rejectTransaction(transaction.getTransactionID(), answer.getToken());
             }
-            mailLogger.logMail(answer.getTicketID(), msg.getFrom(), msg.getSubject(), msg.getBody());
         } catch (NoObjectFoundException e) {
             throw new EmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
         } catch (InfrastructureException e) {

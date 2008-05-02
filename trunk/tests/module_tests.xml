@@ -67,6 +67,8 @@
     <pathelement location="${common-dns.testoutput.dir}"/>
     <path refid="library.epp.classpath"/>
     <path refid="library.xerces.classpath"/>
+    <pathelement location="${eiana-startup.output.dir}"/>
+    <pathelement location="${eiana-startup.testoutput.dir}"/>
   </path>
   
   
@@ -89,7 +91,7 @@
   
   <target name="compile.module.tests" depends="compile.module.tests.production,compile.module.tests.tests" description="Compile module tests"/>
   
-  <target name="compile.module.tests.production" depends="compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria,compile.module.conf,compile.module.common-objectdiff,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-test,compile.module.common-config,compile.module.common-dns" description="Compile module tests; production classes"/>
+  <target name="compile.module.tests.production" depends="compile.module.eiana-domains,compile.module.eiana-logs,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.eiana-users,compile.module.eiana-util,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-mail,compile.module.eiana-mail,compile.module.common-criteria,compile.module.conf,compile.module.common-objectdiff,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-test,compile.module.common-config,compile.module.common-dns,compile.module.eiana-startup" description="Compile module tests; production classes"/>
   
   <target name="compile.module.tests.tests" depends="compile.module.tests.production" description="compile module tests; test classes" unless="skip.tests">
     <mkdir dir="${tests.testoutput.dir}"/>

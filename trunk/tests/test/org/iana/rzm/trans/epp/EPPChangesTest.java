@@ -73,7 +73,7 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
         /*
         System.out.println("#############################");
         while (true) {
-            EppChangeRequestPollRsp pollRsp = new EPPPollRequest(eppClient).send();
+            EppPollResponse pollRsp = new EPPPollRequest(eppClient).send();
             if (pollRsp == null) break;
             System.out.println("ack: " + pollRsp.getChangeRequestId());
         }
@@ -108,10 +108,10 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             /*
             while (true) {
                 EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-                EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+                EppPollResponse pollRsp = eppPollRequest.send();
                 System.out.println("ack: " + pollRsp.getChangeRequestId());
                 assert pollRsp != null;
-                assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+                assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
                 assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                         "unexpected request id: " + pollRsp.getChangeRequestId();
             }
@@ -144,9 +144,9 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.matches(UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+            EppPollResponse pollRsp = eppPollRequest.send();
             assert pollRsp != null;
-            assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
             */
@@ -176,9 +176,9 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.matches(DELETE_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+            EppPollResponse pollRsp = eppPollRequest.send();
             assert pollRsp != null;
-            assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
             */
@@ -209,9 +209,9 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             assert rsp.matches(UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EppChangeRequestPollRsp pollRsp = eppPollRequest.send();
+            EppPollResponse pollRsp = eppPollRequest.send();
             assert pollRsp != null;
-            assert EppChangeRequestPollRsp.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
             */

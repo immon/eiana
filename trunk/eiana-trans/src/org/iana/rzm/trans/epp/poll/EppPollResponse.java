@@ -1,6 +1,7 @@
-package org.iana.rzm.trans.epp;
+package org.iana.rzm.trans.epp.poll;
 
 import org.apache.log4j.Logger;
+import org.iana.rzm.trans.epp.EppChangeRequestPollRspVisitorException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * @author Jakub Laszkiewicz
  */
-public class EppChangeRequestPollRsp {
+public class EppPollResponse {
     public static enum Status {
         DOC_APPROVED("docApproved"),
         DOC_APPROVAL_TIMEOUT("docApprovalTimeout"),
@@ -51,7 +52,12 @@ public class EppChangeRequestPollRsp {
     private String message;
     private List<String> errors = new ArrayList<String>();
 
-    public EppChangeRequestPollRsp(Status status, String changeRequestId, boolean messageAwaiting, String message, List<String> errors) {
+
+    public EppPollResponse(String name) {
+        this.status = Status.forName(name);
+    }
+
+    public EppPollResponse(Status status, String changeRequestId, boolean messageAwaiting, String message, List<String> errors) {
         this.status = status;
         this.changeRequestId = changeRequestId;
         this.messageAwaiting = messageAwaiting;
@@ -59,7 +65,7 @@ public class EppChangeRequestPollRsp {
         this.errors.addAll(errors);
     }
 
-    public EppChangeRequestPollRsp(String status, String changeRequestId, boolean messageAwaiting, String message, List<String> errors) {
+    public EppPollResponse(String status, String changeRequestId, boolean messageAwaiting, String message, List<String> errors) {
         this(Status.forName(status), changeRequestId, messageAwaiting, message, errors);
     }
 
@@ -86,7 +92,7 @@ public class EppChangeRequestPollRsp {
     public void accept(EppChangeRequestPollRspVisitor visitor) throws EppChangeRequestPollRspVisitorException {
         if (messageAwaiting) {
             if (status == null)
-                Logger.getLogger(EppChangeRequestPollRsp.class).warn("status is null");
+                Logger.getLogger(EppPollResponse.class).warn("status is null");
             else
                 switch (status) {
                     case COMPLETE:

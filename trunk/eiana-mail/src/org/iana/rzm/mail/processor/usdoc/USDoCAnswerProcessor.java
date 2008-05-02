@@ -12,6 +12,7 @@ import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.processor.AbstractEmailProcessor;
 import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
 import org.iana.rzm.mail.processor.simple.processor.IllegalMessageDataException;
+import org.iana.rzm.mail.processor.MailLogger;
 
 import java.util.List;
 
@@ -24,12 +25,15 @@ public class USDoCAnswerProcessor extends AbstractEmailProcessor {
 
     private AdminTransactionService transactionService;
 
+    private MailLogger mailLogger;
 
-    public USDoCAnswerProcessor(AuthenticationService authenticationService, AdminTransactionService transactionService) {
+    public USDoCAnswerProcessor(AuthenticationService authenticationService, AdminTransactionService transactionService, MailLogger mailLogger) {
         CheckTool.checkNull(authenticationService, "authentication service");
         CheckTool.checkNull(transactionService, "transaction service");
+        CheckTool.checkNull(mailLogger, "mail logger");
         this.authenticationService = authenticationService;
         this.transactionService = transactionService;
+        this.mailLogger = mailLogger;
     }
 
     protected void _acceptable(MessageData data) throws IllegalMessageDataException {
@@ -38,6 +42,7 @@ public class USDoCAnswerProcessor extends AbstractEmailProcessor {
 
     protected void _process(Message msg) throws EmailProcessException {
         USDoCAnswer answer = (USDoCAnswer) msg.getData();
+        mailLogger.logMail(answer.getTicketID(), msg.getFrom(), msg.getSubject(), msg.getBody());
         try {
             List<TransactionVO> transactions = transactionService.getByTicketID(answer.getTicketID());
             if (transactions == null || transactions.isEmpty()) {

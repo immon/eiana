@@ -54,6 +54,10 @@
     <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${common-config.output.dir}"/>
     <pathelement location="${common-config.testoutput.dir}"/>
+    <pathelement location="${module.eiana-init.basedir}/../lib/quartz/quartz-all-1.6.0.jar"/>
+    <pathelement location="${module.eiana-init.basedir}/../lib/mchange/c3p0-0.9.1.2.jar"/>
+    <pathelement location="${eiana-startup.output.dir}"/>
+    <pathelement location="${eiana-startup.testoutput.dir}"/>
   </path>
   
   
@@ -75,7 +79,7 @@
   
   <target name="compile.module.eiana-init" depends="compile.module.eiana-init.production,compile.module.eiana-init.tests" description="Compile module eiana-init"/>
   
-  <target name="compile.module.eiana-init.production" depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.common-pgp,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-dns,compile.module.common-config" description="Compile module eiana-init; production classes">
+  <target name="compile.module.eiana-init.production" depends="compile.module.eiana-domains,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.eiana-util,compile.module.tests,compile.module.eiana-trans,compile.module.eiana-mail,compile.module.facade-admin,compile.module.facade-common,compile.module.facade-system,compile.module.common-pgp,compile.module.common-codevalues,compile.module.common-dao,compile.module.common-dns,compile.module.common-config,compile.module.eiana-startup" description="Compile module eiana-init; production classes">
     <mkdir dir="${eiana-init.output.dir}"/>
     <javac destdir="${eiana-init.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-init}"/>

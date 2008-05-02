@@ -1149,6 +1149,7 @@
     <bean id="usdocAnswerProcessor" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerProcessor">
         <constructor-arg ref="authenticationServiceBean"/>
         <constructor-arg ref="guardedAdminTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
     </bean>
 
     <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
@@ -1267,6 +1268,7 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
+                                  execution(private * org.iana.rzm.trans.epp.poll.EppPollMsgAction.queryInfoAndProcess(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
@@ -1274,7 +1276,7 @@
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
                                   execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
-                                  execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
+                                  execution(public * org.iana.rzm.trans.epp.poll.EppPollMsgProcessorImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
@@ -1285,7 +1287,7 @@
                                       execution(* org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
                                       execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
                                       execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..)) ||
-                                  execution(public * org.iana.rzm.trans.epp.EppPollMsgProcessorImpl.*(..))"/>
+                                  execution(public * org.iana.rzm.trans.epp.poll.EppPollMsgProcessorImpl.*(..))"/>
             <aop:after method="close" pointcut-ref="jbpmOperation"/>
         </aop:aspect>
         <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
@@ -1458,7 +1460,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="eppPollMsgProcessorBean" class="org.iana.rzm.trans.epp.EppPollMsgProcessorImpl">
+    <bean id="eppPollMsgProcessorBean" class="org.iana.rzm.trans.epp.poll.EppPollMsgProcessorImpl">
         <constructor-arg>
             <ref bean="transactionManagerBean"/>
         </constructor-arg>
@@ -1507,8 +1509,8 @@
         <property name="targetMethod" value="execute"/>
     </bean>
 
-    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.EPPPollMsgAction">
-        <constructor-arg ref="eppPollMsgProcessorBean"/>   
+    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.poll.EPPPollMsgAction">
+        <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="eppClient"/>
         <constructor-arg ref="eppErrorHandler"/>
     </bean>
