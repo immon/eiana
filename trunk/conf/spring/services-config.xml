@@ -1268,7 +1268,7 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(private * org.iana.rzm.trans.epp.poll.EppPollMsgAction.queryInfoAndProcess(..)) ||
+                                  execution(private * org.iana.rzm.trans.epp.poll.EPPPollMsgAction.queryInfoAndProcess(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
