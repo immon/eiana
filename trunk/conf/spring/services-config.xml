@@ -857,7 +857,7 @@
                 <constructor-arg index="0" ref="jbpmConfiguration"/>
             </bean>
         </constructor-arg>
-        <property name="interval" value="5000"/>
+        <property name="interval" value="5000000"/>
         <property name="priority" value="1"/>
     </bean>
 
@@ -870,7 +870,7 @@
                 <property name="maxResultCount" value="1"/>
             </bean>
         </constructor-arg>
-        <property name="interval" value="5000"/>
+        <property name="interval" value="5000000"/>
         <property name="priority" value="1"/>
     </bean>
 
@@ -1207,6 +1207,11 @@
 
     <bean id="cc" class="org.iana.rzm.facade.common.cc.CountryCodesImpl">
         <constructor-arg index="0" ref="cachedCodeValues"/>
+    </bean>
+
+    <bean id="ccManager" class="org.iana.rzm.facade.common.cc.CountryCodesManagerImpl">
+        <constructor-arg ref="cachedCodeValues"/>
+        <constructor-arg ref="codeValues"/>        
     </bean>
 
     <bean id="cachedCodeValues" class="org.iana.codevalues.CachedCodeValuesRetriever">

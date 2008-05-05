@@ -30,11 +30,17 @@ public class Code implements Serializable {
     private Code() {
     }
 
+    public Code(String code) {
+        this(code, new ArrayList<Value>());
+    }
+
     public Code(String code, List<Value> values) {
         this(null, code, values);
     }
 
     public Code(Long objId, String code, List<Value> values) {
+        if (code == null) throw new IllegalArgumentException("code cannot be null");
+        if (values == null) throw new IllegalArgumentException("values cannot be null");
         this.objId = objId;
         this.code = code;
         this.values = values;
@@ -50,6 +56,11 @@ public class Code implements Serializable {
 
     public List<Value> getValues() {
         return values;
+    }
+
+    public void addValue(Value value) {
+        if (value == null) throw new IllegalArgumentException("value cannot be null");
+        values.add(value);
     }
 }
 

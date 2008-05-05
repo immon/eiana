@@ -44,4 +44,7 @@ public class HibernateCodeValuesRetriever extends HibernateDAO<Code> implements 
         }
         return null;
     }
+
+    public void refresh() {
+    }
 }
