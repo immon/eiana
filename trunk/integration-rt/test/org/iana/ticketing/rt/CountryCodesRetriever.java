@@ -52,4 +52,8 @@ class CountryCodesRetriever implements CodeValuesRetriever {
     public Code getCode(String code) {
         return null;
     }
+
+    public void refresh() {
+
+    }
 }
