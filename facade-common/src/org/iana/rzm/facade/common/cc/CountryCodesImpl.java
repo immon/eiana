@@ -10,7 +10,12 @@ import java.util.List;
  */
 public class CountryCodesImpl implements CountryCodes {
 
-    private CodeValuesRetriever retriever;
+    /**
+     * The name of the code containing country information (country code and name).
+     */
+    public static final String CC = "cc";
+
+    protected CodeValuesRetriever retriever;
 
     public CountryCodesImpl(CodeValuesRetriever retriever) {
         if (retriever == null) throw new IllegalArgumentException("null code values retriever");
@@ -18,10 +23,10 @@ public class CountryCodesImpl implements CountryCodes {
     }
 
     public String getCountryName(String countryCode) {
-        return retriever.getValueById("cc", countryCode);
+        return retriever.getValueById(CC, countryCode);
     }
 
     public List<Value> getCountries() {
-        return retriever.getCodeValues("cc");
+        return retriever.getCodeValues(CC);
     }
 }

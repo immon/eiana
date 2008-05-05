@@ -71,4 +71,8 @@ class CachedCodeValuesRetriever implements CodeValuesRetriever {
             }
         }
     }
+
+    public void refresh() {
+        cache.clear();
+    }
 }
