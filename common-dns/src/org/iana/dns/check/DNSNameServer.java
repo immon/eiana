@@ -163,7 +163,13 @@ public class DNSNameServer {
 
 
     public long getSerialNumber() throws DNSCheckIOException {
-        return (getSOA() != null) ? ((SOARecord) getSOA().getSectionArray(1)[0]).getSerial() : -1;
+         if(getSOA() != null){
+            Record[] records = getSOA().getSectionArray(1);
+            if(records != null &&records.length > 0 ){
+                return ((SOARecord)records[0]).getSerial();
+            }
+        }
+        return -1;
     }
 
     public DNSDomain getDomain() {
