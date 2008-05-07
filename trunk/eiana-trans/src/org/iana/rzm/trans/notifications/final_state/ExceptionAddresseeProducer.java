@@ -1,14 +1,12 @@
 package org.iana.rzm.trans.notifications.final_state;
 
-import org.iana.notifications.PAddressee;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer;
-import org.iana.rzm.user.AdminRole;
+import org.apache.commons.lang.*;
+import org.iana.notifications.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.notifications.default_producer.*;
+import org.iana.rzm.user.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -29,7 +27,10 @@ public class ExceptionAddresseeProducer extends DefaultTransactionAddresseeProdu
 
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
         String submitter = td.getSubmitterEmail();
-        retAddressees.add(new PAddressee(submitter, submitter));
+
+        if(StringUtils.isNotBlank(submitter)){
+            retAddressees.add(new PAddressee(submitter, submitter));
+        }
 
         return retAddressees;
     }
