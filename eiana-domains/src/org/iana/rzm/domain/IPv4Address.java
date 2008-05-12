@@ -1,7 +1,8 @@
 package org.iana.rzm.domain;
 
+import org.iana.dns.DNSIPv4Address;
+import org.iana.dns.obj.DNSIPAddressImpl;
 import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.dns.validator.IPAddressValidator;
 
 import javax.persistence.Entity;
 
@@ -19,7 +20,8 @@ public class IPv4Address extends IPAddress {
         setAddress(address);
     }
 
-    protected void isValidAddress(String address) throws InvalidIPAddressException {
-        IPAddressValidator.getInstance().validateIPv4(address);
+    protected String normalizeAddress(String address) throws InvalidIPAddressException {
+        DNSIPv4Address ipv4 = DNSIPAddressImpl.createIPv4Address(address);
+        return ipv4.getAddress();
     }
 }
