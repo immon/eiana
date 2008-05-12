@@ -50,7 +50,7 @@ public abstract class EPPCommand {
     protected String getClientId() {
         String ret = "" + transaction.getTicketID();
         int retries = transaction.getEPPRetries();
-        return retries == 0 ? ret : ret + "-" + retries;
+        return ret + ":" + retries;
     }
 
     protected String getTransactionId() {
