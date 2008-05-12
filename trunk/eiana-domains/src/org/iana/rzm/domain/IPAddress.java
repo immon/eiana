@@ -48,11 +48,10 @@ public abstract class IPAddress {
     }
 
     final public void setAddress(String address) throws InvalidIPAddressException {
-        isValidAddress(address);
-        this.address = address;
+        this.address = normalizeAddress(address);
     }
 
-    abstract protected void isValidAddress(String addr) throws InvalidIPAddressException;
+    abstract protected String normalizeAddress(String addr) throws InvalidIPAddressException;
 
     public static IPAddress createIPAddress(String addr) throws InvalidIPAddressException {
         try {

@@ -1,13 +1,14 @@
 package org.iana.rzm.domain;
 
+import org.iana.dns.DNSIPv6Address;
+import org.iana.dns.obj.DNSIPAddressImpl;
 import org.iana.dns.validator.InvalidIPAddressException;
-import org.iana.dns.validator.IPAddressValidator;
 
 import javax.persistence.Entity;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -20,12 +21,13 @@ public class IPv6Address extends IPAddress {
 
     IPv6Address(String address) throws InvalidIPAddressException {
         super(address, Type.IPv6);
-        isValidAddress(address);
+        normalizeAddress(address);
         super.setAddress(unfoldIPv6Address(address));
     }
     
-    protected void isValidAddress(String address) throws InvalidIPAddressException {
-        IPAddressValidator.getInstance().validateIPv6(address);
+    protected String normalizeAddress(String address) throws InvalidIPAddressException {
+        DNSIPv6Address ipv6 = DNSIPAddressImpl.createIPv6Address(address);
+        return ipv6.getAddress();
     }
 
     private String unfoldIPv6Address(String address) {
