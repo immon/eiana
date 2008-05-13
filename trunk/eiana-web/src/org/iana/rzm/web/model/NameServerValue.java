@@ -30,7 +30,6 @@ public class NameServerValue implements Serializable {
         this.ips.addAll(WebUtil.toVos(ips));
         shared = false;
         status = NEW;
-        created = new Timestamp(System.currentTimeMillis());
     }
 
     public NameServerValue(NameServerVOWrapper nameServer) {
