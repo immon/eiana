@@ -68,8 +68,10 @@ public class DomainManagerBean implements DomainManager {
         for (Host host : domain.getNameServers()) {
             Host found = hostManager.get(host.getName());
             if (found == null) {
-                host.setDelegations(0);
-                newHosts.add(host);
+                Host nHost = new Host(host.getName());
+                nHost.setAddresses(host.getAddresses());
+                nHost.setDelegations(0);
+                newHosts.add(nHost);
             } else {
                 found.setAddresses(host.getAddresses());
                 newHosts.add(found);
