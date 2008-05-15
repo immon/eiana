@@ -77,10 +77,7 @@
         </decision>
 
         <decision name="PENDING_TECH_CHECK">
-            <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
-                <doTest>true</doTest>
-                <period>7</period>
-            </handler>
+            <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck"/>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
             <transition name="error" to="PENDING_TECH_CHECK_REMEDY"/>
         </decision>
@@ -368,7 +365,6 @@
 
         <decision name="PENDING_SUPP_TECH_CHECK">
             <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
-                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
