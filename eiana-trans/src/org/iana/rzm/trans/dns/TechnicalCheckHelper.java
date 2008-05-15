@@ -36,6 +36,8 @@ public class TechnicalCheckHelper implements CheckHelper {
 
     private TemplateFactory templateFactory;
 
+    private boolean doTest;
+
     public TechnicalCheckHelper(TemplateFactory templateFactory) {
         this.templateFactory = templateFactory;
     }
@@ -70,7 +72,9 @@ public class TechnicalCheckHelper implements CheckHelper {
                          Transaction trans,
                          TransactionNotificationSender sender) throws TemplateInstantiationException, NotificationSenderException {
         try {
-            DNSTechnicalCheckFactory.getDomainCheck().check(DNSConverter.toDNSDomain(domain));
+            if (doTest)
+                DNSTechnicalCheckFactory.getDomainCheck().check(DNSConverter.toDNSDomain(domain));
+
         } catch (DNSTechnicalCheckException e) {
             DNSExceptionMessagesVisitor messagesVisitor = new DNSExceptionMessagesVisitor();
             e.accept(messagesVisitor);
@@ -109,4 +113,7 @@ public class TechnicalCheckHelper implements CheckHelper {
         return new PNotification(to, content.getSubject(), content.getBody());
     }
 
+    public void setDoTest(boolean doTest) {
+        this.doTest = doTest;
+    }
 }

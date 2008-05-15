@@ -303,6 +303,7 @@
 
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
+        <property name="doTest"><value>true</value></property>
     </bean>
 
     <!-- Technical Checks -->
