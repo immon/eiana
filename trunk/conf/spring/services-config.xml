@@ -388,6 +388,22 @@
         <property name="persistent" value="true"/>
     </bean>
 
+    <bean id="contactConfirmationRemainderACNotificationProducer" class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
+        <constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>
+        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
+    <bean id="contactConfirmationRemainderTCNotificationProducer" class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
+        <constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>
+        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
     <bean id="exceptionNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
@@ -577,6 +593,13 @@
           class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>contact-confirmation</value>
+        </property>
+    </bean>
+
+    <bean id="contactConfirmationRemainderTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>contact-confirmation-remainder</value>
         </property>
     </bean>
 
