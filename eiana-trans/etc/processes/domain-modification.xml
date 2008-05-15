@@ -78,7 +78,7 @@
 
         <decision name="PENDING_TECH_CHECK">
             <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
-                <doTest>false</doTest>
+                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
@@ -152,22 +152,46 @@
                 -->
             </event>
             <timer name="7d-time-out" duedate='7 days'>
-                <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
-                <!--<period>23</period>-->
-                <!--<notification>contact-confirmation-remainder</notification>-->
-                <!--</action>-->
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderACNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>23</value></entry>
+                    </additionalData>
+                </action>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderTCNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>23</value></entry>
+                    </additionalData>
+                </action>
             </timer>
             <timer name="14d-time-out" duedate='14 days'>
-                <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
-                <!--<period>16</period>-->
-                <!--<notification>contact-confirmation-remainder</notification>-->
-                <!--</action>-->
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderACNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>16</value></entry>
+                    </additionalData>
+                </action>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderTCNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>16</value></entry>
+                    </additionalData>
+                </action>
             </timer>
             <timer name="21d-time-out" duedate='21 days'>
-                <!--<action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationReminder">-->
-                <!--<period>9</period>-->
-                <!--<notification>contact-confirmation-remainder</notification>-->
-                <!--</action>-->
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderACNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>9</value></entry>
+                    </additionalData>
+                </action>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderTCNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>9</value></entry>
+                    </additionalData>
+                </action>
             </timer>
             <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
             <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
@@ -344,7 +368,7 @@
 
         <decision name="PENDING_SUPP_TECH_CHECK">
             <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
-                <doTest>false</doTest>
+                <doTest>true</doTest>
                 <period>7</period>
             </handler>
             <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
