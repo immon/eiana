@@ -119,7 +119,8 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
             dateOfSerial = curDateOfSerial;
             noOfSerial = 0;
         }
-        return dateOfSerial+noOfSerial;
+        String zeroPaddedNoOfSerial = (noOfSerial < 10) ? "0"+noOfSerial : ""+noOfSerial;
+        return dateOfSerial+zeroPaddedNoOfSerial;
     }
 
     private Set<DNSDomain> getDomains() {
