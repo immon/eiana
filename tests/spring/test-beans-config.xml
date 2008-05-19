@@ -23,4 +23,9 @@
 
     <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
 
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
+        <constructor-arg ref="templateFactory"/>
+        <property name="doTest"><value>false</value></property>
+    </bean>
+
 </beans>

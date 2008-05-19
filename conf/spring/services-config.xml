@@ -55,6 +55,11 @@
 
     <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
 
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
+        <constructor-arg ref="templateFactory"/>
+        <property name="doTest"><value>true</value></property>
+    </bean>
+
 <!-- end of test bean section -->
 
         <!--<bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
@@ -298,13 +303,6 @@
     </bean>
 
     <!-- end of facade services configuration -->
-
-    <!-- Technical Check Helper -->
-
-    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
-        <constructor-arg ref="templateFactory"/>
-        <property name="doTest"><value>true</value></property>
-    </bean>
 
     <!-- Technical Checks -->
 
