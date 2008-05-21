@@ -84,9 +84,19 @@
     </bean>
 
     <bean id="diffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
-        <constructor-arg>
-            <ref bean="hostManager"/>
-        </constructor-arg>
+        <constructor-arg ref="hostInstantiator"/>
+    </bean>
+
+    <bean id="hostInstantiator" class="org.iana.rzm.trans.change.HostInstantiator">
+        <constructor-arg ref="hostManager"/>
+    </bean>
+
+    <bean id="noHostDiffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
+        <constructor-arg ref="clonedHostInstantiator"/>
+    </bean>
+
+    <bean id="clonedHostInstantiator" class="org.iana.rzm.trans.change.ClonedHostInstantiator">
+        <constructor-arg ref="hostManager"/>
     </bean>
 
     <bean id="userManagerGSDomainS" class="org.iana.rzm.system.accuracy.TestSystemUserManager"/>

@@ -13,7 +13,7 @@ public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
 
     /**
      * Returns the name of this domain. The returned name is lower-cased and is a valid name according to RFC 1034.
-     * Examples: <code>com</code> <code>nask.pl</code>
+     * Examples: <code>com</code> <code>bask.pl</code>
      *
      * @return the name of this domain.
      */
@@ -21,8 +21,8 @@ public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
 
     /**
      * Returns the name of this domain in a fully qualified form (with a trailing dot).
-     * The returned name is lower-cased.
-     * Examples: <code>com.</code> <code>nask.pl.</code>
+     * The returned name is upper-cased.
+     * Examples: <code>COM.</code> <code>NASK.PL.</code>
      *
      * @return the name of this domain with a trailing dot.
      */
@@ -30,8 +30,8 @@ public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
 
     /**
      * Returns the name of this domain name as fully qualified suffix i.e. with a leading and trailing dot. The returned
-     * name is lower-cased.
-     * Examples: <code>.com.</code> <code>.nask.pl.</code>.
+     * name is upper-cased.
+     * Examples: <code>.COM.</code> <code>.NASK.PL.</code>.
      *
      * @return the name of this domain with a leading and trailing dot.
      */
@@ -62,7 +62,7 @@ public interface DNSDomain extends DNSObject, Comparable<DNSDomain> {
     Map<String, DNSHost> getNameServerMap();
 
     /**
-     * Returns the set of names of name servers to which this domain is delegated. Names are lower-cased.
+     * Returns the set of names of name servers to which this domain is delegated. Names are upper-cased.
      *
      * @return the set of names of the name servers of this domain.
      */

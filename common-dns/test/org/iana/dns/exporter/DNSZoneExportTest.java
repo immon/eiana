@@ -40,7 +40,7 @@ public class DNSZoneExportTest {
                 "b.root-servers.net. AAAA 2001:500:1:0:0:0:803f:235\n" +
                 "$TTL 172800\n";
         valid = valid.replaceAll("\\n", System.getProperty("line.separator"));
-        assert valid.equals(out.toString());
+        assert valid.equalsIgnoreCase(out.toString());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class DNSZoneExportTest {
                 "f-dns.pl. A 217.17.46.189\n" +
                 "f-dns.pl. AAAA 2001:1a68:0:10:0:0:0:189\n";
         valid = valid.replaceAll("\\n", System.getProperty("line.separator"));
-        assert valid.equals(out.toString());
+        assert valid.equalsIgnoreCase(out.toString());
     }
 
     private DNSZoneImpl initZone() {

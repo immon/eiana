@@ -117,7 +117,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         // 2 group/trans -> impactedhost-2
         // 3 group/trans -> notimpactedhost
         // 4 group/trans -> registry url
-        assert trans != null && trans.size() == 1;
+        assert trans.size() == 1 : "transaction created: " + trans.size();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -129,7 +129,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
     public void cleanUp() {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+        domainManager.deleteAll();
+        hostManager.deleteAll();
     }
 }

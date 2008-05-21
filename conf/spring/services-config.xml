@@ -50,13 +50,14 @@
     </bean>
 
     <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
-    <property name="path" value="conf/epp/epp.rootzone.config"/>
+        <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
 
     <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
 
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
+        <constructor-arg ref="noHostDiffConfig"/>
         <property name="doTest"><value>true</value></property>
     </bean>
 
@@ -347,7 +348,7 @@
 
     <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSender">
         <constructor-arg ref="persistentNotificationSender"/>
-        <constructor-arg ref="ticketingService"/>         
+        <constructor-arg ref="ticketingService"/>
     </bean>
 
     <!-- Notification producers -->
@@ -777,15 +778,23 @@
     </bean>
 
     <bean id="diffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
-        <constructor-arg>
-            <ref bean="hostManager"/>
-        </constructor-arg>
+        <constructor-arg ref="hostInstantiator"/>
+    </bean>
+
+    <bean id="hostInstantiator" class="org.iana.rzm.trans.change.HostInstantiator">
+        <constructor-arg ref="hostManager"/>
+    </bean>
+
+    <bean id="noHostDiffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
+        <constructor-arg ref="clonedHostInstantiator"/>
+    </bean>
+
+    <bean id="clonedHostInstantiator" class="org.iana.rzm.trans.change.ClonedHostInstantiator">
+        <constructor-arg ref="hostManager"/>
     </bean>
 
     <bean id="adminDiffConfig" class="org.iana.rzm.facade.admin.trans.AdminDomainDiffConfiguration">
-        <constructor-arg>
-            <ref bean="hostManager"/>
-        </constructor-arg>
+        <constructor-arg ref="hostInstantiator"/>
     </bean>
 
     <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
@@ -871,7 +880,7 @@
         <constructor-arg index="0" ref="jbpmConfiguration"/>
         <constructor-arg index="1">
             <bean class="org.iana.rzm.startup.jbpm.JbpmCommandExecutor">
-                <constructor-arg index="0" ref="jbpmConfiguration"/>                
+                <constructor-arg index="0" ref="jbpmConfiguration"/>
             </bean>
         </constructor-arg>
         <constructor-arg index="2">
@@ -1233,7 +1242,7 @@
 
     <bean id="ccManager" class="org.iana.rzm.facade.common.cc.CountryCodesManagerImpl">
         <constructor-arg ref="cachedCodeValues"/>
-        <constructor-arg ref="codeValues"/>        
+        <constructor-arg ref="codeValues"/>
     </bean>
 
     <bean id="cachedCodeValues" class="org.iana.codevalues.CachedCodeValuesRetriever">
@@ -1295,7 +1304,7 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(private * org.iana.rzm.trans.epp.poll.EPPPollMsgAction.queryInfoAndProcess(..)) ||
+                                  execution(private * org.iana.rzm.trans.epp.poll.EPPInfoMsgAction.queryInfoAndProcess(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
@@ -1536,7 +1545,7 @@
         <property name="targetMethod" value="execute"/>
     </bean>
 
-    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.poll.EPPPollMsgAction">
+    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.poll.EPPInfoMsgAction">
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="eppClient"/>
         <constructor-arg ref="eppErrorHandler"/>

@@ -26,6 +26,8 @@ public interface UserManager {
 
     public void delete(String loginName);
 
+    public void deleteAll();
+
     public void update(RZMUser user);
 
     public List<RZMUser> findAll();

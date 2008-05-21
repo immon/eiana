@@ -62,10 +62,6 @@
         </decision>
 
         <state name="PENDING_CREATION">
-            <event type='node-enter'>
-                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
-                </action>
-            </event>
             <transition name="go-on" to="FIRST_NSLINK_CHANGE_DECISION"/>
             <transition name="admin-accept" to="FIRST_NSLINK_CHANGE_DECISION"/>
         </state>
@@ -132,8 +128,6 @@
 
         <state name="PENDING_CONTACT_CONFIRMATION">
             <event type='node-enter'>
-                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
-                </action>
                 <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationCalculator"/>
                 <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
                     <notificationProducerName>contactConfirmationACNotificationProducer</notificationProducerName>

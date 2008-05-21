@@ -33,6 +33,15 @@ public class Name implements Comparable<Name> {
         return "." + name + ".";
     }
 
+    public String getUpperCasedNameWithDot() {
+        return name.toUpperCase() + ".";
+    }
+
+    public String getUpperCasedNameWithDots() {
+        if (name.length() == 0) return ".";
+        return "." + name + ".";
+    }
+
     public String[] getLabels() {
         return name.split("\\.");
     }

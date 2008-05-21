@@ -43,7 +43,7 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
 
     private static String normalize(String addr) throws InvalidIPv6AddressException {
         if (addr == null) throw new IllegalArgumentException("null address");
-        addr = addr.toLowerCase();
+        addr = addr.toUpperCase();
         IPAddressValidator.getInstance().validateIPv6(addr);
         return isCompressed(addr) ? uncompress(addr) : addr;
     }

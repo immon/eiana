@@ -46,12 +46,19 @@ public class UserManagerBean implements UserManager {
     }
 
     public void delete(RZMUser user) {
+        CheckTool.checkNull(user, "user");
         dao.delete(user);
     }
 
     public void delete(String loginName) {
         RZMUser user = get(loginName);
         if (user != null) delete(user);
+    }
+
+    public void deleteAll() {
+        for (RZMUser user : findAll()) {
+            delete(user);
+        }
     }
 
     public List<RZMUser> findAll() {

@@ -19,14 +19,14 @@ public class HostInstantiator implements ObjectInstantiator {
         this.hostManager = hostManager;
     }
 
-    public Object instantiate(Change change) {
+    public Host instantiate(Change change) {
         ObjectChange objectChange = (ObjectChange)change;
         String hostName = objectChange.getId();
         Host host = hostManager.get(hostName);
         return host != null ? host : new Host(hostName);
     }
 
-    public Object get(String id) {
+    public Host get(String id) {
         return hostManager.get(id);
     }
 }
