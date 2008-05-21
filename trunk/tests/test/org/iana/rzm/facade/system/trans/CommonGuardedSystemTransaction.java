@@ -39,6 +39,7 @@ import java.util.List;
 public abstract class CommonGuardedSystemTransaction {
     protected ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
     protected ProcessDAO processDAO = (ProcessDAO) appCtx.getBean("processDAO");
+    protected HostManager hostManager = (HostManager) appCtx.getBean("hostManager");
     protected UserManager userManager = (UserManager) appCtx.getBean("userManager");
     protected DomainManager domainManager = (DomainManager) appCtx.getBean("domainManager");
     protected AdminNotificationService notificationService =

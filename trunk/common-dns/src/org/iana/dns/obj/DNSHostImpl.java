@@ -27,7 +27,7 @@ public class DNSHostImpl implements DNSHost {
     }
 
     public String getFullyQualifiedName() {
-        return name.getNameWithDot();
+        return name.getUpperCasedNameWithDot();
     }
 
     public String[] getLabels() {

@@ -12,7 +12,7 @@ import java.util.Set;
 public interface DNSHost extends DNSObject, Comparable<DNSHost> {
 
     /**
-     * Returns the name of this domain. The returned name is lower-cased and is a valid name according to RFC 1034.
+     * Returns the name of this domain. The returned name is upper-cased and is a valid name according to RFC 1034.
      * Examples: <code>com</code> <code>nask.pl</code>
      *
      * @return the name of this domain.
@@ -20,8 +20,8 @@ public interface DNSHost extends DNSObject, Comparable<DNSHost> {
     String getName();
 
     /**
-     * Returns the name of this domain with a trailing dot. The returned name is lower-cased.
-     * Examples: <code>com.</code> <code>nask.pl.</code>
+     * Returns the name of this domain with a trailing dot. The returned name is upper-cased.
+     * Examples: <code>COM.</code> <code>NASK.PL.</code>
      *
      * @return the name of this domain with a trailing dot.
      */

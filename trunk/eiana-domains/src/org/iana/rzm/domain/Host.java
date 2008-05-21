@@ -218,19 +218,23 @@ public class Host implements TrackedObject, Cloneable {
         this.trackData = trackData;
     }
 
-    protected Object clone() throws CloneNotSupportedException {
-        Host newHost = (Host) super.clone();
-        newHost.objId = objId;
-        newHost.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
+    public Host clone() {
+        try {
+            Host newHost = (Host) super.clone();
+            newHost.objId = objId;
+            newHost.trackData = trackData == null ? new TrackData() : (TrackData) trackData.clone();
 
-        Set<IPAddress> newAddresses = new HashSet<IPAddress>();
-        if (addresses != null) {
-            for (IPAddress ip : addresses)
-                newAddresses.add(IPAddress.createIPAddress(ip.getAddress()));
+            Set<IPAddress> newAddresses = new HashSet<IPAddress>();
+            if (addresses != null) {
+                for (IPAddress ip : addresses)
+                    newAddresses.add(IPAddress.createIPAddress(ip.getAddress()));
+            }
+            newHost.addresses = newAddresses;
+
+            return newHost;
+        } catch (CloneNotSupportedException e) {
+            throw new UnsupportedOperationException(e);
         }
-        newHost.addresses = newAddresses;
-
-        return newHost;
     }
 
 

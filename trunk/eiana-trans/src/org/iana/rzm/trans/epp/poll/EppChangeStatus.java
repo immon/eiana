@@ -1,5 +1,8 @@
 package org.iana.rzm.trans.epp.poll;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
@@ -36,5 +39,21 @@ public enum EppChangeStatus {
 
     public int getOrderNumber() {
         return orderNumber;
+    }
+
+    private static Map<String, EppChangeStatus> statuses = new HashMap<String, EppChangeStatus>();
+
+    static {
+        for (EppChangeStatus status : EppChangeStatus.values()) {
+            statuses.put(normalize(status.toString()), status);
+        }
+    }
+
+    static String normalize(String status) {
+        return status != null ? status.toLowerCase() : null;
+    }
+
+    public static EppChangeStatus statusOf(String status) {
+        return statuses.get(normalize(status));
     }
 }

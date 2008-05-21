@@ -347,7 +347,7 @@ public class Domain implements TrackedObject, Cloneable {
                 }
             }
             if (whoisServer != null)
-                newDomain.whoisServer = (WhoisName) whoisServer.clone();
+                newDomain.whoisServer = whoisServer.clone();
             newDomain.registryUrl = registryUrl;
 
             Set<Breakpoint> newBreakpoints = new HashSet<Breakpoint>();

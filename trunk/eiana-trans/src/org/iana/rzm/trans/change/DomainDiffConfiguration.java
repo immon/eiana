@@ -2,6 +2,7 @@ package org.iana.rzm.trans.change;
 
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectConfiguration;
+import org.iana.objectdiff.ObjectInstantiator;
 import org.iana.rzm.domain.*;
 
 /**
@@ -14,15 +15,14 @@ public class DomainDiffConfiguration extends DiffConfiguration {
     public static final String SPONSORING_ORG = "supportingOrg";
     public static final String NAME_SERVERS = "nameServers";
 
-    public DomainDiffConfiguration(HostManager hostManager) {
-
+    public DomainDiffConfiguration(ObjectInstantiator hostInstantiator) {
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
                 SPONSORING_ORG, ADMIN_CONTACT, TECH_CONTACT, "whoisServer", "registryUrl", NAME_SERVERS, "status"
         }, "name");
         domainConfig.addFieldClass(SPONSORING_ORG, Contact.class);
         domainConfig.addFieldClass(ADMIN_CONTACT, Contact.class);
         domainConfig.addFieldClass(TECH_CONTACT, Contact.class);
-        domainConfig.addFieldInstantiator(NAME_SERVERS, new HostInstantiator(hostManager));
+        domainConfig.addFieldInstantiator(NAME_SERVERS, hostInstantiator);
         addObjectConfiguration(Domain.class, domainConfig);
         addSimpleClass(Domain.Status.class);
 
@@ -41,7 +41,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
             "name", "addresses"
         }, "name");
         hostConfig.addFieldInstantiator("addresses", new IPAddressInstantiator());
-        hostConfig.setInstantiator(new HostInstantiator(hostManager));
+        hostConfig.setInstantiator(hostInstantiator);
         addObjectConfiguration(Host.class, hostConfig);
 
         ObjectConfiguration ipAddressConfig = new ObjectConfiguration( new String[] {

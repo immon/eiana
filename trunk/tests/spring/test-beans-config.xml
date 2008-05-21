@@ -25,6 +25,7 @@
 
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
+        <constructor-arg ref="noHostDiffConfig"/>
         <property name="doTest"><value>false</value></property>
     </bean>
 

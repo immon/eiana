@@ -158,4 +158,9 @@ public class TestUserManager implements UserManager {
     public RZMUser findUserByEmailAndRole(String email, String domainName) {
         return null;
     }
+
+
+    public void deleteAll() {
+
+    }
 }

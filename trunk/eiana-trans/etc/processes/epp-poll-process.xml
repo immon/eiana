@@ -6,7 +6,7 @@
 
     <state name="EPP_POLL_CHECK">
         <event type='node-enter'>
-            <action class="org.iana.rzm.trans.epp.poll.EPPPollMsgAction"/>
+            <action class="org.iana.rzm.trans.epp.poll.EPPInfoMsgAction"/>
         </event>
         <timer name="1h-time-out" duedate="1 hour" transition="try"></timer>
 

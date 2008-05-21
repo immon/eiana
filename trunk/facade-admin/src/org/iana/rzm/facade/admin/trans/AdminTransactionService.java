@@ -33,4 +33,5 @@ public interface AdminTransactionService extends TransactionService {
 
     void confirmByUSDoC(long transactionId, boolean nsChange, boolean accept) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException, InfrastructureException;
 
+    
 }

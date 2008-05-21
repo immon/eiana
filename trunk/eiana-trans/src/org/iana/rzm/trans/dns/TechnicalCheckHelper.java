@@ -36,14 +36,16 @@ public class TechnicalCheckHelper implements CheckHelper {
 
     private TemplateFactory templateFactory;
 
+    private DiffConfiguration diffConfig;
+
     private boolean doTest;
 
-    public TechnicalCheckHelper(TemplateFactory templateFactory) {
+    public TechnicalCheckHelper(TemplateFactory templateFactory, DiffConfiguration diffConfig) {
         this.templateFactory = templateFactory;
+        this.diffConfig = diffConfig;
     }
 
     public boolean check(ExecutionContext executionContext, String period) throws Exception {
-        DiffConfiguration diffConfig = (DiffConfiguration) executionContext.getJbpmContext().getObjectFactory().createObject("diffConfig");
         NotificationContext ctx = new NotificationContext(executionContext);
         return check(period,
                 ctx.getTransaction(),

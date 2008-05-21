@@ -109,6 +109,7 @@ public class TestSystemUserManager implements UserManager {
     }                                     
 
     public void update(RZMUser user) {}
+    
     public List<RZMUser> find(Criterion criteria) {return null;}
 
     public int count(Criterion criteria) {
@@ -121,5 +122,9 @@ public class TestSystemUserManager implements UserManager {
 
     public RZMUser findUserByEmailAndRole(String email, String domainName) {
         return null;
+    }
+
+    public void deleteAll() {
+
     }
 }

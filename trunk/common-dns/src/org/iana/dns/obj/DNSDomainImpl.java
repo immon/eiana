@@ -27,11 +27,11 @@ public class DNSDomainImpl implements DNSDomain {
     }
 
     public String getFullyQualifiedName() {
-        return name.getNameWithDot();
+        return name.getUpperCasedNameWithDot();
     }
 
     public String getNameAsFullyQualifiedSuffix() {
-        return name.getNameWithDots();
+        return name.getUpperCasedNameWithDots();
     }
 
     public String[] getLabels() {

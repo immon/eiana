@@ -23,9 +23,9 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-public class EPPPollMsgAction {
+public class EPPInfoMsgAction {
 
-    private static Logger logger = Logger.getLogger(EPPPollMsgAction.class);
+    private static Logger logger = Logger.getLogger(EPPInfoMsgAction.class);
 
     private TransactionManager transactionManager;
 
@@ -33,7 +33,7 @@ public class EPPPollMsgAction {
 
     private ErrorHandler eppErrorHandler;
 
-    public EPPPollMsgAction(TransactionManager transactionManager, EPPClient eppClient, ErrorHandler eppErrorHandler) {
+    public EPPInfoMsgAction(TransactionManager transactionManager, EPPClient eppClient, ErrorHandler eppErrorHandler) {
         this.transactionManager = transactionManager;
         this.eppClient = eppClient;
         this.eppErrorHandler = eppErrorHandler;
@@ -74,7 +74,7 @@ public class EPPPollMsgAction {
         ChangeInfoRequest req = operationFactory.getChangeInfoRequest(id(), ref);
         ChangeInfoResponse rsp = eppClient.info(req);
         if (rsp == null || !rsp.isSuccessful() || rsp.getStatus() == null) return null;
-        return EppChangeStatus.valueOf(rsp.getStatus());
+        return EppChangeStatus.statusOf(rsp.getStatus());
     }
 
     private void process(Transaction trans, EppChangeStatus status) throws TransactionException {
