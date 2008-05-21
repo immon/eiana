@@ -5,6 +5,8 @@ import org.iana.rzm.trans.Transaction;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
 import java.sql.Timestamp;
 
 /**
@@ -13,7 +15,8 @@ import java.sql.Timestamp;
 @Entity
 public class PollMsg {
 
-    @Basic
+    @Id
+    @GeneratedValue
     private Long id;
 
     @Basic
