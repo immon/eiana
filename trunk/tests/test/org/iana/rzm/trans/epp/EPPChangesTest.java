@@ -73,7 +73,7 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
         /*
         System.out.println("#############################");
         while (true) {
-            EppPollResponse pollRsp = new EPPPollRequest(eppClient).send();
+            EPPPollResponse pollRsp = new EPPPollRequest(eppClient).send();
             if (pollRsp == null) break;
             System.out.println("ack: " + pollRsp.getChangeRequestId());
         }
@@ -98,8 +98,8 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             domainVONS = DomainToVOConverter.toDomainVO(domainNS);
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String[] rsps = eppChangeRequest.send();
+            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+            String[] rsps = eppChangeReq.send();
             String rsp = rsps[1];
             assert rsp != null;
             rsp = rsp.replaceAll("\\s", " ");
@@ -108,10 +108,10 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             /*
             while (true) {
                 EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-                EppPollResponse pollRsp = eppPollRequest.send();
+                EPPPollResponse pollRsp = eppPollRequest.send();
                 System.out.println("ack: " + pollRsp.getChangeRequestId());
                 assert pollRsp != null;
-                assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+                assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
                 assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                         "unexpected request id: " + pollRsp.getChangeRequestId();
             }
@@ -136,17 +136,17 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             domainVONS = DomainToVOConverter.toDomainVO(domainNS);
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send()[1];
+            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+            String rsp = eppChangeReq.send()[1];
             assert rsp != null;
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EppPollResponse pollRsp = eppPollRequest.send();
+            EPPPollResponse pollRsp = eppPollRequest.send();
             assert pollRsp != null;
-            assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
             */
@@ -168,17 +168,17 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             domainVONS = DomainToVOConverter.toDomainVO(domainNS);
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send()[1];
+            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+            String rsp = eppChangeReq.send()[1];
             assert rsp != null;
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(DELETE_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EppPollResponse pollRsp = eppPollRequest.send();
+            EPPPollResponse pollRsp = eppPollRequest.send();
             assert pollRsp != null;
-            assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
             */
@@ -201,17 +201,17 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
             domainVONS = DomainToVOConverter.toDomainVO(domainNS);
             transId = createTransaction(domainVONS, userAC).getTransactionID();
             Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String rsp = eppChangeRequest.send()[1];
+            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+            String rsp = eppChangeReq.send()[1];
             assert rsp != null;
             assert rsp.length() > 0;
             rsp = rsp.replaceAll("\\s", " ");
             assert rsp.matches(UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
             /*
             EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EppPollResponse pollRsp = eppPollRequest.send();
+            EPPPollResponse pollRsp = eppPollRequest.send();
             assert pollRsp != null;
-            assert EppPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
             assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
                     "unexpected request id: " + pollRsp.getChangeRequestId();
             */

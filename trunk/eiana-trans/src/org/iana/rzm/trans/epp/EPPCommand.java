@@ -48,9 +48,8 @@ public abstract class EPPCommand {
     }
 
     protected String getClientId() {
-        String ret = "" + transaction.getTicketID();
-        int retries = transaction.getEPPRetries();
-        return ret + ":" + retries;
+        EPPChangeReqId id = new EPPChangeReqId(transaction);
+        return id.id();
     }
 
     protected String getTransactionId() {

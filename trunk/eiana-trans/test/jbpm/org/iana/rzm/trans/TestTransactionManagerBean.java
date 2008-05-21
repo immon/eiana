@@ -7,6 +7,7 @@ import org.iana.rzm.domain.dao.DomainDAO;
 import org.iana.rzm.trans.conf.ConfirmationTestProcess;
 import org.iana.rzm.trans.conf.TransactionTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.epp.mock.MockEPPClient;
 import org.jbpm.graph.exe.ProcessInstance;
 
 /**
@@ -18,7 +19,7 @@ public class TestTransactionManagerBean extends TransactionManagerBean implement
 
 
     public TestTransactionManagerBean(ProcessDAO processDAO, DomainManager domainManager, DiffConfiguration diffConfiguration, DomainDAO domainDAO) {
-        super(processDAO, domainManager, diffConfiguration);
+        super(processDAO, domainManager, diffConfiguration, new MockEPPClient());
         this.processDAO = processDAO;
         this.domainDAO = domainDAO;
     }

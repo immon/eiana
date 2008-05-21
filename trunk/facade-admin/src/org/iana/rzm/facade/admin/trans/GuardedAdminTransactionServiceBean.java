@@ -21,6 +21,7 @@ import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.epp.EPPException;
 import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationAlreadyReceived;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationMismatch;
@@ -34,13 +35,24 @@ import java.util.List;
 public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl implements AdminTransactionService {
 
     private static Logger logger = Logger.getLogger(GuardedAdminTransactionServiceBean.class);
-    
+
     public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck) {
         super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck);
     }
 
     private void isUserInRole() throws AccessDeniedException {
         isIana();
+    }
+
+    public String getTransactionEPPStatus(long id) throws NoObjectFoundException, InvalidEPPTransactionException, InfrastructureException, AccessDeniedException {
+        isUserInRole();
+        try {
+            return String.valueOf(transactionManager.queryTransactionStatus(id));
+        } catch (NoSuchTransactionException e) {
+            throw new NoObjectFoundException("transaction", "" + e.getId());
+        } catch (EPPException e) {
+            throw new InfrastructureException("epp query", e);
+        }
     }
 
     public TransactionVO getTransaction(long id) throws NoObjectFoundException, AccessDeniedException {

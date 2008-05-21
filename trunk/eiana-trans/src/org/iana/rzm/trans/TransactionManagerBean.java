@@ -1,26 +1,29 @@
 package org.iana.rzm.trans;
 
 import org.iana.criteria.Criterion;
+import org.iana.epp.EPPClient;
 import org.iana.objectdiff.ChangeDetector;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
+import static org.iana.rzm.common.validators.CheckTool.checkNull;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.epp.EPPException;
+import org.iana.rzm.trans.epp.SimpleIdGenerator;
+import org.iana.rzm.trans.epp.info.EPPChangeInfoReq;
+import org.iana.rzm.trans.epp.info.EPPChangeStatus;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import static org.iana.rzm.common.validators.CheckTool.*;
-import org.iana.ticketing.TicketingService;
-import org.iana.ticketing.TicketingException;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * @author Jakub Laszkiewicz
@@ -36,15 +39,17 @@ public class TransactionManagerBean implements TransactionManager {
 
     private DiffConfiguration diffConfiguration;
 
-    private TicketingService ticketingService;
+    private EPPClient eppClient;
 
-    public TransactionManagerBean(ProcessDAO processDAO, DomainManager domainManager, DiffConfiguration diffConfiguration) {
+    public TransactionManagerBean(ProcessDAO processDAO, DomainManager domainManager, DiffConfiguration diffConfiguration, EPPClient eppClient) {
         checkNull(processDAO, "process dao");
         checkNull(domainManager, "domain manager");
         checkNull(diffConfiguration, "diff configuration");
+        checkNull(eppClient, "epp client");
         this.processDAO = processDAO;
         this.domainManager = domainManager;
         this.diffConfiguration = diffConfiguration;
+        this.eppClient = eppClient;
     }
 
     public Transaction getTransaction(long id) throws NoSuchTransactionException {
@@ -52,6 +57,13 @@ public class TransactionManagerBean implements TransactionManager {
         if (pi == null || !DOMAIN_MODIFICATION_PROCESS.equals(pi.getProcessDefinition().getName()))
             throw new NoSuchTransactionException(id);
         return new Transaction(pi, processDAO);
+    }
+
+
+    public EPPChangeStatus queryTransactionStatus(long id) throws NoSuchTransactionException, EPPException {
+        Transaction trans = getTransaction(id);
+        EPPChangeInfoReq req = new EPPChangeInfoReq(eppClient, new SimpleIdGenerator());
+        return req.queryStatus(trans);
     }
 
     public String getTransactionToken(long transId, String name) throws NoSuchTransactionException {
@@ -78,18 +90,6 @@ public class TransactionManagerBean implements TransactionManager {
         }
         throw new IllegalArgumentException("no role to confirm found: " + role);
    }
-
-
-    public void addCommentToTransaction(long id, String comment) throws NoSuchTransactionException, TransactionException {
-        try {
-            Transaction trans = getTransaction(id);
-            Long ticketID = trans.getTicketID();
-            if (ticketID == null) throw new NoTicketIDException("transaction: " + id);
-            ticketingService.addComment(ticketID, comment);
-        } catch (TicketingException e) {
-            throw new TransactionException(e);
-        }
-    }
 
     public Transaction createDomainCreationTransaction(Domain domain) {
         TransactionData td = new TransactionData();

@@ -15,6 +15,8 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
  */
 public interface AdminTransactionService extends TransactionService {
 
+    String getTransactionEPPStatus(long id) throws NoObjectFoundException, InvalidEPPTransactionException, InfrastructureException, AccessDeniedException; 
+
     void transitTransactionToState(long id, TransactionStateVO.Name targetStateName) throws NoSuchStateException, StateUnreachableException, NoObjectFoundException, FacadeTransactionException, AccessDeniedException;
 
     void transitTransactionToState(long id, String targetStateName) throws NoSuchStateException, StateUnreachableException, NoObjectFoundException, FacadeTransactionException, AccessDeniedException;
