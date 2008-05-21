@@ -1536,6 +1536,7 @@
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="eppClient"/>
         <constructor-arg ref="eppErrorHandler"/>
+        <constructor-arg ref="ticketingService"/>
     </bean>
 
     <!-- DNS Export Configuration -->

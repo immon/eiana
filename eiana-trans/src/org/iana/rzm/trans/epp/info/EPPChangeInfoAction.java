@@ -11,6 +11,8 @@ import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.epp.EPPException;
 import org.iana.rzm.trans.epp.SimpleIdGenerator;
 import org.iana.rzm.trans.errors.ErrorHandler;
+import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.TicketingException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,12 +29,15 @@ public class EPPChangeInfoAction {
 
     private EPPClient eppClient;
 
+    private TicketingService ticketingService;
+
     private ErrorHandler eppErrorHandler;
 
-    public EPPChangeInfoAction(TransactionManager transactionManager, EPPClient eppClient, ErrorHandler eppErrorHandler) {
+    public EPPChangeInfoAction(TransactionManager transactionManager, EPPClient eppClient, ErrorHandler eppErrorHandler, TicketingService ticketingService) {
         this.transactionManager = transactionManager;
         this.eppClient = eppClient;
         this.eppErrorHandler = eppErrorHandler;
+        this.ticketingService = ticketingService;
     }
 
     public void execute() throws Exception {
@@ -69,7 +74,8 @@ public class EPPChangeInfoAction {
         return req.queryStatus(trans);
     }
 
-    private void process(Transaction trans, EPPChangeStatus status) throws TransactionException {
+    private void process(Transaction trans, EPPChangeStatus status) throws TransactionException, TicketingException {
+        ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
         if (status == EPPChangeStatus.complete) {
             trans.complete();
         } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
