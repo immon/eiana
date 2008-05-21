@@ -798,15 +798,10 @@
     </bean>
 
     <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
-        <constructor-arg>
-            <ref bean="processDAO"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="domainManager"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="diffConfig"/>
-        </constructor-arg>
+        <constructor-arg ref="processDAO"/>
+        <constructor-arg ref="domainManager"/>
+        <constructor-arg ref="diffConfig"/>
+        <constructor-arg ref="eppClient"/>
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -1304,15 +1299,14 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(private * org.iana.rzm.trans.epp.poll.EPPInfoMsgAction.queryInfoAndProcess(..)) ||
+                                  execution(private * org.iana.rzm.trans.epp.info.EPPChangeInfoAction.queryInfoAndProcess(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
-                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
-                                  execution(public * org.iana.rzm.trans.epp.poll.EppPollMsgProcessorImpl.*(..))"/>
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
@@ -1322,8 +1316,7 @@
                           expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
                                       execution(* org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
                                       execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
-                                      execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..)) ||
-                                  execution(public * org.iana.rzm.trans.epp.poll.EppPollMsgProcessorImpl.*(..))"/>
+                                      execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..))"/>
             <aop:after method="close" pointcut-ref="jbpmOperation"/>
         </aop:aspect>
         <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
@@ -1496,12 +1489,6 @@
         </constructor-arg>
     </bean>
 
-    <bean id="eppPollMsgProcessorBean" class="org.iana.rzm.trans.epp.poll.EppPollMsgProcessorImpl">
-        <constructor-arg>
-            <ref bean="transactionManagerBean"/>
-        </constructor-arg>
-    </bean>
-
     <!-- quartz scheduler -->
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -1545,7 +1532,7 @@
         <property name="targetMethod" value="execute"/>
     </bean>
 
-    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.poll.EPPInfoMsgAction">
+    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.info.EPPChangeInfoAction">
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="eppClient"/>
         <constructor-arg ref="eppErrorHandler"/>

@@ -4,7 +4,6 @@ import org.iana.epp.ChangePriority;
 import org.iana.epp.EPPClient;
 import org.iana.epp.Problem;
 import org.iana.epp.exceptions.EPPFrameworkException;
-import org.iana.epp.internal.verisign.VerisignEPPClient;
 import org.iana.epp.request.ChangeRequest;
 import org.iana.epp.response.ChangeResponse;
 import org.iana.rzm.domain.HostManager;
@@ -18,17 +17,13 @@ import java.util.List;
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
  */
-public class EPPChangeRequest extends EPPCommand {
+public class EPPChangeReq extends EPPCommand {
 
     private List<EPPCommand> collectors;
 
     private EPPClient client;
 
-    public EPPChangeRequest(Transaction transaction, HostManager hostManager) {
-        this(transaction, hostManager, VerisignEPPClient.getEPPClient("../conf/epp/epp.rootzone.config"));
-    }
-
-    public EPPChangeRequest(Transaction transaction, HostManager hostManager, EPPClient client) {
+    public EPPChangeReq(Transaction transaction, HostManager hostManager, EPPClient client) {
         super(transaction, hostManager, client.getEppOperationFactory());
         this.client = client;
         collectors = Arrays.asList(

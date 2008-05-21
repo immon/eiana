@@ -22,9 +22,6 @@ abstract public class AbstractRZMStatefulService implements RZMStatefulService {
     
     protected AuthenticatedUser user;
 
-    protected AbstractRZMStatefulService() {
-    }
-
     protected AbstractRZMStatefulService(UserManager userManager) {
         CheckTool.checkNull(userManager, "user manager");
         this.userManager = userManager;

@@ -1,21 +1,17 @@
-package org.iana.rzm.trans.epp.poll;
+package org.iana.rzm.trans.epp.info;
 
 import org.apache.log4j.Logger;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.In;
 import org.iana.epp.EPPClient;
-import org.iana.epp.EPPOperationFactory;
-import org.iana.epp.exceptions.EPPFrameworkException;
-import org.iana.epp.request.ChangeInfoRequest;
-import org.iana.epp.request.ChangeRef;
-import org.iana.epp.response.ChangeInfoResponse;
 import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionException;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.TransactionException;
+import org.iana.rzm.trans.epp.EPPException;
+import org.iana.rzm.trans.epp.SimpleIdGenerator;
 import org.iana.rzm.trans.errors.ErrorHandler;
 
-import java.rmi.server.UID;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,9 +19,9 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-public class EPPInfoMsgAction {
+public class EPPChangeInfoAction {
 
-    private static Logger logger = Logger.getLogger(EPPInfoMsgAction.class);
+    private static Logger logger = Logger.getLogger(EPPChangeInfoAction.class);
 
     private TransactionManager transactionManager;
 
@@ -33,7 +29,7 @@ public class EPPInfoMsgAction {
 
     private ErrorHandler eppErrorHandler;
 
-    public EPPInfoMsgAction(TransactionManager transactionManager, EPPClient eppClient, ErrorHandler eppErrorHandler) {
+    public EPPChangeInfoAction(TransactionManager transactionManager, EPPClient eppClient, ErrorHandler eppErrorHandler) {
         this.transactionManager = transactionManager;
         this.eppClient = eppClient;
         this.eppErrorHandler = eppErrorHandler;
@@ -60,7 +56,7 @@ public class EPPInfoMsgAction {
     private void queryInfoAndProcess(long transactionID) {
         try {
             Transaction trans = transactionManager.getTransaction(transactionID);
-            EppChangeStatus response = queryStatus(trans);
+            EPPChangeStatus response = queryStatus(trans);
             if (response != null) process(trans, response);
         } catch (Exception e) {
             logger.error("quering info and processing", e);
@@ -68,27 +64,19 @@ public class EPPInfoMsgAction {
         }
     }
 
-    private EppChangeStatus queryStatus(Transaction trans) throws EPPFrameworkException {
-        EPPOperationFactory operationFactory = eppClient.getEppOperationFactory();
-        ChangeRef ref = operationFactory.getChangeRef(trans.getEppRequestId(), true);
-        ChangeInfoRequest req = operationFactory.getChangeInfoRequest(id(), ref);
-        ChangeInfoResponse rsp = eppClient.info(req);
-        if (rsp == null || !rsp.isSuccessful() || rsp.getStatus() == null) return null;
-        return EppChangeStatus.statusOf(rsp.getStatus());
+    private EPPChangeStatus queryStatus(Transaction trans) throws EPPException {
+        EPPChangeInfoReq req = new EPPChangeInfoReq(eppClient, new SimpleIdGenerator());
+        return req.queryStatus(trans);
     }
 
-    private void process(Transaction trans, EppChangeStatus status) throws TransactionException {
-        if (status == EppChangeStatus.complete) {
+    private void process(Transaction trans, EPPChangeStatus status) throws TransactionException {
+        if (status == EPPChangeStatus.complete) {
             trans.complete();
-        } else if (status.getOrderNumber() >= EppChangeStatus.generated.getOrderNumber()) {
+        } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
             trans.generated();
         } else if (status.getOrderNumber() == -1) {
             trans.exception(status.toString());
         }
-    }
-
-    private String id() {
-        return new UID().toString();
     }
 
 }

@@ -4,7 +4,7 @@ import org.iana.epp.EPPClient;
 import org.iana.rzm.domain.HostManager;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.epp.EPPChangeRequest;
+import org.iana.rzm.trans.epp.EPPChangeReq;
 import org.iana.rzm.trans.process.general.handlers.ActionExceptionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
 
@@ -19,8 +19,8 @@ public class PendingUSDoCApprovalAction extends ActionExceptionHandler {
             HostManager hostManager = (HostManager) executionContext.getJbpmContext().getObjectFactory().createObject("hostManager");
             Transaction trans = getTransaction(executionContext);
             EPPClient eppClient = (EPPClient) executionContext.getJbpmContext().getObjectFactory().createObject("eppClient");
-            EPPChangeRequest eppChangeRequest = new EPPChangeRequest(trans, hostManager, eppClient);
-            String[] rsp = eppChangeRequest.send();
+            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+            String[] rsp = eppChangeReq.send();
             td.setEppReceipt(rsp[1]);
         }
     }

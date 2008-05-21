@@ -8,10 +8,10 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
-      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="JettyRunner" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
+      <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="eiana tomcat" />
       <executeOn event="beforeRun" target="copyBeforeRun" runConfigurationType="Application" runConfigurationName="DBInit" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/eiana-deploy.xml">
@@ -418,6 +418,7 @@
         <root url="jar://$PROJECT_DIR$/../lib/hibernate/hibernate-annotations.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/hibernate/hibernate-tools.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/hibernate/hibernate3.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/mchange/c3p0-0.9.1.2.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -474,6 +475,7 @@
         <root url="jar://$PROJECT_DIR$/../lib/spring/spring.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/aspectj/aspectjrt.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/aspectj/aspectjweaver.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/quartz/quartz-all-1.6.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>

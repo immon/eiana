@@ -434,15 +434,10 @@
     <bean id="ticketingService" class="org.iana.rzm.trans.FakeTicketingService"/>
 
     <bean id="transactionManagerTarget" class="org.iana.rzm.trans.TransactionManagerBean">
-        <constructor-arg>
-            <ref bean="processDAO"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="domainManager"/>
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="diffConfig"/>
-        </constructor-arg>
+        <constructor-arg ref="processDAO"/>
+        <constructor-arg ref="domainManager"/>
+        <constructor-arg ref="diffConfig"/>
+        <constructor-arg ref="eppClient"/>
     </bean>
 
     <bean id="testTransactionManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
