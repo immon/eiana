@@ -75,9 +75,6 @@ public class TransactionData {
     @Column(length = 4096)
     private String comment;
 
-    @Basic
-    private int retries;
-
     private static final int MAX_LEN = 4095;
 
     @Basic
@@ -93,6 +90,15 @@ public class TransactionData {
 
     @Basic
     private EPPChangeStatus eppStatus;
+
+    @Basic
+    private int retries;
+
+    @Basic
+    private String serialNumber;
+
+    @Lob
+    private String technicalErrors;
 
     @Basic
     @Column(length = 4096)
@@ -382,5 +388,22 @@ public class TransactionData {
 
     void setEppStatus(EPPChangeStatus eppStatus) {
         this.eppStatus = eppStatus;
+    }
+
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getTechnicalErrors() {
+        return technicalErrors;
+    }
+
+    public void setTechnicalErrors(String technicalErrors) {
+        this.technicalErrors = technicalErrors;
     }
 }
