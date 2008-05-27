@@ -13,6 +13,8 @@ public interface PollMsgManager {
 
     public PollMsg get(long id);
 
+    public void delete(long id);
+
     public int count(Criterion criteria);
 
     public List<PollMsg> find(Criterion criteria);

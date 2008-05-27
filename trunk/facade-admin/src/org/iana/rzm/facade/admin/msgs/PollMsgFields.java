@@ -9,6 +9,10 @@ public interface PollMsgFields {
 
     static final String TRANSACTION_ID = "transactionID";
 
+    static final String TICKET_ID = "ticketID";
+
+    static final String EPP_ID = "eppID";
+
     static final String DOMAIN_NAME = "name";
 
     static final String STATUS = "status";

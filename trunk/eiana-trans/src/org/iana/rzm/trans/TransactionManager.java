@@ -4,8 +4,6 @@ import org.iana.criteria.Criterion;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.trans.epp.info.EPPChangeStatus;
-import org.iana.rzm.trans.epp.EPPException;
 
 import java.util.List;
 import java.util.Set;
@@ -25,8 +23,6 @@ public interface TransactionManager {
      * @throws NoSuchTransactionException thrown when no transaction found
      */
     Transaction getTransaction(long id) throws NoSuchTransactionException;
-
-    public EPPChangeStatus queryTransactionStatus(long id) throws NoSuchTransactionException, EPPException;
 
     String getTransactionToken(long id, String name) throws NoSuchTransactionException;
 

@@ -11,10 +11,6 @@ import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.dao.ProcessDAO;
-import org.iana.rzm.trans.epp.EPPException;
-import org.iana.rzm.trans.epp.SimpleIdGenerator;
-import org.iana.rzm.trans.epp.info.EPPChangeInfoReq;
-import org.iana.rzm.trans.epp.info.EPPChangeStatus;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.exe.ProcessInstance;
@@ -59,12 +55,6 @@ public class TransactionManagerBean implements TransactionManager {
         return new Transaction(pi, processDAO);
     }
 
-
-    public EPPChangeStatus queryTransactionStatus(long id) throws NoSuchTransactionException, EPPException {
-        Transaction trans = getTransaction(id);
-        EPPChangeInfoReq req = new EPPChangeInfoReq(eppClient, new SimpleIdGenerator());
-        return req.queryStatus(trans);
-    }
 
     public String getTransactionToken(long transId, String name) throws NoSuchTransactionException {
         Transaction trans = getTransaction(transId);

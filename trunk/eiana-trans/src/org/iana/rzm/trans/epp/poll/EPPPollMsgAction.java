@@ -56,7 +56,7 @@ public class EPPPollMsgAction {
 
     private void process(PollResponse rsp) {
         String id = rsp.getChangeRequestId();
-        long ticketID = EPPChangeReqId.extractTicketID(id);
+        long ticketID = new EPPChangeReqId(id).getTicketID();
         Criterion ticketIDCrit = new Equal("ticketID", ticketID);
         List<Transaction> transactions = transactionManager.find(ticketIDCrit);
         if (!transactions.isEmpty()) {

@@ -41,6 +41,11 @@ public class PollMessagesServiceImpl extends AbstractFinderService<PollMsgVO> im
         else msg.setRead(false);
     }
 
+    public void delete(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
+        PollMsg msg = getMsg(id);
+        this.msgManager.delete(id);
+    }
+
     public PollMsgVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
         return toVO(getMsg(id));
     }
@@ -82,7 +87,7 @@ public class PollMessagesServiceImpl extends AbstractFinderService<PollMsgVO> im
 
     private PollMsgVO toVO(PollMsg msg) {
         return msg == null ? null : new PollMsgVO(
-                msg.getId(), msg.getTransactionID(), msg.getName(), msg.getStatus(), msg.isRead(), msg.getCreated()
+                msg.getId(), msg.getTransactionID(), msg.getTicketID(), msg.getEppID(), msg.getName(), msg.getStatus(), msg.isRead(), msg.getCreated()
         );
     }
 

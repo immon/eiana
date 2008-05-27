@@ -15,6 +15,7 @@ import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.trans.epp.info.EPPChangeStatus;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.jbpm.graph.def.Node;
@@ -239,18 +240,6 @@ public class Transaction implements TrackedObject {
         }
     }
 
-    public synchronized void complete() throws TransactionException {
-        TransactionState.Name state = getState().getName();
-        if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
-            systemAccept();
-            systemAccept();
-        } else if (state == TransactionState.Name.PENDING_ZONE_PUBLICATION) {
-            systemAccept();
-        } else {
-            logger.warn("Transaction " + getTransactionID() + " cannot process generated verisign message");
-        }
-    }
-
     public synchronized void exception(String message) throws TransactionException {
         getData().setComment(message);
         getData().setIdentityName("SYSTEM");
@@ -458,8 +447,33 @@ public class Transaction implements TrackedObject {
 
     public void setContactConfirmations(ContactConfirmations conf) {
         if (conf == null) return;
-        System.out.println("====== setting conf: " + getState().getName());
         conf.setStateName(getState().getName());
         getData().setContactConfirmations(conf);
+    }
+
+    public EPPChangeStatus getEPPStatus() {
+        return getData().getEppStatus();
+    }
+
+    public void complete() throws TransactionException {
+        TransactionState.Name state = getState().getName();
+        if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
+            systemAccept();
+            systemAccept();
+        } else if (state == TransactionState.Name.PENDING_ZONE_PUBLICATION) {
+            systemAccept();
+        } else {
+            logger.warn("Transaction " + getTransactionID() + " cannot process generated verisign message");
+        }
+    }
+
+    public boolean updateEPPStatus(EPPChangeStatus status) {
+        CheckTool.checkNull(status, "status");
+        EPPChangeStatus current = getEPPStatus();
+        boolean updated = current == null || current != status;
+        if (updated) {
+            getData().setEppStatus(status);
+        }
+        return updated;
     }
 }

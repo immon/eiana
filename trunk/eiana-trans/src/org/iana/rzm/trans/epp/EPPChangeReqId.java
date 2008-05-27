@@ -8,29 +8,43 @@ import org.iana.rzm.common.validators.CheckTool;
  */
 public class EPPChangeReqId implements EPPIdGenerator {
 
-    private Transaction transaction;
+    private static final String SEPARATOR = ":";
+
+    private long ticketID;
+
+    private int retries;
 
     public EPPChangeReqId(Transaction transaction) {
         CheckTool.checkNull(transaction, "transaction");
-        this.transaction = transaction;
+        CheckTool.checkNull(transaction.getTicketID(), "ticketID");
+        this.ticketID = transaction.getTicketID();
+        this.retries = transaction.getEPPRetries();
+    }
+
+    public EPPChangeReqId(String eppID) {
+        try {
+            CheckTool.checkNull(eppID, "epp id");
+            String[] parts = eppID.split(SEPARATOR);
+            if (parts.length != 2) {
+                throw new IllegalStateException(eppID + "is not a valid epp id");
+            }
+            ticketID = Long.parseLong(parts[0]);
+            retries = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException(eppID + "is not a valid epp id", e);
+        }
     }
 
     public String id() {
-        String ret = "" + transaction.getTicketID();
-        int retries = transaction.getEPPRetries();
-        return ret + ":" + retries;
+        return String.valueOf(ticketID) + SEPARATOR + retries;
     }
 
-    public static long extractTicketID(String id) {
-        CheckTool.checkNull(id, "change request id");
-        String[] parts = id.split(":");
-        if (parts == null || parts.length == 0) {
-            throw new IllegalStateException("invalid change request id: cannot split by ':' [" + id + "]");
-        }
-        try {
-            return Long.parseLong(parts[0]);
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("invalid change request id: not a number [" + parts[0] +"]");
-        }
+    public long getTicketID() {
+        return ticketID;
     }
+
+    public int getRetries() {
+        return retries;
+    }
+    
 }

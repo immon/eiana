@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-public class EPPChangeInfoAction {
+public class EPPChangeInfoAction implements EPPStatusQuery {
 
     private static Logger logger = Logger.getLogger(EPPChangeInfoAction.class);
 
@@ -58,15 +58,20 @@ public class EPPChangeInfoAction {
         return new In("state", states);
     }
 
-    private void queryInfoAndProcess(long transactionID) {
+    public void queryInfoAndProcess(long transactionID) {
         try {
-            Transaction trans = transactionManager.getTransaction(transactionID);
-            EPPChangeStatus response = queryStatus(trans);
-            if (response != null) process(trans, response);
+            queryStatusAndProcess(transactionID);
         } catch (Exception e) {
             logger.error("quering info and processing", e);
             eppErrorHandler.handleException(e);
         }
+    }
+
+    public EPPChangeStatus queryStatusAndProcess(long transactionID) throws EPPException, TransactionException {
+        Transaction trans = transactionManager.getTransaction(transactionID);
+        EPPChangeStatus response = queryStatus(trans);
+        process(trans, response);
+        return response;
     }
 
     private EPPChangeStatus queryStatus(Transaction trans) throws EPPException {
@@ -74,14 +79,21 @@ public class EPPChangeInfoAction {
         return req.queryStatus(trans);
     }
 
-    private void process(Transaction trans, EPPChangeStatus status) throws TransactionException, TicketingException {
-        ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
-        if (status == EPPChangeStatus.complete) {
-            trans.complete();
-        } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
-            trans.generated();
-        } else if (status.getOrderNumber() == -1) {
-            trans.exception(status.toString());
+    private void process(Transaction trans, EPPChangeStatus status) throws TransactionException {
+        try {
+            boolean updated = trans.updateEPPStatus(status);
+            if (updated) {
+                ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
+                if (status == EPPChangeStatus.complete) {
+                    trans.complete();
+                } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
+                    trans.generated();
+                } else if (status.getOrderNumber() == -1) {
+                    trans.exception(status.toString());
+                }
+            }
+        } catch (TicketingException e) {
+            throw new TransactionException(e);
         }
     }
 

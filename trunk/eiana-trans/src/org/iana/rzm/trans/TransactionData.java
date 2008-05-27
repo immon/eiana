@@ -11,6 +11,7 @@ import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
+import org.iana.rzm.trans.epp.info.EPPChangeStatus;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -89,6 +90,9 @@ public class TransactionData {
     @Basic
     @Column(length = 4096)
     private String eppReceipt;
+
+    @Basic
+    private EPPChangeStatus eppStatus;
 
     @Basic
     @Column(length = 4096)
@@ -370,5 +374,13 @@ public class TransactionData {
     public void setImpactedDomains(Set<Domain> impactedDomains) {
         CheckTool.checkNull(impactedDomains, "impacted domains");
         this.impactedDomains = impactedDomains;
+    }
+
+    EPPChangeStatus getEppStatus() {
+        return eppStatus;
+    }
+
+    void setEppStatus(EPPChangeStatus eppStatus) {
+        this.eppStatus = eppStatus;
     }
 }

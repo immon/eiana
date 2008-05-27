@@ -26,6 +26,11 @@ public class PollMsgManagerImpl implements PollMsgManager {
         return msgDAO.get(id);
     }
 
+    public void delete(long id) {
+        PollMsg msg = get(id);
+        if (msg != null) msgDAO.delete(msg);
+    }
+
     public int count(Criterion criteria) {
         return msgDAO.count(criteria);
     }
