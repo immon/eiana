@@ -7,8 +7,10 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
 
-public abstract class EditRequest extends AdminPage implements PageBeginRenderListener, IExternalPage {
+public abstract class EditRequest extends AdminPage implements PageBeginRenderListener, IExternalPage, LinkTraget {
+
     public static final String PAGE_NAME = "admin/EditRequest";
 
     @Component(id = "editRequest", type = "Form", bindings = {
@@ -83,8 +85,11 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
 
     @Persist("client:page")
     public abstract void setRequestId(long id);
-
     public abstract long getRequestId();
+
+    public void setIdentifier(Object id){
+        setRequestId(Long.parseLong(id.toString()));
+    }
 
     protected Object[] getExternalParameters() {
         return new Object[]{getRequestId()};

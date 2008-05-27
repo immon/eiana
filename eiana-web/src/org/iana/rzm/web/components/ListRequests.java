@@ -5,10 +5,11 @@ import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.model.criteria.*;
+import org.iana.rzm.web.pages.admin.*;
 import org.iana.rzm.web.tapestry.*;
 
 @ComponentClass(allowBody = true)
-public abstract class ListRequests extends ListRecords {
+public abstract class ListRequests extends ListRecords implements Sortable {
 
     @Bean(NullSortFactory.class)
     public abstract SortFactory getNullSortFactory();
@@ -54,6 +55,11 @@ public abstract class ListRequests extends ListRecords {
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCancelRequestComponent();
 
+    @Component(id = "pollMessages", type = "DirectLink", bindings = {
+        "listener=listener:viewPollMessages", "parameters=prop:record.rtId",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getPollMessagesLinkComponent();
+
     @Component(id = "refHeader",
                type = "SortableTableHeader",
                bindings = {"header=literal:Ref", "sortFactory=prop:deligator", "imageVisible=prop:refImageVisible"})
@@ -81,7 +87,7 @@ public abstract class ListRequests extends ListRecords {
 
     @Component(id = "modifiedHeader",
                type = "SortableTableHeader",
-               bindings = {"header=literal:Last Change", "sortFactory=prop:deligator","imageVisible=prop:modifiedImageVisible"})
+               bindings = {"header=literal:Last Change", "sortFactory=prop:deligator", "imageVisible=prop:modifiedImageVisible"})
     public abstract IComponent getModifiedHeaderComponent();
 
     @Parameter(required = false, defaultValue = "literal:View")
@@ -96,34 +102,46 @@ public abstract class ListRequests extends ListRecords {
     @Parameter(required = false, defaultValue = "prop:nullSortFactory")
     public abstract SortFactory getSortFactory();
 
-    @Parameter(required = false, defaultValue = "literal:true")    
+    @Parameter(required = false, defaultValue = "literal:true")
     public abstract boolean isCancelRequestEnabled();
 
-    @Persist("client:page")
+    @InjectPage(PollMessagesPerspective.PAGE_NAME)
+    public abstract PollMessagesPerspective getPollMessagesPerspective();
+
+    @Persist()
     public abstract void setCurrentSorting(SortOrder sortOrder);
     public abstract SortOrder getCurrentSorting();
 
-    public boolean isRefImageVisible(){
+    public void setSortOrder(SortOrder sortOrder){
+        setCurrentSorting(sortOrder);
+    }
+
+    public SortOrder getSortOrder(){
+        return getCurrentSorting();
+    }
+    
+
+    public boolean isRefImageVisible() {
         return isImageVisibleFor("Ref");
     }
 
-    public boolean isDomainImageVisible(){
-        return  isImageVisibleFor("Domain");
+    public boolean isDomainImageVisible() {
+        return isImageVisibleFor("Domain");
     }
 
-     public boolean isLoggedImageVisible(){
-         return isImageVisibleFor("Logged");
-     }
-
-    public boolean isCreatedByImageVisible(){
-         return isImageVisibleFor("Created By");
+    public boolean isLoggedImageVisible() {
+        return isImageVisibleFor("Logged");
     }
 
-    public boolean isCurrentStatusImageVisible(){
-         return isImageVisibleFor("Current Status");
+    public boolean isCreatedByImageVisible() {
+        return isImageVisibleFor("Created By");
     }
 
-    public boolean isModifiedImageVisible(){
+    public boolean isCurrentStatusImageVisible() {
+        return isImageVisibleFor("Current Status");
+    }
+
+    public boolean isModifiedImageVisible() {
         return isImageVisibleFor("Last Change");
     }
 
@@ -135,13 +153,14 @@ public abstract class ListRequests extends ListRecords {
         return (TransactionVOWrapper) getCurrentRecord();
     }
 
-    public SortFactory getDeligator(){
-        return new SortFactoryDeligator(getSortFactory());
+    public SortFactory getDeligator() {
+        return new SortFactoryDeligator(getSortFactory(), this);
     }
 
     public boolean isRequestDeleteble() {
         return ((TransactionVOWrapper) getCurrentRecord()).canCancel() && isCancelRequestEnabled();
     }
+
 
     public void goToDomain(String domainName) {
         LinkTraget target = getLinkTragetPage();
@@ -154,23 +173,5 @@ public abstract class ListRequests extends ListRecords {
         page.setIdentifier(requestId);
         getPage().getRequestCycle().activate(page);
     }
-
-    private class SortFactoryDeligator implements SortFactory{
-        private SortFactory factory;
-
-        SortFactoryDeligator(SortFactory factory){
-            this.factory = factory;
-        }
-
-        public boolean isFieldSortable(String name) {
-            return factory.isFieldSortable(name);
-        }
-
-        public void sort(String field, boolean accending) {
-            setCurrentSorting(new SortOrder(field, accending));
-            factory.sort(field,accending);
-        }
-    }
-
 
 }

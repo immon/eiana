@@ -272,7 +272,12 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     }
 
     public String getCountry() {
-        return getUserServices().getCountryName(getDomain().getName());
+        DomainVOWrapper wrapper = getDomain();
+        if(wrapper == null){
+            return "";
+        }
+
+        return getUserServices().getCountryName(wrapper.getName());
     }
 
     public DomainVOWrapper getDomain() {

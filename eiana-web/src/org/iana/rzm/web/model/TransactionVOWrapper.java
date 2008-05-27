@@ -18,15 +18,15 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         this.state = new TransactionStateVOWrapper(vo.getState());
     }
 
-    public String getDocNote(){
+    public String getDocNote() {
         return vo.getUsdocNotes();
     }
 
-    public void setDocNote(String note){
+    public void setDocNote(String note) {
         vo.setUsdocNotes(note);
     }
 
-    public String getStateMessage(){
+    public String getStateMessage() {
         return vo.getStateMessage();
     }
 
@@ -59,11 +59,11 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     }
 
 
-    public Set<String>getImpactedDomains(){
+    public Set<String> getImpactedDomains() {
         return vo.getImpactedDomains();
     }
 
-    public String getRtIdAsString(){
+    public String getRtIdAsString() {
         return getRtId() == 0 ? "Unassigned" : String.valueOf(getRtId());
     }
 
@@ -72,7 +72,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return id == null ? 0 : id;
     }
 
-    public void setRtId(long id){
+    public void setRtId(long id) {
         vo.setTicketID(id);
     }
 
@@ -177,19 +177,33 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public boolean canCancel() {
         return
-            state.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION)||
-            state.getState().equals(TransactionStateVOWrapper.State.PENDING_CONTACT_CONFIRMATION)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_MANUAL_REVIEW)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_IANA_CHECK)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_SOENDORSEMENT)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_IMPACTED_PARTIES)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_EXT_APPROVAL)||
-             state.getState().equals(TransactionStateVOWrapper.State.PENDING_EVALUATION);
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_CREATION) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_CONTACT_CONFIRMATION) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_MANUAL_REVIEW) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_IANA_CHECK) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_SOENDORSEMENT) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_IMPACTED_PARTIES) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_EXT_APPROVAL) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_EVALUATION);
     }
 
     public boolean isException() {
         return state != null && state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION);
+    }
+
+    public boolean isPartOfEPPState() {
+       return
+         state.getState().equals(TransactionStateVOWrapper.State.PENDING_USDOC_APPROVAL)||
+        state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_INSERTION)||
+        state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_PUBLICATION)||
+        state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_TESTING)||
+        state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION);
+
+    }
+
+    public String getVerisignStatus() {
+        return null;
     }
 }

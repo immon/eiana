@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.pages.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
@@ -40,5 +41,7 @@ public abstract class AdminPage extends Protected {
     }
 
 
-    
+    public void handleNoObjectFoundException(NoObjectFoundException e) {
+        getObjectNotFoundHandler().handleObjectNotFound(e,AdminGeneralError.PAGE_NAME);
+    }
 }

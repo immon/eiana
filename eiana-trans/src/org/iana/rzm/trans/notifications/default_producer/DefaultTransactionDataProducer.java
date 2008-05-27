@@ -1,12 +1,10 @@
 package org.iana.rzm.trans.notifications.default_producer;
 
-import org.iana.notifications.producers.DataProducer;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.TransactionState;
+import org.iana.notifications.producers.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -24,6 +22,7 @@ public class DefaultTransactionDataProducer implements DataProducer {
         values.put("docVrsnDate", td.getStateStartDate(TransactionState.Name.PENDING_USDOC_APPROVAL));
         values.put("implementationDate", td.getStateEndDate(TransactionState.Name.PENDING_USDOC_APPROVAL));
         values.put("serialNumber", ""); // todo
+        values.put("reason", td.getStateMessage());
         values.putAll(getSpecificValuesMap(dataSource));
         return values;
     }
