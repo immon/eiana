@@ -17,4 +17,6 @@ public interface PollMessagesService extends RZMStatefulService, FinderService<P
 
     public void markUnread(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
+    public void delete(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
+
 }

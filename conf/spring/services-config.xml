@@ -76,6 +76,7 @@
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="adminDetectorService2"/>
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
+        <constructor-arg index="5" ref="eppReceiverAction"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -86,6 +87,7 @@
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="adminDetectorService2"/>
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
+        <constructor-arg index="5" ref="eppReceiverAction"/>
     </bean>
 
     <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl"

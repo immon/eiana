@@ -23,6 +23,12 @@ public class PollMsg {
     private long transactionID;
 
     @Basic
+    private long ticketID;
+
+    @Basic
+    private String eppID;
+
+    @Basic
     private String name;
 
     @Basic
@@ -40,6 +46,8 @@ public class PollMsg {
     public PollMsg(Transaction transaction, String status, String message) {
         CheckTool.checkNull(transaction, "transaction");
         this.transactionID = transaction.getTransactionID();
+        this.ticketID = transaction.getTicketID();
+        this.eppID = transaction.getEppRequestId();
         this.name = transaction.getCurrentDomain().getName();
         this.status = status;
         this.message = message;
@@ -53,6 +61,14 @@ public class PollMsg {
 
     public long getTransactionID() {
         return transactionID;
+    }
+
+    public long getTicketID() {
+        return ticketID;
+    }
+
+    public String getEppID() {
+        return eppID;
     }
 
     public String getName() {

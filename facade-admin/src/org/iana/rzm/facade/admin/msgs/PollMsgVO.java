@@ -11,6 +11,10 @@ public class PollMsgVO {
 
     private long transactionID;
 
+    private long ticketID;
+
+    private String eppID;
+
     private String domainName;
 
     private String status;
@@ -19,9 +23,11 @@ public class PollMsgVO {
 
     private Timestamp created;
 
-    public PollMsgVO(long id, long transactionID, String domainName, String status, boolean read, Timestamp created) {
+    public PollMsgVO(long id, long transactionID, long ticketID, String eppID, String domainName, String status, boolean read, Timestamp created) {
         this.id = id;
         this.transactionID = transactionID;
+        this.ticketID = ticketID;
+        this.eppID = eppID;
         this.domainName = domainName;
         this.status = status;
         this.read = read;
@@ -34,6 +40,14 @@ public class PollMsgVO {
 
     public long getTransactionID() {
         return transactionID;
+    }
+
+    public long getTicketID() {
+        return ticketID;
+    }
+
+    public String getEppID() {
+        return eppID;
     }
 
     public String getDomainName() {

@@ -21,10 +21,10 @@ import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.epp.EPPException;
 import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationAlreadyReceived;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmationMismatch;
+import org.iana.rzm.trans.epp.info.EPPStatusQuery;
 import org.iana.rzm.user.UserManager;
 
 import java.util.List;
@@ -36,8 +36,12 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
 
     private static Logger logger = Logger.getLogger(GuardedAdminTransactionServiceBean.class);
 
-    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck) {
+    private EPPStatusQuery query;
+
+    public GuardedAdminTransactionServiceBean(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, EPPStatusQuery query) {
         super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck);
+        CheckTool.checkNull(query, "null epp status query");
+        this.query = query;
     }
 
     private void isUserInRole() throws AccessDeniedException {
@@ -47,10 +51,12 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
     public String getTransactionEPPStatus(long id) throws NoObjectFoundException, InvalidEPPTransactionException, InfrastructureException, AccessDeniedException {
         isUserInRole();
         try {
-            return String.valueOf(transactionManager.queryTransactionStatus(id));
+            Transaction trans = transactionManager.getTransaction(id);
+            if (!trans.isNameServerChange()) throw new InvalidEPPTransactionException();
+            return String.valueOf(query.queryStatusAndProcess(id));
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
-        } catch (EPPException e) {
+        } catch (Exception e) {
             throw new InfrastructureException("epp query", e);
         }
     }
