@@ -1,12 +1,9 @@
 package org.iana.dns.check;
 
-import org.iana.dns.DNSHost;
-import org.iana.dns.DNSIPAddress;
+import org.iana.dns.*;
 import org.iana.dns.check.exceptions.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -47,7 +44,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     public void acceptNameServerCoherencyException(NameServerCoherencyException e) {
         buffer.append("Supplied name servers names: ").append(e.getDomain().getNameServerNames()).append(" don't match names")
                 .append(" returned by: ").append(e.getHostName()).append(" in NS Resource Record: ")
-                .append(e.getReceivedNameServers()).append(" for domain: ").append(domainTLDName(e.getDomainName()));
+                .append(e.getReceivedNameServers()).append(" for domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
     public void acceptNoASNumberException(NoASNumberException e) {
@@ -88,7 +85,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
             buffer.append(iterator.next());
             if (iterator.hasNext()) buffer.append(", ");
         }
-        buffer.append("].");
+        buffer.append("].").append("\n");
     }
 
     public void acceptNameServerTechnicalCheckException(NameServerTechnicalCheckException e) {

@@ -5,11 +5,12 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.web.components.admin.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.tapestry.*;
 
 import java.util.*;
 
 
-public abstract class RequestInformation extends AdminPage implements PageBeginRenderListener, IExternalPage {
+public abstract class RequestInformation extends AdminPage implements PageBeginRenderListener, IExternalPage, LinkTraget {
 
     public static final String PAGE_NAME = "admin/RequestInformation";
 
@@ -24,6 +25,10 @@ public abstract class RequestInformation extends AdminPage implements PageBeginR
 
     public abstract void setList(List<NotificationVOWrapper> list);
     public abstract long getRequestId();
+
+    public void setIdentifier(Object id){
+        setRequestId(Long.parseLong(id.toString()));
+    }
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0) {

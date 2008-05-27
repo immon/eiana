@@ -8,6 +8,7 @@ import org.iana.notifications.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.domain.*;
 import org.iana.rzm.facade.admin.domain.dns.*;
+import org.iana.rzm.facade.admin.msgs.*;
 import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.admin.trans.notifications.*;
 import org.iana.rzm.facade.admin.users.*;
@@ -45,6 +46,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private CountryCodes countryCodeService;
     private DomainTypes domainTypesService;
     private AdminDNSService dnsServices;
+    private PollMessagesService pollMessagesService;
 
     private PasswordChangeService changePasswordService;
 
@@ -54,6 +56,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         notificationService = initializer.getBean("notificationService");
         userService = initializer.getBean("GuardedAdminUserServiceBean");
         detectorService = initializer.getBean("adminDetectorService");
+        pollMessagesService = initializer.getBean("pollMessagesService");
         countryCodeService = initializer.getBean("cc", CountryCodes.class);
         domainTypesService = initializer.getBean("domainTypes", DomainTypes.class);
         changePasswordService = initializer.getBean("passwordChangeService", PasswordChangeService.class);
@@ -118,8 +121,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain,
                                                                           boolean splitNameServerChange,
                                                                           RequestMetaParameters params)
-            throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-            InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException {
+        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
+               InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException {
         try {
             List<TransactionVO> list =
                 transactionService.createTransactions(domain.getDomainVO(),
@@ -403,7 +406,69 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         try {
             return dnsServices.exportZoneFile();
         }
-         catch (InfrastructureException e) {
+        catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public List<PollMessageVOWrapper> getPollMessages(long rtId) throws NoObjectFoundException {
+        try {
+            Criterion criterion = CriteriaBuilder.pollMessagesByRtId(rtId);
+            List<PollMsgVO> list = pollMessagesService.find(criterion, new Order(PollMsgFields.CREATED, true), 0, 25);
+            List<PollMessageVOWrapper> result = new ArrayList<PollMessageVOWrapper>(list.size());
+
+            for (PollMsgVO pollMsgVO : list) {
+                result.add(new PollMessageVOWrapper(pollMsgVO));
+            }
+
+            return result;
+
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+
+        }
+    }
+
+    public List<PollMessageVOWrapper> getPollMessages(Criterion criterion, int offset, int length, SortOrder sort) {
+
+        try {
+            List<PollMsgVO> list;
+            if (sort.isValid()) {
+                Order order =
+                    new Order(new PollMsgFieldNameResolver().resolve(sort.getFieldName()), sort.isAscending());
+                list = pollMessagesService.find(criterion, order, offset, length);
+            } else {
+                list = pollMessagesService.find(criterion, offset, length);
+            }
+
+            List<PollMessageVOWrapper> result = new ArrayList<PollMessageVOWrapper>(list.size());
+            for (PollMsgVO pollMsgVO : list) {
+                result.add(new PollMessageVOWrapper(pollMsgVO));
+            }
+
+            return result;
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public int getPollMessagesCount(Criterion criterion) {
+        try {
+            return pollMessagesService.count(criterion);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+
+        }
+    }
+
+    public String getVerisignStatus(long rtId) throws NoObjectFoundException, InvalidEPPTransactionException {
+        try {
+            return transactionService.getTransactionEPPStatus(rtId);
+        } catch (InfrastructureException e) {
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);
         }

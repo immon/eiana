@@ -22,7 +22,7 @@ public class TransactionStateVOWrapper extends ValueObject {
         PENDING_SUPP_TECH_CHECK("Pending Supplement Tech Check"),
         PENDING_SUPP_TECH_CHECK_REMEDY("Pending Supplement Tech Check Remedy"),
         PENDING_USDOC_APPROVAL("Pending USDOC Approval"),
-        PENDING_ZONE_INSERTION("Pending Zone Publication"),
+        PENDING_ZONE_INSERTION("Pending Zone Insertion"),
         PENDING_ZONE_PUBLICATION("Pending Zone Publication"),
         PENDING_ZONE_TESTING("Pending Zone Testing"),
         PENDING_DATABASE_INSERTION("Pending Database Insertion"),

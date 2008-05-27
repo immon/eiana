@@ -131,9 +131,9 @@ public class Visit implements Serializable {
     }
 
     public RequestMetaParameters getRequestMetaParameters() {
-        if(requestMetaParam == null){
-            requestMetaParam = new RequestMetaParameters();
-        }
+            if(requestMetaParam == null){
+                requestMetaParam = new RequestMetaParameters();
+            }
         return requestMetaParam;
     }
 

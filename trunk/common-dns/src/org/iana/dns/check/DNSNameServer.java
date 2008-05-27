@@ -55,12 +55,18 @@ public class DNSNameServer {
             InetAddress address = Address.getByAddress(ips.iterator().next());
             SimpleResolver resolver = new SimpleResolver();
             resolver.setAddress(address);
-            resolver.setTCP(true);
+            resolver.setTCP(false);
+            resolver.setIgnoreTruncation(false);
             Resolver[] resolvers = {resolver};
             ExtendedResolver exResolver = new ExtendedResolver(resolvers);
             exResolver.setRetries(retries);
             Message message = exResolver.send(query);
             return message.getSectionArray(Section.ANSWER);
+        }
+        catch(SocketTimeoutException e){
+            String output = "Connection timed out;  could not reach " + host.getName();
+            Logger.getLogger(DNSNameServer.class).error(output);
+            throw new DNSCheckIOException(output);
         } catch (IOException e) {
             String output = "io exception: " + host.getName();
             Logger.getLogger(DNSNameServer.class).error(output, e);
@@ -165,7 +171,7 @@ public class DNSNameServer {
     public long getSerialNumber() throws DNSCheckIOException {
          if(getSOA() != null){
             Record[] records = getSOA().getSectionArray(1);
-            if(records != null &&records.length > 0 ){
+            if(records != null && records.length > 0 ){
                 return ((SOARecord)records[0]).getSerial();
             }
         }

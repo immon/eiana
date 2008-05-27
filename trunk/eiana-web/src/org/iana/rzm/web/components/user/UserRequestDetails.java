@@ -16,15 +16,25 @@ public abstract class UserRequestDetails extends RequestDetails {
     @Asset(value = "WEB-INF/user/UserRequestDetails.html")
     public abstract IAsset get$template();
 
-    @Component(id="proceed", type = "DirectLink", bindings = {
-            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
-            "listener=listener:proceed",
-            "parameters=prop:requestId"
-            })
+    @Component(id = "proceed", type = "DirectLink", bindings = {
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+        "listener=listener:proceed",
+        "parameters=prop:requestId"
+        })
     public abstract IComponent getRequestDeclineComponent();
 
-    @Component(id="impactedPartiesConfirmations", type="ListRequestConfirmations", bindings = {"confirmations=prop:impactedpartiesConfirmations"})
+    @Component(id = "impactedPartiesConfirmations",
+               type = "ListRequestConfirmations",
+               bindings = {"confirmations=prop:impactedpartiesConfirmations"})
     public abstract IComponent getImpactedPartiesConfirmations();
+
+    @Component(id = "technicalCkeckedfailed", type = "If", bindings = {"condition=prop:technicalCkeckedfailed"})
+    public abstract IComponent getExceptionStateComponent();
+
+    @Component(id="stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
+    public abstract IComponent getStateMessageComponent();
+
+
 
     @InjectPage("user/RequestConfirmation")
     public abstract RequestConfirmation getRequestConfirmation();
@@ -34,9 +44,10 @@ public abstract class UserRequestDetails extends RequestDetails {
     public abstract UserServices getUserServices();
 
     public abstract void setUser(UserVOWrapper user);
+
     public abstract UserVOWrapper getUser();
 
-    protected UserServices getRzmServices(){
+    protected UserServices getRzmServices() {
         return getUserServices();
     }
 
@@ -53,20 +64,25 @@ public abstract class UserRequestDetails extends RequestDetails {
         return getRequest().getImpactedPartiesConfirmations();
     }
 
-    public String getSpaceerColspan(){
-        return isActionEnabled() ? "6": "5";
+    public String getSpaceerColspan() {
+        return isActionEnabled() ? "6" : "5";
     }
 
-    public boolean isActionEnabled(){
+    public boolean isTechnicalCkeckedfailed(){
+        TransactionVOWrapper wrapper = getRequest();
+        return wrapper.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY);
+    }
+
+    public boolean isActionEnabled() {
         TransactionVOWrapper wrapper = getRequest();
 
         boolean result = false;
 
-        if(getUser().isTc() && (!wrapper.tcConfirmed())){
+        if (getUser().isTc() && (!wrapper.tcConfirmed())) {
             result = true;
         }
 
-        if(getUser().isAc() && (!wrapper.acConfirmed())){
+        if (getUser().isAc() && (!wrapper.acConfirmed())) {
             result = true;
         }
 
@@ -74,7 +90,7 @@ public abstract class UserRequestDetails extends RequestDetails {
 
     }
 
-    public void proceed(long requestId){
+    public void proceed(long requestId) {
         RequestConfirmation page = getRequestConfirmation();
         page.setRequestId(requestId);
         getPage().getRequestCycle().activate(page);

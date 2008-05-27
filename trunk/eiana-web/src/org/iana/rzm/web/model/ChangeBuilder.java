@@ -90,10 +90,10 @@ public class ChangeBuilder {
         public boolean isNameServer(String name) {
             return name != null
                    && (name.equals(ChangeFields.NS_IP) ||
-                                    name.equals(ChangeFields.NS_IPS) ||
-                                    name.equals(ChangeFields.NS_IPTYPE) ||
-                                    name.equals(ChangeFields.NS_NAME) ||
-                                    name.equals("nameServers"));
+                       name.equals(ChangeFields.NS_IPS) ||
+                       name.equals(ChangeFields.NS_IPTYPE) ||
+                       name.equals(ChangeFields.NS_NAME) ||
+                       name.equals("nameServers"));
 
         }
 

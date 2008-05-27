@@ -1,6 +1,7 @@
 package org.iana.rzm.web.services;
 
 import org.iana.criteria.*;
+import org.iana.rzm.facade.admin.msgs.*;
 import org.iana.rzm.facade.admin.users.*;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.vo.*;
@@ -48,6 +49,10 @@ public class CriteriaBuilder {
         return new And(Arrays.asList(closeTransactions(), new Or(orList)));
     }
 
+    public static Criterion pollMessagesByTransaction(long transactionId){
+        return new Equal(PollMsgFields.TRANSACTION_ID, transactionId);       
+    }
+
 
     public static Criterion empty() {
         return null;
@@ -84,5 +89,9 @@ public class CriteriaBuilder {
 
     public static Criterion domainsByName(String entity) {
         return new Like(new DomainFieldNameResolver().resolve("domainName"), entity);
+    }
+
+    public static Criterion pollMessagesByRtId(long rtId) {
+        return  new Equal(PollMsgFields.TICKET_ID, rtId);    
     }
 }

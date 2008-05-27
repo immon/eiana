@@ -67,15 +67,23 @@ public interface AdminServices extends RzmServices {
 
     public void moveTransactionNextState(long id) throws NoObjectFoundException, IllegalTransactionStateException;
 
-    void transitTransactionToState(long id, TransactionStateVOWrapper.State state) throws FacadeTransactionException, NoObjectFoundException, NoSuchStateException, StateUnreachableException;
+    public void transitTransactionToState(long id, TransactionStateVOWrapper.State state) throws FacadeTransactionException, NoObjectFoundException, NoSuchStateException, StateUnreachableException;
 
-    void approveByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
+    public void approveByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
 
-    void rejectByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
+    public void rejectByUSDoC(long transactionId) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException;
 
-    List<DomainVOWrapper> getDomains(Criterion criterion);
+    public List<DomainVOWrapper> getDomains(Criterion criterion);
 
-    String getWhoIsData();
+    public String getWhoIsData();
 
-    String getZoneFile();
+    public String getZoneFile();
+
+    public List<PollMessageVOWrapper>getPollMessages(long rtId) throws NoObjectFoundException;
+
+    public List<PollMessageVOWrapper>getPollMessages(Criterion criterion, int offset, int length, SortOrder sort);
+
+    public int getPollMessagesCount(Criterion criterion); 
+
+    public String getVerisignStatus(long rtId) throws NoObjectFoundException, InvalidEPPTransactionException;
 }
