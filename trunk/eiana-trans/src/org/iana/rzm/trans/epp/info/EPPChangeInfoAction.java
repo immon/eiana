@@ -10,6 +10,7 @@ import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.epp.EPPException;
 import org.iana.rzm.trans.epp.SimpleIdGenerator;
+import org.iana.rzm.trans.epp.EPPExecutor;
 import org.iana.rzm.trans.errors.ErrorHandler;
 import org.iana.ticketing.TicketingService;
 import org.iana.ticketing.TicketingException;
@@ -21,7 +22,7 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-public class EPPChangeInfoAction implements EPPStatusQuery {
+public class EPPChangeInfoAction implements EPPStatusQuery, EPPExecutor {
 
     private static Logger logger = Logger.getLogger(EPPChangeInfoAction.class);
 
@@ -40,7 +41,7 @@ public class EPPChangeInfoAction implements EPPStatusQuery {
         this.ticketingService = ticketingService;
     }
 
-    public void execute() throws Exception {
+    public void execute() {
         try {
             List<Transaction> awaiting = transactionManager.find(awaiting());
             for (Transaction trans : awaiting) {

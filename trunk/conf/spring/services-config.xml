@@ -1301,7 +1301,8 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(private * org.iana.rzm.trans.epp.info.EPPChangeInfoAction.queryInfoAndProcess(..)) ||
+                                  execution(* org.iana.rzm.trans.epp.info.EPPChangeInfoAction.queryStatusAndProcess(..)) ||
+                                  execution(* org.iana.rzm.trans.epp.poll.EPPPollMsgAction.queryAndProcess(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
@@ -1499,6 +1500,7 @@
                 <ref bean="dnsTrigger"/>
                 <ref bean="mailsReceiverTrigger"/>
                 <ref bean="eppReceiverTrigger"/>
+                <ref bean="eppPollTrigger"/>
             </list>
         </property>
     </bean>
@@ -1539,6 +1541,38 @@
         <constructor-arg ref="eppClient"/>
         <constructor-arg ref="eppErrorHandler"/>
         <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <!-- EPP Poll Receiver -->
+
+    <bean id="eppPollTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+       <property name="jobDetail" ref="eppPoll"/>
+       <!-- 10s delay -->
+       <property name="startDelay" value="10000"/>
+        <!-- every 5min -->
+       <property name="repeatInterval" value="360000"/>
+   </bean>
+
+    <bean id="eppPoll" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="eppPollAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="eppPollAction" class="org.iana.rzm.trans.epp.poll.EPPPollMsgAction">
+        <constructor-arg ref="eppClient"/>
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="pollManager"/>
+    </bean>
+
+    <bean id="pollManager" class="org.iana.rzm.trans.epp.poll.PollMsgManagerImpl">
+        <constructor-arg ref="pollDAO"/>
+    </bean>
+
+    <bean id="pollDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.rzm.trans.epp.poll.PollMsg" type="java.lang.Class"/>
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
     </bean>
 
     <!-- DNS Export Configuration -->
