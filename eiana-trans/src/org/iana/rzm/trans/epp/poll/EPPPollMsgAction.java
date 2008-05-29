@@ -13,13 +13,14 @@ import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.epp.EPPChangeReqId;
 import org.iana.rzm.trans.epp.EPPException;
 import org.iana.rzm.trans.epp.SimpleIdGenerator;
+import org.iana.rzm.trans.epp.EPPExecutor;
 
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class EPPPollMsgAction {
+public class EPPPollMsgAction implements EPPExecutor {
 
     private static Logger logger = Logger.getLogger(EPPPollMsgAction.class);
 
