@@ -59,12 +59,12 @@ public class CriteriaBuilder {
     }
 
     public static Criterion systemUsers() {
-        return new Equal(UserCriteriaFields.ROLE, "SystemRole");
+        return new Equal(UserCriteria.ROLE, "SystemRole");
     }
 
     public static Criterion adminUsers() {
-        return new And(new Equal(UserCriteriaFields.ROLE, "AdminRole"),
-                       new Equal(UserCriteriaFields.ROLE_TYPE, "IANA"));
+        return new And(new Equal(UserCriteria.ROLE, "AdminRole"),
+                       new Equal(UserCriteria.ROLE_TYPE, "IANA"));
     }
 
     public static Criterion userName(String userName) {
@@ -73,12 +73,12 @@ public class CriteriaBuilder {
 
     public static Criterion docVerisignUsers() {
         And DoC = new And(new ArrayList<Criterion>(Arrays.asList(
-            new Equal(UserCriteriaFields.ROLE, "AdminRole"),
-            new Equal(UserCriteriaFields.ROLE_TYPE, "GOV_OVERSIGHT"))));
+            new Equal(UserCriteria.ROLE, "AdminRole"),
+            new Equal(UserCriteria.ROLE_TYPE, "GOV_OVERSIGHT"))));
 
         And verisign = new And(new ArrayList<Criterion>(Arrays.asList(
-            new Equal(UserCriteriaFields.ROLE, "AdminRole"),
-            new Equal(UserCriteriaFields.ROLE_TYPE, "ZONE_PUBLISHER"))));
+            new Equal(UserCriteria.ROLE, "AdminRole"),
+            new Equal(UserCriteria.ROLE_TYPE, "ZONE_PUBLISHER"))));
 
        return new Or(new ArrayList<Criterion>(Arrays.asList(DoC,verisign)));
     }

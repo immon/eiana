@@ -6,7 +6,9 @@ package org.iana.rzm.facade.admin.users;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface UserCriteriaFields {
+public interface UserCriteria {
+
+    // fields
 
     String OBJ_ID = "objId";
 
@@ -25,4 +27,13 @@ public interface UserCriteriaFields {
     String ROLE = "role";
 
     String ROLE_TYPE = "role.type";
+
+    String ROLE_DOMAIN = "role.name.name";
+
+    // values
+
+    String SYSTEM_ROLE = "SystemRole";
+
+    String ADMIN_ROLE = "AdminRole";
+
 }
