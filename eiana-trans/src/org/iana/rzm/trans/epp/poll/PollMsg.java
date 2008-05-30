@@ -3,10 +3,7 @@ package org.iana.rzm.trans.epp.poll;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.Transaction;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -37,8 +34,7 @@ public class PollMsg {
     @Basic
     private String message;
 
-    @Basic
-    private boolean read;
+    private boolean isread;
 
     @Basic
     private Timestamp created;
@@ -51,7 +47,7 @@ public class PollMsg {
         this.name = transaction.getCurrentDomain().getName();
         this.status = status;
         this.message = message;
-        this.read = false;
+        this.isread = false;
         this.created = new Timestamp(System.currentTimeMillis());
     }
 
@@ -84,11 +80,11 @@ public class PollMsg {
     }
 
     public boolean isRead() {
-        return read;
+        return isread;
     }
 
     public void setRead(boolean read) {
-        this.read = read;
+        this.isread = read;
     }
 
     public Timestamp getCreated() {
