@@ -1,17 +1,21 @@
 package org.iana.rzm.user.dao;
 
+import org.iana.criteria.Criterion;
+import org.iana.criteria.FieldCriterion;
+import org.iana.criteria.In;
+import org.iana.criteria.ValuedFieldCriterion;
+import org.iana.dao.hibernate.HQLBuffer;
+import org.iana.dao.hibernate.HQLGenerator;
+import org.iana.dao.hibernate.HibernateDAO;
+import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.AdminRole;
-import org.iana.dao.hibernate.HibernateDAO;
-import org.iana.dao.hibernate.HQLGenerator;
-import org.iana.dao.hibernate.HQLBuffer;
-import org.iana.criteria.*;
+import org.iana.rzm.user.Role;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Marcin Zajaczkowski
@@ -124,7 +128,9 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
 
             protected Object getValue(ValuedFieldCriterion crit) {
                 String name = crit.getFieldName();
-                if ("role.type".equals(name)) return AdminRole.AdminType.valueOf(""+crit.getValue());
+                if ("role.type".equals(name)) {
+                    return getType(String.valueOf(crit.getValue()));
+                }
                 return crit.getValue();
             }
 
@@ -133,11 +139,19 @@ public class HibernateUserDAO extends HibernateDAO<RZMUser> implements UserDAO {
                 if ("role.type".equals(name)) {
                     Set<Object> ret = new HashSet<Object>();
                     for (Object object : crit.getValues()) {
-                        ret.add(AdminRole.AdminType.valueOf(""+object));
+                        ret.add(getType(String.valueOf(object)));
                     }
                     return ret;
                 }
                 return crit.getValues();
+            }
+
+            private Role.Type getType(String val) {
+                try {
+                    return AdminRole.AdminType.valueOf(val);
+                } catch (IllegalArgumentException e) {
+                    return SystemRole.SystemType.valueOf(val);
+                }
             }
         };
     }
