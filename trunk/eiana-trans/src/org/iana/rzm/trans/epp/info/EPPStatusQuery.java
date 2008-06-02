@@ -8,6 +8,8 @@ import org.iana.rzm.trans.epp.EPPException;
  */
 public interface EPPStatusQuery {
 
+    void process(long transactionID);
+
     EPPChangeStatus queryStatusAndProcess(long transactionID) throws EPPException, TransactionException;
 
 }

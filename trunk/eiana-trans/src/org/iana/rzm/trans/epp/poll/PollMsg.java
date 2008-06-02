@@ -32,6 +32,7 @@ public class PollMsg {
     private String status;
 
     @Basic
+    @Column(length = 4096)
     private String message;
 
     private boolean isread;
