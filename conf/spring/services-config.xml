@@ -76,7 +76,7 @@
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="adminDetectorService2"/>
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
-        <constructor-arg index="5" ref="eppReceiverAction"/>
+        <constructor-arg index="5" ref="eppChangeInfoProcessor"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -87,7 +87,7 @@
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="adminDetectorService2"/>
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
-        <constructor-arg index="5" ref="eppReceiverAction"/>
+        <constructor-arg index="5" ref="eppChangeInfoProcessor"/>
     </bean>
 
     <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl"
@@ -1301,16 +1301,15 @@
                                   execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
                                   execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
                                   execution(public * org.iana.config.ConfigDAO.*(..)) ||
-                                  execution(* org.iana.rzm.trans.epp.info.EPPChangeInfoAction.queryStatusAndProcess(..)) ||
-                                  execution(* org.iana.rzm.trans.epp.poll.EPPPollMsgAction.queryAndProcess(..)) ||
+                                  execution(public * org.iana.rzm.trans.epp.info.EPPChangeInfoProcessor.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.epp.poll.EPPPollMsgProcessor.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
-                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
-                                  execution(public void org.iana.rzm.trans.epp.info.EPPChangeInfoAction.execute())"/>
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>
@@ -1539,6 +1538,11 @@
 
     <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.info.EPPChangeInfoAction">
         <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="eppChangeInfoProcessor"/>
+    </bean>
+
+    <bean id="eppChangeInfoProcessor" class="org.iana.rzm.trans.epp.info.EPPChangeInfoProcessor">
+        <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="eppClient"/>
         <constructor-arg ref="eppErrorHandler"/>
         <constructor-arg ref="ticketingService"/>
@@ -1561,6 +1565,10 @@
 
     <bean id="eppPollAction" class="org.iana.rzm.trans.epp.poll.EPPPollMsgAction">
         <constructor-arg ref="eppClient"/>
+        <constructor-arg ref="eppPollMsgProcessor"/>
+    </bean>
+
+    <bean id="eppPollMsgProcessor" class="org.iana.rzm.trans.epp.poll.EPPPollMsgProcessor">
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="pollManager"/>
     </bean>
