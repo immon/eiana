@@ -623,9 +623,7 @@
                 </action>
             </event>
             <event type='node-leave'>
-                <event type='node-enter'>
-                    <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageCleaner'/>
-                </event>
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageCleaner'/>
             </event>
             <!-- manual transition allowed -->
         </state>
