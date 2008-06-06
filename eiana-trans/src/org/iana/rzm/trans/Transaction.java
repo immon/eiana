@@ -11,8 +11,8 @@ import org.iana.rzm.trans.change.TransactionChangeType;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
 import org.iana.rzm.trans.confirmation.Confirmation;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.confirmation.usdoc.USDoCConfirmation;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.trans.epp.info.EPPChangeStatus;
@@ -231,17 +231,33 @@ public class Transaction implements TrackedObject {
             throw new UserConfirmationNotExpected();
     }
 
+    public synchronized void usdocRejected() throws TransactionException {
+        TransactionState.Name state = getState().getName();
+        if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
+            exception("status mismatch: usdoc accepted but verisign signalled docRejected");
+        }
+    }
+
+    public synchronized void usdocAccepted() throws TransactionException {
+        TransactionState.Name state = getState().getName();
+        if (state == TransactionState.Name.REJECTED) {
+            exception("status mismatch: usdoc rejected but verisign signalled docAccepted");
+        }
+    }
+
     public synchronized void generated() throws TransactionException {
         TransactionState.Name state = getState().getName();
         if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
             systemAccept();
+        } else if (state == TransactionState.Name.REJECTED) {
+            exception("status mismatch: usdoc rejected but verisign signalled generated");            
         } else {
             logger.warn("Transaction " + getTransactionID() + " cannot process generated verisign message");
         }
     }
 
     public synchronized void exception(String message) throws TransactionException {
-        getData().setComment(message);
+        getData().setStateMessage(message);
         getData().setIdentityName("SYSTEM");
         processDAO.signal(pi, EXCEPTION);
     }
@@ -363,6 +379,7 @@ public class Transaction implements TrackedObject {
                 confirmation.setDatabaseChangeConfirmation(accept);
                 break;
         }
+        verifyMismatch(accept);
         if (confirmation.isReceived()) {
             if (confirmation.isAccepted()) {
                 transit(identity, "admin-accept");
@@ -374,6 +391,16 @@ public class Transaction implements TrackedObject {
         }
     }
 
+    private void verifyMismatch(boolean usdocAccept) throws TransactionException {
+        EPPChangeStatus status = getData().getEppStatus();
+        if (status != null) {
+            if (usdocAccept) {
+                if (status == EPPChangeStatus.docRejected) exception("status mismatch: usdoc accepted but verisign signalled docRejected");
+            } else {
+                if (status != EPPChangeStatus.docRejected && status.getOrderNumber() >= EPPChangeStatus.docApproved.getOrderNumber()) exception("status mismatch: usdoc rejected but verisign signalled: " + status);
+            }
+        }
+    }
     public boolean isNameServerChange() {
         return getData().isNameServerChange();
     }
@@ -462,6 +489,8 @@ public class Transaction implements TrackedObject {
             systemAccept();
         } else if (state == TransactionState.Name.PENDING_ZONE_PUBLICATION) {
             systemAccept();
+        } else if (state == TransactionState.Name.REJECTED) {
+            exception("status mismatch: usdoc rejected but verisign signalled completed");
         } else {
             logger.warn("Transaction " + getTransactionID() + " cannot process generated verisign message");
         }

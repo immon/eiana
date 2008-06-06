@@ -129,7 +129,7 @@ public class SmtpMailSender implements MailSender {
             message.setText(body);
             sendMessage(session, message);
         } catch (MessagingException e) {
-            throw new MailSenderException("Message sending failed.", e);
+            throw new MailSenderException(e.getMessage(), e);
         }
     }
 
@@ -154,7 +154,7 @@ public class SmtpMailSender implements MailSender {
             message.setContent(multipart);
             sendMessage(session, message);
         } catch (MessagingException e) {
-            throw new MailSenderException("Message sending failed.", e);
+            throw new MailSenderException(e.getMessage(), e);
         }
     }
 }

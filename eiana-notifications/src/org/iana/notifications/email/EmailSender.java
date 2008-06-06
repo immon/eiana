@@ -168,7 +168,7 @@ public class EmailSender implements NotificationSender {
             mailer.sendMail(getEmailFromAddress(), address, cc, subject, body);
         } catch (MailSenderException e) {
             logger.warn("Unable to send notification to '" + address + "'. Reason: " + e.getMessage(), e);
-            throw new EmailSenderException("Unable to send notification " + e.getMessage());
+            throw new EmailSenderException("Unable to send notification " + e.getMessage(), e);
         } catch (ConfigException e) {
             throw new EmailSenderException(e);
         }

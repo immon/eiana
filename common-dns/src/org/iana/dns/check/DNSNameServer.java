@@ -26,14 +26,14 @@ public class DNSNameServer {
     private DNSSOA soaByTCP;
     private int retries;
 
-    public Record[] getRecords() throws DNSCheckIOException {
+    public Record[] getRecords() throws NameServerUnreachableException {
         List<Record> records = new ArrayList<Record>();
         records.addAll(getRecords(Type.A));
         records.addAll(getRecords(Type.AAAA));
         return records.toArray(new Record[0]);
     }
 
-    private List<Record> getRecords(int type) throws DNSCheckIOException {
+    private List<Record> getRecords(int type) throws NameServerUnreachableException {
         try {
             Lookup lookup = new Lookup(new Name(host.getFullyQualifiedName()), type);
             Record[] records = lookup.run();
@@ -41,11 +41,11 @@ public class DNSNameServer {
         } catch (IOException e) {
             String output = "io exception: " + host.getName();
             Logger.getLogger(DNSNameServer.class).error(output, e);
-            throw new DNSCheckIOException(output);
+            throw new NameServerUnreachableException(e, host);
         }
     }
 
-    public Record[] getNsRecord() throws DNSCheckIOException, EmptyIPAddressListException {
+    public Record[] getNsRecord() throws NameServerUnreachableException, EmptyIPAddressListException {
 
         try {
             Record question = Record.newRecord(new Name(domain.getFullyQualifiedName()), Type.NS, DClass.IN);
@@ -62,15 +62,14 @@ public class DNSNameServer {
             exResolver.setRetries(retries);
             Message message = exResolver.send(query);
             return message.getSectionArray(Section.ANSWER);
-        }
-        catch(SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             String output = "Connection timed out;  could not reach " + host.getName();
             Logger.getLogger(DNSNameServer.class).error(output);
-            throw new DNSCheckIOException(output);
+            throw new NameServerUnreachableException(e, host);
         } catch (IOException e) {
             String output = "io exception: " + host.getName();
             Logger.getLogger(DNSNameServer.class).error(output, e);
-            throw new DNSCheckIOException(output);
+            throw new NameServerUnreachableException(e, host);
         }
     }
 
@@ -92,7 +91,7 @@ public class DNSNameServer {
             this.initialized = true;
         }
 
-        public Message getMessage() throws DNSCheckIOException {
+        public synchronized Message getMessage() throws NameServerUnreachableException {
             if (!initialized) {
                 initialized = true;
                 message = sendSOAQuery(tcp);
@@ -100,7 +99,7 @@ public class DNSNameServer {
             return message;
         }
 
-        private Message sendSOAQuery(boolean byTCP) throws DNSCheckIOException {
+        private Message sendSOAQuery(boolean byTCP) throws NameServerUnreachableException {
             try {
                 Record question = Record.newRecord(new Name(domain.getFullyQualifiedName()), Type.SOA, DClass.IN);
                 Message query = Message.newQuery(question);
@@ -113,7 +112,7 @@ public class DNSNameServer {
             } catch (IOException e) {
                 String output = "io exception: " + host.getName();
                 Logger.getLogger(DNSNameServer.class).error(output, e);
-                throw new DNSCheckIOException(output);
+                throw new NameServerUnreachableException(e, host);
             }
         }
     }
@@ -151,28 +150,28 @@ public class DNSNameServer {
         return soaByTCP != null;
     }
 
-    public boolean isAuthoritative() throws DNSCheckIOException {
+    public boolean isAuthoritative() throws NameServerUnreachableException{
         return ((getSOAByUDP() != null) && (getSOAByUDP().getHeader().getFlag(Flags.AA)));
     }
 
-    public List<Record> getAuthoritySection() throws DNSCheckIOException {
+    public List<Record> getAuthoritySection() throws NameServerUnreachableException {
         return (getSOA() != null) ?
                 Arrays.asList(getSOA().getSectionArray(Section.AUTHORITY)) :
                 new ArrayList<Record>();
     }
 
-    public List<Record> getAdditionalSection() throws DNSCheckIOException {
+    public List<Record> getAdditionalSection() throws NameServerUnreachableException {
         return (getSOA() != null) ?
                 Arrays.asList(getSOA().getSectionArray(Section.ADDITIONAL)) :
                 new ArrayList<Record>();
     }
 
 
-    public long getSerialNumber() throws DNSCheckIOException {
-         if(getSOA() != null){
+    public long getSerialNumber() throws NameServerUnreachableException {
+        if (getSOA() != null) {
             Record[] records = getSOA().getSectionArray(1);
-            if(records != null && records.length > 0 ){
-                return ((SOARecord)records[0]).getSerial();
+            if (records != null && records.length > 0) {
+                return ((SOARecord) records[0]).getSerial();
             }
         }
         return -1;
@@ -210,15 +209,22 @@ public class DNSNameServer {
         return host.hasIPAddress(addr);
     }
 
-    public Message getSOA() throws DNSCheckIOException {
-        return (getSOAByUDP() != null) ? getSOAByUDP() : getSOAByTCP();
+    public Message getSOA() throws NameServerUnreachableException {
+        Message ret;
+        try {
+            ret = getSOAByUDP();
+            if (ret == null) ret = getSOAByTCP();
+        } catch (NameServerUnreachableException e) {
+            ret = getSOAByTCP();
+        }
+        return ret;
     }
 
-    public Message getSOAByUDP() throws DNSCheckIOException {
+    public Message getSOAByUDP() throws NameServerUnreachableException {
         return soaByUDP.getMessage();
     }
 
-    public Message getSOAByTCP() throws DNSCheckIOException {
+    public Message getSOAByTCP() throws NameServerUnreachableException {
         return soaByTCP.getMessage();
     }
 }

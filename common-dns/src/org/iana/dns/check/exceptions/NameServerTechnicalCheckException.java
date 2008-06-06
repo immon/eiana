@@ -10,9 +10,15 @@ import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
  * @author Piotr Tkaczyk
  */
 public class NameServerTechnicalCheckException extends DNSTechnicalCheckException {
+
     DNSHost host;
 
     public NameServerTechnicalCheckException(DNSHost host) {
+        this.host = host;
+    }
+
+    public NameServerTechnicalCheckException(Throwable cause, DNSHost host) {
+        super(cause);
         this.host = host;
     }
 

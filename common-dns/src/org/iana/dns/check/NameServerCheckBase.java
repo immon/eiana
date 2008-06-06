@@ -11,9 +11,9 @@ import org.iana.dns.check.exceptions.NameServerUnreachableException;
 abstract class NameServerCheckBase implements DNSNameServerTechnicalCheck {
 
     public void check(DNSNameServer ns) throws DNSTechnicalCheckException {
-        if (ns.getSOA() != null)
+        if (ns.getSOA() != null) {
             doCheck(ns);
-        else {
+        } else {
             Logger.getLogger(NameServerCheckBase.class).warn("null SOA for " + ns.getName());
             throw new NameServerUnreachableException(ns.getHost());
         }
