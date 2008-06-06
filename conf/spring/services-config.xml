@@ -1577,6 +1577,11 @@
         <constructor-arg ref="pollDAO"/>
     </bean>
 
+    <bean id="pollMessagesService" class="org.iana.rzm.facade.admin.msgs.PollMessagesServiceImpl">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="pollManager"/>
+    </bean>
+
     <bean id="pollDAO" class="org.iana.dao.hibernate.HibernateDAO">
         <constructor-arg value="org.iana.rzm.trans.epp.poll.PollMsg" type="java.lang.Class"/>
         <property name="sessionFactory">
