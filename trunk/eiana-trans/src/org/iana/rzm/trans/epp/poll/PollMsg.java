@@ -40,6 +40,9 @@ public class PollMsg {
     @Basic
     private Timestamp created;
 
+    public PollMsg() {
+    }
+
     public PollMsg(Transaction transaction, String status, String message) {
         CheckTool.checkNull(transaction, "transaction");
         this.transactionID = transaction.getTransactionID();
