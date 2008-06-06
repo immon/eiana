@@ -22,6 +22,7 @@ import java.util.*;
  * value object. Value objects are detached from a simple store.
  *
  * @author Patrycja Wegrzynowicz
+ * @author Jakub Laszkiewicz
  */
 public class TransactionConverter {
 
@@ -59,6 +60,7 @@ public class TransactionConverter {
         ret.setEnd(trans.getEnd());
         ret.setRedelegation(trans.isRedelegation());
         ret.setSubmitterEmail(trans.getSubmitterEmail());
+        ret.setEppStatus(String.valueOf(trans.getEPPStatus()));
 
         Set<ContactIdentity> received = trans.getIdentitiesThatAccepted(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
         for (ContactIdentity cid : received)
