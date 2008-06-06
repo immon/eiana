@@ -10,13 +10,12 @@ import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
  */
 public class NameServerUnreachableException extends NameServerTechnicalCheckException {
 
-    /**
-     * Creates exception from given data.
-     *
-     * @param host current host
-     */
     public NameServerUnreachableException(DNSHost host) {
         super(host);
+    }
+
+    public NameServerUnreachableException(Throwable cause, DNSHost host) {
+        super(cause, host);
     }
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {

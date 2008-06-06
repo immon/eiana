@@ -3,7 +3,7 @@ package org.iana.dns.check.remote;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.check.DNSNameServer;
-import org.iana.dns.check.exceptions.DNSCheckIOException;
+import org.iana.dns.check.exceptions.NameServerUnreachableException;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
 import org.iana.dns.validator.InvalidDomainNameException;
@@ -36,9 +36,9 @@ public class RPCTechnicalCheckImpl implements RPCTechnicalCheck {
                 ret.add(new SOA(host.getName(), ns.getSOAByTCP(), false));
             }
             return ret.toArray(new SOA[0]);
-        } catch (DNSCheckIOException e) {
-            throw new RPCTechnicalCheckException(e);
         } catch (RuntimeException e) {
+            throw new RPCTechnicalCheckException(e);
+        } catch (NameServerUnreachableException e) {
             throw new RPCTechnicalCheckException(e);
         }
     }

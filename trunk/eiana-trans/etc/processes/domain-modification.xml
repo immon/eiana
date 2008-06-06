@@ -51,14 +51,14 @@
         <transition name="TRANSITION_EXCEPTION" to="EXCEPTION"/>
 
         <decision name="REQUEST_TRACKER_TICKET_CREATION">
-            <handler class="org.iana.rzm.trans.process.general.ticketingservice.TicketCreation"/>
-            <transition name="ok" to="FIRST_NSLINK_CHANGE_DECISION"/>
-            <transition name="failed" to="PENDING_CREATION"/>
             <event type='node-enter'>
                 <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
             </event>
+            <handler class="org.iana.rzm.trans.process.general.ticketingservice.TicketCreation"/>
+            <transition name="ok" to="FIRST_NSLINK_CHANGE_DECISION"/>
+            <transition name="failed" to="PENDING_CREATION"/>
         </decision>
 
         <state name="PENDING_CREATION">
@@ -347,7 +347,7 @@
             <transition name="close" to="ADMIN_CLOSED"/>
             <transition name="alert" to="EXCEPTION"/>
             <transition name="withdraw" to="WITHDRAWN"/>
-            <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="admin-accept" to="SECOND_NSLINK_CHANGE_DECISION"/>
             <transition name="admin-reject" to="REJECTED"/>
         </state>
 
@@ -410,8 +410,6 @@
 
         <state name="PENDING_USDOC_APPROVAL">
             <event type='node-enter'>
-                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
-                </action>
                 <action class="org.iana.rzm.trans.process.pending_usdoc_approval.PendingUSDoCApprovalAction"/>
                 <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
                     <notificationProducerName>usdocConfirmationNotificationProducer</notificationProducerName>
@@ -600,14 +598,14 @@
 
         <end-state name='ADMIN_CLOSED'>
             <event type='node-enter'>
-                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
-                    <notificationProducerName>adminClosedNotificationProducer</notificationProducerName>
-                </action>
                 <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
                     <start>false</start>
                 </action>
-                <action class="org.iana.rzm.trans.process.general.ticketingservice.TicketCloser"/>
                 <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover"/>
+                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
+                    <notificationProducerName>adminClosedNotificationProducer</notificationProducerName>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.ticketingservice.TicketCloser"/>
             </event>
             <event type='node-leave'>
                 <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">

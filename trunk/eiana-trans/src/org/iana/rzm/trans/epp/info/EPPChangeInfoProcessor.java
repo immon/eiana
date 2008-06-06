@@ -64,10 +64,15 @@ public class EPPChangeInfoProcessor implements EPPStatusQuery {
                 ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
                 if (status == EPPChangeStatus.complete) {
                     trans.complete();
+                } else if (status == EPPChangeStatus.docApproved) {
+                    trans.usdocAccepted();
+                } else if (status == EPPChangeStatus.docRejected) {
+                    trans.usdocRejected();
                 } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
                     trans.generated();
                 } else if (status.getOrderNumber() == -1) {
-                    trans.exception(status.toString());
+                    String msg = "Verisign exception status: " + status;
+                    trans.exception(msg);
                 }
             }
         } catch (TicketingException e) {
