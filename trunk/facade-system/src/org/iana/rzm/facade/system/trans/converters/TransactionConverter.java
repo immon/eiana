@@ -60,7 +60,7 @@ public class TransactionConverter {
         ret.setEnd(trans.getEnd());
         ret.setRedelegation(trans.isRedelegation());
         ret.setSubmitterEmail(trans.getSubmitterEmail());
-        ret.setEppStatus(String.valueOf(trans.getEPPStatus()));
+        ret.setEppStatus(trans.getEPPStatus() == null ? null : trans.getEPPStatus().toString());
 
         Set<ContactIdentity> received = trans.getIdentitiesThatAccepted(TransactionState.Name.PENDING_CONTACT_CONFIRMATION);
         for (ContactIdentity cid : received)
