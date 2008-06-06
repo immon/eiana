@@ -34,6 +34,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private String comment;
     private String stateMessage;
     private String usdocNotes;
+    private String eppStatus;
 
     public Long getTransactionID() {
         return transactionID;
@@ -274,5 +275,13 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     public void addImpactedDomain(String domainName) {
         if (this.impactedDomains == null) this.impactedDomains = new HashSet<String>();
         this.impactedDomains.add(domainName);
+    }
+
+    public String getEppStatus() {
+        return eppStatus;
+    }
+
+    public void setEppStatus(String eppStatus) {
+        this.eppStatus = eppStatus;
     }
 }
