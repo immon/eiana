@@ -29,13 +29,14 @@ public class EPPPollMsgProcessor implements EPPPollStatusQuery {
     }
 
     public boolean queryAndProcess(EPPPollReq req) throws EPPException, EPPFrameworkException {
-
-        PollResponse rsp = req.query();
-
-        process(rsp);
-        req.ack(rsp);
-        return rsp.getMessageCount() > 0;
-
+        try {
+            PollResponse rsp = req.query();
+            process(rsp);
+            req.ack(rsp);
+            return rsp.getMessageCount() > 0;
+        } catch (EPPNoMsgException e) {
+            return false;
+        }
     }
 
     private void process(PollResponse rsp) {
