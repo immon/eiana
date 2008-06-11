@@ -48,7 +48,7 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         isIana();
     }
 
-    public String getTransactionEPPStatus(long id) throws NoObjectFoundException, InvalidEPPTransactionException, InfrastructureException, AccessDeniedException {
+    public String queryTransactionEPPStatus(long id) throws NoObjectFoundException, InvalidEPPTransactionException, InfrastructureException, AccessDeniedException {
         isUserInRole();
         try {
             Transaction trans = transactionManager.getTransaction(id);

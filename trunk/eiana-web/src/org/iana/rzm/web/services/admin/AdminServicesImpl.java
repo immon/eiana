@@ -467,7 +467,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public String getVerisignStatus(long rtId) throws NoObjectFoundException, InvalidEPPTransactionException {
         try {
-            return transactionService.getTransactionEPPStatus(rtId);
+            return transactionService.queryTransactionEPPStatus(rtId);
         } catch (InfrastructureException e) {
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);

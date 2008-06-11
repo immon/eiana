@@ -6,7 +6,9 @@ import org.iana.criteria.In;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.TransactionException;
 import org.iana.rzm.trans.epp.EPPExecutor;
+import org.iana.rzm.trans.epp.EPPException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.Set;
 /**
  * @author Jakub Laszkiewicz
  */
-public class EPPChangeInfoAction implements EPPExecutor {
+public class EPPChangeInfoAction implements EPPExecutor, EPPStatusQuery {
 
     private static Logger logger = Logger.getLogger(EPPChangeInfoAction.class);
 
@@ -44,5 +46,14 @@ public class EPPChangeInfoAction implements EPPExecutor {
         states.add(TransactionState.Name.PENDING_ZONE_INSERTION.toString());
         states.add(TransactionState.Name.PENDING_ZONE_PUBLICATION.toString());
         return new In("state", states);
+    }
+
+
+    public void process(long transactionID) {
+        eppChangeInfoProcessor.process(transactionID);
+    }
+
+    public EPPChangeStatus queryStatusAndProcess(long transactionID) throws EPPException, TransactionException {
+        return eppChangeInfoProcessor.queryStatusAndProcess(transactionID);
     }
 }
