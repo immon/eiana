@@ -68,7 +68,12 @@ public class PAddressee implements Serializable {
     public String toEmailAddressForm() {
         StringBuilder sb = new StringBuilder();
         sb.append("\"");
-        sb.append(getName().replaceAll("\"", ""));
+
+        if (getName() == null)
+            sb.append("");
+        else
+            sb.append(getName().replaceAll("\"", ""));
+
         sb.append("\"");
         sb.append("<");
         sb.append(getEmail());
