@@ -664,10 +664,14 @@
 
 
     <bean id="contactConfirmationACDataProducer"
-          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACDataProducer"/>
+          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACDataProducer">
+        <constructor-arg ref="userManager"/>
+    </bean>
 
     <bean id="contactConfirmationTCDataProducer"
-          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCDataProducer"/>
+          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCDataProducer">
+        <constructor-arg ref="userManager"/>
+    </bean>
 
     <bean id="impactedPartiesDataProducer"
           class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesDataProducer"/>

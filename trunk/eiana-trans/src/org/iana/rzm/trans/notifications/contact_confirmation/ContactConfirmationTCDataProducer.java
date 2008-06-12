@@ -11,6 +11,9 @@ import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.change.DomainChangePrinter;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
+import org.iana.rzm.user.UserManager;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.common.validators.CheckTool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +22,14 @@ import java.util.Map;
  * @author Piotr Tkaczyk
  */
 public class ContactConfirmationTCDataProducer extends DefaultTransactionDataProducer implements DataProducer {
+
+    private UserManager userManager;
+
+
+    public ContactConfirmationTCDataProducer(UserManager userManager) {
+        CheckTool.checkNull(userManager, "user manager is empty");
+        this.userManager = userManager;
+    }
 
     public Map<String, String> getSpecificValuesMap(Map dataSource) {
         Map<String, String> values = new HashMap<String, String>();
@@ -43,7 +54,13 @@ public class ContactConfirmationTCDataProducer extends DefaultTransactionDataPro
             values.put("newContactOnly", contactIdentity.isNewContact() ? newContactInfo(td) : "");
             values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", "" + td.getTicketID());
-            values.put("subbmiter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());
+
+            RZMUser logInUser = userManager.get(td.getTrackData().getCreatedBy());
+            StringBuffer sbName = new StringBuffer("");
+            if (logInUser != null)
+                sbName.append(logInUser.getName());
+
+            values.put("subbmiter", td.getSubmitterEmail() != null ? td.getSubmitterEmail() : sbName.toString());
         }
         return values;
     }
