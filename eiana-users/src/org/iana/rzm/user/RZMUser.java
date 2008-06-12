@@ -121,7 +121,17 @@ public class RZMUser  implements TrackedObject, Cloneable {
     }
 
     public String getName() {
-        return getFirstName() + " " + getLastName();
+        StringBuffer retVal = new StringBuffer("");
+        if (getFirstName() != null && getFirstName().trim().length() > 0)
+            retVal.append(getFirstName());
+
+        if (retVal.length() > 0)
+            retVal.append(" ");
+
+        if (getLastName() != null && getLastName().trim().length() > 0)
+            retVal.append(getLastName());
+
+        return retVal.toString();
     }
 
     public void setPassword(String password) {
