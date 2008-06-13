@@ -620,6 +620,7 @@
                 </action>
                 <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
                     <notificationProducerName>exceptionNotificationProducer</notificationProducerName>
+                    <notificationSender>transactionNotificationSender</notificationSender>
                 </action>
             </event>
             <event type='node-leave'>
