@@ -5,6 +5,7 @@ import org.iana.epp.response.PollResponse;
 import org.iana.epp.exceptions.EPPFrameworkException;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.errors.ErrorHandler;
 import org.iana.rzm.trans.epp.EPPException;
 import org.iana.rzm.trans.epp.EPPChangeReqId;
 import org.iana.criteria.Criterion;
@@ -23,9 +24,12 @@ public class EPPPollMsgProcessor implements EPPPollStatusQuery {
 
     private PollMsgManager msgManager;
 
-    public EPPPollMsgProcessor(TransactionManager transactionManager, PollMsgManager msgManager) {
+    private ErrorHandler eppErrorHandler;
+
+    public EPPPollMsgProcessor(TransactionManager transactionManager, PollMsgManager msgManager, ErrorHandler eppErrorHandler) {
         this.transactionManager = transactionManager;
         this.msgManager = msgManager;
+        this.eppErrorHandler = eppErrorHandler;
     }
 
     public boolean queryAndProcess(EPPPollReq req) throws EPPException, EPPFrameworkException {
@@ -48,7 +52,7 @@ public class EPPPollMsgProcessor implements EPPPollStatusQuery {
             Transaction trans = transactions.get(0);
             msgManager.create(new PollMsg(trans, rsp.getChangeStatus(), rsp.getMessage()));
         } else {
-            logger.warn("no transaction found for ticket id: " + ticketID);
+            eppErrorHandler.handleException("no transaction found for ticket id: " + ticketID);
         }
     }
 }
