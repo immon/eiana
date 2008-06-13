@@ -64,6 +64,8 @@
         <mapping class="org.iana.rzm.trans.TransactionCriteria"/>
         <mapping class="org.iana.rzm.trans.TransactionData"/>
 
+        <mapping class="org.iana.rzm.trans.notifications.TransactionNotification"/>
+
         <mapping class="org.iana.rzm.trans.epp.poll.PollMsg"/>
 
         <mapping class="org.iana.rzm.trans.confirmation.AbstractConfirmation"/>
