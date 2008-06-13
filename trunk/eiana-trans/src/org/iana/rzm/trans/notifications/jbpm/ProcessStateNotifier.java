@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public class ProcessStateNotifier extends ActionExceptionHandler {
 
+    private String notificationSender = "transactionNotificationSender";
+
     private String notificationProducerName = "emptyNotificationProducer";
 
     private Map<String, Object> additionalData = new HashMap<String, Object>();
