@@ -71,7 +71,7 @@ public class EPPChangeInfoProcessor implements EPPStatusQuery {
                 } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
                     trans.generated();
                 } else if (status.getOrderNumber() == -1) {
-                    String msg = "Verisign exception status: " + status;
+                    String msg = "EPP exception status: " + status;
                     trans.exception(msg);
                 }
             }

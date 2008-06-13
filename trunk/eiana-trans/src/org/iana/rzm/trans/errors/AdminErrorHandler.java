@@ -1,15 +1,15 @@
 package org.iana.rzm.trans.errors;
 
+import org.apache.log4j.Logger;
 import org.iana.notifications.NotificationSender;
 import org.iana.notifications.PNotification;
 import org.iana.notifications.producers.NotificationProducer;
 import org.iana.rzm.common.validators.CheckTool;
-import org.apache.log4j.Logger;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.StringWriter;
-import java.io.PrintWriter;
 
 /**
  * It sends a notification to the email address.
@@ -34,10 +34,18 @@ public class AdminErrorHandler implements ErrorHandler {
     public void handleException(Exception exception) throws IllegalArgumentException {
         CheckTool.checkNull(exception, "exception");
         try {
-            Map<String, Object> data = new HashMap<String, Object>();
             StringWriter out = new StringWriter();
             exception.printStackTrace(new PrintWriter(out));
-            data.put("exception", out.toString());
+            handleException(out.toString());
+        } catch (Exception e) {
+            logger.error("admin error exception handler", e);
+        }
+    }
+
+    public void handleException(String msg) {
+        try {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("exception", msg);
             for (PNotification notification : producer.produce(data)) {
                 sender.send( notification);
             }

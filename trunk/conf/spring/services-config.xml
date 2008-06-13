@@ -1575,6 +1575,7 @@
     <bean id="eppPollMsgProcessor" class="org.iana.rzm.trans.epp.poll.EPPPollMsgProcessor">
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="pollManager"/>
+        <constructor-arg ref="eppErrorHandler"/>
     </bean>
 
     <bean id="pollManager" class="org.iana.rzm.trans.epp.poll.PollMsgManagerImpl">

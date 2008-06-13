@@ -234,7 +234,7 @@ public class Transaction implements TrackedObject {
     public synchronized void usdocRejected() throws TransactionException {
         TransactionState.Name state = getState().getName();
         if (state == TransactionState.Name.PENDING_ZONE_INSERTION) {
-            exception("status mismatch: usdoc accepted but verisign signalled docRejected");
+            exception("status mismatch: usdoc accepted but verisign signaled docRejected");
         }
     }
 
