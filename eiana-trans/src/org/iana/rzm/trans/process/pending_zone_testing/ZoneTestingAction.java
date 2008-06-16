@@ -2,11 +2,11 @@ package org.iana.rzm.trans.process.pending_zone_testing;
 
 import org.apache.log4j.Logger;
 import org.iana.dns.DNSDomain;
-import org.iana.dns.obj.DNSHostImpl;
-import org.iana.dns.obj.DNSDomainImpl;
+import org.iana.dns.DNSHost;
+import org.iana.dns.check.DNSNameServer;
 import org.iana.dns.check.DNSTechnicalCheck;
 import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.dns.check.DNSNameServer;
+import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.objectdiff.ChangeApplicator;
 import org.iana.objectdiff.DiffConfiguration;
 import org.iana.objectdiff.ObjectChange;
@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * @author Jakub Laszkiewicz
  */
-
 public class ZoneTestingAction extends ActionExceptionHandler {
 
     protected void doExecute(ExecutionContext executionContext) throws Exception {
@@ -32,7 +31,7 @@ public class ZoneTestingAction extends ActionExceptionHandler {
         DomainManager domainManager = (DomainManager) objectFactory.createObject("domainManager");
         DiffConfiguration diffConfig = (DiffConfiguration) objectFactory.createObject("diffConfig");
         DNSTechnicalCheck zoneCheck = (DNSTechnicalCheck) objectFactory.createObject("zoneTestingCheck");
-        List<DNSHostImpl> rootServers = (List) objectFactory.createObject("rootServersList");
+        List<DNSHost> rootServers = (List) objectFactory.createObject("rootServersList");
 
         Domain retrievedDomain = domainManager.get(td.getCurrentDomain().getName()).clone();
         ObjectChange change = td.getDomainChange();
@@ -42,7 +41,7 @@ public class ZoneTestingAction extends ActionExceptionHandler {
         DNSDomain dnsDomain = DNSConverter.toDNSDomain(retrievedDomain);
 
         long serialNumber = -1;
-        for (DNSHostImpl rootServer : rootServers) {
+        for (DNSHost rootServer : rootServers) {
             DNSNameServer dnsNameServer = new DNSNameServer(new DNSDomainImpl("."), rootServer, 1);
             serialNumber = dnsNameServer.getSerialNumber();
             if (serialNumber > -1) break;

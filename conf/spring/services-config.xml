@@ -332,9 +332,22 @@
 
     <!-- transaction notification sender -->
 
-    <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSender">
+    <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSenderImpl">
         <constructor-arg ref="persistentNotificationSender"/>
         <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="transactionNotificationResender" class="org.iana.rzm.trans.notifications.PersistentTransactionNotificationSender">
+        <constructor-arg ref="transactionNotificationDAO"/>
+        <constructor-arg ref="transactionNotificationSender"/>
+        <constructor-arg ref="transactionManagerBean"/>
+    </bean>
+
+    <bean id="transactionNotificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.rzm.trans.notifications.TransactionNotification" type="java.lang.Class"/>
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
     </bean>
 
     <!-- Notification producers -->
@@ -1412,6 +1425,11 @@
         </tx:attributes>
     </tx:advice>
 
+    <bean id="transactionNotificationAdvisor" class="org.iana.rzm.facade.system.trans.notifications.TransactionNotificationAdvisor">
+        <constructor-arg ref="transactionNotificationResender"/>
+        <property name="order" value="2"/>
+    </bean>
+
     <bean id="systemTransactionLoggerAdvisor"
           class="org.iana.rzm.facade.system.trans.loggers.SystemTransactionLoggerAdvisor">
         <constructor-arg index="0" ref="transactionManagerBean"/>
@@ -1615,7 +1633,7 @@
         <property name="description" value="empty description"/>
     </bean>
 
-    <bean id="rootServersList" class="java.util.ArrayList">
+    <bean id="rootServersList" class="java.util.ArrayList&lt;org.iana.dns.obj.DNSHost>">
         <constructor-arg>
             <list>
                 <bean class="org.iana.dns.obj.DNSHostImpl">
