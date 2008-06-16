@@ -1633,7 +1633,7 @@
         <property name="description" value="empty description"/>
     </bean>
 
-    <bean id="rootServersList" class="java.util.ArrayList&lt;org.iana.dns.obj.DNSHost>">
+    <bean id="rootServersList" class="java.util.ArrayList">
         <constructor-arg>
             <list>
                 <bean class="org.iana.dns.obj.DNSHostImpl">
