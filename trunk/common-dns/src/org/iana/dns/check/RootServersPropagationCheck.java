@@ -4,7 +4,6 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.check.exceptions.RootServersPropagationException;
 import org.iana.dns.obj.DNSHostImpl;
-import org.iana.rzm.common.validators.CheckTool;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.AAAARecord;
@@ -28,7 +27,7 @@ public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
     }
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
-        CheckTool.checkNull(rootServers, "null root servers");
+        if (rootServers == null) throw new IllegalArgumentException("null root servers");
         for( DNSHost dnsHost : rootServers) {
             DNSNameServer nameServer = new DNSNameServer(domain, dnsHost, dnsCheckRetries);
             Set<DNSHost> retRecords = convertToDNSHosts(nameServer.getAdditionalSection());
