@@ -310,23 +310,7 @@
     <!-- Technical Checks -->
 
     <bean id="rootServersPropagationCheck" class="org.iana.dns.check.RootServersPropagationCheck">
-        <property name="rootServers">
-            <map>
-                <entry><key><value>a.root-servers.net</value></key><value>198.41.0.4</value></entry>
-                <entry><key><value>b.root-servers.net</value></key><value>192.228.79.201</value></entry>
-                <entry><key><value>c.root-servers.net</value></key><value>192.33.4.12</value></entry>
-                <entry><key><value>d.root-servers.net</value></key><value>128.8.10.90</value></entry>
-                <entry><key><value>e.root-servers.net</value></key><value>192.203.230.10</value></entry>
-                <entry><key><value>f.root-servers.net</value></key><value>192.5.5.241</value></entry>
-                <entry><key><value>g.root-servers.net</value></key><value>192.112.36.4</value></entry>
-                <entry><key><value>h.root-servers.net</value></key><value>128.63.2.53</value></entry>
-                <entry><key><value>i.root-servers.net</value></key><value>192.36.148.17</value></entry>
-                <entry><key><value>j.root-servers.net</value></key><value>192.58.128.30</value></entry>
-                <entry><key><value>k.root-servers.net</value></key><value>193.0.14.129</value></entry>
-                <entry><key><value>l.root-servers.net</value></key><value>199.7.83.42</value></entry>
-                <entry><key><value>m.root-servers.net</value></key><value>202.12.27.33</value></entry>
-            </map>
-        </property>
+        <property name="rootServers" ref="rootServersList"/>
         <property name="dnsCheckRetries">
             <value>3</value>
         </property>
@@ -1626,7 +1610,13 @@
         <property name="minimum" value="86400"/>
         <property name="adminAddress" value="NSTLD.VERISIGN-GRS.COM."/>
 
-        <property name="nameServers">
+        <property name="nameServers" ref="rootServersList" />
+
+        <property name="description" value="empty description"/>
+    </bean>
+
+    <bean id="rootServersList" class="java.util.ArrayList">
+        <constructor-arg>
             <list>
                 <bean class="org.iana.dns.obj.DNSHostImpl">
                     <constructor-arg value="A.ROOT-SERVERS.NET."/>
@@ -1740,8 +1730,7 @@
                     </property>
                 </bean>
             </list>
-        </property>
-        <property name="description" value="empty description"/>
+        </constructor-arg>
     </bean>
 
     <bean id="zoneExporter" class="org.iana.dns.exporter.BindExporter"/>
