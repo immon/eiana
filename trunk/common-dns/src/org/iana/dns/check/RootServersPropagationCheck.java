@@ -4,6 +4,7 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.check.exceptions.RootServersPropagationException;
 import org.iana.dns.obj.DNSHostImpl;
+import org.iana.rzm.common.validators.CheckTool;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.AAAARecord;
@@ -15,15 +16,11 @@ import java.util.*;
  */
 public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
 
-    Set<DNSHost> rootServers = new HashSet<DNSHost>();
+    List<DNSHost> rootServers = new ArrayList<DNSHost>();
     private int dnsCheckRetries;
 
-    public void setRootServers(Map<String, String> rootServers) {
-        for(String name : rootServers.keySet()) {
-            DNSHostImpl dnsHost = new DNSHostImpl(name);
-            dnsHost.addIPAddress(rootServers.get(name));
-            this.rootServers.add(dnsHost);
-        }
+    public void setRootServers(List<DNSHost> rootServers) {
+        this.rootServers = rootServers;
     }
 
     public void setDnsCheckRetries(int dnsCheckRetries) {
@@ -31,7 +28,7 @@ public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
     }
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
-
+        CheckTool.checkNull(rootServers, "null root servers");
         for( DNSHost dnsHost : rootServers) {
             DNSNameServer nameServer = new DNSNameServer(domain, dnsHost, dnsCheckRetries);
             Set<DNSHost> retRecords = convertToDNSHosts(nameServer.getAdditionalSection());

@@ -3,6 +3,7 @@ package org.iana.dns.check;
 import org.testng.annotations.Test;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
+import org.iana.dns.DNSHost;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -75,7 +76,15 @@ public class RootServersPropagationCheckTest {
             rootServers.put("k.root-servers.net", "193.0.14.129");
             rootServers.put("l.root-servers.net", "199.7.83.42");
             rootServers.put("m.root-servers.net", "202.12.27.33");
-            check.setRootServers(rootServers);
+
+            List<DNSHost> rootServersAsDNSHost = new ArrayList<DNSHost>();
+            for(String name : rootServers.keySet()) {
+                DNSHostImpl dnsHostTemp = new DNSHostImpl(name);
+                dnsHost.addIPAddress(rootServers.get(name));
+            rootServersAsDNSHost.add(dnsHost);
+            }
+
+            check.setRootServers(rootServersAsDNSHost);
             domainChecks.add(check);
 
             dnsTechnicalCheck.setDomainChecks(domainChecks);
