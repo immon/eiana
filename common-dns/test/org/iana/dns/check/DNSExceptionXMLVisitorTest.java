@@ -16,6 +16,8 @@ import java.util.List;
 /**
  * @author Piotr Tkaczyk
  */
+
+@Test(sequential = true, groups = {"DNSExceptionXMLVisitor"})
 public class DNSExceptionXMLVisitorTest {
 
     private static String example = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -85,7 +87,7 @@ public class DNSExceptionXMLVisitorTest {
             "</exceptions>";
 
     @Test
-    public void doTest() throws Exception {
+    public void xmlVisitorTest() throws Exception {
         DNSDomainImpl domain = new DNSDomainImpl("de");
 
         DNSHostImpl host1 = new DNSHostImpl("f.nic.de");
@@ -136,11 +138,8 @@ public class DNSExceptionXMLVisitorTest {
         String test = visitor.getXML();
         System.out.println(test);
 
-        test = test.replaceAll("\n", "");
-        test = test.replaceAll("\t", "");
-
-        example = example.replaceAll("\n", "");
-        example = example.replaceAll("\t", "");
+        test = test.replaceAll("\\s", "");
+        example = example.replaceAll("\\s", "");
 
         assert example.equals(test);
         
