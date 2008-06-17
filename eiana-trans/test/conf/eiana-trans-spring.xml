@@ -646,5 +646,21 @@
 
     <bean id="zoneTestingCheck" class="org.iana.dns.check.EmptyDNSTechnicalCheck">
     </bean>
+
+    <bean id="rootServersList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="A.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>198.41.0.4</value>
+                            <value>2001:503:BA3E:0:0:0:2:30</value>
+                        </set>
+                    </property>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
     
 </beans>

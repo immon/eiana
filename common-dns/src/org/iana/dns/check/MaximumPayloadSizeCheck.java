@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
 
-    private static final int MAX_SIZE = 512;
+    public static final int MAX_SIZE = 512;
     private static final int NS_SIZE = 12;
     private static final int HEADER_SIZE = 12;
     private static final int QUERY_SIZE = 255;

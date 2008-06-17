@@ -75,6 +75,7 @@
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="library" name="epp" level="project" />
     <orderEntry type="library" name="log4j" level="project" />
+    <orderEntry type="library" name="dnsjava" level="project" />
     <orderEntryProperties />
   </component>
 </module>
