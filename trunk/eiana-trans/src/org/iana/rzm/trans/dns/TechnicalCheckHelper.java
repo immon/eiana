@@ -2,6 +2,7 @@ package org.iana.rzm.trans.dns;
 
 import org.iana.dns.check.DNSExceptionMessagesVisitor;
 import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.dns.check.DNSExceptionXMLVisitor;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.notifications.PAddressee;
 import org.iana.notifications.PContent;
@@ -82,6 +83,11 @@ public class TechnicalCheckHelper implements CheckHelper {
             e.accept(messagesVisitor);
             String messages = messagesVisitor.getMessages();
             trans.setStateMessage(messages);
+
+            DNSExceptionXMLVisitor xmlVisitor = new DNSExceptionXMLVisitor(domain.toDNSDomain());
+            e.accept(xmlVisitor);
+            trans.setTechnicalErrors(xmlVisitor.getXML());
+
             Set<PAddressee> users = new HashSet<PAddressee>();
             if (domain.getAdminContact() != null) {
                 Contact contact = domain.getAdminContact();

@@ -505,4 +505,13 @@ public class Transaction implements TrackedObject {
         }
         return updated;
     }
+
+    public void setTechnicalErrors(String errors) {
+        getData().setTechnicalErrors(errors);
+    }
+
+    public String getTechnicalErrors() {
+        return getData().getTechnicalErrors();
+    }
+
 }

@@ -27,7 +27,7 @@ public class NameServerTechnicalCheckException extends DNSTechnicalCheckExceptio
     }
 
     public String getHostName() {
-        return host.getName();
+        return (host == null)? null : host.getName();
     }
 
     public boolean equals(Object o) {
