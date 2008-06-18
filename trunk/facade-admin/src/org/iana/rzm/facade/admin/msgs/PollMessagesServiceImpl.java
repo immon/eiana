@@ -31,19 +31,27 @@ public class PollMessagesServiceImpl extends AbstractFinderService<PollMsgVO> im
 
     public void markRead(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         PollMsg msg = getMsg(id);
-        if (msg.isRead()) logger.warn("poll msg " + id + " is already read.");
-        else msg.setRead(true);
+        if (msg.isRead()) {
+            logger.warn("poll msg " + id + " is already read.");
+        } else {
+            msg.setRead(true);
+            msgManager.update(msg);
+        }
     }
 
     public void markUnread(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         PollMsg msg = getMsg(id);
-        if (!msg.isRead()) logger.warn("poll msg " + id + " is already marked unread.");
-        else msg.setRead(false);
+        if (!msg.isRead()) {
+            logger.warn("poll msg " + id + " is already marked unread.");
+        } else {
+            msg.setRead(false);
+            msgManager.update(msg);
+        }
     }
 
     public void delete(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         PollMsg msg = getMsg(id);
-        this.msgManager.delete(id);
+        msgManager.delete(id);
     }
 
     public PollMsgVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
@@ -87,7 +95,7 @@ public class PollMessagesServiceImpl extends AbstractFinderService<PollMsgVO> im
 
     private PollMsgVO toVO(PollMsg msg) {
         return msg == null ? null : new PollMsgVO(
-                msg.getId(), msg.getTransactionID(), msg.getTicketID(), msg.getEppID(), msg.getName(), msg.getStatus(), msg.isRead(), msg.getCreated()
+                msg.getId(), msg.getTransactionID(), msg.getTicketID(), msg.getEppID(), msg.getName(), msg.getStatus(), msg.getMessage(), msg.isRead(), msg.getCreated()
         );
     }
 

@@ -19,17 +19,20 @@ public class PollMsgVO {
 
     private String status;
 
+    private String message;
+
     private boolean read;
 
     private Timestamp created;
 
-    public PollMsgVO(long id, long transactionID, long ticketID, String eppID, String domainName, String status, boolean read, Timestamp created) {
+    public PollMsgVO(long id, long transactionID, long ticketID, String eppID, String domainName, String status, String message, boolean read, Timestamp created) {
         this.id = id;
         this.transactionID = transactionID;
         this.ticketID = ticketID;
         this.eppID = eppID;
         this.domainName = domainName;
         this.status = status;
+        this.message = message;
         this.read = read;
         this.created = created;
     }
@@ -56,6 +59,10 @@ public class PollMsgVO {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public boolean isRead() {
