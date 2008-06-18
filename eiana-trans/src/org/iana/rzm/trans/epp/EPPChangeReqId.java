@@ -19,6 +19,7 @@ public class EPPChangeReqId implements EPPIdGenerator {
         CheckTool.checkNull(transaction.getTicketID(), "ticketID");
         this.ticketID = transaction.getTicketID();
         this.retries = transaction.getEPPRetries();
+        transaction.setEPPRetries(retries+1);
     }
 
     public EPPChangeReqId(String eppID) {

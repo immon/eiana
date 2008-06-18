@@ -26,6 +26,11 @@ public class PollMsgManagerImpl implements PollMsgManager {
         return msgDAO.get(id);
     }
 
+    public void update(PollMsg msg) {
+        CheckTool.checkNull(msg, "msg to update");
+        msgDAO.update(msg);
+    }
+
     public void delete(long id) {
         PollMsg msg = get(id);
         if (msg != null) msgDAO.delete(msg);
