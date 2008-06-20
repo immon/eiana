@@ -332,16 +332,18 @@
 
     <!-- transaction notification sender -->
 
-    <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSenderImpl">
+    <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSender">
         <constructor-arg ref="persistentNotificationSender"/>
         <constructor-arg ref="ticketingService"/>
     </bean>
 
+<!--
     <bean id="transactionNotificationResender" class="org.iana.rzm.trans.notifications.PersistentTransactionNotificationSender">
         <constructor-arg ref="transactionNotificationDAO"/>
         <constructor-arg ref="transactionNotificationSender"/>
         <constructor-arg ref="transactionManagerBean"/>
     </bean>
+-->
 
     <bean id="transactionNotificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
         <constructor-arg value="org.iana.rzm.trans.notifications.TransactionNotification" type="java.lang.Class"/>
