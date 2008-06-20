@@ -30,10 +30,11 @@ public class DNSExceptionXMLVisitorTest {
             "\t\t\t<ip>81.91.164.5</ip>\n" +
             "\t\t\t<ip>2001:608:6:6:0:0:0:10</ip>\n" +
             "\t\t</ns>\n" +
+            "\t\t<ns name=\"g.nic.net\" />\n" +
             "\t</domain>\n" +
             "\t<exception name=\"EmptyIPAddressListException\">\n" +
             "\t\t<other>\n" +
-            "\t\t\t<value name=\"host\">f.nic.de</value>\n" +
+            "\t\t\t<value name=\"host\">g.nic.net</value>\n" +
             "\t\t</other>\n" +
             "\t</exception>\n" +
             "\t<exception name=\"MaximumPayloadSizeExceededException\">\n" +
@@ -100,9 +101,12 @@ public class DNSExceptionXMLVisitorTest {
         host2.addIPAddress(ipAddress2_2);
         domain.addNameServer(host2);
 
+        DNSHostImpl host3 = new DNSHostImpl("g.nic.net");
+        domain.addNameServer(host3);
+
         MultipleDNSTechnicalCheckException multiEx = new MultipleDNSTechnicalCheckException();
 
-        multiEx.addException(new EmptyIPAddressListException(domain, host1));
+        multiEx.addException(new EmptyIPAddressListException(domain, host3));
 
         multiEx.addException(new MaximumPayloadSizeExceededException(domain, 623));
 
