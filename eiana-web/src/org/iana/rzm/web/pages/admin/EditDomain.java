@@ -88,7 +88,7 @@ public abstract class EditDomain extends AdminPage
     public abstract DomainVOWrapper getModifiedDomain();
 
     public void setIdentifier(Object id) {
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         SystemDomainVOWrapper domain = null;
         try {
             domain = getAdminServices().getDomain(id.toString());
@@ -137,11 +137,11 @@ public abstract class EditDomain extends AdminPage
             }
             setOriginalDomain(domain);
 
-            DomainVOWrapper mdomain = getVisitState().getMmodifiedDomain();
+            DomainVOWrapper mdomain = getVisitState().getModifiedDomain(getDomainId());
             setModifiedDomain(mdomain);
             getVisitState().markAsVisited(mdomain != null ? mdomain : domain);
 
-            setModifiedDomain(getVisitState().getMmodifiedDomain());
+            setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
                                                                       
             String countryName = getAdminServices().getCountryName(domain.getName());
             setCountryName(countryName);
@@ -151,7 +151,7 @@ public abstract class EditDomain extends AdminPage
     }
 
     public DomainVOWrapper getDomain() {
-        DomainVOWrapper domain = getVisitState().getMmodifiedDomain();
+        DomainVOWrapper domain = getVisitState().getModifiedDomain(getDomainId());
         if(domain == null){
             domain = getVisitState().getCurrentDomain(getDomainId());
         }
@@ -180,7 +180,7 @@ public abstract class EditDomain extends AdminPage
     }
 
     public void saveEntity() {
-        DomainVOWrapper domain = getVisitState().getMmodifiedDomain();
+        DomainVOWrapper domain = getVisitState().getModifiedDomain(getDomainId());
         getVisitState().markAsNotVisited(getDomainId());
         getAdminServices().updateDomain(domain);
         goToDomains();
@@ -238,7 +238,7 @@ public abstract class EditDomain extends AdminPage
     }
 
     public void resetStateIfneeded() {
-        getVisitState().resetModifirdDomain();
+        getVisitState().resetModifiedDomain(getDomainId());
     }
 
     private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {

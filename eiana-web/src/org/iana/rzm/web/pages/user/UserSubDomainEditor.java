@@ -65,7 +65,7 @@ public abstract class UserSubDomainEditor extends UserPage
 
     public void pageBeginRender(PageEvent event) {
 
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
 
         try {
             if (getOriginalDomain() == null) {
@@ -103,7 +103,7 @@ public abstract class UserSubDomainEditor extends UserPage
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.setRegistryUrl(registryUrl);
         domain.setWhoisServer(whois);
-        getVisitState().markDomainDirty(getDomainId());
+        getVisitState().markDomainDirty(getDomainId(), DomainChangeType.sudomain);
         getVisitState().storeDomain(domain);
         backToRevewDomainPage();
     }
@@ -122,6 +122,7 @@ public abstract class UserSubDomainEditor extends UserPage
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(
             Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
+        page.setCallback(createCallback());
         return page;
     }
 

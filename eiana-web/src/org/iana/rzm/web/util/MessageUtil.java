@@ -15,6 +15,15 @@ public class MessageUtil {
     }
 
     public String getDomainModificationErrorMessage(String domainName) {
-        return "You can not modified this Domain " + domainName + " At This time";
+        return "You can't modify this Domain " + domainName + " At This time";
+    }
+
+    public String getRecoverUserNameMessage(){
+        return "We couldn't retrieve your user name based on the information provided. " +
+               "Please contact <a href='mailto:root-mgmt@iana.org'>IANA Root Management</a> for assistance.";
+    }
+
+    public String getSessionTimeoutMessage(){
+        return "Your Session has timed out. Please login to continue";
     }
 }

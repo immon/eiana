@@ -69,6 +69,9 @@ public abstract class NameServerListEditor extends BaseComponent {
     @Parameter(name = "list", required = true)
     public abstract List<NameServerValue> getList();
 
+    @Parameter(name="domainId", required = true)
+    public abstract long getDomainId();
+
     public abstract void setList(List<NameServerValue> list);
 
     public abstract NameServerValue getNameServer();
@@ -78,7 +81,6 @@ public abstract class NameServerListEditor extends BaseComponent {
     public abstract void setNewHostName(String hostname);
 
     public abstract String getNewIpList();
-
     public abstract void setNewIpList(String ips);
 
     public abstract String getListenerTag();
@@ -158,14 +160,12 @@ public abstract class NameServerListEditor extends BaseComponent {
             return;
         }
 
-
         getEditor().save(getList());
-    }
 
+    }
 
     public void revert() {
         getEditor().getValidationDelegate().clearErrors();
         getEditor().revert();
     }
-
 }

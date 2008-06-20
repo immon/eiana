@@ -107,7 +107,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
 
     public void pageBeginRender(PageEvent event) {
 
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
 
         if (getSplitRequest() == 0 || isMustSplit()) {
             setSplitRequest(TWO_RQUEST);
@@ -115,7 +115,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
 
         DomainVOWrapper domainVOWrapper = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(domainVOWrapper.getName());
-        setCountryName("(" + getUserServices().getCountryName(domainVOWrapper.getName()) + ")");
+        setCountryName(getUserServices().getCountryName(domainVOWrapper.getName()));
 
     }
 
@@ -181,6 +181,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(
             getDomainId()).getName()), getUserServices()));
+        page.setCallback(createCallback());
         return page;
     }
 

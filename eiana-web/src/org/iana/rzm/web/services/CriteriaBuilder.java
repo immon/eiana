@@ -94,4 +94,19 @@ public class CriteriaBuilder {
     public static Criterion pollMessagesByRtId(long rtId) {
         return  new Equal(PollMsgFields.TICKET_ID, rtId);    
     }
+
+    public static Criterion usersForDomains(List<String> domains) {
+
+        //List<Or>orList = new ArrayList<Or>();
+        //
+        //for (String domain : domains) {
+        //    Criterion systemRole = new Equal(UserCriteria.ROLE,
+        //    UserCriteria.SYSTEM_ROLE);
+        //    Criterion systemDomain = new Equal(UserCriteria.ROLE_DOMAIN, "tld2");
+        //    Criterion and = new And(systemRole, systemDomain);
+        //
+        //}
+
+        return empty();
+    }
 }

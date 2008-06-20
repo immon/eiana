@@ -1,6 +1,5 @@
 package org.iana.rzm.web.components;
 
-import org.apache.commons.lang.*;
 import org.iana.rzm.web.model.*;
 
 import java.util.*;
@@ -18,11 +17,10 @@ public abstract class SoContactEditor extends ContactEditor {
         }
 
         if (getRole()) {
-            if (StringUtils.isBlank(contactAttributes.get(ContactVOWrapper.JOB_TITLE))) {
                 getEditor().setErrorField(getJobTitleField(), "Role accounts must have a Job Title");
             }
         }
-    }
+    
 
     public void save() {
         getEditor().preventResubmission();

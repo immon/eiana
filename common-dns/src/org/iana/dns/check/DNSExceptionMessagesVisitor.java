@@ -54,7 +54,7 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e) {
-        buffer.append("Number of IPv4 name servers is lower then requested for domain: ")
+        buffer.append("The number of unique name servers is lower than the minimum required for domain: ")
                 .append(domainTLDName(e.getDomainName())).append("\n");
     }
 

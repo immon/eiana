@@ -108,7 +108,7 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     }
 
     public void pageBeginRender(PageEvent event) {
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         DomainVOWrapper currentDomain = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(currentDomain.getName());
         setCountryName(getAdminServices().getCountryName(currentDomain.getName()));
@@ -135,7 +135,7 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
 
     public void proceed() {
         try{
-            getEditor().saveEntity(getVisitState().getMmodifiedDomain(), getRequestCycle());
+            getEditor().saveEntity(getVisitState().getModifiedDomain(getDomainId()), getRequestCycle());
         }catch(NoObjectFoundException e){
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {

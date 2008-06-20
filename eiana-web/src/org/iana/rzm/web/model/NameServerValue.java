@@ -1,12 +1,12 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.vo.HostVO;
-import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
-import org.iana.rzm.web.util.WebUtil;
+import org.iana.rzm.facade.system.domain.vo.*;
+import org.iana.rzm.web.util.*;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.io.*;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 
 public class NameServerValue implements Serializable {
@@ -117,7 +117,7 @@ public class NameServerValue implements Serializable {
 
         if (id != that.id) return false;
         if (hostName != null ? !hostName.equals(that.hostName) : that.hostName != null) return false;
-        if (ips != null ? !ips.equals(that.ips) : that.ips != null) return false;
+        if (ips != null ? !getIps().equals(that.getIps()) : that.ips != null) return false;
 
         return true;
     }

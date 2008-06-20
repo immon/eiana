@@ -70,7 +70,7 @@ public abstract class NewContact extends AdminPage implements ContactAttributesE
 
     public void pageBeginRender(PageEvent event) {
 
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
 
         if (getContactAttributes() == null) {
             setContactAttributes(new HashMap<String, String>());
@@ -97,9 +97,11 @@ public abstract class NewContact extends AdminPage implements ContactAttributesE
 
         attributes.put(ContactVOWrapper.ID, "0");
 
+        DomainChangeType changeType = DomainChangeType.fromString(type);
+
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
-        getVisitState().markDomainDirty(getDomainId());
+        getVisitState().markDomainDirty(getDomainId(), changeType);
         getVisitState().storeDomain(domain);
         getCallback().performCallback(getRequestCycle());
     }

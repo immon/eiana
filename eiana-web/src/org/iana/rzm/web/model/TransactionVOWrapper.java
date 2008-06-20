@@ -194,16 +194,16 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     }
 
     public boolean isPartOfEPPState() {
-       return
-         state.getState().equals(TransactionStateVOWrapper.State.PENDING_USDOC_APPROVAL)||
-        state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_INSERTION)||
-        state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_PUBLICATION)||
-        state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_TESTING)||
-        state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION);
+        return
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_USDOC_APPROVAL) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_INSERTION) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_PUBLICATION) ||
+            state.getState().equals(TransactionStateVOWrapper.State.PENDING_ZONE_TESTING) ||
+            state.getState().equals(TransactionStateVOWrapper.State.EXCEPTION);
 
     }
 
     public String getVerisignStatus() {
-        return null;
+        return vo.getEppStatus();
     }
 }

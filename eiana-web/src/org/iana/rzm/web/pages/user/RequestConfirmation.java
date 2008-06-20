@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.user;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
@@ -10,7 +11,7 @@ import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
-public abstract class RequestConfirmation extends UserPage implements PageBeginRenderListener {
+public abstract class RequestConfirmation extends UserPage implements PageBeginRenderListener, IExternalPage {
 
     @Component(id = "form", type = "Form", bindings = {
             "clientValidationEnabled=literal:true",
@@ -39,6 +40,12 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
     @Component(id = "decline", type = "LinkSubmit", bindings = {"action=listener:decline"})
     public abstract IComponent getDeclineComponent();
 
+    @Component(id="back", type="DirectLink", bindings = {
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER",
+        "listener=listener:back"
+        })
+    public abstract IComponent getBackComponent();
+
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
 
@@ -48,20 +55,36 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
     @InjectPage("user/UserHome")
     public abstract UserHome getHome();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setRequestId(long requestId);
-
     public abstract long getRequestId();
 
-    public abstract ActionVOWrapper getAction();
+    @Persist("client")
+    public abstract ICallback getCallback();
+    public abstract void setCallback(ICallback callback);
 
+    public abstract ActionVOWrapper getAction();
     public abstract ChangeVOWrapper getChange();
 
     public abstract String getToken();
 
     public abstract TransactionVOWrapper getRequest();
-
     public abstract void setRequest(TransactionVOWrapper transaction);
+
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+        if(parameters.length == 0){
+            getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        String idAsString = parameters[0].toString();
+        setRequestId(Long.valueOf(idAsString));
+        setCallback((ICallback) parameters[1]);
+    }
+
+
+    protected Object[] getExternalParameters() {
+        return new Object[]{getRequestId(), getCallback()};
+    }
 
     public void pageBeginRender(PageEvent event) {
         try {
@@ -81,6 +104,8 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
     public String getMessage() {
         return getCounter() + ". " + getMessageBuilder().message(getChange());
     }
+
+
 
     public int getCounter() {
         return getCounterBean().getCounter();
@@ -109,4 +134,9 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
             getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
         }
     }
+
+    public void back(){
+        getCallback().performCallback(getRequestCycle());
+    }
+
 }

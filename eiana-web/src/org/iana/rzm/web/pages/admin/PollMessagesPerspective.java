@@ -25,8 +25,15 @@ public abstract class PollMessagesPerspective extends AdminPage implements PageB
     )
     public abstract IComponent getListRequestComponent();
 
+     @Component(id = "back", type = "DirectLink", bindings = {
+        "listener=listener:back", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getBackComponent();
+
     @Bean(PaginatedEntityQuery.class)
     public abstract PaginatedEntityQuery getPaginatedEntityBean();
+
+    @InjectPage(ViewPollMessage.PAGE_NAME)
+    public abstract ViewPollMessage getViewPollMessage();
 
     @Persist()
     public abstract RzmCallback getCallback();
@@ -59,10 +66,21 @@ public abstract class PollMessagesPerspective extends AdminPage implements PageB
     }
 
     public void viewMessage(long id) {
+        ViewPollMessage page = getViewPollMessage();
+        page.setEppMessageId(id);
+        page.activate();
     }
 
     public void deleteMessage(long id){
-        
+        try {
+            getAdminServices().deletePollMessage(id);
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
+        }
+    }
+
+    public void back(){
+        getCallback().performCallback(getRequestCycle());
     }
 
     public EntityQuery getEntityQuery() {
@@ -70,10 +88,4 @@ public abstract class PollMessagesPerspective extends AdminPage implements PageB
         entityQuery.setFetcher(getEntityFetcher());
         return entityQuery;
     }
-
-    public void activate() {
-        getRequestCycle().activate(this);
-    }
-
-
 }

@@ -204,7 +204,7 @@ public abstract class DomainView extends AdminPage implements PageBeginRenderLis
             if (getOriginalDomain() == null) {
                 DomainVOWrapper domain = getAdminServices().getDomain(getDomainId());
                 setOriginalDomain(domain);
-                DomainVOWrapper mdomain = getVisitState().getMmodifiedDomain();
+                DomainVOWrapper mdomain = getVisitState().getModifiedDomain(getDomainId());
                 setModifiedDomain(mdomain);
                 getVisitState().markAsVisited(mdomain != null ? mdomain : domain);
             }

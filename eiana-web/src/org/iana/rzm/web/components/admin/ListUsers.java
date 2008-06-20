@@ -82,9 +82,13 @@ public abstract class ListUsers extends ListRecords {
     public String getTooltipContent() {
 
         List<RoleUserDomain> list = getRecord().getUserDomains();
+        List<String>included = new ArrayList<String>();
         StringBuilder builder = new StringBuilder();
         for (RoleUserDomain userDomain : list) {
-            builder.append(userDomain.getDomainName()).append(" ");
+            if(!included.contains(userDomain.getDomainName())){
+                builder.append(userDomain.getDomainName()).append(" ");
+                included.add(userDomain.getDomainName());
+            }
         }
 
         return "<span class='tooltip'> " +builder.toString() + " </span>";

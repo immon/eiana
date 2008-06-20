@@ -167,7 +167,7 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
 
     public boolean isOperationPending() {
         return vo.getState().equals(IDomainVO.State.OPERATIONS_PENDING) ||
-                vo.getState().equals(IDomainVO.State.THIRD_PARTY_PENDING);
+               vo.getState().equals(IDomainVO.State.THIRD_PARTY_PENDING);
     }
 
     public void updateContactAttributes(Map<String, String> attributes, String type) {
@@ -191,8 +191,6 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
     public boolean isNew(){
         return Status.form(vo.getStatus()).equals(Status.NEW);
     }
-
-
 
     public String getType(){
         return vo.getType();
@@ -222,5 +220,6 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
         }
         throw new IllegalArgumentException("Can not find contact with type " + type + " and id = " + id);
     }
+
 
 }

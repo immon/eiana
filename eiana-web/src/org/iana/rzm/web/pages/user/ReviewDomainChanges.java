@@ -155,7 +155,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     }
 
     public void pageBeginRender(PageEvent event) {
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         DomainVOWrapper currentDomain = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(currentDomain.getName());
         setSubmitterEmail(getVisitState().getSubmitterEmail());
@@ -264,6 +264,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
+        page.setCallback(createCallback());
         return page;
     }
 }

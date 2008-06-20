@@ -79,11 +79,17 @@ public interface AdminServices extends RzmServices {
 
     public String getZoneFile();
 
-    public List<PollMessageVOWrapper>getPollMessages(long rtId) throws NoObjectFoundException;
+    public List<PollMessageVOWrapper> getPollMessagesbyRtId(long rtId) throws NoObjectFoundException;
 
     public List<PollMessageVOWrapper>getPollMessages(Criterion criterion, int offset, int length, SortOrder sort);
 
     public int getPollMessagesCount(Criterion criterion); 
 
     public String getVerisignStatus(long rtId) throws NoObjectFoundException, InvalidEPPTransactionException;
+
+    public List<String> getDomainNames();
+
+    public void deletePollMessage(long id) throws NoObjectFoundException;
+
+    public PollMessageVOWrapper getPollMessage(long id) throws NoObjectFoundException;
 }

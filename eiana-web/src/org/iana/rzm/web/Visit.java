@@ -13,7 +13,8 @@ public class Visit implements Serializable {
 
     private WebUser user;
     private Map<Long, DomainVOWrapper> visitedDomains = new HashMap<Long, DomainVOWrapper>();
-    private long modifiedDomain;
+    private Map<Long, ModifiedDomain >modifiedDomains = new HashMap<Long, ModifiedDomain>();
+    private ModifiedDomain domain;
     private RequestMetaParameters requestMetaParam;
 
 
@@ -68,7 +69,7 @@ public class Visit implements Serializable {
     public void clearCache() {
         user = null;
         visitedDomains = null;
-        modifiedDomain = 0;
+        modifiedDomains.clear();;
         requestMetaParam = null;
     }
 
@@ -79,7 +80,7 @@ public class Visit implements Serializable {
     }
 
     public boolean isDomainModified(long domainId) {
-        return modifiedDomain == domainId;
+        return modifiedDomains.containsKey(domainId);
     }
 
     public void markAsVisited(DomainVOWrapper domain) {
@@ -90,14 +91,14 @@ public class Visit implements Serializable {
 
     public void markAsNotVisited(long domainId) {
         visitedDomains.remove(domainId);
-        if (modifiedDomain == domainId) {
-            modifiedDomain = 0;
+        if (modifiedDomains.containsKey(domainId)) {
+            modifiedDomains.remove(domainId);
             requestMetaParam = null;
         }
     }
 
-    public void resetModifirdDomain() {
-        modifiedDomain = 0;
+    public void resetModifiedDomain(long id) {
+        modifiedDomains.remove(id);
         requestMetaParam = null;
     }
 
@@ -105,16 +106,24 @@ public class Visit implements Serializable {
         return visitedDomains.get(domainId);
     }
 
-    public void markDomainDirty(long domainId) {
-        modifiedDomain = domainId;
+    public void markDomainDirty(long domainId, DomainChangeType type) {
+        ModifiedDomain modifiedDomain = modifiedDomains.get(domainId);
+        if(modifiedDomain == null){
+            modifiedDomain = new ModifiedDomain(domainId, type);
+        }
+
+        modifiedDomain.addChange(type);
+        modifiedDomains.put(domainId, modifiedDomain);
     }
 
 
-    public DomainVOWrapper getMmodifiedDomain() {
-        if (modifiedDomain == 0) {
-            return null;
+    public DomainVOWrapper getModifiedDomain(long domainId) {
+        ModifiedDomain modifiedDomain = modifiedDomains.get(domainId);
+        if(modifiedDomain != null){
+            return visitedDomains.get(modifiedDomain.getId());
         }
-        return visitedDomains.get(modifiedDomain);
+
+        return null;
     }
 
     public String getSubmitterEmail() {
@@ -150,5 +159,90 @@ public class Visit implements Serializable {
     public boolean isUserPage(IRequestCycle cycle, String pageName) {
         IPage page = cycle.getPage(pageName);
         return UserPage.class.isAssignableFrom(page.getClass());
+    }
+
+    public void clearChange(long domainId, DomainChangeType type) {
+        ModifiedDomain modifiedDomain = modifiedDomains.get(domainId);
+        if(modifiedDomain == null){
+            return;
+        }
+
+        modifiedDomain.removeChange(type);
+        if(!modifiedDomain.isChanged()){
+            modifiedDomains.remove(domainId);
+        }
+    }
+
+    public void resetAllModifiedDomain() {
+        modifiedDomains.clear();
+    }
+
+    private static class ModifiedDomain{
+        private long domainId;
+        private boolean nameServerChange;
+        private boolean adminChange;
+        private boolean techChange;
+        private boolean soChange;
+        private boolean subDomainChange;
+
+        ModifiedDomain(long domainId, DomainChangeType change){
+            this.domainId = domainId;
+            addChange(change);
+        }
+
+        public boolean isAdminChange(){
+            return adminChange;
+        }
+
+        public boolean isTechChange(){
+            return techChange;
+        }
+
+        public boolean isSoChange(){
+            return soChange;
+        }
+
+        public boolean isNameServerChange(){
+            return nameServerChange;
+        }
+
+       public long getId(){
+           return domainId;
+       }
+
+
+        public void addChange(DomainChangeType type) {
+            if(type.equals(DomainChangeType.ns)){
+                nameServerChange = true;
+            } else if(type.equals(DomainChangeType.sudomain)){
+                subDomainChange = true;
+            }  else if(type.equals(DomainChangeType.Administrative)){
+                adminChange = true;
+            } else if(type.equals(DomainChangeType.Technical)){
+                techChange = true;
+            } else if(type.equals(DomainChangeType.SO)){
+                soChange = true;
+            }
+        }
+
+        public void removeChange(DomainChangeType type){
+             if(type.equals(DomainChangeType.ns)){
+                nameServerChange = false;
+            } else if(type.equals(DomainChangeType.sudomain)){
+                subDomainChange = false;
+            }  else if(type.equals(DomainChangeType.Administrative)){
+                adminChange = false;
+            } else if(type.equals(DomainChangeType.Technical)){
+                techChange = false;
+            } else if(type.equals(DomainChangeType.SO)){
+                soChange = false;
+            }
+        }
+
+        public boolean isChanged(){
+            return nameServerChange || adminChange
+                   || techChange || soChange || subDomainChange;
+        }
+
     }
 }

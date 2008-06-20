@@ -14,9 +14,17 @@ public class PollMessageVOWrapper extends ValueObject implements PaginatedEntity
     private long transactionId;
     private Timestamp created;
     private String domainName;
+    private String status;
 
 
-    public PollMessageVOWrapper(long id, long transactionId, Long rtId, String message, String messageId, Timestamp created, String domainName) {
+    public PollMessageVOWrapper(long id,
+                                long transactionId,
+                                Long rtId,
+                                String message,
+                                String messageId,
+                                Timestamp created,
+                                String domainName,
+                                String staus) {
         this.id = id;
         this.rtId = rtId;
         this.message = message;
@@ -24,10 +32,11 @@ public class PollMessageVOWrapper extends ValueObject implements PaginatedEntity
         this.transactionId = transactionId;
         this.created = created;
         this.domainName = domainName;
+        this.status = staus;
     }
 
     public PollMessageVOWrapper(PollMsgVO vo){
-        this(vo.getId(), vo.getTransactionID(), vo.getTicketID(),vo.getStatus(), vo.getEppID(), vo.getCreated(), vo.getDomainName());
+        this(vo.getId(), vo.getTransactionID(), vo.getTicketID(),vo.getMessage(), vo.getEppID(), vo.getCreated(), vo.getDomainName(),(vo.getStatus()));
     }
 
     public long getId(){
@@ -56,5 +65,13 @@ public class PollMessageVOWrapper extends ValueObject implements PaginatedEntity
 
     public String getDomainName() {
         return domainName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -93,6 +93,8 @@ public abstract class UserRequestDetails extends RequestDetails {
     public void proceed(long requestId) {
         RequestConfirmation page = getRequestConfirmation();
         page.setRequestId(requestId);
+        UserPage userPage = (UserPage) getPage();
+        page.setCallback(userPage.createCallback());
         getPage().getRequestCycle().activate(page);
     }
 }

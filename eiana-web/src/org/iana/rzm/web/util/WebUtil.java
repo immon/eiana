@@ -47,6 +47,17 @@ public class WebUtil {
         return builder.toString();
     }
 
+    public static List<NameServerVOWrapper> convertToVos(List<NameServerValue> list) {
+
+        List<NameServerVOWrapper> result = new ArrayList<NameServerVOWrapper>(list.size());
+
+        for (NameServerValue value : list) {
+            result.add(value.asNameServer());
+        }
+
+        return result;
+    }
+
     public static List<NameServerValue> convert(List<NameServerVOWrapper> nameServers) {
         List<NameServerValue> result = new ArrayList<NameServerValue>();
         for (NameServerVOWrapper nameServer : nameServers) {
@@ -56,20 +67,23 @@ public class WebUtil {
         return result;
     }
 
-    public static List<NameServerValue> buildNameServerList(List<NameServerVOWrapper> originals, List<NameServerVOWrapper> current) {
+    public static List<NameServerValue> buildNameServerList(List<NameServerVOWrapper> originals,
+                                                            List<NameServerVOWrapper> current) {
         List<NameServerValue> all = new ArrayList<NameServerValue>();
 
-        if(originals == null){
+        if (originals == null) {
             originals = new ArrayList<NameServerVOWrapper>();
         }
-        
+
         for (NameServerVOWrapper wrapper : originals) {
             NameServerVOWrapper currentVO = findNameServer(wrapper.getId(), current);
             NameServerValue nameServerValue = new NameServerValue(currentVO == null ? wrapper : currentVO);
             if (currentVO == null) {
                 nameServerValue.setStatus(NameServerValue.DELETE);
             } else {
-                String status = currentVO.equals(wrapper) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
+                NameServerValue temp = new NameServerValue(wrapper);
+                String status = temp.equals(nameServerValue) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
+                //status = currentVO.equals(wrapper) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
                 nameServerValue.setStatus(status);
                 current.remove(currentVO);
             }
@@ -80,6 +94,26 @@ public class WebUtil {
             all.add(new NameServerValue(wrapper).setStatus(NameServerValue.NEW));
         }
         return all;
+    }
+
+    public static boolean isModefied(List<NameServerVOWrapper> oldList, List<NameServerVOWrapper> currentList) {
+
+        if(oldList == null && currentList != null || oldList !=null && currentList == null){
+            return true;
+        }
+
+        if(oldList.size() != currentList.size()){
+            return true ;
+        }
+
+        List<NameServerValue> newList = WebUtil.buildNameServerList(oldList,currentList);
+        for (NameServerValue nameServerValue : newList) {
+            if(nameServerValue.isNewOrModified() || nameServerValue.isDelete()){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static String getBrowserName(HttpServletRequest request) {
@@ -126,14 +160,16 @@ public class WebUtil {
 
     public static int getServerPort(int defaultPort) {
 
-        if(Boolean.getBoolean("org.iana.web.debug-enabled")){
+        if (Boolean.getBoolean("org.iana.web.debug-enabled")) {
             return defaultPort;
         }
 
-        if(Boolean.getBoolean("org.iana.web.use.default-port")){
+        if (Boolean.getBoolean("org.iana.web.use.default-port")) {
             return defaultPort;
         }
 
         return 8080;
     }
+
+
 }

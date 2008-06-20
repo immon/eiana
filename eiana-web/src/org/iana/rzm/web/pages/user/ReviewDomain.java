@@ -7,7 +7,9 @@ import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.user.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.*;
 import org.iana.rzm.web.util.*;
 
@@ -25,7 +27,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "contactAttributes=prop:domain.supportingOrganization.map",
             "domainId=prop:domain.id",
             "listener=listener:editContact",
-            "editible=prop:editible",
+            "editible=prop:dataEditable",
             "rzmServices=prop:rzmServices",
             "errorPage=prop:errorPage"
             })
@@ -36,7 +38,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "contacts=prop:domain.adminContacts",
             "domainId=prop:domain.id",
             "action=listener:editContact",
-            "editible=prop:editible",
+            "editible=prop:dataEditable",
             "rzmServices=prop:rzmServices",
             "errorPage=prop:errorPage"
             })
@@ -47,7 +49,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "contacts=prop:domain.technicalContacts",
             "domainId=prop:domain.id",
             "action=listener:editContact",
-            "editible=prop:editible",
+            "editible=prop:dataEditable",
             "rzmServices=prop:rzmServices",
             "errorPage=prop:errorPage"
             })
@@ -57,7 +59,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "nameServers=prop:nameServers",
             "domainId=prop:domain.id",
             "listener=listener:editNameServerList",
-            "editible=prop:editible"
+            "editible=prop:nsChageEditible"
             })
     public abstract IComponent getListNameServerComponent();
 
@@ -67,7 +69,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             "whoisServer=prop:domain.whoisServer",
             "originalWhoisServer=prop:originalDomain.whoisServer",
             "listener=listener:editSubDomain",
-            "editible=prop:editible"
+            "editible=prop:dataEditable"
             })
     public abstract IComponent getSubDomainComponent();
 
@@ -106,6 +108,17 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             })
     public abstract IComponent getShowPendingMessageComponent();
 
+    @Component(id = "pendingGlueRequest", type = "If", bindings = {"condition=prop:glueMember"})
+    public abstract IComponent getIsGluePendingComponent();
+
+      @Component(id = "pendingGlueMessage", type = "ShowPendingRequestsMessage", bindings = {
+            "listener=listener:viewGlueRequests",
+            "pendigRequestMessage=literal:This domain is part of a Glue change. Edits to Name Servers are disabled until the currently glue change is resolved "
+            })
+    public abstract IComponent getPendingGlueMessage();
+
+
+
     @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
     public abstract IComponent getCountryNameComponent();
 
@@ -131,17 +144,19 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     @InjectPage("user/UserSubDomainEditor")
     public abstract UserSubDomainEditor getUserSubDomainEditor();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setDomainId(long domainId);
     public abstract long getDomainId();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
+    public abstract boolean isGlueMember();
+    public abstract void setGlueMember(boolean value);
+
     public abstract DomainVOWrapper getOriginalDomain();
     public abstract void setOriginalDomain(DomainVOWrapper domain);
-
 
     protected Object[] getExternalParameters() {
         DomainVOWrapper modified = getModifiedDomain();
@@ -169,10 +184,13 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             if(domain == null){
                 domain = getUserServices().getDomain(getDomainId());
             }
-            DomainVOWrapper modifiedDomain = getVisitState().getMmodifiedDomain();
+            DomainVOWrapper modifiedDomain = getVisitState().getModifiedDomain(getDomainId());
             setModifiedDomain(modifiedDomain);
             getVisitState().markAsVisited(modifiedDomain == null ? domain : modifiedDomain);
             setOriginalDomain(domain);
+            int count =
+                getUserServices().getTransactionCount(CriteriaBuilder.impactedParty(Arrays.asList(domain.getName())));
+            setGlueMember(count > 0);
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         }catch(AccessDeniedException e){
@@ -201,10 +219,15 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public boolean isModified() {
         return getVisitState().isDomainModified(getDomainId());
     }
-
-    public boolean isEditible(){
+            
+    public boolean isDataEditable(){
         return !getIsRequestsPending();
     }
+
+    public boolean isNsChageEditible(){
+        return !getIsRequestsPending() && !isGlueMember();
+    }
+
 
     public UserHome cancelEdit(long domainId) {
         getVisitState().markAsNotVisited(domainId);
@@ -268,6 +291,15 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getDomain().getName()), getUserServices()));
+        page.setCallback(createCallback());
+        return page;
+    }
+
+    public UserRequestsPerspective viewGlueRequests(){
+        UserRequestsPerspective page = getRequestsPerspective();
+        page.setEntityFetcher(new ImpactedPartyTransactionFetcher(Arrays.asList(getDomain().getName()), getUserServices()));
+        page.setCallback(createCallback());
+        page.setImpactedParty(true);
         return page;
     }
 
