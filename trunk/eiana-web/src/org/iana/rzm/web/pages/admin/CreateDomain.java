@@ -117,6 +117,8 @@ public abstract class CreateDomain extends AdminPage implements DomainAttributeE
     public void save() {
         try{
             getAdminServices().createDomain(getDomain());
+            Domains page = getDomainsPage();
+            getRequestCycle().activate(page);
         }catch(InvalidCountryCodeException e){
             setErrorMessage("Invalid Country Code " + e.getCountryCode());
         }catch( AccessDeniedException e){

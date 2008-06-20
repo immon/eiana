@@ -32,9 +32,9 @@
 					            <span jwcid="loggedInTitle"/>
 						        <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" stateful="literal:false" listener="listener:logout">Logout</a>
                                 &nbsp;|&nbsp;
-                                <a jwcid="@ServiceLink" service="whoisService" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER">Download Whois data.</a>
+                                <a jwcid="@ServiceLink" service="whoisService" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER">Download Whois data</a>
                                 &nbsp;|&nbsp;
-                                <a jwcid="@ServiceLink" service="zoneFileService" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER">Download Zone file.</a>
+                                <a jwcid="@ServiceLink" service="zoneFileService" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER">Download Zone file</a>
                                 &nbsp;|&nbsp;
                                 <a href="#" jwcid="@DirectLink" renderer="ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER" listener="listener:changePassword">Change Password</a>
 	    					    &nbsp;|&nbsp;
@@ -71,10 +71,14 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                   <div class="buttonStyle" style="float: right; margin-bottom: 15px;">
+                                                    <div class="buttonStyle" style="float: right; margin-bottom: 15px;">
                                                         <b class="left"></b>
-                                                        <b class="right"><a href="#" class="button">Logout ></a></b>
+                                                        <b class="right"><a href="#" class="button">Logout &gt;</a></b>
                                                     </div>
+                                                   <!--<div class="buttonStyle" style="float: right; margin: 0 10px 15px;">-->
+                                                        <!--<b class="left"></b>-->
+                                                        <!--<b class="right"><a href="#" class="button" jwcid="back"> &lt; Back </a></b>-->
+                                                    <!--</div>-->
                                                 </td>
                                             </tr>
                                         </table>
@@ -91,7 +95,7 @@
                         <span jwcid="@RenderBody"/>
                     </div>
                 </div>
-                <span jwcid="ib@contrib:InspectorButton" disabled="ognl:isDebugDisabled"/>
+                <!--<span jwcid="ib@contrib:InspectorButton" disabled="ognl:isDebugDisabled"/>-->
             </body>
         </span>
    </span>

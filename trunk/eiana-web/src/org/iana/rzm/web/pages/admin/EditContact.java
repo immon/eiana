@@ -89,7 +89,7 @@ public abstract class EditContact extends AdminPage
 
 
     public void pageBeginRender(PageEvent event) {
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         if (getContactAttributes() == null) {
             setContactAttributes(new HashMap<String, String>());
         }
@@ -112,16 +112,16 @@ public abstract class EditContact extends AdminPage
 
     public void save(Map<String, String> attributes) {
         String type = getContactType();
-
-        if (attributes.equals(getOriginalContact().getMap())) {
-            getCallback().performCallback(getRequestCycle());
-            return;
-        }
-
+        DomainChangeType changeType = DomainChangeType.fromString(type);
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
-        getVisitState().markDomainDirty(getDomainId());
-        getVisitState().storeDomain(domain);
+
+        if (attributes.equals(getOriginalContact().getMap())) {
+            getVisitState().clearChange(getDomainId(), changeType);
+        }else{
+            getVisitState().markDomainDirty(getDomainId(), changeType);
+            getVisitState().storeDomain(domain);
+        }
         getCallback().performCallback(getRequestCycle());
     }
 

@@ -7,9 +7,11 @@ import org.apache.tapestry.web.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.tapestry.*;
+import org.iana.rzm.web.util.*;
 
 import javax.servlet.http.*;
 
@@ -34,6 +36,9 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
     @InjectObject("service:tapestry.globals.HttpServletRequest")
     public abstract HttpServletRequest getHttpRequest();
 
+    @Bean(org.iana.rzm.web.util.MessageUtil.class)
+    public abstract MessageUtil getMessageUtil();
+
     @InjectState("visit")
     public abstract Visit getVisitState();
 
@@ -44,8 +49,9 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
 
     protected abstract String getErrorPageName();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract long getLogedInUserId();
+
     public abstract void setLogedInUserId(long id);
 
     protected Object[] getExternalParameters() {
@@ -71,9 +77,10 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
 
         String state = findState();
         if (state != null) {
-            login.setSessionTimeOutMessage("Your Session has time out. Please login to continue");
+            login.setSessionTimeOutMessage(getMessageUtil().getSessionTimeoutMessage());
             if (isExternal()) {
-                RzmCallback callback = new RzmCallback(getPageName(), isExternal(), getExternalParameters(), getLogedInUserId());
+                RzmCallback callback =
+                    new RzmCallback(getPageName(), isExternal(), getExternalParameters(), getLogedInUserId());
                 login.setCallback(callback);
             }
         }
@@ -95,10 +102,24 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
         getVisitState().markAsVisited(domain);
         TransactionActionsVOWrapper transactionActionsVOWrapper = getRzmServices().getChanges(domain);
         if (transactionActionsVOWrapper.getChanges().size() > 0) {
-            if(getVisitState().getMmodifiedDomain() == null){
-                 getVisitState().storeDomain(domain);
+            if (getVisitState().getModifiedDomain(domain.getId()) == null) {
+                getVisitState().storeDomain(domain);
             }
-            getVisitState().markDomainDirty(domain.getId());
+
+            for (ActionVOWrapper actionVOWrapper : transactionActionsVOWrapper.getChanges()) {
+
+                if (actionVOWrapper.getTitle().startsWith("MODIFY_NAME_SERVERS")) {
+                    getVisitState().markDomainDirty(domain.getId(), DomainChangeType.ns);
+                } else if (actionVOWrapper.getTitle().contains(DomainChangeType.Administrative.getDisplayName())) {
+                    getVisitState().markDomainDirty(domain.getId(), DomainChangeType.Administrative);
+                } else if (actionVOWrapper.getTitle().contains(DomainChangeType.Technical.getDisplayName())) {
+                    getVisitState().markDomainDirty(domain.getId(), DomainChangeType.Technical);
+                } else if (actionVOWrapper.getTitle().contains(DomainChangeType.SO.getDisplayName())) {
+                    getVisitState().markDomainDirty(domain.getId(), DomainChangeType.SO);
+                } else {
+                    getVisitState().markDomainDirty(domain.getId(), DomainChangeType.sudomain);
+                }
+            }
         }
     }
 

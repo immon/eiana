@@ -1,6 +1,6 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 
 public class IPAddressVOWrapper extends ValueObject {
 
@@ -19,6 +19,11 @@ public class IPAddressVOWrapper extends ValueObject {
         }
 
         public static Type from(IPAddressVO.Type type) {
+
+            if(type == null){
+                return IPv4;
+            }
+            
             if (type.equals(IPAddressVO.Type.IPv4)) {
                 return IPv4;
             }
@@ -40,7 +45,48 @@ public class IPAddressVOWrapper extends ValueObject {
     }
 
     public String getAddress() {
-        return vo.getAddress();
+        return normelize(vo.getAddress());
+    }
+
+    private String normelize(String address) {
+        if (getType().equals(Type.IPv4)) {
+            return address;
+        }
+
+        String tempAddres = address.toUpperCase();
+        return isCompressed(tempAddres) ? uncompress(tempAddres) : tempAddres;
+    }
+
+    private static boolean isCompressed(String addr) {
+        return addr.indexOf("::") >= 0;
+    }
+
+    private static String uncompress(String addr) {
+        boolean start = addr.startsWith(":");
+        boolean end = addr.endsWith(":");
+        int missing = 8 - colons(addr);
+        if (start || end) {
+            ++missing;
+        }
+        StringBuffer zeros = new StringBuffer(":");
+        while (missing-- > 0) {
+            zeros.append("0:");
+        }
+        if (start) {
+            zeros.deleteCharAt(0);
+        }
+        if (end) {
+            zeros.deleteCharAt(zeros.length() - 1);
+        }
+        return addr.replaceFirst("::", zeros.toString());
+    }
+
+    private static int colons(String addr) {
+          int ret = 0;
+          for (char c : addr.toCharArray()) {
+              if (c == ':') ++ret;
+          }
+          return ret;
     }
 
     public Type getType() {

@@ -484,16 +484,19 @@ listed as a party to this request.
 <iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
 <iana:content>
 Dear {name} {title},
-
+    
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to alter the
-information associated with the {domainName} domain. The changes
-requested are as follows:
+IP address of an authoritative nameserver. As this nameserver
+is used by the {domainName} domain, it requires your consent
+for this change to be implemented. It is likely this request has
+been lodged either by the operator of the listed nameservers,
+or by another top-level domain operator that shares the use
+of the listed nameservers.
+
+The changes requested are as follows:
 
 {changes}
-We have marked in our database a "special instruction" that your
-or your organisation must consent to this change before it can
-proceed.
 
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:

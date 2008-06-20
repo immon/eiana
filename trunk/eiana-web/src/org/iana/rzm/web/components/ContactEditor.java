@@ -97,7 +97,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             "displayName=literal:Country:", "model=prop:countryCodeModel", "value=prop:country",
             "validators=validators:required,countryCodeValidator"
             })
-    public abstract IComponent getStatesComponent();
+    public abstract IComponent getCountriesComponent();
 
     @Parameter(required = true)
     public abstract ContactAttributesEditor getEditor();

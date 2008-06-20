@@ -8,6 +8,7 @@ import org.apache.tapestry.valid.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.web.services.*;
+import org.iana.rzm.web.util.*;
 
 public abstract class RecoverUserName extends RzmPage {
     @Component(id = "form", type = "Form",
@@ -35,6 +36,9 @@ public abstract class RecoverUserName extends RzmPage {
                    }
     )
     public abstract IComponent getPasswordComponent();
+
+    @Bean(org.iana.rzm.web.util.MessageUtil.class)
+    public abstract MessageUtil getMessageUtil();
 
     @InjectComponent("email")
     public abstract IFormComponent getEmailField();
@@ -78,10 +82,10 @@ public abstract class RecoverUserName extends RzmPage {
             login.setInfoMessage("Your user name is " + userName );
             getRequestCycle().activate(login);
         } catch (NonUniqueDataToRecoverUserException e) {
-            setErrorMessage("We couldn't retreave your user name base on the information.\n Please contact IANA for help");
+            setErrorMessage(getMessageUtil().getRecoverUserNameMessage());
             return;
         } catch (NoObjectFoundException e) {
-            setErrorMessage("We couldn't retreave your user name base on the information.\n Please contact IANA for help");
+            setErrorMessage(getMessageUtil().getRecoverUserNameMessage());
             return;
         }
     }

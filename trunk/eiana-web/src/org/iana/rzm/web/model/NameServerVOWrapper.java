@@ -1,11 +1,9 @@
 package org.iana.rzm.web.model;
 
-import org.iana.rzm.facade.system.domain.vo.HostVO;
-import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
+import org.iana.rzm.facade.system.domain.vo.*;
 
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 public class NameServerVOWrapper extends ValueObject {
 
@@ -85,4 +83,6 @@ public class NameServerVOWrapper extends ValueObject {
     public HostVO getVO() {
         return vo;
     }
+
+    
 }

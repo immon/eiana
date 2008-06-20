@@ -78,7 +78,7 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
 
     public void pageBeginRender(PageEvent event) {
 
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
 
         if (getContactAttributes() == null) {
             setContactAttributes(new HashMap<String, String>());
@@ -122,15 +122,18 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
     public void save(Map<String, String> attributes) {
         String type = getContactType();
 
-        if (attributes.equals(getOriginalContact().getMap())) {
-            goToReviewDomainPage();
-            return;
-        }
-
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
-        getVisitState().markDomainDirty(getDomainId());
-        getVisitState().storeDomain(domain);
+
+        DomainChangeType changeType = DomainChangeType.fromString(type);
+
+        if (attributes.equals(getOriginalContact().getMap())) {
+            getVisitState().clearChange(getDomainId(),changeType);
+        }else{
+            getVisitState().markDomainDirty(getDomainId(),changeType);
+            getVisitState().storeDomain(domain);
+        }
+
         goToReviewDomainPage();
     }
 
@@ -142,6 +145,7 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
+        page.setCallback(createCallback());
         return page;
     }
 

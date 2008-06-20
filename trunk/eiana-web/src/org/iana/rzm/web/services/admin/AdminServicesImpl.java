@@ -412,7 +412,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public List<PollMessageVOWrapper> getPollMessages(long rtId) throws NoObjectFoundException {
+    public List<PollMessageVOWrapper> getPollMessagesbyRtId(long rtId) throws NoObjectFoundException {
         try {
             Criterion criterion = CriteriaBuilder.pollMessagesByRtId(rtId);
             List<PollMsgVO> list = pollMessagesService.find(criterion, new Order(PollMsgFields.CREATED, true), 0, 25);
@@ -468,6 +468,34 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public String getVerisignStatus(long rtId) throws NoObjectFoundException, InvalidEPPTransactionException {
         try {
             return transactionService.queryTransactionEPPStatus(rtId);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public List<String> getDomainNames() {
+        List<DomainVOWrapper> list = getDomains(CriteriaBuilder.empty());
+        List<String>results = new ArrayList<String>(list.size());
+        for (DomainVOWrapper domainVOWrapper : list) {
+            results.add(domainVOWrapper.getName());
+        }
+
+        return results;
+    }
+
+    public void deletePollMessage(long id) throws NoObjectFoundException {
+        try {
+            pollMessagesService.delete(id);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("Infrastructure Exception", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public PollMessageVOWrapper getPollMessage(long id) throws NoObjectFoundException {
+        try {
+            return new PollMessageVOWrapper(pollMessagesService.get(id));
         } catch (InfrastructureException e) {
             LOGGER.warn("Infrastructure Exception", e);
             throw new RzmApplicationException(e);

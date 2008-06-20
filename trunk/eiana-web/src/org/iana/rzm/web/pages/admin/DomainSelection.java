@@ -105,7 +105,7 @@ public abstract class DomainSelection extends AdminPage implements IExternalPage
     }
 
     public void resetStateIfneeded() {
-        getVisitState().resetModifirdDomain();
+        getVisitState().resetAllModifiedDomain();
     }
 
 }

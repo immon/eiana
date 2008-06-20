@@ -14,7 +14,8 @@ import org.iana.rzm.web.services.admin.*;
 import java.util.*;
 
 @ComponentClass
-public abstract class AdminRequestDetails extends RequestDetails {
+public abstract class
+    AdminRequestDetails extends RequestDetails {
 
     @Component(id = "requestSummery", type = "AdminRequestSummery", bindings = {
         "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend",
@@ -73,9 +74,12 @@ public abstract class AdminRequestDetails extends RequestDetails {
     public void pageBeginRender(PageEvent event) {
         super.pageBeginRender(event);
 
-        if(!getRequest().isPartOfEPPState() || getRequest().getVerisignStatus() == null){
+        if(!getRequest().isPartOfEPPState()){
             setVerisignStatus("Not Available");
+        }else{
+            setVerisignStatus(getRequest().getVerisignStatus());
         }
+
     }
 
     public List<ConfirmationVOWrapper> getImpactedPartiesConfirmations() {

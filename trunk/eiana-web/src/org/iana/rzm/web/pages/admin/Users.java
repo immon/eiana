@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
+import org.apache.tapestry.form.*;
 import org.iana.criteria.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.admin.*;
@@ -13,6 +14,9 @@ import org.iana.rzm.web.model.criteria.*;
 import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.services.admin.*;
 import org.iana.rzm.web.tapestry.*;
+
+import java.io.*;
+import java.util.*;
 
 public abstract class Users extends AdminPage implements PageBeginRenderListener, Search {
 
@@ -49,6 +53,15 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCreateSystemUserComponent();
 
+    @Component(id = "domainsList", type = "PropertySelection", bindings = {
+        "model=prop:selectionModel", "value=prop:selectedDomain"
+        })
+    public abstract IComponent getCountriesComponent();
+
+    @Component(id = "usersForDomain", type = "DirectLink", bindings = {"listener=listener:usersForDomain",
+        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getViewUsersForDomainComponent();
+
     @Asset("js/users.js")
     public abstract IAsset getUsersScript();
 
@@ -64,25 +77,27 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
     @InjectPage("admin/EditAdminUser")
     public abstract EditAdminUser getEditAdminUserPage();
 
-
     @InjectPage("admin/UsersPerspective")
     public abstract UsersPerspective getUsersPerspective();
 
     @Persist("client:app")
     public abstract boolean isAdminUsers();
+     public abstract void setAdminUsers(boolean value);
 
-    public abstract void setAdminUsers(boolean value);
-
-
-    @Persist("client:page")
+    @Persist("client:app")
     public abstract boolean isSystemUsers();
-
     public abstract void setSystemUsers(boolean b);
 
-    @Persist("client:page")
+    @Persist("client:app")
     public abstract boolean isDocVerisignUsers();
-
     public abstract void setDocVerisignUsers(boolean b);
+
+    @Persist("client:app")
+    public abstract List<String> getDomainNames();
+    public abstract void setDomainNames(List<String> list);
+
+    @Persist("client:app")
+    public abstract String getSelectedDomain();
 
     public FinderValidator getFinderValidator() {
         return new EmptyFinderValidator();
@@ -99,7 +114,7 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
     public void pageBeginRender(PageEvent event) {
 
-        if(!isAdminUsers() && (!isDocVerisignUsers() )){
+        if (!isAdminUsers() && (!isDocVerisignUsers())) {
             setSystemUsers(true);
         }
 
@@ -109,9 +124,26 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
             if (count != browser.getResultCount()) {
                 browser.initializeForResultCount(count);
             }
+
+            if (getDomainNames() == null) {
+                setDomainNames(getAdminServices().getDomainNames());
+            }
+
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         }
+    }
+
+    public IPropertySelectionModel getSelectionModel() {
+        return new DomainsModel(getDomainNames());
+    }
+
+    public void viewUsersForDomain(){
+        String domain = getSelectedDomain();
+        UsersPerspective perspective = getUsersPerspective();
+        perspective.setEntityFetcher(
+            new SearchUsersEntityFetcher(getAdminServices(),
+                                         CriteriaBuilder.usersForDomains(Arrays.asList(domain))));
     }
 
 
@@ -293,10 +325,8 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
         }
 
         public void applySortOrder(SortOrder sortOrder) {
-            
         }
     }
-
 
     public static class UsersScriptDeligator implements IRender {
         private IAsset javaScript;
@@ -317,7 +347,37 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
             writer.attribute("src", asset.buildURL());
             writer.end();
         }
+    }
 
+    private class DomainsModel implements IPropertySelectionModel, Serializable {
+        private List<String> domains;
+
+        public DomainsModel(List<String> domains) {
+            this.domains = domains;
+        }
+
+        public int getOptionCount() {
+            return domains.size();
+        }
+
+        public Object getOption(int index) {
+            return domains.get(index);
+        }
+
+        public String getLabel(int index) {
+            return domains.get(index);
+        }
+
+        public String getValue(int index) {
+            return domains.get(index);
+        }
+
+        public Object translateValue(String value) {
+            return value;
+        }
 
     }
 }
+
+
+

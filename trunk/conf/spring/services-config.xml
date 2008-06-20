@@ -21,39 +21,40 @@
         <constructor-arg ref="notificationDAO"/>
     </bean>
 
-    <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
-        <constructor-arg index="0" value="http://208.77.191.164"/>
-        <constructor-arg index="1" value="rzm"/>
-        <constructor-arg index="2" value="rzmrzm"/>
-        <property name="customFieldsKeys">
-            <map>
-                <entry>
-                    <key>
-                        <value>tld</value>
-                    </key>
-                    <value>tld</value>
-                </entry>
-                <entry>
-                    <key>
-                        <value>state</value>
-                    </key>
-                    <value>iana_state</value>
-                </entry>
-                <entry>
-                    <key>
-                        <value>type</value>
-                    </key>
-                    <value>request_type</value>
-                </entry>
-            </map>
-        </property>
-    </bean>
+    <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
+        <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
+        <!--<constructor-arg index="1" value="rzm"/>-->
+        <!--<constructor-arg index="2" value="rzmrzm"/>-->
+        <!--<property name="customFieldsKeys">-->
+            <!--<map>-->
+                <!--<entry>-->
+                    <!--<key>-->
+                        <!--<value>tld</value>-->
+                    <!--</key>-->
+                    <!--<value>tld</value>-->
+                <!--</entry>-->
+                <!--<entry>-->
+                    <!--<key>-->
+                        <!--<value>state</value>-->
+
+                    <!--</key>-->
+                    <!--<value>iana_state</value>-->
+                <!--</entry>-->
+                <!--<entry>-->
+                    <!--<key>-->
+                        <!--<value>type</value>-->
+                    <!--</key>-->
+                    <!--<value>request_type</value>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
 
     <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
         <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
 
-    <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
+    <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
 
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
@@ -63,8 +64,8 @@
 
 <!-- end of test bean section -->
 
-        <!--<bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
-        <!--<bean id="ticketingService"  class="org.iana.ticketing.MockTicketingService"/>-->
+        <bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+        <bean id="ticketingService"  class="org.iana.ticketing.MockTicketingService"/>
 
     <!-- facade services configuration -->
 
@@ -718,7 +719,7 @@
     <bean id="NotificationSenderBean" class="org.iana.notifications.email.EmailSender">
         <constructor-arg index="0" value="localhost"/>
         <constructor-arg index="1" value="[RZM]"/>
-        <constructor-arg index="2" value="rzm@iana.org"/>
+        <constructor-arg index="2" value="rzm-dev@iana.org"/>
         <constructor-arg index="3" value=""/>
         <constructor-arg index="4" value=""/>
         <property name="config">
@@ -1003,7 +1004,7 @@
     <!-- mails processing configuration -->
     <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
         <constructor-arg index="0" value="m02.icann.org"/>
-        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="1" value="rzm-dev"/>
         <constructor-arg index="2" value="upowilgeod"/>
         <constructor-arg index="3" value="[RZM]"/>
         <property name="config">
@@ -1427,10 +1428,10 @@
         </tx:attributes>
     </tx:advice>
 
-    <bean id="transactionNotificationAdvisor" class="org.iana.rzm.facade.system.trans.notifications.TransactionNotificationAdvisor">
-        <constructor-arg ref="transactionNotificationResender"/>
-        <property name="order" value="2"/>
-    </bean>
+    <!--<bean id="transactionNotificationAdvisor" class="org.iana.rzm.facade.system.trans.notifications.TransactionNotificationAdvisor">-->
+        <!--<constructor-arg ref="transactionNotificationResender"/>-->
+        <!--<property name="order" value="2"/>-->
+    <!--</bean>-->
 
     <bean id="systemTransactionLoggerAdvisor"
           class="org.iana.rzm.facade.system.trans.loggers.SystemTransactionLoggerAdvisor">
@@ -1580,6 +1581,7 @@
         <constructor-arg ref="transactionManagerBean"/>
         <constructor-arg ref="pollManager"/>
         <constructor-arg ref="eppErrorHandler"/>
+        <constructor-arg ref="ticketingService"/>
     </bean>
 
     <bean id="pollManager" class="org.iana.rzm.trans.epp.poll.PollMsgManagerImpl">

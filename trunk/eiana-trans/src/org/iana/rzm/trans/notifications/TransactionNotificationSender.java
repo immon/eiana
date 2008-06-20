@@ -1,11 +1,8 @@
 package org.iana.rzm.trans.notifications;
 
-import org.iana.notifications.NotificationSender;
-import org.iana.notifications.NotificationSenderException;
-import org.iana.notifications.PNotification;
-import org.iana.rzm.trans.Transaction;
-import org.iana.ticketing.TicketingException;
-import org.iana.ticketing.TicketingService;
+import org.iana.notifications.*;
+import org.iana.rzm.trans.*;
+import org.iana.ticketing.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -13,7 +10,6 @@ import org.iana.ticketing.TicketingService;
 public class TransactionNotificationSender {
 
     NotificationSender sender;
-
     TicketingService ticketSystem;
 
     public TransactionNotificationSender(NotificationSender sender, TicketingService ticketSystem) {

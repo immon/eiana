@@ -251,27 +251,27 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
         Visit visit = getVisitState();
 
         if (!equal(org.getRegistryUrl(), domain.getRegistryUrl())) {
-            visit.markDomainDirty(id);
+            visit.markDomainDirty(id, DomainChangeType.sudomain);
         }
 
         if (!equal(org.getWhoisServer(), domain.getWhoisServer())) {
-            visit.markDomainDirty(id);
+            visit.markDomainDirty(id, DomainChangeType.sudomain);
         }
 
         if (!equal(org.getDescription(), domain.getDescription())) {
-            visit.markDomainDirty(id);
+            visit.markDomainDirty(id, DomainChangeType.admin);
         }
 
         if (!equal(org.getType(), domain.getType())) {
-            visit.markDomainDirty(id);
+            visit.markDomainDirty(id,DomainChangeType.admin);
         }
 
         if (!equal(org.getSpecialInstructions(), domain.getSpecialInstructions())) {
-            visit.markDomainDirty(id);
+            visit.markDomainDirty(id,DomainChangeType.admin);
         }
 
         if (org.isSendEmail() != domain.isSendEmail()) {
-            visit.markDomainDirty(id);
+            visit.markDomainDirty(id, DomainChangeType.admin);
         }
 
 

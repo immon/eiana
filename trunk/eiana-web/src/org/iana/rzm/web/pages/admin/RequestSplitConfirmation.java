@@ -86,7 +86,7 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
 
     public void pageBeginRender(PageEvent event) {
 
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
 
         if (getSplitRequest() == 0 || isMustSplit()) {
             setSplitRequest(TWO_RQUEST);

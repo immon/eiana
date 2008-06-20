@@ -5,7 +5,6 @@ import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.model.criteria.*;
-import org.iana.rzm.web.pages.admin.*;
 import org.iana.rzm.web.tapestry.*;
 
 @ComponentClass(allowBody = true)
@@ -55,11 +54,6 @@ public abstract class ListRequests extends ListRecords implements Sortable {
         "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getCancelRequestComponent();
 
-    @Component(id = "pollMessages", type = "DirectLink", bindings = {
-        "listener=listener:viewPollMessages", "parameters=prop:record.rtId",
-        "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
-    public abstract IComponent getPollMessagesLinkComponent();
-
     @Component(id = "refHeader",
                type = "SortableTableHeader",
                bindings = {"header=literal:Ref", "sortFactory=prop:deligator", "imageVisible=prop:refImageVisible"})
@@ -104,11 +98,8 @@ public abstract class ListRequests extends ListRecords implements Sortable {
 
     @Parameter(required = false, defaultValue = "literal:true")
     public abstract boolean isCancelRequestEnabled();
-
-    @InjectPage(PollMessagesPerspective.PAGE_NAME)
-    public abstract PollMessagesPerspective getPollMessagesPerspective();
-
-    @Persist()
+        
+    @Persist
     public abstract void setCurrentSorting(SortOrder sortOrder);
     public abstract SortOrder getCurrentSorting();
 

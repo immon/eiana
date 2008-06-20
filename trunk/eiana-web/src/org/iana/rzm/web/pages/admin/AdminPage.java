@@ -36,6 +36,10 @@ public abstract class AdminPage extends Protected {
         }
     }
 
+    protected AdminPage getRzmPage(){
+        return (AdminPage) getPage();
+    }
+
     public void resetStateIfneeded() {
 
     }

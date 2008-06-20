@@ -33,7 +33,7 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
     public abstract IComponent getPendingRequestsMessageComponent();
 
     @Component(id = "editor", type = "NameServerListEditor", bindings = {
-            "editor=prop:editor", "list=prop:nameServerListValue"})
+            "editor=prop:editor", "list=prop:nameServerListValue", "domainId=prop:domainId"})
     public abstract IComponent getEditorComponent();
 
     @Bean
@@ -74,7 +74,7 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
     }
 
     public void pageBeginRender(PageEvent event) {
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
 
         if (getNameServerListValue() == null) {
             List<NameServerValue> list = getNameServersForEdit();
@@ -124,19 +124,32 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
     }
 
     public void save(List<NameServerValue> list) {
-        List<NameServerVOWrapper> nameServers = new ArrayList<NameServerVOWrapper>();
-        for (NameServerValue nameServerValue : list) {
-            nameServers.add(nameServerValue.asNameServer());
-        }
-
+        List<NameServerVOWrapper> nameServers = WebUtil.convertToVos(list);
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateNameServers(nameServers);
-        getVisitState().markDomainDirty(getDomainId());
-        getVisitState().storeDomain(domain);
+
+        List<NameServerVOWrapper> oldList = getOriginalNameServerList(getDomainId());
+
+        if(WebUtil.isModefied(oldList, WebUtil.convertToVos(list))){
+            getVisitState().markDomainDirty(getDomainId(),DomainChangeType.ns);
+            getVisitState().storeDomain(domain);
+        }else{
+            getVisitState().clearChange(getDomainId(),DomainChangeType.ns);    
+        }
+
         setNameServerListValue(null);
         ReviewDomain reviewDomainPage = getReviewDomainPage();
         reviewDomainPage.setDomainId(getDomainId());
         getRequestCycle().activate(reviewDomainPage);
+    }
+
+    public List<NameServerVOWrapper> getOriginalNameServerList(long domainId) {
+        try {
+            return getUserServices().getDomain(domainId).getNameServers();
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        }
+        return new ArrayList<NameServerVOWrapper>();
     }
 
 
@@ -154,12 +167,15 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
+        page.setCallback(createCallback());
         return page;
     }
 
     public void setErrorField(IFormComponent field, String message) {
         super.setErrorField(field.getId(), message);
     }
+
+
 
 
 }

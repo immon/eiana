@@ -43,15 +43,15 @@
         <url-pattern>/app</url-pattern>
     </servlet-mapping>
 
-    <security-constraint>
-     <web-resource-collection>
-        <web-resource-name>Protected Context</web-resource-name>
-          <url-pattern>/*</url-pattern>
-      </web-resource-collection>
-      <user-data-constraint>
-         <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-      </user-data-constraint>
-   </security-constraint>
+    <!--<security-constraint>-->
+     <!--<web-resource-collection>-->
+        <!--<web-resource-name>Protected Context</web-resource-name>-->
+          <!--<url-pattern>/*</url-pattern>-->
+      <!--</web-resource-collection>-->
+      <!--<user-data-constraint>-->
+         <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+      <!--</user-data-constraint>-->
+   <!--</security-constraint>-->
 
     <!--<session-config>-->
         <!--<session-timeout>5</session-timeout>-->

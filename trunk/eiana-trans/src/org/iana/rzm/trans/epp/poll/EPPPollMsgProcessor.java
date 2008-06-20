@@ -1,24 +1,22 @@
 package org.iana.rzm.trans.epp.poll;
 
-import org.apache.log4j.Logger;
-import org.iana.epp.response.PollResponse;
-import org.iana.epp.exceptions.EPPFrameworkException;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.errors.ErrorHandler;
-import org.iana.rzm.trans.epp.EPPException;
-import org.iana.rzm.trans.epp.EPPChangeReqId;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
+import org.apache.log4j.*;
+import org.iana.criteria.*;
+import org.iana.epp.exceptions.*;
+import org.iana.epp.response.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.epp.*;
+import org.iana.rzm.trans.errors.*;
+import org.iana.ticketing.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
  */
 public class EPPPollMsgProcessor implements EPPPollStatusQuery {
 
-    private static Logger logger = Logger.getLogger(EPPPollMsgAction.class);
+    private static Logger logger = Logger.getLogger(EPPPollMsgProcessor.class);
 
     private TransactionManager transactionManager;
 
@@ -26,7 +24,10 @@ public class EPPPollMsgProcessor implements EPPPollStatusQuery {
 
     private ErrorHandler eppErrorHandler;
 
-    public EPPPollMsgProcessor(TransactionManager transactionManager, PollMsgManager msgManager, ErrorHandler eppErrorHandler) {
+    private TicketingService ticketingService;
+
+    public EPPPollMsgProcessor(TransactionManager transactionManager, PollMsgManager msgManager, ErrorHandler eppErrorHandler, TicketingService ticketingService) {
+        this.ticketingService = ticketingService;
         this.transactionManager = transactionManager;
         this.msgManager = msgManager;
         this.eppErrorHandler = eppErrorHandler;
@@ -51,7 +52,13 @@ public class EPPPollMsgProcessor implements EPPPollStatusQuery {
         if (!transactions.isEmpty()) {
             Transaction trans = transactions.get(0);
             msgManager.create(new PollMsg(trans, rsp.getChangeStatus(), rsp.getMessage()));
+            try {
+                ticketingService.addComment(trans.getTicketID(), "Poll message: " + rsp.getMessage());
+            } catch (TicketingException e) {
+                logger.error("Could add poll message comment to RT ", e);
+            }
         } else {
+            logger.error("no transaction found for ticket id: " + ticketID);
             eppErrorHandler.handleException("no transaction found for ticket id: " + ticketID);
         }
     }

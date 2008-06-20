@@ -54,6 +54,10 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
         delegate.record(message, null);
     }
 
+    public void activate() {
+        getRequestCycle().activate(this);
+    }
+
     protected boolean hasErrors() {
         return getValidationDelegate().getHasErrors() || getErrorMessage() != null ;
     }

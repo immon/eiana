@@ -91,7 +91,7 @@ public abstract class EditSubDomain extends AdminPage
 
 
     public void pageBeginRender(PageEvent event) {
-        setModifiedDomain(getVisitState().getMmodifiedDomain());
+        setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         //try {
         //    if (getOriginalRegistryUrl() == null || getOriginalWhoisServer() == null) {
         //        SystemDomainVOWrapper domain = getAdminServices().getDomain(getDomainId());
@@ -115,7 +115,7 @@ public abstract class EditSubDomain extends AdminPage
         }
         domain.setRegistryUrl(registryUrl);
         domain.setWhoisServer(whois);
-        getVisitState().markDomainDirty(getDomainId());
+        getVisitState().markDomainDirty(getDomainId(), DomainChangeType.ns);
         getVisitState().storeDomain(domain);
         getCallback().performCallback(getRequestCycle());
     }

@@ -1,22 +1,17 @@
 package org.iana.rzm.trans.notifications.contact_confirmation;
 
-import org.iana.notifications.PAddressee;
-import org.iana.notifications.producers.DataProducer;
-import org.iana.objectdiff.Change;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.SimpleChange;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.DomainChangePrinter;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.notifications.*;
+import org.iana.notifications.producers.*;
+import org.iana.objectdiff.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.change.*;
+import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.trans.notifications.default_producer.*;
+import org.iana.rzm.user.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -56,11 +51,7 @@ public class ContactConfirmationTCDataProducer extends DefaultTransactionDataPro
             values.put("ticket", "" + td.getTicketID());
 
             RZMUser logInUser = userManager.get(td.getTrackData().getCreatedBy());
-            StringBuffer sbName = new StringBuffer("");
-            if (logInUser != null)
-                sbName.append(logInUser.getName());
-
-            values.put("subbmiter", td.getSubmitterEmail() != null ? td.getSubmitterEmail() : sbName.toString());
+            values.put("subbmiter", logInUser == null ? (td.getSubmitterEmail() != null ? td.getSubmitterEmail() : "") : logInUser.getName());
         }
         return values;
     }
