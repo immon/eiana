@@ -121,8 +121,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain,
                                                                           boolean splitNameServerChange,
                                                                           RequestMetaParameters params)
-        throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
-               InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException {
+            throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException,
+            InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException {
         try {
             List<TransactionVO> list =
                 transactionService.createTransactions(domain.getDomainVO(),

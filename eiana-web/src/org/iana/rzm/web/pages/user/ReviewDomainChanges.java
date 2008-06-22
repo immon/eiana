@@ -258,6 +258,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
             setTransactionPending(true);
+        } catch (NameServerChangeNotAllowedException e) {
+            // todo: proper handling of this exception
+            setErrorMessage("A name server change is not allowed for the domain at this time");
         }
     }
 

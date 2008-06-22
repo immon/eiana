@@ -142,6 +142,9 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
             setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
         } catch (TransactionExistsException e) {
             // todo: properly handle this exception in the UI
+        } catch (NameServerChangeNotAllowedException e) {
+            // todo: proper handling of this exception
+            setErrorMessage("A name server change is not allowed for the domain at this time");
         }
     }
 
