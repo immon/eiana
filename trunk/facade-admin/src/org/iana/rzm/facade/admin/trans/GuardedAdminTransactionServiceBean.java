@@ -13,10 +13,7 @@ import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.trans.NoDomainModificationException;
-import org.iana.rzm.facade.system.trans.TransactionDetectorService;
-import org.iana.rzm.facade.system.trans.TransactionExistsException;
-import org.iana.rzm.facade.system.trans.TransactionServiceImpl;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
@@ -206,12 +203,12 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         super.rejectTransaction(id, token);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException {
         isUserInRole();
         return super.createTransactions(domain, splitNameServerChange);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException {
         isUserInRole();
         return super.createTransactions(domain, splitNameServerChange, submitterEmail);
     }
@@ -250,12 +247,12 @@ public class GuardedAdminTransactionServiceBean extends TransactionServiceImpl i
         return TransactionConverter.toTransactionVOList(transactionManager.find(criteria));
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException {
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException {
         isUserInRole();
         return super.createTransactions(domain);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException {
         isUserInRole();
         return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
     }

@@ -148,7 +148,10 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
-            // todo: properly handle in the UI
+            // todo: proper handling of this exception
+        } catch (NameServerChangeNotAllowedException e) {
+            // todo: proper handling of this exception
+            setErrorMessage("A name server change is not allowed for the domain at this time");
         }
     }
 

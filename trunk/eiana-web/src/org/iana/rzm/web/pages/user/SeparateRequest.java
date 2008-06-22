@@ -174,6 +174,9 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
             setTransactionPending(true);
+        } catch (NameServerChangeNotAllowedException e) {
+            // todo: proper handling of this exception
+            setErrorMessage("A name server change is not allowed for the domain at this time");
         }
     }
 

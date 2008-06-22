@@ -8,7 +8,7 @@ import java.io.*;
 
 public interface PageEditorListener<EntityT> extends Serializable {
 
-    public void saveEntity(EntityT entityT, IRequestCycle cycle) throws NoObjectFoundException, NoDomainModificationException, TransactionExistsException;
+    public void saveEntity(EntityT entityT, IRequestCycle cycle) throws NoObjectFoundException, NoDomainModificationException, TransactionExistsException, NameServerChangeNotAllowedException;
 
     public void cancel(IRequestCycle requestCycle);
 }

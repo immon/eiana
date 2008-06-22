@@ -30,7 +30,7 @@ public interface AdminServices extends RzmServices {
             NoObjectFoundException,
             NoDomainModificationException,
             InvalidCountryCodeException,
-            DNSTechnicalCheckExceptionWrapper, TransactionExistsException;
+            DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException;
 
 
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException;
