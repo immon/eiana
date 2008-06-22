@@ -28,7 +28,12 @@ public class EPPUpdateHosts extends EPPCommand {
 
     public void collectChanges(ChangeRequest req) {
         CollectionChange nsChange = getNameServerChange();
-        for (Change change : nsChange.getModified()) {
+        List<Change> nsModifications = new ArrayList<Change>();
+        nsModifications.addAll(nsChange.getModified());
+        for (Change change : nsChange.getAdded()) {
+            if (change.isModification()) nsModifications.add(change);
+        }
+        for (Change change : nsModifications) {
             ObjectChange hostChange = (ObjectChange) change;
             String hostName = hostChange.getId();
             List<EPPHostAddress> toAdd = new ArrayList<EPPHostAddress>();
