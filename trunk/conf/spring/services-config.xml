@@ -21,40 +21,40 @@
         <constructor-arg ref="notificationDAO"/>
     </bean>
 
-    <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
-        <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
-        <!--<constructor-arg index="1" value="rzm"/>-->
-        <!--<constructor-arg index="2" value="rzmrzm"/>-->
-        <!--<property name="customFieldsKeys">-->
-            <!--<map>-->
-                <!--<entry>-->
-                    <!--<key>-->
-                        <!--<value>tld</value>-->
-                    <!--</key>-->
-                    <!--<value>tld</value>-->
-                <!--</entry>-->
-                <!--<entry>-->
-                    <!--<key>-->
-                        <!--<value>state</value>-->
+    <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
+        <constructor-arg index="0" value="http://208.77.191.164"/>
+        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="2" value="rzmrzm"/>
+        <property name="customFieldsKeys">
+            <map>
+                <entry>
+                    <key>
+                        <value>tld</value>
+                    </key>
+                    <value>tld</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>state</value>
 
-                    <!--</key>-->
-                    <!--<value>iana_state</value>-->
-                <!--</entry>-->
-                <!--<entry>-->
-                    <!--<key>-->
-                        <!--<value>type</value>-->
-                    <!--</key>-->
-                    <!--<value>request_type</value>-->
-                <!--</entry>-->
-            <!--</map>-->
-        <!--</property>-->
-    <!--</bean>-->
+                    </key>
+                    <value>iana_state</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>type</value>
+                    </key>
+                    <value>request_type</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
     <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
         <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
 
-    <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
+    <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
 
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
@@ -64,8 +64,10 @@
 
 <!-- end of test bean section -->
 
+<!--
         <bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
         <bean id="ticketingService"  class="org.iana.ticketing.MockTicketingService"/>
+-->
 
     <!-- facade services configuration -->
 

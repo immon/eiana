@@ -46,6 +46,7 @@
     <pathelement location="${common-dns.testoutput.dir}"/>
     <path refid="library.epp.classpath"/>
     <path refid="library.log4j.classpath"/>
+    <path refid="library.dnsjava.classpath"/>
   </path>
   
   

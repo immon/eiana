@@ -22,6 +22,8 @@
     <path refid="library.jaxrpc.classpath"/>
     <path refid="library.dnscheck.classpath"/>
     <path refid="library.fastinfoset.classpath"/>
+    <path refid="library.nask-commons.classpath"/>
+    <path refid="library.jdom.classpath"/>
   </path>
   
   
@@ -35,6 +37,7 @@
   
   <path id="common-dns.module.sourcepath">
     <dirset dir="${module.common-dns.basedir}">
+      <include name="etc"/>
       <include name="src"/>
     </dirset>
   </path>
@@ -59,6 +62,10 @@
     </javac>
     
     <copy todir="${common-dns.output.dir}">
+      <fileset dir="${module.common-dns.basedir}/etc">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
       <fileset dir="${module.common-dns.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
