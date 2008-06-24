@@ -49,6 +49,7 @@ public class ContactConfirmationTCDataProducer extends DefaultTransactionDataPro
             values.put("newContactOnly", contactIdentity.isNewContact() ? newContactInfo(td) : "");
             values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", "" + td.getTicketID());
+            values.put("period", "" + dataSource.get("period"));
 
             RZMUser logInUser = userManager.get(td.getTrackData().getCreatedBy());
             values.put("subbmiter", logInUser == null ? (td.getSubmitterEmail() != null ? td.getSubmitterEmail() : "") : logInUser.getName());

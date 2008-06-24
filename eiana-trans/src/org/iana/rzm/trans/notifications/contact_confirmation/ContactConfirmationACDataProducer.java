@@ -51,6 +51,7 @@ public class ContactConfirmationACDataProducer extends DefaultTransactionDataPro
             values.put("newContactOnly", contactIdentity.isNewContact() ? newContactInfo(td) : "");
             values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", "" + td.getTicketID());
+            values.put("period", "" + dataSource.get("period"));
 
 
             RZMUser logInUser = userManager.get(td.getTrackData().getCreatedBy());
