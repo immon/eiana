@@ -668,11 +668,13 @@
     <bean id="contactConfirmationACDataProducer"
           class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACDataProducer">
         <constructor-arg ref="userManager"/>
+        <property name="stateMaxPeriod" value="30" />
     </bean>
 
     <bean id="contactConfirmationTCDataProducer"
           class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCDataProducer">
         <constructor-arg ref="userManager"/>
+        <property name="stateMaxPeriod" value="30" />
     </bean>
 
     <bean id="impactedPartiesDataProducer"
@@ -684,7 +686,9 @@
           class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationDataProducer"/>
 
     <bean id="usdocConfirmationRemainderDataProducer"
-          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationRemainderDataProducer"/>
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationRemainderDataProducer">
+        <property name="stateMaxPeriod" value="14" />
+    </bean>
 
     <bean id="zoneInsertionAlertDataProducer"
           class="org.iana.rzm.trans.notifications.zone_insertion.ZoneInsertionAlertDataProducer"/>
