@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * @author Piotr Tkaczyk
  */
-@Test(sequential = true, groups = {"common-dns", "FailureDNSTechnicalCheckTest"})
+@Test(sequential = true, groups = {"stress", "common-dns", "FailureDNSTechnicalCheckTest"})
 public class FailureDNSTechnicalCheckTest {
 
     DNSTechnicalCheck dnsTechnicalCheck = new DNSTechnicalCheck();

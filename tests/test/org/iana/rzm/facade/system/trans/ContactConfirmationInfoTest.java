@@ -6,13 +6,10 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -21,16 +18,12 @@ import org.testng.annotations.AfterMethod;
 @Test(sequential = true)
 public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction {
 
-    @BeforeClass
-    public void init() throws Exception {
+    protected void initTestData() {
         Domain domain = new Domain("contactconfirmation");
         domain.setSupportingOrg(new Contact("so-name"));
         domain.setAdminContact(new Contact("ac-name"));
         domain.setTechContact(new Contact("tc-name"));
         domainManager.create(domain);
-
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
     }
 
     @Test
@@ -130,10 +123,10 @@ public class ContactConfirmationInfoTest extends CommonGuardedSystemTransaction 
     
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 
     private String getToken(long transID, SystemRole.SystemType role) throws NoSuchTransactionException {

@@ -7,10 +7,7 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.RZMUser;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -25,8 +22,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
 
     long transactionID;
 
-    @BeforeClass
-    public void init() throws Exception {
+    protected void initTestData() {
         Domain domain = new Domain("activitytest");
         domain.addNameServer(new Host("host1.host"));
         domain.addNameServer(new Host("host2.host"));
@@ -50,18 +46,15 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         domain.addNameServer(new Host("host8.host"));
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
-
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
     }
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        processDAO.deleteAll();
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        processDAO.deleteAll();
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 
     @Test
@@ -127,7 +120,7 @@ public class DomainActivityTest extends CommonGuardedSystemTransaction {
         assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;
 
         domain.setIanaCode("xyz");
-        ads.updateDomain(domain);
+        GuardedAdminDomainServiceBean.updateDomain(domain);
 
         domain = getDomain("activitytest4");
         assert domain.getState() == IDomainVO.State.OPERATIONS_PENDING;

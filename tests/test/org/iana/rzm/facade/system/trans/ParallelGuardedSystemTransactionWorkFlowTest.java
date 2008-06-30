@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
  */
 
 @Test(sequential = true, groups = {"facade-system", "ParallelGuardedSystemTransactionWorkFlowTest"})
-public class ParallelGuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
+public class ParallelGuardedSystemTransactionWorkFlowTest {// extends CommonGuardedSystemTransaction {
 
 /*
     RZMUser userAC, userTC, userIANA, userUSDoC;

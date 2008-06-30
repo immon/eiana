@@ -6,7 +6,6 @@ import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.CommonGuardedSystemTransaction;
-import org.iana.rzm.user.RZMUser;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
@@ -18,7 +17,11 @@ import java.util.List;
  * @author Patrycja Wegrzynowicz
  */
 @Test(sequential = true, groups = {"facade-system"})
-public class NameServerShareTest  extends CommonGuardedSystemTransaction {
+public class NameServerShareTest extends CommonGuardedSystemTransaction {
+
+
+    protected void initTestData() {
+    }
 
     @Test
     public void testNotShared_Create() throws Exception {
@@ -30,7 +33,7 @@ public class NameServerShareTest  extends CommonGuardedSystemTransaction {
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
 
-        IDomainVO created = gsds.getDomain("share1");
+        IDomainVO created = GuardedSystemDomainService.getDomain("share1");
         List<HostVO> nss = created.getNameServers();
         assert nss.size() == 2;
         for (HostVO host : nss) {
@@ -54,14 +57,14 @@ public class NameServerShareTest  extends CommonGuardedSystemTransaction {
         domain2.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain2);
 
-        IDomainVO created1 = gsds.getDomain("share2");
+        IDomainVO created1 = GuardedSystemDomainService.getDomain("share2");
         List<HostVO> nss1 = created1.getNameServers();
         assert nss1.size() == 2;
         for (HostVO host : nss1) {
             assert host.isShared();
         }
 
-        IDomainVO created2 = gsds.getDomain("share3");
+        IDomainVO created2 = GuardedSystemDomainService.getDomain("share3");
         List<HostVO> nss2 = created2.getNameServers();
         assert nss2.size() == 2;
         for (HostVO host : nss2) {
@@ -87,7 +90,7 @@ public class NameServerShareTest  extends CommonGuardedSystemTransaction {
 
         domainManager.delete(domain2);
 
-        IDomainVO created = gsds.getDomain("share4");
+        IDomainVO created = GuardedSystemDomainService.getDomain("share4");
         List<HostVO> nss = created.getNameServers();
         assert nss.size() == 2;
         for (HostVO host : nss) {
@@ -97,9 +100,9 @@ public class NameServerShareTest  extends CommonGuardedSystemTransaction {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 }

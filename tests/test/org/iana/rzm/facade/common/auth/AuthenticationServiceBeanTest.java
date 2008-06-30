@@ -1,16 +1,13 @@
 package org.iana.rzm.facade.common.auth;
 
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.accuracy.TestSecurIDService;
-import org.iana.rzm.facade.accuracy.TestUserManager;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.springframework.context.ApplicationContext;
+import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -18,22 +15,23 @@ import java.io.*;
 /**
  * @author Marcin Zajaczkowski
  * @author Patrycja Wegrzynowicz
+ * @author Piotr Tkaczyk
  */
 @Test(sequential = true, groups = {"test", "authenticationManager"})
-public class AuthenticationServiceBeanTest {
+public class AuthenticationServiceBeanTest extends RollbackableSpringContextTest {
 
-    private UserManager userManager;
-    private AuthenticationService authService;
+    protected UserManager userManager;
+    protected AuthenticationService authenticationServiceBean;
 
     private RZMUser testAdminUser;
     private RZMUser testAdminUserWithSecurID;
     private RZMUser testWrongPasswordUser;
 
-    @BeforeClass
+    public AuthenticationServiceBeanTest() {
+        super(SpringApplicationContext.CONFIG_FILE_NAME);
+    }
+
     public void init() throws IOException {
-        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        userManager = (UserManager) appCtx.getBean("userManager");
-        authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
         createTestUsers();
     }
 
@@ -53,63 +51,61 @@ public class AuthenticationServiceBeanTest {
 
     @Test
     public void testAuthenticate() throws Exception {
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
+        PasswordAuth passwordAuth = new PasswordAuth(ADMIN_LOGIN_VALID, ADMIN_PASSWORD_VALID);
 
-        AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+        AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(passwordAuth);
         assert authenticatedUser != null;
-        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+        assert testAdminUser.getLoginName().equals(authenticatedUser.getUserName());
     }
 
     @Test
     public void testAuthenticateActiveRole() throws Exception {
-        AuthenticatedUser user = authService.authenticate(new PasswordAuth("user-activerole", ""));
+        AuthenticatedUser user = authenticationServiceBean.authenticate(new PasswordAuth("user-activerole", ""));
         assert user != null && user.getUserName().equals("user-activerole");
     }
 
     @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoActiveRole() throws Exception {
-        authService.authenticate(new PasswordAuth("user-noactiverole", ""));
+        authenticationServiceBean.authenticate(new PasswordAuth("user-noactiverole", ""));
     }
 
     @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateNoUser() throws Exception {
         PasswordAuth passwordAuth = new PasswordAuth();
-        passwordAuth.setUserName(TestUserManager.NON_EXIST_LOGIN);
+        passwordAuth.setUserName(NON_EXIST_LOGIN);
         passwordAuth.setPassword("foo");
 
-        authService.authenticate(passwordAuth);
+        authenticationServiceBean.authenticate(passwordAuth);
     }
 
     @Test(expectedExceptions = {AuthenticationFailedException.class})
     public void testAuthenticateWrongPassword() throws Exception {
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.WRONG_PASSWORD_LOGIN, TestUserManager.WRONG_PASSWORD_PASSWORD);
+        PasswordAuth passwordAuth = new PasswordAuth(WRONG_PASSWORD_LOGIN, WRONG_PASSWORD_PASSWORD);
 
-        authService.authenticate(passwordAuth);
+        authenticationServiceBean.authenticate(passwordAuth);
     }
 
     @Test(expectedExceptions = {AuthenticationRequiredException.class})
     public void testAuthenticateWrongSecurdIDNeeded() throws Exception {
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
+        PasswordAuth passwordAuth = new PasswordAuth(ADMIN_WITH_SECURID_VALID_LOGIN, ADMIN_WITH_SECURID_PASSWORD_VALID);
 
-        authService.authenticate(passwordAuth);
+        authenticationServiceBean.authenticate(passwordAuth);
     }
 
     @Test
     public void testAuthenticateWithSecurID() throws Exception {
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
+        PasswordAuth passwordAuth = new PasswordAuth(ADMIN_WITH_SECURID_VALID_LOGIN, ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
-            authService.authenticate(passwordAuth);
+            authenticationServiceBean.authenticate(passwordAuth);
 
         } catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.SECURID) {
 
-                SecurIDAuth securIDAuth = new SecurIDAuth(
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
-                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
+                SecurIDAuth securIDAuth = new SecurIDAuth(ADMIN_WITH_SECURID_VALID_LOGIN, ADMIN_WITH_SECURID_PASSWORD_VALID);
 
-                AuthenticatedUser authenticatedUser = authService.authenticate(e.getToken(), securIDAuth);
-                assert TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN.equals(authenticatedUser.getUserName());
+                AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(e.getToken(), securIDAuth);
+                assert ADMIN_WITH_SECURID_VALID_LOGIN.equals(authenticatedUser.getUserName());
                 return;
             }
         }
@@ -123,7 +119,7 @@ public class AuthenticationServiceBeanTest {
 //        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_WITH_SECURID_VALID_LOGIN, TestUserManager.ADMIN_WITH_SECURID_PASSWORD_VALID);
 //
 //        try {
-//            authService.authenticate(passwordAuth);
+//            authenticationServiceBean.authenticate(passwordAuth);
 //
 //        } catch (AuthenticationRequiredException e) {
 //            if (e.getRequired() == Authentication.SECURID) {
@@ -133,7 +129,7 @@ public class AuthenticationServiceBeanTest {
 //                        TestSecurIDService.ADMIN_WITH_SECURID_SECURID_WRONG_PASSWORD);
 //
 //                try {
-//                    authService.authenticate(e.getToken(), securIDAuth);
+//                    authenticationServiceBean.authenticate(e.getToken(), securIDAuth);
 //
 //                } catch (AuthenticationFailedException ee) {
 //                    return;
@@ -145,12 +141,10 @@ public class AuthenticationServiceBeanTest {
 
     @Test
     public void testAuthenticateOnlySecurID() throws Exception {
-        SecurIDAuth securIDAuth = new SecurIDAuth(
-                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN,
-                TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
+        SecurIDAuth securIDAuth = new SecurIDAuth(ADMIN_WITH_SECURID_VALID_LOGIN, ADMIN_WITH_SECURID_PASSWORD_VALID);
 
         try {
-            authService.authenticate(securIDAuth);
+            authenticationServiceBean.authenticate(securIDAuth);
 
         } catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.PASSWORD) {
@@ -162,31 +156,31 @@ public class AuthenticationServiceBeanTest {
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullData() throws Exception {
-        authService.authenticate(null);
+        authenticationServiceBean.authenticate(null);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullToken() throws Exception {
         SecurIDAuth securIDAuth = new SecurIDAuth();
-        securIDAuth.setUserName(TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_LOGIN);
-        securIDAuth.setPassword(TestSecurIDService.ADMIN_WITH_SECURID_SECURID_VALID_PASSWORD);
+        securIDAuth.setUserName(ADMIN_WITH_SECURID_VALID_LOGIN);
+        securIDAuth.setPassword(ADMIN_WITH_SECURID_PASSWORD_VALID);
 
-        authService.authenticate(null, securIDAuth);
+        authenticationServiceBean.authenticate(null, securIDAuth);
     }
 
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testAuthenticateWithNullBoth() throws Exception {
-        authService.authenticate(null, null);
+        authenticationServiceBean.authenticate(null, null);
     }
 
     @Test
     public void testInvalidateUser() throws AuthenticationFailedException, AuthenticationRequiredException {
-        PasswordAuth passwordAuth = new PasswordAuth(TestUserManager.ADMIN_LOGIN_VALID, TestUserManager.ADMIN_PASSWORD_VALID);
+        PasswordAuth passwordAuth = new PasswordAuth(ADMIN_LOGIN_VALID, ADMIN_PASSWORD_VALID);
 
-        AuthenticatedUser authenticatedUser = authService.authenticate(passwordAuth);
+        AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(passwordAuth);
 
         assert authenticatedUser != null;
-        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+        assert ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
         assert !authenticatedUser.isInvalidated();
 
         authenticatedUser.invalidate();
@@ -198,16 +192,16 @@ public class AuthenticationServiceBeanTest {
     public void testAuthenticateByMail() throws AuthenticationFailedException, AuthenticationRequiredException {
         MailAuth mailAuth = new MailAuth(ADMIN_EMAIL);
 
-        AuthenticatedUser authenticatedUser = authService.authenticate(mailAuth);
+        AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(mailAuth);
 
         assert authenticatedUser != null;
-        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+        assert ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
     @Test(expectedExceptions = AuthenticationFailedException.class)
     public void testAuthenticateByMailFails() throws AuthenticationFailedException, AuthenticationRequiredException {
         MailAuth mailAuth = new MailAuth("bad" + ADMIN_EMAIL);
-        authService.authenticate(mailAuth);
+        authenticationServiceBean.authenticate(mailAuth);
     }
 
     public static String ADMIN_SIGNED_MESSAGE_FILE_NAME = "test-message.txt.asc";
@@ -216,10 +210,10 @@ public class AuthenticationServiceBeanTest {
     public void testAuthenticateByPgpMail() throws AuthenticationFailedException, AuthenticationRequiredException, IOException {
         PgpMailAuth pgpMailAuth = new PgpMailAuth(ADMIN_EMAIL, loadFromFile(ADMIN_SIGNED_MESSAGE_FILE_NAME));
 
-        AuthenticatedUser authenticatedUser = authService.authenticate(pgpMailAuth);
+        AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(pgpMailAuth);
 
         assert authenticatedUser != null;
-        assert TestUserManager.ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
+        assert ADMIN_LOGIN_VALID.equals(authenticatedUser.getUserName());
     }
 
     public static String WRONG_SIGNED_MESSAGE_FILE_NAME = "test-message-1.txt.asc";
@@ -227,7 +221,7 @@ public class AuthenticationServiceBeanTest {
     @Test(expectedExceptions = AuthenticationFailedException.class)
     public void testAuthenticateByPgpMailFails() throws AuthenticationFailedException, AuthenticationRequiredException, IOException {
         PgpMailAuth pgpMailAuth = new PgpMailAuth(ADMIN_EMAIL, loadFromFile(WRONG_SIGNED_MESSAGE_FILE_NAME));
-        authService.authenticate(pgpMailAuth);
+        authenticationServiceBean.authenticate(pgpMailAuth);
     }
 
     @AfterClass(alwaysRun = true)
@@ -345,6 +339,7 @@ public class AuthenticationServiceBeanTest {
         ret.addRole(role);
         return ret;
     }
+
 }
 
 

@@ -2,19 +2,17 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -34,8 +32,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     final static String DOMAIN_NAME = "org";
     final static String DOMAIN_NAMENS = "com";
 
-    @BeforeClass
-    public void init() {
+    protected void initTestData() {
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
         userAC.setFirstName("ACuser");
@@ -76,10 +73,12 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         domain.setEnableEmails(true);
         domainManager.create(domain);
 
-        domain.setRegistryUrl("newregurl.org");
-        domain.getAdminContact().setEmail("admin@new-email.org");
+        Domain newDomain = domain.clone();
 
-        domainVO = DomainToVOConverter.toDomainVO(domain);
+        newDomain.setRegistryUrl("newregurl.org");
+        newDomain.getAdminContact().setEmail("admin@new-email.org");
+
+        domainVO = DomainToVOConverter.toDomainVO(newDomain);
 
 
         domainNS = createDomain(DOMAIN_NAMENS);
@@ -88,17 +87,16 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         domainNS.setEnableEmails(true);
         domainManager.create(domainNS);
 
+        Domain newDomainNS = domainNS.clone();
+
         Host nameServer = new Host("ns1.gstsnewnameserver");
         nameServer.addIPAddress("81.50.50.10");
-        domainNS.addNameServer(nameServer);
+        newDomainNS.addNameServer(nameServer);
         nameServer = new Host("ns2.gstsnewnameserver");
         nameServer.addIPAddress("82.50.50.10");
-        domainNS.addNameServer(nameServer);
+        newDomainNS.addNameServer(nameServer);
 
-        domainVONS = DomainToVOConverter.toDomainVO(domainNS);
-
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
+        domainVONS = DomainToVOConverter.toDomainVO(newDomainNS);
 
     }
 
@@ -313,18 +311,18 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void testAccessDeniedWhenAcceptByWrongUser() throws Exception {
         TransactionVO transactionVO = createTransactions(domainVO, false).get(0);
         setUser(userTC);
-        transactionVO = gsts.get(transactionVO.getTransactionID());
+        transactionVO = GuardedSystemTransactionService.get(transactionVO.getTransactionID());
         List<String> tokens = transactionVO.getTokens(SystemRoleVO.SystemType.AC);
-        gsts.acceptTransaction(transactionVO.getTransactionID(), tokens.get(0));
+        GuardedSystemTransactionService.acceptTransaction(transactionVO.getTransactionID(), tokens.get(0));
     }
 
     @Test(expectedExceptions = {AccessDeniedException.class})
     public void testAccessDeniedWhenRejectByWrongUser() throws Exception {
         TransactionVO transactionToReject = createTransactions(domainVO, false).get(0);
         setUser(userTC);
-        transactionToReject = gsts.get(transactionToReject.getTransactionID());
+        transactionToReject = GuardedSystemTransactionService.get(transactionToReject.getTransactionID());
         List<String> tokens = transactionToReject.getTokens(SystemRoleVO.SystemType.AC);
-        gsts.rejectTransaction(transactionToReject.getTransactionID(), tokens.get(0));
+        GuardedSystemTransactionService.rejectTransaction(transactionToReject.getTransactionID(), tokens.get(0));
     }
 
     @AfterMethod(alwaysRun = true)
@@ -336,13 +334,13 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
     public void cleanUp() {
 /*
         for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
-            notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
+            notificationDAO.deleteNotificationsByAddresse(emailAddressee);
             emailAddresseeDAO.delete(emailAddressee);
         }
 */
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 }

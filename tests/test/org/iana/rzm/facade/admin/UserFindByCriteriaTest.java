@@ -1,26 +1,26 @@
 package org.iana.rzm.facade.admin;
 
+import org.iana.criteria.And;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Like;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.admin.users.AdminUserService;
 import org.iana.rzm.facade.admin.users.UserCriteria;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.SystemRoleVO;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.criteria.Like;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Equal;
-import org.iana.criteria.And;
+import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterClass;
-import org.testng.Assert;
 
 import java.util.List;
 

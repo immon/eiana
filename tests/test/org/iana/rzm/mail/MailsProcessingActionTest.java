@@ -1,18 +1,17 @@
 package org.iana.rzm.mail;
 
+import org.iana.rzm.conf.DefinedTestProcess;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.conf.DefinedMailReceiverProcess;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
+import org.iana.rzm.trans.UserManagementTestUtil;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.dao.common.UserManagementTestUtil;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.springframework.context.ApplicationContext;
@@ -55,8 +54,7 @@ public class MailsProcessingActionTest {
         domainManager = (DomainManager) appCtx.getBean("domainManager");
         userManager = (UserManager) appCtx.getBean("userManager");
         try {
-            processDAO.deploy(DefinedTestProcess.getDefinition());
-            processDAO.deploy(DefinedMailReceiverProcess.getDefinition());
+            processDAO.deploy(DefinedTestProcess.getDefinition("mails-receiver.xml"));
 
             RZMUser user = UserManagementTestUtil.createUser("sys1mailrec",
                     UserManagementTestUtil.createSystemRole("mailrecdomain", true, true,
@@ -89,7 +87,8 @@ public class MailsProcessingActionTest {
             assert TransactionState.Name.PENDING_CONTACT_CONFIRMATION.equals(transaction.getState().getName()) :
                     "unexpected state: " + transaction.getState().getName();
 
-            ProcessInstance pi = processDAO.newProcessInstance(DefinedMailReceiverProcess.getProcessName());
+            DefinedTestProcess.getDefinition("mails-receiver.xml");
+            ProcessInstance pi = processDAO.newProcessInstance(DefinedTestProcess.getProcessName());
             recTrId = pi.getId();
             Token token = pi.getRootToken();
             token.signal();
@@ -105,22 +104,19 @@ public class MailsProcessingActionTest {
             if (!txStatus.isCompleted())
                 txManager.rollback(txStatus);
             throw e;
-        } finally {
-            processDAO.close();
         }
     }
 
     @AfterClass (alwaysRun = true)
     public void cleanUp() throws Exception {
         for (Transaction trans : transactionManager.findAll())
-            try {
                 transactionManager.deleteTransaction(trans);
-            } finally {
-                processDAO.close();
-            }
+
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);
         for (Domain domain : domainManager.findAll())
             domainManager.delete(domain.getName());
+
+        processDAO.deleteAll();
     }
 }

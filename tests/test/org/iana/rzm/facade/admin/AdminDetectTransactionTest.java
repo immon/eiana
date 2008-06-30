@@ -6,7 +6,7 @@ import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.TransactionDetectorService;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;

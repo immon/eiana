@@ -8,7 +8,7 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
@@ -22,7 +22,7 @@ import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.test.spring.TransactionalSpringContextTests;
+import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -34,7 +34,7 @@ import java.util.List;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true, groups = {"excluded"})
-public class EPPChangesTest extends TransactionalSpringContextTests {
+public class EPPChangesTest extends RollbackableSpringContextTest {
     protected ProcessDAO processDAO;
     protected UserManager userManager;
     protected DomainManager domainManager;
@@ -91,35 +91,31 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
                     "Add:.*NS1.GSTSNEWNAMESERVER.ORG.*";
 
     public void testAddHost() throws Exception {
-        try {
-            Host nameServer = new Host("ns1.gstsnewnameserver.org");
-            nameServer.addIPAddress("81.50.50.10");
-            domainNS.addNameServer(nameServer);
-            domainVONS = DomainToVOConverter.toDomainVO(domainNS);
-            transId = createTransaction(domainVONS, userAC).getTransactionID();
-            Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
-            String[] rsps = eppChangeReq.send();
-            String rsp = rsps[1];
-            assert rsp != null;
-            rsp = rsp.replaceAll("\\s", " ");
-            assert rsp.matches(ADD_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            assert rsp.matches(ADD_HOST_EXPECTED_RSP_2);
-            /*
-            while (true) {
-                EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-                EPPPollResponse pollRsp = eppPollRequest.send();
-                System.out.println("ack: " + pollRsp.getChangeRequestId());
-                assert pollRsp != null;
-                assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
-                assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
-                        "unexpected request id: " + pollRsp.getChangeRequestId();
-            }
-            */
-            Thread.sleep(2000);
-        } finally {
-            processDAO.close();
+        Host nameServer = new Host("ns1.gstsnewnameserver.org");
+        nameServer.addIPAddress("81.50.50.10");
+        domainNS.addNameServer(nameServer);
+        domainVONS = DomainToVOConverter.toDomainVO(domainNS);
+        transId = createTransaction(domainVONS, userAC).getTransactionID();
+        Transaction trans = transactionManagerBean.getTransaction(transId);
+        EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+        String[] rsps = eppChangeReq.send();
+        String rsp = rsps[1];
+        assert rsp != null;
+        rsp = rsp.replaceAll("\\s", " ");
+        assert rsp.matches(ADD_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+        assert rsp.matches(ADD_HOST_EXPECTED_RSP_2);
+        /*
+        while (true) {
+            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+            EPPPollResponse pollRsp = eppPollRequest.send();
+            System.out.println("ack: " + pollRsp.getChangeRequestId());
+            assert pollRsp != null;
+            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                    "unexpected request id: " + pollRsp.getChangeRequestId();
         }
+        */
+        Thread.sleep(2000);
     }
 
     public static final String UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 = ".*Change Request Id:.*";
@@ -130,29 +126,25 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
 
     @Test(dependsOnMethods = "testAddHost")
     public void testUpdateHostAddIP() throws Exception {
-        try {
-            Host nameServer = domainNS.getNameServer("pr4.ns2.some.org");
-            nameServer.addIPAddress("21.42.42.31");
-            domainVONS = DomainToVOConverter.toDomainVO(domainNS);
-            transId = createTransaction(domainVONS, userAC).getTransactionID();
-            Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
-            String rsp = eppChangeReq.send()[1];
-            assert rsp != null;
-            assert rsp.length() > 0;
-            rsp = rsp.replaceAll("\\s", " ");
-            assert rsp.matches(UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            /*
-            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EPPPollResponse pollRsp = eppPollRequest.send();
-            assert pollRsp != null;
-            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
-            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
-                    "unexpected request id: " + pollRsp.getChangeRequestId();
-            */
-        } finally {
-            processDAO.close();
-        }
+        Host nameServer = domainNS.getNameServer("pr4.ns2.some.org");
+        nameServer.addIPAddress("21.42.42.31");
+        domainVONS = DomainToVOConverter.toDomainVO(domainNS);
+        transId = createTransaction(domainVONS, userAC).getTransactionID();
+        Transaction trans = transactionManagerBean.getTransaction(transId);
+        EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+        String rsp = eppChangeReq.send()[1];
+        assert rsp != null;
+        assert rsp.length() > 0;
+        rsp = rsp.replaceAll("\\s", " ");
+        assert rsp.matches(UPDATE_HOST_ADD_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+        /*
+        EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+        EPPPollResponse pollRsp = eppPollRequest.send();
+        assert pollRsp != null;
+        assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+        assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                "unexpected request id: " + pollRsp.getChangeRequestId();
+        */
     }
 
     public static final String DELETE_HOST_EXPECTED_RSP_1 = ".*Change Request Id:.*";
@@ -163,28 +155,24 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
 
     @Test(dependsOnMethods = "testUpdateHostAddIP")
     public void testDeleteHost() throws Exception {
-        try {
-            domainNS.removeNameServer("pr4.ns1.some.org");
-            domainVONS = DomainToVOConverter.toDomainVO(domainNS);
-            transId = createTransaction(domainVONS, userAC).getTransactionID();
-            Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
-            String rsp = eppChangeReq.send()[1];
-            assert rsp != null;
-            assert rsp.length() > 0;
-            rsp = rsp.replaceAll("\\s", " ");
-            assert rsp.matches(DELETE_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            /*
-            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EPPPollResponse pollRsp = eppPollRequest.send();
-            assert pollRsp != null;
-            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
-            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
-                    "unexpected request id: " + pollRsp.getChangeRequestId();
-            */
-        } finally {
-            processDAO.close();
-        }
+        domainNS.removeNameServer("pr4.ns1.some.org");
+        domainVONS = DomainToVOConverter.toDomainVO(domainNS);
+        transId = createTransaction(domainVONS, userAC).getTransactionID();
+        Transaction trans = transactionManagerBean.getTransaction(transId);
+        EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+        String rsp = eppChangeReq.send()[1];
+        assert rsp != null;
+        assert rsp.length() > 0;
+        rsp = rsp.replaceAll("\\s", " ");
+        assert rsp.matches(DELETE_HOST_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+        /*
+        EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+        EPPPollResponse pollRsp = eppPollRequest.send();
+        assert pollRsp != null;
+        assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+        assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                "unexpected request id: " + pollRsp.getChangeRequestId();
+        */
     }
 
     public static final String UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 = ".*Change Request Id:.*";
@@ -195,37 +183,28 @@ public class EPPChangesTest extends TransactionalSpringContextTests {
 
     @Test(dependsOnMethods = "testDeleteHost")
     public void testUpdateHostRemoveIP() throws Exception {
-        try {
-            Host nameServer = domainNS.getNameServer("pr3.ns1.some.org");
-            nameServer.removeIPAddress("11.2.3.4");
-            domainVONS = DomainToVOConverter.toDomainVO(domainNS);
-            transId = createTransaction(domainVONS, userAC).getTransactionID();
-            Transaction trans = transactionManagerBean.getTransaction(transId);
-            EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
-            String rsp = eppChangeReq.send()[1];
-            assert rsp != null;
-            assert rsp.length() > 0;
-            rsp = rsp.replaceAll("\\s", " ");
-            assert rsp.matches(UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
-            /*
-            EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
-            EPPPollResponse pollRsp = eppPollRequest.send();
-            assert pollRsp != null;
-            assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
-            assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
-                    "unexpected request id: " + pollRsp.getChangeRequestId();
-            */
-        } finally {
-            processDAO.close();
-        }
+        Host nameServer = domainNS.getNameServer("pr3.ns1.some.org");
+        nameServer.removeIPAddress("11.2.3.4");
+        domainVONS = DomainToVOConverter.toDomainVO(domainNS);
+        transId = createTransaction(domainVONS, userAC).getTransactionID();
+        Transaction trans = transactionManagerBean.getTransaction(transId);
+        EPPChangeReq eppChangeReq = new EPPChangeReq(trans, hostManager, eppClient);
+        String rsp = eppChangeReq.send()[1];
+        assert rsp != null;
+        assert rsp.length() > 0;
+        rsp = rsp.replaceAll("\\s", " ");
+        assert rsp.matches(UPDATE_HOST_REMOVE_IP_EXPECTED_RSP_1 + trans.getTicketID() + ".*");
+        /*
+        EPPPollRequest eppPollRequest = new EPPPollRequest(eppClient);
+        EPPPollResponse pollRsp = eppPollRequest.send();
+        assert pollRsp != null;
+        assert EPPPollResponse.Status.DOC_APPROVED.equals(pollRsp.getStatus());
+        assert trans.getTicketID().toString().equals(pollRsp.getChangeRequestId()) :
+                "unexpected request id: " + pollRsp.getChangeRequestId();
+        */
     }
 
     protected void cleanUp() {
-        processDAO.deleteAll();
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
     }
 
     protected Domain createDomain(String name) {

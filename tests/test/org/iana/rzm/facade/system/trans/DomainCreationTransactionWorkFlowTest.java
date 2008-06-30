@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true, groups = {"facade-system", "DomainCreationTransactionWorkFlowTest"})
-public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
+public class DomainCreationTransactionWorkFlowTest {// extends CommonGuardedSystemTransaction {
 /*
     private final static String DOMAIN_NAME_BASE = "createtranstest";
 
@@ -175,7 +175,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
         try {
             setUser(userAC);
-            IDomainVO retrievedDomain = gsds.getDomain(domain.getName());
+            IDomainVO retrievedDomain = GuardedSystemDomainService.getDomain(domain.getName());
             assert retrievedDomain != null;
             assert retrievedDomain.getAdminContact() != null;
             assertEquals(domain.getAdminContact(), retrievedDomain.getAdminContact());
@@ -244,7 +244,7 @@ public class DomainCreationTransactionWorkFlowTest extends CommonGuardedSystemTr
 
     private TransactionVO createTransaction(DomainVO domainVO, RZMUser user) throws Exception {
         setUser(user);  //iana
-        TransactionVO transaction = ats.createCreationTransaction(domainVO);
+        TransactionVO transaction = GuardedAdminTransactionServiceBean.createCreationTransaction(domainVO);
         closeServices();
         return transaction;
     }

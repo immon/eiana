@@ -1,7 +1,7 @@
 package org.iana.rzm.mail;
 
+import org.iana.rzm.conf.DefinedTestProcess;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.graph.def.ProcessDefinition;
@@ -28,11 +28,6 @@ public class MailReceiverTimerTest {
         ApplicationContext ctx = SpringApplicationContext.getInstance().getContext();
         processDAO = (ProcessDAO) ctx.getBean("processDAO");
         schedulerThread = new SchedulerThread((JbpmConfiguration) ctx.getBean("jbpmConfiguration"));
-        try {
-            processDAO.deploy(getProcessDefinition());
-        } finally {
-            processDAO.close();
-        }
     }
 
     @Test
@@ -47,12 +42,8 @@ public class MailReceiverTimerTest {
     }
 
     private void beginProcess() throws InterruptedException {
-        try {
-            ProcessInstance processInstance = processDAO.newProcessInstance("Mails Receiver");
-            processInstance.signal();
-        } finally {
-            processDAO.close();
-        }
+        ProcessInstance processInstance = processDAO.newProcessInstance("Mails Receiver");
+        processInstance.signal();
     }
 
     @AfterClass(alwaysRun = true)

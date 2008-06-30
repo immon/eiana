@@ -9,7 +9,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.test.spring.TransactionalSpringContextTests;
+import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true)
-public class SystemDomainServiceTest extends TransactionalSpringContextTests {
+public class SystemDomainServiceTest extends RollbackableSpringContextTest {
     protected SystemDomainService SystemDomainServiceBean;
     protected UserManager userManager;
     protected DomainManager domainManager;

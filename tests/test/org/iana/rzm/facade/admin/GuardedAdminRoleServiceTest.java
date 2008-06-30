@@ -5,7 +5,7 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.admin.users.AdminRoleService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.converter.RoleConverter;

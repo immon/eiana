@@ -12,7 +12,7 @@ import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.user.converter.UserConverter;
@@ -25,9 +25,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
 
 /**
  * @author: Piotr Tkaczyk

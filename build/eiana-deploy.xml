@@ -104,6 +104,10 @@
         </hibernatetool>
     </target>
 
+    <target name="database.init.forTests"
+            depends="all.jar, database.create.test, jbpm.init">
+    </target>
+
     <!-- database initialization -->
 
     <path id="inittools.classpath">
@@ -177,7 +181,8 @@
         </java>
     </target>
 
-    <target name="jbpm.init" depends="database.create.test, all.jar, replace.services">
+    <target name="jbpm.init" depends="all.jar, replace.services">
+    <!--<target name="jbpm.init" depends="database.create.test, all.jar, replace.services">-->
         <java classname="org.iana.rzm.init.ant.ProcessDeployment">
             <arg value="domain-modification.xml"/>
             <classpath refid="inittools.classpath"/>
@@ -507,7 +512,7 @@
         </replace>
     </target>
 
-    <target name="all.test" depends="clean, replace.services, all.compile, database.test.dropCreate,database.create.test" description="runs all test from groups that is equal to property value (test.group)
+    <target name="all.test" depends="clean, replace.services, all.compile, database.test.dropCreate, database.init.forTests" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
 
         <condition property="test.group.excluded" value="">
