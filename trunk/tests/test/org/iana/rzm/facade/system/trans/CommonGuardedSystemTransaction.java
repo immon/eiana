@@ -12,20 +12,21 @@ import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.SystemDomainService;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.notification.NotificationConverter;
 import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
+import org.iana.test.spring.RollbackableSpringContextTest;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
 
@@ -36,27 +37,37 @@ import java.util.List;
  * @author: JaKub Laszkiewicz
  */
 
-public abstract class CommonGuardedSystemTransaction {
+public abstract class CommonGuardedSystemTransaction extends RollbackableSpringContextTest {
     protected ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-    protected ProcessDAO processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-    protected HostManager hostManager = (HostManager) appCtx.getBean("hostManager");
-    protected UserManager userManager = (UserManager) appCtx.getBean("userManager");
-    protected DomainManager domainManager = (DomainManager) appCtx.getBean("domainManager");
-    protected AdminNotificationService notificationService =
-            (AdminNotificationService) appCtx.getBean("notificationService");
-    protected DataAccessObject<PNotification> notificationManagerBean =
-            (DataAccessObject<PNotification>) appCtx.getBean("notificationDAO");
-    protected TransactionManager transactionManagerBean =
-            (TransactionManager) appCtx.getBean("transactionManagerBean");
-    protected TransactionService gsts =
-            (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
-    protected SystemDomainService gsds =
-            (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
-    protected AdminDomainService ads =
-            (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
+    protected ProcessDAO processDAO; //= (ProcessDAO) appCtx.getBean("processDAO");
+    protected HostManager hostManager; //= (HostManager) appCtx.getBean("hostManager");
+    protected UserManager userManager; //= (UserManager) appCtx.getBean("userManager");
+    protected DomainManager domainManager; //= (DomainManager) appCtx.getBean("domainManager");
+    protected AdminNotificationService notificationService;// = (AdminNotificationService) appCtx.getBean("notificationService");
+    protected DataAccessObject<PNotification> notificationDAO; //= (DataAccessObject<PNotification>) appCtx.getBean("notificationDAO");
+    protected TransactionManager transactionManagerBean;// = (TransactionManager) appCtx.getBean("transactionManagerBean");
+    protected TransactionService GuardedSystemTransactionService;// = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
+    protected SystemDomainService GuardedSystemDomainService; // = (SystemDomainService) appCtx.getBean("GuardedSystemDomainService");
+    protected AdminDomainService GuardedAdminDomainServiceBean; // = (AdminDomainService) appCtx.getBean("GuardedAdminDomainServiceBean");
+    protected AdminTransactionService GuardedAdminTransactionServiceBean; // = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
+    protected AuthenticationService authenticationServiceBean; // = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
+
     protected RZMUser defaultIana;
-    protected AdminTransactionService ats = (AdminTransactionService) appCtx.getBean("GuardedAdminTransactionServiceBean");
-    protected AuthenticationService authService = (AuthenticationService) appCtx.getBean("authenticationServiceBean");
+
+    private boolean wasInit = false;
+
+    public CommonGuardedSystemTransaction() {
+        super(SpringApplicationContext.CONFIG_FILE_NAME);
+    }
+
+    protected abstract void initTestData();
+
+    protected final void init() {
+        if (!wasInit) {
+            initTestData();
+            wasInit = true;
+        }
+    }
 
     @BeforeClass
     public void commonInit() {
@@ -68,7 +79,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {
         setUser(user);     //iana
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
-        ats.moveTransactionToNextState(transId);
+        GuardedAdminTransactionServiceBean.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
@@ -76,7 +87,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptZONE_INSERTION(RZMUser user, long transId) throws Exception {
         setUser(user); //iana
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
-        ats.moveTransactionToNextState(transId);
+        GuardedAdminTransactionServiceBean.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_PUBLICATION", transId);
         closeServices();
     }
@@ -84,7 +95,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);   //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.moveTransactionToNextState(transId);
+        GuardedSystemTransactionService.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_ZONE_INSERTION", transId);
         closeServices();
     }
@@ -92,7 +103,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptUSDOC_APPROVALnoNSChange(RZMUser user, long transId) throws Exception {
         setUser(user); //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.moveTransactionToNextState(transId);
+        GuardedSystemTransactionService.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("COMPLETED", transId);
         closeServices();
     }
@@ -100,7 +111,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptEXT_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.moveTransactionToNextState(transId);
+        GuardedSystemTransactionService.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         closeServices();
     }
@@ -108,7 +119,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptMANUAL_REVIEW(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
-        gsts.transitTransaction(transId, "accept");
+        GuardedSystemTransactionService.transitTransaction(transId, "accept");
         assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
         closeServices();
     }
@@ -116,7 +127,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptIANA_CHECK(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_IANA_CHECK", transId);
-        gsts.transitTransaction(transId, "accept");
+        GuardedSystemTransactionService.transitTransaction(transId, "accept");
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
         closeServices();
     }
@@ -124,7 +135,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-        gsts.moveTransactionToNextState(transId);
+        GuardedSystemTransactionService.moveTransactionToNextState(transId);
         assert isTransactionInDesiredState("PENDING_IANA_CONFIRMATION", transId);
         closeServices();
     }
@@ -132,10 +143,10 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        TransactionVO trans = gsts.get(transId);
+        TransactionVO trans = GuardedSystemTransactionService.get(transId);
         List<String> tokens = trans.getTokens(SystemRoleVO.SystemType.AC);
         assert tokens.size() > 0;
-        gsts.rejectTransaction(transId, tokens.iterator().next());
+        GuardedSystemTransactionService.rejectTransaction(transId, tokens.iterator().next());
         assert isTransactionInDesiredState("REJECTED", transId);
         closeServices();
     }
@@ -143,14 +154,14 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser user, long transId) throws Exception {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.rejectTransaction(transId, "0");
+        GuardedSystemTransactionService.rejectTransaction(transId, "0");
         closeServices();
     }
 
     protected void closeEXT_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.transitTransaction(transId, "close");
+        GuardedSystemTransactionService.transitTransaction(transId, "close");
         assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
         closeServices();
     }
@@ -158,7 +169,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectEXT_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_EXT_APPROVAL", transId);
-        gsts.rejectTransaction(transId);
+        GuardedSystemTransactionService.rejectTransaction(transId);
         assert isTransactionInDesiredState("REJECTED", transId);
         closeServices();
     }
@@ -166,7 +177,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);  //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        gsts.rejectTransaction(transId);
+        GuardedSystemTransactionService.rejectTransaction(transId);
         assert isTransactionInDesiredState("REJECTED", transId);
         closeServices();
     }
@@ -174,7 +185,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void rejectIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
         setUser(user);  //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-        gsts.rejectTransaction(transId);
+        GuardedSystemTransactionService.rejectTransaction(transId);
         assert isTransactionInDesiredState("REJECTED", transId);
         closeServices();
     }
@@ -182,7 +193,7 @@ public abstract class CommonGuardedSystemTransaction {
     protected void closeIMPACTED_PARTIES(RZMUser user, long transId) throws Exception {
         setUser(user); //userAC
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-        gsts.transitTransaction(transId, "close");
+        GuardedSystemTransactionService.transitTransaction(transId, "close");
         assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
         closeServices();
     }
@@ -190,19 +201,19 @@ public abstract class CommonGuardedSystemTransaction {
     protected void closePENDING_CONTACT_CONFIRMATION(RZMUser user, long transId) throws Exception {
         setUser(user);  //iana
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.transitTransaction(transId, "close");
+        GuardedSystemTransactionService.transitTransaction(transId, "close");
         assert isTransactionInDesiredState("ADMIN_CLOSED", transId);
         closeServices();
     }
 
     protected void acceptPENDING_CONTACT_CONFIRMATION(RZMUser user, long transId, int tokenCount) throws Exception {
         setUser(user);
-        TransactionVO trans = gsts.get(transId);
+        TransactionVO trans = GuardedSystemTransactionService.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
         for (String token : tokens) {
             assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-            gsts.acceptTransaction(transId, token);
+            GuardedSystemTransactionService.acceptTransaction(transId, token);
         }
         assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
         closeServices();
@@ -210,12 +221,12 @@ public abstract class CommonGuardedSystemTransaction {
 
     protected void acceptPENDING_CONTACT_CONFIRMATION_IMPACTED_PARTIES(RZMUser user, long transId, int tokenCount) throws Exception {
         setUser(user);
-        TransactionVO trans = gsts.get(transId);
+        TransactionVO trans = GuardedSystemTransactionService.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
         for (String token : tokens) {
             assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-            gsts.acceptTransaction(transId, token);
+            GuardedSystemTransactionService.acceptTransaction(transId, token);
         }
         assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
         closeServices();
@@ -223,12 +234,12 @@ public abstract class CommonGuardedSystemTransaction {
 
     protected void acceptPENDING_IMPACTED_PARTIES(RZMUser user, long transId, int tokenCount) throws Exception {
         setUser(user); //userAC
-        TransactionVO trans = gsts.get(transId);
+        TransactionVO trans = GuardedSystemTransactionService.get(transId);
         List<String> tokens = trans.getTokens();
         assert tokens.size() == tokenCount : "unexpected token count: " + tokens.size();
         for (String token : tokens) {
             assert isTransactionInDesiredState("PENDING_IMPACTED_PARTIES", transId);
-            gsts.acceptTransaction(transId, token);
+            GuardedSystemTransactionService.acceptTransaction(transId, token);
         }
         assert isTransactionInDesiredState("PENDING_MANUAL_REVIEW", transId);
         closeServices();
@@ -237,14 +248,14 @@ public abstract class CommonGuardedSystemTransaction {
     protected void acceptPENDING_CONTACT_CONFIRMATIONWrongToken(RZMUser firstUser, RZMUser secondUser, long transId) throws Exception {
         setUser(firstUser); //userAC
         assert isTransactionInDesiredState("PENDING_CONTACT_CONFIRMATION", transId);
-        gsts.acceptTransaction(transId, "0");
+        GuardedSystemTransactionService.acceptTransaction(transId, "0");
         closeServices();
     }
 
     protected void acceptPENDING_CREATION(long transId) throws Exception {
         setDefaultUser();
         assert isTransactionInDesiredState("PENDING_CREATION", transId);
-        gsts.transitTransaction(transId, "go-on");
+        GuardedSystemTransactionService.transitTransaction(transId, "go-on");
         closeServices();
     }
 
@@ -262,21 +273,21 @@ public abstract class CommonGuardedSystemTransaction {
 
     protected void setUser(RZMUser user) throws Exception {
         AuthenticatedUser authUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
-        gsts.setUser(authUser);
-        gsds.setUser(authUser);
-        ats.setUser(authUser);
+        GuardedSystemTransactionService.setUser(authUser);
+        GuardedSystemDomainService.setUser(authUser);
+        GuardedAdminTransactionServiceBean.setUser(authUser);
     }
 
     protected void setUser(String loginName) throws Exception {
-        AuthenticatedUser authUser = authService.authenticate(new PasswordAuth(loginName, ""));
+        AuthenticatedUser authUser = authenticationServiceBean.authenticate(new PasswordAuth(loginName, ""));
         setUser(authUser);
     }
 
     protected void setUser(AuthenticatedUser authUser) {
-        gsts.setUser(authUser);
-        gsds.setUser(authUser);
-        ats.setUser(authUser);
-        ads.setUser(authUser);
+        GuardedSystemTransactionService.setUser(authUser);
+        GuardedSystemDomainService.setUser(authUser);
+        GuardedAdminTransactionServiceBean.setUser(authUser);
+        GuardedAdminDomainServiceBean.setUser(authUser);
         notificationService.setUser(authUser);
     }
 
@@ -289,14 +300,14 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected void closeServices() {
-        gsts.close();
-        gsds.close();
-        ats.close();
+        GuardedSystemTransactionService.close();
+        GuardedSystemDomainService.close();
+        GuardedAdminTransactionServiceBean.close();
     }
 
     protected IDomainVO getDomain(String domainName, RZMUser user) throws Exception {
         setUser(user);
-        return gsds.getDomain(domainName);
+        return GuardedSystemDomainService.getDomain(domainName);
     }
 
     protected IDomainVO getDomain(String domainName) throws Exception {
@@ -310,13 +321,13 @@ public abstract class CommonGuardedSystemTransaction {
     protected TransactionVO createTransaction(IDomainVO domainVO, RZMUser user, String submitterEmail) throws Exception {
         try {
             setUser(user);
-            List<TransactionVO> transaction = gsts.createTransactions(domainVO, false, submitterEmail);
+            List<TransactionVO> transaction = GuardedSystemTransactionService.createTransactions(domainVO, false, submitterEmail);
             assert transaction != null;
             assert transaction.size() == 1;
             return transaction.iterator().next();
         } catch (CreateTicketException e) {
             // ignored
-            return gsts.get(e.getTransactionId());
+            return GuardedSystemTransactionService.get(e.getTransactionId());
         }
     }
 
@@ -325,11 +336,11 @@ public abstract class CommonGuardedSystemTransaction {
     }
 
     protected List<TransactionVO> createTransactions(IDomainVO domainVO, boolean splitNameServerChange) throws Exception {
-        return gsts.createTransactions(domainVO, splitNameServerChange);
+        return GuardedSystemTransactionService.createTransactions(domainVO, splitNameServerChange);
     }
 
     protected void transitTransaction(long id, String transitionName) throws Exception {
-        gsts.transitTransaction(id, transitionName);
+        GuardedSystemTransactionService.transitTransaction(id, transitionName);
     }
 
     protected void updateTransaction(long id, Long ticketId, boolean redelegation) throws Exception {
@@ -337,30 +348,30 @@ public abstract class CommonGuardedSystemTransaction {
         trans.setTransactionID(id);
         trans.setTicketID(ticketId);
         trans.setRedelegation(redelegation);
-        ats.updateTransaction(trans);
+        GuardedAdminTransactionServiceBean.updateTransaction(trans);
     }
 
     protected void transitTransactionToState(Long id, String state) throws Exception {
-        ats.transitTransactionToState(id, state);
+        GuardedAdminTransactionServiceBean.transitTransactionToState(id, state);
     }
 
     protected void acceptTransaction(long transactionId, String token) throws Exception {
         assert token != null;
-        gsts.acceptTransaction(transactionId, token);
+        GuardedSystemTransactionService.acceptTransaction(transactionId, token);
     }
 
     protected TransactionVO getTransaction(long transactionId) throws Exception {
-        return gsts.get(transactionId);
+        return GuardedSystemTransactionService.get(transactionId);
     }
 
     private boolean isTransactionInDesiredState(String stateName, long transId) throws Exception {
-        TransactionVO retTransactionVO = gsts.get(transId);
+        TransactionVO retTransactionVO = GuardedSystemTransactionService.get(transId);
         return retTransactionVO.getState().getName().toString().equals(stateName);
     }
 
     protected void checkStateLog(RZMUser user, Long transId, String[][] usersStates) throws Exception {
         setUser(user);
-        TransactionVO trans = gsts.get(transId);
+        TransactionVO trans = GuardedSystemTransactionService.get(transId);
         List<TransactionStateLogEntryVO> log = trans.getStateLog();
         assert log != null;
         assert log.size() == usersStates.length;

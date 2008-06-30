@@ -5,12 +5,9 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.RZMUser;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -23,14 +20,11 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system", "UserSplitTransactionTest"})
 public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
 
-    @BeforeClass
-    public void init() {
+    protected void initTestData() {
         Domain domain = new Domain("usersplittest");
         domain.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain);
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
     }
 
     @Test
@@ -70,9 +64,9 @@ public class UserSplitTransactionTest extends CommonGuardedSystemTransaction {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 }

@@ -8,15 +8,14 @@ import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -58,11 +57,7 @@ public class GuardedSystemTransactionServiceTest {
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         userManager = (UserManager) appCtx.getBean("userManager");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
-        try {
-            processDAO.deploy(DefinedTestProcess.getDefinition());
-        } finally {
-            processDAO.close();
-        }
+
         userAc = createUser("ac", SystemRole.SystemType.AC, "gsts");
         userTc = createUser("tc", SystemRole.SystemType.TC, "gsts");
         userAc1 = createUser("ac1", SystemRole.SystemType.AC, "gstss");

@@ -3,7 +3,7 @@ package org.iana.rzm.trans;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
@@ -17,14 +17,12 @@ import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.springframework.context.ApplicationContext;
+import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.naming.InvalidNameException;
@@ -39,41 +37,39 @@ import java.util.Set;
  */
 
 @Test(sequential = true, groups = {"test", "NameServerChangeTransactionTest"})
-public class NameServerChangeTransactionTest {
-    private TransactionService gsts;
-    private TransactionDetectorService detector;
-    private UserManager userManager;
-    private DomainManager domainManager;
-    private IDomainVO domain;
-    private ProcessDAO processDAO;
+public class NameServerChangeTransactionTest extends RollbackableSpringContextTest {
 
+    protected TransactionService GuardedSystemTransactionService;
+    protected TransactionDetectorService detectorService;
+    protected UserManager userManager;
+    protected DomainManager domainManager;
+    protected ProcessDAO processDAO;
 
-    @BeforeClass
+    public NameServerChangeTransactionTest() {
+        super(SpringApplicationContext.CONFIG_FILE_NAME);
+    }
+
     public void init() throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException, InvalidNameException {
-        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
-        userManager = (UserManager) appCtx.getBean("userManager");
-        domainManager = (DomainManager) appCtx.getBean("domainManager");
-        gsts = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
-        detector = (TransactionDetectorService) appCtx.getBean("detectorService");
+//        ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
+//        processDAO = (ProcessDAO) appCtx.getBean("processDAO");
+//        userManager = (UserManager) appCtx.getBean("userManager");
+//        domainManager = (DomainManager) appCtx.getBean("domainManager");
+//        GuardedSystemTransactionService = (TransactionService) appCtx.getBean("GuardedSystemTransactionService");
+//        detectorService = (TransactionDetectorService) appCtx.getBean("detectorService");
 
         UserVO userAc;
         userAc = createUser("acNSC", SystemRole.SystemType.AC);
         TestAuthenticatedUser testAuthUser = new TestAuthenticatedUser(userAc);
-        gsts.setUser(testAuthUser.getAuthUser());
+        GuardedSystemTransactionService.setUser(testAuthUser.getAuthUser());
 
-        domain = createDomain();
 
-        try {
-            processDAO.deploy(DefinedTestProcess.getDefinition());
-        } finally {
-            processDAO.close();
-        }
     }
 
     @Test
     public void testNameServersChange() throws Exception {
         TransactionVO transaction = null;
+
+        IDomainVO domain = createDomain();
 
         List<HostVO> ns = domain.getNameServers();
         HostVO newHostVO = new HostVO("new.host.name");
@@ -85,18 +81,18 @@ public class NameServerChangeTransactionTest {
         ns.add(newHostVO);
         domain.setNameServers(ns);
 
-        transaction = gsts.createTransactions(domain, false).get(0);
+        transaction = GuardedSystemTransactionService.createTransactions(domain, false).get(0);
 
         assert transaction != null;
 
-        TransactionVO loadedTransaction = gsts.get(transaction.getTransactionID());
+        TransactionVO loadedTransaction = GuardedSystemTransactionService.get(transaction.getTransactionID());
         assert loadedTransaction != null;
         assert compareTransactionVOs(transaction, loadedTransaction);
         Host newNameServer = new Host("newNameServer");
         List<HostVO> hostVOList = new ArrayList<HostVO>();
         hostVOList.add(DomainToVOConverter.toHostVO(newNameServer));
         domain.setNameServers(hostVOList);
-        TransactionActionsVO transactionActionsVO = detector.detectTransactionActions(domain);
+        TransactionActionsVO transactionActionsVO = detectorService.detectTransactionActions(domain);
         assert transactionActionsVO.containsNameServerAction();
         assert transactionActionsVO.getActions().size() == 1;
         for (ChangeVO changeVO : transactionActionsVO.getActions().get(0).getChange()) {
@@ -120,12 +116,12 @@ public class NameServerChangeTransactionTest {
 
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        gsts.close();
-        processDAO.deleteAll();
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user.getLoginName());
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        GuardedSystemTransactionService.close();
+//        processDAO.deleteAll();
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user.getLoginName());
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 
     private UserVO createUser(String name, SystemRole.SystemType role) {

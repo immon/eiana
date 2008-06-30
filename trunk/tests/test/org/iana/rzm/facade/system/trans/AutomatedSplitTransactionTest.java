@@ -7,12 +7,9 @@ import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
-import org.iana.rzm.user.RZMUser;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -25,8 +22,7 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system"})
 public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransaction {
 
-    @BeforeClass
-    public void init() {
+    protected void initTestData() {
         Domain domain1 = new Domain("automatedsplittest");
         domain1.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain1);
@@ -50,8 +46,6 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         domain4.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain4);
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
     }
 
     @Test
@@ -63,7 +57,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
         setDefaultUser();
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = GuardedSystemTransactionService.createTransactions(domain, false);
         closeServices();
 
         // 1 group/trans -> impactedhost-1
@@ -87,7 +81,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
         setDefaultUser();
-        List<TransactionVO> trans = gsts.createTransactions(domain, true);
+        List<TransactionVO> trans = GuardedSystemTransactionService.createTransactions(domain, true);
         closeServices();
 
         // 1 group/trans -> impactedhost-1
@@ -110,7 +104,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
         setDefaultUser();
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = GuardedSystemTransactionService.createTransactions(domain, false);
         closeServices();
 
         // 1 group/trans -> impactedhost-1
@@ -127,9 +121,9 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
 
     @AfterClass (alwaysRun = true)
     public void cleanUp() {
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        domainManager.deleteAll();
-        hostManager.deleteAll();
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        domainManager.deleteAll();
+//        hostManager.deleteAll();
     }
 }

@@ -8,12 +8,11 @@ import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -21,9 +20,9 @@ import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.annotations.AfterMethod;
 
 
 /**
@@ -34,16 +33,15 @@ import org.testng.annotations.AfterMethod;
 @Test(sequential = true, groups = {"test", "GuardedAdminTransactionServiceTest"})
 public class GuardedAdminTransactionServiceWorkFlowTest {
 
-    ApplicationContext appCtx;
-    AdminTransactionService gAdminTransactionServ;
+    protected ApplicationContext appCtx;
+    protected AdminTransactionService gAdminTransactionServ;
 
-    UserManager userManager;
-    DomainManager domainManager;
-    ProcessDAO processDAO;
+    protected UserManager userManager;
+    protected DomainManager domainManager;
+    protected ProcessDAO processDAO;
+
     RZMUser user, wrongUser, domainUser;
-
     Domain domain;
-
     Long transactionID;
 
     private final static String DOMAIN_NAME = "gatstestdomain.org";
@@ -56,9 +54,6 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
         userManager = (UserManager) appCtx.getBean("userManager");
         processDAO = (ProcessDAO) appCtx.getBean("processDAO");
         domainManager = (DomainManager) appCtx.getBean("domainManager");
-
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
 
         user = new RZMUser();
         user.setLoginName("gatsadminuser");
@@ -384,7 +379,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
     @AfterMethod(alwaysRun = true)
     public void deleteTransactions() {
-        processDAO.deleteAll();        
+        processDAO.deleteAll();
     }
 
     @AfterClass(alwaysRun = true)

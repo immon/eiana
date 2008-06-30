@@ -4,14 +4,12 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 
 /**
@@ -27,8 +25,7 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
     final static String DOMAIN_NAME = "gstsfailuretest.org";
     final static String WRONG_NAME = "wrongdomainname.org";
 
-    @BeforeClass
-    public void init() {
+    protected void initTestData() {
         userAC = new RZMUser();
         userAC.setLoginName("gstsignaluser");
         userAC.setFirstName("ACuser");
@@ -67,12 +64,12 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
         domain.addNameServer(setupSecondHost("pr2"));
         domainManager.create(domain);
 
-        domain.setRegistryUrl("newregurl.org");
+        Domain newDomain = domain.clone();
 
-        domainVO = DomainToVOConverter.toDomainVO(domain);
+        newDomain.setRegistryUrl("newregurl.org");
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
+        domainVO = DomainToVOConverter.toDomainVO(newDomain);
+
     }
 
     @Test(expectedExceptions = {AccessDeniedException.class})
@@ -123,13 +120,13 @@ public class FailureGuardedSystemTransactionWorkflowTest extends CommonGuardedSy
     public void cleanUp() {
 /*
         for (EmailAddressee emailAddressee : emailAddresseeDAO.findAll()) {
-            notificationManagerBean.deleteNotificationsByAddresse(emailAddressee);
+            notificationDAO.deleteNotificationsByAddresse(emailAddressee);
             emailAddresseeDAO.delete(emailAddressee);
         }
 */
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 }

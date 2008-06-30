@@ -10,14 +10,12 @@ import org.iana.rzm.domain.Host;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,8 +31,7 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
 
     RZMUser userAC;
 
-    @BeforeClass
-    public void init() {
+    protected void initTestData() {
         Domain domain1 = new Domain("impactedpartytest");
         domain1.setSupportingOrg(new Contact("so-name"));
         domain1.setAdminContact(new Contact("ac-name", "org", null, "", "", "a@x.pl", true));
@@ -66,9 +63,6 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         domain4.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));
         domainManager.create(domain4);
 
-        processDAO.deploy(DefinedTestProcess.getDefinition());
-        processDAO.close();
-
         userIANA = new RZMUser();
         userIANA.setLoginName("gstsignaliana");
         userIANA.setFirstName("IANAuser");
@@ -95,7 +89,7 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("impactedpartytest.registry.url");
 
         setDefaultUser();
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = GuardedSystemTransactionService.createTransactions(domain, false);
         closeServices();
 
         // 1 group/trans -> impactedhost-test1
@@ -119,9 +113,9 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("impactedpartytest.registry.url");
 
         setDefaultUser();
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = GuardedSystemTransactionService.createTransactions(domain, false);
         Criterion impactOnDomains = new Not(new IsNull(TransactionCriteriaFields.IMPACTED_DOMAIN));
-        List<TransactionVO> found = gsts.find(impactOnDomains);
+        List<TransactionVO> found = GuardedSystemTransactionService.find(impactOnDomains);
         assert found.size() == 2;
         closeServices();
     }
@@ -135,12 +129,12 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         domain.setRegistryUrl("impactedpartytest.registry.url");
 
         setDefaultUser();
-        List<TransactionVO> trans = gsts.createTransactions(domain, false);
+        List<TransactionVO> trans = GuardedSystemTransactionService.createTransactions(domain, false);
         Set<String> names = new HashSet<String>();
         names.add("impacteddomain-test1");
         names.add("impacteddomain-test2");
         Criterion impactOnDomains = new In(TransactionCriteriaFields.IMPACTED_DOMAIN, names);
-        List<TransactionVO> found = gsts.find(impactOnDomains);
+        List<TransactionVO> found = GuardedSystemTransactionService.find(impactOnDomains);
         assert found.size() == 1;
         closeServices();
     }
@@ -152,9 +146,9 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
     
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
-        for (RZMUser user : userManager.findAll())
-            userManager.delete(user);
-        for (Domain domain : domainManager.findAll())
-            domainManager.delete(domain.getName());
+//        for (RZMUser user : userManager.findAll())
+//            userManager.delete(user);
+//        for (Domain domain : domainManager.findAll())
+//            domainManager.delete(domain.getName());
     }
 }

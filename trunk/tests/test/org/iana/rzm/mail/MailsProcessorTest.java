@@ -21,7 +21,6 @@ import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionManager;
 import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
@@ -30,9 +29,9 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.test.spring.TransactionalSpringContextTests;
-import org.testng.annotations.Test;
+import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 import java.io.*;
 import java.util.*;
@@ -41,7 +40,7 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true)
-public class MailsProcessorTest extends TransactionalSpringContextTests {
+public class MailsProcessorTest extends RollbackableSpringContextTest {
     protected TransactionManager transactionManagerBean;
     protected ProcessDAO processDAO;
     protected UserManager userManager;
@@ -89,8 +88,6 @@ public class MailsProcessorTest extends TransactionalSpringContextTests {
 
     protected void init() throws Exception {
         try {
-            processDAO.deploy(DefinedTestProcess.getDefinition());
-
             RZMUser user1 = new RZMUser();
             user1.setLoginName("sys1mailrec");
             user1.addRole(new SystemRole(SystemRole.SystemType.AC, "mailrecdomain", true, true));

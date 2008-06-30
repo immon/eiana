@@ -9,7 +9,7 @@ import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.admin.trans.AdminTransactionService;
 import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.TestAuthenticatedUser;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
 import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.facade.system.trans.TransactionService;
@@ -18,7 +18,6 @@ import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.trans.NoSuchTransactionException;
 import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
@@ -63,12 +62,6 @@ public class ResendNotificationTest {
         domainManager = (DomainManager) appCtx.getBean("domainManager");
         notificationManager = (DataAccessObject<PNotification>) appCtx.getBean("notificationDAO");
         transactionManager = (TransactionManager) appCtx.getBean("transactionManagerBean");
-
-        try {
-            processDAO.deploy(DefinedTestProcess.getDefinition());
-        } finally {
-            processDAO.close();
-        }
 
         iana = new RZMUser();
         iana.setLoginName("resendianauser");
