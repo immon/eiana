@@ -77,15 +77,6 @@ public class ConfirmationVO implements Serializable {
         return true;
     }
 
-    public int hashCode() {
-        int result;
-        result = (role != null ? role.hashCode() : 0);
-        result = 31 * result + (confirmed ? 1 : 0);
-        result = 31 * result + (contactName != null ? contactName.hashCode() : 0);
-        result = 31 * result + (newContact ? 1 : 0);
-        return result;
-    }
-
     public String getDomainName() {
         return domainName;
     }
