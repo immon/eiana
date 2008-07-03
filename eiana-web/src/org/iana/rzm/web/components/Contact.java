@@ -19,7 +19,7 @@ public abstract class Contact extends BaseComponent {
     public abstract IComponent getTypeComponent();
 
     @Component(id = "contactName", type = "RzmInsert", bindings = {
-        "value=prop:name", "raw=literal:true", "originalValue=prop:originalName", "modifiedStyle=literal:edited"}
+        "value=prop:contactNameOrgValue", "raw=literal:true", "originalValue=prop:originalContactNameOrgValue", "modifiedStyle=literal:edited"}
     )
     public abstract IComponent getContactNameComponent();
 
@@ -164,10 +164,12 @@ public abstract class Contact extends BaseComponent {
     public abstract String getPhone();
 
     public abstract void setName(Object name);
+    public abstract Object getName();
 
     public abstract void setUserRole(String text);
 
     public abstract void setOrganization(String org);
+    public abstract String getOrganization();
 
     public abstract void setPrivateEmail(String privateEmail);
 
@@ -352,6 +354,18 @@ public abstract class Contact extends BaseComponent {
 
     public boolean isUseJobTitle() {
         return !getJobTitleSpan().equals("hidden");
+    }
+
+    public String getContactNameOrgValue(){
+        return SystemRoleVOWrapper.SUPPORTING_ORGANIZATION.equals(getType()) ? getOrganization() : getName().toString();
+    }
+
+    public String getOriginalContactNameOrgValue(){
+        return SystemRoleVOWrapper.SUPPORTING_ORGANIZATION.equals(getType()) ? getOriginalOrg() : getOriginalName();
+    }
+
+    public boolean isTechOrAdminContact(){
+        return  !SystemRoleVOWrapper.SUPPORTING_ORGANIZATION.equals(getType());   
     }
 
 

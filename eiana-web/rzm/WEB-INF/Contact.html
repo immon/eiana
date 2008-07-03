@@ -18,12 +18,13 @@
                             <span jwcid="@If" condition="prop:role"><br/><span jwcid="@Insert" class="prop:roleAccountClass" value="literal:Role Account">Role Account</span></span>
                             <span jwcid="userRole"></span>
                         </td>
-                        <td valign="top"><strong><span jwcid="contactName">Chris Disspain</span></strong><br/>
+                        <td valign="top">
+                            <strong><span jwcid="contactName">Chris Disspain</span></strong><br/>
                             <span jwcid="jobTitleSpan">
                                 <span jwcid="jobTitle">"ceo@auda.org.au</span>
                                 <span jwcid=@If condition="prop:useJobTitle"><br/></span>
                             </span>
-                            <span jwcid="org">org</span>
+                            <span jwcid=@If condition="prop:techOrAdminContact"><span jwcid="org">org</span></span>
                             <span jwcid="@Any" class="prop:addressClass">
                                 <span jwcid="address">
                                     107 Faraday Street<br/> Melbourne VIC 3053
