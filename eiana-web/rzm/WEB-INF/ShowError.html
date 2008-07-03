@@ -6,7 +6,7 @@
         <span jwcid="@If" condition="ognl:page.hasErrors" volatile="true">
              <div style="margin: 10px 0 10px 0; padding: 10px; display: block;" class="errorMessageBox">
                 <strong>
-                    <span class="errorMessage" jwcid="@Insert" value="ognl:page.errorMessage">
+                    <span class="errorMessage" jwcid="@Insert" raw="literal:true" value="ognl:page.errorMessage">
                         --- Error message ---
                     </span>
                 </strong>

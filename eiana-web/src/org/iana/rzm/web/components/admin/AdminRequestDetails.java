@@ -80,6 +80,10 @@ public abstract class
             setVerisignStatus(getRequest().getVerisignStatus());
         }
 
+        if(getVerisignStatus() == null){
+            setVerisignStatus("Not Available");
+        }
+
     }
 
     public List<ConfirmationVOWrapper> getImpactedPartiesConfirmations() {

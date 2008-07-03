@@ -7,6 +7,7 @@ import org.apache.tapestry.valid.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.tapestry.validator.*;
+import org.iana.rzm.web.util.*;
 
 import java.util.*;
 
@@ -71,6 +72,9 @@ public abstract class NameServerListEditor extends BaseComponent {
 
     @Parameter(name="domainId", required = true)
     public abstract long getDomainId();
+
+    @Bean(org.iana.rzm.web.util.MessageUtil.class)
+    public abstract MessageUtil getMessageUtil();
 
     public abstract void setList(List<NameServerValue> list);
 
@@ -156,9 +160,11 @@ public abstract class NameServerListEditor extends BaseComponent {
         }
 
         getEditor().preventResubmission();
+
         if (getEditor().getValidationDelegate().getHasErrors()) {
             return;
         }
+
 
         getEditor().save(getList());
 

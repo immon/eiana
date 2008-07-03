@@ -1,15 +1,14 @@
 package org.iana.rzm.trans.notifications.impacted_parties;
 
-import org.iana.notifications.PAddressee;
-import org.iana.notifications.producers.DataProducer;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.change.DomainChangePrinter;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer;
-import org.iana.rzm.user.SystemRole;
+import org.iana.notifications.*;
+import org.iana.notifications.producers.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.change.*;
+import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.trans.notifications.default_producer.*;
+import org.iana.rzm.user.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -30,7 +29,7 @@ public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer 
             values.put("token", contactIdentity.getToken());
             values.put("domainName", "." + contactIdentity.getDomainName().toUpperCase());
             values.put("name", contactIdentity.getName());
-            // values.put("title", getContactJobTitle(td));
+            //values.put("title", getContactJobTitle(td));
             values.put("changes", DomainChangePrinter.print(td.getDomainChange()));
             // values.put("currentOrNewContact", isNewContact(td) ? "proposed new technical contact" : "current technical contact");
             // values.put("newContactOnly", isNewContact(td) ? newContactInfo(td) : "");
@@ -40,5 +39,5 @@ public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer 
         }
         return values;
     }
-    
+
 }
