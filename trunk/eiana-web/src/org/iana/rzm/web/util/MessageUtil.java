@@ -26,4 +26,8 @@ public class MessageUtil {
     public String getSessionTimeoutMessage(){
         return "Your Session has timed out. Please login to continue";
     }
+
+    public String getAllNameServersChangeMessage() {
+        return "Changing all Name Servers in one request is not allowed.";
+    }
 }

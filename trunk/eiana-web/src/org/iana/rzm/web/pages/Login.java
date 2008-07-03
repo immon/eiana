@@ -62,6 +62,9 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
                bindings = {"page=literal:RecoverUserName", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getRecoverUserNamedComponent();
 
+    @Component(id = "rememberMe", type = "Checkbox", bindings = {"value=prop:rememberMe"})
+    public abstract IComponent getAltFaxCheckBoxComponent();
+
     @InjectObject("engine-service:external")
     public abstract IEngineService getExternalPageService();
 
@@ -80,10 +83,6 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
     @InjectObject("service:rzm.LoginController")
     public abstract LoginController getLoginController();
 
-    @Persist()
-    public abstract RzmCallback getCallback();
-    public abstract void setCallback(RzmCallback callback);
-
     @InjectComponent("username")
     public abstract IFormComponent getUserNameField();
 
@@ -99,17 +98,20 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
     @InjectStateFlag("visit")
     public abstract boolean getVisitStateExists();
 
-    @Persist("client:page")
-    public abstract void setSessionTimeOutMessage(String message);
+    @Persist()
+    public abstract RzmCallback getCallback();
+    public abstract void setCallback(RzmCallback callback);
 
+    @Persist("client")
+    public abstract void setSessionTimeOutMessage(String message);
     public abstract String getSessionTimeOutMessage();
 
     public abstract void setUserName(String value);
-
     public abstract String getUserName();
 
-    public abstract String getPassword();
+    public abstract boolean isRememberMe();
 
+    public abstract String getPassword();
     public abstract void setPassword(String password);
 
     public void pageBeginRender(PageEvent event) {
@@ -189,7 +191,11 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
         visit.setUser(user);
         IEngineService engineService = getService();
         ILink iLink = getLoginController().loginUser(engineService, cycle, getCallback());
-        getCookieSource().writeCookieValue(Login.COOKIE_NAME, getUserName(), Login.COOKIE_MAX_AGE);
+
+        if(isRememberMe()){
+            getCookieSource().writeCookieValue(Login.COOKIE_NAME, getUserName(), Login.COOKIE_MAX_AGE);
+        }
+
         cycle.forgetPage(getPageName());
         return iLink;
     }

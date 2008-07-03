@@ -9,7 +9,9 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.user.*;
 import org.iana.rzm.web.model.*;
+import org.iana.rzm.web.services.*;
 import org.iana.rzm.web.util.*;
 
 import java.util.*;
@@ -63,8 +65,8 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Component(id="isNotNameServer", type = "If", bindings = {"condition=prop:notNameServer"})
     public abstract IComponent getIsNotNameServerComponent();
 
-    @Component(id="noTransactionPending", type = "If", bindings = {"condition=prop:noTransaction"})
-    public abstract IComponent getNoTransactionPendingComponent();
+    @Component(id="allowedToSubmit", type = "If", bindings = {"condition=prop:allowedToSubmit"})
+    public abstract IComponent getAllowedToSubmitComponent();
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:transactionPending"})
     public abstract IComponent getPendingRequestsComponent();
@@ -73,6 +75,15 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             bindings = {"listener=listener:viewPendingRequests"}
     )
     public abstract IComponent getPendingRequestsMessageComponent();
+
+    @Component(id = "pendingGlueRequest", type = "If", bindings = {"condition=prop:impactedPartyPending"})
+    public abstract IComponent getIsGluePendingComponent();
+
+      @Component(id = "pendingGlueMessage", type = "ShowPendingRequestsMessage", bindings = {
+            "listener=listener:viewGlueRequests",
+            "pendigRequestMessage=literal:This domain is part of a Glue change. Edits to Name Servers are disabled until the currently glue change is resolved "
+            })
+    public abstract IComponent getPendingGlueMessage();
 
 
     @Bean(ChangeMessageBuilder.class)
@@ -93,24 +104,24 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @InjectPage("user/UserRequestsPerspective")
     public abstract UserRequestsPerspective getRequestsPerspective();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract long getDomainId();
     public abstract void setDomainId(long id);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract List<ActionVOWrapper> getActionList();
     public abstract void setActionList(List<ActionVOWrapper> list);
 
-    @Persist("client:page")
+    @Persist("client")
     @InitialValue("literal:false")
     public abstract void setSeparateRequest(boolean value);
     public abstract boolean isSeparateRequest();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
-    @Persist("client:page")
+    @Persist("client")
     @InitialValue("literal:false")
     public abstract void setMustSplitRequest(boolean value);
     public abstract boolean isMustSplitRequest();
@@ -118,6 +129,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @InitialValue("literal:false")
     public abstract void setTransactionPending(boolean value);
     public abstract boolean isTransactionPending();
+
+    @InitialValue("literal:false")
+    public abstract void setImpactedPartyPending(boolean b);
+    public abstract boolean isImpactedPartyPending();
 
     public abstract ActionVOWrapper getAction();
     public abstract ChangeVOWrapper getChange();
@@ -133,6 +148,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
     public abstract void setNameServerChange(boolean nameServerChange);
     public abstract boolean isNameServerChange();
+
+    public boolean isAllowedToSubmit(){
+        return !isTransactionPending() && !isImpactedPartyPending();
+    }
 
     public  boolean isNoTransaction(){
         return  !isTransactionPending();
@@ -162,6 +181,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         try {
             SystemDomainVOWrapper domain = getUserServices().getDomain(currentDomain.getId());
             setTransactionPending(domain.isOperationPending());
+
             if (getActionList() == null) {
                 TransactionActionsVOWrapper transactionActions = getUserServices().getChanges(currentDomain);
                 setActionList(transactionActions.getChanges());
@@ -169,6 +189,17 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
                 setSeparateRequest(transactionActions.offerSeparateRequest());
                 setMustSplitRequest(transactionActions.mustSplitrequest());
             }
+
+            boolean impactedParty = false;
+            if(!domain.isOperationPending()){
+                int count =
+                    getUserServices().getTransactionCount(CriteriaBuilder.impactedParty(Arrays.asList(domain.getName())));
+                impactedParty = count >0 && isNameServerChange();
+              }
+
+              setImpactedPartyPending(impactedParty);
+
+
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         } catch (AccessDeniedException e) {
@@ -226,6 +257,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             separateRequestPage.setDomainId(getDomainId());
             separateRequestPage.setDomainName(getVisitState().getCurrentDomain(getDomainId()).getName());
             separateRequestPage.setMustSplit(isMustSplitRequest());
+            separateRequestPage.setImpactedPartyPending(isImpactedPartyPending());
             getRequestCycle().activate(separateRequestPage);
         } else {
             returnSummaryPage();
@@ -259,15 +291,24 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         } catch (TransactionExistsException e) {
             setTransactionPending(true);
         } catch (NameServerChangeNotAllowedException e) {
-            // todo: proper handling of this exception
-            setErrorMessage("A name server change is not allowed for the domain at this time");
+            setImpactedPartyPending(true);
         }
     }
+
+
 
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
         page.setCallback(createCallback());
+        return page;
+    }
+
+    public UserRequestsPerspective viewGlueRequests(){
+        UserRequestsPerspective page = getRequestsPerspective();
+        page.setEntityFetcher(new ImpactedPartyTransactionFetcher(Arrays.asList(getVisitState().getCurrentDomain(getDomainId()).getName()), getUserServices()));
+        page.setCallback(createCallback());
+        page.setImpactedParty(true);
         return page;
     }
 }
