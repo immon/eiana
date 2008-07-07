@@ -1,18 +1,18 @@
 package org.iana.dns.check;
 
-import pl.nask.xml.dynamic.env.Environment;
-import pl.nask.xml.dynamic.config.DPConfig;
-import pl.nask.xml.dynamic.DynaXMLParser;
-import pl.nask.xml.dynamic.exceptions.DynaXMLException;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.decorators.DomainDataDecorator;
 import org.iana.dns.check.decorators.ExceptionDataDecorator;
 import org.iana.dns.check.decorators.ValueDataDecorator;
 import org.iana.dns.check.exceptions.*;
-import org.iana.dns.DNSDomain;
-import org.iana.dns.DNSIPAddress;
+import pl.nask.xml.dynamic.DynaXMLParser;
+import pl.nask.xml.dynamic.config.DPConfig;
+import pl.nask.xml.dynamic.env.Environment;
+import pl.nask.xml.dynamic.exceptions.DynaXMLException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
@@ -181,6 +181,12 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
             ValueDataDecorator valueDecorator = new ValueDataDecorator(IP, ipAddress.getAddress());
             exceptionDataDecorator.addOther(valueDecorator);
         }
+
+        exceptions.add(exceptionDataDecorator);
+    }
+
+    public void acceptRadicalAlterationException(RadicalAlterationCheckException e) {
+        ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
 
         exceptions.add(exceptionDataDecorator);
     }

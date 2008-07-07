@@ -1,44 +1,47 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.rzm.facade.system.trans.vo.changes.*;
-import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.services.AbstractRZMStatefulService;
+import org.iana.dns.check.exceptions.RadicalAlterationCheckException;
+import org.iana.objectdiff.*;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
+import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.trans.converters.TransactionConverter;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
+import org.iana.rzm.trans.check.RadicalAlteration;
 import org.iana.rzm.user.UserManager;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.objectdiff.ChangeDetector;
 
 import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Piotr Tkaczyk
  */
 public class TransactionDetectorImpl extends AbstractRZMStatefulService implements TransactionDetectorService {
 
     private DomainManager domainManager;
+    private RadicalAlteration radicalCheck;
 
     private DiffConfiguration diffConfiguration;
 
-    public TransactionDetectorImpl(UserManager userManager, DomainManager domainManager, DiffConfiguration diffConfiguration) {
+    public TransactionDetectorImpl(UserManager userManager, DomainManager domainManager, DiffConfiguration diffConfiguration, RadicalAlteration radicalCheck) {
         super(userManager);
         this.domainManager = domainManager;
+        this.radicalCheck = radicalCheck;
         this.diffConfiguration = diffConfiguration;
     }
 
-    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
         return detectTransactionActions(domain, diffConfiguration);
     }
 
-    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
         CheckTool.checkNull(domain, "null domain");
 
         Domain currentDomain = domainManager.get(domain.getName());
@@ -47,10 +50,37 @@ public class TransactionDetectorImpl extends AbstractRZMStatefulService implemen
         TransactionActionsVO ret = new TransactionActionsVO();
         Domain modifiedDomain = DomainFromVOConverter.toDomain(domain);
         ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, config);
+
+        checkForRadicalAlteration(modifiedDomain);
+        detectNameServersCollision(change);
+
         List<TransactionActionVO> actions = TransactionConverter.toTransactionActionVO(change);
         ret.setGroups(createTransactionGroups(domain.getName(), actions));
 
         return ret;
+    }
+
+    private void checkForRadicalAlteration(Domain modifiedDomain) throws RadicalAlterationException {
+        try {
+            radicalCheck.check(modifiedDomain);
+        } catch (RadicalAlterationCheckException e) {
+            throw new RadicalAlterationException(e.getDomainName());
+        }
+    }
+
+    private void detectNameServersCollision(ObjectChange change) throws SharedNameServersCollisionException {
+        Set<String> nameServers = new HashSet<String>();
+        Map<String, Change> fieldChanges = change.getFieldChanges();
+        if (fieldChanges.containsKey("nameServers")) {
+            CollectionChange nameServersChange = (CollectionChange) fieldChanges.get("nameServers");
+            for (Change c : nameServersChange.getAdded()) {
+                if (c.isModification()) {
+                    nameServers.add(((ObjectChange) c).getId());
+                }
+            }
+        }
+        if(!nameServers.isEmpty())
+            throw new SharedNameServersCollisionException(nameServers);
     }
 
     private List<TransactionActionGroupVO> createTransactionGroups(String domainName, List<TransactionActionVO> actions) {

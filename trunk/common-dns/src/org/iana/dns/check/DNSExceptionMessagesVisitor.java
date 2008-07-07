@@ -1,12 +1,16 @@
 package org.iana.dns.check;
 
-import org.iana.dns.*;
+import org.iana.dns.DNSHost;
+import org.iana.dns.DNSIPAddress;
 import org.iana.dns.check.exceptions.*;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVisitor {
     private StringBuffer buffer = new StringBuffer();
@@ -119,6 +123,11 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptDNSCheckIOException(DNSCheckIOException e) {
         buffer.append("Unexpected error: ").append(e.getMessage()).append("\n");
+    }
+
+
+    public void acceptRadicalAlterationException(RadicalAlterationCheckException e) {
+        buffer.append("All name servers are changed for domain ").append(e.getDomainName());
     }
 
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {

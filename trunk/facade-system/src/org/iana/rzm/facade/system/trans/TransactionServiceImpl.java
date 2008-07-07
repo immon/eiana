@@ -1,6 +1,9 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.criteria.*;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Order;
+import org.iana.criteria.SortCriterion;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.check.DNSTechnicalCheck;
 import org.iana.dns.check.DNSTechnicalCheckException;
@@ -64,7 +67,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         return TransactionConverter.toTransactionVOList(trans);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException {
+    public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
             return createTransactions(domain, false, null, false, null);
         } catch (DNSTechnicalCheckException e) {
@@ -73,7 +76,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
             return createTransactions(domain, splitNameServerChange, null, false, null);
         } catch (DNSTechnicalCheckException e) {
@@ -82,7 +85,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
             return createTransactions(domain, splitNameServerChange, submitterEmail, false, null);
         } catch (DNSTechnicalCheckException e) {
@@ -91,7 +94,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         CheckTool.checkNull(domain, "null domain");
 
         existsTransaction(domain.getName());
@@ -104,9 +107,8 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
             List<TransactionVO> ret = new ArrayList<TransactionVO>();
             TransactionActionsVO actions = transactionDetectorService.detectTransactionActions(domain);
 
-            if (actions.containsNameServerAction()) {
-                if (isImpactedParty(domain.getName())) throw new NameServerChangeNotAllowedException();
-                if (performTechnicalCheck) performTechnicalCheck(modifiedDomain);
+            if (actions.containsNameServerAction() && performTechnicalCheck) {
+                performTechnicalCheck(modifiedDomain);
             }
 
             for (TransactionActionGroupVO group : actions.getGroups()) {
@@ -136,15 +138,6 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     private void existsTransaction(String domainName) throws TransactionExistsException {
         List<Transaction> list = transactionManager.findOpenTransactions(domainName);
         if (list.size() > 0) throw new TransactionExistsException(domainName);
-    }
-
-    private boolean isImpactedParty(String domainName) {
-        Criterion impactedParty = new And(
-            new Equal(TransactionCriteriaFields.IMPACTED_DOMAIN, domainName),
-            new IsNull(TransactionCriteriaFields.END)
-        );
-        List<Transaction> list = transactionManager.find(impactedParty);
-        return list.size() > 0;
     }
 
     private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, boolean performTechnicalCheck, String comment) throws NoModificationException, CloneNotSupportedException {

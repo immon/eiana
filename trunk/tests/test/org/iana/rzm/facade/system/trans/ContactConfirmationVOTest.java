@@ -19,7 +19,7 @@ import java.util.Set;
  * @author Jakub Laszkiewicz
  */
 @Test(sequential = true)
-public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
+public class ContactConfirmationVOTest  extends CommonGuardedSystemTransaction {
 
     protected void initTestData() {
         Domain domain = new Domain("contactconfirmation");
@@ -43,7 +43,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true, ""));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false, ""));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true, ""));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -66,7 +66,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -89,7 +89,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -112,7 +112,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -135,7 +135,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -160,7 +160,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -185,7 +185,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -210,7 +210,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -235,7 +235,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, false, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -263,7 +263,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, false, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -294,7 +294,7 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.AC, true, "ac-name-new", true));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name", false));
         expectedConfirmations.add(new ConfirmationVO("contactconfirmation", SystemRoleVO.SystemType.TC, true, "tc-name-new", true));
-        assert expectedConfirmations.equals(trans.getConfirmations());
+        assert equalConfirmations(expectedConfirmations, trans.getConfirmations());
 
         closeServices();
     }
@@ -322,5 +322,19 @@ public class ContactConfirmationVOTest extends CommonGuardedSystemTransaction {
         domain.setAdminContact(new ContactVO("ac-name-new", "ac-name-new@no-email.org"));
         domain.setTechContact(new ContactVO("tc-name-new", "tc-name-new@no-email.org"));
         return createTransaction(domain);
+    }
+
+    private boolean equalConfirmations(Set<ConfirmationVO> expectedConfirmations, Set<ConfirmationVO> currentConfirmations) {
+        assert expectedConfirmations.size() == currentConfirmations.size();
+        int exist = 0;
+        for (ConfirmationVO confirmationVO: currentConfirmations) {
+            for (ConfirmationVO expectedConfirmationVO : expectedConfirmations) {
+                if (expectedConfirmationVO.equals(confirmationVO)) {
+                    exist++;
+                    break;
+                }
+            }
+        }
+        return exist == expectedConfirmations.size();
     }
 }

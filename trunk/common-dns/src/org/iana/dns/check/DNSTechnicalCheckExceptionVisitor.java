@@ -43,4 +43,6 @@ public interface DNSTechnicalCheckExceptionVisitor {
     public void acceptWhoIsIOException(WhoIsIOException e);
 
     public void acceptDNSCheckIOException(DNSCheckIOException e);
+
+    public void acceptRadicalAlterationException(RadicalAlterationCheckException e);
 }

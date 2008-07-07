@@ -1,38 +1,52 @@
 package org.iana.rzm.web.services.admin;
 
-import org.apache.log4j.*;
-import org.iana.codevalues.*;
-import org.iana.criteria.*;
-import org.iana.dns.check.*;
-import org.iana.notifications.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.domain.*;
-import org.iana.rzm.facade.admin.domain.dns.*;
-import org.iana.rzm.facade.admin.msgs.*;
+import org.apache.log4j.Logger;
+import org.iana.codevalues.Value;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Order;
+import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.notifications.NotificationSenderException;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.facade.admin.domain.AdminDomainService;
+import org.iana.rzm.facade.admin.domain.dns.AdminDNSService;
+import org.iana.rzm.facade.admin.msgs.PollMessagesService;
+import org.iana.rzm.facade.admin.msgs.PollMsgFields;
+import org.iana.rzm.facade.admin.msgs.PollMsgVO;
 import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.admin.trans.notifications.*;
-import org.iana.rzm.facade.admin.users.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.common.cc.*;
-import org.iana.rzm.facade.passwd.*;
-import org.iana.rzm.facade.system.domain.types.*;
-import org.iana.rzm.facade.system.domain.vo.*;
-import org.iana.rzm.facade.system.notification.*;
+import org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService;
+import org.iana.rzm.facade.admin.users.AdminUserService;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.common.cc.CountryCodes;
+import org.iana.rzm.facade.passwd.PasswordChangeException;
+import org.iana.rzm.facade.passwd.PasswordChangeService;
+import org.iana.rzm.facade.system.domain.types.DomainTypes;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.notification.NotificationVO;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.rzm.web.*;
-import org.iana.rzm.web.common.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.web.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.RzmApplicationException;
+import org.iana.rzm.web.RzmServerException;
+import org.iana.rzm.web.common.RequestMetaParameters;
+import org.iana.rzm.web.common.RzmApplicationError;
 import org.iana.rzm.web.model.*;
-import org.iana.rzm.web.model.criteria.*;
-import org.iana.rzm.web.services.*;
-import org.iana.rzm.web.tapestry.services.*;
-import org.iana.rzm.web.util.*;
+import org.iana.rzm.web.model.criteria.SortOrder;
+import org.iana.rzm.web.services.CriteriaBuilder;
+import org.iana.rzm.web.services.DomainFieldNameResolver;
+import org.iana.rzm.web.services.PollMsgFieldNameResolver;
+import org.iana.rzm.web.services.RequestFieldNameResolver;
+import org.iana.rzm.web.tapestry.services.ServiceInitializer;
+import org.iana.rzm.web.util.ListUtil;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class AdminServicesImpl implements AdminServices, Serializable {
 
@@ -104,6 +118,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         } catch (InfrastructureException e) {
             LOGGER.warn("NoObjectFoundException", e);
             throw new RzmApplicationException(e);
+        } catch (SharedNameServersCollisionException e) {
+            //TODO
+            throw new RzmApplicationException(e);
+        } catch (RadicalAlterationException e) {
+            //TODO
+            throw new RzmApplicationException(e);
         }
     }
 
@@ -139,6 +159,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             throw new RzmApplicationException(e);
         } catch (DNSTechnicalCheckException e) {
             throw new DNSTechnicalCheckExceptionWrapper(e);
+        } catch (SharedNameServersCollisionException e) {
+            //TODO
+            throw new RzmApplicationException(e);
+        } catch (RadicalAlterationException e) {
+            //TODO
+            throw new RzmApplicationException(e);
         }
     }
 
