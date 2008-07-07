@@ -1,29 +1,36 @@
 package org.iana.rzm.web.services.user;
 
-import org.apache.log4j.*;
-import org.iana.codevalues.*;
-import org.iana.criteria.*;
-import org.iana.dns.check.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.common.cc.*;
-import org.iana.rzm.facade.passwd.*;
-import org.iana.rzm.facade.system.domain.*;
-import org.iana.rzm.facade.system.domain.vo.*;
+import org.apache.log4j.Logger;
+import org.iana.codevalues.Value;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Order;
+import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.admin.trans.NoSuchStateException;
+import org.iana.rzm.facade.admin.trans.StateUnreachableException;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.common.cc.CountryCodes;
+import org.iana.rzm.facade.passwd.PasswordChangeException;
+import org.iana.rzm.facade.passwd.PasswordChangeService;
+import org.iana.rzm.facade.system.domain.SystemDomainService;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.rzm.web.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.web.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.RzmApplicationException;
 import org.iana.rzm.web.model.*;
-import org.iana.rzm.web.model.criteria.*;
-import org.iana.rzm.web.services.*;
-import org.iana.rzm.web.tapestry.services.*;
-import org.iana.rzm.web.util.*;
+import org.iana.rzm.web.model.criteria.SortOrder;
+import org.iana.rzm.web.services.RequestFieldNameResolver;
+import org.iana.rzm.web.tapestry.services.ServiceInitializer;
+import org.iana.rzm.web.util.ListUtil;
 
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class UserServicesImpl implements UserServices {
@@ -188,6 +195,12 @@ public class UserServicesImpl implements UserServices {
             throw new RzmApplicationException(e);
         } catch (DNSTechnicalCheckException e) {
             throw new DNSTechnicalCheckExceptionWrapper(e);
+        } catch (SharedNameServersCollisionException e) {
+            //TODO
+            throw new RzmApplicationException(e);
+        } catch (RadicalAlterationException e) {
+            //TODO
+            throw new RzmApplicationException(e);
         }
     }
 
@@ -208,7 +221,14 @@ public class UserServicesImpl implements UserServices {
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
+        } catch (SharedNameServersCollisionException e) {
+            //TODO
+            throw new RzmApplicationException(e);
+        } catch (RadicalAlterationException e) {
+            //TODO
+            throw new RzmApplicationException(e);
         }
+
     }
 
     public TransactionVOWrapper getTransaction(long requestId) throws NoObjectFoundException, AccessDeniedException {
@@ -258,6 +278,12 @@ public class UserServicesImpl implements UserServices {
             return new TransactionActionsVOWrapper(vo);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        } catch (SharedNameServersCollisionException e) {
+            //TODO
+            throw new RzmApplicationException(e);
+        } catch (RadicalAlterationException e) {
+            //TODO
             throw new RzmApplicationException(e);
         }
     }

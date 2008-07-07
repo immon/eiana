@@ -1,17 +1,17 @@
 package org.iana.dns.check;
 
-import org.testng.annotations.Test;
+import org.iana.dns.DNSHost;
+import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.exceptions.*;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
 import org.iana.dns.obj.DNSIPAddressImpl;
-import org.iana.dns.check.exceptions.*;
-import org.iana.dns.DNSIPAddress;
-import org.iana.dns.DNSHost;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -85,6 +85,7 @@ public class DNSExceptionXMLVisitorTest {
             "\t<exception name=\"NotAuthoritativeNameServerException\">\n" +
             "\t\t<host>f.nic.de</host>\n" +
             "\t</exception>\n" +
+            "\t<exception name=\"RadicalAlterationCheckException\" />\n" +
             "</exceptions>";
 
     @Test
@@ -135,6 +136,8 @@ public class DNSExceptionXMLVisitorTest {
         multiEx.addException(new NoASNumberException(domain, host2, ipAddress2_2));
 
         multiEx.addException(new NotAuthoritativeNameServerException(domain, host1));
+
+        multiEx.addException(new RadicalAlterationCheckException(domain));
         
         DNSExceptionXMLVisitor visitor = new DNSExceptionXMLVisitor(domain);
         multiEx.accept(visitor);

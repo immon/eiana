@@ -62,6 +62,10 @@
         <property name="doTest"><value>true</value></property>
     </bean>
 
+    <bean id="radicalAlterationTechnicalCheckBean" class="org.iana.rzm.trans.check.RadicalAlterationImpl">
+        <constructor-arg ref="technicalCheckBeanWithRadicalAlterationCheck" />
+    </bean>
+
 <!-- end of test bean section -->
 
 <!--
@@ -98,6 +102,7 @@
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="domainManager"/>
         <constructor-arg index="2" ref="diffConfig"/>
+        <constructor-arg index="3" ref="radicalAlterationTechnicalCheckBean" />
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -106,6 +111,7 @@
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="domainManager"/>
         <constructor-arg index="2" ref="adminDiffConfig"/>
+        <constructor-arg index="3" ref="radicalAlterationTechnicalCheckBean" />
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
@@ -113,6 +119,7 @@
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="domainManager"/>
         <constructor-arg index="2" ref="adminDiffConfig"/>
+        <constructor-arg index="3" ref="radicalAlterationTechnicalCheckBean" />
     </bean>
 
     <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl"
@@ -713,6 +720,19 @@
     <bean id="minimumNameServersAndNoReservedIPsCheck"
           class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck"/>
 
+    <bean id="technicalCheckBeanWithRadicalAlterationCheck" class="org.iana.dns.check.DNSTechnicalCheck" >
+        <property name="domainChecks">
+            <list>
+                <ref bean="radicalAlterationCheck" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="radicalAlterationCheck" class="org.iana.rzm.trans.check.RadicalAlterationCheck">
+        <constructor-arg index="0" ref="domainManager" />
+        <constructor-arg index="1" ref="radicalDiffConfig" />
+    </bean>
+
     <!-- end of technical checks-->
 
     <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
@@ -791,6 +811,9 @@
 
     <bean id="diffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
         <constructor-arg ref="hostInstantiator"/>
+    </bean>
+
+    <bean id="radicalDiffConfig" class="org.iana.rzm.trans.check.RadicalAlterationDiffConfiguration">
     </bean>
 
     <bean id="hostInstantiator" class="org.iana.rzm.trans.change.HostInstantiator">
