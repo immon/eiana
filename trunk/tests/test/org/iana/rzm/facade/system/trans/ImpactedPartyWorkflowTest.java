@@ -17,6 +17,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,11 +33,7 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
     RZMUser userAC;
 
     protected void initTestData() {
-        Domain domain1 = new Domain("impactedpartytest");
-        domain1.setSupportingOrg(new Contact("so-name"));
-        domain1.setAdminContact(new Contact("ac-name", "org", null, "", "", "a@x.pl", true));
-        domain1.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));
-        domainManager.create(domain1);
+
 
         Domain domain2 = new Domain("impacteddomain-test1");
         Host h1 = new Host("impactedhost-test1");
@@ -63,6 +60,14 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
         domain4.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));
         domainManager.create(domain4);
 
+        Domain domain1 = new Domain("impactedpartytest");
+        domain1.addNameServer(h1);
+        domain1.addNameServer(h2);
+        domain1.setSupportingOrg(new Contact("so-name"));
+        domain1.setAdminContact(new Contact("ac-name", "org", null, "", "", "a@x.pl", true));
+        domain1.setTechContact(new Contact("tc-name", "org", null, "", "", "a@x.pl", true));
+        domainManager.create(domain1);
+
         userIANA = new RZMUser();
         userIANA.setLoginName("gstsignaliana");
         userIANA.setFirstName("IANAuser");
@@ -83,9 +88,11 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
     @Test
     public void testSingleTransaction() throws Exception {
         IDomainVO domain = getDomain("impactedpartytest");
-        domain.getNameServers().add(new HostVO("impactedhost-test1"));
-        domain.getNameServers().add(new HostVO("impactedhost-test2"));
-        domain.getNameServers().add(new HostVO("notimpactedhost-test"));
+        List<HostVO> hosts = new ArrayList<HostVO>();
+        hosts.add(new HostVO("impactedhost-test1"));
+        hosts.add(new HostVO("impactedhost-test2"));
+        hosts.add(new HostVO("notimpactedhost-test"));
+        domain.setNameServers(hosts);
         domain.setRegistryUrl("impactedpartytest.registry.url");
 
         setDefaultUser();
@@ -107,9 +114,11 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
     @Test
     public void testFindTransactionsByCriteriaNotNullName() throws Exception {
         IDomainVO domain = getDomain("impactedpartytest");
-        domain.getNameServers().add(new HostVO("impactedhost-test1"));
-        domain.getNameServers().add(new HostVO("impactedhost-test2"));
-        domain.getNameServers().add(new HostVO("notimpactedhost-test"));
+        List<HostVO> hosts = new ArrayList<HostVO>();
+        hosts.add(new HostVO("impactedhost-test1"));
+        hosts.add(new HostVO("impactedhost-test2"));
+        hosts.add(new HostVO("notimpactedhost-test"));
+        domain.setNameServers(hosts);
         domain.setRegistryUrl("impactedpartytest.registry.url");
 
         setDefaultUser();
@@ -123,9 +132,11 @@ public class ImpactedPartyWorkflowTest extends CommonGuardedSystemTransaction {
     @Test
     public void testFindTransactionsByCriteriaInNames() throws Exception {
         IDomainVO domain = getDomain("impactedpartytest");
-        domain.getNameServers().add(new HostVO("impactedhost-test1"));
-        domain.getNameServers().add(new HostVO("impactedhost-test2"));
-        domain.getNameServers().add(new HostVO("notimpactedhost-test"));
+        List<HostVO> hosts = new ArrayList<HostVO>();
+        hosts.add(new HostVO("impactedhost-test1"));
+        hosts.add(new HostVO("impactedhost-test2"));
+        hosts.add(new HostVO("notimpactedhost-test"));
+        domain.setNameServers(hosts);
         domain.setRegistryUrl("impactedpartytest.registry.url");
 
         setDefaultUser();

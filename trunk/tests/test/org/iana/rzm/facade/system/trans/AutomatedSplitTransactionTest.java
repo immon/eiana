@@ -11,6 +11,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,9 +24,6 @@ import java.util.List;
 public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransaction {
 
     protected void initTestData() {
-        Domain domain1 = new Domain("automatedsplittest");
-        domain1.setSupportingOrg(new Contact("so-name"));
-        domainManager.create(domain1);
 
         Domain domain2 = new Domain("impacteddomain-1");
         Host h1 = new Host("impactedhost-1");
@@ -46,14 +44,27 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
         domain4.setSupportingOrg(new Contact("so-name"));
         domainManager.create(domain4);
 
+
+        Domain domain1 = new Domain("automatedsplittest");
+        domain1.setSupportingOrg(new Contact("so-name"));
+        domain1.addNameServer(h1);
+        domain1.addNameServer(h2);
+        domainManager.create(domain1);
+
+        Domain domain5 = new Domain("automatedsplittest2");
+        domain5.setSupportingOrg(new Contact("so-name"));
+        domainManager.create(domain5);
+
     }
 
     @Test
     public void testSingleTransaction() throws Exception {
         IDomainVO domain = getDomain("automatedsplittest");
-        domain.getNameServers().add(new HostVO("impactedhost-1"));
-        domain.getNameServers().add(new HostVO("impactedhost-2"));
-        domain.getNameServers().add(new HostVO("notimpactedhost"));
+        List<HostVO> hosts = new ArrayList<HostVO>();
+        hosts.add(new HostVO("impactedhost-1"));
+        hosts.add(new HostVO("impactedhost-2"));
+        hosts.add(new HostVO("notimpactedhost"));
+        domain.setNameServers(hosts);
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
         setDefaultUser();
@@ -75,9 +86,11 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
     @Test
     public void testSeparatedTransaction() throws Exception {
         IDomainVO domain = getDomain("automatedsplittest");
-        domain.getNameServers().add(new HostVO("impactedhost-1"));
-        domain.getNameServers().add(new HostVO("impactedhost-2"));
-        domain.getNameServers().add(new HostVO("notimpactedhost"));
+        List<HostVO> hosts = new ArrayList<HostVO>();
+        hosts.add(new HostVO("impactedhost-1"));
+        hosts.add(new HostVO("impactedhost-2"));
+        hosts.add(new HostVO("notimpactedhost"));
+        domain.setNameServers(hosts);
         domain.setRegistryUrl("automatedsplittest.registry.url");
 
         setDefaultUser();
@@ -93,7 +106,7 @@ public class AutomatedSplitTransactionTest extends CommonGuardedSystemTransactio
 
     @Test
     public void testNoGlueChangeTransaction() throws Exception {
-        IDomainVO domain = getDomain("automatedsplittest");
+        IDomainVO domain = getDomain("automatedsplittest2");
         HostVO h1 = new HostVO("impactedhost-1");
         h1.setAddress(new IPAddressVO("1.1.1.1", IPAddressVO.Type.IPv4));
         HostVO h2 = new HostVO("impactedhost-2");
