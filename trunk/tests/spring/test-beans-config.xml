@@ -29,4 +29,8 @@
         <property name="doTest"><value>false</value></property>
     </bean>
 
+    <bean id="radicalAlterationTechnicalCheckBean" class="org.iana.rzm.trans.check.RadicalAlterationImpl">
+        <constructor-arg ref="zoneTestingCheck" />
+    </bean>
+
 </beans>
