@@ -6,6 +6,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.user.*;
 import org.iana.rzm.web.model.*;
@@ -235,10 +236,20 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     }
 
     public ReviewDomainChanges saveEdit(long domainId) {
-        ReviewDomainChanges page = getReviewChangesPage();
-        page.setDomainId(getDomainId());
-        page.setCountryName(getCountry());
-        return page;
+        try {
+            ReviewDomainChanges page = getReviewChangesPage();
+            page.setDomainId(getDomainId());
+            page.setCountryName(getCountry());
+            page.setTransactionChanges(getUserServices().getChanges(getDomain()));
+            return page;
+        } catch (NoObjectFoundException e) {
+            getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
+        } catch (RadicalAlterationException e) {
+            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+        } catch (SharedNameServersCollisionException e) {
+            setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
+        }
+        return null;
     }
 
 
@@ -246,7 +257,6 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
         UserContactEditor contactPage = getEditContactPage();
         contactPage.setDomainId(getDomain().getId());
         contactPage.setContactType(type);
-        //todo Aske about multiple edits which contact to show
         ContactVOWrapper contact = getDomain().getContact(contactId, type);
         contactPage.setContactAttributes(contact.getMap());
         return contactPage;

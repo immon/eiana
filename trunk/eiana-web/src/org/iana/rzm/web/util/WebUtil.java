@@ -67,8 +67,7 @@ public class WebUtil {
         return result;
     }
 
-    public static List<NameServerValue> buildNameServerList(List<NameServerVOWrapper> originals,
-                                                            List<NameServerVOWrapper> current) {
+    public static List<NameServerValue> buildNameServerList(List<NameServerVOWrapper> originals, List<NameServerVOWrapper> current) {
         List<NameServerValue> all = new ArrayList<NameServerValue>();
 
         if (originals == null) {
@@ -76,15 +75,17 @@ public class WebUtil {
         }
 
         for (NameServerVOWrapper wrapper : originals) {
-            NameServerVOWrapper currentVO = findNameServer(wrapper.getId(), current);
+            NameServerVOWrapper currentVO = findNameServer(wrapper, current);
             NameServerValue nameServerValue = new NameServerValue(currentVO == null ? wrapper : currentVO);
             if (currentVO == null) {
                 nameServerValue.setStatus(NameServerValue.DELETE);
             } else {
                 NameServerValue temp = new NameServerValue(wrapper);
                 String status = temp.equals(nameServerValue) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
-                //status = currentVO.equals(wrapper) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
                 nameServerValue.setStatus(status);
+                if(status.equals(NameServerValue.DEFAULT)){
+                    nameServerValue.setShared(temp.isShared());
+                }
                 current.remove(currentVO);
             }
             all.add(nameServerValue);
@@ -148,12 +149,21 @@ public class WebUtil {
     }
 
 
-    private static NameServerVOWrapper findNameServer(final long id, List<NameServerVOWrapper> list) {
-        return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
+    private static NameServerVOWrapper findNameServer(final NameServerVOWrapper wrapper, List<NameServerVOWrapper> list) {
+        NameServerVOWrapper nameServer = ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
             public boolean evaluate(NameServerVOWrapper object) {
-                return object.getId() == id;
+                return object.getId() == wrapper.getId();
             }
         });
+
+        if(nameServer == null){
+            return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
+                public boolean evaluate(NameServerVOWrapper object) {
+                    return object.getName().equals(wrapper.getName()) && object.getIps().equals(wrapper.getIps());
+            }
+        });
+        }
+        return nameServer;
 
     }
 

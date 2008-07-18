@@ -106,6 +106,11 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
     public abstract void setSessionTimeOutMessage(String message);
     public abstract String getSessionTimeOutMessage();
 
+    @Persist("client")
+    public abstract void setAdminLoginError(String message);
+    public abstract String getAdminLoginError();
+
+
     public abstract void setUserName(String value);
     public abstract String getUserName();
 
@@ -119,8 +124,12 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
             setUserName(getCookieSource().readCookieValue(COOKIE_NAME));
         }
         setErrorMessage(getSessionTimeOutMessage());
+        if(getAdminLoginError() != null){
+            setErrorMessage(getAdminLoginError());
+        }
         setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. ");
         setSessionTimeOutMessage(null);
+        setAdminLoginError(null);
     }
 
 
@@ -232,5 +241,8 @@ public abstract class Login extends RzmPage implements PageBeginRenderListener {
     }
 
 
+
+
 }
+
 

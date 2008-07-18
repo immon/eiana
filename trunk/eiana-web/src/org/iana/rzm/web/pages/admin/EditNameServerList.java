@@ -46,12 +46,10 @@ public abstract class EditNameServerList extends AdminPage
 
     @Persist("client")
     public abstract void setCallback(ICallback callback);
-
     public abstract ICallback getCallback();
 
     @Persist("client")
     public abstract long getDomainId();
-
     public abstract void setDomainId(long domainId);
 
     @Persist("client:page")

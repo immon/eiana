@@ -47,7 +47,6 @@ public abstract class SubDomainEditor extends BaseComponent {
 
     public void save() {
         getEditor().preventResubmission();
-
         getEditor().save(getRegistryUrl(), getWhoisServer());
     }
 

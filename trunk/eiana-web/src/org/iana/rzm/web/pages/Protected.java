@@ -6,6 +6,7 @@ import org.apache.tapestry.event.*;
 import org.apache.tapestry.web.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
@@ -67,7 +68,6 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
     }
 
     public void pageValidate(PageEvent event) {
-
         if (isUserLoggedIn()) {
             setLogedInUserId(getVisitState().getUserId());
             return;
@@ -100,10 +100,13 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
 
     protected void restoreModifiedDomain(DomainVOWrapper domain) throws NoObjectFoundException {
         getVisitState().markAsVisited(domain);
-        TransactionActionsVOWrapper transactionActionsVOWrapper = getRzmServices().getChanges(domain);
-        if (transactionActionsVOWrapper.getChanges().size() > 0) {
-            if (getVisitState().getModifiedDomain(domain.getId()) == null) {
-                getVisitState().storeDomain(domain);
+        TransactionActionsVOWrapper transactionActionsVOWrapper = null;
+        try {
+            transactionActionsVOWrapper = getRzmServices().getChanges(domain);
+            if (transactionActionsVOWrapper.getChanges().size() > 0) {
+                if (getVisitState().getModifiedDomain(domain.getId()) == null) {
+                    getVisitState().storeDomain(domain);
+                }
             }
 
             for (ActionVOWrapper actionVOWrapper : transactionActionsVOWrapper.getChanges()) {
@@ -121,6 +124,13 @@ public abstract class Protected extends RzmPage implements PageValidateListener 
                 }
             }
         }
+
+        catch (RadicalAlterationException e) {
+            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+        } catch (SharedNameServersCollisionException e) {
+            setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
+        }
+
     }
 
     protected void restoreCurrentDomain(long domainId) throws NoObjectFoundException {

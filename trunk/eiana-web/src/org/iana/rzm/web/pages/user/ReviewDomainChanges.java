@@ -109,8 +109,8 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract void setDomainId(long id);
 
     @Persist("client")
-    public abstract List<ActionVOWrapper> getActionList();
-    public abstract void setActionList(List<ActionVOWrapper> list);
+    public abstract void setTransactionChanges(TransactionActionsVOWrapper voWrapper);
+    public abstract TransactionActionsVOWrapper getTransactionChanges();
 
     @Persist("client")
     @InitialValue("literal:false")
@@ -149,6 +149,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract void setNameServerChange(boolean nameServerChange);
     public abstract boolean isNameServerChange();
 
+    public  List<ActionVOWrapper> getActionList(){
+        return getTransactionChanges().getChanges();
+    }
+
     public boolean isAllowedToSubmit(){
         return !isTransactionPending() && !isImpactedPartyPending();
     }
@@ -181,14 +185,11 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         try {
             SystemDomainVOWrapper domain = getUserServices().getDomain(currentDomain.getId());
             setTransactionPending(domain.isOperationPending());
+            TransactionActionsVOWrapper transactionActions = getTransactionChanges();
+            setNameServerChange(transactionActions.isNameServerChange());
+            setSeparateRequest(transactionActions.offerSeparateRequest());
+            setMustSplitRequest(transactionActions.mustSplitrequest());
 
-            if (getActionList() == null) {
-                TransactionActionsVOWrapper transactionActions = getUserServices().getChanges(currentDomain);
-                setActionList(transactionActions.getChanges());
-                setNameServerChange(transactionActions.isNameServerChange());
-                setSeparateRequest(transactionActions.offerSeparateRequest());
-                setMustSplitRequest(transactionActions.mustSplitrequest());
-            }
 
             boolean impactedParty = false;
             if(!domain.isOperationPending()){
@@ -217,9 +218,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     protected Object[] getExternalParameters() {
         DomainVOWrapper domain = getModifiedDomain();
         if (domain != null) {
-            return new Object[]{getDomainId(), getActionList(), isSeparateRequest(), isMustSplitRequest(), getSubmitterEmail(), domain};
+            return new Object[]{getDomainId(), getTransactionChanges(), isSeparateRequest(), isMustSplitRequest(), getSubmitterEmail(), domain};
         }
-        return new Object[]{getDomainId(), getActionList(), isSeparateRequest(), isMustSplitRequest(), getSubmitterEmail()};
+        return new Object[]{getDomainId(), getTransactionChanges(), isSeparateRequest(), isMustSplitRequest(), getSubmitterEmail()};
     }
 
 
@@ -232,7 +233,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
         Long domainId = (Long) parameters[0];
         setDomainId(domainId);
-        setActionList((List<ActionVOWrapper>) parameters[1]);
+        setTransactionChanges((TransactionActionsVOWrapper) parameters[1]);
         setSeparateRequest(Boolean.valueOf(parameters[2].toString()));
         setMustSplitRequest(Boolean.valueOf(parameters[3].toString()));
         try {
@@ -292,6 +293,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             setTransactionPending(true);
         } catch (NameServerChangeNotAllowedException e) {
             setImpactedPartyPending(true);
+        } catch (SharedNameServersCollisionException e) {
+            setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
+        } catch (RadicalAlterationException e) {
+            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
         }
     }
 

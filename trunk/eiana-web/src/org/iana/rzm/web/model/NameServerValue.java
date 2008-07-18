@@ -109,27 +109,33 @@ public class NameServerValue implements Serializable {
         return result;
     }
 
+
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        final NameServerValue that = (NameServerValue) o;
+        NameServerValue that = (NameServerValue) o;
 
-        if (id != that.id) return false;
-        if (hostName != null ? !hostName.equals(that.hostName) : that.hostName != null) return false;
-        if (ips != null ? !getIps().equals(that.getIps()) : that.ips != null) return false;
+        if (hostName != null ? !hostName.equals(that.hostName) : that.hostName != null) {
+            return false;
+        }
+        if (ips != null ? !ips.equals(that.ips) : that.ips != null) {
+            return false;
+        }
 
         return true;
     }
 
     public int hashCode() {
         int result;
-        result = (int) (id ^ (id >>> 32));
-        result = 29 * result + (hostName != null ? hostName.hashCode() : 0);
-        result = 29 * result + (ips != null ? ips.hashCode() : 0);
+        result = (hostName != null ? hostName.hashCode() : 0);
+        result = 31 * result + (ips != null ? ips.hashCode() : 0);
         return result;
     }
-
 
     public void setIps(String ips) {
         List<IPAddressVOWrapper> modifiedProposals = WebUtil.toVos(ips);

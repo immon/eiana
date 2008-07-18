@@ -175,7 +175,6 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             } else {
                 results.add(userServices.createTransaction(domain, getVisitState().getSubmitterEmail()));
             }
-
             Summary page = getSummaryPage();
             page.setTikets(results);
             page.setDomainName(getDomainName());
@@ -191,6 +190,10 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
             setTransactionPending(true);
         } catch (NameServerChangeNotAllowedException e) {
            setImpactedPartyPending(true);
+        } catch (SharedNameServersCollisionException e) {
+            setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
+        } catch (RadicalAlterationException e) {
+           setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
         }
     }
 

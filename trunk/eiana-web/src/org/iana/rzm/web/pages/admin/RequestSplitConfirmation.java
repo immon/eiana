@@ -152,6 +152,10 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
         } catch (NameServerChangeNotAllowedException e) {
             // todo: proper handling of this exception
             setErrorMessage("A name server change is not allowed for the domain at this time");
+        } catch (SharedNameServersCollisionException e) {
+            setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
+        } catch (RadicalAlterationException e) {
+            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
         }
     }
 

@@ -21,7 +21,9 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
     public abstract IComponent getDomainNameComponent();
 
-    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    @Component(id = "domainHeader",
+               type = "DomainHeader",
+               bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
     @Component(id = "actionlist", type = "For", bindings = {"source=prop:actionList", "value=prop:action"})
@@ -54,42 +56,37 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     @Bean(value = CounterBean.class)
     public abstract CounterBean getCounterBean();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract long getDomainId();
-
     public abstract void setDomainId(long id);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract List<ActionVOWrapper> getActionList();
-
     public abstract void setActionList(List<ActionVOWrapper> list);
 
+    @Persist("client")
     public abstract PageEditorListener<DomainVOWrapper> getEditor();
-
-    @Persist("client:page")
     public abstract void setEditor(PageEditorListener<DomainVOWrapper> editor);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract String getCountryName();
+    public abstract void setCountryName(String name);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract String getBorderHeader();
     public abstract void setBorderHeader(String header);
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
+    public abstract void setDomainName(String domainName);
+    public abstract String getDomainName();
+
     public abstract ActionVOWrapper getAction();
 
     public abstract ChangeVOWrapper getChange();
-
-    public abstract String getDomainName();
-
-    public abstract void setDomainName(String domainName);
-
-    public abstract void setCountryName(String name);
 
     public String getChangeTitle() {
         return getAction().getTitle();
@@ -121,7 +118,12 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
             getObjectNotFoundHandler().handleObjectNotFound(e, UserGeneralError.PAGE_NAME);
         } catch (AccessDeniedException e) {
             getAccessDeniedHandler().handleAccessDenied(e, UserGeneralError.PAGE_NAME);
+        } catch (SharedNameServersCollisionException e) {
+            setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
+        } catch (RadicalAlterationException e) {
+            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
         }
+
     }
 
     protected Object[] getExternalParameters() {
@@ -134,9 +136,9 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
 
 
     public void proceed() {
-        try{
-            getEditor().saveEntity(getVisitState().getModifiedDomain(getDomainId()), getRequestCycle());
-        }catch(NoObjectFoundException e){
+        try {
+            getEditor().saveEntity(this,getVisitState().getModifiedDomain(getDomainId()), getRequestCycle());
+        } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, AdminGeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
             setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
@@ -145,6 +147,10 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
         } catch (NameServerChangeNotAllowedException e) {
             // todo: proper handling of this exception
             setErrorMessage("A name server change is not allowed for the domain at this time");
+        } catch (SharedNameServersCollisionException e) {
+            e.printStackTrace();
+        } catch (RadicalAlterationException e) {
+            e.printStackTrace();
         }
     }
 
