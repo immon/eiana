@@ -36,27 +36,27 @@ public abstract class EditSubDomain extends AdminPage
     @InjectPage("admin/RequestsPerspective")
     public abstract RequestsPerspective getRequestsPerspective();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setCallback(ICallback callback);
     public abstract ICallback getCallback();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract long getDomainId();
     public abstract void setDomainId(long id);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract String getOriginalWhoisServer();
     public abstract void setOriginalWhoisServer(String server);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract String getOriginalRegistryUrl();
     public abstract void setOriginalRegistryUrl(String url);
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setRegistryUrl(String url);
     public abstract String getRegistryUrl();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setWhoisServer(String server);
     public abstract String getWhoisServer();
 
@@ -109,14 +109,17 @@ public abstract class EditSubDomain extends AdminPage
 
     public void save(String registryUrl, String whois) {
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
-        if (StringUtils.equals(registryUrl, getOriginalRegistryUrl()) &&
-            StringUtils.equals(whois, getOriginalWhoisServer())) {
-            return;
-        }
         domain.setRegistryUrl(registryUrl);
         domain.setWhoisServer(whois);
-        getVisitState().markDomainDirty(getDomainId(), DomainChangeType.ns);
-        getVisitState().storeDomain(domain);
+
+        if (StringUtils.equals(registryUrl, getOriginalRegistryUrl()) &&
+            StringUtils.equals(whois, getOriginalWhoisServer())) {
+            getVisitState().clearChange(domain.getId(), DomainChangeType.sudomain);
+        }else{
+            getVisitState().markDomainDirty(getDomainId(), DomainChangeType.sudomain);
+            getVisitState().storeDomain(domain);
+        }
+
         getCallback().performCallback(getRequestCycle());
     }
 

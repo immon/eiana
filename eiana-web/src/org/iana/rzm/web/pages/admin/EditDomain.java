@@ -255,7 +255,7 @@ public abstract class EditDomain extends AdminPage
             this.stateManager = stateManager;
         }
 
-        public void saveEntity(DomainVOWrapper domainVOWrapper, IRequestCycle cycle) {
+        public void saveEntity(AdminPage adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle) {
             services.updateDomain(domainVOWrapper);
             Visit visit = (Visit) stateManager.get("visit");
             visit.markAsNotVisited(domainVOWrapper.getId());

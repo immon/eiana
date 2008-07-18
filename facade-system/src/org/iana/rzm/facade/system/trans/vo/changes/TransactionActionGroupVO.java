@@ -1,14 +1,14 @@
 package org.iana.rzm.facade.system.trans.vo.changes;
 
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.common.validators.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class TransactionActionGroupVO {
+public class TransactionActionGroupVO implements Serializable {
 
     private boolean splittable = false;
     private List<TransactionActionVO> actions = new ArrayList<TransactionActionVO>();

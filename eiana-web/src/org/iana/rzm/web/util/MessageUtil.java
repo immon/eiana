@@ -1,6 +1,9 @@
 package org.iana.rzm.web.util;
 
-public class MessageUtil {
+import java.io.*;
+import java.util.*;
+
+public class MessageUtil implements Serializable {
     
     public String getSessionRestorefailedMessage(){
         return "Can't restore session. Please restart session using the link supplied";
@@ -29,5 +32,12 @@ public class MessageUtil {
 
     public String getAllNameServersChangeMessage() {
         return "Changing all Name Servers in one request is not allowed.";
+    }
+
+    public String getSharedNameServersCollisionMessage(Set<String> nameServers) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Changing a shared name server which is not part of your current name server list is not allowed.");
+        return builder.toString();
+
     }
 }

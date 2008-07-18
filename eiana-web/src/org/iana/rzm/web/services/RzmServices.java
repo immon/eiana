@@ -29,7 +29,8 @@ public interface RzmServices extends Serializable {
 
     public List<TransactionVOWrapper>getTransactions(Criterion criterion, int offset, int length, SortOrder sort);
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain) throws NoObjectFoundException, AccessDeniedException;
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain)
+        throws NoObjectFoundException, AccessDeniedException,RadicalAlterationException,SharedNameServersCollisionException;
 
     public void withdrawnTransaction(long requestId)
         throws
