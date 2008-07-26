@@ -1,24 +1,18 @@
 package org.iana.rzm.trans.process.pending_zone_testing;
 
-import org.apache.log4j.Logger;
-import org.iana.dns.DNSDomain;
-import org.iana.dns.DNSHost;
-import org.iana.dns.check.DNSNameServer;
-import org.iana.dns.check.DNSTechnicalCheck;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.dns.obj.DNSDomainImpl;
-import org.iana.objectdiff.ChangeApplicator;
-import org.iana.objectdiff.DiffConfiguration;
-import org.iana.objectdiff.ObjectChange;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.trans.TransactionData;
-import org.iana.rzm.trans.dns.DNSConverter;
-import org.iana.rzm.trans.process.general.handlers.ActionExceptionHandler;
-import org.jbpm.configuration.ObjectFactory;
-import org.jbpm.graph.exe.ExecutionContext;
+import org.apache.log4j.*;
+import org.iana.dns.*;
+import org.iana.dns.check.*;
+import org.iana.dns.obj.*;
+import org.iana.objectdiff.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.dns.*;
+import org.iana.rzm.trans.process.general.handlers.*;
+import org.jbpm.configuration.*;
+import org.jbpm.graph.exe.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -49,7 +43,7 @@ public class ZoneTestingAction extends ActionExceptionHandler {
 
         try {
             zoneCheck.check(dnsDomain);
-            td.setSerialNumber("" + serialNumber);
+            td.setSerialNumber(String.valueOf(serialNumber));
             executionContext.leaveNode("accept");
         } catch (DNSTechnicalCheckException e) {
             Logger.getLogger(ZoneTestingAction.class).warn(e.getMessage());

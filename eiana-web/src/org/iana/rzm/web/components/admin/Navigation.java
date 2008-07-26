@@ -2,6 +2,7 @@ package org.iana.rzm.web.components.admin;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.iana.rzm.web.components.*;
 import org.iana.rzm.web.pages.admin.*;
 
@@ -26,7 +27,15 @@ public abstract class Navigation extends BaseComponent {
 
     @Component(id="logout", type="DirectLink", bindings = {"listener=listener:logout",
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
-    public abstract IComponent getDirectLinkComponent();
+    public abstract IComponent getLogoutComponent();
+
+    @Component(id="back", type="DirectLink", bindings = {"listener=listener:back",
+            "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+    public abstract IComponent getBackComponent();
+
+
+    @Component(id="backOn", type="If", bindings = {"condition=prop:backEnabled"})
+    public abstract IComponent getBackOnComponent();
 
     @Parameter(required = false, defaultValue = "literal:REQUESTS")
     public abstract String getSelected();
@@ -78,6 +87,12 @@ public abstract class Navigation extends BaseComponent {
         return border.logout();
     }
 
+    public void back(){
+        AdminPage page = (AdminPage) getPage();
+        ICallback callback = page.getCallback();
+        callback.performCallback(page.getRequestCycle());
+    }
+
 
     public void viewDomains(){
         AdminPage page = (AdminPage) getPage();
@@ -99,6 +114,11 @@ public abstract class Navigation extends BaseComponent {
             getPage().getRequestCycle().activate(Users.PAGE_NAME);
         }
 
+    }
+
+    public boolean isBackEnabled(){
+        AdminPage page = (AdminPage) getPage();
+        return page.getCallback() != null;
     }
 
     private boolean isSamePage(String pageName) {

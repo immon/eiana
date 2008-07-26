@@ -50,21 +50,6 @@ public abstract class EditDomain extends AdminPage
     @InjectObject("infrastructure:applicationStateManager")
     public abstract ApplicationStateManager getApplicationStateManager();
 
-    @Persist("client:page")
-    public abstract long getDomainId();
-
-    public abstract void setDomainId(long id);
-
-    @Persist("client:page")
-    public abstract String getCountryName();
-
-    @Persist("client:page")
-    public abstract SystemDomainVOWrapper getOriginalDomain();
-    public abstract void setOriginalDomain(SystemDomainVOWrapper domain);
-
-
-    public abstract void setCountryName(String name);
-
     @InjectPage("admin/RequestsPerspective")
     public abstract RequestsPerspective getRequestsPerspective();
 
@@ -83,9 +68,26 @@ public abstract class EditDomain extends AdminPage
     @InjectPage("admin/DomainChangesConfirmation")
     public abstract DomainChangesConfirmation getDomainChangesConfirmation();
 
-    @Persist("client:page")
+    @Persist("client")
+    public abstract long getDomainId();
+    public abstract void setDomainId(long id);
+
+    @Persist("client")
+    public abstract String getCountryName();
+
+    @Persist("client")
+    public abstract SystemDomainVOWrapper getOriginalDomain();
+    public abstract void setOriginalDomain(SystemDomainVOWrapper domain);
+
+    @Persist("client")
     public abstract void setModifiedDomain(DomainVOWrapper modifiedDomain);
     public abstract DomainVOWrapper getModifiedDomain();
+
+    @Persist("client")
+    public abstract ICallback getCallback();
+    public abstract void setCallback(ICallback callback);
+
+    public abstract void setCountryName(String name);
 
     public void setIdentifier(Object id) {
         setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
@@ -99,13 +101,12 @@ public abstract class EditDomain extends AdminPage
         }
     }
 
-
     protected Object[] getExternalParameters() {
         DomainVOWrapper modified = getModifiedDomain();
         if (modified != null) {
-            return new Object[]{getDomainId(), modified};
+            return new Object[]{getDomainId(), getCallback(), modified};
         } else {
-            return new Object[]{getDomainId()};
+            return new Object[]{getDomainId(), getCallback()};
         }
     }
 
@@ -118,10 +119,11 @@ public abstract class EditDomain extends AdminPage
 
         Long domainId = (Long) parameters[0];
         setDomainId(domainId);
+        setCallback((ICallback) parameters[1]);
 
         try {
-            if (parameters.length == 2) {
-                restoreModifiedDomain((DomainVOWrapper) parameters[1]);
+            if (parameters.length == 3) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[2]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
@@ -229,6 +231,7 @@ public abstract class EditDomain extends AdminPage
         RequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(
             getDomainId()).getName()), getRzmServices()));
+         page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId()));
         return page;
     }
 

@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.admin;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
@@ -30,8 +31,12 @@ public abstract class RequestsPerspective extends AdminPage implements PageBegin
     @InjectPage("admin/EditDomain")
     public abstract EditDomain getEditDomain();
 
-    public abstract EntityFetcher getEntityFetcher();
+    @Persist("client")
+    public abstract ICallback getCallback();
+    public abstract void setCallback(ICallback callback);
 
+
+    public abstract EntityFetcher getEntityFetcher();
     public abstract void setEntityFetcher(EntityFetcher fetcher);
 
     public void pageBeginRender(PageEvent event) {

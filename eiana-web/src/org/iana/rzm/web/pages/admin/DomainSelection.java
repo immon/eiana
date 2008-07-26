@@ -39,9 +39,8 @@ public abstract class DomainSelection extends AdminPage implements IExternalPage
     @InjectPage(DomainView.PAGE_NAME)
     public abstract DomainView getDomainView();
 
-    @Persist("client:form")
+    @Persist("client")
     public abstract ICallback getCallback();
-
     public abstract void setCallback(ICallback callback);
 
     public abstract String getDomainName();

@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.user;
 import org.apache.log4j.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
@@ -158,6 +159,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
 
     public abstract DomainVOWrapper getOriginalDomain();
     public abstract void setOriginalDomain(DomainVOWrapper domain);
+
+    public abstract void setCallback(ICallback callback);
+
 
     protected Object[] getExternalParameters() {
         DomainVOWrapper modified = getModifiedDomain();
@@ -325,5 +329,6 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
     }
+
 
 }

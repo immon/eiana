@@ -127,4 +127,9 @@ public abstract class AdminBorder extends Border {
     public String getWindowTitle() {
         return WINDOW_TITLE;
     }
+
+    public boolean isBackEnabled(){
+        AdminPage page = (AdminPage) getPage();
+        return page.getCallback() != null;
+    }
 }

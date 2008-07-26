@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.user;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.iana.rzm.web.tapestry.*;
 
 public abstract class WithdrawRequest extends UserPage implements IExternalPage, LinkTraget {
@@ -15,9 +16,11 @@ public abstract class WithdrawRequest extends UserPage implements IExternalPage,
             "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getHomeLinkComponent();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setRequestId(long requestId);
     public abstract long getRequestId();
+
+    public abstract void setCallback(ICallback callback);
 
     public void setIdentifier(Object id){
         if(!Long.class.isAssignableFrom(id.getClass())){

@@ -32,32 +32,28 @@ public abstract class EditContact extends AdminPage
     @InjectPage("admin/RequestsPerspective")
     public abstract RequestsPerspective getRequestsPerspective();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setContactType(String contactType);
-
     public abstract String getContactType();
 
-    @Persist("client:page")
+    @Persist("client")
     public abstract void setDomainId(long id);
-
     public abstract long getDomainId();
 
-    @Persist()
+    @Persist("client")
     public abstract ICallback getCallback();
-
     public abstract void setCallback(ICallback callback);
 
-    public abstract void setOriginalContact(ContactVOWrapper contact);
-    public abstract ContactVOWrapper getOriginalContact();
-
-    @Persist()
+    @Persist("client")
     public abstract void setContactAttributes(Map<String, String> attributes);
     public abstract Map<String, String> getContactAttributes();
 
-    @Persist()
+    @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
+    public abstract void setOriginalContact(ContactVOWrapper contact);
+    public abstract ContactVOWrapper getOriginalContact();
 
     protected Object[] getExternalParameters() {
         return new Object[]{
@@ -134,6 +130,7 @@ public abstract class EditContact extends AdminPage
         RequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsFetcher(Arrays.asList(getVisitState().getCurrentDomain(
             getDomainId()).getName()), getRzmServices()));
+        page.setCallback(createCallback());
         return page;
     }
 
