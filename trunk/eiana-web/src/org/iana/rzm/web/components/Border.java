@@ -17,6 +17,9 @@ public abstract class Border extends BaseComponent {
 
     @Asset("js/rzm.js")
     public abstract IAsset getScript();
+
+    @Asset("images/favicon.ico")
+    public abstract IAsset getSiteIcon();
     
     @Asset("js/prototype.js")
     public abstract IAsset getPrototypeScript();

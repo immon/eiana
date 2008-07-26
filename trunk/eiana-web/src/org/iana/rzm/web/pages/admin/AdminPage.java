@@ -2,6 +2,7 @@ package org.iana.rzm.web.pages.admin;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.pages.*;
@@ -87,4 +88,8 @@ public abstract class AdminPage extends Protected {
             return false;
         }
     }// isLocalRequest
+
+    public  ICallback getCallback(){
+        return null;
+    }
 }

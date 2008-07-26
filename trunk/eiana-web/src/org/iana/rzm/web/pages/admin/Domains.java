@@ -40,7 +40,7 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
 
     @InjectPage(NewDomainSelection.PAGE_NAME)
     public abstract NewDomainSelection getNewDomainSelectionPage();
-
+        
     public FinderValidator getFinderValidator() {
         return new DomainFinderValidator();
     }
@@ -66,11 +66,13 @@ public abstract class Domains extends AdminPage implements PageBeginRenderListen
     public void editDomain(long domainId){
         EditDomain editDomainPage = getEditDomainPage();
         editDomainPage.setDomainId(domainId);
+        editDomainPage.setCallback(createCallback());
         getRequestCycle().activate(editDomainPage);
     }
 
     public void createNew(){
         NewDomainSelection page = getNewDomainSelectionPage();
+        page.setCallback(createCallback());
         getRequestCycle().activate(page);
     }
 

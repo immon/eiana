@@ -1,17 +1,12 @@
 package org.iana.rzm.trans.check;
 
-import org.iana.dns.DNSDomain;
-import org.iana.dns.check.DNSDomainTechnicalCheck;
-import org.iana.dns.check.DNSNameServer;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.dns.check.exceptions.RadicalAlterationCheckException;
+import org.iana.dns.*;
+import org.iana.dns.check.*;
+import org.iana.dns.check.exceptions.*;
 import org.iana.objectdiff.*;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.*;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -33,6 +28,10 @@ public class RadicalAlterationCheck implements DNSDomainTechnicalCheck {
             DNSDomain currentDomain = d.toDNSDomain();
 
             ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, domain, diffConfiguration);
+
+            if(change == null){
+                return;
+            }
 
             Set<String> touchedNameServers = new HashSet<String>();
             Map<String, Change> fieldChanges = change.getFieldChanges();

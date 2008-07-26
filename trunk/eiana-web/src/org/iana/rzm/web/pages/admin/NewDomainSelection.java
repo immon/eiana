@@ -3,6 +3,7 @@ package org.iana.rzm.web.pages.admin;
 import org.apache.commons.lang.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.valid.*;
 import org.iana.rzm.web.model.*;
 
@@ -37,6 +38,9 @@ public abstract class NewDomainSelection extends AdminPage {
 
     @InjectPage(Domains.PAGE_NAME)
     public abstract Domains getDomainsPage();
+
+    @Persist("client")
+    public abstract void setCallback(ICallback callback);
     
 
     public abstract String getDomainName();

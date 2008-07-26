@@ -5,6 +5,7 @@ import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.model.*;
 import org.iana.rzm.web.model.criteria.*;
+import org.iana.rzm.web.pages.*;
 import org.iana.rzm.web.tapestry.*;
 
 @ComponentClass(allowBody = true)
@@ -154,8 +155,10 @@ public abstract class ListRequests extends ListRecords implements Sortable {
 
 
     public void goToDomain(String domainName) {
+        Protected page  = (Protected) getPage();
         LinkTraget target = getLinkTragetPage();
         target.setIdentifier(domainName);
+        target.setCallback(page.createCallback());
         getPage().getRequestCycle().activate(target);
     }
 
