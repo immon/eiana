@@ -67,7 +67,9 @@
           <root url="jar://$MODULE_DIR$/../lib/tapestry/tapestry-contrib-4.0.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../resources/java libraries/web frameworks/Tapestry/tapestry-4.0.2/contrib/src/java" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -299,6 +301,34 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/tapestry/IanaCommons.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/tapestry/Tapestry4Commons.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/iana-commons/IanaCommons.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="eiana-web-common" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -360,6 +390,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
+    <containerElement type="module" name="eiana-init">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
     <containerElement type="module" name="eiana-logs">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
@@ -388,6 +422,14 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
+    <containerElement type="module" name="eiana-web-common">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-web-components">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
     <containerElement type="module" name="facade-admin">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
@@ -406,6 +448,10 @@
     </containerElement>
     <containerElement type="module" name="integration-securid">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="tests">
+      <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="library" level="module">
@@ -429,6 +475,11 @@
       <url>file://$MODULE_DIR$/../conf/jbpm</url>
     </containerElement>
     <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+      <url>file://$MODULE_DIR$/../conf/spring</url>
+    </containerElement>
+    <containerElement type="library" level="module">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/bsh-2.0b2.jar" />
       <url>jar://$MODULE_DIR$/../lib/bsh/bsh-2.0b2.jar!/</url>
@@ -450,12 +501,18 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/IanaCommons.jar" />
+      <url>jar://$MODULE_DIR$/../lib/iana-commons/IanaCommons.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/libidn-1.8.jar" />
       <url>jar://$MODULE_DIR$/../lib/idn/libidn-1.8.jar!/</url>
     </containerElement>
-    <containerElement type="library" name="javaee" level="project">
+    <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -491,6 +548,11 @@
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/jetty/org.mortbay.jmx.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib/c3p0-0.9.1.2.jar" />
+      <url>jar://$MODULE_DIR$/../lib/mchange/c3p0-0.9.1.2.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -544,6 +606,11 @@
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/IanaCommons.jar" />
+      <url>jar://$MODULE_DIR$/../lib/tapestry/IanaCommons.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/javassist.jar" />
       <url>jar://$MODULE_DIR$/../lib/tapestry/javassist.jar!/</url>
     </containerElement>
@@ -586,6 +653,11 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/tapestry-spring-1.0.0.jar" />
       <url>jar://$MODULE_DIR$/../lib/tapestry/tapestry-spring-1.0.0.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/Tapestry4Commons.jar" />
+      <url>jar://$MODULE_DIR$/../lib/tapestry/Tapestry4Commons.jar!/</url>
     </containerElement>
     <containerElement type="library" name="ant" level="project">
       <attribute name="method" value="0" />
@@ -635,6 +707,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
@@ -683,6 +759,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
+    <containerElement type="library" name="tapestry" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" name="testng-5.5-jdk15" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
@@ -695,7 +775,7 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
-    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/rzm/WEB-INF/web.xml" optional="false" version="2.5" />
+    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/../eiana-web-user/WEB-INF/web.xml" optional="false" version="2.5" />
     <webroots>
       <root url="file://$MODULE_DIR$/rzm" relative="/" />
       <root url="file://$MODULE_DIR$/rzm/WEB-INF" relative="/WEB-INF" />
