@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../../../../../../../../eiana-web-user/rzm/css/master.css"/>
+    </head>
+    <body jwcid="$content$">
+        <form jwcid="form">
+            <table width="90%" border="0" cellspacing="5" cellpadding="5" class="edit">
+                <tr jwcid="for">
+                    <td valign="top" class="label green"><span jwcid="hostname" class="field" onkeypress="return submitOnEnter(event);">ns1.au</span></td>
+                    <td align="right" valign="top"><span jwcid="ips" class="field" onkeypress="return submitOnEnter(event);">203.1.5.1</span></td>
+                    <td align="right" valign="top">
+                        <a href="#"  jwcid="deleteNameServer">
+                            <span jwcid="@Image" border="0" image="asset:delete" alt="Delete Name Server">
+                                <img border="0" src="delete.png" alt="Delete Name Server"/>
+                             </span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><span jwcid="emptyhostname" class="field" onkeypress="return submitOnEnter(event);"/></td>
+                    <td align="right" valign="top"><span jwcid="emptyips" class="field" onkeypress="return submitOnEnter(event);"/></td>
+                    <td align="right" valign="top">
+                        <a href="#" onclick="return notEmpty('hostName',document.form.emptyhostname.value) && notEmpty('IP',document.form.emptyips.value)" jwcid="addNameServer">
+                            <span jwcid="@Image" border="0" image="asset:add" alt="Add Name Server">
+                                <img border="0" src="add.png" alt="Add Name Server"/>
+                            </span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="buttonStyle" style="float: right;">
+					        <b class="left"></b>
+                            <b class="right" style="width: 130px;"><a href="#" jwcid="save" class="button" style="padding-left: 13px;">Save Changes &gt;</a></b>
+                        </div>
+                        <div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+                            <b class="leftBlue"></b>
+                            <b class="right" style="width: 130px;">
+                                <a href="#" jwcid="revert" class="buttonBlue" style="padding-left: 8px;"> &lt; Revert Changes</a>
+                            </b>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

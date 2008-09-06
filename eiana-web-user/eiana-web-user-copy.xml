@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_eiana-web-user">
+
+    <dirname property="module.eiana-web-user.basedir" file="${ant.file.module_eiana-web-user}"/>
+
+    <target name="copyUserBeforeRun">
+        <copy file="${module.eiana-web-user.basedir}/../conf/spring/services-config.xml"
+              todir="${module.eiana-web-user.basedir}/rzm/WEB-INF/" overwrite="true"/>
+    </target>
+</project>

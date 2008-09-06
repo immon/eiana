@@ -51,14 +51,6 @@
     </dirset>
   </path>
   
-  <path id="eiana-users.module.test.sourcepath">
-    <dirset dir="${module.eiana-users.basedir}">
-      <include name="test/conf"/>
-      <include name="test/dao"/>
-      <include name="test/hibernate"/>
-    </dirset>
-  </path>
-  
   
   <target name="compile.module.eiana-users" depends="compile.module.eiana-users.production,compile.module.eiana-users.tests" description="Compile module eiana-users"/>
   
@@ -80,31 +72,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.eiana-users.tests" depends="compile.module.eiana-users.production" description="compile module eiana-users; test classes" unless="skip.tests">
-    <mkdir dir="${eiana-users.testoutput.dir}"/>
-    <javac destdir="${eiana-users.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-users}"/>
-      <classpath refid="eiana-users.module.classpath"/>
-      <classpath location="${eiana-users.output.dir}"/>
-      <src refid="eiana-users.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-users"/>
-    </javac>
-    
-    <copy todir="${eiana-users.testoutput.dir}">
-      <fileset dir="${module.eiana-users.basedir}/test/conf">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-users.basedir}/test/dao">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-users.basedir}/test/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
+  <target name="compile.module.eiana-users.tests" depends="compile.module.eiana-users.production" description="compile module eiana-users; test classes" unless="skip.tests"/>
   
   <target name="clean.module.eiana-users" description="cleanup module">
     <delete dir="${eiana-users.output.dir}"/>

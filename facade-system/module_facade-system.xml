@@ -61,7 +61,6 @@
   <path id="facade-system.module.test.sourcepath">
     <dirset dir="${module.facade-system.basedir}">
       <include name="test/bean"/>
-      <include name="test/conf"/>
     </dirset>
   </path>
   
@@ -98,10 +97,6 @@
     
     <copy todir="${facade-system.testoutput.dir}">
       <fileset dir="${module.facade-system.basedir}/test/bean">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.facade-system.basedir}/test/conf">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

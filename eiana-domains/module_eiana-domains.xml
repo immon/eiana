@@ -50,10 +50,6 @@
   
   <path id="eiana-domains.module.test.sourcepath">
     <dirset dir="${module.eiana-domains.basedir}">
-      <include name="test/conf"/>
-      <include name="test/dao"/>
-      <include name="test/exporter"/>
-      <include name="test/failure"/>
       <include name="test/hibernate"/>
     </dirset>
   </path>
@@ -90,22 +86,6 @@
     </javac>
     
     <copy todir="${eiana-domains.testoutput.dir}">
-      <fileset dir="${module.eiana-domains.basedir}/test/conf">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-domains.basedir}/test/dao">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-domains.basedir}/test/exporter">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-domains.basedir}/test/failure">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
       <fileset dir="${module.eiana-domains.basedir}/test/hibernate">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
