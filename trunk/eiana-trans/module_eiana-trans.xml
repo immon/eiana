@@ -65,19 +65,6 @@
     </dirset>
   </path>
   
-  <path id="eiana-trans.module.test.sourcepath">
-    <dirset dir="${module.eiana-trans.basedir}">
-      <include name="test/change"/>
-      <include name="test/conf"/>
-      <include name="test/confirmation"/>
-      <include name="test/dao"/>
-      <include name="test/etc/processes"/>
-      <include name="test/hibernate"/>
-      <include name="test/jbpm"/>
-      <include name="test/manager"/>
-    </dirset>
-  </path>
-  
   
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
   
@@ -103,51 +90,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.eiana-trans.tests" depends="compile.module.eiana-trans.production" description="compile module eiana-trans; test classes" unless="skip.tests">
-    <mkdir dir="${eiana-trans.testoutput.dir}"/>
-    <javac destdir="${eiana-trans.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-trans}"/>
-      <classpath refid="eiana-trans.module.classpath"/>
-      <classpath location="${eiana-trans.output.dir}"/>
-      <src refid="eiana-trans.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-trans"/>
-    </javac>
-    
-    <copy todir="${eiana-trans.testoutput.dir}">
-      <fileset dir="${module.eiana-trans.basedir}/test/change">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/conf">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/confirmation">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/dao">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/etc/processes">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/jbpm">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.eiana-trans.basedir}/test/manager">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
+  <target name="compile.module.eiana-trans.tests" depends="compile.module.eiana-trans.production" description="compile module eiana-trans; test classes" unless="skip.tests"/>
   
   <target name="clean.module.eiana-trans" description="cleanup module">
     <delete dir="${eiana-trans.output.dir}"/>

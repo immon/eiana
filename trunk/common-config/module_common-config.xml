@@ -40,13 +40,6 @@
     </dirset>
   </path>
   
-  <path id="common-config.module.test.sourcepath">
-    <dirset dir="${module.common-config.basedir}">
-      <include name="test/conf"/>
-      <include name="test/hibernate"/>
-    </dirset>
-  </path>
-  
   
   <target name="compile.module.common-config" depends="compile.module.common-config.production,compile.module.common-config.tests" description="Compile module common-config"/>
   
@@ -68,27 +61,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.common-config.tests" depends="compile.module.common-config.production" description="compile module common-config; test classes" unless="skip.tests">
-    <mkdir dir="${common-config.testoutput.dir}"/>
-    <javac destdir="${common-config.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.common-config}"/>
-      <classpath refid="common-config.module.classpath"/>
-      <classpath location="${common-config.output.dir}"/>
-      <src refid="common-config.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.common-config"/>
-    </javac>
-    
-    <copy todir="${common-config.testoutput.dir}">
-      <fileset dir="${module.common-config.basedir}/test/conf">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.common-config.basedir}/test/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
+  <target name="compile.module.common-config.tests" depends="compile.module.common-config.production" description="compile module common-config; test classes" unless="skip.tests"/>
   
   <target name="clean.module.common-config" description="cleanup module">
     <delete dir="${common-config.output.dir}"/>

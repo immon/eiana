@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_eiana-web-admin">
+
+    <dirname property="module.eiana-web-admin.basedir" file="${ant.file.module_eiana-web-admin}"/>
+
+    <target name="copyAdminBeforeRun">
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/services-config.xml"
+              todir="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/" overwrite="true"/>
+    </target>
+</project>

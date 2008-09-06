@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@Border">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td valign="bottom"><h1>Create New Request </h1></td>
+                    <td valign="bottom">
+                        <div class="buttonStyle" style="float: right; margin-bottom: 15px; margin-right: 10px;">
+						    <b class="left"></b>
+						    <b class="right"><a href="#" jwcid="overview" class="button">Back</a></b>
+						</div>
+                    </td>
+                </tr>
+            </table>
+            <span jwcid="@tapestry4Commons:ShowMessages"/>
+            <span jwcid="@tapestry4Commons:ShowError"/>
+            <span jwcid="pendingRequests">
+                <span jwcid="pendingRequestsMessage"/>
+            </span>
+            <div class="mainBox">
+                <span jwcid="@tapestry4Commons:GrayContainer">
+                    <div class="boxContent">
+                        <span jwcid="domainHeader">
+                            <table width="95%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td><span class="domainLabelBig"><strong>.UI</strong></span>
+                                        <span class="domainLabelSmall">(country)</span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                     </span>       
+                    </div>
+                </span>
+            </div>
+            <span jwcid="isModified">
+                <div style="margin: 10px 0 0 0; padding: 10px; border: 1px solid #F8EC00; display: block;" class="grey">
+				    <div style="float: right;">
+					    <div class="buttonStyle" style="margin: 0 0 15px 10px;">
+					        <b class="leftRed"></b>
+					        <b class="right" style="width: 160px;"><a jwcid="cancelEdit" href="#" class="buttonRed">Cancel Change Request</a></b>
+                        </div>
+					    <div class="buttonStyle" style="margin: 0 0 0 10px; clear: left;">
+					        <b class="leftGreen"></b>
+					        <b class="right" style="width: 160px;"><a jwcid="completeEdit" href="#" class="buttonGreen">Complete Change Request</a></b>
+					    </div>
+				    </div>
+				    <strong><span class="alert">You have made changes to this domain.</span></strong>
+                    Once you have completed making changes (highlighted in orange below) you must submit them to turn
+                    them into a Change Request for IANA to process. Failure to do this will result in changes being lost.
+                </div>
+            </span>
+            <span jwcid="so"/>
+            <h4>Contacts</h4>
+            <span class="grey">Contacts authorised to speak for the operator of the domain. A technical and administrative contact must confirm any changes to details associated with this domain.</span>
+            <span jwcid="ac"/>
+            <span jwcid="tc"/>
+            <h4>Nameservers</h4>
+            <span class="grey">These are the authoritative nameservers to be listed in the DNS root for this domain.</span>
+            <span jwcid="listNameServers"/>
+            <h4>Sub Domain Information</h4>
+            <span class="grey">bbbbbbbb.</span>
+            <span jwcid="subDomain"/>
+        <br/><br/>
+        </body>
+     </span>
+</html>
+
+
