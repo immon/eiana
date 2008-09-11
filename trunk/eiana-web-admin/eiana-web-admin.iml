@@ -24,7 +24,6 @@
     <orderEntry type="module" module-name="facade-admin" />
     <orderEntry type="library" name="tapestry" level="project" />
     <orderEntry type="module" module-name="eiana-notifications" />
-    <orderEntry type="library" name="rzm-ui-components" level="project" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -122,10 +121,6 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
-    <containerElement type="module" name="eiana-web-components">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/classes" />
-    </containerElement>
     <containerElement type="module" name="facade-admin">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/classes" />
@@ -201,7 +196,7 @@
       <url>jar://$MODULE_DIR$/../lib/nask-commons/dynaxml.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
-      <attribute name="method" value="0" />
+      <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/quartz-all-1.6.0.jar" />
       <url>jar://$MODULE_DIR$/../lib/quartz/quartz-all-1.6.0.jar!/</url>
     </containerElement>
