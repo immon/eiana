@@ -332,7 +332,6 @@
       <module fileurl="file://$PROJECT_DIR$/../eiana-util/eiana-util.iml" filepath="$PROJECT_DIR$/../eiana-util/eiana-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-admin/eiana-web-admin.iml" filepath="$PROJECT_DIR$/../eiana-web-admin/eiana-web-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-common/eiana-web-common.iml" filepath="$PROJECT_DIR$/../eiana-web-common/eiana-web-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../eiana-web-components/eiana-web-components.iml" filepath="$PROJECT_DIR$/../eiana-web-components/eiana-web-components.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-user/eiana-web-user.iml" filepath="$PROJECT_DIR$/../eiana-web-user/eiana-web-user.iml" />
       <module fileurl="file://$PROJECT_DIR$/../facade-admin/facade-admin.iml" filepath="$PROJECT_DIR$/../facade-admin/facade-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../facade-common/facade-common.iml" filepath="$PROJECT_DIR$/../facade-common/facade-common.iml" />
