@@ -1,7 +1,7 @@
 package org.iana.rzm.init.ant;
 
-import org.iana.rzm.trans.conf.DefinedTestProcess;
 import org.iana.rzm.trans.dao.ProcessDAO;
+import org.iana.rzm.conf.DefinedTestProcess;
 import org.springframework.context.ApplicationContext;
 
 /**
