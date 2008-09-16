@@ -1,19 +1,17 @@
 package org.iana.rzm.facade.admin.domain;
 
-import org.iana.criteria.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.domain.*;
-import org.iana.rzm.domain.exporter.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.services.*;
-import org.iana.rzm.facade.system.domain.converters.*;
-import org.iana.rzm.facade.system.domain.vo.*;
-import org.iana.rzm.user.*;
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.domain.DomainManager;
+import org.iana.rzm.domain.exporter.DomainExporter;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.services.AbstractFinderService;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 
-import java.sql.*;
-import java.util.*;
+import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
@@ -22,99 +20,50 @@ import java.util.*;
 
 public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomainVO> implements AdminDomainService {
 
-    DomainManager domainManager;
+    StatelessAdminDomainService statelessAdminDomainService;
 
-    DomainExporter domainExporter;
-
-    private void isUserInRole() throws AccessDeniedException {
-        isIana();
-    }
-
-    public GuardedAdminDomainServiceBean(UserManager userManager, DomainManager domainManager, DomainExporter domainExporter) {
-        super(userManager);
-        CheckTool.checkNull(domainManager, "domain manager");
-        CheckTool.checkNull(domainExporter, "domain exporter");
-        this.domainManager = domainManager;
-        this.domainExporter = domainExporter;
+    public GuardedAdminDomainServiceBean(StatelessAdminDomainService statelessAdminDomainService) {
+        this.statelessAdminDomainService = statelessAdminDomainService;
     }
 
     public IDomainVO getDomain(String domainName) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkEmpty(domainName, "domain name");
-        Domain retrivedDomain = domainManager.get(domainName);
-        CheckTool.checkNull(retrivedDomain, "no such domain: " + domainName);
-        return DomainToVOConverter.toDomainVO(retrivedDomain);
+        return statelessAdminDomainService.getDomain(domainName, getAuthenticatedUser());
     }
 
     public IDomainVO getDomain(long id) throws AccessDeniedException {
-        isUserInRole();
-        Domain retrivedDomain = domainManager.get(id);
-        CheckTool.checkNull(retrivedDomain, "no such domain: " + id);
-        return DomainToVOConverter.toDomainVO(retrivedDomain);
+        return statelessAdminDomainService.getDomain(id, getAuthenticatedUser());
     }
 
     public void createDomain(IDomainVO domain) throws InvalidCountryCodeException, AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(domain, "domainVO");
-        Domain newDomain = DomainFromVOConverter.toDomain(domain);
-        newDomain.setCreated(new Timestamp(System.currentTimeMillis()));
-        newDomain.setCreatedBy(getAuthenticatedUser().getUserName());
-        domainManager.create(newDomain);
+        statelessAdminDomainService.createDomain(domain, getAuthenticatedUser());
     }
 
     public void updateDomain(IDomainVO domain) throws InvalidCountryCodeException, AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(domain, "domainVO");
-        Domain newDomain = DomainFromVOConverter.toDomain(domain);
-        domainManager.update(newDomain, user.getUserName());
+        statelessAdminDomainService.updateDomain(domain, getAuthenticatedUser());
     }
 
     public void deleteDomain(String domainName) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkEmpty(domainName, "doamain Name");
-        Domain retrivedDomain = domainManager.get(domainName);
-        CheckTool.checkNull(retrivedDomain, "no such domain");
-        domainManager.delete(retrivedDomain);
+        statelessAdminDomainService.deleteDomain(domainName, getAuthenticatedUser());
     }
 
     public void deleteDomain(long id) throws AccessDeniedException {
-        isUserInRole();
-        Domain retrivedDomain = domainManager.get(id);
-        CheckTool.checkNull(retrivedDomain, "no such domain: " + id);
-        domainManager.delete(retrivedDomain);
+        statelessAdminDomainService.deleteDomain(id, getAuthenticatedUser());
     }
 
     public List<IDomainVO> findDomains() throws AccessDeniedException {
-        isUserInRole();
-        List<IDomainVO> domainVOList = new ArrayList<IDomainVO>();
-        for (Domain domian: domainManager.findAll())
-            domainVOList.add(DomainToVOConverter.toSimpleDomainVO(domian));
-        return domainVOList;
+        return statelessAdminDomainService.findDomains(getAuthenticatedUser());
     }
 
     public List<IDomainVO> findDomains(Criterion criteria) throws AccessDeniedException {
-        isUserInRole();
-        List<IDomainVO> domainVOs = new ArrayList<IDomainVO>();
-        for (Domain domain : domainManager.find(criteria))
-            domainVOs.add(DomainToVOConverter.toSimpleDomainVO(domain));
-        return domainVOs;
-    }
-
-    public void setUser(AuthenticatedUser user) {
-        super.setUser(user);
+        return statelessAdminDomainService.findDomains(criteria, getAuthenticatedUser());
     }
 
     public int count(Criterion criteria) throws AccessDeniedException {
-        isUserInRole();
-        return domainManager.count(criteria);
+        return statelessAdminDomainService.count(criteria, getAuthenticatedUser());
     }
 
     public List<IDomainVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException {
-        isUserInRole();
-        List<IDomainVO> domainVOs = new ArrayList<IDomainVO>();
-        for (Domain domain : domainManager.find(criteria, offset, limit))
-            domainVOs.add(DomainToVOConverter.toSimpleDomainVO(domain));
-        return domainVOs;
+        return statelessAdminDomainService.find(criteria, offset, limit, getAuthenticatedUser());
     }
 
     public IDomainVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
@@ -122,21 +71,15 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
     }
 
     public List<IDomainVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
-        List<IDomainVO> domainVOs = new ArrayList<IDomainVO>();
-        for (Domain domain : domainManager.find(criteria))
-            domainVOs.add(DomainToVOConverter.toSimpleDomainVO(domain));
-        return domainVOs;
+        return statelessAdminDomainService.find(criteria, getAuthenticatedUser());
     }
 
 
     public void exportDomainsToXML() throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
-        domainExporter.exportToXML(domainManager.findAll());
+        statelessAdminDomainService.exportDomainsToXML(getAuthenticatedUser());
     }
 
     public String saveDomainsToXML() throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
-        return domainExporter.saveToXML(domainManager.findAll());
+        return statelessAdminDomainService.saveDomainsToXML(getAuthenticatedUser());
     }
 }

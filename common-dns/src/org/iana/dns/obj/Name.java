@@ -3,10 +3,12 @@ package org.iana.dns.obj;
 import org.iana.dns.validator.InvalidDomainNameException;
 import org.iana.dns.validator.DomainNameValidator;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class Name implements Comparable<Name> {
+public class Name implements Comparable<Name>, Serializable {
 
     private String name;
 

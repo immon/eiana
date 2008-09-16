@@ -7,19 +7,11 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
 
 import java.util.List;
 
@@ -31,148 +23,88 @@ import java.util.List;
  */
 public class GuardedTransactionService extends AbstractRZMStatefulService implements TransactionService {
 
-    private TransactionService delegate;
+    private StatelessTransactionService statelessTransactionService;
 
-    private TransactionManager manager;
-
-    public GuardedTransactionService(UserManager userManager, TransactionService delegate, TransactionManager manager) {
-        super(userManager);
-        CheckTool.checkNull(delegate, "system transaction service");
-        CheckTool.checkNull(manager, "transaction manager");
-        this.delegate = delegate;
-        this.manager = manager;
-    }
-
-    private void isUserInRole(long transactionId) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        TransactionVO trans = delegate.get(transactionId);
-        try {
-            isUserInIanaGovOrDomainRole(trans.getDomainName());
-        } catch (AccessDeniedException e) {
-            for (String domainName : trans.getImpactedDomains()) {
-                try {
-                    isUserInIanaGovOrDomainRole(domainName);
-                    return;
-                } catch (AccessDeniedException e1) {
-                }
-            }
-            throw new AccessDeniedException("no role found for transaction " + trans.getDomainName() + " : " + trans.getImpactedDomains());
-        }
-    }
-
-    private void isUserInRole(long transactionId, String token) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        try {
-            Transaction trans = manager.getTransaction(transactionId);
-            ContactConfirmations contactConfirmations = trans.getContactConfirmations();
-            if (contactConfirmations == null) throw new AccessDeniedException("no contact confirmation pending");
-            SystemRole role = contactConfirmations.getRoleForToken(token);
-            if (role == null) throw new AccessDeniedException("no contact confirmation pending for the token: " + token);
-            RZMUser user = getRZMUser();
-            if (user.isAdmin()) return;
-            if (user.isInRole(role)) return;
-            throw new AccessDeniedException("User " + user.getName() + " is not an  " + role.getType().name() + " for domain " + role.getName() + "  (token: " + token + ")");
-        } catch (NoSuchTransactionException e) {
-            throw new NoObjectFoundException(transactionId, "transaction");
-        }
-    }
-
-    private void isUserInCreateTransactionRole(String domainName) throws AccessDeniedException {
-        isUserInIanaOrDomainRole(domainName);
-    }
-
-
-    public void setUser(AuthenticatedUser user) {
-        super.setUser(user);
-        delegate.setUser(user);
+    public GuardedTransactionService(StatelessTransactionService statelessTransactionService) {
+        CheckTool.checkNull(statelessTransactionService, "statelessTransactionService");
+        this.statelessTransactionService = statelessTransactionService;
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
-        isUserInCreateTransactionRole(domain.getName());
-        return delegate.createTransactions(domain);
+        return statelessTransactionService.createTransactions(domain, getAuthenticatedUser());
     }
 
     public List<TransactionVO> getByTicketID(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id);
-        return delegate.getByTicketID(id);
+        return statelessTransactionService.getByTicketID(id, getAuthenticatedUser());
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
-        isUserInCreateTransactionRole(domain.getName());
-        return delegate.createTransactions(domain, splitNameServerChange);
+        return statelessTransactionService.createTransactions(domain, splitNameServerChange, getAuthenticatedUser());
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
-        isUserInCreateTransactionRole(domain.getName());
-        return delegate.createTransactions(domain, splitNameServerChange, submitterEmail);
+        return statelessTransactionService.createTransactions(domain, splitNameServerChange, submitterEmail, getAuthenticatedUser());
     }
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
-        isUserInCreateTransactionRole(domain.getName());
-        return delegate.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment);
+        return statelessTransactionService.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment, getAuthenticatedUser());
     }
 
     public void acceptTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id, token);
-        delegate.acceptTransaction(id, token);
+        statelessTransactionService.acceptTransaction(id, token, getAuthenticatedUser());
     }
 
     public void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id, token);
-        delegate.rejectTransaction(id, token);
+        statelessTransactionService.rejectTransaction(id, token, getAuthenticatedUser());
     }
 
     public void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, IllegalTransactionStateException {
-        isUserInRole(id);
-        delegate.moveTransactionToNextState(id);
+        statelessTransactionService.moveTransactionToNextState(id, getAuthenticatedUser());
     }
 
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id);
-        delegate.rejectTransaction(id);
+        statelessTransactionService.acceptTransaction(id, getAuthenticatedUser());
     }
 
     public void rejectTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id);
-        delegate.rejectTransaction(id);
+        statelessTransactionService.rejectTransaction(id, getAuthenticatedUser());
     }
 
     public void transitTransaction(long id, String transitionName) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
-        isUserInRole(id);
-        delegate.transitTransaction(id, transitionName);
+        statelessTransactionService.transitTransaction(id, transitionName, getAuthenticatedUser());
     }
 
 
     public TransactionVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        isUserInRole(id);
-        return delegate.get(id);
+        return statelessTransactionService.get(id, getAuthenticatedUser());
     }
 
 
     public int count(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        return delegate.count(criteria);
+        return statelessTransactionService.count(criteria, getAuthenticatedUser());
     }
 
     public List<TransactionVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        return delegate.find(criteria);
+        return statelessTransactionService.find(criteria, getAuthenticatedUser());
     }
 
     public List<TransactionVO> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        return delegate.find(order, offset, limit);
+        return statelessTransactionService.find(order, offset, limit, getAuthenticatedUser());
     }
 
     public List<TransactionVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        return delegate.find(criteria, offset, limit);
+        return statelessTransactionService.find(criteria, offset, limit, getAuthenticatedUser());
     }
 
     public List<TransactionVO> find(Criterion criteria, Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        return delegate.find(criteria, order, offset, limit);
+        return statelessTransactionService.find(criteria, order, offset, limit, getAuthenticatedUser());
     }
 
     public List<TransactionVO> find(Criterion criteria, List<Order> order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
-        return delegate.find(criteria, order, offset, limit);
+        return statelessTransactionService.find(criteria, order, offset, limit, getAuthenticatedUser());
     }
 
     public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        isUserInRole(id);
-        delegate.withdrawTransaction(id);
+        statelessTransactionService.withdrawTransaction(id, getAuthenticatedUser());
     }
 }

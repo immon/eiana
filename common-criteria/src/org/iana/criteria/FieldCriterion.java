@@ -2,10 +2,12 @@ package org.iana.criteria;
 
 import org.iana.rzm.common.validators.CheckTool;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-abstract public class FieldCriterion implements Criterion {
+abstract public class FieldCriterion implements Criterion, Serializable {
 
     private String fieldName;
 

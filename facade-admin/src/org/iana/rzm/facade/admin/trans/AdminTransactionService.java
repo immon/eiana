@@ -7,6 +7,7 @@ import org.iana.rzm.facade.system.trans.IllegalTransactionStateException;
 import org.iana.rzm.facade.system.trans.TransactionService;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.services.RZMStatefulService;
 
 /**
  * @author Piotr Tkaczyk

@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.exceptions.InvalidEmailException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -15,42 +16,30 @@ import java.util.List;
  * @author Piotr Tkaczyk
  * @author Jakub Laszkiewicz
  */
-public class EmptySystemDomainService implements SystemDomainService {
+public class EmptySystemDomainService implements StatelessSystemDomainService {
 
-    public IDomainVO getDomain(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        return null;
+
+    public IDomainVO getDomain(long id, AuthenticatedUser authUser) throws AccessDeniedException, InfrastructureException, NoObjectFoundException, InvalidEmailException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public IDomainVO getDomain(String name) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        return null;
+    public IDomainVO getDomain(String name, AuthenticatedUser authUser) throws AccessDeniedException, InfrastructureException, NoObjectFoundException, InvalidEmailException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<SimpleDomainVO> findUserDomains() throws AccessDeniedException, InfrastructureException {
-        return new ArrayList<SimpleDomainVO>();
+    public List<SimpleDomainVO> findUserDomains(AuthenticatedUser authUser) throws AccessDeniedException, InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<SimpleDomainVO> findUserDomains(String userName) throws AccessDeniedException, InfrastructureException {
-        return new ArrayList<SimpleDomainVO>();
+    public List<SimpleDomainVO> findUserDomains(String userName, AuthenticatedUser authUser) throws AccessDeniedException, InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setAccessToDomain(long userId, long domainId, boolean access) {
+    public void setAccessToDomain(long userId, long domainId, boolean access, AuthenticatedUser authUser) throws AccessDeniedException, InfrastructureException {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly) {
-        return new ArrayList<UserVO>();
-    }
-
-    public void setUser(AuthenticatedUser user) {
-    }
-
-    public void close() {
-    }
-
-    public AuthenticatedUser getAuthenticatedUser() {
-        return null;
-    }
-
-    public UserVO getUser() {
-        return null;
+    public List<UserVO> findDomainUsers(String domainName, boolean havingAccessOnly, AuthenticatedUser authUser) throws AccessDeniedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

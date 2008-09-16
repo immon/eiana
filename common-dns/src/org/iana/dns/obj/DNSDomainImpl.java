@@ -6,11 +6,12 @@ import org.iana.dns.DNSVisitor;
 import org.iana.dns.DNSDelegationSigner;
 
 import java.util.*;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class DNSDomainImpl implements DNSDomain {
+public class DNSDomainImpl implements DNSDomain, Serializable {
 
     private Name name;
 

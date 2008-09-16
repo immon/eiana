@@ -1,23 +1,11 @@
 package org.iana.rzm.facade.system.domain;
 
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.auth.AuthenticationService;
-import org.iana.rzm.facade.auth.PasswordAuth;
-import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
 import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.springframework.context.ApplicationContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 /**
  * It tests a domain access flag set for a user.
@@ -33,6 +21,7 @@ public class DomainAccessTest {
     UserManager userManager = (UserManager) context.getBean("userManager");
     DomainManager domainManager = (DomainManager) context.getBean("domainManager");
 
+/*
     @BeforeClass
     public void init() {
         RZMUser user1 = new RZMUser();
@@ -158,4 +147,5 @@ public class DomainAccessTest {
         domainManager.delete("domainaccess1");
         domainManager.delete("domainaccess2");
     }
+*/
 }
