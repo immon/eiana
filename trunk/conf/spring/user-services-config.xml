@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+       default-lazy-init="false">
+
+    <!-- ############################# -->
+
+    <bean id="remoteGuardedSystemDomainService" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService" scope="session">
+        <constructor-arg index="0" ref="remoteStatelessGuardedSystemDomainService"/>
+    </bean>
+
+    <bean id="remoteStatelessGuardedSystemDomainService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="http://localhost:8080/rzm/remoting/remoteGuardedSystemDomainServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.system.domain.StatelessSystemDomainService"/>
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteGuardedSystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService" scope="session">
+        <constructor-arg index="0" ref="remoteStatelessGuardedSystemTransactionServiceBean"/>
+    </bean>
+
+    <bean id="remoteStatelessGuardedSystemTransactionServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="http://localhost:8080/rzm/remoting/remoteGuardedSystemTransactionServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.system.trans.StatelessTransactionService"/>
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteDetectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl" scope="session">
+        <constructor-arg index="0" ref="remoteStatelessDetectorService"/>
+    </bean>
+
+    <bean id="remoteStatelessDetectorService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="http://localhost:8080/rzm/remoting/remoteDetectorService"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.system.trans.StatelessTransactionDetectorService"/>
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteCc" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="http://localhost:8080/rzm/remoting/remoteCc"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.common.cc.CountryCodes"/>
+    </bean>
+
+    <bean id="remotePasswordChangeService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="http://localhost:8080/rzm/remoting/remotePasswordChangeService"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.passwd.PasswordChangeService"/>
+    </bean>
+
+    <bean id="remoteAuthenticationServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="http://localhost:8080/rzm/remoting/remoteAuthenticationServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.auth.AuthenticationService"/>
+    </bean>
+
+</beans>

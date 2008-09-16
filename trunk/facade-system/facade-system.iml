@@ -38,6 +38,7 @@
     <orderEntry type="module" module-name="eiana-logs" />
     <orderEntry type="module" module-name="common-codevalues" />
     <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module" module-name="facade-remote" />
     <orderEntryProperties />
   </component>
 </module>

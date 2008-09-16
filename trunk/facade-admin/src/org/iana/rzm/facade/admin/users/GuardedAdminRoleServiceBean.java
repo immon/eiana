@@ -7,12 +7,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.RoleManager;
-import org.iana.rzm.user.UserManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,89 +15,51 @@ import java.util.List;
  */
 public class GuardedAdminRoleServiceBean extends AbstractFinderService<RoleVO> implements AdminRoleService {
 
-    RoleManager roleManager;
+    private StatelessAdminRoleService statelessAdminRoleService;
 
-    private void isUserInRole() throws AccessDeniedException {
-        isIana();
-    }
-
-    public GuardedAdminRoleServiceBean(UserManager userManager, RoleManager roleManager) {
-        super(userManager);
-        CheckTool.checkNull(roleManager, "role maager");
-        this.roleManager = roleManager;
+    public GuardedAdminRoleServiceBean(StatelessAdminRoleService statelessAdminRoleService) {
+        CheckTool.checkNull(statelessAdminRoleService, "stateless admin role service");
+        this.statelessAdminRoleService = statelessAdminRoleService;
     }
 
     public RoleVO getRole(long id) throws AccessDeniedException {
-        isUserInRole();
-        Role retRole = this.roleManager.get(id);
-        CheckTool.checkNull(retRole, "no such role: " + id);
-        return RoleConverter.convertRole(retRole);
+        return statelessAdminRoleService.getRole(id, getAuthenticatedUser());
     }
 
     public long createRole(RoleVO roleVO) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(roleVO, "roleVO");
-        Role newRole = RoleConverter.convertRole(roleVO);
-        this.roleManager.create(newRole);
-        return newRole.getObjId();
+        return statelessAdminRoleService.createRole(roleVO, getAuthenticatedUser());
     }
 
     public void updateRole(RoleVO roleVO) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(roleVO, "roleVO");
-        Role updateRole = RoleConverter.convertRole(roleVO);
-        this.roleManager.update(updateRole);
+        statelessAdminRoleService.updateRole(roleVO, getAuthenticatedUser());
     }
 
     public void deleteRole(long id) throws AccessDeniedException {
-        isUserInRole();
-        Role retRole = this.roleManager.get(id);
-        CheckTool.checkNull(retRole, "no such role: " + id);
-        this.roleManager.delete(retRole);
+        statelessAdminRoleService.deleteRole(id, getAuthenticatedUser());
     }
 
     public List<RoleVO> findRoles() throws AccessDeniedException {
-        isUserInRole();
-        List<RoleVO> rolesVO = new ArrayList<RoleVO>();
-        for (Role role : this.roleManager.findAll())
-            rolesVO.add(RoleConverter.convertRole(role));
-        return rolesVO;
+        return statelessAdminRoleService.findRoles(getAuthenticatedUser());
     }
 
     public List<RoleVO> findRoles(Criterion criteria) throws AccessDeniedException {
-        isUserInRole();
-        List<RoleVO> roleVOs = new ArrayList<RoleVO>();
-        for (Role role : this.roleManager.find(criteria))
-            roleVOs.add(RoleConverter.convertRole(role));
-
-        return roleVOs;
+        return statelessAdminRoleService.findRoles(criteria, getAuthenticatedUser());
     }
 
     public int count(Criterion criteria) throws AccessDeniedException {
-        isUserInRole();
-        return roleManager.count(criteria);
+        return statelessAdminRoleService.count(criteria, getAuthenticatedUser());
     }
 
     public List<RoleVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException {
-        isUserInRole();
-        List<RoleVO> roleVOs = new ArrayList<RoleVO>();
-        for (Role role : this.roleManager.find(criteria, offset, limit))
-            roleVOs.add(RoleConverter.convertRole(role));
-
-        return roleVOs;
+        return statelessAdminRoleService.find(criteria, offset, limit, getAuthenticatedUser());
     }
 
 
     public List<RoleVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
-        List<RoleVO> roleVOs = new ArrayList<RoleVO>();
-        for (Role role : this.roleManager.find(criteria))
-            roleVOs.add(RoleConverter.convertRole(role));
-
-        return roleVOs;
+        return statelessAdminRoleService.find(criteria, getAuthenticatedUser());
     }
 
     public RoleVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        return getRole(id);
+        return statelessAdminRoleService.get(id, getAuthenticatedUser());
     }
 }

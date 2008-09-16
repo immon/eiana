@@ -1,11 +1,13 @@
 package org.iana.rzm.facade.auth;
 
+import java.io.Serializable;
+
 /**
  * <p>This class holds a user name and plain-text password.</p>
  *
  * @author Patrycja Wegrzynowicz
  */
-public class PasswordAuth implements AuthenticationData {
+public class PasswordAuth implements AuthenticationData, Serializable {
 
     private String userName;
     private String password;

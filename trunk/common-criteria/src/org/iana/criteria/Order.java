@@ -1,12 +1,14 @@
 package org.iana.criteria;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class Order {
+public class Order implements Serializable {
 
     private String fieldName;
-    private boolean ascending;
+    private Boolean ascending;
 
     public Order(String fieldName) {
         this(fieldName, true);    

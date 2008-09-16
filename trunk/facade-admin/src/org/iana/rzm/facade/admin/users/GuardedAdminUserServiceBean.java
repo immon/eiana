@@ -2,19 +2,11 @@ package org.iana.rzm.facade.admin.users;
 
 import org.iana.criteria.Criterion;
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,113 +14,58 @@ import java.util.List;
  */
 public class GuardedAdminUserServiceBean  extends AbstractFinderService<UserVO> implements AdminUserService {
 
-    UserManager userManager;
+    StatelessAdminUserService statelessAdminUserService;
 
-    private void isUserInRole() throws AccessDeniedException {
-        isIana();
-    }
-
-    public GuardedAdminUserServiceBean(UserManager userMgr) {
-        super(userMgr);
-        CheckTool.checkNull(userMgr, "user manager");
-        this.userManager = userMgr;
+    public GuardedAdminUserServiceBean(StatelessAdminUserService statelessAdminUserService) {
+        this.statelessAdminUserService = statelessAdminUserService;
     }
 
     public UserVO getUser(String userName) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkEmpty(userName, "user name");
-        RZMUser retUser = this.userManager.get(userName);
-        CheckTool.checkNull(retUser, "no such user: " + userName);
-        return UserConverter.convert(retUser);
+        return statelessAdminUserService.getUser(userName, getAuthenticatedUser());
     }
 
     public UserVO getUser(long id) throws AccessDeniedException {
-        isUserInRole();
-        RZMUser retUser = this.userManager.get(id);
-        CheckTool.checkNull(retUser, "no such user: " + id);
-        return UserConverter.convert(retUser);
+        return statelessAdminUserService.getUser(id, getAuthenticatedUser());
     }
 
     public void createUser(UserVO userVO) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(userVO, "userVO");
-        RZMUser newUser = UserConverter.convert(userVO);
-        for (Role role : newUser.getRoles()) {
-            role.setObjId(null);
-            if (role instanceof SystemRole) {
-                SystemRole systemRole = (SystemRole) role;
-                systemRole.setAccessToDomain(true);
-            }
-        }
-        newUser.setPassword(userVO.getPassword());
-        newUser.setCreated(new Timestamp(System.currentTimeMillis()));
-        newUser.setCreatedBy(getAuthenticatedUser().getUserName());
-        this.userManager.create(newUser);
+        statelessAdminUserService.createUser(userVO, getAuthenticatedUser());
     }
 
     public void updateUser(UserVO userVO) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkNull(userVO, "userVO");
-        RZMUser user = userManager.get(userVO.getObjId());
-        RZMUser updateUser = UserConverter.convert(user, userVO);
-        updateUser.setTrackData(user.getTrackData());
-        updateUser.setModified(new Timestamp(System.currentTimeMillis()));
-        updateUser.setModifiedBy(getAuthenticatedUser().getUserName());
-        this.userManager.update(updateUser);
+        statelessAdminUserService.updateUser(userVO, getAuthenticatedUser());
     }
 
     public void deleteUser(String userName) throws AccessDeniedException {
-        isUserInRole();
-        CheckTool.checkEmpty(userName, "user Name");
-        this.userManager.delete(userName);
+        statelessAdminUserService.deleteUser(userName, getAuthenticatedUser());
     }
 
     public void deleteUser(long id) throws AccessDeniedException {
-        isUserInRole();
-        RZMUser retUser = this.userManager.get(id);
-        CheckTool.checkNull(retUser, "no such user: " + id);
-        this.userManager.delete(retUser);
+        statelessAdminUserService.deleteUser(id, getAuthenticatedUser());
     }
 
     public List<UserVO> findUsers() throws AccessDeniedException {
-        isUserInRole();
-        return findUsers(null);
+        return statelessAdminUserService.findUsers(getAuthenticatedUser());
     }
 
     public List<UserVO> findUsers(Criterion criteria) throws AccessDeniedException {
-        isUserInRole();
-        List<UserVO> userVOs = new ArrayList<UserVO>();
-        for (RZMUser user : this.userManager.find(criteria))
-            userVOs.add(UserConverter.convert(user));
-
-        return userVOs;
+        return statelessAdminUserService.findUsers(criteria, getAuthenticatedUser());
     }
 
     public int count(Criterion criteria) throws AccessDeniedException {
-        isUserInRole();
-        return userManager.count(criteria);
+        return statelessAdminUserService.count(criteria, getAuthenticatedUser());
     }
 
     public List<UserVO> find(Criterion criteria, int offset, int limit) throws AccessDeniedException {
-        isUserInRole();
-        List<UserVO> userVOs = new ArrayList<UserVO>();
-        for (RZMUser user : this.userManager.find(criteria, offset, limit))
-            userVOs.add(UserConverter.convert(user));
-
-        return userVOs;
+        return statelessAdminUserService.find(criteria, offset, limit, getAuthenticatedUser());
     }
 
 
     public UserVO get(long id) throws AccessDeniedException, InfrastructureException, NoObjectFoundException {
-        return getUser(id);
+        return statelessAdminUserService.get(id, getAuthenticatedUser());
     }
 
     public List<UserVO> find(Criterion criteria) throws AccessDeniedException, InfrastructureException {
-        isUserInRole();
-        List<UserVO> userVOs = new ArrayList<UserVO>();
-        for (RZMUser user : this.userManager.find(criteria))
-            userVOs.add(UserConverter.convert(user));
-
-        return userVOs;
+        return statelessAdminUserService.find(criteria, getAuthenticatedUser());
     }
 }

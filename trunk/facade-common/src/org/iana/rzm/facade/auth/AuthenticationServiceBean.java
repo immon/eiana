@@ -12,26 +12,18 @@ import java.util.Map;
  */
 public class AuthenticationServiceBean implements AuthenticationService {
 
-    private Map<String, AuthenticationService> authenticators;
+    private AuthenticationService authenticationService;
 
-    public AuthenticationServiceBean(Map<String, AuthenticationService> authenticators) {
-        CheckTool.checkNull(authenticators, "authenticators");
-        this.authenticators = authenticators;
+    public AuthenticationServiceBean(AuthenticationService authenticationService) {
+        CheckTool.checkNull(authenticationService, "authentication service");
+        this.authenticationService = authenticationService;
     }
 
     public AuthenticatedUser authenticate(AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
-        CheckTool.checkNull(data, "authentication data");
-        return getAuthenticator(data).authenticate(data);
+        return authenticationService.authenticate(data);
     }
 
     public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {
-        CheckTool.checkNull(data, "authentication data");
-        return getAuthenticator(data).authenticate(token, data);
-    }
-
-    private AuthenticationService getAuthenticator(AuthenticationData data) {
-        AuthenticationService authenticator = authenticators.get(data.getClass().getName());
-        CheckTool.checkNull(authenticator, "authenticator for authentication data " + data.getClass());
-        return authenticator;
+        return authenticationService.authenticate(token, data);
     }
 }
