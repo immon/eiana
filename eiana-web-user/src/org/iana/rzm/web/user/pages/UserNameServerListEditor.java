@@ -150,12 +150,13 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
         domain.updateNameServers(nameServers);
 
 
-        if (WebUtil.isModefied(oldList, vos)) {
+        if (WebUtil.isModefied(oldList, nameServers)) {
             getVisitState().markDomainDirty(getDomainId(), DomainChangeType.ns);
-            getVisitState().storeDomain(domain);
         } else {
             getVisitState().clearChange(getDomainId(), DomainChangeType.ns);
         }
+
+        getVisitState().storeDomain(domain);
 
         setNameServerListValue(null);
         ReviewDomain reviewDomainPage = getReviewDomainPage();

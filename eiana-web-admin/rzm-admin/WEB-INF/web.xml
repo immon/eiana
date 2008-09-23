@@ -4,7 +4,7 @@
     <display-name>Root Zone Managment Application - Admin Interfaces</display-name>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/services-config.xml</param-value>
+        <param-value>/WEB-INF/admin-services-config.xml</param-value>
     </context-param>
     <filter>
         <filter-name>ContextFilter</filter-name>
@@ -32,27 +32,13 @@
         <servlet-class>org.apache.tapestry.ApplicationServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>Jbpm</servlet-name>
-        <servlet-class>org.iana.rzm.startup.jbpm.JbpmScheduler</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
+    
     <servlet-mapping>
         <servlet-name>rzm-admin</servlet-name>
         <url-pattern>/app</url-pattern>
     </servlet-mapping>
 
-    <!--<security-constraint>-->
-     <!--<web-resource-collection>-->
-        <!--<web-resource-name>Protected Context</web-resource-name>-->
-          <!--<url-pattern>/*</url-pattern>-->
-      <!--</web-resource-collection>-->
-      <!--<user-data-constraint>-->
-         <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
-      <!--</user-data-constraint>-->
-   <!--</security-constraint>-->
-
+    
     <!--<session-config>-->
         <!--<session-timeout>5</session-timeout>-->
     <!--</session-config>-->

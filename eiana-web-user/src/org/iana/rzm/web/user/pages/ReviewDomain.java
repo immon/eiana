@@ -274,10 +274,8 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public UserSubDomainEditor editSubDomain(){
         UserSubDomainEditor editor = getUserSubDomainEditor();
         editor.setDomainId(getDomainId());
-        editor.setOriginalDomain(getOriginalDomain());
         editor.setWhoisServer(getVisitState().getCurrentDomain(getDomainId()).getWhoisServer());
         editor.setRegistryUrl(getVisitState().getCurrentDomain(getDomainId()).getRegistryUrl());
-        
         return editor;
     }
 

@@ -115,11 +115,11 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
         if (WebUtil.isModefied(oldList, WebUtil.convertToVos(list))) {
             getVisitState().markDomainDirty(getDomainId(), DomainChangeType.ns);
-            getVisitState().storeDomain(domain);
         } else {
             getVisitState().clearChange(getDomainId(), DomainChangeType.ns);
         }
 
+        getVisitState().storeDomain(domain);
         setNameServerListValue(null);
         getCallback().performCallback(getRequestCycle());
     }

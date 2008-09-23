@@ -39,11 +39,11 @@ public class UserServicesImpl implements UserServices {
 
 
     public UserServicesImpl(ServiceInitializer<RZMStatefulService> initializer) {
-        domainService = initializer.getBean("GuardedSystemDomainService");
-        transactionService = initializer.getBean("GuardedSystemTransactionService");
-        detectorService = initializer.getBean("detectorService");
-        countryCodeService = initializer.getBean("cc", CountryCodes.class);
-        changePasswordService = initializer.getBean("passwordChangeService", PasswordChangeService.class);
+        domainService = initializer.getBean("remoteGuardedSystemDomainService");
+        transactionService = initializer.getBean("remoteGuardedSystemTransactionServiceBean");
+        detectorService = initializer.getBean("remoteDetectorService");
+        countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
+        changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
     }
 
     public String getCountryName(String name) {

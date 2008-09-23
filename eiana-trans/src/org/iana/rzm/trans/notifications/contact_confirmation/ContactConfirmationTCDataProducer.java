@@ -47,7 +47,7 @@ public class ContactConfirmationTCDataProducer extends DefaultTransactionDataPro
             values.put("changes", DomainChangePrinter.print(td.getDomainChange()));
             values.put("currentOrNewContact", contactIdentity.isNewContact() ? "proposed new technical contact" : "current technical contact");
             values.put("newContactOnly", contactIdentity.isNewContact() ? newContactInfo(td) : "");
-            values.put("url", "https://rzm.iana.org:8080/rzm");
+            values.put("url", "https://rzm.iana.org/rzm");
             values.put("ticket", "" + td.getTicketID());
             values.put("period", "" + dataSource.get("period"));
 

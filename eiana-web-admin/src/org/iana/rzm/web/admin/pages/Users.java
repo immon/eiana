@@ -339,6 +339,10 @@ public abstract class Users extends AdminPage implements PageBeginRenderListener
 
         public void render(IMarkupWriter writer, IRequestCycle cycle) {
             IComponent border = cycle.getPage().getComponent("border");
+            writer.begin("link");
+            writer.attribute("REL","SHORTCUT ICON");
+            IAsset icon = border.getAsset("siteIcon");
+            writer.attribute("HREF", icon.buildURL());
             writeScript(writer, border.getAsset("script"));
             writeScript(writer, javaScript);
         }

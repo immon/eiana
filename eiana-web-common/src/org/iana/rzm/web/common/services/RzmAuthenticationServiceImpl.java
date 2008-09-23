@@ -51,8 +51,8 @@ public class RzmAuthenticationServiceImpl implements RzmAuthenticationService {
     }
 
     public void setBeanFactoryHolder(SpringBeanFactoryHolder beanFactoryHolder) {
-        authenticationService = (AuthenticationService) beanFactoryHolder.getBeanFactory().getBean("authenticationServiceBean");
-        changePasswordService = (PasswordChangeService)beanFactoryHolder.getBeanFactory().getBean("passwordChangeService");
+        authenticationService = (AuthenticationService) beanFactoryHolder.getBeanFactory().getBean("remoteAuthenticationServiceBean");
+        changePasswordService = (PasswordChangeService)beanFactoryHolder.getBeanFactory().getBean("remotePasswordChangeService");
     }
 
 }
