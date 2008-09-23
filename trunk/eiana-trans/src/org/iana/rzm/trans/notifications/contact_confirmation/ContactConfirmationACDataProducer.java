@@ -49,7 +49,7 @@ public class ContactConfirmationACDataProducer extends DefaultTransactionDataPro
                        "proposed new administrative contact" :
                        "current administrative contact");
             values.put("newContactOnly", contactIdentity.isNewContact() ? newContactInfo(td) : "");
-            values.put("url", "https://rzm.iana.org:8080/rzm");
+            values.put("url", "https://rzm.iana.org/rzm");
             values.put("ticket", "" + td.getTicketID());
             values.put("period", "" + dataSource.get("period"));
 

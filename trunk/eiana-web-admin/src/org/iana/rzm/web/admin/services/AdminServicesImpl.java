@@ -56,16 +56,16 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private PasswordChangeService changePasswordService;
 
     public AdminServicesImpl(ServiceInitializer<RZMStatefulService> initializer) {
-        domainService = initializer.getBean("GuardedAdminDomainServiceBean");
-        transactionService = initializer.getBean("GuardedAdminTransactionServiceBean");
-        notificationService = initializer.getBean("notificationService");
-        userService = initializer.getBean("GuardedAdminUserServiceBean");
-        detectorService = initializer.getBean("adminDetectorService");
-        pollMessagesService = initializer.getBean("pollMessagesService");
-        countryCodeService = initializer.getBean("cc", CountryCodes.class);
-        domainTypesService = initializer.getBean("domainTypes", DomainTypes.class);
-        changePasswordService = initializer.getBean("passwordChangeService", PasswordChangeService.class);
-        dnsServices = initializer.getBean("dnsService", AdminDNSService.class);
+        domainService = initializer.getBean("remoteGuardedAdminDomainServiceBean");
+        transactionService = initializer.getBean("remoteGuardedAdminTransactionServiceBean");
+        notificationService = initializer.getBean("remoteNotificationService");
+        userService = initializer.getBean("remoteGuardedAdminUserServiceBean");
+        detectorService = initializer.getBean("remoteAdminDetectorService");
+        pollMessagesService = initializer.getBean("remotePollMessagesService");
+        countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
+        domainTypesService = initializer.getBean("remoteDomainTypes", DomainTypes.class);
+        changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
+        dnsServices = initializer.getBean("remoteDnsService", AdminDNSService.class);
     }
 
     public int getTransactionCount(Criterion criterion) {

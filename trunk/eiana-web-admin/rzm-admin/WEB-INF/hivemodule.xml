@@ -142,10 +142,10 @@
         <filter name="discard-session" object="service:DiscardSessionFilter"/>
     </contribution>
 
-    <contribution configuration-id="tapestry.InfrastructureOverrides">
-        <property name="exceptionPageName" value="ApplicationException"/>
-    </contribution>
-
+    <!--<contribution configuration-id="tapestry.InfrastructureOverrides">-->
+        <!--<property name="exceptionPageName" value="ApplicationException"/>-->
+    <!--</contribution>-->
+                         
     <contribution configuration-id="tapestry.form.validator.Validators">
         <validator name="domainName" configurable="false"
                    class="org.iana.rzm.web.common.validators.WebDomainNameValidator"/>

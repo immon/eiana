@@ -44,7 +44,6 @@ public abstract class RequestDetails extends BaseRequestDetails {
     public abstract UserServices getUserServices();
 
     public abstract void setUser(UserVOWrapper user);
-
     public abstract UserVOWrapper getUser();
 
     protected UserServices getRzmServices() {
