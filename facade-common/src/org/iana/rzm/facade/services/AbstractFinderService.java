@@ -14,6 +14,10 @@ import java.util.List;
  */
 public abstract class AbstractFinderService<T> extends AbstractRZMStatefulService implements FinderService<T> {
 
+    protected AbstractFinderService(UserManager userManager) {
+        super(userManager);
+    }
+
     public List<T> find(Order order, int offset, int limit) throws AccessDeniedException, InfrastructureException {
         return find(null, order, offset, limit);
     }

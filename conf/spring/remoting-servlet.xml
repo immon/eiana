@@ -82,6 +82,11 @@
         <property name="serviceInterface" value="org.iana.rzm.facade.auth.AuthenticationService"/>
     </bean>
 
+    <bean id="remoteUserManager" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+        <property name="service" ref="userManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.user.UserManager"/>
+    </bean>
+
     <bean id="remoteMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <props>
@@ -99,6 +104,7 @@
                 <prop key="/remotePasswordChangeService">remotePasswordChangeService</prop>
                 <prop key="/remoteDnsService">remoteDnsService</prop>
                 <prop key="/remoteAuthenticationServiceBean">remoteAuthenticationServiceBean</prop>
+                <prop key="/remoteUserManager">remoteUserManager</prop>
             </props>
         </property>
     </bean>

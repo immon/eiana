@@ -15,7 +15,8 @@
     <!-- ############################# -->
 
     <bean id="remoteGuardedSystemDomainService" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessGuardedSystemDomainService"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedSystemDomainService"/>
     </bean>
 
     <bean id="remoteStatelessGuardedSystemDomainService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -26,7 +27,8 @@
     <!-- ############################# -->
 
     <bean id="remoteGuardedSystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessGuardedSystemTransactionServiceBean"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedSystemTransactionServiceBean"/>
     </bean>
 
     <bean id="remoteStatelessGuardedSystemTransactionServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -37,7 +39,8 @@
     <!-- ############################# -->
 
     <bean id="remoteDetectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessDetectorService"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessDetectorService"/>
     </bean>
 
     <bean id="remoteStatelessDetectorService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -60,6 +63,13 @@
     <bean id="remoteAuthenticationServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
         <property name="serviceUrl" value="${remoting.url}/remoteAuthenticationServiceBean"/>
         <property name="serviceInterface" value="org.iana.rzm.facade.auth.AuthenticationService"/>
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteUserManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteUserManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.user.UserManager"/>
     </bean>
 
 </beans>

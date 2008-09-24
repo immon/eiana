@@ -5,10 +5,8 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.Role;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.user.*;
 import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.annotations.Test;
 
@@ -21,7 +19,7 @@ import java.util.List;
  */
 @Test(sequential = true)
 public class SystemDomainServiceTest extends RollbackableSpringContextTest {
-    protected SystemDomainService SystemDomainServiceBean;
+    protected SystemDomainService GuardedSystemDomainService;
     protected UserManager userManager;
     protected DomainManager domainManager;
 
@@ -36,6 +34,15 @@ public class SystemDomainServiceTest extends RollbackableSpringContextTest {
     protected void init() {
         createDomain(DOMAIN_NAME_1);
         createDomain(DOMAIN_NAME_2);
+
+        RZMUser admin = new RZMUser();
+        admin.setLoginName("iana");
+        AdminRole adminRole = new AdminRole(AdminRole.AdminType.IANA);
+        admin.addRole(adminRole);
+        userManager.create(admin);
+        AuthenticatedUser authUser = new AuthenticatedUser(admin.getObjId(), admin.getLoginName(), true);
+        GuardedSystemDomainService.setUser(authUser);
+
         for (int i = 0; i < 6; i++) {
             RZMUser user = createUser(USER_NAME_BASE + i);
             if (i < 4) {
@@ -79,10 +86,10 @@ public class SystemDomainServiceTest extends RollbackableSpringContextTest {
         RZMUser[] users = getUsers();
         Domain domain1 = domainManager.get(DOMAIN_NAME_1);
         Domain domain2 = domainManager.get(DOMAIN_NAME_2);
-        SystemDomainServiceBean.setAccessToDomain(users[0].getObjId(), domain1.getObjId(), true);
-        SystemDomainServiceBean.setAccessToDomain(users[2].getObjId(), domain1.getObjId(), true);
-        SystemDomainServiceBean.setAccessToDomain(users[2].getObjId(), domain2.getObjId(), true);
-        SystemDomainServiceBean.setAccessToDomain(users[4].getObjId(), domain2.getObjId(), true);
+        GuardedSystemDomainService.setAccessToDomain(users[0].getObjId(), domain1.getObjId(), true);
+        GuardedSystemDomainService.setAccessToDomain(users[2].getObjId(), domain1.getObjId(), true);
+        GuardedSystemDomainService.setAccessToDomain(users[2].getObjId(), domain2.getObjId(), true);
+        GuardedSystemDomainService.setAccessToDomain(users[4].getObjId(), domain2.getObjId(), true);
 
         users = getUsers();
         assertUserRoles(users[0], 1, true);
@@ -118,19 +125,19 @@ public class SystemDomainServiceTest extends RollbackableSpringContextTest {
 
     @Test(dependsOnMethods = "testSetAccessToDomain")
     public void testFindDomainUsers() {
-        List<UserVO> domain1AcessUsers = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_1, true);
+        List<UserVO> domain1AcessUsers = GuardedSystemDomainService.findDomainUsers(DOMAIN_NAME_1, true);
         List<String> domain1AcessUsersNames = getUserNames(domain1AcessUsers);
         assert VALID_DOMAIN_1_ACCESS_USER_NAMES.equals(domain1AcessUsersNames) : "unexpected domain 1 users: " + domain1AcessUsersNames;
 
-        List<UserVO> domain1Users = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_1, false);
+        List<UserVO> domain1Users = GuardedSystemDomainService.findDomainUsers(DOMAIN_NAME_1, false);
         List<String> domain1UsersNames = getUserNames(domain1Users);
         assert VALID_DOMAIN_1_USER_NAMES.equals(domain1UsersNames) : "unexpected domain 1 users: " + domain1UsersNames;
 
-        List<UserVO> domain2AccessUsers = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_2, true);
+        List<UserVO> domain2AccessUsers = GuardedSystemDomainService.findDomainUsers(DOMAIN_NAME_2, true);
         List<String> domain2AccessUsersNames = getUserNames(domain2AccessUsers);
         assert VALID_DOMAIN_2_ACCESS_USER_NAMES.equals(domain2AccessUsersNames) : "unexpected domain 2 users: " + domain2AccessUsersNames;
 
-        List<UserVO> domain2Users = SystemDomainServiceBean.findDomainUsers(DOMAIN_NAME_2, false);
+        List<UserVO> domain2Users = GuardedSystemDomainService.findDomainUsers(DOMAIN_NAME_2, false);
         List<String> domain2UsersNames = getUserNames(domain2Users);
         assert VALID_DOMAIN_2_USER_NAMES.equals(domain2UsersNames) : "unexpected domain 2 users: " + domain2UsersNames;
     }

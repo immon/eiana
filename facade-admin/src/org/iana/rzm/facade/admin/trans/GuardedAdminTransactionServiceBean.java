@@ -13,6 +13,7 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.user.UserManager;
 
 import java.util.List;
 
@@ -23,7 +24,8 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
 
     private StatelessAdminTransactionService statelessAdminTransactionService;
 
-    public GuardedAdminTransactionServiceBean(StatelessAdminTransactionService statelessAdminTransactionService) {
+    public GuardedAdminTransactionServiceBean(UserManager userManager, StatelessAdminTransactionService statelessAdminTransactionService) {
+        super(userManager);
         CheckTool.checkNull(statelessAdminTransactionService, "statelessAdminTransactionService");
         this.statelessAdminTransactionService = statelessAdminTransactionService;
     }

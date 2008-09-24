@@ -122,6 +122,7 @@ public class ResendNotificationTest {
         sts.setUser(au);
         sts.acceptTransaction(transactionID, token);
 
+        nts.setUser(au);
         nts.resendNotification(transactionID, NotificationVO.Type.CONTACT_CONFIRMATION, NOTIFICATION_COMMENT, null);
     }
 
@@ -137,6 +138,7 @@ public class ResendNotificationTest {
         ats.transitTransaction(transactionID, "admin-accept");
         assertTransactionState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
 
+        nts.setUser(au);
         nts.resendNotification(transactionID, NotificationVO.Type.USDOC_CONFIRMATION, NOTIFICATION_COMMENT, null);
     }
 

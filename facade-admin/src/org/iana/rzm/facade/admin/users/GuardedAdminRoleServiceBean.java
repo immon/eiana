@@ -7,6 +7,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.user.UserManager;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ public class GuardedAdminRoleServiceBean extends AbstractFinderService<RoleVO> i
 
     private StatelessAdminRoleService statelessAdminRoleService;
 
-    public GuardedAdminRoleServiceBean(StatelessAdminRoleService statelessAdminRoleService) {
+    public GuardedAdminRoleServiceBean(UserManager userManager, StatelessAdminRoleService statelessAdminRoleService) {
+        super(userManager);
         CheckTool.checkNull(statelessAdminRoleService, "stateless admin role service");
         this.statelessAdminRoleService = statelessAdminRoleService;
     }

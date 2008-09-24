@@ -74,6 +74,9 @@ public abstract class CommonGuardedSystemTransaction extends RollbackableSpringC
         defaultIana = new RZMUser("fn", "ln", "org", "default-iana", "iana@nowhere", "", false);
         defaultIana.addRole(new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(defaultIana);
+
+        AuthenticatedUser authUser = new AuthenticatedUser(defaultIana.getObjId(), defaultIana.getLoginName(), true);
+        notificationService.setUser(authUser);
     }
 
     protected void acceptZONE_PUBLICATION(RZMUser user, long transId) throws Exception {

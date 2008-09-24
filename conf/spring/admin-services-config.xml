@@ -15,7 +15,8 @@
     <!-- ############################# -->
 
     <bean id="remoteGuardedAdminDomainServiceBean" class="org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessGuardedAdminDomainServiceBean"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedAdminDomainServiceBean"/>
     </bean>
 
     <bean id="remoteStatelessGuardedAdminDomainServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -26,7 +27,8 @@
     <!-- ############################# -->
 
     <bean id="remoteGuardedAdminTransactionServiceBean" class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessGuardedAdminTransactionServiceBean"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedAdminTransactionServiceBean"/>
     </bean>
 
     <bean id="remoteStatelessGuardedAdminTransactionServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -37,7 +39,8 @@
     <!-- ############################# -->
 
     <bean id="remoteNotificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessNotificationService"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessNotificationService"/>
     </bean>
 
     <bean id="remoteStatelessNotificationService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -48,7 +51,8 @@
     <!-- ############################# -->
 
     <bean id="remoteGuardedAdminUserServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessGuardedAdminUserServiceBean"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedAdminUserServiceBean"/>
     </bean>
 
     <bean id="remoteStatelessGuardedAdminUserServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -59,7 +63,8 @@
     <!-- ############################# -->
 
     <bean id="remoteAdminDetectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessAdminDetectorService"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessAdminDetectorService"/>
     </bean>
     
     <bean id="remoteStatelessAdminDetectorService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -70,7 +75,8 @@
     <!-- ############################# -->
 
     <bean id="remotePollMessagesService" class="org.iana.rzm.facade.admin.msgs.PollMessagesServiceImpl" scope="session">
-        <constructor-arg index="0" ref="remoteStatelessPollMessagesService"/>
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessPollMessagesService"/>
     </bean>
 
     <bean id="remoteStatelessPollMessagesService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -103,6 +109,13 @@
     <bean id="remoteAuthenticationServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
         <property name="serviceUrl" value="${remoting.url}/remoteAuthenticationServiceBean"/>
         <property name="serviceInterface" value="org.iana.rzm.facade.auth.AuthenticationService"/>
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteUserManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteUserManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.user.UserManager"/>
     </bean>
 
 </beans>

@@ -8,6 +8,8 @@ import org.iana.rzm.facade.system.domain.vo.DomainVO;
 import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.rzm.user.UserManager;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,10 +28,12 @@ public class GuardedSystemDomainServiceFailureTest {
     private long domainId2;
 
     Domain domain1, domain2;
+    UserManager userManager;
 
     @BeforeClass
     public void init() throws Exception {
         gsds = (SystemDomainService) SpringApplicationContext.getInstance().getContext().getBean("GuardedSystemDomainService");
+        userManager = (UserManager) SpringApplicationContext.getInstance().getContext().getBean("userManager");
     }
 
     @Test
@@ -43,6 +47,8 @@ public class GuardedSystemDomainServiceFailureTest {
         domain2.setWhoisServer("whoIsServer2");
         domainDAO.create(domain2);
         domainId2 = domain2.getObjId();
+
+        userManager.create(UserConverter.convert(generateUser()));
     }
 
     @Test (expectedExceptions = {AccessDeniedException.class},

@@ -3,13 +3,11 @@ package org.iana.rzm.facade.admin.domain;
 import org.iana.criteria.Criterion;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.exporter.DomainExporter;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.user.UserManager;
 
 import java.util.List;
 
@@ -22,7 +20,8 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
 
     StatelessAdminDomainService statelessAdminDomainService;
 
-    public GuardedAdminDomainServiceBean(StatelessAdminDomainService statelessAdminDomainService) {
+    public GuardedAdminDomainServiceBean(UserManager userManager, StatelessAdminDomainService statelessAdminDomainService) {
+        super(userManager);
         this.statelessAdminDomainService = statelessAdminDomainService;
     }
 
