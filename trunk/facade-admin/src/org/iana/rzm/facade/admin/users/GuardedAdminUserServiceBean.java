@@ -6,6 +6,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.user.UserManager;
 
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class GuardedAdminUserServiceBean  extends AbstractFinderService<UserVO> 
 
     StatelessAdminUserService statelessAdminUserService;
 
-    public GuardedAdminUserServiceBean(StatelessAdminUserService statelessAdminUserService) {
+    public GuardedAdminUserServiceBean(UserManager userManager, StatelessAdminUserService statelessAdminUserService) {
+        super(userManager);
         this.statelessAdminUserService = statelessAdminUserService;
     }
 
