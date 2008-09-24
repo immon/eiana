@@ -8,7 +8,7 @@ import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
 import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class GuardedSystemDomainService extends AbstractRZMStatefulService imple
 
     private StatelessSystemDomainService statelessSystemDomainService;
 
-    public GuardedSystemDomainService(UserManager userManager, StatelessSystemDomainService statelessSystemDomainService) {
+    public GuardedSystemDomainService(UserVOManager userManager, StatelessSystemDomainService statelessSystemDomainService) {
         super(userManager);
         this.statelessSystemDomainService = statelessSystemDomainService;
     }

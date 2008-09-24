@@ -4,7 +4,7 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.notification.NotificationVO;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class AdminNotificationServiceImpl extends AbstractRZMStatefulService imp
 
     StatelessAdminNotificationService statelessAdminNotificationService;
 
-    public AdminNotificationServiceImpl(UserManager userManager, StatelessAdminNotificationService statelessAdminNotificationService) {
+    public AdminNotificationServiceImpl(UserVOManager userManager, StatelessAdminNotificationService statelessAdminNotificationService) {
         super(userManager);
         this.statelessAdminNotificationService = statelessAdminNotificationService;
     }

@@ -7,7 +7,7 @@ import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
 
     StatelessAdminDomainService statelessAdminDomainService;
 
-    public GuardedAdminDomainServiceBean(UserManager userManager, StatelessAdminDomainService statelessAdminDomainService) {
+    public GuardedAdminDomainServiceBean(UserVOManager userManager, StatelessAdminDomainService statelessAdminDomainService) {
         super(userManager);
         this.statelessAdminDomainService = statelessAdminDomainService;
     }

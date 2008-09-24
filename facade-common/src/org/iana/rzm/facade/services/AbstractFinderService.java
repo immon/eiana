@@ -5,7 +5,7 @@ import org.iana.criteria.Order;
 import org.iana.criteria.SortCriterion;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public abstract class AbstractFinderService<T> extends AbstractRZMStatefulService implements FinderService<T> {
 
-    protected AbstractFinderService(UserManager userManager) {
+    protected AbstractFinderService(UserVOManager userManager) {
         super(userManager);
     }
 
