@@ -11,7 +11,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
 
     StatelessTransactionService statelessTransactionService;
 
-    public TransactionServiceImpl(UserManager userManager, StatelessTransactionService statelessTransactionService) {
+    public TransactionServiceImpl(UserVOManager userManager, StatelessTransactionService statelessTransactionService) {
         super(userManager);
         CheckTool.checkNull(statelessTransactionService, "stateless Transaction Service");
         this.statelessTransactionService = statelessTransactionService;

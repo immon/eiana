@@ -79,13 +79,13 @@
 
     <bean id="GuardedAdminTransactionServiceBean"
           class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="guardedStatelessAdminTransactionService"/>
     </bean>
 
     <bean id="guardedAdminTransactionService"
           class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="statelessAdminTransactionService"/>
     </bean>
 
@@ -107,19 +107,19 @@
 <!-- ######################################################################## -->
 
     <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="statelessDetectorService"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
     <bean id="adminDetectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
-        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="0" ref="userVOManager" />
         <constructor-arg index="1" ref="statelessAdminDetectorService"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
 
     <bean id="adminDetectorService2" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
-        <constructor-arg index="0" ref="userManager" />
+        <constructor-arg index="0" ref="userVOManager" />
         <constructor-arg index="1" ref="statelessAdminDetectorService"/>
     </bean>
 
@@ -140,7 +140,7 @@
 <!-- ######################################################################## -->
 
     <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="guardedStatelessAdminNotificationService"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -160,7 +160,7 @@
 <!-- ######################################################################## -->
 
     <bean id="GuardedAdminRoleServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean" scope="session">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="guardedStatelessAdminRoleServiceBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -179,7 +179,7 @@
 <!-- ######################################################################## -->
 
     <bean id="GuardedAdminUserServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="guardedStatelessAdminUserServiceBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -198,7 +198,7 @@
 <!-- ######################################################################## -->
 
     <bean id="GuardedAdminDomainServiceBean" class="org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="guardedStatelessAdminDomainServiceBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -269,7 +269,7 @@
 <!-- ######################################################################## -->
 
     <bean id="GuardedSystemDomainService" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService" scope="session">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="userVOManager"/>
         <constructor-arg index="1" ref="guardedStatelessSystemDomainService"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -386,7 +386,7 @@
 <!-- ######################################################################## -->
 
     <bean id="GuardedSystemTransactionService" class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService">
-        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="userVOManager"/>
         <constructor-arg ref="guardedStatelessSystemTransactionService"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -400,7 +400,7 @@
     </bean>
 
     <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.TransactionServiceImpl">
-        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="userVOManager"/>
         <constructor-arg ref="statelessSystemTransactionServiceBean"/>
     </bean>
 
@@ -1108,6 +1108,9 @@
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
     -->
+    <bean id="userVOManager" class="org.iana.rzm.facade.user.UserVOManagerImpl">
+        <constructor-arg index="0" ref="userManager"/>
+    </bean>
 
     <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
         <constructor-arg index="0" ref="userDAO"/>
@@ -1726,7 +1729,7 @@
     </bean>
 
     <bean id="pollMessagesService" class="org.iana.rzm.facade.admin.msgs.PollMessagesServiceImpl">
-        <constructor-arg ref="userManager" />
+        <constructor-arg ref="userVOManager" />
         <constructor-arg ref="statelessPollMessagesService"/>
     </bean>
 

@@ -69,7 +69,7 @@
 
     <bean id="remoteUserManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
         <property name="serviceUrl" value="${remoting.url}/remoteUserManager"/>
-        <property name="serviceInterface" value="org.iana.rzm.user.UserManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.user.UserVOManager"/>
     </bean>
 
 </beans>

@@ -6,7 +6,7 @@ import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractFinderService;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class PollMessagesServiceImpl extends AbstractFinderService<PollMsgVO> im
 
     private StatelessPollMessagesService statelessPollMessagesService;
 
-    public PollMessagesServiceImpl(UserManager userManager, StatelessPollMessagesService statelessPollMessagesService) {
+    public PollMessagesServiceImpl(UserVOManager userManager, StatelessPollMessagesService statelessPollMessagesService) {
         super(userManager);
         CheckTool.checkNull(statelessPollMessagesService, "stateless poll messages service");
         this.statelessPollMessagesService = statelessPollMessagesService;

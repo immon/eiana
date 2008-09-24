@@ -9,7 +9,7 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.services.AbstractRZMStatefulService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
-import org.iana.rzm.user.UserManager;
+import org.iana.rzm.facade.user.UserVOManager;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -19,7 +19,7 @@ public class TransactionDetectorImpl extends AbstractRZMStatefulService implemen
 
     private StatelessTransactionDetectorService statelessTransactionDetectorService;
 
-    public TransactionDetectorImpl(UserManager userManager, StatelessTransactionDetectorService statelessTransactionDetectorService) {
+    public TransactionDetectorImpl(UserVOManager userManager, StatelessTransactionDetectorService statelessTransactionDetectorService) {
         super(userManager);
         CheckTool.checkNull(statelessTransactionDetectorService, "stateless transaction detector service");
         this.statelessTransactionDetectorService = statelessTransactionDetectorService;
