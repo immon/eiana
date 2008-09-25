@@ -27,8 +27,12 @@ public class Name implements Cloneable, Serializable {
         return name;
     }
 
-    public String getFqdnName(){
+    public String getFqdnName() {
         return name.startsWith(".") ? name.toUpperCase(Locale.ENGLISH) : "." + name.toUpperCase(Locale.ENGLISH);
+    }
+
+    public String getNameWithDot() {
+        return (name != null && !name.endsWith("."))? name + "." : name;    
     }
 
     public boolean equals(Object o) {

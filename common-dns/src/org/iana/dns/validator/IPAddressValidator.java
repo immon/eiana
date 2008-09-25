@@ -49,7 +49,9 @@ public class IPAddressValidator {
                         }
                     }
                 } else {
-                    if (pieces.size() != 8) throw new InvalidIPv6AddressException(address);
+                    if (pieces.size() != 8)
+                        throw new InvalidIPv6AddressException(address);
+                    
                     for (String piece : pieces)
                         if (!validateHEX4(piece)) throw new InvalidIPv6AddressException(address);
                 }

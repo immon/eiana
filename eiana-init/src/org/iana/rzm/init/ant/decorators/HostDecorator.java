@@ -24,6 +24,7 @@ public class HostDecorator {
 
     public void setIpaddress(List<String> values) {
         for (String value : values)
-            host.addIPAddress(value);
+            if(value != null && value.trim().length() > 0)
+                host.addIPAddress(value);
     }
 }

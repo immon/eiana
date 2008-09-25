@@ -67,6 +67,10 @@ public class Host implements TrackedObject, Cloneable {
         return name == null ? null : name.getName();
     }
 
+    final public String getNameWithDot() {
+        return name == null ? null : name.getNameWithDot();
+    }
+
     final public void setName(String name) throws InvalidDomainNameException {
         this.name = new Name(name);
     }

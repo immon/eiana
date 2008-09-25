@@ -2,6 +2,7 @@ package org.iana.rzm.common;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -9,6 +10,8 @@ import java.sql.Timestamp;
  */
 @Embeddable
 public class TrackData implements Cloneable {
+
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Basic
     private Timestamp created;
@@ -27,6 +30,14 @@ public class TrackData implements Cloneable {
         return created;
     }
 
+    final public String getCreatedToXMLExport() {
+        if (getCreated() == null)
+            return null;
+        
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        return sdf.format(getCreated());
+    }
+
     final public void setCreated(Timestamp created) {
         this.created = created;
     }
@@ -37,6 +48,14 @@ public class TrackData implements Cloneable {
 
     final public Timestamp getModified() {
         return modified;
+    }
+
+    final public String getModifiedToXMLExport() {
+        if (getModified() == null)
+            return null;
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        return sdf.format(getModified());
     }
 
     final public void setModified(Timestamp modified) {
