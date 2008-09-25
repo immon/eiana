@@ -26,57 +26,54 @@ public class InitDatabaseFromXMLTask extends HibernateTask {
     public List<DomainDecorator> getDomainsFromXML() throws DynaXMLException, FileNotFoundException, UnsupportedEncodingException {
         Environment env = DPConfig.getEnvironment("test-data.properties");
         DynaXMLParser parser = new DynaXMLParser();
-        DomainRegistryDecorator drd = (DomainRegistryDecorator) parser.fromXML(createReader("test-data.xml"), env);
+        DomainRegistryDecorator drd = (DomainRegistryDecorator) parser.fromXML(createReader("domain-whois-root.xml"), env);
         return drd.getDomains();
     }
 
     public void doExecute(Session session) throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException, DynaXMLException, FileNotFoundException, UnsupportedEncodingException {
         DomainManager domainManager = (DomainManager) SpringInitContext.getContext().getBean("domainManager");
+        UserManager userManager = (UserManager) SpringInitContext.getContext().getBean("userManager");
 
         RZMUser iana = setupUser(new RZMUser(), "iana");
         iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        session.save(iana);
+        userManager.create(iana);
 
         RZMUser govOversight = setupUser(new RZMUser(), "gov_oversight");
         govOversight.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
-        session.save(govOversight);
+        userManager.create(govOversight);
 
         RZMUser zonePublisher = setupUser(new RZMUser(), "zone_publisher");
         zonePublisher.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
-        session.save(zonePublisher);
+        userManager.create(zonePublisher);
 
         for (DomainDecorator domainDecorator : getDomainsFromXML()) {
             String domain = domainDecorator.getDomain().getName();
             System.out.print("\n     ----- TLD: " + domain + " -----\n");
 
-            session.save(setupSystemUser(domain + "-ac1", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-ac1", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.AC), domain, true, true, true)));
-            session.save(setupSystemUser(domain + "-ac2", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-ac2", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.AC), domain, true, false, true)));
-            session.save(setupSystemUser(domain + "-ac3", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-ac3", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.AC), domain, false, false, true)));
 
-            session.save(setupSystemUser(domain + "-so1", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-so1", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.SO), domain, true, true, true)));
-            session.save(setupSystemUser(domain + "-so2", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-so2", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.SO), domain, true, false, true)));
-            session.save(setupSystemUser(domain + "-so3", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-so3", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.SO), domain, false, false, true)));
 
-            session.save(setupSystemUser(domain + "-tc1", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-tc1", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.TC), domain, true, true, true)));
-            session.save(setupSystemUser(domain + "-tc2", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-tc2", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.TC), domain, true, false, true)));
-            session.save(setupSystemUser(domain + "-tc3", setupSystemRole(
+            userManager.create(setupSystemUser(domain + "-tc3", setupSystemRole(
                     new SystemRole(SystemRole.SystemType.TC), domain, false, false, true)));
 
             domainManager.create(domainDecorator.getDomain());
         }
         createUser();
-
-        Domain domain = domainManager.getCloned("ac");
-        System.out.println(domain.getSupportingOrg().getName());
-        System.out.println(domain.getSupportingOrg().getAddress());
     }
 
     private RZMUser setupUser(RZMUser user, String name) {

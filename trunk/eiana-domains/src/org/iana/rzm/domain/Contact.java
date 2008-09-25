@@ -87,6 +87,13 @@ public class Contact implements TrackedObject, Cloneable {
         return name;
     }
 
+    final public String getNameToXMLExport() {
+        if (getName() != null && getName().trim().length() > 0)
+            return getName();
+        else
+            return null;
+    }
+
     final public void setName(String name) {
         this.name = name;
         touch();
@@ -102,10 +109,17 @@ public class Contact implements TrackedObject, Cloneable {
     }
 
     final public List<String> getSplittedOrganization() {
-        if (getOrganization() != null)
+        if (getOrganization() != null && getOrganization().contains("\n"))
             return Arrays.asList(getOrganization().split("\n"));
         return null;
     }
+
+    final public String getSingleLineOrganization() {
+        if (getOrganization() != null && !getOrganization().contains("\n"))
+            return getOrganization();
+        return null;
+    }
+
 
     public String getJobTitle() {
         return jobTitle;
@@ -118,6 +132,10 @@ public class Contact implements TrackedObject, Cloneable {
 
     public Address getAddress() {
         return address;
+    }
+
+    public String getCountry() {
+        return (getAddress() != null)? getAddress().getCountry() : null;
     }
 
     final public List<String> getSplittedTextAddress() {
@@ -214,10 +232,18 @@ public class Contact implements TrackedObject, Cloneable {
         return trackData.getCreated();
     }
 
+    public String getCreatedToXMLExport() {
+        return trackData.getCreatedToXMLExport();
+    }
+
     public Timestamp getModified() {
         return trackData.getModified();
     }
 
+    public String getModifiedToXMLExport() {
+        return trackData.getModifiedToXMLExport();
+    }
+    
     public String getCreatedBy() {
         return trackData.getCreatedBy();
     }

@@ -1,19 +1,22 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.codevalues.*;
-import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.common.cc.*;
-import org.iana.rzm.init.ant.*;
-import pl.nask.util.xml.*;
+import org.iana.codevalues.Value;
+import org.iana.rzm.domain.Address;
+import org.iana.rzm.domain.Contact;
+import org.iana.rzm.facade.common.cc.CountryCodes;
+import org.iana.rzm.init.ant.SpringInitContext;
+import pl.nask.util.xml.XMLDateTime;
 
-import java.sql.*;
-import java.text.*;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
  */
 public class ContactDecorator {
+
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     private Contact contact = new Contact();
 
@@ -48,6 +51,7 @@ public class ContactDecorator {
         }
         // warning: country is a full name - not a country code!
         String code = countries.get(country);
+        address.setCountry(country);
         address.setCountryCode(code);
         address.setTextAddress(text.toString());
 
@@ -78,7 +82,7 @@ public class ContactDecorator {
 
     public void setOrganization(String organization) {
         String name = this.contact.getName();
-        if (isEmpty(name)) this.contact.setName(organization);
+//        if (isEmpty(name)) this.contact.setName(organization);
         this.contact.setOrganization(organization);
     }
 
@@ -163,10 +167,10 @@ public class ContactDecorator {
         // cr-date is always set and is after address so we can flush address now
         flushAddressChange();
         flushNameChange();
-        contact.setCreated(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
+        contact.setCreated(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
     }
 
     public void setModified(String value) {
-        contact.setModified(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
+        contact.setModified(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
     }
 }

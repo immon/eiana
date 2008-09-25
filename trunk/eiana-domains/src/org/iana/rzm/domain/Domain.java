@@ -173,6 +173,10 @@ public class Domain implements TrackedObject, Cloneable {
         return Collections.unmodifiableList(nameServers);
     }
 
+    final public NameServersDecorator getNameServersToXMLExport() {
+        return new NameServersDecorator(getNameServers());
+    }
+
     final public void setNameServers(List<Host> nameServers) throws NameServerAlreadyExistsException {
         CheckTool.checkCollectionNull(nameServers, "nameServers");
         this.nameServers = new ArrayList<Host>();
@@ -304,8 +308,16 @@ public class Domain implements TrackedObject, Cloneable {
         return trackData.getCreated();
     }
 
+    public String getCreatedToXMLExport() {
+        return trackData.getCreatedToXMLExport();
+    }
+
     public Timestamp getModified() {
         return trackData.getModified();
+    }
+
+    public String getModifiedToXMLExport() {
+        return trackData.getModifiedToXMLExport();
     }
 
     public String getCreatedBy() {

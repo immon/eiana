@@ -17,6 +17,9 @@ public class Address implements Cloneable{
     private String textAddress;
     @Embedded
     private CountryCode countryCode;
+    @Basic
+    @Column(length = 4096)
+    private String country;
 
     public Address() {
     }
@@ -47,6 +50,13 @@ public class Address implements Cloneable{
         this.countryCode = countryCode != null ? new CountryCode(countryCode) : null;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,6 +64,7 @@ public class Address implements Cloneable{
 
         Address address = (Address) o;
 
+        if (country != null ? !country.equals(address.country) : address.country != null) return false;
         if (countryCode != null ? !countryCode.equals(address.countryCode) : address.countryCode != null) return false;
         if (textAddress != null ? !textAddress.equals(address.textAddress) : address.textAddress != null) return false;
 
@@ -64,6 +75,7 @@ public class Address implements Cloneable{
         int result;
         result = (textAddress != null ? textAddress.hashCode() : 0);
         result = 31 * result + (countryCode != null ? countryCode.hashCode() : 0);
+        result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
     }
 

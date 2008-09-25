@@ -13,6 +13,8 @@ import java.util.*;
 
 public class DomainDecorator {
 
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+
     private Domain domain;
     private static final String INT = "int";
     private static final String KIM_DAVIES_ICANN_ORG = "kim.davies@icann.org";
@@ -81,13 +83,13 @@ public class DomainDecorator {
 
     public void setCreated(String value) throws ParseException {
         if (value != null && !value.equals("None")) {
-            domain.setCreated(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
+            domain.setCreated(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
         }
     }
 
     public void setModified(String value) {
         if (value != null && !value.equals("None")) {
-            domain.setModified(new Timestamp(new XMLDateTime(value, "dd-MMMMM-yyyy").getDate().getTime()));
+            domain.setModified(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
         }
     }
 
