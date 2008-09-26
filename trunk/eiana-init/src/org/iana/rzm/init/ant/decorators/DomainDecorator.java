@@ -1,19 +1,15 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.rzm.domain.*;
-import pl.nask.util.xml.*;
+import org.iana.rzm.domain.Domain;
 
-import java.sql.*;
-import java.text.*;
-import java.util.*;
+import java.text.ParseException;
+import java.util.List;
 
 /**
  * @author: Piotr Tkaczyk
  */
 
-public class DomainDecorator {
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
+public class DomainDecorator extends AbstractDecorator {
 
     private Domain domain;
     private static final String INT = "int";
@@ -83,13 +79,13 @@ public class DomainDecorator {
 
     public void setCreated(String value) throws ParseException {
         if (value != null && !value.equals("None")) {
-            domain.setCreated(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
+            domain.setCreated(getFormatedDate(value));
         }
     }
 
-    public void setModified(String value) {
+    public void setModified(String value) throws ParseException {
         if (value != null && !value.equals("None")) {
-            domain.setModified(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
+            domain.setModified(getFormatedDate(value));
         }
     }
 

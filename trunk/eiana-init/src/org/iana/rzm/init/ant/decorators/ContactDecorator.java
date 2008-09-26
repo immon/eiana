@@ -5,18 +5,14 @@ import org.iana.rzm.domain.Address;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.facade.common.cc.CountryCodes;
 import org.iana.rzm.init.ant.SpringInitContext;
-import pl.nask.util.xml.XMLDateTime;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
  */
-public class ContactDecorator {
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
+public class ContactDecorator extends AbstractDecorator {
 
     private Contact contact = new Contact();
 
@@ -167,10 +163,10 @@ public class ContactDecorator {
         // cr-date is always set and is after address so we can flush address now
         flushAddressChange();
         flushNameChange();
-        contact.setCreated(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
+        contact.setCreated(getFormatedDate(value));
     }
 
-    public void setModified(String value) {
-        contact.setModified(new Timestamp(new XMLDateTime(value, DATE_FORMAT).getDate().getTime()));
+    public void setModified(String value) throws ParseException {
+        contact.setModified(getFormatedDate(value));
     }
 }
