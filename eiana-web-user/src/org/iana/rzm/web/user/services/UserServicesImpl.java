@@ -36,6 +36,7 @@ public class UserServicesImpl implements UserServices {
     private TransactionDetectorService detectorService;
     private CountryCodes countryCodeService;
     private PasswordChangeService changePasswordService;
+    private UserVOManager userManager;
 
 
     public UserServicesImpl(ServiceInitializer<RZMStatefulService> initializer) {
@@ -44,6 +45,7 @@ public class UserServicesImpl implements UserServices {
         detectorService = initializer.getBean("remoteDetectorService");
         countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
+        userManager = initializer.getBean("remoteUserManager", UserVOManager.class);
     }
 
     public String getCountryName(String name) {
@@ -94,8 +96,8 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public UserVOWrapper getUser() {
-        return new UserVOWrapper(domainService.getUser());
+    public UserVOWrapper getUser(long userId) {
+        return new UserVOWrapper(userManager.getUserVO(userId));
     }
 
     public void acceptTransaction(long requestId, String token) throws NoObjectFoundException, AccessDeniedException {

@@ -25,6 +25,7 @@ package org.iana.rzm.web.common.pages;
 
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.pages.Exception;
+import org.apache.tapestry.util.exception.*;
 import org.apache.tapestry.web.*;
 
 /**
@@ -32,20 +33,21 @@ import org.apache.tapestry.web.*;
  */
 public abstract class BaseApplicationException extends Exception {
 
-    
     @InjectObject("infrastructure:request")
     public abstract WebRequest getRequest();
+
+    public abstract void setError(String error);
+
+    public abstract String getError();
+
+    public abstract void setExceptionName(String name);
+
+    public abstract String getExceptionName();
 
     public boolean isRzmApplicationException() {
         String exceptionName = getExceptionName();
         return exceptionName != null && exceptionName.contains("RzmApplicationException");
     }
-
-    public abstract void setError(String error);
-    public abstract String getError();
-
-    public abstract void setExceptionName(String name);
-    public abstract String getExceptionName();
 
     public boolean isPageNotFoundException() {
         String exceptionName = getExceptionName();
@@ -59,25 +61,28 @@ public abstract class BaseApplicationException extends Exception {
 
 
     public boolean isOtherException() {
-        return !isPageNotFoundException() && (!isRzmApplicationException());
+        return !isPageNotFoundException() && (!isRzmApplicationException() && (!isAccessDeniedException()));
     }
 
     @Override
     public void setException(Throwable value) {
         super.setException(value);
+
         setExceptionName(value.getClass().getName());
         String message = value.getMessage();
         if (message == null) {
-            message = value.getClass().getName();
+            ExceptionAnalyzer analyzer = new ExceptionAnalyzer();
+            ExceptionDescription[] exceptions = analyzer.analyze(value);
+            StringBuilder builder = new StringBuilder();
+            for (ExceptionDescription description : exceptions) {
+                builder.append(description.getMessage()).append("\n");
+            }
+            message = builder.toString();
         }
-
-
+        setError(message);
     }
+
 }
-
-
-
-
 
 
 

@@ -17,21 +17,30 @@
     <pathelement location="${facade-common.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
     <pathelement location="${facade-system.testoutput.dir}"/>
-    <pathelement location="${common-criteria.output.dir}"/>
-    <pathelement location="${common-criteria.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <pathelement location="${common-codevalues.output.dir}"/>
     <pathelement location="${common-codevalues.testoutput.dir}"/>
+    <pathelement location="${eiana-startup.output.dir}"/>
+    <pathelement location="${eiana-startup.testoutput.dir}"/>
+    <pathelement location="${integration-rt.output.dir}"/>
+    <pathelement location="${integration-rt.testoutput.dir}"/>
+    <pathelement location="${integration-securid.output.dir}"/>
+    <pathelement location="${integration-securid.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
     <path refid="library.tapestry.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/iana-commons/IanaCommons.jar"/>
     <path refid="library.log4j.classpath"/>
     <path refid="library.apache-commons.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/javaee/javaee.jar"/>
     <path refid="library.spring.classpath"/>
-    <pathelement location="${module.eiana-web-common.basedir}/../lib/tapestry/rzmTapestry4components.jar"/>
+    <path refid="library.rzm-ui-components.classpath"/>
+    <pathelement location="${module.eiana-web-common.basedir}/../lib/idn/libidn-1.8.jar"/>
   </path>
   
   
@@ -52,7 +61,7 @@
   
   <target name="compile.module.eiana-web-common" depends="compile.module.eiana-web-common.production,compile.module.eiana-web-common.tests" description="Compile module eiana-web-common"/>
   
-  <target name="compile.module.eiana-web-common.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.common-criteria,compile.module.eiana-util,compile.module.common-codevalues,compile.module.common-dns" description="Compile module eiana-web-common; production classes">
+  <target name="compile.module.eiana-web-common.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-codevalues,compile.module.eiana-startup,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-criteria,compile.module.common-dns,compile.module.eiana-notifications" description="Compile module eiana-web-common; production classes">
     <mkdir dir="${eiana-web-common.output.dir}"/>
     <javac destdir="${eiana-web-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-web-common}"/>

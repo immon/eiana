@@ -29,7 +29,7 @@
   <component name="WebModuleBuildComponent">
     <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/exploded" />
     <setting name="EXPLODED_ENABLED" value="true" />
-    <setting name="JAR_URL" value="file://$MODULE_DIR$/eiana-web-admin.war" />
+    <setting name="JAR_URL" value="file://$MODULE_DIR$/rzm-admin.war" />
     <setting name="JAR_ENABLED" value="false" />
     <setting name="SYNC_EXPLODED_DIR" value="true" />
     <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
@@ -145,10 +145,9 @@
       <attribute name="URI" value="/WEB-INF/lib/libidn-1.8.jar" />
       <url>jar://$MODULE_DIR$/../lib/idn/libidn-1.8.jar!/</url>
     </containerElement>
-    <containerElement type="library" level="module">
+    <containerElement type="library" name="javaee" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
-      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
