@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-trans" default="compile.module.eiana-trans">
   <dirname property="module.eiana-trans.basedir" file="${ant.file.module_eiana-trans}"/>
-
-
+  
+  
   <property name="compiler.args.eiana-trans" value="${compiler.args}"/>
-
+  
   <property name="eiana-trans.output.dir" value="${module.eiana-trans.basedir}/../build/classes/production/eiana-trans"/>
   <property name="eiana-trans.testoutput.dir" value="${module.eiana-trans.basedir}/../build/classes/test/eiana-trans"/>
-
+  
   <path id="eiana-trans.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
-
+  
   <path id="eiana-trans.module.classpath">
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
@@ -48,26 +48,26 @@
     <path refid="library.log4j.classpath"/>
     <path refid="library.dnsjava.classpath"/>
   </path>
-
-
+  
+  
   <patternset id="excluded.from.module.eiana-trans">
     <patternset refid="ignored.files"/>
   </patternset>
-
+  
   <patternset id="excluded.from.compilation.eiana-trans">
     <patternset refid="excluded.from.module.eiana-trans"/>
   </patternset>
-
+  
   <path id="eiana-trans.module.sourcepath">
     <dirset dir="${module.eiana-trans.basedir}">
       <include name="etc/processes"/>
       <include name="src"/>
     </dirset>
   </path>
-
-
+  
+  
   <target name="compile.module.eiana-trans" depends="compile.module.eiana-trans.production,compile.module.eiana-trans.tests" description="Compile module eiana-trans"/>
-
+  
   <target name="compile.module.eiana-trans.production" depends="compile.module.eiana-domains,compile.module.eiana-util,compile.module.integration-rt,compile.module.eiana-users,compile.module.eiana-notifications,compile.module.common-objectdiff,compile.module.common-criteria,compile.module.common-dao,compile.module.common-test,compile.module.common-dns" description="Compile module eiana-trans; production classes">
     <mkdir dir="${eiana-trans.output.dir}"/>
     <javac destdir="${eiana-trans.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
@@ -77,7 +77,7 @@
       <src refid="eiana-trans.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.eiana-trans"/>
     </javac>
-
+    
     <copy todir="${eiana-trans.output.dir}">
       <fileset dir="${module.eiana-trans.basedir}/etc/processes">
         <patternset refid="compiler.resources"/>
@@ -89,9 +89,9 @@
       </fileset>
     </copy>
   </target>
-
+  
   <target name="compile.module.eiana-trans.tests" depends="compile.module.eiana-trans.production" description="compile module eiana-trans; test classes" unless="skip.tests"/>
-
+  
   <target name="clean.module.eiana-trans" description="cleanup module">
     <delete dir="${eiana-trans.output.dir}"/>
     <delete dir="${eiana-trans.testoutput.dir}"/>
