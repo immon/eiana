@@ -93,8 +93,8 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
 
     public DNSZone getDNSZone() {
         DNSZoneImpl ret = new DNSZoneImpl("");
-        ret.setTTL1(TTL1);
-        ret.setTTL2(TTL2);
+        ret.setZoneNameServersTTL(TTL1);
+        ret.setDefaultTTL(TTL2);
         ret.setRefresh(refresh);
         ret.setRetry(retry);
         ret.setExpire(expire);
