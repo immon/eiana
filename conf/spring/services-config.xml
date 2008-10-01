@@ -1768,8 +1768,9 @@
 
     <bean id="zoneProducer" class="org.iana.rzm.facade.admin.domain.dns.DNSZoneProducerImpl">
         <constructor-arg ref="domainManager"/>
-        <property name="TTL1" value="518400"/>
-        <property name="TTL2" value="172800"/>
+        <property name="zoneTTL" value="86400"/>
+        <property name="zoneNameServersTTL" value="518400"/>
+        <property name="defaultTTL" value="172800"/>
         <property name="refresh" value="1800"/>
         <property name="retry" value="900"/>
         <property name="expire" value="604800"/>

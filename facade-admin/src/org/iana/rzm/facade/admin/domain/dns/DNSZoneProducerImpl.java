@@ -18,9 +18,11 @@ import java.text.SimpleDateFormat;
  */
 public class DNSZoneProducerImpl implements DNSZoneProducer {
 
-    private long TTL1;
+    private long zoneTTL;
 
-    private long TTL2;
+    private long zoneNameServersTTL;
+
+    private long defaultTTL;
 
     private long refresh;
 
@@ -47,12 +49,16 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
         this.domainManager = domainManager;
     }
 
-    public void setTTL1(long TTL1) {
-        this.TTL1 = TTL1;
+    public void setZoneTTL(long zoneTTL) {
+        this.zoneTTL = zoneTTL;
     }
 
-    public void setTTL2(long TTL2) {
-        this.TTL2 = TTL2;
+    public void setZoneNameServersTTL(long TTL1) {
+        this.zoneNameServersTTL = TTL1;
+    }
+
+    public void setDefaultTTL(long TTL2) {
+        this.defaultTTL = TTL2;
     }
 
     public void setRefresh(long refresh) {
@@ -93,8 +99,9 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
 
     public DNSZone getDNSZone() {
         DNSZoneImpl ret = new DNSZoneImpl("");
-        ret.setZoneNameServersTTL(TTL1);
-        ret.setDefaultTTL(TTL2);
+        ret.setZoneTTL(zoneTTL);
+        ret.setZoneNameServersTTL(zoneNameServersTTL);
+        ret.setDefaultTTL(defaultTTL);
         ret.setRefresh(refresh);
         ret.setRetry(retry);
         ret.setExpire(expire);
