@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.List;
+import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -43,6 +44,7 @@ class BindExport {
 
     private PrintWriter out;
 
+    private Set<DNSHost> glueHostsExported = new HashSet<DNSHost>();
     private Set<DNSHost> glueHosts = new TreeSet<DNSHost>();
 
     public BindExport(Writer out) {
@@ -52,11 +54,13 @@ class BindExport {
     public void exportZone(DNSZone zone) {
         exportHeader(zone);
         exportHeaderNS(zone);
-        exportDomains(zone);
+        exportDomains(zone, zone.getDefaultTTL());
+        glueHostsExported.clear();
     }
 
     private void exportHeader(DNSZone zone) {
         _prints(zone.getFullyQualifiedName());
+        _prints(zone.getZoneTTL());
         _printt(IN);
         _printt(SOA);
         _prints(getPrimaryServer(zone).getFullyQualifiedName());
@@ -71,21 +75,17 @@ class BindExport {
     }
 
     private void exportHeaderNS(DNSZone zone) {
-        _prints(TTL);
-        _println(zone.getTTL1());
-        exportDomain(zone);
-        flushGlue();
+        exportDomain(zone, zone.getZoneNameServersTTL());
+        flushGlue(zone.getZoneNameServersTTL());
     }
 
-    private void exportDomains(DNSZone zone) {
-        _prints(TTL);
-        _println(zone.getTTL2());
+    private void exportDomains(DNSZone zone, long ttl) {
         Set<DNSDomain> domains = zone.getDomains();
         if (domains != null) {
             for (DNSDomain domain : zone.getDomains()) {
-                exportDomain(domain);
+                exportDomain(domain, ttl);
             }
-            flushGlue();
+            flushGlue(ttl);
         }
     }
 
@@ -100,10 +100,12 @@ class BindExport {
         return ret;
     }
 
-    public void exportDomain(DNSDomain domain) {
+    public void exportDomain(DNSDomain domain, long ttl) {
         String domainName = domain.getFullyQualifiedName();
         for (DNSHost host : domain.getNameServers()) {
             _prints(domainName);
+            _prints(ttl);
+            _prints(IN);
             _prints(NS);
             _println(host.getFullyQualifiedName());
             // if (host.isInDomain(domain))
@@ -123,17 +125,22 @@ class BindExport {
         }
     }
 
-    private void flushGlue() {
+    private void flushGlue(long ttl) {
         for (DNSHost host : glueHosts) {
-            exportGlue(host);
+            if (!glueHostsExported.contains(host)) {
+                exportGlue(host, ttl);
+            }
         }
+        glueHostsExported.addAll(glueHosts);
         glueHosts.clear();
     }
 
-    public void exportGlue(DNSHost host) {
+    public void exportGlue(DNSHost host, long ttl) {
         String hostName = host.getFullyQualifiedName();
         for (DNSIPAddress addr : host.getIPAddresses()) {
             _prints(hostName);
+            _prints(ttl);
+            _prints(IN);
             switch (addr.getType()) {
                 case IPv4:
                     _prints(A); break;
@@ -172,6 +179,11 @@ class BindExport {
     private void _printt(String s) {
         out.print(s);
         _tab();
+    }
+
+    private void _prints(long l) {
+        out.print(l);
+        _sp();
     }
 
     private void _prints(String s) {

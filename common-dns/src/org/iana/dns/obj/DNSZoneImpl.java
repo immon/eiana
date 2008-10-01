@@ -12,9 +12,11 @@ import java.util.Set;
  */
 public class DNSZoneImpl extends DNSDomainImpl implements DNSZone {
 
-    long TTL1;
+    long zoneTTL;
 
-    long TTL2;
+    long zoneNameServersTTL;
+
+    long defaultTTL;
 
     String serial;
 
@@ -38,20 +40,29 @@ public class DNSZoneImpl extends DNSDomainImpl implements DNSZone {
         super(name);
     }
 
-    public long getTTL1() {
-        return TTL1;
+
+    public long getZoneTTL() {
+        return zoneTTL;
     }
 
-    public void setTTL1(long TTL1) {
-        this.TTL1 = TTL1;
+    public void setZoneTTL(long zoneTTL) {
+        this.zoneTTL = zoneTTL;
     }
 
-    public long getTTL2() {
-        return TTL2;
+    public long getZoneNameServersTTL() {
+        return zoneNameServersTTL;
     }
 
-    public void setTTL2(long TTL2) {
-        this.TTL2 = TTL2;
+    public void setZoneNameServersTTL(long zoneNameServersTTL) {
+        this.zoneNameServersTTL = zoneNameServersTTL;
+    }
+
+    public long getDefaultTTL() {
+        return defaultTTL;
+    }
+
+    public void setDefaultTTL(long defaultTTL) {
+        this.defaultTTL = defaultTTL;
     }
 
     public String getSerial() {

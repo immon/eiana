@@ -4,9 +4,11 @@ import java.util.Set;
 
 public interface DNSZone extends DNSDomain {
 
-    public long getTTL1();
+    public long getZoneTTL();
 
-    public long getTTL2();
+    public long getZoneNameServersTTL();
+
+    public long getDefaultTTL();
 
     public String getSerial();
 
