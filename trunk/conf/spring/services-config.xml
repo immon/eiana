@@ -1288,12 +1288,17 @@
         <constructor-arg index="4" value="no"/>
     </bean>
 
-    <bean id="usdocAnswerParser" class="org.iana.rzm.mail.processor.usdoc.PGPUSDoCParser">
+    <bean id="usdocAnswerParser" class="org.iana.rzm.mail.processor.simple.pgp.PGPParser">
         <constructor-arg ref="plainUSDoCAnswerParser"/>
         <property name="pgp" value="false"/>
     </bean>
 
-    <bean id="verisignMailParser" class="org.iana.rzm.mail.processor.verisign.VeriSignMailParser">
+    <bean id="verisignMailParser" class="org.iana.rzm.mail.processor.simple.pgp.PGPParser">
+        <constructor-arg ref="plainVerisignMailParser"/>
+        <property name="pgp" value="false"/>
+    </bean>
+
+    <bean id="plainVerisignMailParser" class="org.iana.rzm.mail.processor.verisign.VeriSignMailParser">
         <constructor-arg index="0" value="rzmsdev@lnxdev-rz163.vrsn.com"/>
         <constructor-arg index="1">
             <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
@@ -1328,6 +1333,7 @@
     <bean id="verisignMailProcessor" class="org.iana.rzm.mail.processor.verisign.VeriSignMailProcessor">
         <constructor-arg ref="transSystemTransactionService"/>
         <constructor-arg ref="mailLogger"/>
+        <constructor-arg ref="authenticationServiceBean"/>
     </bean>
 
     <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
