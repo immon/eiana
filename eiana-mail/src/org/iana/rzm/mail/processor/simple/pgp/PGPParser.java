@@ -1,4 +1,4 @@
-package org.iana.rzm.mail.processor.usdoc;
+package org.iana.rzm.mail.processor.simple.pgp;
 
 import org.iana.pgp.PGPUtils;
 import org.iana.pgp.PGPUtilsException;
@@ -10,19 +10,18 @@ import org.iana.rzm.mail.processor.simple.parser.EmailParser;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class PGPUSDoCParser implements EmailParser {
-
-    private EmailParser plainParser;
+public class PGPParser implements EmailParser {
+    private EmailParser delegate;
 
     private boolean pgp;
 
-    public PGPUSDoCParser(EmailParser parser) {
+    public PGPParser(EmailParser parser) {
         this(parser, true);
     }
 
-    public PGPUSDoCParser(EmailParser parser, boolean pgp) {
-        CheckTool.checkNull(parser, "usdoc plain parser");
-        this.plainParser = parser;
+    public PGPParser(EmailParser parser, boolean pgp) {
+        CheckTool.checkNull(parser, "email delegate parser");
+        this.delegate = parser;
         this.pgp = pgp;
     }
 
@@ -34,14 +33,15 @@ public class PGPUSDoCParser implements EmailParser {
         if (pgp) {
             try {
                 String plainContent = PGPUtils.getSignedMessageContent(content);
-                USDoCAnswer answer = (USDoCAnswer) plainParser.parse(from, subject, plainContent);
+                PGPMessageData answer = (PGPMessageData) delegate.parse(from, subject, plainContent);
                 answer.setPgp(true);
                 return answer;
             } catch (PGPUtilsException e) {
                 throw new EmailParseException(e);
             }
         } else {
-            return plainParser.parse(from, subject, content);
+            return delegate.parse(from, subject, content);
         }
     }
 }
+

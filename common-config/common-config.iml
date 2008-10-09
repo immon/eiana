@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4" relativePaths="true" type="JAVA_MODULE">
   <component name="FacetManager">
-    <facet type="hibernate" name="Hibernate" implicit="true">
+    <facet type="hibernate" name="Hibernate">
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-map>
