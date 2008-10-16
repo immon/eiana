@@ -25,13 +25,8 @@ public abstract class AdminPage extends ProtectedPage {
 
     @InjectObject("service:rzm.ExternalPageErrorHandler")
     public abstract ExternalPageErrorHandler getExternalPageErrorHandler();
-    
 
-    //@InjectPage(Login.PAGE_NAME)
-    //public abstract Login getLogin();
 
-    //@InjectPage(GeneralError.PAGE_NAME)
-    //public abstract BaseGeneralError getErrorPage();
 
     public RzmServices getRzmServices() {
         return getAdminServices();

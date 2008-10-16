@@ -2,10 +2,10 @@ package org.iana.rzm.web.admin.pages;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.admin.components.*;
-import org.iana.rzm.web.common.callback.*;
 import org.iana.rzm.web.common.query.*;
 import org.iana.rzm.web.common.query.retriver.*;
 import org.iana.web.tapestry.components.browser.*;
@@ -35,18 +35,9 @@ public abstract class PollMessagesPerspective extends AdminPage implements PageB
     @InjectPage(ViewPollMessage.PAGE_NAME)
     public abstract ViewPollMessage getViewPollMessage();
 
-    @Persist()
-    public abstract RzmCallback getCallback();
-    public abstract void setCallback(RzmCallback callback);
-
-    //public FinderValidator getFinderValidator() {
-    //    return new DomainFinderValidator();
-    //}
-
-    //public Finder getFinderListener() {
-    //    return new DomainsFinderListener(getAdminServices(), getRequestCycle(), this, this);
-    //}
-
+    @Persist
+    public abstract ICallback getCallback();
+    public abstract void setCallback(ICallback callback);
 
 
     @Persist

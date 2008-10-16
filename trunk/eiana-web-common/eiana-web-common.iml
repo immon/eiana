@@ -50,6 +50,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" exported="" name="hibernate" level="project" />
     <orderEntryProperties />
   </component>
 </module>
