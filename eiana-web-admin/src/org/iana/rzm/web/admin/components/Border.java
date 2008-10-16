@@ -17,7 +17,7 @@ import org.iana.web.tapestry.validation.*;
 
 public abstract class Border extends BaseBorder {
 
-    public static final String WINDOW_TITLE = "IANA Root Zone Maintenance";
+    public static final String WINDOW_TITLE = "IANA Root Zone Maintenance - Admin Interface ";
 
     @Component(id = "loggedIn1", type = "If",  bindings = {"condition=prop:loggedIn"})
     public abstract IComponent getloggedIn1Component();

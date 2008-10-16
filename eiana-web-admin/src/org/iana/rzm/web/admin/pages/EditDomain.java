@@ -118,7 +118,9 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
 
         try {
             if (parameters.length == 3) {
-                restoreModifiedDomain((DomainVOWrapper) parameters[2]);
+                if(getVisitState().getModifiedDomain(domainId) == null){
+                    restoreModifiedDomain((DomainVOWrapper) parameters[2]);
+                }
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
@@ -137,9 +139,6 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
             DomainVOWrapper mdomain = getVisitState().getModifiedDomain(getDomainId());
             setModifiedDomain(mdomain);
             getVisitState().markAsVisited(mdomain != null ? mdomain : domain);
-
-            setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
-                                                                      
             String countryName = getAdminServices().getCountryName(domain.getName());
             setCountryName(countryName);
         } catch (NoObjectFoundException e) {

@@ -1,12 +1,11 @@
 package org.iana.rzm.init.ant.decorators;
 
-import org.iana.codevalues.Value;
-import org.iana.rzm.domain.Address;
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.facade.common.cc.CountryCodes;
-import org.iana.rzm.init.ant.SpringInitContext;
+import org.iana.codevalues.*;
+import org.iana.rzm.domain.*;
+import org.iana.rzm.facade.common.cc.*;
+import org.iana.rzm.init.ant.*;
 
-import java.text.ParseException;
+import java.text.*;
 import java.util.*;
 
 /**
@@ -78,7 +77,9 @@ public class ContactDecorator extends AbstractDecorator {
 
     public void setOrganization(String organization) {
         String name = this.contact.getName();
-//        if (isEmpty(name)) this.contact.setName(organization);
+        if (isEmpty(name)){
+            this.contact.setName(organization);
+        }
         this.contact.setOrganization(organization);
     }
 

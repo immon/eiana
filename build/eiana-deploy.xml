@@ -3,6 +3,9 @@
 
     <import file="eiana.xml"/>
     <import file="task-defs.xml"/>
+    <import file="${basedir}/../eiana-web-backend/module_eiana-web-backend.xml"/>
+    <import file="${basedir}/../eiana-web-user/module_eiana-web-user.xml"/>
+    <import file="${basedir}/../eiana-web-admin/module_eiana-web-admin.xml"/>
 
     <property environment="env"/>
 
@@ -163,9 +166,9 @@
     </target>
 
     <target name="database.init.root" depends="database.create.test, all.jar, jbpm.init, cc.init">
-        <java classname="org.iana.rzm.init.ant.InitRootTask">
-            <classpath refid="inittools.classpath"/>
-        </java>
+        <!--<java classname="org.iana.rzm.init.ant.InitRootTask">-->
+            <!--<classpath refid="inittools.classpath"/>-->
+        <!--</java>-->
     </target>
 
     <target name="database.init.xml" depends=" all.jar, jbpm.init, cc.init">
@@ -291,7 +294,13 @@
 
     <target name="war" depends="compile.module.build.production" description="makes war archive">
         <mkdir dir="${war.output.dir}"/>
-        <antcall target="j2ee.build.jar.eiana-web">
+        <antcall target="j2ee.build.jar.eiana-web-backend">
+            <param name="j2ee.path.jar" value="${war.output.dir}/rzm-backend.war"/>
+        </antcall>
+        <antcall target="j2ee.build.jar.eiana-web-admin">
+            <param name="j2ee.path.jar" value="${war.output.dir}/rzm-admin.war"/>
+        </antcall>
+        <antcall target="j2ee.build.jar.eiana-web-user">
             <param name="j2ee.path.jar" value="${war.output.dir}/rzm.war"/>
         </antcall>
     </target>
