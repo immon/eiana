@@ -1840,7 +1840,6 @@
                     <property name="IPAddressesAsStrings">
                         <set>
                             <value>192.228.79.201</value>
-                            <value>2001:500:2F:0:0:0:0:F</value>
                         </set>
                     </property>
                 </bean>
