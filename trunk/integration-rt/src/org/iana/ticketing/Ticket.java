@@ -15,4 +15,9 @@ public interface Ticket {
     public String getIanaState();
 
     public String getComment();
+
+    public String getCurrentStateComment();
+
+    public boolean isNSGlueTicket();
+
 }

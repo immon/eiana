@@ -5,13 +5,18 @@
  */
 package org.iana.rzm.trans.process.general.ticketingservice;
 
-import org.iana.objectdiff.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.change.*;
-import org.iana.ticketing.*;
+import org.iana.objectdiff.ObjectChange;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.change.DomainChangePrinter;
+import org.iana.rzm.trans.change.DomainPrinter;
+import org.iana.ticketing.Ticket;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jakub Laszkiewicz
@@ -117,5 +122,13 @@ public class RequestTrackerTicket implements Ticket {
 
     public String getComment() {
         return DomainChangePrinter.print(transaction.getDomainChange());
+    }
+
+    public boolean isNSGlueTicket() {
+        return transaction.isNSSharedGlueChange();
+    }
+
+    public String getCurrentStateComment() {
+        return DomainPrinter.print(transaction.getCurrentDomain());
     }
 }
