@@ -472,6 +472,11 @@ public class Transaction implements TrackedObject {
         return getData().getImpactedDomains();
     }
 
+    public boolean isNSSharedGlueChange() {
+        Set<Domain> impactedDomains = getImpactedDomains();
+        return impactedDomains != null && !impactedDomains.isEmpty();
+    }
+
     public void setContactConfirmations(ContactConfirmations conf) {
         if (conf == null) return;
         conf.setStateName(getState().getName());

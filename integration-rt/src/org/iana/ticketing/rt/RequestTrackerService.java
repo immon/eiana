@@ -21,6 +21,7 @@ import java.util.Map;
  *
  * @author Patrycja Wegrzynowicz
  * @author Jakub Laszkiewicz
+ * @author Piotr Tkaczyk
  */
 public class RequestTrackerService implements TicketingService {
     private static final String QUEUE_NAME = "IANA-Root-Mgmt";
@@ -28,6 +29,8 @@ public class RequestTrackerService implements TicketingService {
     private static final String CUSTOM_FIELD_IANA_STATE = "IANA State";
     private static final String CUSTOM_FIELD_TLD = "TLD";
     private static final String CUSTOM_FIELD_REQUEST_TYPE = "Request Type";
+
+    private static final String GLUE_CHANGE = "Glue change. \n";
 
     private RTStore store;
     private CodeValuesRetriever retriever;
@@ -77,6 +80,16 @@ public class RequestTrackerService implements TicketingService {
             String content = convertNewLines(ticket.getComment());
             Comment comment = store.tickets().commentFactory().create(content);
             store.tickets().addComment(rtTicket, comment);
+
+            String currentState = convertNewLines(ticket.getCurrentStateComment());
+            Comment currentStateComment = store.tickets().commentFactory().create(currentState);
+            store.tickets().addComment(rtTicket, currentStateComment);
+
+            if (ticket.isNSGlueTicket()) {
+                Comment glueComment = store.tickets().commentFactory().create(GLUE_CHANGE);
+                store.tickets().addComment(rtTicket, glueComment);
+            }
+
             return rtTicket.getId();
         } catch (IOException e) {
             throw new TicketingException(e);
@@ -112,6 +125,11 @@ public class RequestTrackerService implements TicketingService {
         try {
             Ticket rtTicket = store.tickets().load(ticket.getId());
             rtTicket.setStatus(Ticket.Status.Resolved);
+
+            String currentState = convertNewLines(ticket.getCurrentStateComment());
+            Comment currentStateComment = store.tickets().commentFactory().create(currentState);
+            store.tickets().addComment(rtTicket, currentStateComment);
+            
             store.tickets().update(rtTicket);
         } catch (IOException e) {
             throw new TicketingException(e);
