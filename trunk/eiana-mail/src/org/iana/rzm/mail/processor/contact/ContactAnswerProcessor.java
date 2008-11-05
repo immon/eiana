@@ -45,23 +45,15 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
             TransactionVO transaction = transactions.get(0);
             validate(transaction, answer);
             if (answer.isAccept()) {
-                acceptTransaction(transaction.getTransactionID(), answer.getToken());
+                transactionService.acceptTransaction(transaction.getTransactionID(), answer.getToken());
             } else {
-                rejectTransaction(transaction.getTransactionID(), answer.getToken());
+                transactionService.rejectTransaction(transaction.getTransactionID(), answer.getToken());
             }
         } catch (NoObjectFoundException e) {
             throw new EmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
         } catch (InfrastructureException e) {
             throw new EmailProcessException("Unexpected exception during processing.", e);
         }
-    }
-
-    protected void acceptTransaction(Long id, String token) throws NoObjectFoundException, InfrastructureException {
-        transactionService.acceptTransaction(id, token);
-    }
-
-    protected void rejectTransaction(Long id, String token) throws NoObjectFoundException, InfrastructureException {
-        transactionService.rejectTransaction(id, token);
     }
 
     protected void validate(TransactionVO transaction, ContactAnswer answer) throws EmailProcessException {

@@ -25,11 +25,6 @@ public class ImpactedPartyAnswerProcessor extends ContactAnswerProcessor {
         if (!(data instanceof ImpactedPartyAnswer)) throw new IllegalMessageDataException(data);
     }
 
-
-    protected void rejectTransaction(Long id, String token) throws NoObjectFoundException, InfrastructureException {
-        transactionService.transitTransaction(id, "alert");
-    }
-
     protected void validate(TransactionVO transaction, ContactAnswer answer) throws EmailProcessException {
         if (transaction.getState().getName() != TransactionStateVO.Name.PENDING_IMPACTED_PARTIES) {
             throw new EmailProcessException("Transaction is not in an appropriate state to perform this operation.");
