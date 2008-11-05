@@ -123,7 +123,7 @@ public class StatelessTransactionDetectorServiceImpl implements StatelessTransac
                 groupAction.addChange(hostToChanges.get(hostName));
                 hostToChanges.remove(hostName);
             }
-            ret.add(new TransactionActionGroupVO(groupAction));
+            ret.add(new TransactionActionGroupVO(groupAction, true));
         }
         if (!hostToChanges.isEmpty()) {
             TransactionActionVO groupAction = new TransactionActionVO(action.getName());

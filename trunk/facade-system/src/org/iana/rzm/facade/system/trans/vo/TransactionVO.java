@@ -277,6 +277,17 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
         this.impactedDomains.add(domainName);
     }
 
+    public Set<String> getEffectedDomains() {
+        Set<String> ret = new HashSet<String>();
+        if (impactedDomains != null) ret.addAll(impactedDomains);
+        ret.add(domainName);
+        return ret;
+    }
+
+    public boolean isGlueChange() {
+        return impactedDomains != null && impactedDomains.size() > 0;
+    }
+
     public String getEppStatus() {
         return eppStatus;
     }

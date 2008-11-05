@@ -14,13 +14,15 @@ public class TransactionActionGroupVO implements Serializable {
     private List<TransactionActionVO> actions = new ArrayList<TransactionActionVO>();
     private int nameServerActions;
     private boolean otherAction;
+    private boolean glueChange = false;
 
     public TransactionActionGroupVO(boolean splittable) {
         this.splittable = splittable;
     }
 
-    public TransactionActionGroupVO(TransactionActionVO action) {
+    public TransactionActionGroupVO(TransactionActionVO action, boolean glueChange) {
         addAction(action);
+        this.glueChange = glueChange;
     }
 
     public TransactionActionGroupVO(TransactionActionVO action1, TransactionActionVO action2) {
@@ -53,6 +55,11 @@ public class TransactionActionGroupVO implements Serializable {
 
     public boolean containsNameServerAction() {
         return nameServerActions > 0;
+    }
+
+
+    public boolean isGlueChange() {
+        return glueChange;
     }
 
     /**
