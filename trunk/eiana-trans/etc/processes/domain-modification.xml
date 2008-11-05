@@ -271,6 +271,7 @@
             <transition name="reject" to="REJECTED_TRANSPARENT"/>
             <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
             <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="alert" to="EXCEPTION"/>
             <transition name="admin-accept" to="PENDING_MANUAL_REVIEW"/>
             <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
         </state>
