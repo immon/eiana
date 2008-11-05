@@ -37,60 +37,61 @@ public class DNSTechnicalCheck {
         this.dnsCheckRetries = dnsCheckRetries;
     }
 
-    public void check(DNSDomain domain) throws DNSTechnicalCheckException {
+    public DNSCheckCollectionResult checkWithResult(DNSDomain domain) {
         if (domain == null) throw new IllegalArgumentException("null domain");
+        DNSCheckCollectionResult result = new DNSCheckCollectionResult();
         if (!isEmpty(domainChecks) || !isEmpty(nameServerChecks)) {
             Set<DNSNameServer> nameServers = new HashSet<DNSNameServer>();
             for (DNSHost host : domain.getNameServers()) {
                 nameServers.add(new DNSNameServer(domain, host, dnsCheckRetries));
             }
-
-            MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
-            checkDomain(domain, nameServers, e);
+            checkDomain(domain, nameServers, result);
             for (DNSNameServer ns : nameServers) {
-                checkNameServer(ns, e);
+                checkNameServer(ns, result);
             }
-            if (!e.isEmpty()) throw e;
         }
+
+        return result;
+    }
+
+    public void check(DNSDomain domain) throws DNSTechnicalCheckException {
+        MultipleDNSTechnicalCheckException e = checkWithResult(domain).getException();
+        if (!e.isEmpty()) throw e;
+    }
+
+    public DNSCheckCollectionResult checkWithResult(DNSDomain domain, Set<DNSNameServer> nameServers) {
+        if (domain == null) throw new IllegalArgumentException("null domain");
+        if (nameServers == null) throw new IllegalArgumentException("null name servers");
+        DNSCheckCollectionResult result = new DNSCheckCollectionResult();
+        if (!isEmpty(domainChecks) || !isEmpty(nameServerChecks)) {
+            checkDomain(domain, nameServers, result);
+            for (DNSNameServer ns : nameServers) {
+                checkNameServer(ns, result);
+            }
+        }
+
+        return result;
     }
 
     public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
-        if (domain == null) throw new IllegalArgumentException("null domain");
-        if (nameServers == null) throw new IllegalArgumentException("null name servers");
-        if (!isEmpty(domainChecks) || !isEmpty(nameServerChecks)) {
-            MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
-            checkDomain(domain, nameServers, e);
-            for (DNSNameServer ns : nameServers) {
-                checkNameServer(ns, e);
-            }
-            if (!e.isEmpty()) throw e;
-        }
+        MultipleDNSTechnicalCheckException e = checkWithResult(domain, nameServers).getException();
+        if (!e.isEmpty()) throw e;
     }
 
-    private void checkDomain(DNSDomain domain, Set<DNSNameServer> nameServers, MultipleDNSTechnicalCheckException error) {
+    private void checkDomain(DNSDomain domain, Set<DNSNameServer> nameServers, DNSCheckCollectionResult result) {
         if (!isEmpty(domainChecks)) {
             for (DNSDomainTechnicalCheck check : domainChecks) {
-                try {
-                    check.check(domain, nameServers);
-                } catch (MultipleDNSTechnicalCheckException e) {
-                    error.addExceptions(e.getExceptions());
-                } catch (DNSTechnicalCheckException e) {
-                    error.addException(e);
-                }
+                DNSCheckResult r = check.check(domain, nameServers);
+                result.addResult(r);
             }
         }
     }
 
-    private void checkNameServer(DNSNameServer nameServer, MultipleDNSTechnicalCheckException error) {
+    private void checkNameServer(DNSNameServer nameServer, DNSCheckCollectionResult result) {
         if (!isEmpty(nameServerChecks)) {
             for (DNSNameServerTechnicalCheck check : nameServerChecks) {
-                try {
-                    check.check(nameServer);
-                } catch (MultipleDNSTechnicalCheckException e) {
-                    error.addExceptions(e.getExceptions());
-                } catch (DNSTechnicalCheckException e) {
-                    error.addException(e);
-                }
+                DNSCheckResult r = check.check(nameServer);
+                result.addResult(r);
             }
         }
     }

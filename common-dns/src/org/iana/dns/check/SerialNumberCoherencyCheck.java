@@ -14,9 +14,9 @@ import java.util.*;
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
  */
-public class SerialNumberCoherencyCheck implements DNSDomainTechnicalCheck {
+public class SerialNumberCoherencyCheck extends AbstractDNSDomainTechnicalCheck {
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 
         Map<Long, List<DNSHost>> serialsMap = new HashMap<Long, List<DNSHost>>();
 

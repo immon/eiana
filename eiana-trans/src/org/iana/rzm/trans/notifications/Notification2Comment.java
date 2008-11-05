@@ -22,6 +22,12 @@ public class Notification2Comment {
         StringBuffer buf = new StringBuffer();
         buf.append(createToLine()).append("\n");
         buf.append(createSubjectLine()).append("\n\n");
+        buf.append(getCommentBody());
+        return buf.toString();
+    }
+
+    public String getCommentBody() {
+        StringBuffer buf = new StringBuffer();
         buf.append(createContent());
         return buf.toString();
     }

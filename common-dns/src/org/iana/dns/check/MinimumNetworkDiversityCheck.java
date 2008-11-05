@@ -19,7 +19,7 @@ import java.util.*;
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
  */
-public class MinimumNetworkDiversityCheck implements DNSDomainTechnicalCheck {
+public class MinimumNetworkDiversityCheck extends AbstractDNSDomainTechnicalCheck {
 
     DNSWhoIsDataRetriever whoIs;
 
@@ -31,7 +31,7 @@ public class MinimumNetworkDiversityCheck implements DNSDomainTechnicalCheck {
         this.whoIs = whoIs;
     }
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 //          ASNumber, DNSHost
         Map<String, List<DNSHost>> asNumbers = new HashMap<String, List<DNSHost>>();
 

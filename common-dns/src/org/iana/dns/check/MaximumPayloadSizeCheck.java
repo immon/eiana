@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Piotr Tkaczyk
  */
-public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
+public class MaximumPayloadSizeCheck extends AbstractDNSDomainTechnicalCheck {
 
     public static final int MAX_SIZE = 512;
     private static final int NS_SIZE = 12;
@@ -24,7 +24,7 @@ public class MaximumPayloadSizeCheck implements DNSDomainTechnicalCheck {
 
     private static final int SZ_PTR = 2;
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 
         Set<String> suffixes = new HashSet<String>();
         int ns_set_size = 0;

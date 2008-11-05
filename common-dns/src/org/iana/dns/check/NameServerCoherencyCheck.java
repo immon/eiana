@@ -16,9 +16,9 @@ import java.util.Set;
  * @author Piotr Tkaczyk
  */
 
-public class NameServerCoherencyCheck implements DNSDomainTechnicalCheck {
+public class NameServerCoherencyCheck extends AbstractDNSDomainTechnicalCheck {
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
         Set<String> domainNameSeverNames = domain.getNameServerNames();
         for (DNSNameServer ns : nameServers) {
             Set<String> retHostNames = new HashSet<String>();

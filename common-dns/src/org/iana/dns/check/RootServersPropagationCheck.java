@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * @author Piotr Tkaczyk
  */
-public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
+public class RootServersPropagationCheck extends AbstractDNSDomainTechnicalCheck {
 
     List<DNSHost> rootServers = new ArrayList<DNSHost>();
     private int dnsCheckRetries;
@@ -26,7 +26,7 @@ public class RootServersPropagationCheck implements DNSDomainTechnicalCheck {
         this.dnsCheckRetries = dnsCheckRetries;
     }
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
         if (rootServers == null) throw new IllegalArgumentException("null root servers");
         for( DNSHost dnsHost : rootServers) {
             DNSNameServer nameServer = new DNSNameServer(domain, dnsHost, dnsCheckRetries);

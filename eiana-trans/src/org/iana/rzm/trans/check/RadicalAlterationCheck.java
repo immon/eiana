@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * @author Piotr Tkaczyk
  */
-public class RadicalAlterationCheck implements DNSDomainTechnicalCheck {
+public class RadicalAlterationCheck extends AbstractDNSDomainTechnicalCheck {
 
     DomainManager domainManager;
     private DiffConfiguration diffConfiguration;
@@ -21,8 +21,7 @@ public class RadicalAlterationCheck implements DNSDomainTechnicalCheck {
         this.diffConfiguration = diffConfiguration;
     }
 
-
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
         Domain d = domainManager.get(domain.getName());
         if (d != null) {
             DNSDomain currentDomain = d.toDNSDomain();
