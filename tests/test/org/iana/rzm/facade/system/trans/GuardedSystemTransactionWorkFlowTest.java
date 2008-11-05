@@ -253,7 +253,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         acceptIANA_CHECK(userIANA, transId);
         assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
-        assertPersistentNotifications(transId, 0);
+        assertPersistentNotifications(transId, 1);
         checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
 
