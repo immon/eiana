@@ -1,8 +1,5 @@
 package org.iana.dns.check;
 
-import org.iana.dns.DNSHost;
-import org.iana.dns.DNSDomain;
-
 /**
  * It provides a uniform interface for technical checks in the context of a single
  * name server of a given domain.
@@ -11,5 +8,5 @@ import org.iana.dns.DNSDomain;
  */
 public interface DNSNameServerTechnicalCheck {
 
-    public void check(DNSNameServer ns) throws DNSTechnicalCheckException;
+    public DNSCheckResult check(DNSNameServer ns);
 }

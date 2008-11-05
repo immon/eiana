@@ -9,9 +9,10 @@ import java.util.Set;
  * performed on the domain itself, often including all name servers).
  *
  * @author Patrycja Wegrzynowicz
+ * @author Piotr Tkaczyk
  */
 public interface DNSDomainTechnicalCheck {
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException;
+    public DNSCheckResult check(DNSDomain domain, Set<DNSNameServer> nameServers);
     
 }

@@ -591,10 +591,11 @@ listed as a party to this request.
 </iana:template>
 
 <iana:template>
-<iana:type>failed-technical-check-period</iana:type>
-<iana:subject>Domain {domainName} technical checks failed</iana:subject>
+<iana:type>technical-check-period</iana:type>
+<iana:subject>Domain {domainName} technical checks</iana:subject>
 <iana:content>
-Technical checks failed for domain {domainName}:
+Technical checks for domain {domainName}:
+{passedList}
 {errorList}
 You have {days} day(s) left to make everything working properly.
 </iana:content>
@@ -602,10 +603,11 @@ You have {days} day(s) left to make everything working properly.
 </iana:template>
 
 <iana:template>
-<iana:type>failed-technical-check</iana:type>
-<iana:subject>Domain {domainName} technical checks failed</iana:subject>
+<iana:type>technical-check</iana:type>
+<iana:subject>Domain {domainName} technical checks</iana:subject>
 <iana:content>
-Technical checks failed for domain {domainName}:
+Technical checks for domain {domainName}:
+{passedList}
 {errorList}
 </iana:content>
 <iana:signed>false</iana:signed>

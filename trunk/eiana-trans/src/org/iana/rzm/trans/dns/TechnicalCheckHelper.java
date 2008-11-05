@@ -1,8 +1,10 @@
 package org.iana.rzm.trans.dns;
 
+import org.iana.dns.check.DNSCheckCollectionResult;
 import org.iana.dns.check.DNSExceptionMessagesVisitor;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.dns.check.DNSExceptionXMLVisitor;
+import org.iana.dns.check.MultipleDNSTechnicalCheckException;
+import org.iana.dns.DNSDomain;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.notifications.PAddressee;
 import org.iana.notifications.PContent;
@@ -17,21 +19,22 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.notifications.TransactionNotificationSender;
+import org.iana.rzm.trans.notifications.Notification2Comment;
 import org.iana.rzm.trans.process.general.ctx.NotificationContext;
+import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.TicketingException;
 import org.jbpm.graph.exe.ExecutionContext;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
  */
 public class TechnicalCheckHelper implements CheckHelper {
-    private static final String TEMPLATE_PERIOD_NAME = "failed-technical-check-period";
-    private static final String TEMPLATE_NAME = "failed-technical-check";
+    private static final String TEMPLATE_PERIOD_NAME = "technical-check-period";
+    private static final String TEMPLATE_NAME = "technical-check";
     private static final String TEMPLATE_VALUE_DOMAIN_NAME = "domainName";
+    private static final String TEMPLATE_VALUE_PASSED_LIST = "passedList";
     private static final String TEMPLATE_VALUE_ERROR_LIST = "errorList";
     private static final String TEMPLATE_VALUE_DAYS = "days";
 
@@ -51,13 +54,15 @@ public class TechnicalCheckHelper implements CheckHelper {
         return check(period,
                 ctx.getTransaction(),
                 ctx.getSender(),
+                ctx.getTicketingService(),
                 diffConfig);
     }
 
     public boolean check(String period,
                          Transaction trans,
                          TransactionNotificationSender sender,
-                         DiffConfiguration diffConfig) throws NotificationSenderException, TemplateInstantiationException {
+                         TicketingService ticketingService,
+                                 DiffConfiguration diffConfig) throws NotificationSenderException, TemplateInstantiationException {
         Domain retrievedDomain = trans.getCurrentDomain().clone();
         ObjectChange change = trans.getDomainChange();
         if (change != null) {
@@ -65,6 +70,7 @@ public class TechnicalCheckHelper implements CheckHelper {
             return check(retrievedDomain,
                     period,
                     trans,
+                    ticketingService,
                     sender);
         }
         return true;
@@ -73,13 +79,87 @@ public class TechnicalCheckHelper implements CheckHelper {
     public boolean check(Domain domain,
                          String period,
                          Transaction trans,
+                         TicketingService ticketingService,
                          TransactionNotificationSender sender) throws TemplateInstantiationException, NotificationSenderException {
-        try {
-            if (doTest)
-                DNSTechnicalCheckFactory.getDomainCheck().check(DNSConverter.toDNSDomain(domain));
+        if (doTest) {
+            DNSDomain dnsDomain = DNSConverter.toDNSDomain(domain);
+            DNSCheckCollectionResult result = DNSTechnicalCheckFactory.getDomainCheck().checkWithResult(dnsDomain);
 
-        } catch (DNSTechnicalCheckException e) {
+            PNotification notification = createNotification(domain, trans, result, period);
+            sender.send(trans, notification);
+
+            addCommentToRT(ticketingService, notification, trans);
+
+            return result.isSuccess();
+        }
+        return true;
+    }
+
+    private void addCommentToRT(TicketingService ticketingService, PNotification notification, Transaction trans) throws NotificationSenderException {
+        Long ticketID = trans.getTicketID();
+        if (ticketID != null) {
+            try {
+                Notification2Comment conv = new Notification2Comment(notification);
+                ticketingService.addComment(ticketID, conv.getCommentBody());
+            } catch (TicketingException e) {
+                throw new NotificationSenderException(e);
+            }
+        }
+    }
+
+    private PNotification createNotification(Domain domain, Transaction trans, DNSCheckCollectionResult result, String period) throws TemplateInstantiationException {
+        Map<String, String> values = new HashMap<String, String>();
+        values.put(TEMPLATE_VALUE_DOMAIN_NAME, domain.getName());
+        values.put(TEMPLATE_VALUE_PASSED_LIST, getPassedMessages(result));
+        values.put(TEMPLATE_VALUE_ERROR_LIST, getErrorMessages(domain, trans, result));
+        values.put(TEMPLATE_VALUE_DAYS, period);
+        String templateName =
+                (period != null && period.length() > 0) ?
+                        TEMPLATE_PERIOD_NAME : TEMPLATE_NAME;
+        Template template = templateFactory.getTemplate(templateName);
+        PContent content = template.instantiate(values);
+        Set<PAddressee> addressees = getAddressees(domain, trans);
+        return new PNotification(addressees, content.getSubject(), content.getBody());
+    }
+
+    private Set<PAddressee> getAddressees(Domain domain, Transaction trans) {
+        Set<PAddressee> users = new HashSet<PAddressee>();
+        if (domain.getAdminContact() != null) {
+            Contact contact = domain.getAdminContact();
+            users.add(new PAddressee(contact.getName(), contact.getEmail()));
+        }
+        if (domain.getTechContact() != null) {
+            Contact contact = domain.getTechContact();
+            users.add(new PAddressee(contact.getName(), contact.getEmail()));
+        }
+        if (trans.getSubmitterEmail() != null) {
+            String submitterEmail = trans.getSubmitterEmail();
+            users.add(new PAddressee(submitterEmail, submitterEmail));
+        }
+
+        return users;
+    }
+
+    private String getPassedMessages(DNSCheckCollectionResult result) {
+        StringBuffer sb = new StringBuffer();
+        List<String> checkNames = result.getSuccessfulCheckNames();
+        if (!checkNames.isEmpty()) {
+            sb.append("Passed tests: \n");
+            for (String checkName : checkNames) {
+                sb.append(" - ").append(checkName).append("\n");
+            }
+            return sb.toString();
+        } else {
+            return "";
+        }
+    }
+
+    private String getErrorMessages(Domain domain, Transaction trans, DNSCheckCollectionResult result) {
+        MultipleDNSTechnicalCheckException e = result.getException();
+
+        if (!e.isEmpty()) {
             DNSExceptionMessagesVisitor messagesVisitor = new DNSExceptionMessagesVisitor();
+
             e.accept(messagesVisitor);
             String messages = messagesVisitor.getMessages();
             trans.setStateMessage(messages);
@@ -88,38 +168,22 @@ public class TechnicalCheckHelper implements CheckHelper {
             e.accept(xmlVisitor);
             trans.setTechnicalErrors(xmlVisitor.getXML());
 
-            Set<PAddressee> users = new HashSet<PAddressee>();
-            if (domain.getAdminContact() != null) {
-                Contact contact = domain.getAdminContact();
-                users.add(new PAddressee(contact.getName(), contact.getEmail()));
+            List<String> checkNames = result.getFailedCheckNames();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Failed tests: \n");
+            for (String checkName : checkNames) {
+                sb.append(" - ").append(checkName).append("\n");
             }
-            if (domain.getTechContact() != null) {
-                Contact contact = domain.getTechContact();
-                users.add(new PAddressee(contact.getName(), contact.getEmail()));
-            }
-            if (trans.getSubmitterEmail() != null) {
-                String submitterEmail = trans.getSubmitterEmail();
-                users.add(new PAddressee(submitterEmail, submitterEmail));
-            }
-            PNotification notification = createNotification(users, domain.getName(), messages, period);
-            sender.send(trans, notification);
-            return false;
+
+            sb.append("\n").append(messages);
+
+            return sb.toString();
+        } else {
+            return "";
         }
-        return true;
     }
 
-    private PNotification createNotification(Set<PAddressee> to, String domainName, String errorMessages, String period) throws TemplateInstantiationException {
-        Map<String, String> values = new HashMap<String, String>();
-        values.put(TEMPLATE_VALUE_DOMAIN_NAME, domainName);
-        values.put(TEMPLATE_VALUE_ERROR_LIST, errorMessages);
-        values.put(TEMPLATE_VALUE_DAYS, period);
-        String templateName =
-                (period != null && period.length() > 0) ?
-                        TEMPLATE_PERIOD_NAME : TEMPLATE_NAME;
-        Template template = templateFactory.getTemplate(templateName);
-        PContent content = template.instantiate(values);
-        return new PNotification(to, content.getSubject(), content.getBody());
-    }
 
     public void setDoTest(boolean doTest) {
         this.doTest = doTest;

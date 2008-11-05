@@ -10,7 +10,16 @@ public class MultipleDNSTechnicalCheckException extends DNSTechnicalCheckExcepti
     List<DNSTechnicalCheckException> exceptions = new ArrayList<DNSTechnicalCheckException>();
 
     public void addException(DNSTechnicalCheckException e) {
-        exceptions.add(e);
+        if (e instanceof MultipleDNSTechnicalCheckException) {
+            MultipleDNSTechnicalCheckException mex = (MultipleDNSTechnicalCheckException) e;
+            exceptions.addAll(mex.getExceptions());
+        } else {
+            exceptions.add(e);
+        }
+    }
+
+    public void addExceptions(List<DNSTechnicalCheckException> e) {
+        exceptions.addAll(e);
     }
 
     public void addExceptions(Collection<DNSTechnicalCheckException> e) {

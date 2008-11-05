@@ -21,8 +21,8 @@ public class NotificationVO implements Serializable {
         WITHDRAWN,
         ADMIN_CLOSED,
         EXCEPTION,
-        FAILED_TECHNICAL_CHECK_PERIOD,
-        FAILED_TECHNICAL_CHECK,
+        TECHNICAL_CHECK_PERIOD,
+        TECHNICAL_CHECK,
         TEXT
     }
 

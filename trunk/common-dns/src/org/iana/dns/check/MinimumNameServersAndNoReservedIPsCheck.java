@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Piotr Tkaczyk
  */
-public class MinimumNameServersAndNoReservedIPsCheck implements DNSDomainTechnicalCheck {
+public class MinimumNameServersAndNoReservedIPsCheck extends AbstractDNSDomainTechnicalCheck {
 
     private int minNameServersNumber;
 
@@ -30,7 +30,7 @@ public class MinimumNameServersAndNoReservedIPsCheck implements DNSDomainTechnic
         this.minNameServersNumber = minNameServersNumber;
     }
 
-    public void check(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
+    public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
 
         MultipleDNSTechnicalCheckException e = new MultipleDNSTechnicalCheckException();
 
