@@ -71,4 +71,5 @@ public class TransactionActionVO implements Serializable {
         result = 31 * result + (change != null ? change.hashCode() : 0);
         return result;
     }
+
 }
