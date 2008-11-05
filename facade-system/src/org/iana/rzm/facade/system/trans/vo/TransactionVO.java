@@ -277,7 +277,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
         this.impactedDomains.add(domainName);
     }
 
-    public Set<String> getEffectedDomains() {
+    public Set<String> getAffectedDomains() {
         Set<String> ret = new HashSet<String>();
         if (impactedDomains != null) ret.addAll(impactedDomains);
         ret.add(domainName);
