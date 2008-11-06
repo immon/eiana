@@ -20,4 +20,6 @@ public interface Ticket {
 
     public boolean isNSGlueTicket();
 
+    public List<String> getImpactedDomainsNames();
+
 }

@@ -55,6 +55,9 @@
                 <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
                     <start>true</start>
                 </action>
+                <action class="org.iana.rzm.trans.notifications.review.SpecialReviewProcessStateNotifier">
+                    <notificationProducerName>specialReviewNotificationProducer</notificationProducerName>
+                </action>
             </event>
             <handler class="org.iana.rzm.trans.process.general.ticketingservice.TicketCreation"/>
             <transition name="ok" to="FIRST_NSLINK_CHANGE_DECISION"/>

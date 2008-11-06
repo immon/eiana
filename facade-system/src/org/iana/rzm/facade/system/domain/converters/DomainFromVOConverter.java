@@ -1,14 +1,16 @@
 package org.iana.rzm.facade.system.domain.converters;
 
-import org.iana.dns.validator.*;
-import org.iana.rzm.common.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.common.validators.*;
+import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.rzm.common.TrackData;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.system.domain.vo.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.rzm.user.*;
+import org.iana.rzm.facade.user.RoleVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.SystemRole;
 
 import java.util.*;
 
@@ -59,6 +61,7 @@ public class DomainFromVOConverter {
         try {
             tDomain.setName(fDomainVO.getName());
             tDomain.setObjId(fDomainVO.getObjId());
+            tDomain.setSpecialReview(fDomainVO.isSpecialReview());
             tDomain.setAdminContact(toContact(fDomainVO.getAdminContact()));
             tDomain.setBreakpoints(toBreakpointSet(fDomainVO.getBreakpoints()));
             tDomain.setNameServers(toHostList(fDomainVO.getNameServers()));

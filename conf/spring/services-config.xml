@@ -482,6 +482,14 @@
         <constructor-arg index="3" ref="defaultDataProducer"/>
     </bean>
 
+    <bean id="specialReviewNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="adminAddresseeProducer"/>
+        <constructor-arg index="2" ref="specialReviewTemplateProducer"/>
+        <constructor-arg index="3" ref="specialReviewDataProducer"/>
+    </bean>
+
     <bean id="contactConfirmationACNotificationProducer" class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
@@ -618,6 +626,13 @@
         </property>
     </bean>
 
+    <bean id="adminAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToAdmins">
+            <value>true</value>
+        </property>
+    </bean>
+
     <bean id="submitterAddresseeProducer"
           class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
         <property name="sendToContacts">
@@ -685,6 +700,13 @@
           class="org.iana.rzm.trans.notifications.zone_publication.ZonePublicationAlertAddresseeProducer"/>
 
     <!-- Template producers -->
+
+    <bean id="specialReviewTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>special-review</value>
+        </property>
+    </bean>
 
     <bean id="adminClosedTemplateProducer"
           class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
@@ -802,6 +824,8 @@
     <bean id="zonePublicationAlertDataProducer"
           class="org.iana.rzm.trans.notifications.zone_publication.ZonePublicationAlertDataProducer"/>
 
+    <bean id="specialReviewDataProducer"
+          class="org.iana.rzm.trans.notifications.review.SpecialReviewDataProducer"/>
 
     <!-- Technical checks -->
 

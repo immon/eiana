@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.system.trans.converters;
 
 import org.iana.objectdiff.*;
+import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.trans.vo.*;
 import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
 import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
@@ -10,10 +11,9 @@ import org.iana.rzm.facade.user.converter.RoleConverter;
 import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.TransactionStateLogEntry;
+import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
 import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.rzm.trans.confirmation.Identity;
-import org.iana.rzm.domain.Domain;
 
 import java.util.*;
 
@@ -77,9 +77,13 @@ public class TransactionConverter {
             ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact(), cid.getToken()));
 
         Set<Domain> impactedDomains = trans.getImpactedDomains();
+        ret.setSpecialReviewInvolved(false);
         if (impactedDomains != null) {
             for (Domain domain : impactedDomains) {
                 ret.addImpactedDomain(domain.getName());
+                if (domain.isSpecialReview()) {
+                    ret.setSpecialReviewInvolved(true);
+                }
             }
         }
 

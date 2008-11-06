@@ -472,6 +472,16 @@ public class Transaction implements TrackedObject {
         return getData().getImpactedDomains();
     }
 
+    public List<String> getImpactedDomainsNames() {
+        List<String> names = new ArrayList<String>();
+        if (getData().getImpactedDomains() != null) {
+            for (Domain domain : getData().getImpactedDomains()) {
+                names.add(domain.getName());
+            }
+        }
+        return names;
+    }
+
     public boolean isNSSharedGlueChange() {
         Set<Domain> impactedDomains = getImpactedDomains();
         return impactedDomains != null && !impactedDomains.isEmpty();

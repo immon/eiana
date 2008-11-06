@@ -5,14 +5,16 @@ import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.Host;
 import org.iana.rzm.domain.IPAddress;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
  */
 public class DomainPrinter {
+
+    public static final String DOMAIN_NAMES_SEPARATOR = ", ";
 
     public static String print(Domain domain) {
         if (domain == null) return "";
@@ -36,6 +38,20 @@ public class DomainPrinter {
 
         sb.append(printNameServers(hosts));
 
+        return sb.toString();
+    }
+
+    public static String printDomainNames(Set<Domain> domians) {
+        StringBuffer sb = new StringBuffer();
+        if (domians != null && !domians.isEmpty()) {
+            for (Iterator<Domain> i = domians.iterator(); i.hasNext();) {
+                Domain d = i.next();
+                sb.append(d.getName());
+                if (i.hasNext()) {
+                    sb.append(DOMAIN_NAMES_SEPARATOR);
+                }
+            }
+        }
         return sb.toString();
     }
 

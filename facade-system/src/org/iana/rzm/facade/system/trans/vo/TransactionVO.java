@@ -6,10 +6,10 @@ import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
 import org.iana.rzm.facade.user.SystemRoleVO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -31,6 +31,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private Set<ConfirmationVO> confirmations = new HashSet<ConfirmationVO>();
     private Set<ConfirmationVO> impactedPartyConfirmations = new HashSet<ConfirmationVO>();
     private Set<String> impactedDomains = new HashSet<String>();
+    private boolean specialReviewInvolved;
     private String comment;
     private String stateMessage;
     private String usdocNotes;
@@ -275,6 +276,14 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     public void addImpactedDomain(String domainName) {
         if (this.impactedDomains == null) this.impactedDomains = new HashSet<String>();
         this.impactedDomains.add(domainName);
+    }
+
+    public boolean isSpecialReviewInvolved() {
+        return this.specialReviewInvolved;
+    }
+
+    public void setSpecialReviewInvolved(boolean specialReviewInvolved) {
+        this.specialReviewInvolved = specialReviewInvolved;
     }
 
     public Set<String> getAffectedDomains() {

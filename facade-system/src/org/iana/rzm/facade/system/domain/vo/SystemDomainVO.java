@@ -1,11 +1,12 @@
 package org.iana.rzm.facade.system.domain.vo;
 
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.user.*;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.user.RoleVO;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class is used as a wrapper around DomainVO to limit access to domain attributes.
@@ -122,6 +123,14 @@ class SystemDomainVO implements IDomainVO, Serializable {
 
     public void setName(String name) {
         domain.setName(name);
+    }
+
+    public boolean isSpecialReview() {
+        return domain.isSpecialReview();
+    }
+
+    public void setSpecialReview(boolean specialReview) {
+        domain.setSpecialReview(specialReview);
     }
 
     public Set<RoleVO.Type> getRoles() {
