@@ -1,6 +1,7 @@
 package org.iana.rzm.facade.admin.domain;
 
 import org.iana.criteria.Criterion;
+import org.iana.criteria.In;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -16,7 +17,9 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Piotr Tkaczyk
@@ -60,6 +63,20 @@ public class StatelessAdminDomainServiceImpl implements StatelessAdminDomainServ
         CheckTool.checkNull(domain, "domainVO");
         Domain newDomain = DomainFromVOConverter.toDomain(domain);
         domainManager.update(newDomain, authUser.getUserName());
+    }
+
+    public void updateSpecialReviewOnly(List<IDomainVO> domains, AuthenticatedUser authUser) throws AccessDeniedException {
+        CheckTool.checkCollectionNull(domains, "List<IDomainVO>");
+        Map<String, Boolean> domainsMap = new HashMap<String, Boolean>();
+        for (IDomainVO d : domains) {
+            CheckTool.checkEmpty(d.getName(), "domain name");
+            CheckTool.checkNull(d.isSpecialReview(), "special review flag");
+            domainsMap.put(d.getName(), d.isSpecialReview());
+        }
+        Criterion criteria = new In("name.name", domainsMap.keySet());
+        for (Domain d : domainManager.find(criteria)) {
+            d.setSpecialReview(domainsMap.get(d.getName()));
+        }
     }
 
     public void deleteDomain(String domainName, AuthenticatedUser authUser) throws AccessDeniedException {

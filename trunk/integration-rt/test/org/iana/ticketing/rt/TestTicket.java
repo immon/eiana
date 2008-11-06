@@ -65,4 +65,8 @@ public class TestTicket implements Ticket {
     public String getCurrentStateComment() {
         return "";
     }
+
+    public List<String> getImpactedDomainsNames() {
+        return null;
+    }
 }

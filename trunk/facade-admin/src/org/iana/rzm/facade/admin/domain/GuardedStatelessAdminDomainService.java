@@ -3,9 +3,9 @@ package org.iana.rzm.facade.admin.domain;
 import org.iana.criteria.Criterion;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
-import org.iana.rzm.facade.services.AbstractRZMStatelessService;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.services.AbstractRZMStatelessService;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.user.UserManager;
 
@@ -41,6 +41,11 @@ public class GuardedStatelessAdminDomainService extends AbstractRZMStatelessServ
     public void updateDomain(IDomainVO domain, AuthenticatedUser authUser) throws InvalidCountryCodeException, AccessDeniedException {
         isIana(authUser);
         statelessAdminDomainService.updateDomain(domain, authUser);
+    }
+
+    public void updateSpecialReviewOnly(List<IDomainVO> domains, AuthenticatedUser authUser) throws AccessDeniedException {
+        isIana(authUser);
+        statelessAdminDomainService.updateSpecialReviewOnly(domains, authUser);
     }
 
     public void deleteDomain(String domainName, AuthenticatedUser authUser) throws AccessDeniedException {

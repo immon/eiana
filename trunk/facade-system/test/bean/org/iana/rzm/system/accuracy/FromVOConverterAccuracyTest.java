@@ -1,14 +1,19 @@
 package org.iana.rzm.system.accuracy;
 
-import org.iana.dns.validator.*;
+import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.domain.converters.*;
+import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.*;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.net.*;
-import java.sql.*;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -218,6 +223,7 @@ public class FromVOConverterAccuracyTest {
         domainVO.setSupportingOrg(contactVO);
         domainVO.setTechContact(contactVO);
         domainVO.setWhoisServer("whois");
+        domainVO.setSpecialReview(true);
 
         domainVO.setCreated(created);
         domainVO.setCreatedBy("somebody");
@@ -246,6 +252,7 @@ public class FromVOConverterAccuracyTest {
         assert domain.getWhoisServer().equals("whois");
 
         assert domain.getName().equals("domain.org");
+        assert domain.isSpecialReview();
         assert domain.getCreated().equals(created);
         assert domain.getCreatedBy().equals("somebody");
         assert domain.getModified().equals(modified);

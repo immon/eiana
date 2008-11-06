@@ -131,4 +131,8 @@ public class RequestTrackerTicket implements Ticket {
     public String getCurrentStateComment() {
         return DomainPrinter.print(transaction.getCurrentDomain());
     }
+
+    public List<String> getImpactedDomainsNames() {
+        return transaction.getImpactedDomainsNames();
+    }
 }

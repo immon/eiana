@@ -1,11 +1,13 @@
 package org.iana.rzm.facade.system.domain.vo;
 
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.user.*;
+import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.rzm.facade.common.Trackable;
+import org.iana.rzm.facade.user.RoleVO;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A simplified version of DomainVO used with lists of domains.
@@ -17,6 +19,7 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
     private String name;
     private Set<RoleVO.Type> roles;
     private String specialInstructions;
+    private boolean specialReview;
 
     private Long objId;
     private TrackDataVO trackData = new TrackDataVO();
@@ -46,6 +49,13 @@ public class SimpleDomainVO implements IDomainVO, Trackable, Serializable {
         this.roles = roles;
     }
 
+    public boolean isSpecialReview() {
+        return specialReview;
+    }
+
+    public void setSpecialReview(boolean specialReview) {
+        this.specialReview = specialReview;
+    }
 
     public Long getObjId() {
         return objId;

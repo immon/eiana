@@ -1,17 +1,20 @@
 package org.iana.rzm.system.accuracy;
 
-import org.iana.dns.validator.*;
-import org.iana.rzm.common.*;
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.rzm.common.TrackData;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.facade.system.domain.converters.*;
+import org.iana.rzm.facade.system.domain.converters.DomainFromVOConverter;
+import org.iana.rzm.facade.system.domain.converters.DomainToVOConverter;
 import org.iana.rzm.facade.system.domain.vo.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.rzm.user.*;
-import org.testng.annotations.*;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.user.SystemRole;
+import org.testng.annotations.Test;
 
-import java.net.*;
-import java.sql.*;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -130,6 +133,7 @@ public class ToVOConverterTest {
         fromDomain.addNameServer(fromHost);
         fromDomain.setTechContact(fromContact);
 
+        fromDomain.setSpecialReview(true);
         fromDomain.setRegistryUrl("http://tmp.something.org:80/someFile");
         fromDomain.setSpecialInstructions("Super Secret Special Instruction Alpha One");
 //        fromDomain.setState(Domain.State.NO_ACTIVITY);
@@ -142,6 +146,7 @@ public class ToVOConverterTest {
         toDomainVO = DomainToVOConverter.toDomainVO(fromDomain);
 
         assert fromDomain.getName().equals(toDomainVO.getName());
+        assert toDomainVO.isSpecialReview();
 
         ContactVO adminContactVO = toDomainVO.getAdminContact();
         assert adminContactVO.getName().equals(fromContact.getName());

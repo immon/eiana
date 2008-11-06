@@ -86,10 +86,13 @@ public class Domain implements TrackedObject, Cloneable {
     private String type;
     @Basic
     private String ianaCode;
+    @Basic
+    private boolean specialReview;
 
     protected Domain() {
         this.nameServers = new ArrayList<Host>();
         this.breakpoints = new HashSet<Breakpoint>();
+        this.specialReview = false;
     }
 
     public Domain(String name) throws InvalidDomainNameException {
@@ -98,6 +101,7 @@ public class Domain implements TrackedObject, Cloneable {
         this.breakpoints = new HashSet<Breakpoint>();
         this.status = Status.ACTIVE;
         this.ianaCode = getName();
+        this.specialReview = false;
     }
 
     public Long getObjId() {
@@ -116,6 +120,13 @@ public class Domain implements TrackedObject, Cloneable {
         return name == null ? null : name.getFqdnName();
     }
 
+    public boolean isSpecialReview() {
+        return specialReview;
+    }
+
+    public void setSpecialReview(boolean specialReview) {
+        this.specialReview = specialReview;
+    }
 
     final public void setName(String name) throws InvalidDomainNameException {
         this.name = new Name(name);

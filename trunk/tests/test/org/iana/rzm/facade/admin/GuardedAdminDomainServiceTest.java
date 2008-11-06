@@ -24,10 +24,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: Piotr Tkaczyk
@@ -96,6 +93,50 @@ public class GuardedAdminDomainServiceTest {
 
         gAdminServ.close();
 
+    }
+
+    @Test
+    public void testSetSpecialReview() {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminServ.setUser(testAuthUser);
+
+        boolean specialReview = true;
+
+        Map<String, Boolean> correctValues = new HashMap<String, Boolean>();
+
+        for (int i = 0; i < 4; i++) {
+            DomainVO domain = new DomainVO();
+            domain.setName("domainsrt" + i);
+            HostVO nameServer = new HostVO();
+            nameServer.setName("name1.domain" + i);
+            nameServer.setAddress(new IPAddressVO("1.1.1." + i, IPAddressVO.Type.IPv4));
+            domain.setNameServers(Arrays.asList(nameServer));
+            domain.setStatus(DomainVO.Status.ACTIVE);
+            domain.setSpecialReview(specialReview);
+            gAdminServ.createDomain(domain);
+
+            correctValues.put(domain.getName(), domain.isSpecialReview());
+            specialReview = !specialReview;
+        }
+
+        List<IDomainVO> domainsToChange = new ArrayList<IDomainVO>();
+        specialReview = false;
+        for (int i = 0; i < 3; i++) {
+            IDomainVO simple = new SimpleDomainVO();
+            simple.setName("domainsrt" + i);
+            simple.setSpecialReview(specialReview);
+            domainsToChange.add(simple);
+
+            correctValues.put(simple.getName(), simple.isSpecialReview());
+            specialReview = !specialReview;
+        }
+
+        gAdminServ.updateSpecialReview(domainsToChange);
+
+        for (String domainName : correctValues.keySet()) {
+            IDomainVO iDomain = gAdminServ.getDomain(domainName);
+            assert correctValues.get(domainName) == iDomain.isSpecialReview();
+        }
     }
 
     @Test

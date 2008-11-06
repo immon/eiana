@@ -17,11 +17,11 @@ import java.util.Map;
  */
 public class ProcessStateNotifier extends ActionExceptionHandler {
 
-    private String notificationSender = "transactionNotificationSender";
+    protected String notificationSender = "transactionNotificationSender";
 
-    private String notificationProducerName = "emptyNotificationProducer";
+    protected String notificationProducerName = "emptyNotificationProducer";
 
-    private Map<String, Object> additionalData = new HashMap<String, Object>();
+    protected Map<String, Object> additionalData = new HashMap<String, Object>();
 
     public void doExecute(ExecutionContext executionContext) throws Exception {
         NotificationContext ctx = new NotificationContext(executionContext);

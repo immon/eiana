@@ -41,6 +41,10 @@ public class GuardedAdminDomainServiceBean extends AbstractFinderService<IDomain
         statelessAdminDomainService.updateDomain(domain, getAuthenticatedUser());
     }
 
+    public void updateSpecialReview(List<IDomainVO> domains) throws AccessDeniedException {
+        statelessAdminDomainService.updateSpecialReviewOnly(domains, getAuthenticatedUser());
+    }
+
     public void deleteDomain(String domainName) throws AccessDeniedException {
         statelessAdminDomainService.deleteDomain(domainName, getAuthenticatedUser());
     }

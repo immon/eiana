@@ -727,4 +727,15 @@ The following exception happened:
 <iana:signed>false</iana:signed>
 </iana:template>
 
+
+    <!--TODO subject and body-->
+<iana:template>
+<iana:type>special-review</iana:type>
+<iana:subject>New transaction with special review domain</iana:subject>
+<iana:content>
+Current domain: {domainName} has special review flag set on.
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
 </iana:templates>
