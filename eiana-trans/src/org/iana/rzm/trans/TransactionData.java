@@ -406,4 +406,14 @@ public class TransactionData {
     public void setTechnicalErrors(String technicalErrors) {
         this.technicalErrors = technicalErrors;
     }
+
+    public boolean requiresSpecialReview() {
+        if (currentDomain.isSpecialReview()) return true;
+        if (impactedDomains != null) {
+            for (Domain domain : impactedDomains) {
+                if (domain.isSpecialReview()) return true;
+            }
+        }
+        return false;
+    }
 }
