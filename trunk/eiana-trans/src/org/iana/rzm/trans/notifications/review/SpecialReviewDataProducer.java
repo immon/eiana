@@ -16,8 +16,8 @@ public class SpecialReviewDataProducer implements DataProducer {
 
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
 
+
         values.put("domainName", td.getCurrentDomain().getName());
-        
 
         return values;
     }

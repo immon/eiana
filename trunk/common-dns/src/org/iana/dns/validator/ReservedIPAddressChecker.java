@@ -17,7 +17,7 @@ public class ReservedIPAddressChecker {
         // 224.0.0.0/4; 240.0.0.0/4
         if (octets[0] >= 224) return true;
         switch (octets[0]) {
-            // 0.0.0.0/8
+            // 0.0.0.0/8           `
             case 0:
                 return true;
                 // 10.0.0.0/8
