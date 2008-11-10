@@ -17,7 +17,7 @@ public class DomainDiffConfiguration extends DiffConfiguration {
 
     public DomainDiffConfiguration(ObjectInstantiator hostInstantiator) {
         ObjectConfiguration domainConfig = new ObjectConfiguration(new String[]{
-                SPONSORING_ORG, ADMIN_CONTACT, TECH_CONTACT, "whoisServer", "registryUrl", NAME_SERVERS, "status"
+                SPONSORING_ORG, ADMIN_CONTACT, TECH_CONTACT, "whoisServer", "registryUrl", NAME_SERVERS, "status", "specialReview"
         }, "name");
         domainConfig.addFieldClass(SPONSORING_ORG, Contact.class);
         domainConfig.addFieldClass(ADMIN_CONTACT, Contact.class);
