@@ -124,6 +124,10 @@ public class Domain implements TrackedObject, Cloneable {
         return specialReview;
     }
 
+    public boolean getSpecialReview() {
+        return specialReview;
+    }
+
     public void setSpecialReview(boolean specialReview) {
         this.specialReview = specialReview;
     }
