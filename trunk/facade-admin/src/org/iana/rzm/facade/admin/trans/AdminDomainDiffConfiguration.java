@@ -20,5 +20,6 @@ public class AdminDomainDiffConfiguration extends DomainDiffConfiguration {
         config.addField("description");
         config.addField("specialInstructions");
         config.addField("enableEmails");
+        config.addField("specialReview");
     }
 }
