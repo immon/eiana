@@ -39,4 +39,8 @@ public class TransactionActionsVOWrapper extends ValueObject  {
     public boolean offerSeparateRequest(){
         return vo.containsNameServerAction() && vo.containsOtherAction();
     }
+
+    public boolean isGlueChange() {
+        return vo.isGlueChange();
+    }
 }

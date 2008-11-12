@@ -89,6 +89,14 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
         vo.setSpecialInstructions(specialInstructions);
     }
 
+    public boolean isSpecialReview(){
+        return vo.isSpecialReview();
+    }
+
+    public void setSpecialReview(boolean value){
+        vo.setSpecialReview(value);
+    }
+
     public String getRegistryUrl(){
         return vo.getRegistryUrl();
     }

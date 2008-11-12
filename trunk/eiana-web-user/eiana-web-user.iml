@@ -139,9 +139,10 @@
       <attribute name="URI" value="/WEB-INF/lib/libidn-1.8.jar" />
       <url>jar://$MODULE_DIR$/../lib/idn/libidn-1.8.jar!/</url>
     </containerElement>
-    <containerElement type="library" name="javaee" level="project">
+    <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
@@ -207,6 +208,10 @@
     <containerElement type="library" name="hibernate" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />

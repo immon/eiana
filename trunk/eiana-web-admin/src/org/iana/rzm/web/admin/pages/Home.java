@@ -44,7 +44,8 @@ public abstract class Home extends AdminPage implements PageBeginRenderListener,
             "actionTitle=literal:Review / Edit",
             "linkTragetPage=prop:editDomain",
             "cancelRequestPage=literal:WithdrawRequest" ,
-            "sortFactory=prop:sortFactory"
+            "sortFactory=prop:sortFactory",
+            "specialReviewImage=literal:true"
             }
     )
     public abstract IComponent getListRequestComponent();

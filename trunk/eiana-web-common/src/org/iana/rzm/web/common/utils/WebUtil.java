@@ -179,7 +179,7 @@ public class WebUtil {
             return defaultPort;
         }
 
-        return 8080;
+        return 80;
     }
 
 

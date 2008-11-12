@@ -29,6 +29,9 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
     )
     public abstract IComponent getContactAttributeEditorComponent();
 
+    @Component(id="editContactTitle", type="Insert", bindings = {"value=prop:pageTitle"})
+    public abstract IComponent getEditContactDetailsTitleComponent();
+
     @InjectPage(EditDomain.PAGE_NAME)
     public abstract EditDomain getEditDomain();
 
@@ -64,7 +67,9 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
         };
     }
 
-    
+    public String getPageTitle(){
+        return "Edit " + getContactType() + " Contact ("  + getVisitState().getCurrentDomain(getDomainId()).getName() + ")"; 
+    }
 
     @SuppressWarnings("unchecked")
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {

@@ -40,7 +40,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="spring" level="project" />
-    <orderEntry type="library" exported="" name="rzm-ui-components" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -51,6 +50,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="hibernate" level="project" />
+    <orderEntry type="library" exported="" name="rzm-ui-components" level="project" />
     <orderEntryProperties />
   </component>
 </module>

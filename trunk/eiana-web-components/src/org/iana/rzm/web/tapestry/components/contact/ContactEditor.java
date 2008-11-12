@@ -8,6 +8,8 @@ import org.apache.tapestry.form.*;
 import org.apache.tapestry.valid.*;
 import org.iana.codevalues.*;
 import org.iana.commons.*;
+import org.iana.rzm.common.*;
+import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.pages.*;
 import org.iana.rzm.web.common.utils.*;
@@ -250,6 +252,7 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
 
         if (isValidationRequired()) {
             validateInput();
+
             if (getEditor().getValidationDelegate().getHasErrors()) {
                 return;
             }
@@ -267,7 +270,9 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             attributes.put(ContactVOWrapper.ALT_PHONE, getAlternatePhone());
         }
 
-        getEditor().save(getContactAttributes());
+
+            getEditor().save(getContactAttributes());
+
     }
 
     public IValidationDelegate getValidationDelegate() {
@@ -343,6 +348,8 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             validateEmail(getPrivateEmail(), getPrivateEmailField(), ContactVOWrapper.PRIVATE_EMAIL);
         }
 
+        validateEmail(contactAttributes.get(ContactVOWrapper.EMAIL),getEmailField(), ContactVOWrapper.EMAIL);
+
         if (getRole()) {
             if (StringUtil.isBlank(contactAttributes.get(ContactVOWrapper.JOB_TITLE))) {
                 getEditor().setErrorField(getJobTitleField(), "Role accounts must have a Job Title");
@@ -366,9 +373,18 @@ public abstract class ContactEditor extends BaseComponent implements PageBeginRe
             return;
         }
 
+        try{
+            new EmailAddress(email);
+        }catch(InvalidEmailException e){
+            getEditor().setErrorField(field, "Invalid email address format " + email);
+            return;
+        }
+
         if (!validator.isValid(email)) {
             getEditor().setErrorField(field, "Invalid email address format " + email);
         }
+
+
     }
 
     protected void validateReqiredField(Map attributes, String fieldName, IFormComponent field) {

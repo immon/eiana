@@ -18,7 +18,7 @@ public abstract class ListRequests extends ListRecords implements Sortable {
     public abstract IComponent getPaginationComponent();
 
     @Component(id = "records", type = "tapestry4lib:Browser", bindings = {
-        "entityQuery=prop:entityQuery", "value=prop:currentRecord", "element=literal:tr"})
+        "entityQuery=prop:entityQuery", "value=prop:currentRecord", "element=literal:tr", "style=prop:currentRecordStyle"})                                                                                               
     public abstract IComponent getBrowserComponent();
 
     @Component(id = "rt", type = "Insert", bindings = {"value=prop:record.rtIdAsString"})
@@ -45,12 +45,13 @@ public abstract class ListRequests extends ListRecords implements Sortable {
         })
     public abstract IComponent getListenerComponent();
 
-
     @Component(id = "domainLink", type = "DirectLink", bindings = {
         "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER",
         "listener=listener:goToDomain", "parameters=prop:record.domainName"
         })
     public abstract IComponent getDomainLinkComponent();
+
+
 
     @Component(id = "showCancelRequest",
                type = "If",
@@ -92,11 +93,18 @@ public abstract class ListRequests extends ListRecords implements Sortable {
                bindings = {"header=literal:Last Change", "sortFactory=prop:deligator", "imageVisible=prop:modifiedImageVisible"})
     public abstract IComponent getModifiedHeaderComponent();
 
+    @Component(id="reviewImage", type="If", bindings = {"condition=prop:specialReview"})
+    public abstract IComponent getReviewImageComponent();
+
+    @Asset("orange_dot_sm.png")
+    public abstract IAsset getOrangeDotImage();
+
     public abstract String getActionTitle();
     public abstract LinkTraget getLinkTragetPage();
     public abstract String getCancelRequestPage();
     public abstract SortFactory getSortFactory();
     public abstract boolean isCancelRequestEnabled();
+    public abstract boolean isSpecialReviewImage();
         
     @Persist("client")
     public abstract void setCurrentSorting(SortOrder sortOrder);
@@ -117,7 +125,7 @@ public abstract class ListRequests extends ListRecords implements Sortable {
 
     public boolean isDomainImageVisible() {
         return isImageVisibleFor("Domain");
-    }
+    }                                                                                                                                                                               
 
     public boolean isLoggedImageVisible() {
         return isImageVisibleFor("Logged");
@@ -149,6 +157,25 @@ public abstract class ListRequests extends ListRecords implements Sortable {
 
     public boolean isRequestDeleteble() {
         return ((TransactionVOWrapper) getCurrentRecord()).canCancel() && isCancelRequestEnabled();
+    }
+
+    public boolean isRecordSpecialReview(){
+        return ((TransactionVOWrapper) getCurrentRecord()).isSpecialReview();
+    }
+
+    public String getCurrentRecordStyle(){
+        return isRecordSpecialReview() ? "color:orange" : null;
+    }
+
+
+    public boolean isSpecialReview(){
+        PaginatedEntity[] tvr = getRecords().getPageResults();
+        for (PaginatedEntity entity : tvr) {
+            if(((TransactionVOWrapper) entity).isSpecialReview()){
+                return true;
+            }
+        }
+        return false;
     }
 
 
