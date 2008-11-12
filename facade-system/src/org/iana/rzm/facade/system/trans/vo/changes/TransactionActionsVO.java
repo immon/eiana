@@ -1,12 +1,9 @@
 package org.iana.rzm.facade.system.trans.vo.changes;
 
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.common.validators.*;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Represents a set of transaction groups - a difference between modified domain and current domain.
@@ -30,7 +27,7 @@ public class TransactionActionsVO implements Serializable {
     public void setGroups(Collection<TransactionActionGroupVO> groups) {
         for (TransactionActionGroupVO group : groups) {
             addGroup(group);
-        }
+        }                                                                                                                                                                                                                                                                                   
     }
 
     public void setOtherAction(boolean otherAction) {

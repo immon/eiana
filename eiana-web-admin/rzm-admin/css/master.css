@@ -171,12 +171,6 @@ select.field { width: 185px;}
     color: #579d4f;
 }
 
-.rzm-doclink {
-    margin: 10px 0 0 40px;
-    padding: 10px 10px 10px 30px;
-    background: url( ../images/doc-link.png ) center left no-repeat;                                                 
-}
-
 .rzm-securid-login {
     margin: 10px 0px -20px 150px;
 }
@@ -230,6 +224,11 @@ SPAN.error {
 .info {
     color: green;
     text-align: center;
+}
+
+.specialReview {
+    font-weight: bold;
+    color:yellow
 }
 
 widgettabdocumentation {

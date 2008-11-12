@@ -3,7 +3,7 @@
   "-//Apache Software Foundation//Tapestry Specification 4.0//EN"
   "http://jakarta.apache.org/tapestry/dtd/Tapestry_4_0.dtd">
 
-<component-specification class="org.iana.rzm.web.tapestry.components.list.ListRequests" allow-body="no" allow-informal-parameters="no">
+<component-specification class="org.iana.rzm.web.tapestry.components.list.ListRequests" allow-body="no">
 
     <!--<parameter name="entityQuery"  required = "true"/>-->
     <!--<parameter name="listener"  required = "true"/>-->
@@ -15,5 +15,6 @@
     <parameter name="actionTitle" default-value="literal:View" required = "false"/>
     <parameter name="sortFactory" default-value="prop:nullSortFactory" required = "false"/>
     <parameter name="cancelRequestEnabled" default-value="literal:true" required = "false"/>
+    <parameter name="specialReviewImage" default-value="literal:false" required = "false"/>
 
 </component-specification>

@@ -149,7 +149,7 @@ public class RequestTrackerService implements TicketingService {
     private String getLabel(String tld) {
         String label = null;
         if (retriever != null) label = retriever.getValueById("cc", tld.toUpperCase());
-        if (label == null) label = "";
+        if (label == null) label = "Top Level Domain";
         return label;
     }
 

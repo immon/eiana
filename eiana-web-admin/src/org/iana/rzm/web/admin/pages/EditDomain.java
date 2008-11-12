@@ -160,6 +160,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
     }
 
     public void save() {
+
         if (getVisitState().isDomainModified(getDomainId())) {
             DomainChangesConfirmation domainChangesConfirmation = getDomainChangesConfirmation();
             domainChangesConfirmation.setDomainId(getDomainId());

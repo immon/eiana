@@ -126,6 +126,13 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
     @Component(id = "emailLabel", type = "FieldLabel", bindings = {"field=component:sendEmail"})
     public abstract IComponent getSendEmailLabelComponent();
 
+     @Component(id = "specialReview", type = "Checkbox", bindings = {
+        "displayName=message:specialReview-label", "value=prop:domain.specialReview"})
+    public abstract IComponent getSpecialReviewComponent();
+
+    @Component(id = "specialReviewLabel", type = "FieldLabel", bindings = {"field=component:specialReview"})
+    public abstract IComponent getSpecialReviewLabelComponent();
+
     @Asset(value = "WEB-INF/admin/DomainEditor.html")
     public abstract IAsset get$template();
 
@@ -268,6 +275,10 @@ public abstract class DomainEditor extends BaseComponent implements PageBeginRen
         }
 
         if (!equal(org.getSpecialInstructions(), domain.getSpecialInstructions())) {
+            visit.markDomainDirty(id,DomainChangeType.admin);
+        }
+
+        if((org.isSpecialReview() != domain.isSpecialReview())){
             visit.markDomainDirty(id,DomainChangeType.admin);
         }
 

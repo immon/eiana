@@ -158,6 +158,11 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         vo.setSubmitterEmail(email);
     }
 
+    public boolean isGlueChange(){
+        //need to be implemented in VO waiting for nask
+        return true;
+    }
+
 
     public boolean isClose() {
         return
@@ -174,6 +179,14 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public TransactionVO getVO() {
         return vo;
+    }
+
+    public boolean isSpecialReview() {
+        return vo.isSpecialReviewInvolved();
+    }
+
+    public void setSpecialReview(boolean specialReviewInvolved) {
+        vo.setSpecialReviewInvolved(specialReviewInvolved);        
     }
 
     public boolean canCancel() {

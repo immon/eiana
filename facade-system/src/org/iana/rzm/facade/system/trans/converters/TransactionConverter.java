@@ -1,19 +1,13 @@
 package org.iana.rzm.facade.system.trans.converters;
 
 import org.iana.objectdiff.*;
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
-import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
-import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.TransactionStateLogEntry;
-import org.iana.rzm.trans.confirmation.Identity;
-import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
+import org.iana.rzm.facade.user.converter.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.*;
+import org.iana.rzm.trans.confirmation.contact.*;
 
 import java.util.*;
 
@@ -50,7 +44,10 @@ public class TransactionConverter {
         ret.setTransactionID(trans.getTransactionID());
         ret.setTicketID(trans.getTicketID());
         ret.setName(trans.getName());
-        if (trans.getCurrentDomain() != null) ret.setDomainName(trans.getCurrentDomain().getName());
+        if (trans.getCurrentDomain() != null){
+            ret.setDomainName(trans.getCurrentDomain().getName());
+            ret.setSpecialReviewInvolved(trans.getCurrentDomain().isSpecialReview());
+        }
 
         ret.setDomainActions(toTransactionActionVO(trans.getDomainChange()));
 
@@ -77,7 +74,6 @@ public class TransactionConverter {
             ret.addImpactedPartyConfirmation(new ConfirmationVO(cid.getDomainName(), RoleConverter.systemRolesMap.get(cid.getType()), false, cid.getName(), cid.isNewContact(), cid.getToken()));
 
         Set<Domain> impactedDomains = trans.getImpactedDomains();
-        ret.setSpecialReviewInvolved(false);
         if (impactedDomains != null) {
             for (Domain domain : impactedDomains) {
                 ret.addImpactedDomain(domain.getName());
