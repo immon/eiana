@@ -25,7 +25,8 @@
         <constructor-arg index="0" value="http://208.77.191.164"/>
         <constructor-arg index="1" value="rzm"/>
         <constructor-arg index="2" value="rzmrzm"/>
-        <property name="customFieldsKeys">
+        <constructor-arg index="3" ref="cachedCodeValues"/>
+         <property name="customFieldsKeys">
             <map>
                 <entry>
                     <key>
@@ -54,7 +55,7 @@
         <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
 
-    <bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>
+    <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
 
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
@@ -68,10 +69,10 @@
 
 <!-- end of test bean section -->
 
-<!--
+
         <bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
-        <bean id="ticketingService"  class="org.iana.ticketing.MockTicketingService"/>
--->
+        <!--<bean id="ticketingService"  class="org.iana.ticketing.MockTicketingService"/>-->
+
 
     <!-- facade services configuration -->
 
