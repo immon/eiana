@@ -2,8 +2,8 @@ package org.iana.criteria;
 
 import org.iana.rzm.common.validators.CheckTool;
 
-import java.util.Set;
 import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -15,6 +15,7 @@ public class In extends FieldCriterion {
     public In(String fieldName, Set<? extends Object> values) {
         super(fieldName);
         CheckTool.checkCollectionNull(values, "null in criterion values");
+        CheckTool.checkCollectionEmpty(values, "in criterion values");
         this.values = values;
     }
 
