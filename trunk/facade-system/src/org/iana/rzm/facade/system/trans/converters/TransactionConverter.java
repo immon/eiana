@@ -1,13 +1,19 @@
 package org.iana.rzm.facade.system.trans.converters;
 
 import org.iana.objectdiff.*;
-import org.iana.rzm.domain.*;
+import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.*;
-import org.iana.rzm.facade.user.converter.*;
-import org.iana.rzm.trans.*;
-import org.iana.rzm.trans.confirmation.*;
-import org.iana.rzm.trans.confirmation.contact.*;
+import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
+import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
+import org.iana.rzm.facade.user.converter.RoleConverter;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.TransactionStateLogEntry;
+import org.iana.rzm.trans.confirmation.Identity;
+import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 
 import java.util.*;
 
@@ -104,10 +110,11 @@ public class TransactionConverter {
             if (fieldChanges.containsKey("specialInstructions") ||
                     fieldChanges.containsKey("type") ||
                     fieldChanges.containsKey("description") ||
-                    fieldChanges.containsKey("enableEmails")) {
+                    fieldChanges.containsKey("enableEmails") ||
+                    fieldChanges.containsKey("specialReview")) {
                 TransactionActionVO action = new TransactionActionVO();
                 action.setName(TransactionActionVO.MODIFY_OTHER_ATTRIBUTES);
-                for (String field : new String[]{"specialInstructions", "type", "description", "enableEmails"}) {
+                for (String field : new String[]{"specialInstructions", "type", "description", "enableEmails", "specialReview"}) {
                     SimpleChange simpleChange = (SimpleChange) fieldChanges.get(field);
                     if (simpleChange != null) action.addChange(toChangeVOSimple(field, simpleChange));
                 }

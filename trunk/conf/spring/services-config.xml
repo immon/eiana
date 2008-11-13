@@ -55,8 +55,6 @@
         <property name="path" value="conf/epp/epp.rootzone.config"/>
     </bean>
 
-    <!--<bean id="eppClient"  factory-bean="eppClientFactory" factory-method="getInstance"></bean>-->
-
     <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
         <constructor-arg ref="templateFactory"/>
         <constructor-arg ref="noHostDiffConfig"/>
