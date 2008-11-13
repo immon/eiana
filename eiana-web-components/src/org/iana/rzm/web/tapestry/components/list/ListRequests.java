@@ -160,7 +160,7 @@ public abstract class ListRequests extends ListRecords implements Sortable {
     }
 
     public boolean isRecordSpecialReview(){
-        return ((TransactionVOWrapper) getCurrentRecord()).isSpecialReview();
+        return ((TransactionVOWrapper) getCurrentRecord()).isSpecialReview() && isSpecialReviewImage();
     }
 
     public String getCurrentRecordStyle(){
@@ -172,7 +172,7 @@ public abstract class ListRequests extends ListRecords implements Sortable {
         PaginatedEntity[] tvr = getRecords().getPageResults();
         for (PaginatedEntity entity : tvr) {
             if(((TransactionVOWrapper) entity).isSpecialReview()){
-                return true;
+                return isSpecialReviewImage();
             }
         }
         return false;

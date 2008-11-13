@@ -28,7 +28,6 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
 
     @InitialValue("ognl:null")
     public abstract void setErrorMessage(String value);
-
     public abstract String getErrorMessage();
 
     public boolean isHasErrors(){
