@@ -117,20 +117,21 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
 
     public abstract boolean isRememberMe();
     public abstract String getPassword();
-
     public abstract void setPassword(String password);
 
+    protected abstract String getCookieName();
+
     public void pageBeginRender(PageEvent event) {
-        if (getUserName() == null) {
-            setUserName(getCookieSource().readCookieValue(COOKIE_NAME));
-        }
+        //if (getUserName() == null) {
+        //    setUserName(getCookieSource().readCookieValue(COOKIE_NAME));
+        //}
+        //if (getAdminLoginError() != null) {
+        //    setErrorMessage(getAdminLoginError());
+        //}
         setErrorMessage(getSessionTimeOutMessage());
-        if (getAdminLoginError() != null) {
-            setErrorMessage(getAdminLoginError());
-        }
         setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. ");
         setSessionTimeOutMessage(null);
-        setAdminLoginError(null);
+        //setAdminLoginError(null);
     }
 
 
@@ -203,12 +204,14 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
         ILink iLink = getLoginController().loginUser(engineService, cycle, getCallback());
 
         if (isRememberMe()) {
-            getCookieSource().writeCookieValue(COOKIE_NAME, getUserName(), COOKIE_MAX_AGE);
+            getCookieSource().writeCookieValue(getCookieName(), getUserName(), COOKIE_MAX_AGE);
         }
 
         cycle.forgetPage(getPageName());
         return iLink;
     }
+
+
 
     private IEngineService getService() {
 

@@ -132,4 +132,8 @@ public class MessageUtil implements Serializable {
     public String getPasswordResetOkMessage() {
         return "Your Password was reset Successfully";
     }
+
+    public String getOnlyUserErrorMessage() {
+        return "You tried to log in to the RZM User site using Admin Credential\n. Please use none admin Credential or use the RZM Admin website";
+    }
 }

@@ -50,18 +50,17 @@ public abstract class AdminPage extends ProtectedPage {
 
             if (!(ip.greaterThanOrEqual(ICANN_ADDRESS1_START) && ICANN_ADDRESS1_END.greaterThanOrEqual(ip) ||
                   (ip.greaterThanOrEqual(ICANN_ADDRESS2_START) && ICANN_ADDRESS2_END.greaterThanOrEqual(ip)))) {
-                Login login = (Login) getLogin();
+                Login login = (Login) logout();
                 login.setAdminLoginError(getMessageUtil().getAdminLoginFromIcannNetwork());
                 throw new PageRedirectException(login);
             }
         }
 
         if (!getVisitState().getUser().isAdmin()) {
-            Login login = (Login) getLogin();
+            Login login = (Login) logout();
             login.setAdminLoginError(getMessageUtil().getOnlyAdminErrorMessage());
             throw new PageRedirectException(login);
         }
-
 
     }
 
