@@ -47,13 +47,15 @@ public class HQLBuffer {
     }
 
     public HQLBuffer in(String fieldName, Set<? extends Object> values) {
-        buf.append(getName(fieldName)).append(" ").append("in ").append('(');
-        for (Object value : values) {
-            buf.append("?,");
-            params.add(value);
+        if (values != null && !values.isEmpty()) {
+            buf.append(getName(fieldName)).append(" ").append("in ").append('(');
+            for (Object value : values) {
+                buf.append("?,");
+                params.add(value);
+            }
+            if (values.size() > 0) buf.deleteCharAt(buf.length() - 1);
+            buf.append(')');
         }
-        if (values.size() > 0) buf.deleteCharAt(buf.length() - 1);
-        buf.append(')');
         return sp();
     }
 
