@@ -27,6 +27,7 @@ public class RequestTrackerService implements TicketingService {
     private static final String CUSTOM_FIELD_TLD = "TLD";
     private static final String CUSTOM_FIELD_REQUEST_TYPE = "Request Type";
     private static final String CUSTOM_FIELD_IMPACTED_DOMAINS = "Impacted Domains";
+    private static final String IMPACTED_DOMAINS_FIELD = "TLD";
 
     private static final String GLUE_CHANGE = "Glue change. \n";
 
@@ -88,6 +89,11 @@ public class RequestTrackerService implements TicketingService {
             if (ticket.isNSGlueTicket()) {
                 Comment glueComment = store.tickets().commentFactory().create(GLUE_CHANGE);
                 store.tickets().addComment(rtTicket, glueComment);
+/*
+TODO: remove comment when custom field ready in RT
+                List<String> impactedDomains = ticket.getImpactedDomainsNames();
+                rtTicket.customFields().setMultiVal(customFields.get(IMPACTED_DOMAINS_FIELD), impactedDomains);
+*/
             }
 
             return rtTicket.getId();
@@ -111,13 +117,6 @@ public class RequestTrackerService implements TicketingService {
             if (ianaState != null) {
                 //rtTicket.customFields().setSingleVal(CUSTOM_FIELD_IANA_STATE, ianaState);
                 rtTicket.customFields().setSingleVal(customFields.get("state"), ianaState);
-
-/* TODO remove comment when custom field ready in RT
-                List<String> impactedDomains = ticket.getImpactedDomainsNames();
-                if (!impactedDomains.isEmpty()) {
-                    rtTicket.customFields().setMultiVal(customFields.get("impacted"), impactedDomains);
-                }
-*/
 
                 store.tickets().update(rtTicket);
             }
