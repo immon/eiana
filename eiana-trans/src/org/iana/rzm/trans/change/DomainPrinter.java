@@ -1,9 +1,6 @@
 package org.iana.rzm.trans.change;
 
-import org.iana.rzm.domain.Contact;
-import org.iana.rzm.domain.Domain;
-import org.iana.rzm.domain.Host;
-import org.iana.rzm.domain.IPAddress;
+import org.iana.rzm.domain.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -22,9 +19,7 @@ public class DomainPrinter {
         StringBuffer sb = new StringBuffer();
         sb.append("TLD current state:\n");
 
-        Contact adminContact = domain.getAdminContact();
-        if (adminContact != null)
-            sb.append("Admin Contact: ").append(adminContact.getName()).append("\n");
+        appendContact(sb, "Admin Contact: ", domain.getAdminContact());
 
         Contact technicalContact = domain.getTechContact();
         if (technicalContact != null)
@@ -39,6 +34,25 @@ public class DomainPrinter {
         sb.append(printNameServers(hosts));
 
         return sb.toString();
+    }
+
+    private static void appendContact(StringBuffer sb, String label, Contact contact) {
+        if (contact != null) {
+            sb.append(label).append("\n");
+            sb.append("Name: ").append(contact.getName()).append("\n");
+            sb.append("Organization: ").append(contact.getOrganization()).append("\n");
+            sb.append("Job title: ").append(contact.getJobTitle()).append("\n");
+            Address addr = contact.getAddress();
+            if (addr != null) {
+                sb.append("Address: ").append(addr.getTextAddress()).append(addr.getCountry()).append("\n");
+            }
+            sb.append("Phone number: ").append(contact.getPhoneNumber()).append("\n");
+            sb.append("Alt phone number: ").append(contact.getAltPhoneNumber()).append("\n");
+            sb.append("Fax number: ").append(contact.getFaxNumber()).append("\n");
+            sb.append("Alt fax number: ").append(contact.getAltFaxNumber()).append("\n");
+            sb.append("Public email: ").append(contact.getPublicEmail()).append("\n");
+            sb.append("Private email: ").append(contact.getPrivateEmail()).append("\n");
+        }
     }
 
     public static String printDomainNames(Set<Domain> domians) {
