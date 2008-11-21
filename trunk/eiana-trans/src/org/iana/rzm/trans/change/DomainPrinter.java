@@ -2,9 +2,7 @@ package org.iana.rzm.trans.change;
 
 import org.iana.rzm.domain.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -20,38 +18,41 @@ public class DomainPrinter {
         sb.append("TLD current state:\n");
 
         appendContact(sb, "Admin Contact: ", domain.getAdminContact());
-
-        Contact technicalContact = domain.getTechContact();
-        if (technicalContact != null)
-            sb.append("Technical Contact: ").append(technicalContact.getName()).append("\n");
-
-        Contact suppContact = domain.getAdminContact();
-        if (suppContact != null)
-            sb.append("Supporting Contact: ").append(suppContact.getName()).append("\n");
+        appendContact(sb, "Technical Contact: ", domain.getTechContact());
+        appendContact(sb, "Supporting Contact: ", domain.getSupportingOrg());
 
         List<Host> hosts = domain.getNameServers();
-
         sb.append(printNameServers(hosts));
 
         return sb.toString();
     }
 
     private static void appendContact(StringBuffer sb, String label, Contact contact) {
+
         if (contact != null) {
-            sb.append(label).append("\n");
-            sb.append("Name: ").append(contact.getName()).append("\n");
-            sb.append("Organization: ").append(contact.getOrganization()).append("\n");
-            sb.append("Job title: ").append(contact.getJobTitle()).append("\n");
+            append(sb, label, true);
+            append(sb, "Name: ", false);
+            append(sb, contact.getName(), true);
+            append(sb,"Organization: ", false);
+            append(sb, contact.getOrganization(), true);
+            append(sb, "Job title: ", false);
+            append(sb, contact.getJobTitle(), true);
             Address addr = contact.getAddress();
             if (addr != null) {
                 sb.append("Address: ").append(addr.getTextAddress()).append(addr.getCountry()).append("\n");
             }
-            sb.append("Phone number: ").append(contact.getPhoneNumber()).append("\n");
-            sb.append("Alt phone number: ").append(contact.getAltPhoneNumber()).append("\n");
-            sb.append("Fax number: ").append(contact.getFaxNumber()).append("\n");
-            sb.append("Alt fax number: ").append(contact.getAltFaxNumber()).append("\n");
-            sb.append("Public email: ").append(contact.getPublicEmail()).append("\n");
-            sb.append("Private email: ").append(contact.getPrivateEmail()).append("\n");
+            append(sb,"Phone number: ", false);
+            append(sb, contact.getPhoneNumber(), true);
+            append(sb, "Alt phone number: ", false);
+            append(sb, contact.getAltPhoneNumber(), true);
+            append(sb, "Fax number: ", false);
+            append(sb, contact.getFaxNumber(), true);
+            append(sb, "Alt fax number: ", false);
+            append(sb, contact.getAltFaxNumber(), true);
+            append(sb, "Public email: ", false);
+            append(sb, contact.getPublicEmail(), true);
+            append(sb, "Private email: ", false);
+            append(sb, contact.getPrivateEmail(), true);
         }
     }
 
@@ -106,5 +107,23 @@ public class DomainPrinter {
         }
 
         return sb.toString();
+    }
+
+    private static void append(StringBuffer buffer, String str, boolean endofLine ){
+        if(buffer == null){
+            return;
+        }
+
+        if(str != null){
+            buffer.append(str);
+        }else{
+            buffer.append(" ");
+        }
+
+        if(endofLine){
+            buffer.append("\n");
+        }
+
+        return;
     }
 }

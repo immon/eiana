@@ -89,11 +89,6 @@ public class RequestTrackerService implements TicketingService {
             if (ticket.isNSGlueTicket()) {
                 Comment glueComment = store.tickets().commentFactory().create(GLUE_CHANGE);
                 store.tickets().addComment(rtTicket, glueComment);
-/*
-TODO: remove comment when custom field ready in RT
-                List<String> impactedDomains = ticket.getImpactedDomainsNames();
-                rtTicket.customFields().setMultiVal(customFields.get(IMPACTED_DOMAINS_FIELD), impactedDomains);
-*/
             }
 
             return rtTicket.getId();
