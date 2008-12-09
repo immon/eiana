@@ -94,4 +94,6 @@ public interface AdminServices extends RzmServices, WhoisDataProducer, ZoneProdu
     public void deletePollMessage(long id) throws NoObjectFoundException;
 
     public PollMessageVOWrapper getPollMessage(long id) throws NoObjectFoundException;
+
+    boolean isDomainExist(String domainName);
 }

@@ -39,7 +39,6 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
     @Persist("client")
     public abstract List<NameServerValue> getNameServerListValue();
-
     public abstract void setNameServerListValue(List<NameServerValue> list);
 
     @Persist("client")
@@ -54,6 +53,10 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
+    @Persist("client")
+    public abstract  List<NameServerVOWrapper> getOriginalNameServers();
+    public abstract void setOriginalNameServers( List<NameServerVOWrapper> list);
+
     public List<NameServerValue> getCurrentNameServers() {
         return WebUtil.convert(getVisitState().getCurrentDomain(getDomainId()).getNameServers());
     }
@@ -65,7 +68,7 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
     protected Object[] getExternalParameters() {
         return new Object[]{
-            getDomainId(), getNameServerListValue(), getCallback(), getModifiedDomain()
+            getDomainId(), getNameServerListValue(), getCallback(), getModifiedDomain(), getOriginalNameServers()
         };
     }
 
@@ -87,6 +90,10 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
+        }
+
+        if(parameters.length > 4 && parameters[4] != null){
+            setOriginalNameServers((List<NameServerVOWrapper>) parameters[4]);
         }
     }
 
@@ -126,7 +133,11 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
 
     public List<NameServerVOWrapper> getOriginalNameServerList(long domainId) {
         try {
-            return getAdminServices().getDomain(domainId).getNameServers();
+            if(getOriginalNameServers() == null){
+                return getAdminServices().getDomain(domainId).getNameServers();
+            }
+
+            return getOriginalNameServers();
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         }

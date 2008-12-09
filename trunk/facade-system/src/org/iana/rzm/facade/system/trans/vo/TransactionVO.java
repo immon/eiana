@@ -1,15 +1,12 @@
 package org.iana.rzm.facade.system.trans.vo;
 
-import org.iana.rzm.common.TrackedObject;
-import org.iana.rzm.facade.common.TrackDataVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
-import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.rzm.common.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
+import org.iana.rzm.facade.user.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -36,6 +33,7 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
     private String stateMessage;
     private String usdocNotes;
     private String eppStatus;
+    private String technicalErrors;
 
     public Long getTransactionID() {
         return transactionID;
@@ -303,5 +301,13 @@ public class TransactionVO extends TrackDataVO implements TrackedObject {
 
     public void setEppStatus(String eppStatus) {
         this.eppStatus = eppStatus;
+    }
+
+    public void setTechnicalErrors(String technicalErrors) {
+        this.technicalErrors = technicalErrors;
+    }
+
+    public String getTechnicalErrors(){
+        return technicalErrors;
     }
 }
