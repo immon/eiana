@@ -8,7 +8,7 @@ import org.apache.tapestry.valid.*;
 import org.iana.rzm.web.common.model.*;
 
 public abstract class NewDomainSelection extends AdminPage {
-    public static final String PAGE_NAME = "admin/NewDomainSelection";
+    public static final String PAGE_NAME = "NewDomainSelection";
 
     @Component(id = "domainSelection", type = "Form", bindings = {
         "clientValidationEnabled=literal:false",
@@ -76,10 +76,14 @@ public abstract class NewDomainSelection extends AdminPage {
             return;
         }
 
-        String name1 = getAdminServices().getCountryName(name);
-        if(!name1.equals("Top Level Domain")){
+        boolean exist =  getAdminServices().isDomainExist(name);
+        if(exist){
             validationDelegate.record("Domain name already in use", ValidationConstraint.CONSISTENCY);
             return;
+        }
+
+        if(getCountry() == null){
+            setCountry(getAdminServices().getCountryName(name));
         }
 
         SystemDomainVOWrapper domain = new SystemDomainVOWrapper();
@@ -89,6 +93,7 @@ public abstract class NewDomainSelection extends AdminPage {
         page.setCountryCode(getCountryCode());
         page.setDomain(domain);
         page.setOriginalDomain(new SystemDomainVOWrapper());
+        page.setDomainId(domain.getId());
         getVisitState().storeDomain(domain);
         getRequestCycle().activate(page);
     }

@@ -27,6 +27,11 @@ public abstract class CreateDomain extends AdminPage implements DomainAttributeE
                    })
     public abstract IComponent getDomainEditorComoponent();
 
+     @Component(id = "domainHeader",
+               type = "rzmLib:DomainHeader",
+               bindings = {"countryName=prop:countryName", "domainName=prop:domain.name"})
+    public abstract IComponent getDomainHeaderComponentComponent();
+
     @Component(id = "domainName", type = "Insert", bindings = {"value=prop:domain.name"})
     public abstract IComponent getDomainNameComponent();
 
@@ -62,8 +67,13 @@ public abstract class CreateDomain extends AdminPage implements DomainAttributeE
     public abstract void setDomain(SystemDomainVOWrapper domain);
     public abstract SystemDomainVOWrapper getDomain();
 
-    public long getDomainId(){
-        return getDomain().getId();
+    @Persist("client")
+    public abstract long getDomainId();
+    public abstract void setDomainId(long id) ;
+
+
+    protected Object[] getExternalParameters() {
+        return new Object[] {getDomainId(),getDomain(), getOriginalDomain(), getCountryName()};
     }
 
     public void newContact(String type) {
@@ -88,6 +98,7 @@ public abstract class CreateDomain extends AdminPage implements DomainAttributeE
 
     public void newNameServerList(){
         EditNameServerList page = getEditNameServerList();
+        page.setOriginalNameServers(new ArrayList<NameServerVOWrapper>());
         page.setDomainId(getDomainId());
         page.setCallback(new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId()));
         getRequestCycle().activate(page);
@@ -106,8 +117,14 @@ public abstract class CreateDomain extends AdminPage implements DomainAttributeE
 
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
-
+        setDomainId((Long)parameters[0]);
+        DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
+        setDomain((SystemDomainVOWrapper) (domain == null ? (SystemDomainVOWrapper) parameters[1] : domain));
+        setOriginalDomain((SystemDomainVOWrapper) parameters[2]);
+        setCountryName((String) parameters[3]);
     }
+
+
 
     public DomainAttributeEditor getDomainEditor() {
         return this;

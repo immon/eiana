@@ -1,19 +1,13 @@
 package org.iana.rzm.facade.system.trans.converters;
 
 import org.iana.objectdiff.*;
-import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.*;
 import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.ChangeVO;
-import org.iana.rzm.facade.system.trans.vo.changes.ObjectValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.StringValueVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
-import org.iana.rzm.facade.user.converter.RoleConverter;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.TransactionStateLogEntry;
-import org.iana.rzm.trans.confirmation.Identity;
-import org.iana.rzm.trans.confirmation.contact.ContactConfirmations;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
+import org.iana.rzm.facade.user.converter.*;
+import org.iana.rzm.trans.*;
+import org.iana.rzm.trans.confirmation.*;
+import org.iana.rzm.trans.confirmation.contact.*;
 
 import java.util.*;
 
@@ -99,6 +93,7 @@ public class TransactionConverter {
         ret.setComment(trans.getComment());
         ret.setStateMessage(trans.getStateMessage());
         ret.setUsdocNotes(trans.getUsdocNotes());
+        ret.setTechnicalErrors(trans.getTechnicalErrors());
 
         return ret;
     }

@@ -159,8 +159,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     }
 
     public boolean isGlueChange(){
-        //need to be implemented in VO waiting for nask
-        return true;
+        return vo.isGlueChange();
     }
 
 
@@ -219,5 +218,9 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public String getVerisignStatus() {
         return vo.getEppStatus();
+    }
+
+    public String getTechnicalErrors(){
+        return vo.getTechnicalErrors();
     }
 }
