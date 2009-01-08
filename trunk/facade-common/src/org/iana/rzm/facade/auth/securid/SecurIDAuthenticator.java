@@ -1,11 +1,9 @@
-package org.iana.rzm.facade.auth;
+package org.iana.rzm.facade.auth.securid;
 
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.securid.SecurIDService;
-import org.iana.securid.InvalidAuthenticationDataException;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 
 import java.text.MessageFormat;
 
@@ -43,11 +41,11 @@ public class SecurIDAuthenticator implements AuthenticationService {
             throw new AuthenticationFailedException(
                     MessageFormat.format("User {0} has not been found.", data.getUserName()));
         }
-        try {
+        if (securData.getSessionId() != null) {
+            securID.authenticateWithNextCode(securData.getSessionId(), securData.getPassword());
+        } else {
             securID.authenticate(securData.getUserName(), securData.getPassword());
-            return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
-        } catch (InvalidAuthenticationDataException e) {
-            throw new AuthenticationFailedException(e);
         }
+        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
     }
 }

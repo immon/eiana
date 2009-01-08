@@ -31,7 +31,7 @@ public class AuthenticationToken {
         credentials.add(credential);
     }
 
-    boolean hasCredential(Authentication credential) {
+    public boolean hasCredential(Authentication credential) {
         return credentials.contains(credential);
     }
 }

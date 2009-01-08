@@ -1,5 +1,7 @@
 package org.iana.rzm.facade.auth;
 
+import org.iana.rzm.facade.auth.securid.SecurIDAuth;
+
 /**
  * <p><code>AuthenticationVisitor</code> represents an operation to be performed on the elements of the <code>AuthenticationData</code>
  * hierarchy. It's a straightforward implementation of Visitor GoF design pattern altough
