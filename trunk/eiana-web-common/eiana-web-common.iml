@@ -51,6 +51,7 @@
     </orderEntry>
     <orderEntry type="library" exported="" name="hibernate" level="project" />
     <orderEntry type="library" exported="" name="rzm-ui-components" level="project" />
+    <orderEntry type="library" exported="" name="secureId" level="project" />
     <orderEntryProperties />
   </component>
 </module>

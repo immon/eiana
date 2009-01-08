@@ -1,11 +1,11 @@
 package org.iana.rzm.web.common.pages;
 
-import org.apache.log4j.*;
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.engine.*;
 import org.apache.tapestry.services.*;
 import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.auth.securid.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.callback.*;
 import org.iana.rzm.web.common.model.*;
@@ -14,22 +14,22 @@ import org.iana.web.tapestry.session.*;
 
 public abstract class BaseSecureId extends RzmPage implements IExternalPage {
 
-    private static final Logger logger = Logger.getLogger(BaseSecureId.class.getName());
+
     public static final String PAGE_NAME = "SecureId";
 
     @Component(id = "code", type = "TextField", bindings = {
-            "displayName=literal:Code:",
-            "value=prop:code",
-            "validators=validators:required"
-            })
+        "displayName=literal:Code:",
+        "value=prop:code",
+        "validators=validators:required"
+        })
     public abstract IComponent getCodeComponent();
 
     @Component(id = "form", type = "Form", bindings = {
-            "success=listener:checkToken",
-            "stateful=literal:false",
-            "clientValidationEnabled=literal:true",
-            "cancel=listener:logout"
-            })
+        "success=listener:checkToken",
+        "stateful=literal:false",
+        "clientValidationEnabled=literal:true",
+        "cancel=listener:logout"
+        })
     public abstract IComponent getFormComponent();
 
     @Component(id = "cancel", type = "Submit", bindings = {"listener=listener:logout"})
@@ -44,16 +44,17 @@ public abstract class BaseSecureId extends RzmPage implements IExternalPage {
     @InjectObject("service:rzm.LoginController")
     public abstract LoginController getLoginController();
 
-    @InjectPage("BaseLogin")
+    @InjectObject("service:rzm.RzmAuthenticationService")
+    public abstract RzmAuthenticationService getAuthenticationService();
+
+    @InjectPage(BaseLogin.PAGE_NAME)
     public abstract BaseLogin getLoginPage();
 
-    @Persist("client")
-    public abstract RzmCallback getCallback();
+    @InjectPage(BaseSecureIdNextCode.PAGE_NAME)
+    public abstract BaseSecureIdNextCode getSecureIdNextCodePage();
 
-    @Persist("client")
-    public abstract void setUserName(String userName);
-
-    public abstract String getUserName();
+    @InjectPage(BaseSecureIdNewPin.PAGE_NAME)
+    public abstract BaseSecureIdNewPin getSecureIdNewPinPage();
 
     @InjectObject("engine-service:home")
     public abstract IEngineService getHomeService();
@@ -64,44 +65,64 @@ public abstract class BaseSecureId extends RzmPage implements IExternalPage {
     @InjectObject("engine-service:external")
     public abstract IEngineService getExternalService();
 
-    @InjectObject("service:rzm.RzmAuthenticationService")
-    public abstract RzmAuthenticationService getSecureIdService();
-
-     @InjectState("visit")
+    @InjectState("visit")
     public abstract Visit getVisitState();
+
+    @Persist("client")
+    public abstract RzmCallback getCallback();
+
+    public abstract void setCallback(RzmCallback callback);
+
+    @Persist("client")
+    public abstract void setUserName(String userName);
+
+    public abstract String getUserName();
+
+    @Persist("client")
+    public abstract AuthenticationToken getAuthenticationToken();
+
+    public abstract void setAuthenticationToken(AuthenticationToken authenticationToken);
+
 
     public abstract void setCode(String code);
 
     public abstract String getCode();
 
+    protected abstract String getCookieName();
+
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
-        String userName = (String) parameters[0];
+        String userName = parameters[0].toString();
+        AuthenticationToken authenticationToken = (AuthenticationToken) parameters[1];
         setUserName(userName);
+        setAuthenticationToken(authenticationToken);
     }
 
     public ILink checkToken() {
 
-        IRequestCycle cycle = getRequestCycle();
-        Visit visit = getVisitState();
-        IEngineService engineService = getService();
-
         try {
-            WebUser webUser = getSecureIdService().secureId(getUserName(), getCode());
-            ILink iLink = getLoginController().loginUser(engineService, cycle, getCallback());
-            visit.setUser(webUser);
-            getCookieSource().writeCookieValue(BaseLogin.COOKIE_NAME, getUserName(), BaseLogin.COOKIE_MAX_AGE);
-            cycle.forgetPage(getPageName());
+            WebUser webUser = getAuthenticationService().secureId(getAuthenticationToken(), getUserName(), getCode());
+            ILink iLink = getLoginController().loginUser(getService(), getRequestCycle(), getCallback());
+            getCookieSource().writeCookieValue(getCookieName(), getUserName(), BaseLogin.COOKIE_MAX_AGE);
+            getVisitState().setUser(webUser);
+            getRequestCycle().forgetPage(getPageName());
             return iLink;
-        } catch (AuthenticationFailedException e) {
-            log(logger, "BaseSecureId AuthenticationFailed Exception", e);
-            setErrorMessage(e.getMessage());
-            return null;
+        } catch (SecurIDNextCodeRequiredException e) {
+            BaseSecureIdNextCode page = getSecureIdNextCodePage();
+            page.setSessionId(e.getSessionId());
+            page.setCallback(getCallback());
+            throw new PageRedirectException(page);
+        } catch (SecurIDNewPinRequiredException e) {
+            BaseSecureIdNewPin page = getSecureIdNewPinPage();
+            page.setSessionId(e.getSessionId());
+            throw new PageRedirectException(page);
         } catch (AuthenticationRequiredException e) {
-            log(logger, "BaseSecureId AuthenticationRequired Exception Exception", e);
             BaseLogin login = getLoginPage();
-            login.setErrorMessage(e.getMessage());
+            login.setSecureIdErrorMessage(e.getRequired().name() + " Authentication required");
             throw new PageRedirectException(login);
+        } catch (AuthenticationFailedException e) {
+            setErrorMessage("SecureID Authentication Failed Please try again");
         }
+        return null;
     }
 
     public IPage logout() {

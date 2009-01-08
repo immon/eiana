@@ -1,14 +1,14 @@
 package org.iana.rzm.facade.auth.securid;
 
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.securid.*;
+import com.rsa.authagent.authapi.*;
+import org.iana.rzm.common.validators.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.secureid.AccessDeniedException;
+import org.iana.secureid.*;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.UUID;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -19,7 +19,7 @@ public class StaticSecurIDService implements SecurIDService {
 
     private SecurIDAuthenticationFactory securIDFactory;
 
-    private static Map<String, SecurIdAuthentication> securIDMemo = new HashMap<String, SecurIdAuthentication>();
+    private static Map<String, SecureIdAuthentication> securIDMemo = new HashMap<String, SecureIdAuthentication>();
 
     public StaticSecurIDService(SecurIDAuthenticationFactory securIDFactory, String uri) throws URISyntaxException {
         CheckTool.checkNull(uri, "secur id init uri");
@@ -28,8 +28,9 @@ public class StaticSecurIDService implements SecurIDService {
         this.securIDFactory = securIDFactory;
     }
 
-    public void authenticate(String userName, String securId) throws SecurIDNextCodeRequiredException, SecurIDNewPinRequiredException, SecurIDException {
-        SecurIdAuthentication auth = securIDFactory.createSecurIdAuthentication();
+    public void authenticate(String userName, String securId)
+        throws AuthenticationFailedException, SecurIDNewPinRequiredException, SecurIDException {
+        SecureIdAuthentication auth = securIDFactory.createSecurIdAuthentication();
         try {
             auth.init(securIDInitFile);
         } catch (AuthAgentException e) {
@@ -43,55 +44,58 @@ public class StaticSecurIDService implements SecurIDService {
             throw new SecurIDException(e);
         } catch (NextCodeRequiredException e) {
             throw new SecurIDNextCodeRequiredException(memo(auth));
+        } catch (NewPinRequiredException e) {
+            throw new SecurIDNewPinRequiredException(memo(auth));
+        } catch (AccessDeniedException e) {
+            close(auth);
+            throw new AuthenticationFailedException(e.getMessage());
         } catch (SecureIdException e) {
             close(auth);
             throw new SecurIDException(e);
-        } catch (NewPinRequiredException e) {
-            throw new SecurIDNewPinRequiredException(memo(auth));
         }
     }
 
     public void authenticateWithNextCode(String sessionId, String securId) throws SecurIDException {
-        SecurIdAuthentication auth = get(sessionId);
+        SecureIdAuthentication auth = get(sessionId);
         try {
             auth.nextToken(securId);
             closeAndRemove(sessionId);
-        } catch (SecureIdException e) {
-            // to close or not to close?
+        }catch (NextCodeBadException e){
+            closeAndRemove(sessionId);
             throw new SecurIDException(e);
-        } catch (NextCodeBadException e) {
-            // to close or not to close?
+        } catch (SecureIdException e) {
+            closeAndRemove(sessionId);
             throw new SecurIDException(e);
         }
+
     }
 
     public void setPin(String sessionId, String pin) throws SecurIDInvalidPinException, SecurIDException {
-        SecurIdAuthentication auth = get(sessionId);
+        SecureIdAuthentication auth = get(sessionId);
         try {
             auth.newPin(pin);
             closeAndRemove(sessionId);
-        } catch (SecureIdException e) {
-            // to close or not to close?
-            throw new SecurIDException(e);
         } catch (PinRejectedException e) {
-            // to close or not to close?
+            throw new SecurIDInvalidPinException(e.getMessage(), sessionId);
+        } catch (SecureIdException e) {
+            closeAndRemove(sessionId);
             throw new SecurIDException(e);
         }
     }
 
-    private String memo(SecurIdAuthentication auth) {
+    private String memo(SecureIdAuthentication auth) {
         String sessionId = UUID.randomUUID().toString();
         securIDMemo.put(sessionId, auth);
         return sessionId;
     }
 
     private void closeAndRemove(String sessionId) throws SecurIDException {
-        SecurIdAuthentication auth = get(sessionId);
+        SecureIdAuthentication auth = get(sessionId);
         close(auth);
         securIDMemo.remove(sessionId);
     }
 
-    private void close(SecurIdAuthentication auth) throws SecurIDException {
+    private void close(SecureIdAuthentication auth) throws SecurIDException {
         try {
             auth.close();
         } catch (AuthAgentException e) {
@@ -99,9 +103,11 @@ public class StaticSecurIDService implements SecurIDService {
         }
     }
 
-    private SecurIdAuthentication get(String sessionId) throws SecurIDException {
-        SecurIdAuthentication ret = securIDMemo.get(sessionId);
-        if (ret == null) throw new SecurIDException("session not found " + sessionId);
+    private SecureIdAuthentication get(String sessionId) throws SecurIDException {
+        SecureIdAuthentication ret = securIDMemo.get(sessionId);
+        if (ret == null) {
+            throw new SecurIDException("session not found " + sessionId);
+        }
         return ret;
     }
 

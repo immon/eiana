@@ -7,6 +7,7 @@ import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
 import org.apache.tapestry.services.*;
 import org.apache.tapestry.valid.*;
+import org.iana.commons.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.callback.*;
@@ -14,11 +15,6 @@ import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.services.*;
 
 public abstract class BaseLogin extends RzmPage implements PageBeginRenderListener {
-    /*
-     * The name of a cookie to store on the user's machine that will identify them next time they
-     * log in.
-     */
-    public static final String COOKIE_NAME = "org.iana.rzm.BaseLogin.username";
 
     public static final int COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
     public static final String PAGE_NAME = "Login";
@@ -100,7 +96,6 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
 
     @Persist()
     public abstract RzmCallback getCallback();
-
     public abstract void setCallback(RzmCallback callback);
 
     @Persist("client")
@@ -108,9 +103,12 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
     public abstract String getSessionTimeOutMessage();
 
     @Persist("client")
-    public abstract void setAdminLoginError(String message);
-    public abstract String getAdminLoginError();
+    public abstract void setSecureIdErrorMessage(String message);
+    public abstract String getSecureIdErrorMessage();
 
+    //@Persist("client")
+    //public abstract void setAdminLoginError(String message);
+    //public abstract String getAdminLoginError();
 
     public abstract void setUserName(String value);
     public abstract String getUserName();
@@ -121,19 +119,33 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
 
     protected abstract String getCookieName();
 
+
+
     public void pageBeginRender(PageEvent event) {
-        //if (getUserName() == null) {
-        //    setUserName(getCookieSource().readCookieValue(COOKIE_NAME));
-        //}
-        //if (getAdminLoginError() != null) {
-        //    setErrorMessage(getAdminLoginError());
-        //}
-        setErrorMessage(getSessionTimeOutMessage());
+        String error = buildErrorMessage(getSessionTimeOutMessage(), getSecureIdErrorMessage());
+        setErrorMessage(error);
         setWarningMessage("Please note: This is a test environment to test the new automation system at IANA. ");
         setSessionTimeOutMessage(null);
-        //setAdminLoginError(null);
+        setSecureIdErrorMessage(null);
     }
 
+    private String buildErrorMessage(String sessionTimeOutMessage, String secureIdErrorMessage) {
+        StringBuilder builder = new StringBuilder();
+
+        if(StringUtil.isNotBlank(secureIdErrorMessage)){
+            builder.append(secureIdErrorMessage);
+        }
+
+        if(StringUtil.isNotBlank(sessionTimeOutMessage)){
+            builder.append(sessionTimeOutMessage).append("\n");
+        }
+
+        if(StringUtil.isNotBlank(getErrorMessage())){
+            builder.append(getErrorMessage()).append("\n");
+        }
+
+        return StringUtil.isBlank(builder.toString()) ? null : builder.toString();
+    }
 
     /**
      * Attempts to login.
@@ -164,7 +176,7 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
         }
         catch (AuthenticationRequiredException e) {
             if (e.getRequired() == Authentication.SECURID) {
-                return redirectToSecureIdPage();
+                return redirectToSecureIdPage(e.getToken());
             }
             IValidationDelegate validationDelegate = getValidationDelegate();
             validationDelegate.record(e.getMessage(), null);
@@ -179,10 +191,10 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
 
     }
 
-    protected ILink redirectToSecureIdPage() {
+    protected ILink redirectToSecureIdPage(AuthenticationToken token) {
         IPage secureIdPage = getSecureIdPage();
         ExternalServiceParameter parameter =
-            new ExternalServiceParameter(secureIdPage.getPageName(), new Object[]{getUserName()});
+            new ExternalServiceParameter(secureIdPage.getPageName(), new Object[]{getUserName(), token});
         return getExternalPageService().getLink(true, parameter);
     }
 

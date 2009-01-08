@@ -15,8 +15,8 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-admin" />
       <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
+      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-admin" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/../eiana-web-user/eiana-web-user-copy.xml">
       <additionalClassPath />
@@ -597,9 +597,7 @@
         <root url="jar://$PROJECT_DIR$/../lib/rt/rt-api.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://$PROJECT_DIR$/../../RT/main/src" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="epp">
       <CLASSES>
@@ -649,6 +647,14 @@
       <SOURCES>
         <root url="file://$PROJECT_DIR$/../eiana-web-components/src" />
       </SOURCES>
+    </library>
+    <library name="secureId">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/../lib/secureId/authapi.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/secureId/SecureID.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
   </component>
   <component name="uidesigner-configuration">

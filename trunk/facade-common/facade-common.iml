@@ -48,6 +48,7 @@
     <orderEntry type="module" module-name="common-test" />
     <orderEntry type="module" module-name="eiana-trans" />
     <orderEntry type="module" module-name="facade-remote" />
+    <orderEntry type="library" name="secureId" level="project" />
     <orderEntryProperties />
   </component>
 </module>
