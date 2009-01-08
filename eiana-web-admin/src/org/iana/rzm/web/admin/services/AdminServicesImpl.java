@@ -52,6 +52,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private DomainTypes domainTypesService;
     private AdminDNSService dnsServices;
     private PollMessagesService pollMessagesService;
+    
 
     private PasswordChangeService changePasswordService;
 
@@ -66,6 +67,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         domainTypesService = initializer.getBean("remoteDomainTypes", DomainTypes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
         dnsServices = initializer.getBean("remoteDnsService", AdminDNSService.class);
+
     }
 
     public int getTransactionCount(Criterion criterion) {

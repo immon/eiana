@@ -1,14 +1,11 @@
 package org.iana.rzm.facade.common.auth;
 
-import org.iana.rzm.conf.SpringApplicationContext;
+import org.iana.rzm.conf.*;
 import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.user.AdminRole;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.user.UserManager;
-import org.iana.test.spring.RollbackableSpringContextTest;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
+import org.iana.rzm.facade.auth.securid.*;
+import org.iana.rzm.user.*;
+import org.iana.test.spring.*;
+import org.testng.annotations.*;
 
 import java.io.*;
 

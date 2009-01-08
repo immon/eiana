@@ -6,8 +6,8 @@
     <span jwcid="$content$">
         <body jwcid="border@Border">
             <div id="main">
-                <h1>Your SecurID is required</h1>
-                <p>The account is secured with an additional layer of security using an RSA SecurID authenticator. We require you to enter your code from this device now to proceed.</p>
+                <h1>New Pin Required</h1>
+                <p>RSA SecurID authenticator required you to create new PIN</p>
                 <div class="rzm-securid-login">
                     <img alt="SecureID" src="images/securid-login.png"/>
                 </div>
@@ -15,15 +15,19 @@
                     <div class="loginbox">
                         <table>
                             <tr>
-                                <td class="keylabel"><span jwcid="@FieldLabel" field="component:code">Code:</span></td>
-                                <td><input jwcid="code" type="text" name="code" onKeyPress="return submitOnEnter(event);"/>
+                                <td class="keylabel"><span jwcid="@FieldLabel" field="component:pin">Pin:</span></td>
+                                <td><input jwcid="pin" type="text" name="pin"/>
+                            </tr>
+                            <tr>
+                                <td class="keylabel"><span jwcid="@FieldLabel" field="component:confirmPin">Confirm Pin:</span></td>
+                                <td><input jwcid="confirmPin" type="text" name="confirmPin"/>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>
-                                    <input name="cancel" type="submit" jwcid="cancel" class="button" value="&lt; Back" onClick="document.form.events.cancel()"/>
+                                    <input name="cancel" type="submit" jwcid="cancel" class="button" value="&lt; Cancel" onClick="document.form.events.cancel()"/>
                                     &nbsp;
-                                    <input name="login" type=submit class="button" value="Login &gt;"/>
+                                    <input name="login" type=submit class="button" value="Submit &gt;"/>
                                 </td>
                         </table>
                     </div>

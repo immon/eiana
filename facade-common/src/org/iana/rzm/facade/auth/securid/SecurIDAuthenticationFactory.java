@@ -1,10 +1,12 @@
 package org.iana.rzm.facade.auth.securid;
 
+import org.iana.secureid.*;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
 public interface SecurIDAuthenticationFactory {
 
-    org.iana.securid.SecurIdAuthentication createSecurIdAuthentication();
+    public SecureIdAuthentication createSecurIdAuthentication();
     
 }
