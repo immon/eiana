@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.auth;
 
-import org.iana.rzm.facade.auth.securid.SecurIDAuth;
+import org.iana.rzm.facade.auth.securid.*;
 
 /**
  * <p><code>AuthenticationVisitor</code> represents an operation to be performed on the elements of the <code>AuthenticationData</code>
@@ -14,7 +14,7 @@ import org.iana.rzm.facade.auth.securid.SecurIDAuth;
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface AuthenticationVisitor {
+public interface AuthenticationVisitor  {
 
     void visitPassword(PasswordAuth data) throws AuthenticationException;
 

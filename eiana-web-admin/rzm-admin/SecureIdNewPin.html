@@ -7,7 +7,12 @@
         <body jwcid="border@Border">
             <div id="main">
                 <h1>New Pin Required</h1>
-                <p>RSA SecurID authenticator required you to create new PIN</p>
+
+                <span jwcid="@tapestry4Commons:ShowMessages"/>
+                <span jwcid="@tapestry4Commons:ShowError"/>
+                <span jwcid="@tapestry4Commons:ShowValidationErrors"/>
+                
+                <h3><span style="color: orange"> RSA SecurID authenticator required you to create new PIN</span></h3>
                 <div class="rzm-securid-login">
                     <img alt="SecureID" src="images/securid-login.png"/>
                 </div>

@@ -70,22 +70,18 @@ public abstract class BaseSecureId extends RzmPage implements IExternalPage {
 
     @Persist("client")
     public abstract RzmCallback getCallback();
-
     public abstract void setCallback(RzmCallback callback);
 
     @Persist("client")
     public abstract void setUserName(String userName);
-
     public abstract String getUserName();
 
     @Persist("client")
     public abstract AuthenticationToken getAuthenticationToken();
-
     public abstract void setAuthenticationToken(AuthenticationToken authenticationToken);
 
 
     public abstract void setCode(String code);
-
     public abstract String getCode();
 
     protected abstract String getCookieName();
@@ -109,11 +105,16 @@ public abstract class BaseSecureId extends RzmPage implements IExternalPage {
         } catch (SecurIDNextCodeRequiredException e) {
             BaseSecureIdNextCode page = getSecureIdNextCodePage();
             page.setSessionId(e.getSessionId());
+            page.setAuthenticationToken(getAuthenticationToken());
             page.setCallback(getCallback());
+            page.setUserName(getUserName());
             throw new PageRedirectException(page);
         } catch (SecurIDNewPinRequiredException e) {
             BaseSecureIdNewPin page = getSecureIdNewPinPage();
+            page.setCallback(getCallback());
+            page.setAuthenticationToken(getAuthenticationToken());
             page.setSessionId(e.getSessionId());
+            page.setUserName(getUserName());
             throw new PageRedirectException(page);
         } catch (AuthenticationRequiredException e) {
             BaseLogin login = getLoginPage();

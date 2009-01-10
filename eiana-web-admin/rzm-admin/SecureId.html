@@ -7,7 +7,12 @@
         <body jwcid="border@Border">
             <div id="main">
                 <h1>Your SecurID is required</h1>
-                <p>The account is secured with an additional layer of security using an RSA SecurID authenticator. We require you to enter your code from this device now to proceed.</p>
+
+                <span jwcid="@tapestry4Commons:ShowMessages"/>
+                <span jwcid="@tapestry4Commons:ShowError"/>
+                <span jwcid="@tapestry4Commons:ShowValidationErrors"/>
+                
+                <p>The account is secured with an additional layer of security using an RSA SecurID authenticator. We require you to enter your pin + code from this device now to proceed. If you haven't created a pin yet please enetr your code only</p>
                 <div class="rzm-securid-login">
                     <img alt="SecureID" src="images/securid-login.png"/>
                 </div>
