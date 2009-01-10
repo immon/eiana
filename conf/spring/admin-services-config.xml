@@ -111,6 +111,11 @@
         <property name="serviceInterface" value="org.iana.rzm.facade.auth.AuthenticationService"/>
     </bean>
 
+    <bean id="remoteSecureIdServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteSecureIdServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.auth.securid.SecurIDService"/>
+    </bean>
+
     <!-- ############################# -->
 
     <bean id="remoteUserManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">

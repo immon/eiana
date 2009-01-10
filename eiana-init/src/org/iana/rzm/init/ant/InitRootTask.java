@@ -18,56 +18,94 @@ public class InitRootTask extends HibernateTask {
 
     public void doExecute(Session session) throws Exception {
         UserManager userManager = (UserManager) SpringInitContext.getContext().getBean("userManager");
-        RZMUser user = createUser("root", "root", "root", "root", "root", new AdminRole(AdminRole.AdminType.IANA));
+        RZMUser user = createUser("root", "root", "root", "names&numbers", "simon.raveh@icann.org", new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(user);
 
-         user = createUser("naelaAdmin", "Naela", "Sarras", "naelaAdmin", "naela.sarras@icann.org", new AdminRole(AdminRole.AdminType.IANA));
+        user =
+            createUser("naelaAdmin",
+                       "Naela",
+                       "Sarras",
+                       "naelaAdmin",
+                       "naela.sarras@icann.org",
+                       new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(user);
 
-        user = createUser("doc", "doc", "doc", "doc", "iana.doc@gmail.com", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+        user =
+            createUser("doc",
+                       "doc",
+                       "doc",
+                       "doc",
+                       "iana.doc@gmail.com",
+                       new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
         userManager.create(user);
-        user =createUser("verisign", "verisign", "verisign", "verisign", "iana.verisign@gmail.com", new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
-        userManager.create(user);
-
-        SystemRole systemRole = new SystemRole(SystemRole.SystemType.AC);
-        systemRole.setNotify(true);
-        systemRole.setAcceptFrom(true);
-        systemRole.setName("example");
-        user =createUser("naelas", "Naela", "Sarras", "naelas", "naela.sarras@icann.org", systemRole);
-        userManager.create(user);
-
-        systemRole = new SystemRole(SystemRole.SystemType.AC);
-        systemRole.setNotify(true);
-        systemRole.setAcceptFrom(true);
-        systemRole.setName("int");
-        user =createUser("sraveh", "Simon", "Raveh", "sraveh", "sraveh@gmail.com", systemRole);
+        user =
+            createUser("verisign",
+                       "verisign",
+                       "verisign",
+                       "verisign",
+                       "iana.verisign@gmail.com",
+                       new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         userManager.create(user);
 
-        systemRole = new SystemRole(SystemRole.SystemType.AC);
-        systemRole.setNotify(true);
-        systemRole.setAcceptFrom(true);
-        systemRole.setName("int");
-        user =createUser("naelas", "Naela", "Sarras", "naelas", "naela.sarras@icann.org", systemRole);
-        userManager.create(user);
+
+        //SystemRole systemRole = new SystemRole(SystemRole.SystemType.AC);
+        //systemRole.setNotify(true);
+        //systemRole.setAcceptFrom(true);
+        //systemRole.setName("example");
+        //user = createUser("naelas", "Naela", "Sarras", "naelas", "naela.sarras@icann.org", systemRole);
+        //userManager.create(user);
+        //
+        //systemRole = new SystemRole(SystemRole.SystemType.AC);
+        //systemRole.setNotify(true);
+        //systemRole.setAcceptFrom(true);
+        //systemRole.setName("int");
+        //user = createUser("sraveh", "Simon", "Raveh", "sraveh", "sraveh@gmail.com", systemRole);
+        //userManager.create(user);
+        //
+        //systemRole = new SystemRole(SystemRole.SystemType.AC);
+        //systemRole.setNotify(true);
+        //systemRole.setAcceptFrom(true);
+        //systemRole.setName("int");
+        //user = createUser("naelas", "Naela", "Sarras", "naelas", "naela.sarras@icann.org", systemRole);
+        //userManager.create(user);
 
         DomainManager domainManager = (DomainManager) SpringInitContext.getContext().getBean("domainManager");
+        //IanaTesters testers = new IanaTesters();
+        //testers.doExecute(SpringInitContext.getContext());
+
+
 
         for (DomainDecorator domainDecorator : getDomainsFromXML()) {
             Domain domain = domainDecorator.getDomain();
-            domain.setEnableEmails(domain.getName().equals("int"));
+//            List<IanaTester> list = testers.getTestersForDomain(domain.getName());
+//            domain.setEnableEmails(list.size() > 0);
+
+            //for (IanaTester ianaTester : list) {
+            //    List<TesterRole> roles = ianaTester.getRoles();
+            //    for (TesterRole role : roles) {
+            //        if(role.getDomain().equals(domain.getName())){
+            //            if(role.getType().equals("ac")){
+            //                domain.getAdminContact().setEmail(role.getEmail());
+            //            }else{
+            //                domain.getTechContact().setEmail(role.getEmail());
+            //            }
+            //        }
+            //    }
+            //}
+
             domainManager.create(domain);
         }
 
-        createExampleDomain(domainManager);
+        //createExampleDomain(domainManager);
         setupConfigParams(session);
     }
 
     private RZMUser createUser(String loginName,
-                            String firstName,
-                            String lastName,
-                            String password,
-                            String email,
-                            Role role) {
+                               String firstName,
+                               String lastName,
+                               String password,
+                               String email,
+                               Role role) {
 
         RZMUser user = new RZMUser();
         user.setLoginName(loginName);
@@ -117,9 +155,9 @@ public class InitRootTask extends HibernateTask {
 
     private void createExampleDomain(DomainManager domainManager) {
         Domain d = new Domain("example");
-        d.setAdminContact(setupContact(new Contact(), "Naela Sarras","simon.raveh@icann.org", "US" ));
-        d.setTechContact(setupContact(new Contact(), "Naela Sarras","simon.raveh@icann.org", "US" ));
-        d.setSupportingOrg(setupContact(new Contact(), "Naela Sarras","simon.raveh@icann.org", "US" ));
+        d.setAdminContact(setupContact(new Contact(), "Naela Sarras", "simon.raveh@icann.org", "US"));
+        d.setTechContact(setupContact(new Contact(), "Naela Sarras", "simon.raveh@icann.org", "US"));
+        d.setSupportingOrg(setupContact(new Contact(), "Naela Sarras", "simon.raveh@icann.org", "US"));
         Host ns1 = new Host("ns1.example.test.com");
         Host ns2 = new Host("ns2.example.test.com");
         ns1.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
@@ -157,7 +195,6 @@ public class InitRootTask extends HibernateTask {
         contact.setPhoneNumber("+1234567891");
         return contact;
     }
-
 
 
     public List<DomainDecorator> getDomainsFromXML()
