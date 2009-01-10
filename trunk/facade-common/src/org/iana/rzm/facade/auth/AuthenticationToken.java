@@ -1,7 +1,7 @@
 package org.iana.rzm.facade.auth;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.io.*;
+import java.util.*;
 
 /**
  * <p>This class represents an authentication process and holds a set of valid credentials obtained so far.</p>
@@ -9,7 +9,7 @@ import java.util.HashSet;
  * @author Patrycja Wegrzynowicz
  * @author Marcin Zajaczkowski
  */
-public class AuthenticationToken {
+public class AuthenticationToken implements Serializable {
 
     private String userName;
     final private Set<Authentication> credentials = new HashSet<Authentication>();

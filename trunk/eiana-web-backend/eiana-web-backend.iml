@@ -335,6 +335,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
+    <containerElement type="library" name="secureId" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
     <containerElement type="library" name="spring" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />

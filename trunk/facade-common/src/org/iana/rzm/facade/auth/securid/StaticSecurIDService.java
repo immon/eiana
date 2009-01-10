@@ -91,8 +91,8 @@ public class StaticSecurIDService implements SecurIDService {
 
     private void closeAndRemove(String sessionId) throws SecurIDException {
         SecureIdAuthentication auth = get(sessionId);
-        close(auth);
         securIDMemo.remove(sessionId);
+        close(auth);
     }
 
     private void close(SecureIdAuthentication auth) throws SecurIDException {

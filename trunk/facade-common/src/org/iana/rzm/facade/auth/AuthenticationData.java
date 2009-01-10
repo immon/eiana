@@ -1,12 +1,14 @@
 package org.iana.rzm.facade.auth;
 
+import java.io.*;
+
 /**
  * <p><code>AuthenticationData</code> interface represents a hierarchy of various data required by different
  * authentication mechanisms.</p>
  *
  * @author Patrycja Wegrzynowicz
  */
-public interface AuthenticationData {
+public interface AuthenticationData extends Serializable {
 
     /**
      * Returns a user name associated with this authentication data.

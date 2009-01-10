@@ -7,8 +7,7 @@ import org.iana.rzm.facade.auth.*;
  */
 public interface SecurIDService {
 
-    void authenticate(String userName, String securId) throws SecurIDNextCodeRequiredException, SecurIDNewPinRequiredException, SecurIDException,
-                                                              AuthenticationFailedException;
+    void authenticate(String userName, String securId) throws SecurIDNextCodeRequiredException, SecurIDNewPinRequiredException, SecurIDException, AuthenticationFailedException;
 
     void authenticateWithNextCode(String sessionId, String securId) throws SecurIDException;
 
