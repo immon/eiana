@@ -111,6 +111,14 @@ public class StaticSecurIDService implements SecurIDService {
 
     }
 
+    public AuthenticatedUser authenticateWithNextCode(AuthenticationToken token, String sessionId, String securId) throws AuthenticationRequiredException, SecurIDException {
+        CheckTool.checkNull(token, "authentication token");
+        if (!token.hasCredential(Authentication.PASSWORD)) {
+            throw new AuthenticationRequiredException(Authentication.PASSWORD);
+        }
+        return authenticateWithNextCode(sessionId, securId);
+    }
+
     public void setPin(String sessionId, String pin) throws SecurIDInvalidPinException, SecurIDException {
         SecurIDEntry entry = get(sessionId);
         try {

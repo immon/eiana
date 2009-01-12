@@ -12,6 +12,8 @@ public interface SecurIDService {
 
     AuthenticatedUser authenticateWithNextCode(String sessionId, String securId) throws SecurIDException;
 
+    AuthenticatedUser authenticateWithNextCode(AuthenticationToken token, String sessionId, String securId) throws AuthenticationRequiredException, SecurIDException;
+
     void setPin(String sessionId, String pin) throws SecurIDInvalidPinException, SecurIDException;
 
     RSAPinData getPinInfo() throws SecurIDException;
