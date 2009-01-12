@@ -2,10 +2,6 @@ package org.iana.rzm.facade.auth.securid;
 
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.user.RZMUser;
-import org.iana.rzm.user.UserManager;
-
-import java.text.MessageFormat;
 
 /**
  * org.iana.rzm.facade.auth.SecurIDAuthenticator
@@ -15,13 +11,10 @@ import java.text.MessageFormat;
  */
 public class SecurIDAuthenticator implements AuthenticationService {
 
-    private UserManager manager;
     private SecurIDService securID;
 
-    public SecurIDAuthenticator(UserManager manager, SecurIDService securID) {
-        CheckTool.checkNull(manager, "user manager");
+    public SecurIDAuthenticator(SecurIDService securID) {
         CheckTool.checkNull(securID, "securID service");
-        this.manager = manager;
         this.securID = securID;
     }
 
@@ -36,16 +29,7 @@ public class SecurIDAuthenticator implements AuthenticationService {
         if (!token.hasCredential(Authentication.PASSWORD)) throw new AuthenticationRequiredException(Authentication.PASSWORD);
 
         SecurIDAuth securData = (SecurIDAuth)data;
-        RZMUser user = manager.get(securData.getUserName());
-        if (user == null) {
-            throw new AuthenticationFailedException(
-                    MessageFormat.format("User {0} has not been found.", data.getUserName()));
-        }
-        if (securData.getSessionId() != null) {
-            securID.authenticateWithNextCode(securData.getSessionId(), securData.getPassword());
-        } else {
-            securID.authenticate(securData.getUserName(), securData.getPassword());
-        }
-        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
+        return securID.authenticate(securData.getUserName(), securData.getPassword());
     }
+    
 }
