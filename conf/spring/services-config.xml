@@ -255,9 +255,6 @@
 
     <bean id="securIDAuthenticator" class="org.iana.rzm.facade.auth.securid.SecurIDAuthenticator">
         <constructor-arg>
-            <ref bean="userManager"/>
-        </constructor-arg>
-        <constructor-arg>
             <ref bean="securID"/>
         </constructor-arg>
     </bean>
@@ -274,6 +271,7 @@
     <!--<bean id="securID" class=" org.iana.rzm.facade.auth.securid.StaticSecurIDService">-->
     <!--<constructor-arg ref="securIDAuthenticationFactory"/>-->
     <!--<constructor-arg value="conf/secureId/rsa_api.properties"/>-->
+    <!--<constructor-arg ref="userManager"/>-->
     <!--</bean>-->
 
     <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
