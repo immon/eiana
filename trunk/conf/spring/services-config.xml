@@ -1504,6 +1504,7 @@
                                   execution(public * org.iana.rzm.facade.auth.StatelessAuthenticationServiceBean.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
                                   execution(public * org.iana.rzm.facade.system.domain.StatelessSystemDomainService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.auth.securid.SecurIDService.*(..)) ||
                                   execution(public * org.iana.rzm.log.LoggerBean.*(..)) ||
                                   execution(public * org.iana.rzm.domain.DomainManagerBean.*(..)) ||
                                   execution(public * org.iana.rzm.domain.dao.HibernateDomainDAO.*(..)) ||
