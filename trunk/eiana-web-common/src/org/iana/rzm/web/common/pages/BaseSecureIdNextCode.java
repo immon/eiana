@@ -6,7 +6,9 @@ import org.apache.tapestry.engine.*;
 import org.apache.tapestry.services.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.auth.securid.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.callback.*;
+import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.services.*;
 import org.iana.web.tapestry.session.*;
 
@@ -17,7 +19,8 @@ public abstract class BaseSecureIdNextCode extends RzmPage {
     @Component(id = "code", type = "TextField", bindings = {
         "displayName=literal:Next Code:",
         "value=prop:nextCode",
-        "validators=validators:required"
+        "validators=validators:required",
+        "hidden=literal:true"
         })
     public abstract IComponent getCodeComponent();
 
@@ -50,6 +53,10 @@ public abstract class BaseSecureIdNextCode extends RzmPage {
     @InjectObject("service:rzm.LoginController")
     public abstract LoginController getLoginController();
 
+
+    @InjectState("visit")
+    public abstract Visit getVisitState();                                                                                                                                                                                                            
+
     @InjectPage("Login")
     public abstract BaseLogin getLoginPage();
 
@@ -74,19 +81,21 @@ public abstract class BaseSecureIdNextCode extends RzmPage {
 
 
     public ILink checkNextCode() {
-        try {
-            getAuthenticationService().nextCode(getSessionId(), getNextCode());
-            //WebUser webUser = getAuthenticationService().nextCode(getSessionId(), getNextCode());
+          try {
+            WebUser webUser = getAuthenticationService().nextCode(getAuthenticationToken(),getSessionId(), getNextCode());
             ILink iLink = getLoginController().loginUser(getService(), getRequestCycle(), getCallback());
             getCookieSource().writeCookieValue(getCookieName(), getUserName(), BaseLogin.COOKIE_MAX_AGE);
-            //getVisitState().setUser(webUser);
+            getVisitState().setUser(webUser);
             getRequestCycle().forgetPage(getPageName());
             return iLink;
-
         } catch (SecurIDException e) {
             BaseLogin login = getLoginPage();
             login.setSecureIdErrorMessage(e.getMessage());
             throw new PageRedirectException(login);
+        } catch (AuthenticationRequiredException e) {
+            BaseLogin login = getLoginPage();
+            login.setSecureIdErrorMessage(e.getMessage());
+            throw new PageRedirectException(login);            
         }
     }
 

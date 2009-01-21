@@ -20,7 +20,8 @@ public abstract class BaseSecureId extends RzmPage implements IExternalPage {
     @Component(id = "code", type = "TextField", bindings = {
         "displayName=literal:Code:",
         "value=prop:code",
-        "validators=validators:required"
+        "validators=validators:required",
+        "hidden=literal:true"
         })
     public abstract IComponent getCodeComponent();
 

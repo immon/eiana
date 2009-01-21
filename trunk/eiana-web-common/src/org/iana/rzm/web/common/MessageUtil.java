@@ -136,4 +136,16 @@ public class MessageUtil implements Serializable {
     public String getOnlyUserErrorMessage() {
         return "You tried to log in to the RZM User site using Admin Credential\n. Please use none admin Credential or use the RZM Admin website";
     }
+
+    public String mismatchSecureIdPin() {
+        return "New Pin does not match Confirm Pin.";
+    }
+
+    public String secureIdPinToLong(int length) {
+        return "Your pin is to long. It's should be " + length + " max";
+    }
+
+    public String secureIdPinToShort(int length) {
+        return "Your pin is to short. It's should be at least " + length + " long";
+    }
 }

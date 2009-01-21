@@ -73,12 +73,12 @@ public class RequestTrackerService implements TicketingService {
             rtTicket.setQueue(queue);
             rtTicket.setStatus(Ticket.Status.Open);
             rtTicket.setSubject(TICKET_SUBJECT.replace("%tld%", ticket.getTld()).replace("%label%", getLabel(ticket.getTld())));
-            //rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
-            //rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
-            //List<String> domains = ticket.getImpactedDomainsNames();
-            //domains.add(ticket.getTld());
-            //rtTicket.customFields().setMultiVal(customFields.get("tld"),domains);
-            rtTicket.customFields().setSingleVal(customFields.get("tld"),ticket.getTld());            
+            rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
+            rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
+            List<String> domains = ticket.getImpactedDomainsNames();
+            domains.add(ticket.getTld());
+            rtTicket.customFields().setMultiVal(customFields.get("tld"),domains);
+            //rtTicket.customFields().setSingleVal(customFields.get("tld"),ticket.getTld());
             store.tickets().create(rtTicket);
             String content = convertNewLines(ticket.getComment());
             Comment comment = store.tickets().commentFactory().create(content);

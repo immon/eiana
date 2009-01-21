@@ -9,6 +9,7 @@ import org.iana.rzm.facade.passwd.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.model.*;
+import org.iana.secureid.*;
 
 public class RzmAuthenticationServiceImpl implements RzmAuthenticationService {
 
@@ -32,8 +33,14 @@ public class RzmAuthenticationServiceImpl implements RzmAuthenticationService {
         securIDService.setPin(sessionId, pin);
     }
 
-    public void nextCode(String sessionId, String code) throws SecurIDException {
-        securIDService.authenticateWithNextCode(sessionId, code);
+    public WebUser nextCode(AuthenticationToken authenticationToken, String sessionId, String code)
+        throws SecurIDException, AuthenticationRequiredException {
+        AuthenticatedUser user = securIDService.authenticateWithNextCode(authenticationToken,sessionId, code);
+        return new WebUser(user);
+    }
+
+    public RSAPinData getPinInfo(String sessionId) throws SecurIDException {
+        return securIDService.getPinInfo(sessionId);
     }
 
     public void newPassword(String newPassword, String userName, String token, String newPasswordConfirmed)
