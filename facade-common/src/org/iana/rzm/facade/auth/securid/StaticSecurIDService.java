@@ -1,22 +1,24 @@
 package org.iana.rzm.facade.auth.securid;
 
 import com.rsa.authagent.authapi.*;
+import org.apache.log4j.*;
 import org.iana.rzm.common.validators.*;
 import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.*;
 import org.iana.secureid.AccessDeniedException;
 import org.iana.secureid.*;
 
 import java.io.*;
 import java.net.*;
+import java.text.*;
 import java.util.*;
-import java.text.MessageFormat;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 public class StaticSecurIDService implements SecurIDService {
+
+    private static final Logger LOGGER = Logger.getLogger(StaticSecurIDService.class.getName());
 
     private File securIDInitFile;
 
@@ -53,11 +55,12 @@ public class StaticSecurIDService implements SecurIDService {
         }
     }
 
-    public StaticSecurIDService(SecurIDAuthenticationFactory securIDFactory, String uri, UserManager userManager) throws URISyntaxException {
-        CheckTool.checkNull(uri, "secur id init uri");
+    public StaticSecurIDService(SecurIDAuthenticationFactory securIDFactory, File f, UserManager userManager)
+        throws URISyntaxException {
+        CheckTool.checkNull(f, "secur id init file");
         CheckTool.checkNull(securIDFactory, "secur id factory");
         CheckTool.checkNull(userManager, "user manager");
-        this.securIDInitFile = new File(new URI(uri));
+        this.securIDInitFile = new File(f.getAbsolutePath());
         this.securIDFactory = securIDFactory;
         this.userManager = userManager;
     }
@@ -95,13 +98,13 @@ public class StaticSecurIDService implements SecurIDService {
         return auth;
     }
 
-    public AuthenticatedUser authenticateWithNextCode(String sessionId, String securId) throws SecurIDException {
+    private AuthenticatedUser authenticateWithNextCode(String sessionId, String securId) throws SecurIDException {
         SecurIDEntry sessionEntry = get(sessionId);
         try {
             sessionEntry.getAuthenticator().nextToken(securId);
             closeAndRemove(sessionEntry);
             return createUser(sessionEntry.getUserName());
-        } catch (NextCodeBadException e){
+        } catch (NextCodeBadException e) {
             closeAndRemove(sessionEntry);
             throw new SecurIDException(e);
         } catch (SecureIdException e) {
@@ -111,7 +114,8 @@ public class StaticSecurIDService implements SecurIDService {
 
     }
 
-    public AuthenticatedUser authenticateWithNextCode(AuthenticationToken token, String sessionId, String securId) throws AuthenticationRequiredException, SecurIDException {
+    public AuthenticatedUser authenticateWithNextCode(AuthenticationToken token, String sessionId, String securId)
+        throws AuthenticationRequiredException, SecurIDException {
         CheckTool.checkNull(token, "authentication token");
         if (!token.hasCredential(Authentication.PASSWORD)) {
             throw new AuthenticationRequiredException(Authentication.PASSWORD);
@@ -132,14 +136,13 @@ public class StaticSecurIDService implements SecurIDService {
         }
     }
 
-    public RSAPinData getPinInfo() throws SecurIDException {
-        SecureIdAuthentication auth = createAuthenticator();
+    public RSAPinData getPinInfo(String sessionId) throws SecurIDException {
+        SecurIDEntry entry = get(sessionId);
         try {
-            return auth.getSession().getRsaPinData();
+            return entry.getAuthenticator().getSession().getRsaPinData();
         } catch (SecureIdException e) {
+            closeAndRemove(entry);
             throw new SecurIDException(e);
-        } finally {
-            close(auth);
         }
     }
 

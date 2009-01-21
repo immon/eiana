@@ -1,14 +1,10 @@
 package org.iana.securid;
 
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.facade.auth.AuthenticationFailedException;
-import org.iana.rzm.facade.auth.AuthenticationToken;
-import org.iana.rzm.facade.auth.AuthenticationRequiredException;
+import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.auth.securid.*;
-import org.iana.secureid.RSAPinData;
+import org.iana.secureid.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -55,7 +51,7 @@ public class MockSecurIDService implements SecurIDService {
     }
 
     public AuthenticatedUser authenticateWithNextCode(String sessionId, String securId) throws SecurIDException {
-        return new AuthenticatedUser(0, sessionId, false);
+        return new AuthenticatedUser(5, sessionId, true);
     }
 
     public void setPin(String sessionId, String pin) throws SecurIDInvalidPinException, SecurIDException {
@@ -72,7 +68,19 @@ public class MockSecurIDService implements SecurIDService {
         return authenticateWithNextCode(sessionId, securId);
     }
 
-    public RSAPinData getPinInfo() throws SecurIDException {
-        return null;
+    public RSAPinData getPinInfo(String sessionId) throws SecurIDException {
+        return new RSAPinData() {
+            public int getMaxPinLength() {
+                return 10;
+            }
+
+            public int getMinPinLength() {
+                return 6;
+            }
+
+            public boolean isAlphanumeric() {
+                return true;
+            }
+        };
     }
 }

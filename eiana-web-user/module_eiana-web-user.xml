@@ -300,7 +300,9 @@
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/Tapestry4Commons.jar" prefix="WEB-INF/lib"/>
-        <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
+       <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
+        <zipfileset file="${module.eiana-web-user.basedir}/../lib/secureId/authapi.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/secureId/SecureID.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/rzm/WEB-INF/web.xml" prefix="WEB-INF"/>
     </jar>
   </target>
