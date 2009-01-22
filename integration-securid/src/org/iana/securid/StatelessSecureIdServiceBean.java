@@ -24,7 +24,7 @@ public class StatelessSecureIdServiceBean implements SecurIDService {
         service.setPin(sessionId, pin);
     }
 
-    public RSAPinData getPinInfo() throws SecurIDException {
-        return service.getPinInfo();
+    public RSAPinData getPinInfo(String sessionId) throws SecurIDException {
+        return service.getPinInfo(sessionId);
     }
 }
