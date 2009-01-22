@@ -23,6 +23,27 @@
         <constructor-arg ref="notificationDAO"/>
     </bean>
 
+    <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
+        <property name="path" value="conf/epp/epp.rootzone.config"/>
+    </bean>
+
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
+        <constructor-arg ref="templateFactory"/>
+        <constructor-arg ref="noHostDiffConfig"/>
+        <property name="doTest">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="radicalAlterationTechnicalCheckBean" class="org.iana.rzm.trans.check.RadicalAlterationImpl">
+        <constructor-arg ref="technicalCheckBeanWithRadicalAlterationCheck"/>
+    </bean>
+
+    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
+
+    <!-- end of test bean section -->
+
     <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
     <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
     <!--<constructor-arg index="1" value="rzm"/>-->
@@ -52,28 +73,6 @@
     <!--</map>-->
     <!--</property>-->
     <!--</bean>-->
-
-    <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
-        <property name="path" value="conf/epp/epp.rootzone.config"/>
-    </bean>
-
-    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
-        <constructor-arg ref="templateFactory"/>
-        <constructor-arg ref="noHostDiffConfig"/>
-        <property name="doTest">
-            <value>true</value>
-        </property>
-    </bean>
-
-    <bean id="radicalAlterationTechnicalCheckBean" class="org.iana.rzm.trans.check.RadicalAlterationImpl">
-        <constructor-arg ref="technicalCheckBeanWithRadicalAlterationCheck"/>
-    </bean>
-
-    <!-- end of test bean section -->
-
-
-    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
-    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
 
 
     <!-- facade services configuration -->
@@ -1248,9 +1247,7 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \|
-                        ([^\| ]*).*
-                    </value>
+                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \| ([^\| ]*).*</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
@@ -1281,9 +1278,7 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>([^:]*:)*\s*([\d]*) \| nameserver change for \| ([^\| ]*) \| \[RZM\] \| (AC|TC) \| ([^\|
-                        ]*).*
-                    </value>
+                    <value>([^:]*:)*\s*([\d]*) \| nameserver change for \| ([^\| ]*) \| \[RZM\] \| (AC|TC) \| ([^\| ]*).*</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
@@ -1340,9 +1335,7 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>.+Authorized:(.+)\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change
-                        Request Summary: DO NOT EDIT ABOVE.*
-                    </value>
+                    <value>.+Authorized:(.+)\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>

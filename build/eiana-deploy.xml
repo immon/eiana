@@ -155,6 +155,9 @@
         <fileset dir="${lib.dir}/quartz">
             <include name="**/*.jar"/>
         </fileset>
+        <fileset dir="${lib.dir}/secureId">
+            <include name="**/*.jar"/>
+        </fileset>
         <path location="${eiana-init.output.dir}"/>
         <path refid="eiana-init.module.classpath"/>
     </path>
