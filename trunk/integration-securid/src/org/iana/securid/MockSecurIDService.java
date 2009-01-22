@@ -38,7 +38,7 @@ public class MockSecurIDService implements SecurIDService {
         } else {
             clean(sessionId, userName);
         }
-        return new AuthenticatedUser(0, sessionId, false);
+        return new AuthenticatedUser(0, userName, false);
     }
 
     private void clean(String sessionId, String userName) {

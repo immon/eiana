@@ -3,6 +3,8 @@ package org.iana.rzm.facade.common.auth;
 import org.iana.rzm.conf.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.auth.securid.SecurIDAuth;
+import org.iana.rzm.facade.auth.securid.SecurIDNewPinRequiredException;
+import org.iana.rzm.facade.auth.securid.SecurIDNextCodeRequiredException;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
@@ -104,10 +106,17 @@ public class AuthenticationServiceBeanTest extends RollbackableSpringContextTest
             if (e.getRequired() == Authentication.SECURID) {
 
                 SecurIDAuth securIDAuth = new SecurIDAuth(ADMIN_WITH_SECURID_VALID_LOGIN, ADMIN_WITH_SECURID_PASSWORD_VALID);
-
-                AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(e.getToken(), securIDAuth);
-                assert ADMIN_WITH_SECURID_VALID_LOGIN.equals(authenticatedUser.getUserName());
-                return;
+                try {
+                    authenticationServiceBean.authenticate(e.getToken(), securIDAuth);
+                } catch (SecurIDNewPinRequiredException e1) {
+                    try {
+                        authenticationServiceBean.authenticate(e.getToken(), securIDAuth);
+                    } catch (SecurIDNextCodeRequiredException e2) {
+                        AuthenticatedUser authenticatedUser = authenticationServiceBean.authenticate(e.getToken(), securIDAuth);
+                        assert ADMIN_WITH_SECURID_VALID_LOGIN.equals(authenticatedUser.getUserName());
+                        return;
+                    }
+                }
             }
         }
         assert false;
