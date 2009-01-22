@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+    	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    	<title>IANA  Root Zone Maintenance</title>
+	    <link rel="stylesheet" type="text/css" media="screen" href="css/master.css" />
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@Border">
+            <h1 class="marginTop40">IANA Root Zone Management </h1>
+            <span jwcid="@tapestry4Commons:ShowMessages"/>
+            <h2>Recover Your User name</h2>
+            <p>Please provide your email address and password.</p>
+            <span jwcid="@tapestry4Commons:ShowError"/>
+            <span jwcid="@tapestry4Commons:ShowValidationErrors"/>
+            <div id="mainBox" style="margin: 20px 0 40px 40px; width: 70%;">
+                <span jwcid="container@tapestry4Commons:GrayContainer">
+                    <form jwcid="form" class="loginbox">
+                        <table>
+                            <tr>
+                                <td class="keylabel"><span jwcid="@FieldLabel" field="component:email">Email</span></td>
+                                <td><input jwcid="email" type="text" name="email"/>
+                            </tr>
+                            <tr>
+                                <td class="keylabel"><span jwcid="@FieldLabel" field="component:password">Password</span></td>
+                                <td><input jwcid="password" type="text" name="password" size="10" maxlength="20"/></td>
+                            </tr>
+                            <tr>
+                                <td align="right">&nbsp;</td>
+                                <td align="right">
+                                    <input name="cancel" type=submit jwcid="@Submit"  action="listener:cancel"  class="button" value="&lt; Cancel"/>
+                                    <input name="submit" type=submit jwcid="@Submit" action="listener:recoverUserName" class="button" value="Proceed &gt;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </span>
+            </div>
+        </body>
+    </span>
+</html>

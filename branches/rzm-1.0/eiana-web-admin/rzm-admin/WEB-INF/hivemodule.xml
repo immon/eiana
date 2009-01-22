@@ -1,0 +1,175 @@
+<module id="rzm" version="1.0.0">
+
+    <contribution configuration-id="tapestry.state.ApplicationObjects">
+		<state-object name="visit" scope="session">
+			<create-instance class="org.iana.rzm.web.common.Visit"/>
+		</state-object>
+	</contribution>
+
+    <contribution configuration-id="tapestry.services.ApplicationServices">
+        <service name="whoisService" object="service:WhoisService"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.services.ApplicationServices">
+        <service name="zoneFileService" object="service:ZoneFileService"/>
+    </contribution>
+
+    <service-point id="ApplicationLifecycle" interface="org.iana.web.tapestry.session.ApplicationLifecycle">
+        Controls lifecycle operations; specifically logging out.
+        <invoke-factory model="threaded">
+            <construct class="org.iana.rzm.web.common.services.ApplicationLifecycleImpl">
+                <set-object property="stateManager" value="infrastructure:applicationStateManager"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="QueryExceptionHandler" interface="org.iana.rzm.web.common.services.QueryExceptionHandler">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.common.services.QueryExceptionHandlerImpl">
+                <set-object property="externalService" value="infrastructure:serviceMap"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+    
+
+    <service-point id="ObjectNotFoundHandler" interface="org.iana.rzm.web.common.services.ObjectNotFoundHandler">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.common.services.ObjectNotFoundHandlerImpl">
+                <set-object property="stateManager" value="infrastructure:applicationStateManager"/>
+                <set-object property="requestCycle" value="infrastructure:requestCycle"/>
+                <set-object property="externalService" value="infrastructure:serviceMap"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="AccessDeniedHandler" interface="org.iana.rzm.web.common.services.AccessDeniedHandler">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.common.services.AccessDeniedHandlerImpl">
+                <set-object property="externalService" value="infrastructure:serviceMap"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="WhoisService" interface="org.apache.tapestry.engine.IEngineService">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.admin.tapestry.services.WhoisService">
+                <set-object property="linkFactory" value="infrastructure:linkFactory"/>
+                <set-object property="response" value="infrastructure:response"/>
+                <set-object property="whoisDataProducer" value="service:rzm.AdminServices"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="ZoneFileService" interface="org.apache.tapestry.engine.IEngineService">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.admin.tapestry.services.ZoneFileService">
+                <set-object property="linkFactory" value="infrastructure:linkFactory"/>
+                <set-object property="response" value="infrastructure:response"/>
+                <set-object property="zoneProducer" value="service:rzm.AdminServices"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="ExternalPageErrorHandler" interface="org.iana.rzm.web.common.services.ExternalPageErrorHandler">
+         <invoke-factory>
+             <construct class="org.iana.rzm.web.common.services.ExternalPageErrorHandlerImpl">
+                 <set-object property="requestCycle" value="infrastructure:requestCycle"/>
+                 <set-object property="pageName" value="AdminGeneralError"/>
+             </construct>
+         </invoke-factory>
+     </service-point>
+
+
+
+    <service-point id="DiscardSessionFilter" interface="org.apache.tapestry.services.WebRequestServicerFilter">
+        Filter used to optionally discard the session at the end of a request (typically after a logout).
+        <invoke-factory>
+            <construct class="org.iana.web.tapestry.session.DiscardSessionFilter">
+                <set-object property="applicationLifecycle" value="service:ApplicationLifecycle"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="ServiceInitializer" interface="org.iana.web.tapestry.services.ServiceInitializer">
+        <invoke-factory model="threaded">
+            <construct class="org.iana.rzm.web.common.services.ServiceInitializerImpl">
+                <set-object property="applicationStateManager" value="infrastructure:applicationStateManager"/>
+                <set-object property="beanFactoryHolder" value="service:hivemind.lib.DefaultSpringBeanFactoryHolder"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+
+    <service-point id="AdminServices" interface="org.iana.rzm.web.admin.services.AdminServices">
+        <invoke-factory model="threaded">
+            <construct class="org.iana.rzm.web.admin.services.AdminServicesImpl">
+                <service>rzm.ServiceInitializer</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="ContactServices" interface="org.iana.rzm.web.tapestry.components.contact.ContactServices">
+        <invoke-factory model="threaded">
+            <construct class="org.iana.rzm.web.common.services.ContactServicesImpl">
+                <set-object property="rzmServices" value="service:AdminServices"/>
+                <set-object property="objectNotFoundHandler" value="service:ObjectNotFoundHandler"/>
+                <set-object property="accessDeniedHandler" value="service:AccessDeniedHandler"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="RzmAuthenticationService" interface="org.iana.rzm.web.common.services.RzmAuthenticationService">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.common.services.RzmAuthenticationServiceImpl">
+                <set-object property="beanFactoryHolder" value="service:hivemind.lib.DefaultSpringBeanFactoryHolder"/>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="JavaScriptDelegator" interface="org.apache.tapestry.IRender">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.common.render.JavaScriptDelegator"/>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="LoginController" interface="org.iana.rzm.web.common.services.LoginController">
+        <invoke-factory>
+            <construct class="org.iana.rzm.web.common.services.LoginControllerImpl"/>
+        </invoke-factory>
+    </service-point>
+
+    <contribution configuration-id="tapestry.request.WebRequestServicerPipeline">
+        <filter name="discard-session" object="service:DiscardSessionFilter"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.InfrastructureOverrides">
+        <property name="exceptionPageName" value="ApplicationException"/>
+    </contribution>
+                         
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="domainName" configurable="false"
+                   class="org.iana.rzm.web.common.validators.WebDomainNameValidator"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="ipListValidator" configurable="false"
+                   class="org.iana.rzm.web.common.validators.WebIPListValidator"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="countryCodeValidator" configurable="false"
+                   class="org.iana.rzm.web.common.validators.WebCountryCodeValidator"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="whoisValidator" configurable="false"
+                   class="org.iana.rzm.web.common.validators.WebWhoisValidator"/>
+    </contribution>
+
+    <contribution configuration-id="tapestry.form.validator.Validators">
+        <validator name="registryUrlValidator" configurable="false"
+                   class="org.iana.rzm.web.common.validators.WebRegistryUrlValidator"/>
+    </contribution>
+
+</module>
+ 

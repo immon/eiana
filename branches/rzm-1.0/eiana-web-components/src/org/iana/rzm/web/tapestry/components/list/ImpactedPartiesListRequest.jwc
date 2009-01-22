@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 4.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_4_0.dtd">
+
+<component-specification class="org.iana.rzm.web.tapestry.components.list.ImpactedPartiesListRequest">
+
+    <!--<parameter name="entityQuery"  required = "true"/>-->
+    <!--<parameter name="listener"  required = "true"/>-->
+    <!--<parameter name="usePagination" default-value="true" required = "false"/>-->
+    <!--<parameter name="noRecordsMessage" default-value="literal:There are no records to display" required = "false"/>-->
+    
+
+    <parameter name="sortFactory" default-value="prop:nullSortFactory" required = "false"/>
+    <parameter name="actionTitle"  default-value = "literal:View" required="false"/>
+
+</component-specification>
