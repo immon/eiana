@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration
+        xmlns="http://java.sun.com/xml/ns/jax-rpc/ri/config">
+    <service name="TechnicalCheck"
+             packageName="org.iana.dns.check.remote"
+             targetNamespace="http://www.iana.org/rzm/wsdl"
+             typeNamespace="http://www.iana.org/rzm/wsdl">
+        <interface name="org.iana.dns.check.remote.RPCTechnicalCheck"
+                   servantName="org.iana.dns.check.remote.RPCTechnicalCheckImpl">
+        </interface>
+    </service>
+</configuration>

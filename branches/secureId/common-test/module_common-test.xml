@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_common-test" default="compile.module.common-test">
+  <dirname property="module.common-test.basedir" file="${ant.file.module_common-test}"/>
+  
+  
+  <property name="compiler.args.common-test" value="${compiler.args}"/>
+  
+  <property name="common-test.output.dir" value="${module.common-test.basedir}/../build/classes/production/common-test"/>
+  <property name="common-test.testoutput.dir" value="${module.common-test.basedir}/../build/classes/test/common-test"/>
+  
+  <path id="common-test.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common-test.module.classpath">
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.junit.classpath"/>
+    <path refid="library.javaee.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common-test">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common-test">
+    <patternset refid="excluded.from.module.common-test"/>
+  </patternset>
+  
+  <path id="common-test.module.test.sourcepath">
+    <dirset dir="${module.common-test.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common-test" depends="compile.module.common-test.production,compile.module.common-test.tests" description="Compile module common-test"/>
+  
+  <target name="compile.module.common-test.production" description="Compile module common-test; production classes"/>
+  
+  <target name="compile.module.common-test.tests" depends="compile.module.common-test.production" description="compile module common-test; test classes" unless="skip.tests">
+    <mkdir dir="${common-test.testoutput.dir}"/>
+    <javac destdir="${common-test.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-test}"/>
+      <classpath refid="common-test.module.classpath"/>
+      <classpath location="${common-test.output.dir}"/>
+      <src refid="common-test.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-test"/>
+    </javac>
+    
+    <copy todir="${common-test.testoutput.dir}">
+      <fileset dir="${module.common-test.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.common-test" description="cleanup module">
+    <delete dir="${common-test.output.dir}"/>
+    <delete dir="${common-test.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,29 @@
+package org.iana.objectdiff.hibernate;
+
+import org.iana.objectdiff.SimpleChange;
+import org.testng.annotations.Test;
+
+import java.io.Serializable;
+
+/**
+ * @author Patrycja Wegrzynowicz
+ */
+public class SimpleChangeHibernateMappingTest extends HibernateMappingUnitTest<SimpleChange> {
+
+    protected SimpleChange create() throws Exception {
+        return new SimpleChange("abc", "xyz");
+    }
+
+    protected SimpleChange change(SimpleChange o) throws Exception {
+        return o;
+    }
+
+    protected Serializable getId(SimpleChange o) {
+        return o.getObjId();
+    }
+
+    @Test
+    public void testSimpleChange() throws Exception {
+        super.test();
+    }
+}
