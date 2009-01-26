@@ -35,6 +35,16 @@ public class EmailSender implements NotificationSender {
 
     private static Logger logger = Logger.getLogger(EmailSender.class);
 
+    public static final String SMTP_MAILER = "emailMailer";
+    public static final String SMTP_MAILHOST = "emailMailhost";
+    public static final String SMTP_MAILHOST_PORT = "emailMailhostPort";
+    public static final String SMTP_FROM_ADDRESS = "emailFromAddress";
+    public static final String SMTP_USER_NAME = "emailUserName";
+    public static final String SMTP_USER_PWD = "emailUserPassword";
+    public static final String SMTP_USE_SSL = "emailUseSSL";
+    public static final String SMTP_USE_TLS = "emailUseTLS";
+    public static final String SMTP_SMTP_FROM = "mailSmtpFrom";
+
     public EmailSender(String mailHost, String mailer, String fromAddress,
                                   String userName, String password) {
         this(mailHost, null, mailer, fromAddress, userName, password, false, false);
@@ -82,7 +92,7 @@ public class EmailSender implements NotificationSender {
 
     public String getEmailMailer() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("emailMailer");
+            String param = config.getParameter(SMTP_MAILER);
             if (param != null) {
                 return param;
             }
@@ -92,7 +102,7 @@ public class EmailSender implements NotificationSender {
 
     public String getEmailMailhost() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("emailMailhost");
+            String param = config.getParameter(SMTP_MAILHOST);
             if (param != null) {
                 return param;
             }
@@ -102,7 +112,7 @@ public class EmailSender implements NotificationSender {
 
     public Integer getEmailMailhostPort() throws ConfigException {
         if (config != null) {
-            Integer param = config.getIntegerParameter("emailMailhostPort");
+            Integer param = config.getIntegerParameter(SMTP_MAILHOST_PORT);
             if (param != null) {
                 return param;
             }
@@ -112,7 +122,7 @@ public class EmailSender implements NotificationSender {
 
     public String getEmailFromAddress() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("emailFromAddress");
+            String param = config.getParameter(SMTP_FROM_ADDRESS);
             if (param != null) {
                 return param;
             }
@@ -122,7 +132,7 @@ public class EmailSender implements NotificationSender {
 
     public String getEmailUserName() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("emailUserName");
+            String param = config.getParameter(SMTP_USER_NAME);
             if (param != null) {
                 return param;
             }
@@ -132,7 +142,7 @@ public class EmailSender implements NotificationSender {
 
     public String getEmailUserPassword() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("emailUserPassword");
+            String param = config.getParameter(SMTP_USER_PWD);
             if (param != null) {
                 return param;
             }
@@ -142,7 +152,7 @@ public class EmailSender implements NotificationSender {
 
     public boolean isEmailUseSSL() throws ConfigException {
         if (config != null) {
-            Boolean param = config.getBooleanParameter("emailUseSSL");
+            Boolean param = config.getBooleanParameter(SMTP_USE_SSL);
             if (param != null) {
                 return param;
             }
@@ -152,7 +162,7 @@ public class EmailSender implements NotificationSender {
 
     public boolean isEmailUseTLS() throws ConfigException {
         if (config != null) {
-            Boolean param = config.getBooleanParameter("emailUseTLS");
+            Boolean param = config.getBooleanParameter(SMTP_USE_TLS);
             if (param != null) {
                 return param;
             }
@@ -163,7 +173,7 @@ public class EmailSender implements NotificationSender {
     private void sendMail(String address, String cc, String subject, String body) throws EmailSenderException {
         try {
             MailSender mailer = new SmtpMailSender(getEmailMailer(), getEmailMailhost(), getEmailMailhostPort(), getEmailUserName(), getEmailUserPassword(), isEmailUseSSL(), isEmailUseTLS());
-            String configParam = config.getParameter("mailSmtpFrom");
+            String configParam = config.getParameter(SMTP_SMTP_FROM);
             ((SmtpMailSender) mailer).setMailSmtpFrom(configParam == null ? mailSmtpFrom : configParam);
             mailer.sendMail(getEmailFromAddress(), address, cc, subject, body);
         } catch (MailSenderException e) {

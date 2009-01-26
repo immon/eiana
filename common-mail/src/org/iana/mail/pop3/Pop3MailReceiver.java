@@ -20,38 +20,43 @@ public class Pop3MailReceiver implements MailReceiver {
     private String host;
     private String user;
     private String password;
-    private String subjectToken;
     private Integer port;
     private boolean ssl;
     private boolean debug;
     private Config config;
 
+    public static final String POP3_HOST = "host";
+    public static final String POP3_USER = "user";
+    public static final String POP3_PWD = "password";
+    public static final String POP3_SSL = "ssl";
+    public static final String POP3_PORT = "port";
+    public static final String POP3_DEBUG = "debug";
 
-    public Pop3MailReceiver(String host, String user, String password, String subjectToken) {
-        this(host, null, user, password, subjectToken, false, false);
+
+    public Pop3MailReceiver(String host, String user, String password) {
+        this(host, null, user, password, false, false);
     }
 
     public Pop3MailReceiver(String host, String user, String password,
-                            String subjectToken, boolean ssl) {
-        this(host, null, user, password, subjectToken, ssl, false);
+                            boolean ssl) {
+        this(host, null, user, password, ssl, false);
     }
 
     public Pop3MailReceiver(String host, Integer port, String user, String password,
-                            String subjectToken, boolean ssl) {
-        this(host, port, user, password, subjectToken, ssl, false);
+                            boolean ssl) {
+        this(host, port, user, password, ssl, false);
     }
 
     public Pop3MailReceiver(String host, String user, String password,
-                            String subjectToken, boolean ssl, boolean debug) {
-        this(host, null, user, password, subjectToken, ssl, debug);
+                            boolean ssl, boolean debug) {
+        this(host, null, user, password, ssl, debug);
     }
 
     public Pop3MailReceiver(String host, Integer port, String user, String password,
-                            String subjectToken, boolean ssl, boolean debug) {
+                            boolean ssl, boolean debug) {
         this.host = host;
         this.user = user;
         this.password = password;
-        this.subjectToken = subjectToken;
         this.port = port;
         this.ssl = ssl;
         this.debug = debug;
@@ -79,7 +84,7 @@ public class Pop3MailReceiver implements MailReceiver {
 
     private boolean isSsl() throws ConfigException {
         if (config != null) {
-            Boolean param = config.getBooleanParameter("ssl");
+            Boolean param = config.getBooleanParameter(POP3_SSL);
             if (param != null) return param;
         }
         return ssl;
@@ -87,7 +92,7 @@ public class Pop3MailReceiver implements MailReceiver {
 
     private String getHost() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("host");
+            String param = config.getParameter(POP3_HOST);
             if (param != null) return param;
         }
         return host;
@@ -95,7 +100,7 @@ public class Pop3MailReceiver implements MailReceiver {
 
     private String getUser() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("user");
+            String param = config.getParameter(POP3_USER);
             if (param != null) return param;
         }
         return user;
@@ -103,23 +108,15 @@ public class Pop3MailReceiver implements MailReceiver {
 
     private String getPassword() throws ConfigException {
         if (config != null) {
-            String param = config.getParameter("password");
+            String param = config.getParameter(POP3_PWD);
             if (param != null) return param;
         }
         return password;
     }
 
-    private String getSubjectToken() throws ConfigException {
-        if (config != null) {
-            String param = config.getParameter("subjectToken");
-            if (param != null) return param;
-        }
-        return subjectToken;
-    }
-
     private Integer getPort() throws ConfigException {
         if (config != null) {
-            Integer param = config.getIntegerParameter("port");
+            Integer param = config.getIntegerParameter(POP3_PORT);
             if (param != null) return param;
         }
         return port;
@@ -127,7 +124,7 @@ public class Pop3MailReceiver implements MailReceiver {
 
     public boolean isDebug() throws ConfigException {
         if (config != null) {
-            Boolean param = config.getBooleanParameter("debug");
+            Boolean param = config.getBooleanParameter(POP3_DEBUG);
             if (param != null) return param;
         }
         return debug;
@@ -153,11 +150,7 @@ public class Pop3MailReceiver implements MailReceiver {
             Message[] msgs = folder.getMessages();
             for (Message msg : msgs) {
                 msg.setFlag(Flags.Flag.DELETED, true);
-//                String subject = msg.getSubject();
-//                if (msg.getSubject().contains(getSubjectToken())) {
-//                    msg.setSubject(removeSubjectToken(msg.getSubject()));
-                    list.add(new MimeMessage((MimeMessage) msg));
-//                }
+                list.add(new MimeMessage((MimeMessage) msg));
             }
             folder.close(true);
         } catch (Exception e) {
@@ -166,10 +159,4 @@ public class Pop3MailReceiver implements MailReceiver {
         return list;
     }
 
-    private String removeSubjectToken(String subject) throws ConfigException {
-        int i = subject.indexOf(getSubjectToken());
-        StringBuffer sb = new StringBuffer();
-        sb.append(subject.substring(0, i)).append(subject.substring(i + getSubjectToken().length()));
-        return sb.toString();
-    }
 }

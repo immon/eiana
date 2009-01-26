@@ -138,12 +138,12 @@ public class InitRootTask extends HibernateTask {
         //singleParam = new SingleParameter(subConfigName + "emailUserName", "");
         //singleParam.setOwner(Config.DEFAULT_OWNER);
         //singleParam.setFromDate(System.currentTimeMillis());
-        //singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        //singleParam.setToDate(System.currentTimeMillis() + ConfigParameter.DAY);
         //session.save(singleParam);
         //singleParam = new SingleParameter(subConfigName + "emailUserPassword", "");
         //singleParam.setOwner(Config.DEFAULT_OWNER);
         //singleParam.setFromDate(System.currentTimeMillis());
-        //singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        //singleParam.setToDate(System.currentTimeMillis() + ConfigParameter.DAY);
         //session.save(singleParam);
 
         singleParam = new SingleParameter(subConfigName + "mailsmtpFrom", "rt-sender@rs.icann.org");

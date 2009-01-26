@@ -86,6 +86,7 @@
 
      CREATE DATABASE eianatest;
      GRANT ALL PRIVILEGES ON *.* TO 'testng'@'localhost' IDENTIFIED BY '1q2w3e' WITH GRANT OPTION;
+     GRANT ALL PRIVILEGES ON *.* TO 'rzm'@'localhost' IDENTIFIED BY 'names&numbers' WITH GRANT OPTION;
 
      -->
     <target name="database.create.test"

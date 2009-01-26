@@ -1192,7 +1192,6 @@
         <constructor-arg index="0" value="m02.icann.org"/>
         <constructor-arg index="1" value="rzm-dev"/>
         <constructor-arg index="2" value="upowilgeod"/>
-        <constructor-arg index="3" value="[RZM]"/>
         <property name="config">
             <ref bean="parameterManager"/>
         </property>
