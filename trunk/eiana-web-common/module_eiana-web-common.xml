@@ -39,8 +39,10 @@
     <path refid="library.apache-commons.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/javaee/javaee.jar"/>
     <path refid="library.spring.classpath"/>
-    <path refid="library.rzm-ui-components.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/idn/libidn-1.8.jar"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.rzm-ui-components.classpath"/>
+    <path refid="library.secureid.classpath"/>
   </path>
   
   

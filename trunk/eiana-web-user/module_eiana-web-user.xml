@@ -13,7 +13,7 @@
   </path>
   
   <path id="eiana-web-user.module.classpath">
-    <pathelement location="${module.eiana-web-user.basedir}/../../../../../../Applications/IntelliJ IDEA 6.0.6.app/lib/j2ee.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/j2ee.jar"/>
     <pathelement location="${eiana-web-common.output.dir}"/>
     <pathelement location="${eiana-web-common.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
@@ -73,29 +73,40 @@
     <pathelement location="${module.eiana-web-user.basedir}/../lib/aspectj/aspectjrt.jar"/>
     <pathelement location="${module.eiana-web-user.basedir}/../lib/aspectj/aspectjweaver.jar"/>
     <pathelement location="${module.eiana-web-user.basedir}/../lib/quartz/quartz-all-1.6.0.jar"/>
-    <pathelement location="${module.eiana-web-user.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar"/>
     <pathelement location="${module.eiana-web-user.basedir}/../lib/idn/libidn-1.8.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/antlr-2.7.6.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/asm.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/cglib-2.1.3.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/ehcache-1.2.3.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate-tools.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate3.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/mchange/c3p0-0.9.1.2.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/bsh/bsh-2.0b2.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/secureId/authapi.jar"/>
+    <pathelement location="${module.eiana-web-user.basedir}/../lib/secureId/SecureID.jar"/>
     <path refid="library.tapestry.classpath"/>
   </path>
-
-
+  
+  
   <patternset id="excluded.from.module.eiana-web-user">
     <patternset refid="ignored.files"/>
   </patternset>
-
+  
   <patternset id="excluded.from.compilation.eiana-web-user">
     <patternset refid="excluded.from.module.eiana-web-user"/>
   </patternset>
-
+  
   <path id="eiana-web-user.module.sourcepath">
     <dirset dir="${module.eiana-web-user.basedir}">
       <include name="src"/>
     </dirset>
   </path>
-
-
+  
+  
   <target name="compile.module.eiana-web-user" depends="compile.module.eiana-web-user.production,compile.module.eiana-web-user.tests" description="Compile module eiana-web-user"/>
-
+  
   <target name="compile.module.eiana-web-user.production" depends="compile.module.eiana-web-common" description="Compile module eiana-web-user; production classes">
     <mkdir dir="${eiana-web-user.output.dir}"/>
     <javac destdir="${eiana-web-user.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
@@ -105,7 +116,7 @@
       <src refid="eiana-web-user.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.eiana-web-user"/>
     </javac>
-
+    
     <copy todir="${eiana-web-user.output.dir}">
       <fileset dir="${module.eiana-web-user.basedir}/src">
         <patternset refid="compiler.resources"/>
@@ -113,25 +124,21 @@
       </fileset>
     </copy>
   </target>
-
+  
   <target name="compile.module.eiana-web-user.tests" depends="compile.module.eiana-web-user.production" description="compile module eiana-web-user; test classes" unless="skip.tests"/>
-
+  
   <target name="clean.module.eiana-web-user" description="cleanup module">
     <delete dir="${eiana-web-user.output.dir}"/>
     <delete dir="${eiana-web-user.testoutput.dir}"/>
   </target>
-
+  
   <property name="eiana-web-user.dir.exploded" value="${module.eiana-web-user.basedir}/exploded"/>
-  <property name="eiana-web-user.path.jar" value="${module.eiana-web-user.basedir}/rzm.war"/>
   <target name="j2ee.build.eiana-web-user" depends="compile.module.eiana-web-user, compile.module.common-codevalues, compile.module.common-criteria, compile.module.common-dns, compile.module.common-objectdiff, compile.module.eiana-notifications, compile.module.eiana-util, compile.module.eiana-web-common, compile.module.facade-common, compile.module.facade-system, compile.module.integration-rt, compile.module.integration-securid" description="Build configured Java EE directories and archives for module 'eiana-web-user'">
     <antcall target="j2ee.build.exploded.eiana-web-user">
       <param name="j2ee.dir.exploded" value="${eiana-web-user.dir.exploded}"/>
     </antcall>
-    <antcall target="j2ee.build.jar.eiana-web-user">
-      <param name="j2ee.path.jar" value="${eiana-web-user.path.jar}"/>
-    </antcall>
   </target>
-
+  
   <!-- Call the target to build exploded directory for module 'eiana-web-user'.
        Path to the exploded directory is specified by parameter 'j2ee.dir.exploded' -->
   <target name="j2ee.build.exploded.eiana-web-user" description="Build exploded directory for module 'eiana-web-user'">
@@ -154,6 +161,8 @@
     <copy file="${module.eiana-web-user.basedir}/../lib/aspectj/aspectjrt.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/aspectjrt.jar"/>
     <copy file="${module.eiana-web-user.basedir}/../lib/spring/spring.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/spring.jar"/>
     <copy file="${module.eiana-web-user.basedir}/../lib/spring/spring-mock.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/spring-mock.jar"/>
+    <copy file="${module.eiana-web-user.basedir}/../lib/secureId/SecureID.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/SecureID.jar"/>
+    <copy file="${module.eiana-web-user.basedir}/../lib/secureId/authapi.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/authapi.jar"/>
     <copy file="${module.eiana-web-user.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/rzmTapestry4components.jar"/>
     <copy file="${module.eiana-web-user.basedir}/../lib/nask-commons/common-cache.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/common-cache.jar"/>
     <copy file="${module.eiana-web-user.basedir}/../lib/nask-commons/util.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/util.jar"/>
@@ -232,7 +241,7 @@
       <fileset dir="${module.eiana-web-user.basedir}/../build/classes/production/eiana-web-user"/>
     </copy>
   </target>
-
+  
   <!-- Call the target to build war archive for module 'eiana-web-user'.
        Path to the archive file is specified by parameter 'j2ee.path.jar' -->
   <target name="j2ee.build.jar.eiana-web-user" description="Build Java EE archive for module 'eiana-web-user'">
@@ -278,15 +287,27 @@
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/dnsjava/dnsjava-2.0.3.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/dom4j/dom4j-1.6.1.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/antlr-2.7.6.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/asm.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/cglib-2.1.3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/ehcache-1.2.3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate-annotations.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate-tools.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/mchange/c3p0-0.9.1.2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/jdom/jdom.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/log4j/log4j-1.2.14.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/nask-commons/util.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/nask-commons/common-cache.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/secureId/authapi.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/secureId/SecureID.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/spring/spring-mock.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/spring/spring.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/aspectj/aspectjrt.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/aspectj/aspectjweaver.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-user.basedir}/../lib/quartz/quartz-all-1.6.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/manTap4Library-1.8.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/oro-2.0.8.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/hivemind-1.1.1.jar" prefix="WEB-INF/lib"/>
@@ -300,9 +321,6 @@
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/../lib/tapestry/Tapestry4Commons.jar" prefix="WEB-INF/lib"/>
-       <zipfileset file="${module.eiana-web-user.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
-        <zipfileset file="${module.eiana-web-user.basedir}/../lib/secureId/authapi.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-user.basedir}/../lib/secureId/SecureID.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-user.basedir}/rzm/WEB-INF/web.xml" prefix="WEB-INF"/>
     </jar>
   </target>

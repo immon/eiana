@@ -33,8 +33,10 @@ public class SingleParameter extends AbstractParameter {
     }
 
     public void setValue(String value) {
+/*
         if (value == null || value.trim().length() == 0)
             throw new IllegalArgumentException("parameter value cannot be null or empty");
+*/
         this.value = value;
     }
 
