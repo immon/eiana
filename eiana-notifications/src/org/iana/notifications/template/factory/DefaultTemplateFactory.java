@@ -32,6 +32,8 @@ public class DefaultTemplateFactory implements TemplateFactory {
 
     private StringTemplateAlgorithm defaultTemplateAlgorithm;
 
+    public static final String KEY = "key";
+
     public static final String KEY_FILENAME = "keyFilename";
 
     public static final String KEY_PASSPHRASE = "keyPassphrase";
@@ -62,9 +64,11 @@ public class DefaultTemplateFactory implements TemplateFactory {
                     if (def != null) {
                         Template ret = new SimpleTemplate(def.getSubject(), def.getContent(), defaultTemplateAlgorithm);
                         if (def.isSigned()) {
+                            String key = getKey();
                             String keyFilename = getKeyFilename(def.getKeyFileName());
                             String keyPassphrase = getKeyPassphrase(def.getKeyPassphrase());
-                            ret = new PGPTemplate(ret, load(keyFilename), keyPassphrase);
+                            String pgpKey = key == null ? load(keyFilename) : key;
+                            ret = new PGPTemplate(ret, pgpKey, keyPassphrase);
                         }
                         templates.put(name, ret);
                         return ret;
@@ -73,6 +77,19 @@ public class DefaultTemplateFactory implements TemplateFactory {
             }
         } catch (IOException e) {
             logger.warn("can't initialize template - pgp key loading failed", e);
+        }
+        return null;
+    }
+
+    private String getKey() {
+        try {
+            if (config != null) {
+                String keyFilename = config.getParameter(KEY);
+                if (keyFilename != null) {
+                    return keyFilename;
+                }
+            }
+        } catch (ConfigException e) {
         }
         return null;
     }
