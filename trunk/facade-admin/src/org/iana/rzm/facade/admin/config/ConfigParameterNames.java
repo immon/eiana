@@ -50,6 +50,8 @@ public abstract class ConfigParameterNames {
 
     private static final String EMAIL_PGP_SIGNATURE_CLASS = DefaultTemplateFactory.class.getSimpleName();
 
+    public static final String EMAIL_PGP_PRIVATE_KEY = EMAIL_PGP_SIGNATURE_CLASS + "." + DefaultTemplateFactory.KEY;
+
     public static final String EMAIL_PGP_PRIVATE_KEY_FILENAME = EMAIL_PGP_SIGNATURE_CLASS + "." + DefaultTemplateFactory.KEY_FILENAME;
 
     public static final String EMAIL_PGP_PRIVATE_KEY_PASSPHRASE = EMAIL_PGP_SIGNATURE_CLASS + "." +  DefaultTemplateFactory.KEY_PASSPHRASE;
