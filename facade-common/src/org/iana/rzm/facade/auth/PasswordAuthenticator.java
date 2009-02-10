@@ -33,6 +33,9 @@ public class PasswordAuthenticator implements AuthenticationService {
         if (!user.isValidPassword(passData.getPassword())) {
             throw new AuthenticationFailedException("Password is not valid.");
         }
+        if (user.hasExpiredPassword()) {
+            throw new PasswordExpiredException();
+        }
         if (!user.isActive()) {
             throw new AuthenticationFailedException("User is not active.");
         }
