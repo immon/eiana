@@ -44,6 +44,8 @@ public class StatelessAdminUserServiceImpl implements StatelessAdminUserService 
     public void createUser(UserVO userVO, AuthenticatedUser authUser) throws AccessDeniedException {
         CheckTool.checkNull(userVO, "userVO");
         RZMUser newUser = UserConverter.convert(userVO);
+        // new users always created with the expired password!
+        newUser.setPasswordExDate(new Timestamp(System.currentTimeMillis()-1));
         for (Role role : newUser.getRoles()) {
             role.setObjId(null);
             if (role instanceof SystemRole) {
