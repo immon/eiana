@@ -18,6 +18,7 @@ public class UserVO implements Trackable, Serializable {
     private String organization;
     private String email;
     private String password;
+    private Timestamp passwordExDate;
     private boolean securID;
     private Set<RoleVO> roles = new HashSet<RoleVO>();
 
@@ -63,6 +64,14 @@ public class UserVO implements Trackable, Serializable {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public Timestamp getPasswordExDate() {
+        return passwordExDate;
+    }
+
+    public void setPasswordExDate(Timestamp passwordExDate) {
+        this.passwordExDate = passwordExDate;
     }
 
     public String getEmail() {
@@ -204,4 +213,5 @@ public class UserVO implements Trackable, Serializable {
     public void setTrackData(TrackDataVO trackData) {
         this.trackData = trackData;
     }
+
 }

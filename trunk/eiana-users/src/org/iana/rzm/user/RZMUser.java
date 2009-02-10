@@ -146,6 +146,18 @@ public class RZMUser  implements TrackedObject, Cloneable {
         return this.password.isValid(password);
     }
 
+    public boolean hasExpiredPassword() {
+        return this.password.isExpired();
+    }
+
+    public void setPasswordExDate(Timestamp exDate) {
+        this.password.setExDate(exDate);
+    }
+
+    public Timestamp getPasswordExDate() {
+        return this.password.getExDate();
+    }
+
     public boolean isSecurID() {
         return securID;
     }
@@ -359,4 +371,5 @@ public class RZMUser  implements TrackedObject, Cloneable {
     public void resetPasswordChangeToken() {
         passwordChangeToken = null;
     }
+
 }

@@ -1,5 +1,7 @@
 package org.iana.rzm.user;
 
+import java.sql.Timestamp;
+
 /**
  * <p>
  * The password interface to generlize manipulation of different forms of passwords (MD5, plain-text, SHA-1 etc.).
@@ -31,5 +33,11 @@ public interface Password extends Cloneable {
      */
     public boolean isValid(String password);
 
+    public boolean isExpired();
+
     public Object clone() throws CloneNotSupportedException;
+
+    public Timestamp getExDate();
+
+    public void setExDate(Timestamp exDate);
 }
