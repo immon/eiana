@@ -738,4 +738,24 @@ Current domain: {domainName} has special review flag set on.
 <iana:signed>false</iana:signed>
 </iana:template>
 
+    <!--TODO subject and body-->
+<iana:template>
+<iana:type>manual-review</iana:type>
+<iana:subject>Request {ticket} for domain {domainName} in manual review state</iana:subject>
+<iana:content>
+Dear Admin,
+
+There is a new request created by {subbmiter} for domain {domainName}.
+
+Domain has special review flag set {specialReviewFlag}.
+
+Domain special instructions: {specialInstructions}.
+
+Request change data:
+{changes}
+
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
 </iana:templates>

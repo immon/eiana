@@ -516,6 +516,13 @@
         <constructor-arg index="3" ref="specialReviewDataProducer"/>
     </bean>
 
+    <bean id="manualReviewNotificationProducer" class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="adminAddresseeProducer"/>
+        <constructor-arg index="2" ref="manualReviewTemplateProducer"/>
+        <constructor-arg index="3" ref="manualReviewDataProducer"/>
+    </bean>
+
     <bean id="contactConfirmationACNotificationProducer"
           class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
@@ -738,6 +745,13 @@
         </property>
     </bean>
 
+    <bean id="manualReviewTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>manual-review</value>
+        </property>
+    </bean>
+
     <bean id="adminClosedTemplateProducer"
           class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
@@ -857,6 +871,9 @@
 
     <bean id="specialReviewDataProducer"
           class="org.iana.rzm.trans.notifications.review.SpecialReviewDataProducer"/>
+
+    <bean id="manualReviewDataProducer"
+          class="org.iana.rzm.trans.notifications.review.ManualReviewDataProducer"/>
 
     <!-- Technical checks -->
 
