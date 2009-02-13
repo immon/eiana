@@ -9,9 +9,21 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>generateZoneFile</servlet-name>
+        <servlet-class>org.iana.rzm.facade.admin.servlet.ZoneGeneratorServlet</servlet-class>
+        <load-on-startup>10</load-on-startup>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>remoting</servlet-name>
         <url-pattern>/remoting/*</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>generateZoneFile</servlet-name>
+        <url-pattern>/generateZoneFile</url-pattern>
     </servlet-mapping>
 
 </web-app>
