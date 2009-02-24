@@ -1,11 +1,11 @@
 package org.iana.rzm.facade.services;
 
-import org.iana.rzm.user.*;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.user.*;
 
 import java.util.*;
 
@@ -55,8 +55,12 @@ abstract public class AbstractRZMStatelessService {
     }
 
     final protected void isIana(AuthenticatedUser user) throws AccessDeniedException {
+        if (!checkIsIana(user)) throw new AccessDeniedException("authenticated user not in the role IANA");
+    }
+
+    final protected boolean checkIsIana(AuthenticatedUser user) throws AccessDeniedException {
         RZMUser rzmUser = getRZMUser(user);
-        if (!rzmUser.isInRole(IANA)) throw new AccessDeniedException("authenticated user not in the role IANA");
+        return rzmUser.isInRole(IANA);
     }
 
     final protected void isGov(AuthenticatedUser user) throws AccessDeniedException {

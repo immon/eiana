@@ -82,7 +82,7 @@
     <bean id="GuardedAdminTransactionServiceBean"
           class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
         <constructor-arg index="0" ref="userVOManager"/>
-        <constructor-arg index="1" ref="guardedStatelessAdminTransactionService"/>
+        <constructor-arg index="1" ref="guardedStatelessIanaTransactionService"/>
     </bean>
 
     <bean id="guardedAdminTransactionService"
@@ -93,6 +93,19 @@
 
     <bean id="guardedStatelessAdminTransactionService"
           class="org.iana.rzm.facade.admin.trans.GuardedStatelessAdminTransactionService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="guardedStatelessIanaTransactionService"/>
+        <constructor-arg index="2" ref="guardedStatelessDoCTransactionService"/>
+    </bean>
+
+    <bean id="guardedStatelessIanaTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedStatelessIanaTransactionService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminTransactionService"/>
+    </bean>
+
+    <bean id="guardedStatelessDoCTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedStatelessDoCTransactionService">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="statelessAdminTransactionService"/>
     </bean>
