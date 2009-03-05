@@ -79,6 +79,18 @@
 
     <!-- ######################################################################## -->
 
+    <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.AdminEmailTemplateManagerImpl">
+        <constructor-arg ref="templatesConfig"/>
+    </bean>
+
+    <bean id="templatesConfig" class="org.iana.notifications.template.def.dao.HibernateTemplateDefDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    
+    <!-- ######################################################################## -->
+
     <bean id="GuardedAdminTransactionServiceBean"
           class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
         <constructor-arg index="0" ref="userVOManager"/>

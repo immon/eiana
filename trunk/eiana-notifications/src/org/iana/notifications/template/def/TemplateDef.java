@@ -3,14 +3,30 @@
  */
 package org.iana.notifications.template.def;
 
+import org.hibernate.annotations.CollectionOfElements;
+
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.Set;
+
+@Entity
 public class TemplateDef {
+    @Id
     private String type;
+    @Basic
     private String subject;
+    @Basic
     private String content;
+    @Basic
     private boolean signed;
+    @Basic
     private String keyFileName;
+    @Basic
     private String keyPassphrase;
 
+    @CollectionOfElements
+    private Set<String> addressees;
 
     public String getType() {
         return type;
@@ -64,4 +80,11 @@ public class TemplateDef {
         this.keyPassphrase = keyPassphrase;
     }
 
+    public Set<String> getAddressees() {
+        return addressees;
+    }
+
+    public void setAddressees(Set<String> addressees) {
+        this.addressees = addressees;
+    }
 }

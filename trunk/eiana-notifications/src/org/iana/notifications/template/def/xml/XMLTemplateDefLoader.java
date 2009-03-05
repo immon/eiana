@@ -1,11 +1,15 @@
-package org.iana.notifications.template.def;
+package org.iana.notifications.template.def.xml;
 
+import org.iana.notifications.template.def.TemplateDef;
+import org.iana.notifications.template.def.TemplateDefConfig;
+import org.iana.notifications.template.def.TemplateInitializationException;
 import pl.nask.xml.dynamic.DynaXMLParser;
 import pl.nask.xml.dynamic.config.DPConfig;
 import pl.nask.xml.dynamic.env.Environment;
 import pl.nask.xml.dynamic.exceptions.DynaXMLException;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -46,4 +50,19 @@ public class XMLTemplateDefLoader implements TemplateDefConfig {
         return config.getTemplateDef(name);
     }
 
+    public void create(TemplateDef def) {
+        config.create(def);
+    }
+
+    public void update(TemplateDef def) {
+        config.update(def);
+    }
+
+    public void delete(String name) {
+        config.delete(name);
+    }
+
+    public List<TemplateDef> getTemplateDefs() {
+        return null;
+    }
 }
