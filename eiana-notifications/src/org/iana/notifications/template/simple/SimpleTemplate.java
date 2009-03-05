@@ -1,6 +1,7 @@
 package org.iana.notifications.template.simple;
 
 import org.iana.notifications.PContent;
+import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -15,6 +16,8 @@ public class SimpleTemplate implements Template {
     private String bodyTemplate;
 
     private StringTemplateAlgorithm algorithm;
+
+    private AddresseeProducer addresseeProducer;
 
     public SimpleTemplate(String subjectTemplate, String bodyTemplate, StringTemplateAlgorithm algorithm) {
         CheckTool.checkNull(subjectTemplate, "subject template string");
@@ -33,6 +36,15 @@ public class SimpleTemplate implements Template {
         } catch (StringTemplateException e) {
             throw new TemplateInstantiationException(e);
         }
+    }
+
+
+    public AddresseeProducer getAddresseeProducer() {
+        return addresseeProducer;
+    }
+
+    public void setAddresseeProducer(AddresseeProducer addresseeProducer) {
+        this.addresseeProducer = addresseeProducer;
     }
 
 }

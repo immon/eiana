@@ -1,12 +1,12 @@
 /**
  * @author Piotr Tkaczyk
  */
-package org.iana.notifications.template.def;
+package org.iana.notifications.template.def.xml;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.iana.notifications.template.def.TemplateDef;
+import org.iana.notifications.template.def.TemplateDefConfig;
+
+import java.util.*;
 
 public class XMLTemplateDefConfig implements TemplateDefConfig {
 
@@ -61,5 +61,22 @@ public class XMLTemplateDefConfig implements TemplateDefConfig {
 
     public TemplateDef getTemplateDef(String name) {
         return templates.get(name);
+    }
+
+
+    public void create(TemplateDef def) {
+        throw new UnsupportedOperationException("create");
+    }
+
+    public void update(TemplateDef def) {
+        throw new UnsupportedOperationException("update");
+    }
+
+    public void delete(String name) {
+        throw new UnsupportedOperationException("delete");
+    }
+
+    public List<TemplateDef> getTemplateDefs() {
+        return Collections.EMPTY_LIST;
     }
 }

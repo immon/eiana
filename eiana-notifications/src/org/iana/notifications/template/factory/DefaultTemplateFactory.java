@@ -1,6 +1,11 @@
 package org.iana.notifications.template.factory;
 
 import org.apache.log4j.Logger;
+import org.iana.config.Config;
+import org.iana.config.ParameterManager;
+import org.iana.config.impl.ConfigException;
+import org.iana.config.impl.OwnedConfig;
+import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.def.TemplateDef;
 import org.iana.notifications.template.def.TemplateDefConfig;
@@ -8,10 +13,6 @@ import org.iana.notifications.template.pgp.PGPTemplate;
 import org.iana.notifications.template.simple.SimpleTemplate;
 import org.iana.notifications.template.simple.StringTemplateAlgorithm;
 import org.iana.rzm.common.validators.CheckTool;
-import org.iana.config.Config;
-import org.iana.config.ParameterManager;
-import org.iana.config.impl.ConfigException;
-import org.iana.config.impl.OwnedConfig;
 
 import java.io.*;
 import java.util.HashMap;
@@ -25,6 +26,10 @@ public class DefaultTemplateFactory implements TemplateFactory {
     private static Logger logger = Logger.getLogger(DefaultTemplateFactory.class);
 
     private Map<String, Template> templates = new HashMap<String, Template>();
+
+    private Map<String, AddresseeProducer> producers = new HashMap<String, AddresseeProducer>();
+
+    private AddresseeProducer defaultProducer;
 
     private TemplateDefConfig templateConfig;
 
@@ -56,6 +61,15 @@ public class DefaultTemplateFactory implements TemplateFactory {
         return templates.get(name);
     }
 
+    public void setProducers(Map<String, AddresseeProducer> producers) {
+        CheckTool.checkNull(producers, "producers");
+        this.producers = producers;
+    }
+
+    public void setDefaultProducer(AddresseeProducer defaultProducer) {
+        this.defaultProducer = defaultProducer;
+    }
+
     private Template initTemplate(String name) {
         try {
             synchronized (templates) {
@@ -63,6 +77,9 @@ public class DefaultTemplateFactory implements TemplateFactory {
                     TemplateDef def = templateConfig.getTemplateDef(name);
                     if (def != null) {
                         Template ret = new SimpleTemplate(def.getSubject(), def.getContent(), defaultTemplateAlgorithm);
+                        if (def.getAddressees() != null && !def.getAddressees().isEmpty()) {
+                            ret.setAddresseeProducer(new ConfiguredRecipients(producers, defaultProducer, def.getAddressees()));
+                        }
                         if (def.isSigned()) {
                             String key = getKey();
                             String keyFilename = getKeyFilename(def.getKeyFileName());

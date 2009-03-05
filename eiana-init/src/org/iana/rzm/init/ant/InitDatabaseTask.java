@@ -5,12 +5,15 @@ import org.iana.config.Config;
 import org.iana.config.Parameter;
 import org.iana.config.impl.SingleParameter;
 import org.iana.dns.validator.InvalidIPAddressException;
+import org.iana.notifications.template.def.TemplateDef;
 import org.iana.rzm.domain.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * @author Jakub Laszkiewicz
@@ -157,6 +160,25 @@ public class InitDatabaseTask extends HibernateTask {
         singleParam.setFromDate(System.currentTimeMillis());
         singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
         session.save(singleParam);
+
+        TemplateDef templateDef = new TemplateDef();
+        templateDef.setType("manual-review");
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("t1@b.c", "t2@b.c")));
+        templateDef.setSubject("Database Template Request {ticket} for domain {domainName} in manual review state");
+        templateDef.setContent("" +
+                "Dear Admin,\n" +
+                "\n" +
+                "There is a new request created by {subbmiter} for domain {domainName}.\n" +
+                "\n" +
+                "Domain has special review flag set {specialReviewFlag}.\n" +
+                "\n" +
+                "Domain special instructions: {specialInstructions}.\n" +
+                "\n" +
+                "Request change data:\n" +
+                "{changes}");
+        templateDef.setSigned(false);
+        session.save(templateDef);
+
     }
 
 
