@@ -7,6 +7,7 @@ import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.OwnedConfig;
 import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.notifications.template.Template;
+import org.iana.notifications.template.TemplateNotFoundException;
 import org.iana.notifications.template.def.TemplateDef;
 import org.iana.notifications.template.def.TemplateDefConfig;
 import org.iana.notifications.template.pgp.PGPTemplate;
@@ -28,8 +29,6 @@ public class DefaultTemplateFactory implements TemplateFactory {
     private Map<String, Template> templates = new HashMap<String, Template>();
 
     private Map<String, AddresseeProducer> producers = new HashMap<String, AddresseeProducer>();
-
-    private AddresseeProducer defaultProducer;
 
     private TemplateDefConfig templateConfig;
 
@@ -54,9 +53,10 @@ public class DefaultTemplateFactory implements TemplateFactory {
         config = new OwnedConfig(manager).getSubConfig(getClass().getSimpleName());
     }
 
-    public Template getTemplate(String name) {
+    public Template getTemplate(String name) throws TemplateNotFoundException {
         if (!templates.containsKey(name)) {
-            return initTemplate(name);
+            Template t = initTemplate(name);
+            if (t == null) throw new TemplateNotFoundException(name);
         }
         return templates.get(name);
     }
@@ -66,11 +66,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
         this.producers = producers;
     }
 
-    public void setDefaultProducer(AddresseeProducer defaultProducer) {
-        this.defaultProducer = defaultProducer;
-    }
-
-    private Template initTemplate(String name) {
+    private Template initTemplate(String name) throws TemplateNotFoundException {
         try {
             synchronized (templates) {
                 if (!templates.containsKey(name)) {
@@ -78,7 +74,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
                     if (def != null) {
                         Template ret = new SimpleTemplate(def.getSubject(), def.getContent(), defaultTemplateAlgorithm);
                         if (def.getAddressees() != null && !def.getAddressees().isEmpty()) {
-                            ret.setAddresseeProducer(new ConfiguredRecipients(producers, defaultProducer, def.getAddressees()));
+                            ret.setAddresseeProducer(new ConfiguredRecipients(producers, def.getAddressees()));
                         }
                         if (def.isSigned()) {
                             String key = getKey();
@@ -89,6 +85,8 @@ public class DefaultTemplateFactory implements TemplateFactory {
                         }
                         templates.put(name, ret);
                         return ret;
+                    } else {
+                        throw new TemplateNotFoundException(name);
                     }
                 }
             }

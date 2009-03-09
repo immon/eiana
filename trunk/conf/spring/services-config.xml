@@ -479,15 +479,77 @@
     <!-- Content -->
 
     <bean id="templateFactory" class="org.iana.notifications.template.factory.DefaultTemplateFactory">
-        <constructor-arg index="0">
-            <bean class="org.iana.notifications.template.def.XMLTemplateDefLoader">
-                <constructor-arg value="iana-templates.properties"/>
-                <constructor-arg value="templates.xml"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg index="0" ref="templatesConfig" />
         <constructor-arg index="1">
             <bean class="org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm"/>
         </constructor-arg>
+        <property name="producers">
+            <map>
+                <entry key="AC">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
+                        <constructor-arg index="0" value="AC" />
+                    </bean>
+                </entry>
+                <entry key="TC">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
+                        <constructor-arg index="0" value="TC" />
+                    </bean>
+                </entry>
+                <entry key="SO">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
+                        <constructor-arg index="0" value="SO" />
+                    </bean>
+                </entry>
+                <entry key="AC_CONFIRM">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
+                        <constructor-arg index="0" value="AC" />
+                    </bean>
+                </entry>
+                <entry key="TC_CONFIRM">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
+                        <constructor-arg index="0" value="TC" />
+                    </bean>
+                </entry>
+                <entry key="SO_CONFIRM">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
+                        <constructor-arg index="0" value="SO" />
+                    </bean>
+                </entry>
+                <entry key="AC_NEW">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
+                        <constructor-arg index="0" value="AC" />
+                    </bean>
+                </entry>
+                <entry key="TC_NEW">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
+                        <constructor-arg index="0" value="TC" />
+                    </bean>
+                </entry>
+                <entry key="SO_NEW">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
+                        <constructor-arg index="0" value="SO" />
+                    </bean>
+                </entry>
+                <entry key="AC_IMPACTED_PARTIES">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
+                        <constructor-arg index="0" value="AC" />
+                    </bean>
+                </entry>
+                <entry key="TC_IMPACTED_PARTIES">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
+                        <constructor-arg index="0" value="TC" />
+                    </bean>
+                </entry>
+                <entry key="SO_IMPACTED_PARTIES">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
+                        <constructor-arg index="0" value="SO" />
+                    </bean>
+                </entry>
+                <entry key="SUBMITTER">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.SubmitterRecipients" />
+                </entry>
+            </map>
+        </property>
     </bean>
 
     <!-- transaction notification sender -->
