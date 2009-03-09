@@ -1,7 +1,7 @@
 package org.iana.rzm.trans.notifications.recipients;
 
-import org.apache.log4j.Logger;
 import org.iana.notifications.PAddressee;
+import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.trans.TransactionData;
@@ -13,9 +13,7 @@ import java.util.Set;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class NewContactRecipients {
-
-    private static Logger logger = Logger.getLogger(ContactRecipients.class);
+public class NewContactRecipients implements AddresseeProducer {
 
     private Contact.Role contactRole;
 
