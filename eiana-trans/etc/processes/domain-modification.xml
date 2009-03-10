@@ -133,11 +133,11 @@
             <event type='node-enter'>
                 <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationCalculator"/>
                 <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
-                    <notificationProducerName>contactConfirmationACNotificationProducer</notificationProducerName>
+                    <notificationProducerName>contactConfirmationNotificationProducer</notificationProducerName>
                 </action>
-                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
-                    <notificationProducerName>contactConfirmationTCNotificationProducer</notificationProducerName>
-                </action>
+                <!--<action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">-->
+                    <!--<notificationProducerName>contactConfirmationTCNotificationProducer</notificationProducerName>-->
+                <!--</action>-->
                 <!--
                             <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
                             <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">

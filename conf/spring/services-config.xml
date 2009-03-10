@@ -610,6 +610,15 @@
         <constructor-arg index="3" ref="manualReviewDataProducer"/>
     </bean>
 
+    <bean id="contactConfirmationNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
+        <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
+        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
     <bean id="contactConfirmationACNotificationProducer"
           class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
