@@ -619,34 +619,26 @@
         <property name="persistent" value="true"/>
     </bean>
 
-    <bean id="contactConfirmationACNotificationProducer"
-          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
-        <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
-        <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
-        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
-        <property name="persistent" value="true"/>
-    </bean>
+    <!-- Unused since template are stored in db -->
+    <!--<bean id="contactConfirmationACNotificationProducer"-->
+          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+        <!--<constructor-arg index="0" ref="templateFactory"/>-->
+        <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+        <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
+        <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+        <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
 
-    <bean id="contactConfirmationTCNotificationProducer"
-          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
-        <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>
-        <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
-        <constructor-arg index="3" ref="contactConfirmationTCDataProducer"/>
-        <property name="persistent" value="true"/>
-    </bean>
+    <!--<bean id="contactConfirmationTCNotificationProducer"-->
+          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+        <!--<constructor-arg index="0" ref="templateFactory"/>-->
+        <!--<constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>-->
+        <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
+        <!--<constructor-arg index="3" ref="contactConfirmationTCDataProducer"/>-->
+        <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
 
-    <bean id="contactConfirmationRemainderACNotificationProducer"
-          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
-        <constructor-arg index="0" ref="templateFactory"/>
-        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
-        <constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>
-        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
-        <property name="persistent" value="true"/>
-    </bean>
-
-    <bean id="contactConfirmationRemainderTCNotificationProducer"
+    <bean id="contactConfirmationRemainderNotificationProducer"
           class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
@@ -654,6 +646,25 @@
         <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
         <property name="persistent" value="true"/>
     </bean>
+
+    <!-- Unused since template are stored in db -->
+    <!--<bean id="contactConfirmationRemainderACNotificationProducer"-->
+          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+        <!--<constructor-arg index="0" ref="templateFactory"/>-->
+        <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+        <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
+        <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+        <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="contactConfirmationRemainderTCNotificationProducer"-->
+          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+        <!--<constructor-arg index="0" ref="templateFactory"/>-->
+        <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+        <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
+        <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+        <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
 
     <bean id="exceptionNotificationProducer"
           class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
@@ -739,6 +750,7 @@
     </bean>
 
     <!-- Addressee producers -->
+
 
     <bean id="contactConfirmationACAddresseeProducer"
           class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACAddresseeProducer"/>
