@@ -530,7 +530,7 @@
         </replace>
     </target>
 
-    <target name="all.test" depends="clean, replace.services, all.compile, database.test.dropCreate, database.init.forTests" description="runs all test from groups that is equal to property value (test.group)
+    <target name="all.test" depends="clean, replace.services, all.compile, database.test.dropCreate, database.init.forTests, database.init.templateDef" description="runs all test from groups that is equal to property value (test.group)
      and excludes all tests from groups that is equal to property value (test.group.excluded).">
 
         <condition property="test.group.excluded" value="">
