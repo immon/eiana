@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.user;
 
-import java.io.*;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -44,6 +44,18 @@ public class RoleVO implements Serializable {
      * @return is role is the Admin role
      */
     public boolean isAdmin() {
+        return false;
+    }
+
+    public boolean isIANAAdmin() {
+        return false;
+    }
+
+    public boolean isUSDoCAdmin() {
+        return false;
+    }
+
+    public boolean isZonePublisherAdmin() {
         return false;
     }
 

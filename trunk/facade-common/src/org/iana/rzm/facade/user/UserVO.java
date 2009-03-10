@@ -1,10 +1,14 @@
 package org.iana.rzm.facade.user;
 
-import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.common.TrackDataVO;
+import org.iana.rzm.facade.common.Trackable;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -87,6 +91,36 @@ public class UserVO implements Trackable, Serializable {
 
         for (RoleVO role : roles) {
             if (role.isAdmin()) return true;
+        }
+
+        return false;
+    }
+
+    public boolean isIANAAdmin() {
+        if (roles == null) return false;
+
+        for (RoleVO role : roles) {
+            if (role.isIANAAdmin()) return true;
+        }
+
+        return false;
+    }
+
+    public boolean isUSDoCAdmin() {
+        if (roles == null) return false;
+
+        for (RoleVO role : roles) {
+            if (role.isUSDoCAdmin()) return true;
+        }
+
+        return false;
+    }
+
+    public boolean isZonePublisherAdmin() {
+        if (roles == null) return false;
+
+        for (RoleVO role : roles) {
+            if (role.isZonePublisherAdmin()) return true;
         }
 
         return false;

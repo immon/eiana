@@ -31,6 +31,18 @@ public class AdminRoleVO extends RoleVO {
         return true;
     }
 
+    public boolean isIANAAdmin() {
+        return AdminType.IANA.equals(getType());
+    }
+
+    public boolean isUSDoCAdmin() {
+        return AdminType.GOV_OVERSIGHT.equals(getType());
+    }
+
+    public boolean isZonePublisherAdmin() {
+        return AdminType.ZONE_PUBLISHER.equals(getType());
+    }
+
     public boolean equals(Object object) {
         return object instanceof AdminRoleVO && super.equals(object);
     }
