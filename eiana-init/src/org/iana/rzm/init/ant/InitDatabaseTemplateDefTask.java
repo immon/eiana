@@ -552,15 +552,6 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         session.save(templateDef);
 
         templateDef = new TemplateDef();
-        templateDef.setType("rejected");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
-        templateDef.setSubject("Domain modification");
-        templateDef.setContent(
-                "Rejected.");
-        templateDef.setSigned(false);
-        session.save(templateDef);
-
-        templateDef = new TemplateDef();
         templateDef.setType("technical-check-period");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
         templateDef.setSubject("Domain {domainName} technical checks");

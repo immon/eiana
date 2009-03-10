@@ -6,6 +6,7 @@ package org.iana.notifications.template.def;
 import org.hibernate.annotations.CollectionOfElements;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Set;
@@ -15,8 +16,10 @@ public class TemplateDef {
     @Id
     private String type;
     @Basic
+    @Column(length = 1024)
     private String subject;
     @Basic
+    @Column(length = 4096)
     private String content;
     @Basic
     private boolean signed;

@@ -9,6 +9,7 @@ import org.iana.notifications.producers.NotificationProducerException;
 import org.iana.notifications.producers.TemplateNameProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
+import org.iana.notifications.template.TemplateNotFoundException;
 import org.iana.notifications.template.factory.TemplateFactory;
 
 import java.util.*;
@@ -48,6 +49,8 @@ public class SplittedByAddresseeProducer extends AbstractNotificationProducer {
                 }
             }
             return notifications;
+        } catch (TemplateNotFoundException e) {
+            throw new NotificationProducerException(e);
         } catch (TemplateInstantiationException e) {
             throw new NotificationProducerException(e);
         }
