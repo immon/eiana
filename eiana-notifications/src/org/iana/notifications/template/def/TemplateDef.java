@@ -4,6 +4,7 @@
 package org.iana.notifications.template.def;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.iana.notifications.template.def.xml.AddresseeHelper;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -89,5 +90,9 @@ public class TemplateDef {
 
     public void setAddressees(Set<String> addressees) {
         this.addressees = addressees;
+    }
+
+    public void setAddressees(AddresseeHelper adrrHelp) {
+        this.addressees = adrrHelp.getAddreessees();
     }
 }

@@ -80,13 +80,27 @@
     <!-- ######################################################################## -->
 
     <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.AdminEmailTemplateManagerImpl">
-        <constructor-arg ref="templatesConfig"/>
+        <constructor-arg ref="templatesConfigLoader"/>
     </bean>
 
-    <bean id="templatesConfig" class="org.iana.notifications.template.def.dao.HibernateTemplateDefDAO">
+    <bean id="dbTemplatesConfig" class="org.iana.notifications.template.def.dao.HibernateTemplateDefDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
+    </bean>
+
+    <bean id="xmlTemplatesConfig" class="org.iana.notifications.template.def.xml.XMLTemplateDefLoader">
+        <constructor-arg index="0" value="iana-templates.properties" />
+        <constructor-arg index="1" value="templates.xml" />
+    </bean>
+
+    <bean id="templatesConfigLoader" class="org.iana.notifications.template.def.TemplateDefConfigLoader">
+        <constructor-arg>
+            <list>
+                <ref bean="dbTemplatesConfig" />
+                <ref bean="xmlTemplatesConfig" />
+            </list>
+        </constructor-arg>
     </bean>
     
     <!-- ######################################################################## -->
@@ -479,7 +493,7 @@
     <!-- Content -->
 
     <bean id="templateFactory" class="org.iana.notifications.template.factory.DefaultTemplateFactory">
-        <constructor-arg index="0" ref="templatesConfig" />
+        <constructor-arg index="0" ref="templatesConfigLoader" />
         <constructor-arg index="1">
             <bean class="org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm"/>
         </constructor-arg>
