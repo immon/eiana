@@ -18,6 +18,17 @@
         </property>
     </bean>
 
+    <bean id="whiteListNotificationSender" class="org.iana.notifications.WhiteListNotificationSender">
+        <constructor-arg ref="persistentNotificationSender"/>
+        <property name="whiteList">
+            <list>
+                <value>correct1@test.iana.org</value>
+                <value>correct2@test.iana.org</value>
+            </list>
+        </property>
+        <property name="defaultEmail" value="default@test.iana.org" />
+    </bean>
+
     <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
         <constructor-arg ref="NotificationSenderBean"/>
         <constructor-arg ref="notificationDAO"/>
@@ -198,7 +209,7 @@
 
     <bean id="statelessAdminNotificationService"
           class="org.iana.rzm.facade.admin.trans.notifications.StatelessAdminNotificationServiceImpl">
-        <constructor-arg index="0" ref="persistentNotificationSender"/>
+        <constructor-arg index="0" ref="whiteListNotificationSender"/>
         <constructor-arg index="1" ref="transactionManagerBean"/>
         <aop:scoped-proxy proxy-target-class="false"/>
     </bean>
@@ -569,7 +580,7 @@
     <!-- transaction notification sender -->
 
     <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSender">
-        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="whiteListNotificationSender"/>
         <constructor-arg ref="ticketingService"/>
     </bean>
 
@@ -1557,7 +1568,7 @@
         </constructor-arg>
         <constructor-arg index="2">
             <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
-                <constructor-arg ref="persistentNotificationSender"/>
+                <constructor-arg ref="whiteListNotificationSender"/>
             </bean>
         </constructor-arg>
     </bean>
@@ -1827,7 +1838,7 @@
 
     <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">
         <constructor-arg ref="userManager"/>
-        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="whiteListNotificationSender"/>
         <constructor-arg>
             <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
                 <constructor-arg ref="templateFactory"/>
