@@ -118,7 +118,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
             if (TransactionState.Name.PENDING_EVALUATION == transaction.getState().getName()) {
                 transition = "accept";
             }
-            transaction.transit(userManager.get(authUser.getUserName()), transition);
+            transaction.transit(authUser.getUserName(), transition);
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
@@ -130,7 +130,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
     public void rejectTransaction(long id, AuthenticatedUser authUser) throws NoObjectFoundException, AccessDeniedException, InfrastructureException {
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            transaction.transit(userManager.get(authUser.getUserName()), "admin-reject");
+            transaction.transit(authUser.getUserName(), "admin-reject");
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
@@ -142,7 +142,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
     public void transitTransaction(long id, String transitionName, AuthenticatedUser authUser) throws NoObjectFoundException, InfrastructureException, AccessDeniedException {
         try {
             Transaction transaction = transactionManager.getTransaction(id);
-            transaction.transit(userManager.get(authUser.getUserName()), transitionName);
+            transaction.transit(authUser.getUserName(), transitionName);
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
@@ -230,7 +230,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
-            transaction.transit(userManager.get(authUser.getUserName()), "admin-accept");
+            transaction.transit(authUser.getUserName(), "admin-accept");
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
@@ -243,7 +243,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
-            transaction.transit(userManager.get(authUser.getUserName()), "admin-reject");
+            transaction.transit(authUser.getUserName(), "admin-reject");
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
@@ -261,7 +261,8 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         }
         try {
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
-            transaction.confirmChangeByUSDoC(userManager.get(authUser.getUserName()),
+
+            transaction.confirmChangeByUSDoC(authUser.getUserName(),
                     nsChange ? TransactionChangeType.NAMESERVER_CHANGE : TransactionChangeType.DATABASE_CHANGE,
                     accept);
             markModified(transaction, authUser);

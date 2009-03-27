@@ -324,15 +324,13 @@
     <!--</bean>-->
 
     <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
-        <constructor-arg>
-            <ref bean="userManager"/>
-        </constructor-arg>
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="parameterManager" />
     </bean>
 
     <bean id="pgpMailAuthenticator" class="org.iana.rzm.facade.auth.PgpMailAuthenticator">
-        <constructor-arg>
-            <ref bean="userManager"/>
-        </constructor-arg>
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="parameterManager" />
     </bean>
 
     <!-- system domain service -->
@@ -572,6 +570,11 @@
                 </entry>
                 <entry key="SUBMITTER">
                     <bean class="org.iana.rzm.trans.notifications.recipients.SubmitterRecipients" />
+                </entry>
+                <entry key="GOV_OVERSIGHT">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients" >
+                        <constructor-arg index="0" value="GOV_OVERSIGHT" />
+                    </bean>
                 </entry>
             </map>
         </property>
@@ -1503,7 +1506,8 @@
     </bean>
 
     <bean id="plainVerisignMailParser" class="org.iana.rzm.mail.processor.verisign.VeriSignMailParser">
-        <constructor-arg index="0" value="rzmsdev@lnxdev-rz163.vrsn.com"/>
+        <!--<constructor-arg index="0" value="rzmsdev@lnxdev-rz163.vrsn.com"/> Verisign email address is now stored in database-->
+        <constructor-arg index="0" ref="parameterManager"/>
         <constructor-arg index="1">
             <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
                 <constructor-arg>

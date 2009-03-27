@@ -313,7 +313,7 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
     public void transitTransaction(long id, String transitionName, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
-            trans.transit(userManager.get(authUser.getUserName()), transitionName);
+            trans.transit(authUser.getUserName(), transitionName);
             markModified(trans, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException(id, "transaction");
