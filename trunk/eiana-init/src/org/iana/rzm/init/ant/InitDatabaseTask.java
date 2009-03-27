@@ -157,6 +157,27 @@ public class InitDatabaseTask extends HibernateTask {
         singleParam.setFromDate(System.currentTimeMillis());
         singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
         session.save(singleParam);
+        singleParam = new SingleParameter("usdocEmail", "usdoc@wrong.email.com.tv");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter("usdocPublicKey", "123afe32dc");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter("verisignEmail", "verisign@wrong.email.com.tv");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+        singleParam = new SingleParameter("verisignPublicKey", "321afe221dc");
+        singleParam.setOwner(Config.DEFAULT_OWNER);
+        singleParam.setFromDate(System.currentTimeMillis());
+        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(singleParam);
+
 
     }
 

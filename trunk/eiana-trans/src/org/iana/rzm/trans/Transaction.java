@@ -262,8 +262,8 @@ public class Transaction implements TrackedObject {
         processDAO.signal(pi, EXCEPTION);
     }
 
-    public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
-        getData().setIdentityName(user.getLoginName());
+    public synchronized void transit(String userName, String transitionName) throws TransactionException {
+        getData().setIdentityName(userName);
         processDAO.signal(pi, transitionName);
     }
 
@@ -363,7 +363,7 @@ public class Transaction implements TrackedObject {
         return getData().getUSDoCConfirmation();
     }
 
-    public void confirmChangeByUSDoC(RZMUser identity, TransactionChangeType type, boolean accept) throws TransactionException {
+    public void confirmChangeByUSDoC(String identityName, TransactionChangeType type, boolean accept) throws TransactionException {
         if (getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) {
             throw new IllegalTransactionStateException(getState());
         }
@@ -382,9 +382,9 @@ public class Transaction implements TrackedObject {
         verifyMismatch(accept);
         if (confirmation.isReceived()) {
             if (confirmation.isAccepted()) {
-                transit(identity, "admin-accept");
+                transit(identityName, "admin-accept");
             } else {
-                transit(identity, "admin-reject");
+                transit(identityName, "admin-reject");
             }
         } else {
             logger.info("there still are outstanding confirmation present.");

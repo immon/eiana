@@ -735,7 +735,9 @@ Internet Assigned Numbers Authority
 
 Authorized:
 
-{receipt}
+[+] Begin Change Request Summary: DO NOT EDIT BELOW
+{change}
+[-] End Change Request Summary: DO NOT EDIT ABOVE
 </iana:content>
 <iana:signed>true</iana:signed>
 <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
