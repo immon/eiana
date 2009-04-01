@@ -1,14 +1,17 @@
 package org.iana.rzm.facade.admin.config;
 
+import org.iana.config.Config;
 import org.iana.config.ConfigDAO;
 import org.iana.config.Parameter;
-import org.iana.config.Config;
 import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.SingleParameter;
 import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.facade.admin.config.binded.*;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -49,4 +52,65 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         }
     }
 
+    public void setParameter(BindedParameter parameter) throws InfrastructureException {
+        Map<String, String> values = parameter.getValuesMap();
+        for (String paramName : values.keySet()) {
+            setParameter(paramName, values.get(paramName));
+        }
+    }
+
+    public Pop3Config getPop3Config() throws InfrastructureException {
+        List<String> parameterNames = Pop3Config.getParameterNames();
+        Map<String, String> values = getValuesMap(parameterNames);
+
+        return new Pop3Config(values);
+    }
+
+
+    public SmtpConfig getSmtpConfig() throws InfrastructureException {
+        List<String> parameterNames = SmtpConfig.getParameterNames();
+        Map<String, String> values = getValuesMap(parameterNames);
+
+        return new SmtpConfig(values);
+    }
+
+    public PgpConfig getPgpConfig() throws InfrastructureException {
+        List<String> parameterNames = PgpConfig.getParameterNames();
+        Map<String, String> values = getValuesMap(parameterNames);
+
+        return new PgpConfig(values);
+    }
+
+    public VerisignOrgConfig getVerisignOrgConfig() throws InfrastructureException {
+        List<String> parameterNames = VerisignOrgConfig.getParameterNames();
+        Map<String, String> values = getValuesMap(parameterNames);
+
+        return new VerisignOrgConfig(values);
+    }
+
+    public USDoCOrgConfig getUSDoCOrgConfig(String owner) throws InfrastructureException {
+        List<String> parameterNames = USDoCOrgConfig.getParameterNames();
+        Map<String, String> values = getValuesMap(parameterNames);
+
+        return new USDoCOrgConfig(values);
+    }
+
+    private Map<String, String> getValuesMap(List<String> paramterNames) throws InfrastructureException {
+        try {
+            Map<String, String> values = new HashMap<String, String>();
+
+            for (String paramName : paramterNames) {
+                Parameter param = configDAO.getParameter(Config.DEFAULT_OWNER, paramName);
+                if (param == null) {
+                    values.put(paramName, null);
+                } else {
+                    values.put(paramName, param.getParameter());
+                }
+            }
+
+            return values;
+        } catch (ConfigException e) {
+            throw new InfrastructureException(e);
+        }
+    }
 }
