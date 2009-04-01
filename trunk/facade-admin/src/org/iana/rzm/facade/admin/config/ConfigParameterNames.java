@@ -3,6 +3,7 @@ package org.iana.rzm.facade.admin.config;
 import org.iana.mail.pop3.Pop3MailReceiver;
 import org.iana.notifications.email.EmailSender;
 import org.iana.notifications.template.factory.DefaultTemplateFactory;
+import org.iana.rzm.facade.auth.AuthenticationService;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -56,4 +57,12 @@ public abstract class ConfigParameterNames {
 
     public static final String EMAIL_PGP_PRIVATE_KEY_PASSPHRASE = EMAIL_PGP_SIGNATURE_CLASS + "." +  DefaultTemplateFactory.KEY_PASSPHRASE;
 
+
+    public static final String VERISIGN_PUBLIC_KEY = AuthenticationService.VERISIGN_PUBLIC_KEY;
+
+    public static final String VERISIGN_EMAIL = AuthenticationService.VERISIGN_EMAIL;
+
+    public static final String USDOC_PUBLIC_KEY = AuthenticationService.USDOC_PUBLIC_KEY;
+
+    public static final String USDOC_EMAIL = AuthenticationService.USDOC_EMAIL;
 }
