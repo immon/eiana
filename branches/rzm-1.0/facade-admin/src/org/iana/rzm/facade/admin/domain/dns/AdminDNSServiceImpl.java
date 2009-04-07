@@ -1,11 +1,13 @@
 package org.iana.rzm.facade.admin.domain.dns;
 
-import org.iana.dns.*;
-import org.iana.dns.exporter.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.common.validators.*;
+import org.iana.dns.DNSZone;
+import org.iana.dns.exporter.DNSExporter;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * The default implementation of AdminDNSService interface.
@@ -47,6 +49,10 @@ public class AdminDNSServiceImpl implements AdminDNSService {
         this.exportFilenamePrefix = exportFilenamePrefix;
     }
 
+    public String getExportFileName() {
+        return exportFilenamePrefix + System.currentTimeMillis();
+    }
+
     public void exportAll() throws IOException, InfrastructureException {
         try {
             DNSZone zone = producer.getDNSZone();
@@ -65,6 +71,6 @@ public class AdminDNSServiceImpl implements AdminDNSService {
     }
 
     private File getExportFile() {
-        return new File(exportDirectory, exportFilenamePrefix + System.currentTimeMillis());
+        return new File(exportDirectory, getExportFileName());
     }
 }
