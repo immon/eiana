@@ -22,11 +22,14 @@
         <constructor-arg ref="persistentNotificationSender"/>
         <property name="whiteList">
             <list>
-                <value>correct1@test.iana.org</value>
-                <value>correct2@test.iana.org</value>
+                <value>iana.doc@gmail.com</value>
+                <value>iana.verisign@gmail.com</value>
+                <value>naela.sarras@icann.org</value>
+                <value>simon.raveh@icann.org</value>
+                <value>kim.davies@icann.org></value>
             </list>
         </property>
-        <property name="defaultEmail" value="default@test.iana.org" />
+        <property name="defaultEmail" value="rzm-test@iana.org"/>
     </bean>
 
     <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
@@ -54,6 +57,8 @@
     <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
 
     <!-- end of test bean section -->
+
+    <!--<bean id="eppClient" factory-bean="eppClientFactory" factory-method="getInstance"/>-->
 
     <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
     <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
@@ -90,6 +95,11 @@
 
     <!-- ######################################################################## -->
 
+
+    <bean id="adminConfigManager" class="org.iana.rzm.facade.admin.config.AdminConfigManagerImpl">
+        <constructor-arg ref="hibernateConfigDAO"/>
+    </bean>
+
     <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.AdminEmailTemplateManagerImpl">
         <constructor-arg ref="templatesConfigLoader"/>
     </bean>
@@ -101,19 +111,19 @@
     </bean>
 
     <bean id="xmlTemplatesConfig" class="org.iana.notifications.template.def.xml.XMLTemplateDefLoader">
-        <constructor-arg index="0" value="iana-templates.properties" />
-        <constructor-arg index="1" value="templates.xml" />
+        <constructor-arg index="0" value="iana-templates.properties"/>
+        <constructor-arg index="1" value="templates.xml"/>
     </bean>
 
     <bean id="templatesConfigLoader" class="org.iana.notifications.template.def.TemplateDefConfigLoader">
         <constructor-arg>
             <list>
-                <ref bean="dbTemplatesConfig" />
-                <ref bean="xmlTemplatesConfig" />
+                <ref bean="dbTemplatesConfig"/>
+                <ref bean="xmlTemplatesConfig"/>
             </list>
         </constructor-arg>
     </bean>
-    
+
     <!-- ######################################################################## -->
 
     <bean id="GuardedAdminTransactionServiceBean"
@@ -325,12 +335,12 @@
 
     <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
         <constructor-arg ref="userManager"/>
-        <constructor-arg ref="parameterManager" />
+        <constructor-arg ref="parameterManager"/>
     </bean>
 
     <bean id="pgpMailAuthenticator" class="org.iana.rzm.facade.auth.PgpMailAuthenticator">
         <constructor-arg ref="userManager"/>
-        <constructor-arg ref="parameterManager" />
+        <constructor-arg ref="parameterManager"/>
     </bean>
 
     <!-- system domain service -->
@@ -502,7 +512,7 @@
     <!-- Content -->
 
     <bean id="templateFactory" class="org.iana.notifications.template.factory.DefaultTemplateFactory">
-        <constructor-arg index="0" ref="templatesConfigLoader" />
+        <constructor-arg index="0" ref="templatesConfigLoader"/>
         <constructor-arg index="1">
             <bean class="org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm"/>
         </constructor-arg>
@@ -510,70 +520,70 @@
             <map>
                 <entry key="AC">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
-                        <constructor-arg index="0" value="AC" />
+                        <constructor-arg index="0" value="AC"/>
                     </bean>
                 </entry>
                 <entry key="TC">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
-                        <constructor-arg index="0" value="TC" />
+                        <constructor-arg index="0" value="TC"/>
                     </bean>
                 </entry>
                 <entry key="SO">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
-                        <constructor-arg index="0" value="SO" />
+                        <constructor-arg index="0" value="SO"/>
                     </bean>
                 </entry>
                 <entry key="AC_CONFIRM">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
-                        <constructor-arg index="0" value="AC" />
+                        <constructor-arg index="0" value="AC"/>
                     </bean>
                 </entry>
                 <entry key="TC_CONFIRM">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
-                        <constructor-arg index="0" value="TC" />
+                        <constructor-arg index="0" value="TC"/>
                     </bean>
                 </entry>
                 <entry key="SO_CONFIRM">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
-                        <constructor-arg index="0" value="SO" />
+                        <constructor-arg index="0" value="SO"/>
                     </bean>
                 </entry>
                 <entry key="AC_NEW">
                     <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
-                        <constructor-arg index="0" value="AC" />
+                        <constructor-arg index="0" value="AC"/>
                     </bean>
                 </entry>
                 <entry key="TC_NEW">
                     <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
-                        <constructor-arg index="0" value="TC" />
+                        <constructor-arg index="0" value="TC"/>
                     </bean>
                 </entry>
                 <entry key="SO_NEW">
                     <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
-                        <constructor-arg index="0" value="SO" />
+                        <constructor-arg index="0" value="SO"/>
                     </bean>
                 </entry>
                 <entry key="AC_IMPACTED_PARTIES">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
-                        <constructor-arg index="0" value="AC" />
+                        <constructor-arg index="0" value="AC"/>
                     </bean>
                 </entry>
                 <entry key="TC_IMPACTED_PARTIES">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
-                        <constructor-arg index="0" value="TC" />
+                        <constructor-arg index="0" value="TC"/>
                     </bean>
                 </entry>
                 <entry key="SO_IMPACTED_PARTIES">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
-                        <constructor-arg index="0" value="SO" />
+                        <constructor-arg index="0" value="SO"/>
                     </bean>
                 </entry>
                 <entry key="SUBMITTER">
-                    <bean class="org.iana.rzm.trans.notifications.recipients.SubmitterRecipients" />
+                    <bean class="org.iana.rzm.trans.notifications.recipients.SubmitterRecipients"/>
                 </entry>
                 <entry key="GOV_OVERSIGHT">
-                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients" >
-                        <constructor-arg index="0" value="GOV_OVERSIGHT" />
+                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients">
+                        <constructor-arg index="0" value="GOV_OVERSIGHT"/>
                     </bean>
                 </entry>
             </map>
@@ -631,7 +641,8 @@
         <constructor-arg index="3" ref="specialReviewDataProducer"/>
     </bean>
 
-    <bean id="manualReviewNotificationProducer" class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+    <bean id="manualReviewNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="adminAddresseeProducer"/>
         <constructor-arg index="2" ref="manualReviewTemplateProducer"/>
@@ -649,21 +660,21 @@
 
     <!-- Unused since template are stored in db -->
     <!--<bean id="contactConfirmationACNotificationProducer"-->
-          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
-        <!--<constructor-arg index="0" ref="templateFactory"/>-->
-        <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
-        <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
-        <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
-        <!--<property name="persistent" value="true"/>-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
     <!--</bean>-->
 
     <!--<bean id="contactConfirmationTCNotificationProducer"-->
-          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
-        <!--<constructor-arg index="0" ref="templateFactory"/>-->
-        <!--<constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>-->
-        <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
-        <!--<constructor-arg index="3" ref="contactConfirmationTCDataProducer"/>-->
-        <!--<property name="persistent" value="true"/>-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationTCDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
     <!--</bean>-->
 
     <bean id="contactConfirmationRemainderNotificationProducer"
@@ -677,21 +688,21 @@
 
     <!-- Unused since template are stored in db -->
     <!--<bean id="contactConfirmationRemainderACNotificationProducer"-->
-          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
-        <!--<constructor-arg index="0" ref="templateFactory"/>-->
-        <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
-        <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
-        <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
-        <!--<property name="persistent" value="true"/>-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
     <!--</bean>-->
 
     <!--<bean id="contactConfirmationRemainderTCNotificationProducer"-->
-          <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
-        <!--<constructor-arg index="0" ref="templateFactory"/>-->
-        <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
-        <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
-        <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
-        <!--<property name="persistent" value="true"/>-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
     <!--</bean>-->
 
     <bean id="exceptionNotificationProducer"
@@ -1340,9 +1351,8 @@
         </property>
     </bean>
 
-    <!-- mails processing configuration -->
     <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
-        <constructor-arg index="0" value="m02.icann.org"/>
+        <constructor-arg index="0" value="m00.icann.org"/>
         <constructor-arg index="1" value="rzm-dev"/>
         <constructor-arg index="2" value="upowilgeod"/>
         <property name="config">
@@ -1358,6 +1368,8 @@
             <value>true</value>
         </property>
     </bean>
+
+    <!-- mails processing configuration -->
 
     <bean id="templatesManager" class="org.iana.templates.def.parser.TemplatesManager">
         <constructor-arg index="0" value="mail-templates.xml"/>
@@ -1399,7 +1411,9 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \| ([^\| ]*).*</value>
+                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \|
+                        ([^\| ]*).*
+                    </value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
@@ -1430,7 +1444,9 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>([^:]*:)*\s*([\d]*) \| nameserver change for \| ([^\| ]*) \| \[RZM\] \| (AC|TC) \| ([^\| ]*).*</value>
+                    <value>([^:]*:)*\s*([\d]*) \| nameserver change for \| ([^\| ]*) \| \[RZM\] \| (AC|TC) \| ([^\|
+                        ]*).*
+                    </value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
@@ -1487,7 +1503,9 @@
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>.+Authorized:(.+)\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
+                    <value>.+Authorized:(.+)\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change
+                        Request Summary: DO NOT EDIT ABOVE.*
+                    </value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
@@ -1740,8 +1758,8 @@
             <aop:pointcut id="updateDomain"
                           expression="execution(public * org.iana.rzm.domain.DomainManagerBean.update(..))"/>
             <aop:around
-                pointcut-ref="updateDomain"
-                method="setUpdateDate"/>
+                    pointcut-ref="updateDomain"
+                    method="setUpdateDate"/>
         </aop:aspect>
     </aop:config>
 
@@ -1850,7 +1868,7 @@
                     <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
                 </constructor-arg>
                 <constructor-arg value
-                    ="password-change"/>
+                        ="password-change"/>
                 <constructor-arg>
                     <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
                 </constructor-arg>

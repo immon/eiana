@@ -1,10 +1,13 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.tapestry.*;
+import org.apache.tapestry.BaseComponent;
+import org.apache.tapestry.IAsset;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IPage;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
+import org.apache.tapestry.callback.ICallback;
 import org.iana.rzm.web.admin.pages.*;
-import org.iana.rzm.web.common.components.*;
+import org.iana.rzm.web.common.components.BaseBorder;
 
 @ComponentClass
 public abstract class Navigation extends BaseComponent {
@@ -12,6 +15,7 @@ public abstract class Navigation extends BaseComponent {
     public static final String REQUEST = "REQUESTS";
     public static final String DOMAINS = "DOMAINS";
     public static final String USERS = "USERS";
+    public static final String SYSTEM_SETTINGS = "SYSTEM_SETTINGS";
 
     @Component(id = "requestsLink", type = "SelectionLink", bindings = {"spanStyle=prop:requestsSpanStyle",
         "linkStyle=prop:requestsStyle", "linkText=literal:Requests", "listener=listener:viewRequests", "useDivStyle=literal:true"})
@@ -24,6 +28,10 @@ public abstract class Navigation extends BaseComponent {
     @Component(id = "usersLink", type = "SelectionLink", bindings = {"spanStyle=prop:usersSpanStyle",
         "linkStyle=prop:usersStyle", "linkText=literal:Users", "listener=listener:viewUsers", "useDivStyle=literal:true"})
     public abstract IComponent getUsersLinkComponent();
+
+    @Component(id = "systemLink", type = "SelectionLink", bindings = {"spanStyle=prop:systemSpanStyle",
+        "linkStyle=prop:systemStyle", "linkText=literal:System Settings", "listener=listener:viewSystemSettings", "useDivStyle=literal:true"})
+    public abstract IComponent getSystemLinkComponent();
 
     @Component(id = "logout", type = "DirectLink", bindings = {"listener=listener:logout",
         "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
@@ -61,6 +69,9 @@ public abstract class Navigation extends BaseComponent {
         return getStyle(USERS);
     }
 
+    public String getSystemStyle() {
+        return getStyle(SYSTEM_SETTINGS);
+    }
 
     public String getRequestsSpanStyle() {
         return getRequestsStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
@@ -72,6 +83,10 @@ public abstract class Navigation extends BaseComponent {
 
     public String getUsersSpanStyle() {
         return getUsersStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
+    }
+
+    public String getSystemSpanStyle() {
+        return getSystemStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
     }
 
     private String getStyle(String page) {
@@ -112,6 +127,13 @@ public abstract class Navigation extends BaseComponent {
     public void viewUsers() {
         if (!isSamePage(Users.PAGE_NAME)) {
             getPage().getRequestCycle().activate(Users.PAGE_NAME);
+        }
+
+    }
+
+    public void viewSystemSettings() {
+        if (!isSamePage(SystemSettings.PAGE_NAME)) {
+            getPage().getRequestCycle().activate(SystemSettings.PAGE_NAME);
         }
 
     }

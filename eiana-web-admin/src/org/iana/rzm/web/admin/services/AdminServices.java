@@ -1,29 +1,28 @@
 package org.iana.rzm.web.admin.services;
 
-import org.iana.codevalues.*;
-import org.iana.criteria.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
+import org.iana.codevalues.Value;
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.admin.trans.InvalidEPPTransactionException;
+import org.iana.rzm.facade.admin.trans.NoSuchStateException;
+import org.iana.rzm.facade.admin.trans.StateUnreachableException;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.admin.*;
+import org.iana.rzm.web.admin.RzmServerException;
 import org.iana.rzm.web.admin.model.*;
-import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.common.RequestMetaParameters;
 import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.model.criteria.*;
-import org.iana.rzm.web.common.services.*;
-import org.iana.rzm.web.tapestry.services.*;
+import org.iana.rzm.web.common.model.criteria.SortOrder;
+import org.iana.rzm.web.common.services.RzmServices;
+import org.iana.rzm.web.tapestry.services.WhoisDataProducer;
+import org.iana.rzm.web.tapestry.services.ZoneProducer;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: simon
- * Date: May 8, 2007
- * Time: 5:10:06 PM
- * To change this template use File | Settings | File Templates.
- */
 public interface AdminServices extends RzmServices, WhoisDataProducer, ZoneProducer {
 
     List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
@@ -96,4 +95,17 @@ public interface AdminServices extends RzmServices, WhoisDataProducer, ZoneProdu
     public PollMessageVOWrapper getPollMessage(long id) throws NoObjectFoundException;
 
     boolean isDomainExist(String domainName);
+
+    public SmtpConfigVOWrapper getSmtpConfigSettings();
+
+    public POP3ConfigVOWrapper getPop3ConfigSettings();
+
+    public VersignConfigVOWrpper getVerisignConfigSettings();
+
+    public void setApplicationConfiguration(ApplicationConfig config);
+
+    public USDoCConfigVOWrapper getDoCConfigSettings();
+
+    public PgpConfigVOWrapper getPgpConfigSettings();
+
 }
