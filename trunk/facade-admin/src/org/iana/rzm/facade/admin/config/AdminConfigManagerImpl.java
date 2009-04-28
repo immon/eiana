@@ -41,7 +41,7 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         try {
             Parameter parameter = configDAO.getParameter(Config.DEFAULT_OWNER, name);
             if (parameter == null) {
-                parameter = new SingleParameter(name, value);
+                parameter = new SingleParameter(name, value, Config.DEFAULT_OWNER);
                 configDAO.addParameter(parameter);
             } else if (parameter instanceof SingleParameter) {
                 SingleParameter singleParameter = (SingleParameter) parameter;
@@ -88,7 +88,7 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         return new VerisignOrgConfig(values);
     }
 
-    public USDoCOrgConfig getUSDoCOrgConfig(String owner) throws InfrastructureException {
+    public USDoCOrgConfig getUSDoCOrgConfig() throws InfrastructureException {
         List<String> parameterNames = USDoCOrgConfig.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
 

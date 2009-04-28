@@ -24,6 +24,7 @@
     <orderEntry type="module" module-name="facade-admin" />
     <orderEntry type="library" name="tapestry" level="project" />
     <orderEntry type="module" module-name="eiana-logs" />
+    <orderEntry type="module" module-name="common-mail" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
@@ -54,12 +55,12 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="module" name="common-dns">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/classes" />
-    </containerElement>
-    <containerElement type="module" name="common-mail">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
+    <containerElement type="module" name="common-mail">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="module" name="common-objectdiff">
       <attribute name="method" value="1" />
@@ -202,8 +203,8 @@
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="epp" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="fastinfoset" level="project">
       <attribute name="method" value="0" />
@@ -212,6 +213,10 @@
     <containerElement type="library" name="hibernate" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />
@@ -230,8 +235,8 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="log4j" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="mail" level="project">
       <attribute name="method" value="0" />

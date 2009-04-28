@@ -24,6 +24,6 @@ public interface AdminConfigManager {
 
     public VerisignOrgConfig getVerisignOrgConfig() throws InfrastructureException;
 
-    public USDoCOrgConfig getUSDoCOrgConfig(String owner) throws InfrastructureException;
+    public USDoCOrgConfig getUSDoCOrgConfig() throws InfrastructureException;
 
 }

@@ -32,6 +32,13 @@ public class SingleParameter extends AbstractParameter {
         setName(name);
     }
 
+    public SingleParameter(String name, String value, String owner) {
+        this(name, value);
+        setOwner(owner);
+    }
+
+
+
     public void setValue(String value) {
 /*
         if (value == null || value.trim().length() == 0)

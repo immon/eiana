@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Piotr Tkaczyk
  * @author Patrycja Wegrzynowicz
  */
-public class EmailSender implements NotificationSender {
+public class EmailSender implements NotificationSender, EmailConstants {
 
     private String emailMailhost;
     private Integer emailMailhostPort;
@@ -33,17 +33,7 @@ public class EmailSender implements NotificationSender {
     private String mailSmtpFrom;
     private Config config;
 
-    private static Logger logger = Logger.getLogger(EmailSender.class);
-
-    public static final String SMTP_MAILER = "emailMailer";
-    public static final String SMTP_MAILHOST = "emailMailhost";
-    public static final String SMTP_MAILHOST_PORT = "emailMailhostPort";
-    public static final String SMTP_FROM_ADDRESS = "emailFromAddress";
-    public static final String SMTP_USER_NAME = "emailUserName";
-    public static final String SMTP_USER_PWD = "emailUserPassword";
-    public static final String SMTP_USE_SSL = "emailUseSSL";
-    public static final String SMTP_USE_TLS = "emailUseTLS";
-    public static final String SMTP_SMTP_FROM = "mailSmtpFrom";
+    private transient static Logger logger = Logger.getLogger(EmailSender.class);
 
     public EmailSender(String mailHost, String mailer, String fromAddress,
                                   String userName, String password) {
