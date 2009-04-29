@@ -3,18 +3,17 @@ package org.iana.rzm.facade.admin;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.admin.users.AdminUserService;
 import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
-import org.iana.rzm.facade.user.converter.UserConverter;
-import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.passwd.PasswordChangeService;
+import org.iana.rzm.facade.system.domain.TestAuthenticatedUser;
+import org.iana.rzm.facade.user.AdminRoleVO;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -58,15 +57,18 @@ public class LoginTest {
         userManager.deleteAll();
     }
 
+    @BeforeMethod
     public void initUser() {
         UserVO user = new UserVO();
         user.setUserName("username");
         user.setFirstName("first-name");
         user.setLastName("last-name");
         user.setPassword("password");
+        user.addRole(new AdminRoleVO(AdminRoleVO.AdminType.IANA));
         userService.createUser(user);
     }
 
+    @AfterMethod
     public void deleteUser() {
         userManager.delete("username");
     }
