@@ -98,6 +98,7 @@ public class PasswordChangeServiceBean implements PasswordChangeService {
         if (!user.isValidPasswordChangeToken(token)) throw new InvalidPasswordChangeTokenException(userName);
         if (!newPwd.equals(newPwd2)) throw new NewPasswordConfirmationMismatchException(userName);
         user.setPassword(newPwd);
+        user.setPasswordExDate(null);
         user.resetPasswordChangeToken();
         userManager.update(user);
     }
