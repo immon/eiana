@@ -206,10 +206,11 @@ public class Transaction implements TrackedObject {
             if (confirmation == null) {
                 throw new UserConfirmationNotExpected();
             }
-            if (!confirmation.accept(user)) {
+            ContactIdentity id = confirmation.accept(user);
+            if (!confirmation.isReceived()) {
                 return;
             }
-            getData().setIdentityName("AC/TC");
+            getData().setIdentityName(id.getName());
             processDAO.signal(pi, StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
