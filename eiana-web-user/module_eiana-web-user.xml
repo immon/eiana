@@ -18,6 +18,8 @@
     <pathelement location="${eiana-web-common.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
     <pathelement location="${facade-system.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>

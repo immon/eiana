@@ -22,6 +22,7 @@ public class SmtpConfig extends BindedParameter {
     public static final String SMTP_SMTP_FROM = ConfigParameterNames.SMTP_FROM;
 
     public SmtpConfig() {
+        super(getParameterNames());
     }
 
     public SmtpConfig(Map<String, String> values) {
@@ -36,19 +37,19 @@ public class SmtpConfig extends BindedParameter {
         setValue(SMTP_MAILER, value);
     }
 
-    public String getMailHost() {
+    public String getHost() {
         return getValue(SMTP_MAILHOST);
     }
 
-    public void setMailHost(String value) {
+    public void setHost(String value) {
         setValue(SMTP_MAILHOST, value);
     }
 
-    public Integer getMailHostPort() {
+    public Integer getPort() {
         return getInetegerValue(SMTP_MAILHOST_PORT);
     }
 
-    public void setMailHostPort(Integer value) {
+    public void setPort(Integer value) {
         setValue(SMTP_MAILHOST_PORT, value);
     }
 

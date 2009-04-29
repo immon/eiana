@@ -36,6 +36,9 @@ abstract class AbstractParameter implements Parameter {
     @Basic
     protected Long toDate;
 
+    protected AbstractParameter() {
+        this.fromDate = System.currentTimeMillis();
+    }
 
     public Long getObjId() {
         return objId;

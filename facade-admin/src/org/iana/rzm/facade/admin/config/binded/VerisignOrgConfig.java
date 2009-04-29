@@ -16,6 +16,7 @@ public class VerisignOrgConfig extends BindedParameter {
     public static final String EMAIL = ConfigParameterNames.VERISIGN_EMAIL;
 
     public VerisignOrgConfig() {
+        super(getParameterNames());
     }
 
     public VerisignOrgConfig(Map<String, String> values) {

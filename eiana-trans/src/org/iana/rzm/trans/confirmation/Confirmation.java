@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.confirmation;
 
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+
 import java.util.Set;
 
 /**
@@ -18,12 +20,11 @@ public interface Confirmation {
     /**
      * Accepts this <code>Confirmation</code> on behalf of the <code>user</code>.
      * @param user who accepts this <code>Confirmation</code>.
-     * @return <code>true</code> when this <code>Confirmation</code> is accepted
-     * or <code>false</code> when there are still users, who have to accept this <code>Confirmation</code>.
+     * @return ContactIdentity related to the user who accepted
      * @throws AlreadyAcceptedByUser when the <code>user</code> already accepted this <code>Confirmation</code>.
      * @throws NotAcceptableByUser when the <code>user</code> is not eligible to accept this <code>Confirmation</code>.
      */
-    public boolean accept(Identity user) throws AlreadyAcceptedByUser, NotAcceptableByUser;
+    public ContactIdentity accept(Identity user) throws AlreadyAcceptedByUser, NotAcceptableByUser;
 
     /**
      * Checks whether this <code>Confirmation</code> is accepted.
