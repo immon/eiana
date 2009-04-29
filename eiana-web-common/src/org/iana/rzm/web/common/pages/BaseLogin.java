@@ -1,18 +1,24 @@
 package org.iana.rzm.web.common.pages;
 
-import org.apache.tapestry.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IPage;
+import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.engine.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.apache.tapestry.services.*;
-import org.apache.tapestry.valid.*;
-import org.iana.commons.*;
+import org.apache.tapestry.engine.ExternalServiceParameter;
+import org.apache.tapestry.engine.IEngineService;
+import org.apache.tapestry.engine.ILink;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IFormComponent;
+import org.apache.tapestry.services.CookieSource;
+import org.apache.tapestry.valid.IValidationDelegate;
+import org.iana.commons.StringUtil;
 import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.callback.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.services.*;
+import org.iana.rzm.web.common.Visit;
+import org.iana.rzm.web.common.callback.RzmCallback;
+import org.iana.rzm.web.common.model.WebUser;
+import org.iana.rzm.web.common.services.LoginController;
+import org.iana.rzm.web.common.services.RzmAuthenticationService;
 
 public abstract class BaseLogin extends RzmPage implements PageBeginRenderListener {
 
@@ -21,41 +27,41 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
 
 
     @Component(id = "form", type = "Form",
-               bindings = {
-                   "success=listener:attemptLogin",
-                   "stateful=literal:false",
-                   "clientValidationEnabled=literal:true"
-                   }
+            bindings = {
+                    "success=listener:attemptLogin",
+                    "stateful=literal:false",
+                    "clientValidationEnabled=literal:true"
+                    }
     )
     public abstract IComponent getFormComponent();
 
     @Component(id = "username", type = "TextField",
-               bindings = {
-                   "displayName=message:user-label",
-                   "value=prop:userName",
-                   "validators=validators:required"
-                   }
+            bindings = {
+                    "displayName=message:user-label",
+                    "value=prop:userName",
+                    "validators=validators:required"
+                    }
     )
     public abstract IComponent getUserNameComponent();
 
     @Component(id = "password", type = "TextField",
-               bindings = {
-                   "displayName=message:password-label",
-                   "value=prop:password",
-                   "validators=validators:required",
-                   "hidden=literal:true"
-                   }
+            bindings = {
+                    "displayName=message:password-label",
+                    "value=prop:password",
+                    "validators=validators:required",
+                    "hidden=literal:true"
+                    }
     )
     public abstract IComponent getPasswordComponent();
 
     @Component(id = "resetPassword",
-               type = "PageLink",
-               bindings = {"page=literal:ResetPassword", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
+            type = "PageLink",
+            bindings = {"page=literal:ResetPassword", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getResetPasswordComponent();
 
     @Component(id = "recoverUserName",
-               type = "PageLink",
-               bindings = {"page=literal:RecoverUserName", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
+            type = "PageLink",
+            bindings = {"page=literal:RecoverUserName", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getRecoverUserNamedComponent();
 
     @Component(id = "rememberMe", type = "Checkbox", bindings = {"value=prop:rememberMe"})
@@ -88,6 +94,9 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
     @InjectPage(BaseSecureId.PAGE_NAME)
     public abstract IPage getSecureIdPage();
 
+    @InjectPage(BaseExpiredPasswordChange.PAGE_NAME)
+    public abstract IPage getExpiredPasswordChange();
+
     @InjectState("visit")
     public abstract Visit getVisitState();
 
@@ -106,19 +115,15 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
     public abstract void setSecureIdErrorMessage(String message);
     public abstract String getSecureIdErrorMessage();
 
-    //@Persist("client")
-    //public abstract void setAdminLoginError(String message);
-    //public abstract String getAdminLoginError();
 
     public abstract void setUserName(String value);
     public abstract String getUserName();
 
     public abstract boolean isRememberMe();
     public abstract String getPassword();
+
     public abstract void setPassword(String password);
-
     protected abstract String getCookieName();
-
 
 
     public void pageBeginRender(PageEvent event) {
@@ -132,15 +137,15 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
     private String buildErrorMessage(String sessionTimeOutMessage, String secureIdErrorMessage) {
         StringBuilder builder = new StringBuilder();
 
-        if(StringUtil.isNotBlank(secureIdErrorMessage)){
+        if (StringUtil.isNotBlank(secureIdErrorMessage)) {
             builder.append(secureIdErrorMessage);
         }
 
-        if(StringUtil.isNotBlank(sessionTimeOutMessage)){
+        if (StringUtil.isNotBlank(sessionTimeOutMessage)) {
             builder.append(sessionTimeOutMessage).append("\n");
         }
 
-        if(StringUtil.isNotBlank(getErrorMessage())){
+        if (StringUtil.isNotBlank(getErrorMessage())) {
             builder.append(getErrorMessage()).append("\n");
         }
 
@@ -181,6 +186,13 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
             IValidationDelegate validationDelegate = getValidationDelegate();
             validationDelegate.record(e.getMessage(), null);
         }
+        catch (PasswordExpiredException e) {
+            BaseExpiredPasswordChange page = (BaseExpiredPasswordChange) getExpiredPasswordChange();
+            page.setUserName(getUserName());
+            page.setShowContinue(false);
+            page.setWarningMessage(getMessageUtil().getFirstLoginMessage());
+            page.activate();
+        }
         catch (AuthenticationException ex) {
             IFormComponent field = getUserNameField();
             IValidationDelegate validationDelegate = getValidationDelegate();
@@ -194,7 +206,7 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
     protected ILink redirectToSecureIdPage(AuthenticationToken token) {
         IPage secureIdPage = getSecureIdPage();
         ExternalServiceParameter parameter =
-            new ExternalServiceParameter(secureIdPage.getPageName(), new Object[]{getUserName(), token});
+                new ExternalServiceParameter(secureIdPage.getPageName(), new Object[]{getUserName(), token});
         return getExternalPageService().getLink(true, parameter);
     }
 
@@ -222,7 +234,6 @@ public abstract class BaseLogin extends RzmPage implements PageBeginRenderListen
         cycle.forgetPage(getPageName());
         return iLink;
     }
-
 
 
     private IEngineService getService() {

@@ -1,18 +1,25 @@
 package org.iana.rzm.init.ant;
 
-import org.hibernate.*;
-import org.iana.config.*;
-import org.iana.config.impl.*;
+import org.hibernate.Session;
+import org.iana.config.Config;
+import org.iana.config.Parameter;
+import org.iana.config.impl.SingleParameter;
 import org.iana.rzm.domain.*;
-import org.iana.rzm.init.ant.decorators.*;
-import org.iana.rzm.user.*;
-import pl.nask.xml.dynamic.*;
-import pl.nask.xml.dynamic.config.*;
-import pl.nask.xml.dynamic.env.*;
-import pl.nask.xml.dynamic.exceptions.*;
+import org.iana.rzm.init.ant.decorators.DomainDecorator;
+import org.iana.rzm.init.ant.decorators.DomainRegistryDecorator;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.Role;
+import org.iana.rzm.user.UserManager;
+import pl.nask.xml.dynamic.DynaXMLParser;
+import pl.nask.xml.dynamic.config.DPConfig;
+import pl.nask.xml.dynamic.env.Environment;
+import pl.nask.xml.dynamic.exceptions.DynaXMLException;
 
 import java.io.*;
-import java.util.*;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Locale;
 
 public class InitRootTask extends HibernateTask {
 
@@ -112,6 +119,7 @@ public class InitRootTask extends HibernateTask {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
+        user.setPasswordExDate(new Timestamp(System.currentTimeMillis()-1));
         user.setEmail(email);
         user.addRole(role);
         return user;
