@@ -16,6 +16,7 @@ public class PgpConfig extends BindedParameter {
     public static final String PRIVATE_KEY_PASSPHRASE = ConfigParameterNames.EMAIL_PGP_PRIVATE_KEY_PASSPHRASE;
 
     public PgpConfig() {
+        super(getParameterNames());
     }
 
     public PgpConfig(Map<String, String> values) {

@@ -17,6 +17,8 @@
     <pathelement location="${eiana-util.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${eiana-domains.output.dir}"/>
     <pathelement location="${eiana-domains.testoutput.dir}"/>
     <path refid="library.testng-5.5-jdk15.classpath"/>

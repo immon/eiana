@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * @author Patrycja Wegrzynowicz
+ * @author Piotr Tkaczyk
  */
 public class AdminConfigManagerImpl implements AdminConfigManager {
 
@@ -62,7 +63,6 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
     public Pop3Config getPop3Config() throws InfrastructureException {
         List<String> parameterNames = Pop3Config.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
-
         return new Pop3Config(values);
     }
 
@@ -113,4 +113,25 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
             throw new InfrastructureException(e);
         }
     }
+
+    public void setPop3Config(Pop3Config config) throws InfrastructureException {
+        setParameter(config);
+    }
+
+    public void setSmtpConfig(SmtpConfig config) throws InfrastructureException {
+        setParameter(config);
+    }
+
+    public void setPgpConfig(PgpConfig config) throws InfrastructureException {
+        setParameter(config);
+    }
+
+    public void setVersignOrgConfig(VerisignOrgConfig config) throws InfrastructureException {
+        setParameter(config);
+    }
+
+    public void setUSDoCOrgConfig(USDoCOrgConfig config) throws InfrastructureException {
+        setParameter(config);
+    }
+
 }

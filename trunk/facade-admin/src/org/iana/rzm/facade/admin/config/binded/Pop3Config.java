@@ -20,6 +20,7 @@ public class Pop3Config extends BindedParameter {
     public static final String POP3_DEBUG = ConfigParameterNames.POP3_DEBUG;
 
     public Pop3Config() {
+        super(getParameterNames());
     }
 
     public Pop3Config(Map<String, String> values) {
@@ -77,4 +78,6 @@ public class Pop3Config extends BindedParameter {
     public static List<String> getParameterNames() {
         return Arrays.asList(POP3_HOST, POP3_USER, POP3_PWD, POP3_PORT, POP3_SSL, POP3_DEBUG);
     }
+
+
 }

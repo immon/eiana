@@ -44,7 +44,7 @@ public class ContactConfirmations extends AbstractConfirmation {
         return outstandingConfirmations.contains(identity);
     }
 
-    public boolean accept(Identity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser {
+    public ContactIdentity accept(Identity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser {
         if (receivedConfirmations.contains(identity))
             throw new AlreadyAcceptedByUser();
         if (!isAcceptableBy(identity))
@@ -53,10 +53,11 @@ public class ContactConfirmations extends AbstractConfirmation {
             if (id != null && id.equals(identity)) {
                 outstandingConfirmations.remove(id);
                 receivedConfirmations.add(id.clone());
-                break;
+                return id;
             }
         }
-        return isReceived();
+        // never reached
+        return null;
     }
 
     public boolean isReceived() {

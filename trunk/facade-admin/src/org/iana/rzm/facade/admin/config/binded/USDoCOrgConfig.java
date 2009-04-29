@@ -16,6 +16,7 @@ public class USDoCOrgConfig extends BindedParameter {
     private static final String EMAIL = ConfigParameterNames.USDOC_EMAIL;
 
     public USDoCOrgConfig() {
+        super(getParameterNames());
     }
 
     public USDoCOrgConfig(Map<String, String> values) {

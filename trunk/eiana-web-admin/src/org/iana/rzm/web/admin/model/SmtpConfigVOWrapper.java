@@ -16,19 +16,19 @@ public class SmtpConfigVOWrapper extends ValueObject implements ApplicationConfi
 
 
     public void setHost(String host) {
-        config.setMailHost(host);
+        config.setHost(host);
     }
 
     public String getHost(){
-        return config.getMailHost();
+        return config.getHost();
     }
 
     public void setPort(int port) {
-        config.setMailHostPort(port);
+        config.setPort(port);
     }
 
     public  Integer getPort(){
-        return config.getMailHostPort();
+        return config.getPort();
     }
 
     public void setFromAddress(String fromAddress) {
