@@ -1,17 +1,25 @@
 package org.iana.rzm.web.common.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.apache.tapestry.valid.*;
-import org.iana.commons.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.auth.securid.*;
-import org.iana.rzm.web.common.callback.*;
-import org.iana.rzm.web.common.services.*;
-import org.iana.secureid.*;
-import org.iana.web.tapestry.session.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IPage;
+import org.apache.tapestry.PageRedirectException;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectObject;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IFormComponent;
+import org.apache.tapestry.valid.IValidationDelegate;
+import org.apache.tapestry.valid.ValidationConstraint;
+import org.iana.commons.StringUtil;
+import org.iana.rzm.facade.auth.AuthenticationToken;
+import org.iana.rzm.facade.auth.securid.SecurIDException;
+import org.iana.rzm.facade.auth.securid.SecurIDInvalidPinException;
+import org.iana.rzm.web.common.callback.RzmCallback;
+import org.iana.rzm.web.common.services.RzmAuthenticationService;
+import org.iana.secureid.RSAPinData;
+import org.iana.web.tapestry.session.ApplicationLifecycle;
 
 public abstract class BaseSecureIdNewPin extends RzmPage implements PageBeginRenderListener {
 
@@ -107,17 +115,17 @@ public abstract class BaseSecureIdNewPin extends RzmPage implements PageBeginRen
             RSAPinData pinData = getAuthenticationService().getPinInfo(getSessionId());
             IValidationDelegate delegate = getValidationDelegate();
             if(!StringUtil.equals(getPin(), getConfirmPin())){
-                delegate.record(getMessageUtil().mismatchSecureIdPin(),ValidationConstraint.CONSISTENCY);
+                delegate.record(getMessageUtil().getMismatchSecureIdPinMessage(),ValidationConstraint.CONSISTENCY);
             }
 
             if(pinData.getMaxPinLength() < getPin().length()){
                 delegate.setFormComponent((IFormComponent) getComponent("pin"));
-                delegate.record(getMessageUtil().secureIdPinToLong(pinData.getMaxPinLength()),ValidationConstraint.MAXIMUM_WIDTH);
+                delegate.record(getMessageUtil().getSecureIdPinToLongMessage(pinData.getMaxPinLength()),ValidationConstraint.MAXIMUM_WIDTH);
             }
 
             if(pinData.getMinPinLength() > getPin().length()){
                 delegate.setFormComponent((IFormComponent) getComponent("pin"));
-                delegate.record(getMessageUtil().secureIdPinToShort(pinData.getMaxPinLength()),ValidationConstraint.MINIMUM_WIDTH);
+                delegate.record(getMessageUtil().getSecureIdPinToShortMessage(pinData.getMaxPinLength()),ValidationConstraint.MINIMUM_WIDTH);
             }
 
             if(delegate.getHasErrors()){

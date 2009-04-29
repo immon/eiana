@@ -1,7 +1,7 @@
 package org.iana.rzm.web.common;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Set;
 
 public class MessageUtil implements Serializable {
 
@@ -137,15 +137,33 @@ public class MessageUtil implements Serializable {
         return "You tried to log in to the RZM User site using Admin Credential\n. Please use none admin Credential or use the RZM Admin website";
     }
 
-    public String mismatchSecureIdPin() {
+    public String getMismatchSecureIdPinMessage() {
         return "New Pin does not match Confirm Pin.";
     }
 
-    public String secureIdPinToLong(int length) {
+    public String getSecureIdPinToLongMessage(int length) {
         return "Your pin is to long. It's should be " + length + " max";
     }
 
-    public String secureIdPinToShort(int length) {
+    public String getSecureIdPinToShortMessage(int length) {
         return "Your pin is to short. It's should be at least " + length + " long";
     }
+
+
+    public String getPasswordMismatchMessage() {
+        return "new Password does not match Confirm Password.";
+    }
+
+    public String getPasswordTheSameMessage() {
+        return "New Password must be different from Current Password.";
+    }
+
+    public String getPasswordExpiredMessage(){
+        return "Your Password has bean expired.";
+    }
+
+    public String getFirstLoginMessage(){
+        return "This is your first login into the system. For security reason please change your password";
+    }
+
 }

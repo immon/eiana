@@ -108,6 +108,14 @@
         </invoke-factory>
     </service-point>
 
+    <service-point id="ChangePasswordService" interface="org.iana.rzm.web.common.services.ChangePasswordService">
+        <invoke-factory model="threaded">
+            <construct class="org.iana.rzm.web.common.services.ChangePasswordServiceImpl">
+                <service>rzm.ServiceInitializer</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
     <service-point id="ContactServices" interface="org.iana.rzm.web.tapestry.components.contact.ContactServices">
         <invoke-factory model="threaded">
             <construct class="org.iana.rzm.web.common.services.ContactServicesImpl">
