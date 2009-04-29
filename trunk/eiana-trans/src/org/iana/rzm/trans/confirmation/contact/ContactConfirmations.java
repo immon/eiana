@@ -45,10 +45,10 @@ public class ContactConfirmations extends AbstractConfirmation {
     }
 
     public boolean accept(Identity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser {
-        if (!isAcceptableBy(identity))
-            throw new NotAcceptableByUser();
         if (receivedConfirmations.contains(identity))
             throw new AlreadyAcceptedByUser();
+        if (!isAcceptableBy(identity))
+            throw new NotAcceptableByUser();
         for (ContactIdentity id : outstandingConfirmations) {
             if (id != null && id.equals(identity)) {
                 outstandingConfirmations.remove(id);
