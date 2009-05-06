@@ -206,12 +206,11 @@ public class Transaction implements TrackedObject {
             if (confirmation == null) {
                 throw new UserConfirmationNotExpected();
             }
-            ContactIdentity id = confirmation.accept(user);
-            if (!confirmation.isReceived()) {
-                return;
+            if (confirmation.accept(user)) {
+                // all confirmations received - we proceed further with this process
+                getData().setIdentityName(confirmation.getNamesOfIdentitiesThatAccepted());
+                processDAO.signal(pi, StateTransition.ACCEPT);
             }
-            getData().setIdentityName(id.getName());
-            processDAO.signal(pi, StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
         } catch (NotAcceptableByUser e) {
@@ -226,7 +225,7 @@ public class Transaction implements TrackedObject {
             throw new UserConfirmationNotExpected();
         }
         if (confirmation.isAcceptableBy(user)) {
-            getData().setIdentityName("AC/TC");
+            getData().setIdentityName(confirmation.getNameOfIdentity(user));
             processDAO.signal(pi, StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
