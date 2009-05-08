@@ -6,7 +6,9 @@ import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -62,7 +64,14 @@ public class AdminEmailTemplateManagerImpl implements AdminEmailTemplateManager 
         ret.setSubject(src.getSubject());
         ret.setContent(src.getContent());
         ret.setSigned(src.isSigned());
-        ret.setAddressees(src.getAddressees());
+
+        Set<String> retSet = new HashSet<String>();
+
+        for (String address : src.getAddressees()) {
+            retSet.add(address);
+        }
+        
+        ret.setAddressees(retSet);
         return ret;
     }
 
