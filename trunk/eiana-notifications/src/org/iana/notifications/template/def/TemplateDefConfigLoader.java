@@ -13,7 +13,7 @@ public class TemplateDefConfigLoader implements TemplateDefConfig {
     List<TemplateDefConfig> loaders = new ArrayList<TemplateDefConfig>();
 
     public TemplateDefConfigLoader(List<TemplateDefConfig> loaders) {
-        CheckTool.checkCollectionEmpty(loaders, "Template definition loader list is apmty or null.");
+        CheckTool.checkCollectionEmpty(loaders, "Template definition loader list is empty or null.");
         this.loaders = loaders;
     }
 

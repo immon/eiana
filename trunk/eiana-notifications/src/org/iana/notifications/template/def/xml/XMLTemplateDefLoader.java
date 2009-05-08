@@ -63,6 +63,6 @@ public class XMLTemplateDefLoader implements TemplateDefConfig {
     }
 
     public List<TemplateDef> getTemplateDefs() {
-        return null;
+        return config.getTemplateDefs();
     }
 }
