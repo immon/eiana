@@ -1,11 +1,12 @@
 package org.iana.rzm.facade.admin.config;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class EmailTemplateVO {
+public class EmailTemplateVO implements Serializable {
 
     private String name;
 
