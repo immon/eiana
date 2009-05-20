@@ -1,5 +1,6 @@
 package org.iana.rzm.facade.admin.domain.dns;
 
+import org.iana.config.impl.ConfigException;
 import org.iana.dns.DNSZone;
 
 /**
@@ -9,6 +10,6 @@ import org.iana.dns.DNSZone;
  */
 public interface DNSZoneProducer {
 
-    public DNSZone getDNSZone();
+    public DNSZone getDNSZone() throws ConfigException;
 
 }

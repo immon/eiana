@@ -130,6 +130,10 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
         buffer.append("All name servers are changed for domain ").append(e.getDomainName());
     }
 
+    public void acceptInternalDNSCheckException(InternalDNSCheckException e) {
+        buffer.append("Internal Exception ").append(e.getMessage());
+    }
+
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {
         for (DNSTechnicalCheckException subEx : e.getExceptions()) subEx.accept(this);
     }

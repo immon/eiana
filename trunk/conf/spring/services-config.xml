@@ -503,7 +503,7 @@
     <!-- Technical Checks -->
 
     <bean id="rootServersPropagationCheck" class="org.iana.dns.check.RootServersPropagationCheck">
-        <property name="rootServers" ref="rootServersList"/>
+        <property name="rootServersProducer" ref="rootServersProducerBean"/>
         <property name="dnsCheckRetries">
             <value>3</value>
         </property>
@@ -2003,7 +2003,8 @@
     </bean>
 
     <bean id="zoneProducer" class="org.iana.rzm.facade.admin.domain.dns.DNSZoneProducerImpl">
-        <constructor-arg ref="domainManager"/>
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="rootServersProducerBean"/>
         <property name="zoneTTL" value="86400"/>
         <property name="zoneNameServersTTL" value="518400"/>
         <property name="defaultTTL" value="172800"/>
@@ -2013,9 +2014,12 @@
         <property name="minimum" value="86400"/>
         <property name="adminAddress" value="NSTLD.VERISIGN-GRS.COM."/>
 
-        <property name="nameServers" ref="rootServersList"/>
-
         <property name="description" value="empty description"/>
+    </bean>
+
+    <bean id="rootServersProducerBean" class="org.iana.dns.RootServersProducerImpl">
+        <constructor-arg index="0" ref="parameterManager"/>
+        <property name="rootServers" ref="rootServersList"/>
     </bean>
 
     <bean id="rootServersList" class="java.util.ArrayList">
