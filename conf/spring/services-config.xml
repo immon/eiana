@@ -2019,7 +2019,6 @@
 
     <bean id="rootServersProducerBean" class="org.iana.dns.RootServersProducerImpl">
         <constructor-arg index="0" ref="parameterManager"/>
-        <property name="rootServers" ref="rootServersList"/>
     </bean>
 
     <bean id="rootServersList" class="java.util.ArrayList">
