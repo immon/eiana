@@ -31,8 +31,29 @@ public class RootServersProducerImpl implements RootServersProducer {
     public List<DNSHost> getRootServers() throws ConfigException {
         Config rootServerConfig = config.getSubConfig(rootServerParamNames);
         if (rootServerConfig == null)
-            throw new IllegalArgumentException("root servers subconfig is null");
+            return rootServers;
+        return toDNSHostList(rootServerConfig);
+    }
 
+    public boolean hasRootServers() throws ConfigException {
+        Config rootServerConfig = config.getSubConfig(rootServerParamNames);
+        return rootServerConfig.getParameterNames().size() > 0;
+    }
+
+    public List<DNSHost> getDefaultServers() throws ConfigException {
+        return rootServers;
+    }
+
+    public List<Parameter> toConfig(List<DNSHost> rootServers) throws ConfigException {
+        List<Parameter> ret = new ArrayList<Parameter>();
+        for (DNSHost host : rootServers) {
+            Parameter param = new SetParameter(rootServerParamNames + "." + host.getName(), host.getIPAddressesAsStrings());
+            ret.add(param);
+        }
+        return ret;
+    }
+
+    private List<DNSHost> toDNSHostList(Config rootServerConfig) throws ConfigException {
         List<DNSHost> dnsHostsList = new ArrayList<DNSHost>();
         for (String rootServer : rootServerConfig.getParameterNames()) {
             Set<String> serverAddresses = config.getParameterSet(rootServer);
@@ -41,15 +62,6 @@ public class RootServersProducerImpl implements RootServersProducer {
             dnsHostsList.add(dnsHost);
         }
         return dnsHostsList;
-    }
-
-    public List<Parameter> getConfig(List<DNSHost> rootServers) throws ConfigException {
-        List<Parameter> ret = new ArrayList<Parameter>();
-        for (DNSHost host : rootServers) {
-            Parameter param = new SetParameter(rootServerParamNames + "." + host.getName(), host.getIPAddressesAsStrings());
-            ret.add(param);
-        }
-        return ret;
     }
 
 }
