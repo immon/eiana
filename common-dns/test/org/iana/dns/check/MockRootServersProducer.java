@@ -1,5 +1,6 @@
 package org.iana.dns.check;
 
+import org.iana.config.Parameter;
 import org.iana.config.impl.ConfigException;
 import org.iana.dns.DNSHost;
 import org.iana.dns.RootServersProducer;
@@ -41,5 +42,10 @@ public class MockRootServersProducer implements RootServersProducer {
         }
 
         return rootServersAsDNSHost;
+    }
+
+
+    public List<Parameter> getConfig(List<DNSHost> rootServers) throws ConfigException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
