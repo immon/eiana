@@ -1,14 +1,11 @@
 package org.iana.dns.check;
 
-import org.testng.annotations.Test;
 import org.iana.dns.obj.DNSDomainImpl;
 import org.iana.dns.obj.DNSHostImpl;
-import org.iana.dns.DNSHost;
+import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
@@ -62,29 +59,8 @@ public class RootServersPropagationCheckTest {
             List<DNSDomainTechnicalCheck> domainChecks = new ArrayList<DNSDomainTechnicalCheck>();
 
             RootServersPropagationCheck check = new RootServersPropagationCheck();
-            Map<String, String> rootServers = new HashMap<String, String>();
-            rootServers.put("a.root-servers.net", "198.41.0.4");
-            rootServers.put("b.root-servers.net", "192.228.79.201");
-            rootServers.put("c.root-servers.net", "192.33.4.12");
-            rootServers.put("d.root-servers.net", "128.8.10.90");
-            rootServers.put("e.root-servers.net", "192.203.230.10");
-            rootServers.put("f.root-servers.net", "192.5.5.241");
-            rootServers.put("g.root-servers.net", "192.112.36.4");
-            rootServers.put("h.root-servers.net", "128.63.2.53");
-            rootServers.put("i.root-servers.net", "192.36.148.17");
-            rootServers.put("j.root-servers.net", "192.58.128.30");
-            rootServers.put("k.root-servers.net", "193.0.14.129");
-            rootServers.put("l.root-servers.net", "199.7.83.42");
-            rootServers.put("m.root-servers.net", "202.12.27.33");
-
-            List<DNSHost> rootServersAsDNSHost = new ArrayList<DNSHost>();
-            for(String name : rootServers.keySet()) {
-                DNSHostImpl dnsHostTemp = new DNSHostImpl(name);
-                dnsHost.addIPAddress(rootServers.get(name));
-            rootServersAsDNSHost.add(dnsHost);
-            }
-
-            check.setRootServers(rootServersAsDNSHost);
+            
+            check.setRootServersProducer(new MockRootServersProducer());
             domainChecks.add(check);
 
             dnsTechnicalCheck.setDomainChecks(domainChecks);

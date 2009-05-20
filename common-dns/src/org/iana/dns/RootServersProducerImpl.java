@@ -17,6 +17,8 @@ public class RootServersProducerImpl implements RootServersProducer {
 
     Config config;
 
+    List<DNSHost> rootServers;
+
     public RootServersProducerImpl(ParameterManager parameterManager) {
         if (parameterManager == null)
             throw new IllegalArgumentException("parameter manager is null");
@@ -29,7 +31,7 @@ public class RootServersProducerImpl implements RootServersProducer {
         Set<String> rootServerNames = config.getParameterSet(rootServerParamNames);
 
         if (rootServerNames == null)
-            throw new IllegalArgumentException("root server name list is null");
+            return rootServers;
 
         List<DNSHost> dnsHostsList = new ArrayList<DNSHost>(rootServerNames.size());
 
@@ -42,5 +44,9 @@ public class RootServersProducerImpl implements RootServersProducer {
         }
 
         return dnsHostsList;
+    }
+
+    public void setRootServers(List<DNSHost> rootServers) {
+        this.rootServers = rootServers;
     }
 }

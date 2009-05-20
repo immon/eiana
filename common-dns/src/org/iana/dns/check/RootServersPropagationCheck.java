@@ -18,15 +18,9 @@ import java.util.*;
  */
 public class RootServersPropagationCheck extends AbstractDNSDomainTechnicalCheck {
 
-    List<DNSHost> rootServers;
-
     private RootServersProducer rootServerProducer;
 
     private int dnsCheckRetries;
-
-    public void setRootServers(List<DNSHost> rootServers) {
-        this.rootServers = rootServers;
-    }
 
     public void setRootServersProducer(RootServersProducer rootServersProducer) {
         this.rootServerProducer = rootServersProducer;
@@ -79,7 +73,7 @@ public class RootServersPropagationCheck extends AbstractDNSDomainTechnicalCheck
 
     private List<DNSHost> getRootServers() throws DNSTechnicalCheckException {
         try {
-            return (rootServers != null)? rootServers : rootServerProducer.getRootServers();
+            return rootServerProducer.getRootServers();
         } catch (ConfigException e) {
             throw new InternalDNSCheckException(e);
         }

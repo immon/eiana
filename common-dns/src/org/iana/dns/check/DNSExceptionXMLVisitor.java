@@ -191,6 +191,12 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
         exceptions.add(exceptionDataDecorator);
     }
 
+
+    public void acceptInternalDNSCheckException(InternalDNSCheckException e) {
+        ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
+        exceptions.add(exceptionDataDecorator);
+    }
+
     public void acceptDNSCheckIOException(DNSCheckIOException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
         exceptions.add(exceptionDataDecorator);

@@ -3,6 +3,7 @@ package org.iana.rzm.init.ant;
 import org.hibernate.Session;
 import org.iana.config.Config;
 import org.iana.config.Parameter;
+import org.iana.config.impl.SetParameter;
 import org.iana.config.impl.SingleParameter;
 import org.iana.dns.validator.InvalidIPAddressException;
 import org.iana.rzm.domain.*;
@@ -11,6 +12,7 @@ import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
 
 import java.net.MalformedURLException;
+import java.util.*;
 
 /**
  * @author Jakub Laszkiewicz
@@ -178,6 +180,34 @@ public class InitDatabaseTask extends HibernateTask {
         singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
         session.save(singleParam);
 
+        Map<String, Set<String>> rootServers = new HashMap<String, Set<String>>();
+        rootServers.put("A.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("198.41.0.4", "2001:503:BA3E:0:0:0:2:30")));
+        rootServers.put("H.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("128.63.2.53", "2001:500:1:0:0:0:803F:235")));
+        rootServers.put("C.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.33.4.12")));
+        rootServers.put("G.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.112.36.4")));
+        rootServers.put("F.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.5.5.241", "2001:500:2F:0:0:0:0:F")));
+        rootServers.put("B.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.228.79.201")));
+        rootServers.put("J.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.58.128.30", "2001:503:C27:0:0:0:2:30")));
+        rootServers.put("K.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("193.0.14.129", "2001:7FD:0:0:0:0:0:1")));
+        rootServers.put("L.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("199.7.83.42")));
+        rootServers.put("M.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("202.12.27.33", "2001:DC3:0:0:0:0:0:35")));
+        rootServers.put("I.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.36.148.17")));
+        rootServers.put("E.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("192.203.230.10")));
+        rootServers.put("D.ROOT-SERVERS.NET.", new HashSet<String>(Arrays.asList("128.8.10.90")));
+
+
+        SetParameter setParam = new SetParameter("rootServerNames", rootServers.keySet());
+        setParam.setOwner(Config.DEFAULT_OWNER);
+        setParam.setFromDate(System.currentTimeMillis());
+        setParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+        session.save(setParam);
+
+        for (String rootServerName : rootServers.keySet()) {
+            SetParameter sParam = new SetParameter(rootServerName, rootServers.get(rootServerName));
+            sParam.setFromDate(System.currentTimeMillis());
+            sParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
+            session.save(sParam);
+        }
 
     }
 

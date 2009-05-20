@@ -1,15 +1,17 @@
 package org.iana.rzm.facade.admin.domain.dns;
 
-import org.iana.dns.DNSZone;
-import org.iana.dns.DNSHost;
+import org.iana.config.impl.ConfigException;
 import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSHost;
+import org.iana.dns.DNSZone;
+import org.iana.dns.RootServersProducer;
 import org.iana.dns.obj.DNSZoneImpl;
-import org.iana.rzm.domain.DomainManager;
-import org.iana.rzm.domain.Domain;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.domain.Domain;
+import org.iana.rzm.domain.DomainManager;
 
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * The default implementation of DNSZoneProducer interface.
@@ -34,8 +36,6 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
 
     private String adminAddress;
 
-    private List<DNSHost> nameServers;
-
     private String description;
 
     private String dateOfSerial;
@@ -44,9 +44,13 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
 
     private DomainManager domainManager;
 
-    public DNSZoneProducerImpl(DomainManager domainManager) {
+    private RootServersProducer rootServersProducer;
+
+    public DNSZoneProducerImpl(DomainManager domainManager, RootServersProducer rootServersProducer) {
         CheckTool.checkNull(domainManager, "domain manager");
+        CheckTool.checkNull(rootServersProducer, "root servers producer");
         this.domainManager = domainManager;
+        this.rootServersProducer = rootServersProducer;
     }
 
     public void setZoneTTL(long zoneTTL) {
@@ -81,10 +85,6 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
         this.adminAddress = adminAddress;
     }
 
-    public void setNameServers(List<DNSHost> nameServers) {
-        this.nameServers = nameServers;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -97,7 +97,11 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
         this.noOfSerial = noOfSerial;
     }
 
-    public DNSZone getDNSZone() {
+    private List<DNSHost> getNameServers() throws ConfigException {
+        return rootServersProducer.getRootServers();
+    }
+
+    public DNSZone getDNSZone() throws ConfigException {
         DNSZoneImpl ret = new DNSZoneImpl("");
         ret.setZoneTTL(zoneTTL);
         ret.setZoneNameServersTTL(zoneNameServersTTL);
@@ -107,6 +111,9 @@ public class DNSZoneProducerImpl implements DNSZoneProducer {
         ret.setExpire(expire);
         ret.setMinimum(minimum);
         ret.setAdminAddress(adminAddress);
+
+        List<DNSHost> nameServers = getNameServers();
+
         if (nameServers != null && nameServers.size() > 0) {
             ret.setPrimaryServer(nameServers.get(0));
         }

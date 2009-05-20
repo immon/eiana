@@ -45,4 +45,6 @@ public interface DNSTechnicalCheckExceptionVisitor {
     public void acceptDNSCheckIOException(DNSCheckIOException e);
 
     public void acceptRadicalAlterationException(RadicalAlterationCheckException e);
+
+    public void acceptInternalDNSCheckException(InternalDNSCheckException e);
 }
