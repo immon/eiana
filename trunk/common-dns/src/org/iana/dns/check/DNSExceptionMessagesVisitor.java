@@ -30,7 +30,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNotUniqueIPAddressException(NotUniqueIPAddressException e) {
-        buffer.append("IP addresses are duplicated for host: ").append(e.getHostName())
+        buffer.append("IP addresses are duplicated for hosts: ").append(e.getHostName())
+                .append(", ").append(e.getOtherHost().getName())
                 .append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
