@@ -17,11 +17,18 @@ public class NotUniqueIPAddressException extends DomainTechnicalCheckException {
      * @param domain    current domain
      * @param host      current host
      */
-    public NotUniqueIPAddressException(DNSDomain domain, DNSHost host) {
-        super(domain, host);
+    private DNSHost otherHost;
+
+    public NotUniqueIPAddressException(DNSDomain domain, DNSHost currentHost, DNSHost otherHost) {
+        super(domain, currentHost);
+        this.otherHost = otherHost;
     }
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
         visitor.acceptNotUniqueIPAddressException(this);
+    }
+
+    public DNSHost getOtherHost() {
+        return otherHost;
     }
 }

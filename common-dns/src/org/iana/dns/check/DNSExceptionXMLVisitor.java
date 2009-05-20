@@ -59,6 +59,13 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
 
     public void acceptNotUniqueIPAddressException(NotUniqueIPAddressException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
+
+        ValueDataDecorator expectedHostName = new ValueDataDecorator(HOST, e.getHostName());
+        exceptionDataDecorator.addExpected(expectedHostName);
+
+        ValueDataDecorator otherHostName = new ValueDataDecorator(HOST, e.getOtherHost().getName());
+        exceptionDataDecorator.addOther(otherHostName);
+        
         exceptions.add(exceptionDataDecorator);
     }
 
