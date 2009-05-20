@@ -14,6 +14,10 @@ public interface RootServersProducer {
     
     List<DNSHost> getRootServers() throws ConfigException;
 
-    List<Parameter> getConfig(List<DNSHost> rootServers) throws ConfigException;
+    boolean hasRootServers() throws ConfigException;
+
+    List<DNSHost> getDefaultServers() throws ConfigException;
+
+    List<Parameter> toConfig(List<DNSHost> rootServers) throws ConfigException;
 
 }
