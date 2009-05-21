@@ -78,11 +78,11 @@ public class Pop3MailReceiver implements MailReceiver {
         this.port = port;
     }
 
-    private String getProtocol() throws ConfigException {
+    public String getProtocol() throws ConfigException {
         return isSsl() ? "pop3s" : "pop3";
     }
 
-    private boolean isSsl() throws ConfigException {
+    public boolean isSsl() throws ConfigException {
         if (config != null) {
             Boolean param = config.getBooleanParameter(POP3_SSL);
             if (param != null) return param;
@@ -90,7 +90,7 @@ public class Pop3MailReceiver implements MailReceiver {
         return ssl;
     }
 
-    private String getHost() throws ConfigException {
+    public String getHost() throws ConfigException {
         if (config != null) {
             String param = config.getParameter(POP3_HOST);
             if (param != null) return param;
@@ -98,7 +98,7 @@ public class Pop3MailReceiver implements MailReceiver {
         return host;
     }
 
-    private String getUser() throws ConfigException {
+    public String getUser() throws ConfigException {
         if (config != null) {
             String param = config.getParameter(POP3_USER);
             if (param != null) return param;
@@ -106,7 +106,7 @@ public class Pop3MailReceiver implements MailReceiver {
         return user;
     }
 
-    private String getPassword() throws ConfigException {
+    public String getPassword() throws ConfigException {
         if (config != null) {
             String param = config.getParameter(POP3_PWD);
             if (param != null) return param;
@@ -114,7 +114,7 @@ public class Pop3MailReceiver implements MailReceiver {
         return password;
     }
 
-    private Integer getPort() throws ConfigException {
+    public Integer getPort() throws ConfigException {
         if (config != null) {
             Integer param = config.getIntegerParameter(POP3_PORT);
             if (param != null) return param;

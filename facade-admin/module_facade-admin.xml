@@ -15,6 +15,8 @@
   <path id="facade-admin.module.classpath">
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.nask-commons.classpath"/>
     <pathelement location="${facade-system.output.dir}"/>
@@ -41,8 +43,6 @@
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
     <path refid="library.log4j.classpath"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${common-mail.output.dir}"/>
     <pathelement location="${common-mail.testoutput.dir}"/>
   </path>

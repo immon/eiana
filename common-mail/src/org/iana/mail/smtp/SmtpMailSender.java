@@ -122,6 +122,10 @@ public class SmtpMailSender implements MailSender {
         mailSmtpFrom = value;
     }
 
+    public String getMailSmtpFrom() {
+        return mailSmtpFrom;
+    }
+
     public void sendMail(String from, String to, String cc, String subject, String body) throws MailSenderException {
         Session session = init();
         try {

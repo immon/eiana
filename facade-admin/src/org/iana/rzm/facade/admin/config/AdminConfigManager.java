@@ -1,5 +1,6 @@
 package org.iana.rzm.facade.admin.config;
 
+import org.iana.dns.DNSHost;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.admin.config.binded.*;
 
@@ -10,8 +11,7 @@ import java.util.List;
  */
 public interface AdminConfigManager {
 
-    public List<ConfigParameter> getParameters() throws InfrastructureException;
-
+    @Deprecated
     public void setParameter(String name, String value) throws InfrastructureException;
 
     public Pop3Config getPop3Config() throws InfrastructureException;
@@ -33,5 +33,9 @@ public interface AdminConfigManager {
     public USDoCOrgConfig getUSDoCOrgConfig() throws InfrastructureException;
 
     public void setUSDoCOrgConfig(USDoCOrgConfig config) throws InfrastructureException;
+
+    public List<DNSHost> getRootNameservers() throws InfrastructureException;
+
+    public void setRootNameservers(List<DNSHost> nameservers) throws InfrastructureException;
     
 }

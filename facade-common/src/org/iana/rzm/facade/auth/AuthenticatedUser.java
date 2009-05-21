@@ -65,7 +65,6 @@ public class AuthenticatedUser implements Serializable {
         return userName;
     }
 
-
     public boolean isAdmin() {
         return admin;
     }

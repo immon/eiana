@@ -1,14 +1,14 @@
-package org.iana.rzm.facade.admin.config;
+package org.iana.rzm.facade.admin.config.impl;
 
 import org.iana.notifications.template.def.TemplateDef;
 import org.iana.notifications.template.def.TemplateDefConfig;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.admin.config.AdminEmailTemplateManager;
+import org.iana.rzm.facade.admin.config.EmailTemplateVO;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -64,14 +64,7 @@ public class AdminEmailTemplateManagerImpl implements AdminEmailTemplateManager 
         ret.setSubject(src.getSubject());
         ret.setContent(src.getContent());
         ret.setSigned(src.isSigned());
-
-        Set<String> retSet = new HashSet<String>();
-
-        for (String address : src.getAddressees()) {
-            retSet.add(address);
-        }
-        
-        ret.setAddressees(retSet);
+        ret.setAddressees(src.getAddressees());
         return ret;
     }
 

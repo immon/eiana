@@ -48,4 +48,17 @@ public class MockRootServersProducer implements RootServersProducer {
     public List<Parameter> getConfig(List<DNSHost> rootServers) throws ConfigException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+
+    public boolean hasRootServers() throws ConfigException {
+        return false;
+    }
+
+    public List<DNSHost> getDefaultServers() throws ConfigException {
+        return null;
+    }
+
+    public List<Parameter> toConfig(List<DNSHost> rootServers) throws ConfigException {
+        return null;
+    }
 }
