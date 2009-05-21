@@ -96,11 +96,18 @@
     <!-- ######################################################################## -->
 
 
-    <bean id="adminConfigManager" class="org.iana.rzm.facade.admin.config.AdminConfigManagerImpl">
+    <bean id="adminConfigManager" class="org.iana.rzm.facade.admin.config.impl.AdminConfigManagerImpl">
         <constructor-arg ref="hibernateConfigDAO"/>
+        <constructor-arg>
+            <bean class="org.iana.rzm.facade.admin.config.impl.SimpleParameterRetriever">
+                <constructor-arg ref="NotificationSenderBean"/>
+                <constructor-arg ref="mailReceiver"/>    
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="rootServersProducerBean"/>
     </bean>
 
-    <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.AdminEmailTemplateManagerImpl">
+    <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.impl.AdminEmailTemplateManagerImpl">
         <constructor-arg ref="templatesConfigLoader"/>
     </bean>
 
@@ -2013,6 +2020,7 @@
 
     <bean id="rootServersProducerBean" class="org.iana.dns.RootServersProducerImpl">
         <constructor-arg index="0" ref="parameterManager"/>
+        <constructor-arg ref="rootServersList"/>
     </bean>
 
     <bean id="rootServersList" class="java.util.ArrayList">

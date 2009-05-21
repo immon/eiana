@@ -24,6 +24,9 @@
     <path refid="library.fastinfoset.classpath"/>
     <path refid="library.nask-commons.classpath"/>
     <path refid="library.jdom.classpath"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
+    <path refid="library.hibernate.classpath"/>
   </path>
   
   
@@ -51,7 +54,7 @@
   
   <target name="compile.module.common-dns" depends="compile.module.common-dns.production,compile.module.common-dns.tests" description="Compile module common-dns"/>
   
-  <target name="compile.module.common-dns.production" description="Compile module common-dns; production classes">
+  <target name="compile.module.common-dns.production" depends="compile.module.common-config" description="Compile module common-dns; production classes">
     <mkdir dir="${common-dns.output.dir}"/>
     <javac destdir="${common-dns.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.common-dns}"/>

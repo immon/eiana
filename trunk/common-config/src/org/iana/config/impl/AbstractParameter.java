@@ -2,6 +2,7 @@ package org.iana.config.impl;
 
 
 import org.iana.config.Parameter;
+import org.iana.config.Config;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,7 +27,7 @@ abstract class AbstractParameter implements Parameter {
     protected String name;
 
     @Basic
-    protected String owner;
+    protected String owner = Config.DEFAULT_OWNER;
 
     /**
      * Parameter validity date.

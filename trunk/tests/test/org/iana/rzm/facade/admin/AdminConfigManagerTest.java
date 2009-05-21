@@ -1,17 +1,14 @@
 package org.iana.rzm.facade.admin;
 
+import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
 import org.iana.rzm.facade.admin.config.AdminConfigManager;
-import org.iana.rzm.facade.admin.config.ConfigParameter;
 import org.iana.rzm.facade.admin.config.binded.Pop3Config;
 import org.iana.rzm.facade.admin.config.binded.SmtpConfig;
-import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.test.spring.RollbackableSpringContextTest;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
 import org.testng.Assert;
-
-import java.util.List;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -63,14 +60,6 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
         SmtpConfig expectedConfig = createSmtpConfig();
         SmtpConfig actualConfig = adminConfigManager.getSmtpConfig();
         Assert.assertEquals(actualConfig, expectedConfig);
-    }
-
-    @Test
-    public void testGetConfigParameters() throws Exception {
-        createPop3Config();
-        createSmtpConfig();
-        List<ConfigParameter> params = adminConfigManager.getParameters();
-        Assert.assertTrue(params.size() > 0);
     }
 
     private Pop3Config createPop3Config() throws InfrastructureException {

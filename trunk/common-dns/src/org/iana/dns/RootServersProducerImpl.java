@@ -21,11 +21,11 @@ public class RootServersProducerImpl implements RootServersProducer {
 
     List<DNSHost> rootServers;
 
-    public RootServersProducerImpl(ParameterManager parameterManager) {
+    public RootServersProducerImpl(ParameterManager parameterManager, List<DNSHost> rootServers) {
         if (parameterManager == null)
             throw new IllegalArgumentException("parameter manager is null");
-
         config = new OwnedConfig(parameterManager);
+        this.rootServers = rootServers;
     }
 
     public List<DNSHost> getRootServers() throws ConfigException {
@@ -46,20 +46,24 @@ public class RootServersProducerImpl implements RootServersProducer {
 
     public List<Parameter> toConfig(List<DNSHost> rootServers) throws ConfigException {
         List<Parameter> ret = new ArrayList<Parameter>();
-        for (DNSHost host : rootServers) {
-            Parameter param = new SetParameter(rootServerParamNames + "." + host.getName(), host.getIPAddressesAsStrings());
-            ret.add(param);
+        if (rootServers != null) {
+            for (DNSHost host : rootServers) {
+                Parameter param = new SetParameter(rootServerParamNames + "." + host.getName(), host.getIPAddressesAsStrings());
+                ret.add(param);
+            }
         }
         return ret;
     }
 
     private List<DNSHost> toDNSHostList(Config rootServerConfig) throws ConfigException {
         List<DNSHost> dnsHostsList = new ArrayList<DNSHost>();
-        for (String rootServer : rootServerConfig.getParameterNames()) {
-            Set<String> serverAddresses = config.getParameterSet(rootServer);
-            DNSHostImpl dnsHost = new DNSHostImpl(rootServer);
-            dnsHost.setIPAddressesAsStrings(serverAddresses);
-            dnsHostsList.add(dnsHost);
+        if (rootServerConfig != null) {
+            for (String rootServer : rootServerConfig.getParameterNames()) {
+                Set<String> serverAddresses = config.getParameterSet(rootServer);
+                DNSHostImpl dnsHost = new DNSHostImpl(rootServer);
+                dnsHost.setIPAddressesAsStrings(serverAddresses);
+                dnsHostsList.add(dnsHost);
+            }
         }
         return dnsHostsList;
     }

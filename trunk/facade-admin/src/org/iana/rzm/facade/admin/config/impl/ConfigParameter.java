@@ -1,4 +1,4 @@
-package org.iana.rzm.facade.admin.config;
+package org.iana.rzm.facade.admin.config.impl;
 
 /**
  * @author Patrycja Wegrzynowicz

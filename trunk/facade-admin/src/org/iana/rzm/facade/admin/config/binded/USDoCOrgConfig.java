@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.admin.config.binded;
 
-import org.iana.rzm.facade.admin.config.ConfigParameterNames;
+import org.iana.rzm.facade.admin.config.impl.ConfigParameterNames;
 
 import java.util.Arrays;
 import java.util.List;

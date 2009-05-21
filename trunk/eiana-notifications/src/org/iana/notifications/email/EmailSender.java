@@ -80,6 +80,10 @@ public class EmailSender implements NotificationSender, EmailConstants {
         mailSmtpFrom = value;
     }
 
+    public String getMailSmtpFrom() {
+        return mailSmtpFrom;
+    }
+
     public String getEmailMailer() throws ConfigException {
         if (config != null) {
             String param = config.getParameter(SMTP_MAILER);
