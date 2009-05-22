@@ -44,6 +44,8 @@ abstract public class AbstractRZMStatelessService {
         return ret;
     }
 
+    public static final Role ROOT = new AdminRole(AdminRole.AdminType.ROOT);
+
     public static final Role IANA = new AdminRole(AdminRole.AdminType.IANA);
 
     public static final Role GOV = new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
@@ -60,7 +62,7 @@ abstract public class AbstractRZMStatelessService {
 
     final protected boolean checkIsIana(AuthenticatedUser user) throws AccessDeniedException {
         RZMUser rzmUser = getRZMUser(user);
-        return rzmUser.isInRole(IANA);
+        return rzmUser.isInRole(IANA) || rzmUser.isInRole(ROOT);
     }
 
     final protected void isGov(AuthenticatedUser user) throws AccessDeniedException {
