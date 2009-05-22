@@ -7,6 +7,7 @@ package org.iana.rzm.facade.user;
 public class AdminRoleVO extends RoleVO {
 
     public enum AdminType implements RoleVO.Type {
+        ROOT,
         IANA,
         GOV_OVERSIGHT,
         ZONE_PUBLISHER
@@ -29,6 +30,10 @@ public class AdminRoleVO extends RoleVO {
 
     public boolean isAdmin() {
         return true;
+    }
+
+    public boolean isRoot() {
+        return AdminType.ROOT.equals(getType());
     }
 
     public boolean isIANAAdmin() {

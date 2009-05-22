@@ -1,12 +1,13 @@
 package org.iana.rzm.web.admin.model;
 
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.user.AdminRoleVO;
+import org.iana.rzm.web.common.model.RoleVOWrapper;
 
 public class AdminRoleVOWrapper extends RoleVOWrapper {
 
     public enum AdminType implements Type {
+        ROOT("ROOT", "ROOT"),
         IANA("IANA", "IANA"),
         DoC( "GOV_OVERSIGHT", "DoC"),
         ZONE_PUBLISHER("ZONE_PUBLISHER", "Zone Publisher");
@@ -67,6 +68,8 @@ public class AdminRoleVOWrapper extends RoleVOWrapper {
                 return DoC;
             } else if (type.equals(AdminRoleVO.AdminType.ZONE_PUBLISHER)) {
                 return ZONE_PUBLISHER;
+            } else if (type.equals(AdminRoleVO.AdminType.ROOT)) {
+                return ROOT;
             }
             throw new IllegalArgumentException(type.getClass().getName());
         }
