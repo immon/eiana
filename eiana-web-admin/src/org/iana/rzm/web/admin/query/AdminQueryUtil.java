@@ -1,11 +1,15 @@
 package org.iana.rzm.web.admin.query;
 
-import org.iana.criteria.*;
-import org.iana.rzm.facade.admin.msgs.*;
-import org.iana.rzm.facade.admin.users.*;
-import org.iana.rzm.web.common.query.*;
+import org.iana.criteria.And;
+import org.iana.criteria.Criterion;
+import org.iana.criteria.Equal;
+import org.iana.criteria.Or;
+import org.iana.rzm.facade.admin.msgs.PollMsgFields;
+import org.iana.rzm.facade.admin.users.UserCriteria;
+import org.iana.rzm.web.common.query.QueryBuilderUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AdminQueryUtil extends QueryBuilderUtil {
 
@@ -23,8 +27,12 @@ public class AdminQueryUtil extends QueryBuilderUtil {
     }
 
     public static Criterion adminUsers() {
-        return new And(new Equal(UserCriteria.ROLE, "AdminRole"),
-                       new Equal(UserCriteria.ROLE_TYPE, "IANA"));
+        And iana = new And(new Equal(UserCriteria.ROLE, "AdminRole"),
+                          new Equal(UserCriteria.ROLE_TYPE, "IANA"));
+        And root = new And(new Equal(UserCriteria.ROLE, "AdminRole"),
+                          new Equal(UserCriteria.ROLE_TYPE, "ROOT"));
+        
+        return new Or(new ArrayList<Criterion>(Arrays.asList(iana, root)));
     }
 
      public static Criterion docVerisignUsers() {

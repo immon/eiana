@@ -1,18 +1,18 @@
 package org.iana.rzm.facade.admin.users;
 
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.converter.UserConverter;
+import org.iana.criteria.Criterion;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.auth.AuthenticatedUser;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.facade.user.converter.UserConverter;
 import org.iana.rzm.user.*;
-import org.iana.criteria.Criterion;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Piotr Tkaczyk
@@ -44,6 +44,14 @@ public class StatelessAdminUserServiceImpl implements StatelessAdminUserService 
     public void createUser(UserVO userVO, AuthenticatedUser authUser) throws AccessDeniedException {
         CheckTool.checkNull(userVO, "userVO");
         RZMUser newUser = UserConverter.convert(userVO);
+
+        List<RZMUser> rootUsers = userManager.findUsersInAdminRole(AdminRole.AdminType.ROOT);
+        Role rootRole = new AdminRole(AdminRole.AdminType.ROOT);
+        if (!rootUsers.isEmpty() && newUser.isInRole(rootRole)) {
+            RZMUser rUser = rootUsers.iterator().next();
+            throw new AccessDeniedException("Root user already exists: " + rUser.getLoginName());
+        }
+
         // new users always created with the expired password!
         newUser.setPasswordExDate(new Timestamp(System.currentTimeMillis()-1));
         for (Role role : newUser.getRoles()) {
@@ -61,8 +69,19 @@ public class StatelessAdminUserServiceImpl implements StatelessAdminUserService 
 
     public void updateUser(UserVO userVO, AuthenticatedUser authUser) throws AccessDeniedException {
         CheckTool.checkNull(userVO, "userVO");
+
+        List<RZMUser> rootUsers = userManager.findUsersInAdminRole(AdminRole.AdminType.ROOT);
+        Role rootRole = new AdminRole(AdminRole.AdminType.ROOT);
+        
         RZMUser user = userManager.get(userVO.getObjId());
         RZMUser updateUser = UserConverter.convert(user, userVO);
+
+        if (!rootUsers.isEmpty() && updateUser.isInRole(rootRole)) {
+            RZMUser rUser = rootUsers.iterator().next();
+            if (!rUser.getObjId().equals(updateUser.getObjId()))
+                throw new AccessDeniedException("Root user already exists: " + rUser.getLoginName());
+        }
+
         updateUser.setTrackData(user.getTrackData());
         updateUser.setModified(new Timestamp(System.currentTimeMillis()));
         updateUser.setModifiedBy(authUser.getUserName());

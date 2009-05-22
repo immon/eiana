@@ -9,9 +9,9 @@ import org.iana.rzm.user.Role;
 import org.iana.rzm.user.SystemRole;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * org.iana.rzm.facade.user.converter.RoleConverter
@@ -33,6 +33,7 @@ public class RoleConverter {
         systemRolesMap.put(SystemRole.SystemType.TC, SystemRoleVO.SystemType.TC);
         systemRolesMap.put(SystemRole.SystemType.SO, SystemRoleVO.SystemType.SO);
 
+        adminRolesMap.put(AdminRole.AdminType.ROOT, AdminRoleVO.AdminType.ROOT);
         adminRolesMap.put(AdminRole.AdminType.IANA, AdminRoleVO.AdminType.IANA);
         adminRolesMap.put(AdminRole.AdminType.GOV_OVERSIGHT, AdminRoleVO.AdminType.GOV_OVERSIGHT);
         adminRolesMap.put(AdminRole.AdminType.ZONE_PUBLISHER, AdminRoleVO.AdminType.ZONE_PUBLISHER);
@@ -41,6 +42,7 @@ public class RoleConverter {
         systemRolesVOMap.put(SystemRoleVO.SystemType.TC, SystemRole.SystemType.TC);
         systemRolesVOMap.put(SystemRoleVO.SystemType.SO, SystemRole.SystemType.SO);
 
+        adminRolesVOMap.put(AdminRoleVO.AdminType.ROOT, AdminRole.AdminType.ROOT);
         adminRolesVOMap.put(AdminRoleVO.AdminType.IANA, AdminRole.AdminType.IANA);
         adminRolesVOMap.put(AdminRoleVO.AdminType.GOV_OVERSIGHT, AdminRole.AdminType.GOV_OVERSIGHT);
         adminRolesVOMap.put(AdminRoleVO.AdminType.ZONE_PUBLISHER, AdminRole.AdminType.ZONE_PUBLISHER);
