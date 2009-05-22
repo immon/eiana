@@ -3,13 +3,14 @@ package org.iana.rzm.facade.admin.config;
 import org.iana.dns.DNSHost;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.admin.config.binded.*;
+import org.iana.rzm.facade.services.RZMStatefulService;
 
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public interface AdminConfigManager {
+public interface AdminConfigManager extends RZMStatefulService {
 
     @Deprecated
     public void setParameter(String name, String value) throws InfrastructureException;

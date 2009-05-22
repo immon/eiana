@@ -78,11 +78,11 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         userService = initializer.getBean("remoteGuardedAdminUserServiceBean");
         detectorService = initializer.getBean("remoteAdminDetectorService");
         pollMessagesService = initializer.getBean("remotePollMessagesService");
+        configManager = initializer.getBean("remoteGuardedConfigManager");
         countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
         domainTypesService = initializer.getBean("remoteDomainTypes", DomainTypes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
         dnsServices = initializer.getBean("remoteDnsService", AdminDNSService.class);
-        configManager = initializer.getBean("remoteConfigManager", AdminConfigManager.class);
     }
 
     public int getTransactionCount(Criterion criterion) {

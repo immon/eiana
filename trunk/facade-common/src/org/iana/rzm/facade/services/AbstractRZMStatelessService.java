@@ -56,6 +56,15 @@ abstract public class AbstractRZMStatelessService {
         isUserInRole(IANA_GOV, user);
     }
 
+    final protected void isRoot(AuthenticatedUser user) throws AccessDeniedException {
+        if (!checkIsRoot(user)) throw new AccessDeniedException("authenticated user not in the role ROOT");
+    }
+
+    final protected boolean checkIsRoot(AuthenticatedUser user) throws AccessDeniedException {
+        RZMUser rzmUser = getRZMUser(user);
+        return rzmUser.isInRole(ROOT);
+    }
+
     final protected void isIana(AuthenticatedUser user) throws AccessDeniedException {
         if (!checkIsIana(user)) throw new AccessDeniedException("authenticated user not in the role IANA");
     }

@@ -96,7 +96,8 @@
     <!-- ######################################################################## -->
 
 
-    <bean id="adminConfigManager" class="org.iana.rzm.facade.admin.config.impl.AdminConfigManagerImpl">
+    <bean id="adminConfigManager" class="org.iana.rzm.facade.admin.config.impl.StatelessAdminConfigManagerImpl">
+        <constructor-arg ref="userManager"/>
         <constructor-arg ref="hibernateConfigDAO"/>
         <constructor-arg>
             <bean class="org.iana.rzm.facade.admin.config.impl.SimpleParameterRetriever">
@@ -1690,7 +1691,8 @@
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
-                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..))"/>
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.StatelessAdminConfigManagerImpl.*(..))"/>
         <aop:advisor advice-ref="txAdvice"
                      pointcut-ref="transactionalOperation"
                      order="1"/>

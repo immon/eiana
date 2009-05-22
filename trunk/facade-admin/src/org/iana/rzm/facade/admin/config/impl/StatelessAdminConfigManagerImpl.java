@@ -8,8 +8,11 @@ import org.iana.config.impl.SingleParameter;
 import org.iana.dns.DNSHost;
 import org.iana.dns.RootServersProducer;
 import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.admin.config.AdminConfigManager;
+import org.iana.rzm.facade.admin.config.StatelessAdminConfigManager;
 import org.iana.rzm.facade.admin.config.binded.*;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.services.AbstractRZMStatelessService;
+import org.iana.rzm.user.UserManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +23,7 @@ import java.util.Set;
  * @author Patrycja Wegrzynowicz
  * @author Piotr Tkaczyk
  */
-public class AdminConfigManagerImpl implements AdminConfigManager {
+public class StatelessAdminConfigManagerImpl extends AbstractRZMStatelessService implements StatelessAdminConfigManager {
 
     protected ConfigParameterRetriever defaultParameterRetriever;
 
@@ -28,7 +31,8 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
 
     protected RootServersProducer rootServers;
 
-    public AdminConfigManagerImpl(ConfigDAO configDAO, ConfigParameterRetriever defaultValues, RootServersProducer rootServers) throws ConfigException {
+    public StatelessAdminConfigManagerImpl(UserManager userManager, ConfigDAO configDAO, ConfigParameterRetriever defaultValues, RootServersProducer rootServers) throws ConfigException {
+        super(userManager);
         this.configDAO = configDAO;
         this.defaultParameterRetriever = defaultValues;
         this.rootServers = rootServers;
@@ -58,61 +62,66 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         }
     }
 
-    public Pop3Config getPop3Config() throws InfrastructureException {
+    public Pop3Config getPop3Config(AuthenticatedUser authUser) throws InfrastructureException {
         List<String> parameterNames = Pop3Config.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
         return new Pop3Config(values);
     }
 
-    public SmtpConfig getSmtpConfig() throws InfrastructureException {
+    public SmtpConfig getSmtpConfig(AuthenticatedUser authUser) throws InfrastructureException {
         List<String> parameterNames = SmtpConfig.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
         return new SmtpConfig(values);
     }
 
-    public PgpConfig getPgpConfig() throws InfrastructureException {
+    public PgpConfig getPgpConfig(AuthenticatedUser authUser) throws InfrastructureException {
         List<String> parameterNames = PgpConfig.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
         // no default configured in spring (it's configured in templates.xml per email template)
         return new PgpConfig(values);
     }
 
-    public VerisignOrgConfig getVerisignOrgConfig() throws InfrastructureException {
+    public VerisignOrgConfig getVerisignOrgConfig(AuthenticatedUser authUser) throws InfrastructureException {
         List<String> parameterNames = VerisignOrgConfig.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
-        if (values == null) values = initParameter(ConfigParameterNames.VERISIGN_EMAIL);
+        if (values == null) values = initParameter(ConfigParameterNames.VERISIGN_EMAIL, authUser);
         // no default configured in spring (it's used only via database parameters)
         return new VerisignOrgConfig(values);
     }
 
-    public USDoCOrgConfig getUSDoCOrgConfig() throws InfrastructureException {
+    public USDoCOrgConfig getUSDoCOrgConfig(AuthenticatedUser authUser) throws InfrastructureException {
         List<String> parameterNames = USDoCOrgConfig.getParameterNames();
         Map<String, String> values = getValuesMap(parameterNames);
         // no default configured in spring (it's used only via database parameters)
         return new USDoCOrgConfig(values);
     }
 
-    public void setPop3Config(Pop3Config config) throws InfrastructureException {
-        setParameter(config);
+    public void setPop3Config(Pop3Config config, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
+        setParameter(config, authUser);
     }
 
-    public void setSmtpConfig(SmtpConfig config) throws InfrastructureException {
-        setParameter(config);
+    public void setSmtpConfig(SmtpConfig config, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
+        setParameter(config, authUser);
     }
 
-    public void setPgpConfig(PgpConfig config) throws InfrastructureException {
-        setParameter(config);
+    public void setPgpConfig(PgpConfig config, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
+        setParameter(config, authUser);
     }
 
-    public void setVersignOrgConfig(VerisignOrgConfig config) throws InfrastructureException {
-        setParameter(config);
+    public void setVersignOrgConfig(VerisignOrgConfig config, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
+        setParameter(config, authUser);
     }
 
-    public void setUSDoCOrgConfig(USDoCOrgConfig config) throws InfrastructureException {
-        setParameter(config);
+    public void setUSDoCOrgConfig(USDoCOrgConfig config, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
+        setParameter(config, authUser);
     }
 
-    public List<DNSHost> getRootNameservers() throws InfrastructureException {
+    public List<DNSHost> getRootNameservers(AuthenticatedUser authUser) throws InfrastructureException {
         try {
             return rootServers.getRootServers();
         } catch (ConfigException e) {
@@ -120,7 +129,8 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         }
     }
 
-    public void setRootNameservers(List<DNSHost> nameservers) throws InfrastructureException {
+    public void setRootNameservers(List<DNSHost> nameservers, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
         try {
             removeRootNameservers();
             addRootNameservers(nameservers);
@@ -147,7 +157,8 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         return configDAO.getSubConfigNames(Config.DEFAULT_OWNER, RootServersProducer.rootServerParamNames);
     }
 
-    public void setParameter(String name, String value) throws InfrastructureException {
+    public void setParameter(String name, String value, AuthenticatedUser authUser) throws InfrastructureException {
+        isRoot(authUser);
         try {
             Parameter parameter = getParameter(name);
             if (parameter == null) {
@@ -168,20 +179,20 @@ public class AdminConfigManagerImpl implements AdminConfigManager {
         return configDAO.getParameter(Config.DEFAULT_OWNER, name);
     }
 
-    private void setParameter(BindedParameter parameter) throws InfrastructureException {
-        setParameter(parameter.getValuesMap());
+    private void setParameter(BindedParameter parameter, AuthenticatedUser authUser) throws InfrastructureException {
+        setParameter(parameter.getValuesMap(), authUser);
     }
 
-    private void setParameter(Map<String, String> values) throws InfrastructureException {
+    private void setParameter(Map<String, String> values, AuthenticatedUser authUser) throws InfrastructureException {
         for (String paramName : values.keySet()) {
-            setParameter(paramName, values.get(paramName));
+            setParameter(paramName, values.get(paramName), authUser);
         }
     }
 
-    private Map<String, String> initParameter(String name) throws InfrastructureException {
+    private Map<String, String> initParameter(String name, AuthenticatedUser authUser) throws InfrastructureException {
         try {
             Map<String, String> ret = defaultParameterRetriever.getParameter(name);
-            setParameter(ret);
+            setParameter(ret, authUser);
             return ret;
         } catch (ConfigException e) {
             throw new InfrastructureException(e);

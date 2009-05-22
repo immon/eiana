@@ -2,9 +2,13 @@ package org.iana.rzm.facade.admin;
 
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.admin.config.AdminConfigManager;
+import org.iana.rzm.facade.admin.config.StatelessAdminConfigManager;
 import org.iana.rzm.facade.admin.config.binded.Pop3Config;
 import org.iana.rzm.facade.admin.config.binded.SmtpConfig;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.user.AdminRole;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 import org.iana.test.spring.RollbackableSpringContextTest;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -16,7 +20,10 @@ import org.testng.annotations.Test;
 @Test
 public class AdminConfigManagerTest extends RollbackableSpringContextTest {
 
-    protected AdminConfigManager adminConfigManager;
+    protected StatelessAdminConfigManager adminConfigManager;
+    protected UserManager userManager;
+
+    private AuthenticatedUser authUser;
 
     public AdminConfigManagerTest() {
         super(SpringApplicationContext.CONFIG_FILE_NAME);
@@ -24,6 +31,14 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
 
     @BeforeClass
     protected void init() throws Exception {
+
+        RZMUser root = new RZMUser();
+        root.setLoginName("root");
+        AdminRole adminRole = new AdminRole(AdminRole.AdminType.ROOT);
+        root.addRole(adminRole);
+        userManager.create(root);
+        authUser = new AuthenticatedUser(root.getObjId(), root.getLoginName(), true);
+
     }
 
     protected void cleanUp() throws Exception {
@@ -32,7 +47,7 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
     @Test
     public void testCreatePop3Config() throws Exception {
         Pop3Config expectedConfig = createPop3Config();
-        Pop3Config actualConfig = adminConfigManager.getPop3Config();
+        Pop3Config actualConfig = adminConfigManager.getPop3Config(authUser);
         Assert.assertEquals(actualConfig, expectedConfig);
     }
 
@@ -40,8 +55,8 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
     public void testUpdatePop3Config() throws Exception {
         Pop3Config expectedConfig = createPop3Config();
         expectedConfig.setHost("host2");
-        adminConfigManager.setPop3Config(expectedConfig);
-        Pop3Config actualConfig = adminConfigManager.getPop3Config();
+        adminConfigManager.setPop3Config(expectedConfig, authUser);
+        Pop3Config actualConfig = adminConfigManager.getPop3Config(authUser);
         Assert.assertEquals(actualConfig, expectedConfig);
     }
 
@@ -50,15 +65,15 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
         Pop3Config expectedConfig = createPop3Config();
         expectedConfig.setHost(null);
         expectedConfig.setPort(null);
-        adminConfigManager.setPop3Config(expectedConfig);
-        Pop3Config actualConfig = adminConfigManager.getPop3Config();
+        adminConfigManager.setPop3Config(expectedConfig, authUser);
+        Pop3Config actualConfig = adminConfigManager.getPop3Config(authUser);
         Assert.assertEquals(actualConfig, expectedConfig);
     }
 
     @Test
     public void testCreateSmtpConfig() throws Exception {
         SmtpConfig expectedConfig = createSmtpConfig();
-        SmtpConfig actualConfig = adminConfigManager.getSmtpConfig();
+        SmtpConfig actualConfig = adminConfigManager.getSmtpConfig(authUser);
         Assert.assertEquals(actualConfig, expectedConfig);
     }
 
@@ -66,7 +81,7 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
         Pop3Config expectedConfig = new Pop3Config();
         expectedConfig.setHost("host");
         expectedConfig.setPort(22);
-        adminConfigManager.setPop3Config(expectedConfig);
+        adminConfigManager.setPop3Config(expectedConfig, authUser);
         return expectedConfig;
     }
 
@@ -74,8 +89,8 @@ public class AdminConfigManagerTest extends RollbackableSpringContextTest {
         SmtpConfig expectedConfig = new SmtpConfig();
         expectedConfig.setHost("host");
         expectedConfig.setPort(22);
-        adminConfigManager.setSmtpConfig(expectedConfig);
+        adminConfigManager.setSmtpConfig(expectedConfig, authUser);
         return expectedConfig;
     }
-    
+
 }
