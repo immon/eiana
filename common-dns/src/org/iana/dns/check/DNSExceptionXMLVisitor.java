@@ -44,7 +44,8 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
     }
 
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {
-        for (DNSTechnicalCheckException subEx : e.getExceptions()) subEx.accept(this);
+        for (DNSTechnicalCheckException subEx : e.getExceptions()) 
+            subEx.accept(this);
     }
 
     public void acceptMinimumNetworkDiversityException(MinimumNetworkDiversityException e) {
@@ -107,6 +108,11 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
         exceptionDataDecorator.setHostName(e.getHostName());
 
+        for (DNSIPAddress ipAddress : e.getHost().getIPAddresses()) {
+            ValueDataDecorator expected = new ValueDataDecorator(IP, ipAddress.getAddress());
+            exceptionDataDecorator.addExpected(expected);
+        }
+
         for (DNSIPAddress ipAddress : e.getReturnedIPAddresses()) {
             ValueDataDecorator returned = new ValueDataDecorator(IP, ipAddress.getAddress());
             exceptionDataDecorator.addReceived(returned);
@@ -153,6 +159,8 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
+        exceptionDataDecorator.addExpected(new ValueDataDecorator(NS, e.getExpected()));
+        exceptionDataDecorator.addReceived(new ValueDataDecorator(NS, e.getReceived()));
         exceptions.add(exceptionDataDecorator);
     }
 
@@ -173,7 +181,7 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
         for (Long number : e.getSerialNumbers()) {
             if (number != null) {
                 ValueDataDecorator valueDecorator = new ValueDataDecorator(SERIAL_NUMBER, number.intValue());
-                exceptionDataDecorator.addReceived(valueDecorator);
+                exceptionDataDecorator.addOther(valueDecorator);
             }
         }
 

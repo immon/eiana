@@ -17,7 +17,6 @@ public class InternalDNSCheckException extends DNSTechnicalCheckException {
     }
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
-        //TODO
-        //To change body of implemented methods use File | Settings | File Templates.
+        visitor.acceptInternalDNSCheckException(this);
     }
 }

@@ -39,7 +39,7 @@ public class MinimumNameServersAndNoReservedIPsCheck extends AbstractDNSDomainTe
         int uniqueDiff = 0;
 
         if (nameServers == null || nameServers.isEmpty())
-            throw new NotEnoughNameServersException(domain);
+            throw new NotEnoughNameServersException(domain, minNameServersNumber, 0);
 
         for (DNSNameServer currentNs : nameServers) {
             Set<DNSIPAddress> currentIps = currentNs.getIPAddresses();
@@ -69,7 +69,7 @@ public class MinimumNameServersAndNoReservedIPsCheck extends AbstractDNSDomainTe
             }
         }
         if (uniqueDiff < minNameServersNumber)
-            e.addException(new NotEnoughNameServersException(domain));
+            e.addException(new NotEnoughNameServersException(domain, minNameServersNumber, uniqueDiff));
 
         if (!e.isEmpty()) throw e;
     }
