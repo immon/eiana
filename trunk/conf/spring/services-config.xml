@@ -108,7 +108,8 @@
         <constructor-arg ref="rootServersProducerBean"/>
     </bean>
 
-    <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.impl.AdminEmailTemplateManagerImpl">
+    <bean id="adminTemplatesManager" class="org.iana.rzm.facade.admin.config.impl.StatelessAdminEmailTemplateManagerImpl">
+        <constructor-arg ref="userManager"/>
         <constructor-arg ref="templatesConfigLoader"/>
     </bean>
 
@@ -1686,7 +1687,7 @@
                                   execution(public * org.iana.rzm.trans.epp.poll.EPPPollMsgProcessor.*(..)) ||
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
-                                  execution(public * org.iana.rzm.facade.admin.config.impl.AdminEmailTemplateManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.StatelessAdminEmailTemplateManagerImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||

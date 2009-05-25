@@ -1,8 +1,8 @@
 package org.iana.rzm.facade.admin;
 
 import org.iana.rzm.conf.SpringApplicationContext;
-import org.iana.rzm.facade.admin.config.AdminEmailTemplateManager;
 import org.iana.rzm.facade.admin.config.EmailTemplateVO;
+import org.iana.rzm.facade.admin.config.StatelessAdminEmailTemplateManager;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,17 +16,17 @@ import java.util.List;
 @Test
 public class AdminEmailTemplateManagerTest {
 
-    AdminEmailTemplateManager adminEmailTemplateManager;
+    StatelessAdminEmailTemplateManager statelessAdminEmailTemplateManager;
 
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        adminEmailTemplateManager = (AdminEmailTemplateManager) appCtx.getBean("adminTemplatesManager");
+        statelessAdminEmailTemplateManager = (StatelessAdminEmailTemplateManager) appCtx.getBean("adminTemplatesManager");
     }
 
     @Test
     public void testGetTemplates() throws Exception {
-        List<EmailTemplateVO> emailTemplates = adminEmailTemplateManager.getEmailTemplates();
+        List<EmailTemplateVO> emailTemplates = statelessAdminEmailTemplateManager.getEmailTemplates();
         assert emailTemplates != null;
         assert emailTemplates.size() == 25;
     }
