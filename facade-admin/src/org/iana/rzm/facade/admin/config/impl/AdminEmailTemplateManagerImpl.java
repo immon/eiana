@@ -1,71 +1,42 @@
 package org.iana.rzm.facade.admin.config.impl;
 
-import org.iana.notifications.template.def.TemplateDef;
-import org.iana.notifications.template.def.TemplateDefConfig;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.admin.config.AdminEmailTemplateManager;
 import org.iana.rzm.facade.admin.config.EmailTemplateVO;
+import org.iana.rzm.facade.admin.config.StatelessAdminEmailTemplateManager;
+import org.iana.rzm.facade.services.AbstractRZMStatefulService;
+import org.iana.rzm.facade.user.UserVOManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class AdminEmailTemplateManagerImpl implements AdminEmailTemplateManager {
+public class AdminEmailTemplateManagerImpl extends AbstractRZMStatefulService implements AdminEmailTemplateManager {
 
-    private TemplateDefConfig templateDefConfig;
+    StatelessAdminEmailTemplateManager statelessAdminEmailTemplateManager;
 
-    public AdminEmailTemplateManagerImpl(TemplateDefConfig templateDefConfig) {
-        CheckTool.checkNull(templateDefConfig, "template def config");
-        this.templateDefConfig = templateDefConfig;
+    public AdminEmailTemplateManagerImpl(UserVOManager userManager, StatelessAdminEmailTemplateManager statelessAdminEmailTemplateManager) {
+        super(userManager);
+        CheckTool.checkNull(statelessAdminEmailTemplateManager, "admin email template manager");
+        this.statelessAdminEmailTemplateManager = statelessAdminEmailTemplateManager;
     }
 
     public void create(EmailTemplateVO template) throws InfrastructureException {
-        templateDefConfig.create(toTemplateDef(template));
+        statelessAdminEmailTemplateManager.create(template, getAuthenticatedUser());
     }
 
     public void update(EmailTemplateVO template) throws InfrastructureException {
-        templateDefConfig.update(toTemplateDef(template));
+        statelessAdminEmailTemplateManager.update(template, getAuthenticatedUser());
     }
 
     public void delete(String templateName) throws InfrastructureException {
-        templateDefConfig.delete(templateName);
+        statelessAdminEmailTemplateManager.delete(templateName, getAuthenticatedUser());
     }
 
     public List<EmailTemplateVO> getEmailTemplates() throws InfrastructureException {
-        return toTemplateVOs(templateDefConfig.getTemplateDefs());
-    }
-
-    private TemplateDef toTemplateDef(EmailTemplateVO src) {
-        TemplateDef ret = new TemplateDef();
-        ret.setType(src.getName());
-        ret.setSubject(src.getSubject());
-        ret.setContent(src.getContent());
-        ret.setSigned(src.isSigned());
-        ret.setAddressees(src.getAddressees());
-        return ret;
-    }
-
-    private List<EmailTemplateVO> toTemplateVOs(List<TemplateDef> src) {
-        List<EmailTemplateVO> ret = new ArrayList<EmailTemplateVO>();
-        if (src != null) {
-            for (TemplateDef tmp : src) {
-                ret.add(toTemplateVO(tmp));
-            }
-        }
-        return ret;
-    }
-
-    private EmailTemplateVO toTemplateVO(TemplateDef src) {
-        EmailTemplateVO ret = new EmailTemplateVO();
-        ret.setName(src.getType());
-        ret.setSubject(src.getSubject());
-        ret.setContent(src.getContent());
-        ret.setSigned(src.isSigned());
-        ret.setAddressees(src.getAddressees());
-        return ret;
+        return statelessAdminEmailTemplateManager.getEmailTemplates();
     }
 
 }
