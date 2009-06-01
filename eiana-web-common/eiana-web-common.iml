@@ -20,6 +20,7 @@
     <orderEntry type="module" module-name="common-dns" exported="" />
     <orderEntry type="module" module-name="eiana-notifications" exported="" />
     <orderEntry type="library" exported="" name="tapestry" level="project" />
+    <orderEntry type="library" exported="" name="rzm-ui-components" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -62,7 +63,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
-    <orderEntry type="module" module-name="eiana-web-components" exported="" />
     <orderEntryProperties />
   </component>
 </module>
