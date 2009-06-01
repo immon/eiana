@@ -1,30 +1,31 @@
 package org.iana.rzm.web.common.components;
 
-import org.apache.tapestry.*;
+import org.apache.tapestry.BaseComponent;
+import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.changes.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.pages.*;
-import org.iana.rzm.web.common.services.*;
-import org.iana.rzm.web.common.utils.*;
-import org.iana.web.tapestry.callback.*;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
+import org.iana.rzm.web.common.Visit;
+import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
+import org.iana.rzm.web.common.model.ActionVOWrapper;
+import org.iana.rzm.web.common.model.ChangeVOWrapper;
+import org.iana.rzm.web.common.model.SystemDomainVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
+import org.iana.rzm.web.common.pages.RzmPage;
+import org.iana.rzm.web.common.services.AccessDeniedHandler;
+import org.iana.rzm.web.common.services.ObjectNotFoundHandler;
+import org.iana.rzm.web.common.services.RzmServices;
+import org.iana.rzm.web.common.utils.CounterBean;
+import org.iana.web.tapestry.callback.MessagePropertyCallback;
 
-import java.util.*;
+import java.util.List;
 
 
 public abstract class BaseWithdrawRequestConfirmation extends BaseComponent implements PageBeginRenderListener {
-
-    //@Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
-    //public abstract IComponent getDomainNameComponent();
-    //
-    //@Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
-    //public abstract IComponent getCountryComponent();
 
     @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();

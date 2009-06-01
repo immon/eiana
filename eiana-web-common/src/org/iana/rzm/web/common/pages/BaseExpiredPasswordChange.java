@@ -54,9 +54,11 @@ public abstract class BaseExpiredPasswordChange extends RzmPage {
     public abstract IFormComponent getContinueHiddenComponent();
 
 
-    @Component(id = "continue", type = "DirectLink", bindings = {
-            "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER", "listener=listener:proceed"})
+    @Component(id = "continue", type = "DirectLink", bindings = {"listener=listener:proceed"})
     public abstract IComponent getContinueComponent();
+
+    @Component(id="showContinue", type="If", bindings = {"condition=prop:continueVisible"})
+    public abstract IComponent getShowContinueComponent();
 
 
     @InjectPage(BaseLogin.PAGE_NAME)
@@ -76,6 +78,11 @@ public abstract class BaseExpiredPasswordChange extends RzmPage {
     public abstract String getConfirmNewPassword();
 
 
+
+    public boolean isContinueVisible(){
+        boolean result =  isShowContinue();
+        return result;
+    }
 
     public void cancel() {
         getValidationDelegate().clearErrors();

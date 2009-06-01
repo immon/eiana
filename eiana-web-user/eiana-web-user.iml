@@ -152,6 +152,10 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/jbpm/jbpm-identity-3.1.4.jar!/</url>
     </containerElement>
+    <containerElement type="library" name="jdom" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib/jdom.jar" />
+    </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib/dynaxml.jar" />
@@ -247,10 +251,6 @@
     <containerElement type="library" name="rt-api" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
-    </containerElement>
-    <containerElement type="library" name="rzm-ui-components" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="saaj" level="project">
       <attribute name="method" value="0" />

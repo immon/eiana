@@ -3,41 +3,31 @@
         <link rel="stylesheet" type="text/css" href="../../css/master.css"/>
         <title>Root Zone Management</title>
     </head>
-    <span jwcid="$content$">
-        <body jwcid="$content$">
-            <h4><span jwcid="title">Verisign Settings</span></h4>
-            <div class="mainBox" style="margin: 10px 0 0 0;">
-                <span jwcid="container@tapestry4Commons:GrayContainer">
-                    <form action="#" name="user" jwcid="editor">
-                        <table width="65%" border="0" cellspacing="5" cellpadding="5" class="edit">
-                            <tr>
-                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:email">Email Address:</span></td>
-                                <td align="right" valign="top"><input jwcid="email" type="text" name="textfield7" class="field"/></td>
-                            </tr>
-                            <tr>
-                                <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:pgp">PGP Key:</span></td>
-                                <td align="right" valign="top">
-                                    <span jwcid="pgp" rows="4" class="field">
-                                        <textarea name="textfield3" rows="4" class="field"></textarea>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" valign="top" class="label green">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>
-                                    <div class="buttonStyle" style="float: right;">
-                                        <b class="left"></b>
-                                        <b class="right" style="width: 130px;"><a href="#" jwcid="save" class="button" style="padding-left: 13px;"> Save Changes &gt;</a></b>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </form>
-                </span>
-            </div>
-        </body>
-    </span>
+    <body jwcid="$content$">
+        <h4><span jwcid="title">Verisign Settings</span></h4>
+        <div class="mainBox" style="margin: 10px 0 0 0;">
+            <span jwcid="container@tapestry4Commons:GrayContainer">
+                <form action="#" name="user" jwcid="editor">
+                    <table class="edit" border="0" cellpadding="5" cellspacing="5" width="65%">
+                        <tr>
+                            <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:email">Email Address:</span></td>
+                            <td align="right" valign="top"><input jwcid="email" type="text" name="textfield7" class="field"/></td>
+                        </tr>
+                        <tr>
+                            <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:pgp">PGP Key:</span></td>
+                            <td align="right" valign="top">
+                                <span jwcid="pgp" rows="4" class="field">
+                                    <textarea name="textfield3" rows="4" class="field"></textarea>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="buttonStyle" style="float: right;">
+                        <b class="left"></b>
+                        <b class="right" style="width: 130px;"><a href="#" jwcid="save" class="button" style="padding-left: 13px;"> Save Changes &gt;</a></b>
+                    </div>
+                </form>
+            </span>
+        </div>
+    </body>
 </html>

@@ -1,15 +1,21 @@
 package org.iana.rzm.web.user.components;
 
-import org.apache.tapestry.*;
+import org.apache.tapestry.IAsset;
+import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.components.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.user.pages.*;
-import org.iana.rzm.web.user.services.*;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.web.common.Visit;
+import org.iana.rzm.web.common.components.BaseRequestDetails;
+import org.iana.rzm.web.common.model.ConfirmationVOWrapper;
+import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
+import org.iana.rzm.web.common.model.UserVOWrapper;
+import org.iana.rzm.web.user.pages.GeneralError;
+import org.iana.rzm.web.user.pages.RequestConfirmation;
+import org.iana.rzm.web.user.pages.UserPage;
+import org.iana.rzm.web.user.services.UserServices;
 
-import java.util.*;
+import java.util.List;
 
 @ComponentClass
 public abstract class RequestDetails extends BaseRequestDetails {
@@ -34,6 +40,9 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
+
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"prop:errors"})
+    public abstract IComponent getErrorListComponent();
 
     @InjectPage(RequestConfirmation.PAGE_NAME)
     public abstract RequestConfirmation getRequestConfirmation();
@@ -69,6 +78,10 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     public String getSpaceerColspan() {
         return isActionEnabled() ? "6" : "5";
+    }
+
+    public List<String>getErrors(){
+        return getUserServices().parseErrors(getRequest().getTechnicalErrors());     
     }
 
     public boolean isTechnicalCkeckedfailed() {

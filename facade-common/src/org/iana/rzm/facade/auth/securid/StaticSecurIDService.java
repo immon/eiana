@@ -1,17 +1,20 @@
 package org.iana.rzm.facade.auth.securid;
 
-import com.rsa.authagent.authapi.*;
-import org.apache.log4j.*;
-import org.iana.rzm.common.validators.*;
+import com.rsa.authagent.authapi.AuthAgentException;
+import org.apache.log4j.Logger;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.user.*;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 import org.iana.secureid.AccessDeniedException;
 import org.iana.secureid.*;
 
-import java.io.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -178,7 +181,7 @@ public class StaticSecurIDService implements SecurIDService {
         if (user == null) {
             throw new SecurIDException(MessageFormat.format("User {0} has not been found.", userName));
         }
-        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
+        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin(), user.isRoot());
     }
 
 }

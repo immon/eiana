@@ -1,16 +1,24 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.facade.common.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.callback.PageCallback;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.admin.services.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.admin.services.AdminServices;
+import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.common.model.DomainVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class RequestSplitConfirmation extends AdminPage implements PageBeginRenderListener, IExternalPage{
 
@@ -141,14 +149,12 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
-            // todo: proper handling of this exception
         } catch (NameServerChangeNotAllowedException e) {
-            // todo: proper handling of this exception
             setErrorMessage(getMessageUtil().getNameServerChangeNotAllowedErrorMessage());
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomainName()));
         }
     }
 

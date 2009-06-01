@@ -1,8 +1,8 @@
 package org.iana.dns;
 
 import org.iana.config.Config;
-import org.iana.config.ParameterManager;
 import org.iana.config.Parameter;
+import org.iana.config.ParameterManager;
 import org.iana.config.impl.ConfigException;
 import org.iana.config.impl.OwnedConfig;
 import org.iana.config.impl.SetParameter;
@@ -30,8 +30,9 @@ public class RootServersProducerImpl implements RootServersProducer {
 
     public List<DNSHost> getRootServers() throws ConfigException {
         Config rootServerConfig = config.getSubConfig(rootServerParamNames);
-        if (rootServerConfig == null)
+        if (rootServerConfig == null || rootServerConfig.getParameterNames() == null){
             return rootServers;
+        }
         return toDNSHostList(rootServerConfig);
     }
 

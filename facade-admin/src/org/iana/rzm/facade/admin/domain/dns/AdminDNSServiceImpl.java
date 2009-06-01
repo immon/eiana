@@ -60,9 +60,9 @@ public class AdminDNSServiceImpl implements AdminDNSService {
             File output = getExportFile();
             exporter.export(zone, output);
         } catch (ConfigException e) {
-            throw new InfrastructureException("dsn export", e);
+            throw new InfrastructureException("dns export", e);
         } catch (RuntimeException e) {
-            throw new InfrastructureException("dsn export", e);
+            throw new InfrastructureException("dns export", e);
         }
     }
 

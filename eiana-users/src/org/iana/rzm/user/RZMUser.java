@@ -260,7 +260,19 @@ public class RZMUser  implements TrackedObject, Cloneable {
         }
         return false;
     }
-    
+
+    final public boolean isRoot() {
+        if (roles != null) {
+            for (Role role : roles) {
+                if (role.isRoot()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+        
     final public boolean isInAnyRole(Collection<Role> roles, Comparator<? super Role> comparator) {
         if (roles != null) {
             for (Role role : roles) {

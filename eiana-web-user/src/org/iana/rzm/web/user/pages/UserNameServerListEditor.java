@@ -1,21 +1,31 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.log4j.*;
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.query.retriver.*;
-import org.iana.rzm.web.common.render.*;
-import org.iana.rzm.web.common.utils.*;
-import org.iana.rzm.web.editors.*;
+import org.apache.log4j.Logger;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Bean;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IFormComponent;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.DomainChangeType;
+import org.iana.rzm.web.common.model.DomainVOWrapper;
+import org.iana.rzm.web.common.model.NameServerVOWrapper;
+import org.iana.rzm.web.common.model.NameServerValue;
+import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
+import org.iana.rzm.web.common.render.JavaScriptDelegator;
+import org.iana.rzm.web.common.utils.WebUtil;
+import org.iana.rzm.web.editors.NameServerAttributesEditor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class UserNameServerListEditor extends UserPage implements PageBeginRenderListener,
                                                                            NameServerAttributesEditor, IExternalPage {
@@ -143,7 +153,7 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
         }
 
         if (allChanged) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(domain.getName()));
             return;
         }
 

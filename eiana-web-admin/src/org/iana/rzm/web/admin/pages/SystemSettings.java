@@ -73,6 +73,19 @@ public abstract class SystemSettings extends AdminPage implements PageBeginRende
     public abstract POP3ConfigVOWrapper getPop3Settings();
     public abstract void setPop3Settings(POP3ConfigVOWrapper config);
 
+    @Persist("client")
+    public abstract USDoCConfigVOWrapper getDocConfig();
+    public abstract void setDocConfig(USDoCConfigVOWrapper config);
+
+    @Persist("client")
+    public abstract VersignConfigVOWrpper getVersignConfig();
+    public abstract void setVersignConfig(VersignConfigVOWrpper config);
+
+    @Persist("client")
+    public abstract PgpConfigVOWrapper getPgpConfig();
+    public abstract void setPgpConfig(PgpConfigVOWrapper config);
+
+
     public void pageBeginRender(PageEvent event){
 
         if(getSmtpSettings() == null){
@@ -81,6 +94,18 @@ public abstract class SystemSettings extends AdminPage implements PageBeginRende
 
         if(getPop3Settings() == null){
             setPop3Settings(getAdminServices().getPop3ConfigSettings());            
+        }
+
+        if(getDocConfig() == null){
+            setDocConfig(getAdminServices().getDoCConfigSettings());
+        }
+
+        if(getVersignConfig() == null){
+            setVersignConfig(getAdminServices().getVerisignConfigSettings());
+        }
+
+        if(getPgpConfig() == null){
+            setPgpConfig(getAdminServices().getPgpConfigSettings());
         }
     }
 
@@ -91,20 +116,8 @@ public abstract class SystemSettings extends AdminPage implements PageBeginRende
     public void editPopSettings(){
         doClick(BLOCKS[5]);
     }
-
-    public VersignConfigVOWrpper getVersignConfig() {
-        return getAdminServices().getVerisignConfigSettings();
-    }
-
-    public USDoCConfigVOWrapper getDocConfig() {
-        return getAdminServices().getDoCConfigSettings();
-    }
-
-    public PgpConfigVOWrapper getPgpConfig() {
-        return getAdminServices().getPgpConfigSettings();
-    }
-
-
+    
+    
     public Block getSelectedBlock() {
         String selectedId = blockId();
         return (Block) getComponent(selectedId);

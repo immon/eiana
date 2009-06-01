@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class AdminEmailTemplateManagerImpl extends AbstractRZMStatefulService implements AdminEmailTemplateManager {
+public class  AdminEmailTemplateManagerImpl extends AbstractRZMStatefulService implements AdminEmailTemplateManager {
 
     StatelessAdminEmailTemplateManager statelessAdminEmailTemplateManager;
 

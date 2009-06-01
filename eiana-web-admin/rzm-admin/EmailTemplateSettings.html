@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <span jwcid="$content$">
+        <body jwcid="border@Border" selected="literal:EMAIL_TEMPLATE">
+            <h4>Email Templates</h4>
+            <span jwcid="@tapestry4Commons:ShowError"/>
+            <span jwcid="@tapestry4Commons:ShowMessages"/>
+            <span jwcid="@tapestry4Commons:ShowValidationErrors"/>
+
+            <span style="clear: both;" jwcid="@RenderBlock" block="prop:selectedBlock">Page content goes here</span>
+
+            <span jwcid="VIEW@Block">
+                <div class="mainBox" style="margin: 10px 0 0 0;">
+                    <span jwcid="container@tapestry4Commons:GrayContainer">
+                        <span jwcid="selector"/>
+                    </span>
+                    <br/><br/>
+                    <span jwcid="@tapestry4Commons:GrayContainer">
+                        <span jwcid="viewer"/>
+                    </span>
+                </div>
+            </span>
+            <span jwcid="EDIT@Block">
+                <span jwcid="editor"/>
+            </span>
+        </body>
+    </span>
+</html>

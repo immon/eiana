@@ -96,6 +96,11 @@
         <property name="serviceInterface" value="org.iana.rzm.facade.admin.config.StatelessAdminConfigManager"/>
     </bean>
 
+    <bean id="remoteTemplate" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+        <property name="service" ref="statelessAdminTemplatesManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.admin.config.StatelessAdminEmailTemplateManager"/>
+    </bean>
+
 
     <bean id="remoteMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
@@ -117,6 +122,7 @@
                 <prop key="/remoteUserManager">remoteUserManager</prop>
                 <prop key="/remoteSecureIdServiceBean">remoteSecureIdServiceBean</prop>
                 <prop key="/remoteConfig">remoteConfig</prop>
+                <prop key="/remoteTemplate">remoteTemplate</prop>
             </props>
         </property>
     </bean>

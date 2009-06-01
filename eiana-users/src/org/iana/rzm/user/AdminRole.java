@@ -48,6 +48,10 @@ public class AdminRole extends Role implements Cloneable {
         return true;
     }
 
+    final public boolean isRoot(){
+        return type.equals(AdminType.ROOT);
+    }
+
     public Object clone() throws CloneNotSupportedException {
         AdminRole adminRole = (AdminRole) super.clone();
         adminRole.type = type;

@@ -18,6 +18,12 @@
         <copy file="${module.eiana-web-user.basedir}/../conf/spring/remoting.properties"
               todir="${module.eiana-web-user.basedir}/exploded/WEB-INF/classes" overwrite="true"/>
 
+        <copy file="${module.eiana-web-user.basedir}/../conf/spring/dnscheck-errors-config.xml"
+              todir="${module.eiana-web-user.basedir}/rzm/WEB-INF/" overwrite="true"/>
+
+        <copy file="${module.eiana-web-user.basedir}/../conf/spring/dnscheck-errors-config.xml"
+              todir="${module.eiana-web-user.basedir}/exploded/WEB-INF/" overwrite="true"/>
+
         <antcall target="copyBackendBeforeRun"/>
     </target>
 </project>
