@@ -218,6 +218,10 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
@@ -227,8 +231,8 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jdom" level="project">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib" />
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="/WEB-INF/lib/jdom.jar" />
     </containerElement>
     <containerElement type="library" name="junit" level="project">
       <attribute name="method" value="0" />
