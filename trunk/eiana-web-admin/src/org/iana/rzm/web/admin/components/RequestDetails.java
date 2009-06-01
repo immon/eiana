@@ -1,17 +1,24 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.commons.lang.*;
-import org.apache.tapestry.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tapestry.IActionListener;
+import org.apache.tapestry.IAsset;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.common.*;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.admin.trans.InvalidEPPTransactionException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.admin.pages.*;
-import org.iana.rzm.web.admin.services.*;
-import org.iana.rzm.web.common.components.*;
-import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.admin.services.AdminServices;
+import org.iana.rzm.web.common.components.BaseRequestDetails;
+import org.iana.rzm.web.common.model.ConfirmationVOWrapper;
+import org.iana.rzm.web.common.model.NotificationVOWrapper;
+import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @ComponentClass
 public abstract class RequestDetails extends BaseRequestDetails {
@@ -25,8 +32,14 @@ public abstract class RequestDetails extends BaseRequestDetails {
     @Component(id = "exceptionState", type = "If", bindings = {"condition=prop:exceptionState"})
     public abstract IComponent getExceptionStateComponent();
 
+    @Component(id = "technicalCkeckedfailed", type = "If", bindings = {"condition=prop:technicalCkeckedfailed"})
+    public abstract IComponent getTechnicalCkeckedfailedComponent();
+
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
+
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"prop:errors"})
+    public abstract IComponent getErrorListComponent();
 
     @Component(id = "impactedPartiesConfirmations",
                type = "rzmLib:ListRequestConfirmations",
@@ -88,6 +101,15 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     }
 
+    public List<String>getErrors(){
+        String technicalErrors = getRequest().getTechnicalErrors();
+        if(StringUtils.isEmpty(technicalErrors)){
+            return new ArrayList<String>();
+        }
+        
+        return getAdminServices().parseErrors(technicalErrors);
+    }
+
     public List<ConfirmationVOWrapper> getImpactedPartiesConfirmations() {
         return getRequest().getImpactedPartiesConfirmations();
     }
@@ -97,15 +119,12 @@ public abstract class RequestDetails extends BaseRequestDetails {
     }
 
     public boolean isExceptionState() {
-        return StringUtils.isNotBlank(getRequest().getStateMessage());
+        return StringUtils.isNotBlank(getRequest().getStateMessage()) && !isTechnicalCkeckedfailed();
     }
 
-    protected AdminServices getRzmServices() {
-        return getAdminServices();
-    }
-
-    protected String getExceptionPage() {
-        return GeneralError.PAGE_NAME;
+    public boolean isTechnicalCkeckedfailed() {
+            TransactionVOWrapper wrapper = getRequest();
+            return wrapper.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY);
     }
 
     public boolean isShowPollLink() {
@@ -145,6 +164,16 @@ public abstract class RequestDetails extends BaseRequestDetails {
         }
         return new EditRequestListener(getEditRequest(), getRequestId());
     }
+
+
+    protected AdminServices getRzmServices() {
+        return getAdminServices();
+    }
+
+    protected String getExceptionPage() {
+        return GeneralError.PAGE_NAME;
+    }
+    
 
     private static class EditRequestListener implements IActionListener {
 

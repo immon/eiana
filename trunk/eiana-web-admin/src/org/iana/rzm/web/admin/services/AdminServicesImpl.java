@@ -11,6 +11,8 @@ import org.iana.notifications.NotificationSenderException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.admin.config.AdminConfigManager;
+import org.iana.rzm.facade.admin.config.AdminEmailTemplateManager;
+import org.iana.rzm.facade.admin.config.EmailTemplateVO;
 import org.iana.rzm.facade.admin.domain.AdminDomainService;
 import org.iana.rzm.facade.admin.domain.dns.AdminDNSService;
 import org.iana.rzm.facade.admin.msgs.PollMessagesService;
@@ -44,6 +46,7 @@ import org.iana.rzm.web.common.model.criteria.SortOrder;
 import org.iana.rzm.web.common.query.QueryBuilderUtil;
 import org.iana.rzm.web.common.query.resolver.DomainFieldNameResolver;
 import org.iana.rzm.web.common.query.resolver.RequestFieldNameResolver;
+import org.iana.rzm.web.common.technical_check.DNSTechnicalCheckErrorsXmlParser;
 import org.iana.rzm.web.common.utils.CountryCodeSorter;
 import org.iana.web.tapestry.services.ServiceInitializer;
 
@@ -67,6 +70,8 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private AdminDNSService dnsServices;
     private PollMessagesService pollMessagesService;
     private AdminConfigManager configManager;
+    private AdminEmailTemplateManager adminTemplateManager;
+    private DNSTechnicalCheckErrorsXmlParser technicalErrorsXmlParser;
 
 
     private PasswordChangeService changePasswordService;
@@ -79,10 +84,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         detectorService = initializer.getBean("remoteAdminDetectorService");
         pollMessagesService = initializer.getBean("remotePollMessagesService");
         configManager = initializer.getBean("remoteGuardedConfigManager");
+        adminTemplateManager = initializer.getBean("remoteAdminTemplatesManager");
         countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
         domainTypesService = initializer.getBean("remoteDomainTypes", DomainTypes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
         dnsServices = initializer.getBean("remoteDnsService", AdminDNSService.class);
+        technicalErrorsXmlParser = initializer.getBean("technicalErrorsXmlParser", DNSTechnicalCheckErrorsXmlParser.class);
     }
 
     public int getTransactionCount(Criterion criterion) {
@@ -153,6 +160,11 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
 
         return false;
+    }
+
+    public List<String> parseErrors(String technicalErrors) {
+        return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);       
+
     }
 
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain,
@@ -332,6 +344,30 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     public PgpConfigVOWrapper getPgpConfigSettings() {
         try {
             return new PgpConfigVOWrapper(configManager.getPgpConfig());
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public EmailTemplateVOWrapper getEmailTemplate(final String templateName) {
+        try {
+            List<EmailTemplateVO> list = adminTemplateManager.getEmailTemplates();
+            EmailTemplateVO template = ListUtil.find(list, new ListUtil.Predicate<EmailTemplateVO>() {
+                public boolean evaluate(EmailTemplateVO emailTemplateVO) {
+                    return emailTemplateVO.getName().equals(templateName);
+                }
+            });
+            return new EmailTemplateVOWrapper(template);
+        } catch (InfrastructureException e) {
+            LOGGER.warn("InfrastructureException", e);
+            throw new RzmApplicationException(e);
+        }
+    }
+
+    public void saveTemplate(EmailTemplateVOWrapper vo) {
+        try {
+            adminTemplateManager.update(vo.getConfig());
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);

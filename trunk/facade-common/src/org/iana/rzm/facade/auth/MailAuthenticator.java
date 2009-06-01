@@ -46,7 +46,7 @@ public class MailAuthenticator implements AuthenticationService {
             throw new AuthenticationFailedException(
                     MessageFormat.format("User {0} has not been found.", data.getUserName()));
         }
-        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
+        return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin(), user.isRoot());
     }
 
     public AuthenticatedUser authenticate(AuthenticationToken token, AuthenticationData data) throws AuthenticationFailedException, AuthenticationRequiredException {

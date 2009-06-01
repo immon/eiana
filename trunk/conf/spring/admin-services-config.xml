@@ -8,6 +8,8 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
        default-lazy-init="false">
 
+    <import resource="dnscheck-errors-config.xml"/>
+
     <bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:remoting.properties" />
     </bean>
@@ -195,5 +197,18 @@
         <property name="serviceInterface" value="org.iana.rzm.facade.admin.config.StatelessAdminConfigManager"/>
         <property name="httpInvokerRequestExecutor" ref="adminInvokerRequestExecutor" />
     </bean>
+
+    <bean id="remoteAdminTemplatesManager" class="org.iana.rzm.facade.admin.config.impl.AdminEmailTemplateManagerImpl" scope="session">
+         <constructor-arg index="0" ref="remoteUserManager"/>
+         <constructor-arg index="1" ref="remoteStatelesAdminTemplatesManager"/>
+    </bean>
+
+    <bean id="remoteStatelesAdminTemplatesManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteTemplate"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.admin.config.StatelessAdminEmailTemplateManager"/>
+        <property name="httpInvokerRequestExecutor" ref="adminInvokerRequestExecutor" />
+    </bean>
+
+
 
 </beans>

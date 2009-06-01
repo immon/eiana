@@ -108,4 +108,7 @@ public interface AdminServices extends RzmServices, WhoisDataProducer, ZoneProdu
 
     public PgpConfigVOWrapper getPgpConfigSettings();
 
+    EmailTemplateVOWrapper getEmailTemplate(String templateName);
+
+    void saveTemplate(EmailTemplateVOWrapper vo);
 }

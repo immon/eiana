@@ -27,6 +27,7 @@ import org.iana.rzm.web.common.RzmApplicationException;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.model.criteria.SortOrder;
 import org.iana.rzm.web.common.query.resolver.RequestFieldNameResolver;
+import org.iana.rzm.web.common.technical_check.DNSTechnicalCheckErrorsXmlParser;
 import org.iana.rzm.web.common.utils.CountryCodeSorter;
 import org.iana.web.tapestry.services.ServiceInitializer;
 
@@ -46,6 +47,7 @@ public class UserServicesImpl implements UserServices {
     private CountryCodes countryCodeService;
     private PasswordChangeService changePasswordService;
     private UserVOManager userManager;
+    private DNSTechnicalCheckErrorsXmlParser technicalErrorsXmlParser;
 
 
     public UserServicesImpl(ServiceInitializer<RZMStatefulService> initializer) {
@@ -55,6 +57,7 @@ public class UserServicesImpl implements UserServices {
         countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
         userManager = initializer.getBean("remoteUserManager", UserVOManager.class);
+        technicalErrorsXmlParser = initializer.getBean("technicalErrorsXmlParser", DNSTechnicalCheckErrorsXmlParser.class);
     }
 
     public String getCountryName(String name) {
@@ -79,6 +82,10 @@ public class UserServicesImpl implements UserServices {
 
         return false;
 
+    }
+
+    public List<String> parseErrors(String technicalErrors) {
+        return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);
     }
 
     public List<Value> getCountrys() {

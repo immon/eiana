@@ -11,7 +11,9 @@ import org.iana.rzm.facade.services.AbstractRZMStatelessService;
 import org.iana.rzm.user.UserManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Piotr Tkaczyk
@@ -71,7 +73,14 @@ public class StatelessAdminEmailTemplateManagerImpl extends AbstractRZMStateless
         ret.setSubject(src.getSubject());
         ret.setContent(src.getContent());
         ret.setSigned(src.isSigned());
-        ret.setAddressees(src.getAddressees());
+
+        Set<String>addresses = new HashSet<String>();
+
+        for (String s : src.getAddressees()) {
+            addresses.add(s);
+        }
+
+        ret.setAddressees(addresses);
         return ret;
     }
 }

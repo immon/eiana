@@ -1,17 +1,23 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.annotations.Bean;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.admin.pages.listeners.*;
-import org.iana.rzm.web.common.changes.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.utils.*;
+import org.iana.rzm.web.admin.pages.listeners.PageEditorListener;
+import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
+import org.iana.rzm.web.common.model.ActionVOWrapper;
+import org.iana.rzm.web.common.model.ChangeVOWrapper;
+import org.iana.rzm.web.common.model.DomainVOWrapper;
+import org.iana.rzm.web.common.model.TransactionActionsVOWrapper;
+import org.iana.rzm.web.common.utils.CounterBean;
 
-import java.util.*;
+import java.util.List;
 
 public abstract class DomainChangesConfirmation extends AdminPage implements PageBeginRenderListener {
 
@@ -116,7 +122,7 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomainName()));
         }
 
     }

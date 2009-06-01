@@ -1,21 +1,27 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.log4j.*;
-import org.apache.tapestry.*;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IPage;
+import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.facade.auth.*;
-import org.iana.rzm.facade.common.*;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.auth.AccessDeniedException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.changes.*;
+import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
 import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.query.*;
-import org.iana.rzm.web.common.query.retriver.*;
-import org.iana.rzm.web.common.utils.*;
-import org.iana.rzm.web.user.query.retriver.*;
+import org.iana.rzm.web.common.query.QueryBuilderUtil;
+import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
+import org.iana.rzm.web.common.utils.CounterBean;
+import org.iana.rzm.web.user.query.retriver.ImpactedPartyTransactionRetriver;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class ReviewDomainChanges extends UserPage implements PageBeginRenderListener, IExternalPage {
 
@@ -301,7 +307,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             log(LOGGER, "No Object Found Exception", Level.WARN);
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
-            setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
+            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(getDomainName()));
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
@@ -311,7 +317,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomainName()));
         }
     }
 

@@ -46,7 +46,7 @@ public class PgpMailAuthenticator implements AuthenticationService {
 
             for (RZMUser user : users) {
                 if (validateSignature(pgpMailData.getMessage(), user.getPublicKey()))
-                    return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin());
+                    return new AuthenticatedUser(user.getObjId(), user.getLoginName(), user.isAdmin(), user.isRoot());
             }
 
             throw new AuthenticationFailedException(

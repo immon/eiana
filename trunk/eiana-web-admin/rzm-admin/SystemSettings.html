@@ -5,8 +5,6 @@
     </head>
     <span jwcid="$content$">
         <body jwcid="border@Border" selected="literal:SYSTEM_SETTINGS">
-            <span jwcid="@tapestry4Commons:ShowError"/>
-            <span jwcid="@tapestry4Commons:ShowMessages"/>
             <div style="padding: 5px 0 40px 10px;">
                 <span jwcid="email">
                     <div class="buttonStyle" style="float: left; margin: 0 3px 0 0;">
@@ -33,9 +31,11 @@
                     </div>
                 </span>
             </div>
-            <span jwcid="@tapestry4Commons:ShowMessages"/>
+
             <span jwcid="@tapestry4Commons:ShowError"/>
+            <span jwcid="@tapestry4Commons:ShowMessages"/>
             <span jwcid="@tapestry4Commons:ShowValidationErrors"/>
+
             <span style="clear: both;" jwcid="@RenderBlock" block="prop:selectedBlock">Page content goes here</span>
             <span jwcid="EMAIL@Block">
                 <span jwcid="smtp"/>

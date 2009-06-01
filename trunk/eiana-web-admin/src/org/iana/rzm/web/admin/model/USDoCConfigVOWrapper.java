@@ -25,18 +25,18 @@ public class USDoCConfigVOWrapper extends ValueObject implements VerisignDoCConf
     }
 
     public String getEmail() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return config.getEmail();
     }
 
     public String getKey() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return config.getPublicKey();
     }
 
     public void setEmail(String email) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        config.setEmail(email);
     }
 
     public void setKey(String key) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        config.setPublicKey(key);
     }
 }

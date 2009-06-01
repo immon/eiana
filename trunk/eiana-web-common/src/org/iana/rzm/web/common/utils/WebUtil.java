@@ -1,10 +1,14 @@
 package org.iana.rzm.web.common.utils;
 
-import org.iana.commons.*;
-import org.iana.rzm.web.common.model.*;
+import org.iana.commons.ListUtil;
+import org.iana.rzm.web.common.model.IPAddressVOWrapper;
+import org.iana.rzm.web.common.model.NameServerVOWrapper;
+import org.iana.rzm.web.common.model.NameServerValue;
 
-import javax.servlet.http.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class WebUtil {
@@ -29,10 +33,6 @@ public class WebUtil {
         }
 
         return ipList;
-    }
-
-    private static IPAddressVOWrapper.Type getType(String ip) {
-        return ip.indexOf(":") > -1 ? IPAddressVOWrapper.Type.IPv6 : IPAddressVOWrapper.Type.IPv4;
     }
 
     public static String buildIpListAsString(List<IPAddressVOWrapper> ips) {
@@ -84,7 +84,7 @@ public class WebUtil {
                 NameServerValue temp = new NameServerValue(wrapper);
                 String status = temp.equals(nameServerValue) ? NameServerValue.DEFAULT : NameServerValue.MODIFIED;
                 nameServerValue.setStatus(status);
-                if(status.equals(NameServerValue.DEFAULT)){
+                if (status.equals(NameServerValue.DEFAULT)) {
                     nameServerValue.setShared(temp.isShared());
                 }
                 current.remove(currentVO);
@@ -100,17 +100,21 @@ public class WebUtil {
 
     public static boolean isModefied(List<NameServerVOWrapper> oldList, List<NameServerVOWrapper> currentList) {
 
-        if(oldList == null && currentList != null || oldList !=null && currentList == null){
+        if (oldList == null && currentList == null) {
+            return false;
+        }
+
+        if (oldList == null || currentList == null) {
             return true;
         }
 
-        if(oldList.size() != currentList.size()){
-            return true ;
+        if (oldList.size() != currentList.size()) {
+            return true;
         }
 
-        List<NameServerValue> newList = WebUtil.buildNameServerList(oldList,currentList);
+        List<NameServerValue> newList = WebUtil.buildNameServerList(oldList, currentList);
         for (NameServerValue nameServerValue : newList) {
-            if(nameServerValue.isNewOrModified() || nameServerValue.isDelete()){
+            if (nameServerValue.isNewOrModified() || nameServerValue.isDelete()) {
                 return true;
             }
         }
@@ -150,25 +154,6 @@ public class WebUtil {
     }
 
 
-    private static NameServerVOWrapper findNameServer(final NameServerVOWrapper wrapper, List<NameServerVOWrapper> list) {
-        NameServerVOWrapper nameServer = ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
-            public boolean evaluate(NameServerVOWrapper object) {
-                return object.getId() == wrapper.getId();
-            }
-        });
-
-        if(nameServer == null){
-            return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
-                public boolean evaluate(NameServerVOWrapper object) {
-                    return object.getName().equals(wrapper.getName()) && object.getIps().equals(wrapper.getIps());
-            }
-        });
-        }
-        return nameServer;
-
-    }
-
-
     public static int getServerPort(int defaultPort) {
 
         if (Boolean.getBoolean("org.iana.web.debug-enabled")) {
@@ -180,6 +165,29 @@ public class WebUtil {
         }
 
         return 80;
+    }
+
+    static NameServerVOWrapper findNameServer(final NameServerVOWrapper wrapper, List<NameServerVOWrapper> list) {
+        NameServerVOWrapper nameServer = ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
+            public boolean evaluate(NameServerVOWrapper object) {
+                return object.getId() == wrapper.getId();
+            }
+        });
+
+        if (nameServer == null) {
+            return ListUtil.find(list, new ListUtil.Predicate<NameServerVOWrapper>() {
+                public boolean evaluate(NameServerVOWrapper object) {
+                    return object.getName().equals(wrapper.getName()) && object.getIps().equals(wrapper.getIps());
+                }
+            });
+        }
+        return nameServer;
+
+    }
+
+
+    static IPAddressVOWrapper.Type getType(String ip) {
+        return ip.indexOf(":") > -1 ? IPAddressVOWrapper.Type.IPv6 : IPAddressVOWrapper.Type.IPv4;
     }
 
 

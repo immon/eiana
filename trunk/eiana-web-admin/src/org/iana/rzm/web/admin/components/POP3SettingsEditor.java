@@ -37,7 +37,7 @@ public abstract class POP3SettingsEditor extends BaseComponent {
     @Component(id="password", type="TextField", bindings = {"value=prop:password", "displayName=literal:Password:"})
     public abstract IComponent getPasswordComponent();
 
-    @Component(id = "ssl", type = "Checkbox", bindings = {"value=prop:ssl", "displayName=literal:Use  SSL:"})
+    @Component(id = "ssl", type = "Checkbox", bindings = {"value=prop:ssl", "displayName=literal:Use SSL:"})
     public abstract IComponent getSslCheckBoxComponent();
 
     @Component(id = "debug", type = "Checkbox", bindings = {"value=prop:debug", "displayName=literal:Debug:"})
@@ -70,11 +70,9 @@ public abstract class POP3SettingsEditor extends BaseComponent {
     public abstract IAsset get$template();
 
     public void save(){
-
         if(getValidationDelegate().getHasErrors()){
             return;
         }
-        
         getAdminServices().setApplicationConfiguration(getConfig());
         getBack().actionTriggered(this, getPage().getRequestCycle());
     }

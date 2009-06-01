@@ -35,7 +35,7 @@ public abstract class Pop3Settings extends BaseComponent {
     @Component(id="editible", type="If",  bindings = {"condition=prop:editible"})
     public abstract IComponent getEditibileComponent();
 
-      @Component(id = "edit", type = "DirectLink", bindings = {
+    @Component(id = "edit", type = "DirectLink", bindings = {
         "listener=prop:listener", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getEditLinkComponent();
 

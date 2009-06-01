@@ -112,6 +112,10 @@ public class SystemRole extends Role implements Cloneable {
         return false;
     }
 
+    public boolean isRoot() {
+        return false;
+    }
+
     public boolean isAccessToDomain() {
         return accessToDomain;
     }
