@@ -12,7 +12,6 @@ import java.util.List;
  */
 public interface AdminConfigManager extends RZMStatefulService {
 
-    @Deprecated
     public void setParameter(String name, String value) throws InfrastructureException;
 
     public Pop3Config getPop3Config() throws InfrastructureException;

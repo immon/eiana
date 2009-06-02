@@ -50,6 +50,8 @@ public abstract class BaseWithdrawRequestConfirmation extends BaseComponent impl
     @Component(id = "title", type = "Insert", bindings = {"value=prop:action.title"})
     public abstract IComponent getTitleComponent();
 
+    @Component(id = "comment", type = "TextArea", bindings = {"value=prop:comment"})
+    public abstract IComponent getCommentComponent();
 
     @InjectObject("service:rzm.ObjectNotFoundHandler")
     public abstract ObjectNotFoundHandler getObjectNotFoundHandler();
@@ -95,6 +97,14 @@ public abstract class BaseWithdrawRequestConfirmation extends BaseComponent impl
 
     public String getDomainName(){
         return getRequest().getDomainName();
+    }
+
+    public String getComment(){
+        return null;
+    }
+
+    public void setComment(String comment){
+        
     }
 
     public void pageBeginRender(PageEvent event){

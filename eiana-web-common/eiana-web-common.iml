@@ -9,6 +9,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="common-mail" exported="" />
+    <orderEntry type="module" module-name="common-criteria" exported="" />
+    <orderEntry type="module" module-name="common-dns" exported="" />
     <orderEntry type="module" module-name="facade-common" exported="" />
     <orderEntry type="module" module-name="facade-system" exported="" />
     <orderEntry type="module" module-name="eiana-util" exported="" />
@@ -16,8 +19,6 @@
     <orderEntry type="module" module-name="eiana-startup" exported="" />
     <orderEntry type="module" module-name="integration-rt" exported="" />
     <orderEntry type="module" module-name="integration-securid" exported="" />
-    <orderEntry type="module" module-name="common-criteria" exported="" />
-    <orderEntry type="module" module-name="common-dns" exported="" />
     <orderEntry type="module" module-name="eiana-notifications" exported="" />
     <orderEntry type="library" exported="" name="tapestry" level="project" />
     <orderEntry type="library" exported="" name="rzm-ui-components" level="project" />

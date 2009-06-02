@@ -7,6 +7,7 @@ import org.iana.rzm.web.common.services.RzmServices;
 
 public abstract class RzmComponent extends BaseComponent {
 
+    
     public RzmServices getRzmServices(){
         return getApplicationPage().getRzmServices();
     }
