@@ -1,12 +1,12 @@
 package org.iana.rzm.mail.processor.usdoc;
 
-import org.iana.rzm.mail.processor.simple.data.MessageData;
+import org.iana.rzm.mail.processor.simple.pgp.PGPMessageData;
 import org.iana.rzm.mail.processor.ticket.TicketData;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class USDoCAnswer extends TicketData implements MessageData {
+public class USDoCAnswer extends TicketData implements PGPMessageData {
 
     private String eppID;
 
