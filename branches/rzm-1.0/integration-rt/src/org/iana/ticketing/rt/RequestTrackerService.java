@@ -23,9 +23,9 @@ import java.util.*;
 public class RequestTrackerService implements TicketingService {
     private static final String QUEUE_NAME = "IANA-Root-Mgmt";
     private static final String TICKET_SUBJECT = "Root Zone Change request for .%tld% (%label%)";
-    private static final String CUSTOM_FIELD_IANA_STATE = "IANA State";
+    private static final String CUSTOM_FIELD_IANA_STATE = "IANA_State";
     private static final String CUSTOM_FIELD_TLD = "TLD";
-    private static final String CUSTOM_FIELD_REQUEST_TYPE = "Request Type";
+    private static final String CUSTOM_FIELD_REQUEST_TYPE = "Request_Type";
     private static final String CUSTOM_FIELD_IMPACTED_DOMAINS = "Impacted Domains";
     private static final String IMPACTED_DOMAINS_FIELD = "TLD";
 
@@ -39,9 +39,19 @@ public class RequestTrackerService implements TicketingService {
         this(url, username, password, null);
     }
 
+    public RequestTrackerService(RTStore store, CodeValuesRetriever retriever) throws TicketingException {
+            this.store = store;
+            this.retriever = retriever;
+            customFields = new HashMap<String, String>();
+            customFields.put("state", CUSTOM_FIELD_IANA_STATE);
+            customFields.put("tld", CUSTOM_FIELD_TLD);
+            customFields.put("type", CUSTOM_FIELD_REQUEST_TYPE);
+            customFields.put("impacted", CUSTOM_FIELD_IMPACTED_DOMAINS);
+    }
+
     public RequestTrackerService(String url, String username, String password, CodeValuesRetriever retriever) throws TicketingException {
         try {
-            store = RTStore.getStore(url, username, password);
+            store = RTStoreImpl.getStore(url, username, password);
             this.retriever = retriever;
             customFields = new HashMap<String, String>();
             customFields.put("state", CUSTOM_FIELD_IANA_STATE);
@@ -69,16 +79,18 @@ public class RequestTrackerService implements TicketingService {
         try {
             Ticket rtTicket = store.tickets().newInstance();
             Queue queue = store.queues().findByName(QUEUE_NAME);
-            if (queue == null) throw new TicketingException("Queue does not exist: " + QUEUE_NAME);
+
+            if (queue == null) {
+                throw new TicketingException("Queue does not exist: " + QUEUE_NAME);
+            }
+            
             rtTicket.setQueue(queue);
             rtTicket.setStatus(Ticket.Status.Open);
             rtTicket.setSubject(TICKET_SUBJECT.replace("%tld%", ticket.getTld()).replace("%label%", getLabel(ticket.getTld())));
-            rtTicket.customFields().setSingleVal(CUSTOM_FIELD_TLD, ticket.getTld());
             rtTicket.customFields().setMultiVal(CUSTOM_FIELD_REQUEST_TYPE, ticket.getRequestType());
             List<String> domains = ticket.getImpactedDomainsNames();
             domains.add(ticket.getTld());
             rtTicket.customFields().setMultiVal(customFields.get("tld"),domains);
-            //rtTicket.customFields().setSingleVal(customFields.get("tld"),ticket.getTld());
             store.tickets().create(rtTicket);
             String content = convertNewLines(ticket.getComment());
             Comment comment = store.tickets().commentFactory().create(content);
@@ -90,7 +102,6 @@ public class RequestTrackerService implements TicketingService {
                 Comment glueComment = store.tickets().commentFactory().create(GLUE_CHANGE);
                 store.tickets().addComment(rtTicket, glueComment);
             }
-
             return rtTicket.getId();
         } catch (IOException e) {
             throw new TicketingException(e);

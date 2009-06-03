@@ -20,5 +20,6 @@
               todir="${module.eiana-web-admin.basedir}/exploded/WEB-INF/classes" overwrite="true"/>
 
         <antcall target="copyBackendBeforeRun"/>
+        
     </target>
 </project>

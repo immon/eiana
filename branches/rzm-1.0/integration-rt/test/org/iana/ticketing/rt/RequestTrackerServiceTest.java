@@ -2,6 +2,7 @@ package org.iana.ticketing.rt;
 
 import org.iana.rt.RTException;
 import org.iana.rt.RTStore;
+import org.iana.rt.RTStoreImpl;
 import org.iana.rt.ticket.Ticket;
 import org.iana.ticketing.TicketingException;
 import org.iana.ticketing.TicketingService;
@@ -30,7 +31,7 @@ public class RequestTrackerServiceTest {
     @BeforeClass
     public void intit() throws TicketingException, IOException, RTException {
         rts = new RequestTrackerService(RTS_URL, RTS_USERNAME, RTS_PASSWORD, new CountryCodesRetriever());
-        store = RTStore.getStore(RTS_URL, RTS_USERNAME, RTS_PASSWORD);
+        store = RTStoreImpl.getStore(RTS_URL, RTS_USERNAME, RTS_PASSWORD);
     }
 
     private static final String TICKET_NEW_TLD = "PL";

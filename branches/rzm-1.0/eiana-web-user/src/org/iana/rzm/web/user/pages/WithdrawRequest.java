@@ -12,7 +12,7 @@ public abstract class WithdrawRequest extends UserPage implements IExternalPage,
     @Component(id = "cancelRequest", type = "WithdrawRequestConfirmation", bindings = {"requestId=prop:requestId"})
     public abstract IComponent getRequestDetailsComponent();
 
-      @Component(id = "overview", type = "PageLink", bindings = {"page=literal:Home",
+    @Component(id = "overview", type = "PageLink", bindings = {"page=literal:Home",
             "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getHomeLinkComponent();
 
@@ -22,11 +22,11 @@ public abstract class WithdrawRequest extends UserPage implements IExternalPage,
 
     public abstract void setCallback(ICallback callback);
 
-    public void setIdentifier(Object id){
-        if(!Long.class.isAssignableFrom(id.getClass())){
+    public void setIdentifier(Object id) {
+        if (!Long.class.isAssignableFrom(id.getClass())) {
             setRequestId(0);
-        }else{
-            setRequestId(((Long)id));
+        } else {
+            setRequestId(((Long) id));
         }
     }
 
@@ -36,7 +36,7 @@ public abstract class WithdrawRequest extends UserPage implements IExternalPage,
         }
         setRequestId((Long) parameters[0]);
     }
-   
+
     protected Object[] getExternalParameters() {
         return new Object[]{getRequestId()};
     }

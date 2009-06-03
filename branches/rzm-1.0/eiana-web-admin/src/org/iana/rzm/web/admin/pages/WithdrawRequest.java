@@ -1,6 +1,7 @@
 package org.iana.rzm.web.admin.pages;
 
 import org.apache.tapestry.*;
+import org.apache.tapestry.callback.ICallback;
 import org.apache.tapestry.annotations.*;
 import org.iana.rzm.web.common.*;
 
@@ -14,6 +15,8 @@ public abstract class WithdrawRequest extends AdminPage implements IExternalPage
     @Persist("client")
     public abstract void setRequestId(long requestId);
     public abstract long getRequestId();
+
+    public abstract void setCallback(ICallback callback);
 
     public void setIdentifier(Object id){
         if(!Long.class.isAssignableFrom(id.getClass())){
@@ -33,5 +36,7 @@ public abstract class WithdrawRequest extends AdminPage implements IExternalPage
     protected Object[] getExternalParameters() {
         return new Object[]{getRequestId()};
     }
+
+
 
 }
