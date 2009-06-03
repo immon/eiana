@@ -12,6 +12,11 @@ import org.iana.web.tapestry.callback.*;
 @ComponentClass
 public abstract class WithdrawRequestConfirmation extends BaseWithdrawRequestConfirmation {
 
+    @Component(id = "requestSummery", type = "RequestSummery", bindings = {
+        "domainName=prop:domainName", "request=prop:request", "linkTragetPage=prop:domainPage"
+        })
+    public abstract IComponent getRequestSummaryComponent();
+
     @Asset(value = "WEB-INF/admin/WithdrawRequestConfirmation.html")
     public abstract IAsset get$template();
 

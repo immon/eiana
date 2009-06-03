@@ -22,11 +22,14 @@
         <constructor-arg ref="persistentNotificationSender"/>
         <property name="whiteList">
             <list>
-                <value>correct1@test.iana.org</value>
-                <value>correct2@test.iana.org</value>
+                <value>iana.doc@gmail.com</value>
+                <value>iana.verisign@gmail.com</value>
+                <value>naela.sarras@icann.org</value>
+                <value>simon.raveh@icann.org</value>
+                <value>kim.davies@icann.org></value>
             </list>
         </property>
-        <property name="defaultEmail" value="default@test.iana.org" />
+        <property name="defaultEmail" value="rzm-test@iana.org"/>
     </bean>
 
     <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
@@ -50,41 +53,40 @@
         <constructor-arg ref="technicalCheckBeanWithRadicalAlterationCheck"/>
     </bean>
 
-    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
-    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
+    <!--<bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>-->
+    <!--<bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>-->
 
     <!-- end of test bean section -->
 
-    <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
-    <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
-    <!--<constructor-arg index="1" value="rzm"/>-->
-    <!--<constructor-arg index="2" value="rzmrzm"/>-->
-    <!--<constructor-arg index="3" ref="cachedCodeValues"/>-->
-    <!--<property name="customFieldsKeys">-->
-    <!--<map>-->
-    <!--<entry>-->
-    <!--<key>-->
-    <!--<value>tld</value>-->
-    <!--</key>-->
-    <!--<value>tld</value>-->
-    <!--</entry>-->
-    <!--<entry>-->
-    <!--<key>-->
-    <!--<value>state</value>-->
+    <bean id="eppClient" factory-bean="eppClientFactory" factory-method="getInstance"/>
 
-    <!--</key>-->
-    <!--<value>iana_state</value>-->
-    <!--</entry>-->
-    <!--<entry>-->
-    <!--<key>-->
-    <!--<value>type</value>-->
-    <!--</key>-->
-    <!--<value>request_type</value>-->
-    <!--</entry>-->
-    <!--</map>-->
-    <!--</property>-->
-    <!--</bean>-->
 
+    <bean id="rtStore" class="org.iana.rt.RTStoreImpl">
+        <constructor-arg index="0" value="https://xen2.lax.icann.org"/>
+        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="2" value="rzmrzm"/>
+    </bean>
+
+    <bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">
+        <constructor-arg index="0" ref="rtStore"/>
+        <constructor-arg index="1" ref="cachedCodeValues"/>
+        <property name="customFieldsKeys">
+            <map>
+                <entry>
+                    <key> <value>tld</value> </key>
+                    <value>TLD</value>
+                </entry>
+                <entry>
+                    <key> <value>state</value></key>
+                    <value>IANA_State</value>
+                </entry>
+                <entry>
+                    <key> <value>type</value></key>
+                    <value>Request_Type</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
     <!-- facade services configuration -->
 
@@ -1200,9 +1202,9 @@
 
     <!-- mails processing configuration -->
     <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
-        <constructor-arg index="0" value="m02.icann.org"/>
-        <constructor-arg index="1" value="rzm-dev"/>
-        <constructor-arg index="2" value="upowilgeod"/>
+        <constructor-arg index="0" value="m00.icann.org"/>
+        <constructor-arg index="1" value="rzm"/>
+        <constructor-arg index="2" value="y1MI07n9w"/>
         <constructor-arg index="3" value="[RZM]"/>
         <property name="config">
             <ref bean="parameterManager"/>

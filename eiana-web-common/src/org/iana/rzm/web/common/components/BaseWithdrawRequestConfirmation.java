@@ -20,12 +20,6 @@ import java.util.*;
 
 public abstract class BaseWithdrawRequestConfirmation extends BaseComponent implements PageBeginRenderListener {
 
-    //@Component(id = "domainName", type = "Insert", bindings = {"value=prop:domainName"})
-    //public abstract IComponent getDomainNameComponent();
-    //
-    //@Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
-    //public abstract IComponent getCountryComponent();
-
     @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
 

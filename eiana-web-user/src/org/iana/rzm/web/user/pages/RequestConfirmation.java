@@ -122,7 +122,6 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (AccessDeniedException e) {
             setErrorMessage("Invalid token or " + e.getMessage());
-            //getAccessDeniedHandler().handleAccessDenied(e, GeneralError.PAGE_NAME);
         }
 
     }

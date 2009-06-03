@@ -42,7 +42,6 @@ public class ZoneGeneratorServlet extends HttpServlet {
             response.setHeader("Content-type","application/octetstream");
             response.setHeader("Content-disposition","inline; filename=" + zoneFileName);
 
-
             PrintWriter pw = response.getWriter();
             pw.print(zoneFileContent);
             pw.flush();

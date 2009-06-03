@@ -13,7 +13,6 @@ public interface AdminDNSService {
 
     public void exportAll() throws IOException, InfrastructureException;
     public String exportZoneFile() throws  InfrastructureException;
-
     public String getExportFileName();
 
 }
