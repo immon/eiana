@@ -30,7 +30,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     }
 
     public void acceptNotUniqueIPAddressException(NotUniqueIPAddressException e) {
-        buffer.append("IP addresses are duplicated for host: ").append(e.getHostName())
+        buffer.append("IP addresses are duplicated for hosts: ").append(e.getHostName())
+                .append(", ").append(e.getOtherHost().getName())
                 .append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }
 
@@ -59,7 +60,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e) {
         buffer.append("The number of unique name servers is lower than the minimum required for domain: ")
-                .append(domainTLDName(e.getDomainName())).append("\n");
+                .append(domainTLDName(e.getDomainName())).append("(expected: ")
+                .append(e.getExpected()).append(", received: ").append(e.getReceived()).append("\n");
     }
 
     public void acceptReservedIPv4Exception(ReservedIPv4Exception e) {
@@ -128,6 +130,10 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
 
     public void acceptRadicalAlterationException(RadicalAlterationCheckException e) {
         buffer.append("All name servers are changed for domain ").append(e.getDomainName());
+    }
+
+    public void acceptInternalDNSCheckException(InternalDNSCheckException e) {
+        buffer.append("Internal Exception ").append(e.getMessage());
     }
 
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {

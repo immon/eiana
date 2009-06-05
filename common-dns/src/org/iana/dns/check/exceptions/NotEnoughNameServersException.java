@@ -10,16 +10,29 @@ import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
  */
 public class NotEnoughNameServersException extends DomainTechnicalCheckException {
 
+    private int expected;
+    private int received;
+
     /**
      * Creates exception from given data.
      *
      * @param domain current domain
      */
-    public NotEnoughNameServersException(DNSDomain domain) {
+    public NotEnoughNameServersException(DNSDomain domain, int expected, int received) {
         super(domain, null);
+        this.expected = expected;
+        this.received = received;
     }
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
         visitor.acceptNotEnoughNameServersException(this);
+    }
+
+    public int getExpected() {
+        return expected;
+    }
+
+    public int getReceived() {
+        return received;
     }
 }
