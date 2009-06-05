@@ -7,11 +7,27 @@ import org.iana.rzm.common.validators.CheckTool;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
 public class EmailRecipients implements AddresseeProducer {
+
+    Set<String> emails;
+
+    public EmailRecipients(List<String> emails) {
+        this.emails = new HashSet<String>(emails);
+    }
+
+    public EmailRecipients(Set<String> emails) {
+        this.emails = emails;
+    }
+
+    public EmailRecipients(String email) {
+        this.emails = new HashSet<String>();
+        this.emails.add(email);
+    }
 
     public Set<PAddressee> produce(Map dataSource) {
         Set<PAddressee> ret = new HashSet<PAddressee>();
@@ -19,6 +35,13 @@ public class EmailRecipients implements AddresseeProducer {
         if (CheckTool.isCorrectEmali(email)) {
             ret.add(new PAddressee(email, email));
         }
+
+        for (String e : emails) {
+            if (CheckTool.isCorrectEmali(email)) {
+                ret.add(new PAddressee(email, email));
+            }
+        }
+
         return ret;
     }
 

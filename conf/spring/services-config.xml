@@ -529,6 +529,11 @@
         </constructor-arg>
         <property name="producers">
             <map>
+                <entry key="IANA">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients">
+                        <constructor-arg index="0" value="IANA"/>
+                    </bean>
+                </entry>
                 <entry key="AC">
                     <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
                         <constructor-arg index="0" value="AC"/>
@@ -595,6 +600,11 @@
                 <entry key="GOV_OVERSIGHT">
                     <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients">
                         <constructor-arg index="0" value="GOV_OVERSIGHT"/>
+                    </bean>
+                </entry>
+                <entry key="SYSTEM_ERRORS">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.EmailRecipients">
+                        <constructor-arg index="0" value="system-errors@iana.org"/>
                     </bean>
                 </entry>
             </map>
