@@ -4,12 +4,13 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSIPAddress;
 import static org.iana.dns.DNSIPAddress.Type.IPv4;
 import org.iana.dns.DNSIPv4Address;
-import org.iana.dns.check.exceptions.NotUniqueIPAddressException;
 import org.iana.dns.check.exceptions.EmptyIPAddressListException;
 import org.iana.dns.check.exceptions.NotEnoughNameServersException;
+import org.iana.dns.check.exceptions.NotUniqueIPAddressException;
 import org.iana.dns.check.exceptions.ReservedIPv4Exception;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * (Test 1, 11)
@@ -38,7 +39,7 @@ public class MinimumNameServersAndNoReservedIPsCheck extends AbstractDNSDomainTe
         int uniqueDiff = 0;
 
         if (nameServers == null || nameServers.isEmpty())
-            throw new NotEnoughNameServersException(domain);
+            throw new NotEnoughNameServersException(domain, minNameServersNumber, 0);
 
         for (DNSNameServer currentNs : nameServers) {
             Set<DNSIPAddress> currentIps = currentNs.getIPAddresses();
@@ -62,13 +63,13 @@ public class MinimumNameServersAndNoReservedIPsCheck extends AbstractDNSDomainTe
                     if (!otherNs.getName().equals(currentNs.getName())) {
                         Set<DNSIPAddress> otherIps = otherNs.getIPAddresses();
                         if (otherIps.containsAll(currentIps))
-                            e.addException(new NotUniqueIPAddressException(domain, currentNs.getHost()));
+                            e.addException(new NotUniqueIPAddressException(domain, currentNs.getHost(), otherNs.getHost()));
                     }
                 }
             }
         }
         if (uniqueDiff < minNameServersNumber)
-            e.addException(new NotEnoughNameServersException(domain));
+            e.addException(new NotEnoughNameServersException(domain, minNameServersNumber, uniqueDiff));
 
         if (!e.isEmpty()) throw e;
     }

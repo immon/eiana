@@ -44,7 +44,8 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
     }
 
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {
-        for (DNSTechnicalCheckException subEx : e.getExceptions()) subEx.accept(this);
+        for (DNSTechnicalCheckException subEx : e.getExceptions()) 
+            subEx.accept(this);
     }
 
     public void acceptMinimumNetworkDiversityException(MinimumNetworkDiversityException e) {
@@ -59,6 +60,13 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
 
     public void acceptNotUniqueIPAddressException(NotUniqueIPAddressException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
+
+        ValueDataDecorator expectedHostName = new ValueDataDecorator(HOST, e.getHostName());
+        exceptionDataDecorator.addExpected(expectedHostName);
+
+        ValueDataDecorator otherHostName = new ValueDataDecorator(HOST, e.getOtherHost().getName());
+        exceptionDataDecorator.addOther(otherHostName);
+
         exceptions.add(exceptionDataDecorator);
     }
 
@@ -99,6 +107,11 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
     public void acceptNameServerIPAddressesNotEqualException(NameServerIPAddressesNotEqualException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
         exceptionDataDecorator.setHostName(e.getHostName());
+
+        for (DNSIPAddress ipAddress : e.getHost().getIPAddresses()) {
+            ValueDataDecorator expected = new ValueDataDecorator(IP, ipAddress.getAddress());
+            exceptionDataDecorator.addExpected(expected);
+        }
 
         for (DNSIPAddress ipAddress : e.getReturnedIPAddresses()) {
             ValueDataDecorator returned = new ValueDataDecorator(IP, ipAddress.getAddress());
@@ -146,6 +159,8 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
+        exceptionDataDecorator.addExpected(new ValueDataDecorator(NS, e.getExpected()));
+        exceptionDataDecorator.addReceived(new ValueDataDecorator(NS, e.getReceived()));
         exceptions.add(exceptionDataDecorator);
     }
 
@@ -166,7 +181,7 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
         for (Long number : e.getSerialNumbers()) {
             if (number != null) {
                 ValueDataDecorator valueDecorator = new ValueDataDecorator(SERIAL_NUMBER, number.intValue());
-                exceptionDataDecorator.addReceived(valueDecorator);
+                exceptionDataDecorator.addOther(valueDecorator);
             }
         }
 
@@ -188,6 +203,12 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
     public void acceptRadicalAlterationException(RadicalAlterationCheckException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
 
+        exceptions.add(exceptionDataDecorator);
+    }
+
+
+    public void acceptInternalDNSCheckException(InternalDNSCheckException e) {
+        ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
         exceptions.add(exceptionDataDecorator);
     }
 

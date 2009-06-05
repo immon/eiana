@@ -107,8 +107,8 @@ public class FailureDNSTechnicalCheckTest {
             List<DNSTechnicalCheckException> errors = exception.getExceptions();
             assert errors.contains(new ReservedIPv4Exception(domain, host1, DNSIPAddressImpl.createIPAddress("10.0.0.1")));
             assert errors.contains(new ReservedIPv4Exception(domain, host2, DNSIPAddressImpl.createIPAddress("192.168.0.3")));
-            assert errors.contains(new NotUniqueIPAddressException(domain, host1)) ||
-                    errors.contains(new NotUniqueIPAddressException(domain, host2));
+            assert errors.contains(new NotUniqueIPAddressException(domain, host1, host2)) ||
+                    errors.contains(new NotUniqueIPAddressException(domain, host2, host1));
             throw e;
         }
     }
