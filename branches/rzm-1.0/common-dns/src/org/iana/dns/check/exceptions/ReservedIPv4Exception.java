@@ -50,5 +50,5 @@ public class ReservedIPv4Exception extends DomainTechnicalCheckException {
 
     public void accept(DNSTechnicalCheckExceptionVisitor visitor) {
         visitor.acceptReservedIPv4Exception(this);
-    }
+    }        
 }

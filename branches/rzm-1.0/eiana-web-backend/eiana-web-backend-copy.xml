@@ -12,5 +12,7 @@
               todir="${module.eiana-web-backend.basedir}/rzm-backend/WEB-INF/" overwrite="true"/>
         <copy file="${module.eiana-web-backend.basedir}/../conf/spring/remoting-servlet.xml"
               todir="${module.eiana-web-backend.basedir}/exploded/WEB-INF/" overwrite="true"/>
+        <copy file="${module.eiana-web-backend.basedir}/../conf/log4j/log4j-backend.properties"
+              tofile="${module.eiana-web-backend.basedir}/exploded/WEB-INF/classes/log4j.properties" overwrite="true"/>
     </target>
 </project>

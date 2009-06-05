@@ -19,7 +19,18 @@
         <copy file="${module.eiana-web-admin.basedir}/../conf/spring/remoting.properties"
               todir="${module.eiana-web-admin.basedir}/exploded/WEB-INF/classes" overwrite="true"/>
 
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/dnscheck-errors-config.xml"
+              todir="${module.eiana-web-admin.basedir}/exploded/WEB-INF/" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/dnscheck-errors-config.xml"
+            todir="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/log4j/log4j-admin.properties"
+              tofile="${module.eiana-web-admin.basedir}/exploded/WEB-INF/classes/log4j.properties" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/log4j/log4j-admin.properties"
+              tofile="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/classes/log4j.properties" overwrite="true"/>
+
         <antcall target="copyBackendBeforeRun"/>
-        
     </target>
 </project>

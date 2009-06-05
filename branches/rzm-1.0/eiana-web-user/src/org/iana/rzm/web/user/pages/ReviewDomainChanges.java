@@ -7,6 +7,7 @@ import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.changes.*;
 import org.iana.rzm.web.common.model.*;
@@ -311,7 +312,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         }
     }
 

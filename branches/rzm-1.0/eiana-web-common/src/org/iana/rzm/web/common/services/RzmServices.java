@@ -43,4 +43,6 @@ public interface RzmServices extends Serializable {
     public List<Value> getCountrys();
 
     public boolean isValidCountryCode(String code);
+
+    public List<String> parseErrors(String technicalErrors);
 }
