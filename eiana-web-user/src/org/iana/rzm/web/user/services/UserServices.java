@@ -2,6 +2,7 @@ package org.iana.rzm.web.user.services;
 
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.services.*;
@@ -34,5 +35,6 @@ public interface UserServices extends RzmServices {
     public void rejectTransaction(long requestId, String token) throws NoObjectFoundException;
 
     public void setAccessToDomain(long domainId, long userId, boolean access);
+
 
 }

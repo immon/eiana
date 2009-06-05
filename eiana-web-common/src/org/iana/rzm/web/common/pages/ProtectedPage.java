@@ -138,7 +138,7 @@ public abstract class ProtectedPage extends RzmPage implements PageValidateListe
         }
 
         catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }

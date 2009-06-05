@@ -1,7 +1,8 @@
 package org.iana.rzm.web.common;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 public class MessageUtil implements Serializable {
 
@@ -30,8 +31,9 @@ public class MessageUtil implements Serializable {
         return "Your Session has timed out. Please login to continue";
     }
 
-    public String getAllNameServersChangeMessage() {
-        return "Changing all Name Servers in one request is not allowed.";
+    public String getRadicalAlterationCheckMessage(String domainName) {
+        return "You are trying to change all name servers for domain " + domainName + " We prefer that you " +
+                "stagger the request in two requests such that any unexpected faults might be mitigated." ;
     }
 
     public String getSharedNameServersCollisionMessage(Set<String> nameServers) {
@@ -137,15 +139,96 @@ public class MessageUtil implements Serializable {
         return "You tried to log in to the RZM User site using Admin Credential\n. Please use none admin Credential or use the RZM Admin website";
     }
 
-    public String mismatchSecureIdPin() {
+    public String getMismatchSecureIdPinMessage() {
         return "New Pin does not match Confirm Pin.";
     }
 
-    public String secureIdPinToLong(int length) {
+    public String getSecureIdPinToLongMessage(int length) {
         return "Your pin is to long. It's should be " + length + " max";
     }
 
-    public String secureIdPinToShort(int length) {
+    public String getSecureIdPinToShortMessage(int length) {
         return "Your pin is to short. It's should be at least " + length + " long";
+    }
+
+
+    public String getPasswordMismatchMessage() {
+        return "new Password does not match Confirm Password.";
+    }
+
+    public String getPasswordTheSameMessage() {
+        return "New Password must be different from Current Password.";
+    }
+
+    public String getPasswordExpiredMessage(){
+        return "Your Password has bean expired.";
+    }
+
+    public String getFirstLoginMessage(){
+        return "This is your first login into the system. For security reason please change your password.";
+    }
+
+    public String getChangesSavedSuccessfullyMessage() {
+        return "Your changes were saved Successfully.";
+
+    }
+
+    public String getAllNameServersFromSameASNumnerMessage(String value) {
+        return "All name servers have the same AS number " + value  + ".";
+    }
+
+    public String getEmptyIpAddressListMessage(String hosts) {
+        return "The folowing host does not seem to have have an ip address: " + "["+hosts+"].";
+    }
+
+    public String getMaximumPayloadSizeMessage(String receivedPayload, String expectedPayload) {
+        return "The Response estimated size was " + receivedPayload +  " and it is greater than " + expectedPayload +  " bytes.";
+    }
+
+    public String getNameServerUnreachableByTCPMessage(String host) {
+        return "The folowing host is not reachable by TCP: " + "["+host+"].";
+    }
+
+    public String getNameServerUnreachableMessage(String host) {
+        return "The folowing host is not reachable: " + "["+host+"].";
+    }
+
+    public String getNameServerUnreachableByUdpMessage(String host) {
+        return "The folowing host is not reachable by UDP: " + "["+host+"].";
+    }
+
+    public String getNotAuthoritativeNameServerMessage(String host, String domain) {
+        return "The folowing host: [" + host + "] is not Authoritative for the domain: " + domain  + ".";
+    }
+
+    public String getNameServerCoherencyMessage(List<String> recivedNameServers, List<String> expectedNameServers, String host) {
+        return "The NS RR-set returned by the authoritative name servers " + recivedNameServers.toString() +
+                " are not the same as the supplied ns records " + expectedNameServers.toString() + " for Name server: " + host  + ".";
+    }
+
+    public String getNameServerIPAddressesNotEqualMessage(String host, List<String> recivedNameServers, List<String> expectedNameServers) {
+        return "The A and AAAA records " +  recivedNameServers.toString() +
+                " returned from the authoritative name server [" + host + "] are not the same as the supplied glue records " +
+        expectedNameServers.toString() + ".";
+    }
+
+    public String NotUniqueIPAddressMessage(List<String> list) {
+        return "The following name servers " + list.toString() + " share one or more IP Addresses.";
+    }
+
+    public String getNotEnoughNameServersMessage(String expected, String actual) {
+        return "IANA Required a minimum of " +  expected + " name servers hosts you only have " + actual  + ".";
+    }
+
+    public String getReservedIPv4Message(String host, List<String> ips) {
+        return "The following Name Server [" + host + "] is using a reserved IPV4 Address " + ips.toString() + ".";
+    }
+
+    public String getSerialNumberNotEqualMessage(List<String> serials) {
+        return "The Authoritative name servers SOA serial number does not match: " + serials.toString() + "." ;
+    }
+
+    public String getWhoIsIOExceptionMessage(String host, List<String> ips) {
+        return "We couldn't determine the autonomous system for Name Server [" +host+ "] IPV4 " + ips.toString() + ".";
     }
 }

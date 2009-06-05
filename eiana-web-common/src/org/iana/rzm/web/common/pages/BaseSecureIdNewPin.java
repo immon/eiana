@@ -107,17 +107,17 @@ public abstract class BaseSecureIdNewPin extends RzmPage implements PageBeginRen
             RSAPinData pinData = getAuthenticationService().getPinInfo(getSessionId());
             IValidationDelegate delegate = getValidationDelegate();
             if(!StringUtil.equals(getPin(), getConfirmPin())){
-                delegate.record(getMessageUtil().mismatchSecureIdPin(),ValidationConstraint.CONSISTENCY);
+                delegate.record(getMessageUtil().getMismatchSecureIdPinMessage(),ValidationConstraint.CONSISTENCY);
             }
 
             if(pinData.getMaxPinLength() < getPin().length()){
                 delegate.setFormComponent((IFormComponent) getComponent("pin"));
-                delegate.record(getMessageUtil().secureIdPinToLong(pinData.getMaxPinLength()),ValidationConstraint.MAXIMUM_WIDTH);
+                delegate.record(getMessageUtil().getSecureIdPinToLongMessage(pinData.getMaxPinLength()),ValidationConstraint.MAXIMUM_WIDTH);
             }
 
             if(pinData.getMinPinLength() > getPin().length()){
                 delegate.setFormComponent((IFormComponent) getComponent("pin"));
-                delegate.record(getMessageUtil().secureIdPinToShort(pinData.getMaxPinLength()),ValidationConstraint.MINIMUM_WIDTH);
+                delegate.record(getMessageUtil().getSecureIdPinToShortMessage(pinData.getMaxPinLength()),ValidationConstraint.MINIMUM_WIDTH);
             }
 
             if(delegate.getHasErrors()){

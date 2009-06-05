@@ -9,11 +9,12 @@ import org.iana.dns.validator.InvalidIPAddressException;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.TreeSet;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class DNSHostImpl implements DNSHost {
+public class DNSHostImpl implements DNSHost, Serializable {
 
     private Name name;
     private Set<DNSIPAddress> addresses = new TreeSet<DNSIPAddress>();

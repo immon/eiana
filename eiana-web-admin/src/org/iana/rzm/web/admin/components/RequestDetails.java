@@ -17,33 +17,39 @@ import java.util.*;
 public abstract class RequestDetails extends BaseRequestDetails {
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend",
-        "linkTragetPage=prop:editDomain"
-        })
+            "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend",
+            "linkTragetPage=prop:editDomain"
+            })
     public abstract IComponent getRequestSummaryComponent();
 
     @Component(id = "exceptionState", type = "If", bindings = {"condition=prop:exceptionState"})
     public abstract IComponent getExceptionStateComponent();
 
+    @Component(id = "technicalCkeckedfailed", type = "If", bindings = {"condition=prop:technicalCkeckedfailed"})
+    public abstract IComponent getTechnicalCkeckedfailedComponent();
+
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
 
     @Component(id = "impactedPartiesConfirmations",
-               type = "rzmLib:ListRequestConfirmations",
-               bindings = {"confirmations=prop:impactedPartiesConfirmations"})
+            type = "rzmLib:ListRequestConfirmations",
+            bindings = {"confirmations=prop:impactedPartiesConfirmations"})
     public abstract IComponent getImpactedPartiesConfirmationsComponent();
 
     @Component(id = "displayVerisignCheck", type = "If", bindings = {"condition=prop:showPollLink"})
     public abstract IComponent getShowVerisignCheckComponent();
 
-    @Component(id="checkVerisignState", type="DirectLink", bindings = {
+    @Component(id = "checkVerisignState", type = "DirectLink", bindings = {
             "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER",
             "listener=listener:checkVerisignState", "parameters=prop:request.rtId"
             })
     public abstract IComponent getCheckVerisignStateComponent();
 
-    @Component(id="verisignStatus", type = "Insert", bindings = {"value=prop:verisignStatus"})
+    @Component(id = "verisignStatus", type = "Insert", bindings = {"value=prop:verisignStatus"})
     public abstract IComponent getVerisignStatusComponent();
+
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"errors=prop:errors"})
+    public abstract IComponent getErrorListComponent();
 
 
     @Asset(value = "WEB-INF/admin/RequestDetails.html")
@@ -66,26 +72,37 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     @Persist()
     public abstract void setNotifications(List<NotificationVOWrapper> list);
+
     public abstract List<NotificationVOWrapper> getNotifications();
 
     @Persist
     public abstract String getVerisignStatus();
+
     public abstract void setVerisignStatus(String status);
 
 
     public void pageBeginRender(PageEvent event) {
         super.pageBeginRender(event);
 
-        if(!getRequest().isPartOfEPPState()){
+        if (!getRequest().isPartOfEPPState()) {
             setVerisignStatus("Not Available");
-        }else{
+        } else {
             setVerisignStatus(getRequest().getVerisignStatus());
         }
 
-        if(getVerisignStatus() == null){
+        if (getVerisignStatus() == null) {
             setVerisignStatus("Not Available");
         }
 
+    }
+
+    public List<String> getErrors() {
+        String technicalErrors = getRequest().getTechnicalErrors();
+        if (StringUtils.isEmpty(technicalErrors)) {
+            return new ArrayList<String>();
+        }
+
+        return getAdminServices().parseErrors(technicalErrors);
     }
 
     public List<ConfirmationVOWrapper> getImpactedPartiesConfirmations() {
@@ -97,8 +114,14 @@ public abstract class RequestDetails extends BaseRequestDetails {
     }
 
     public boolean isExceptionState() {
-        return StringUtils.isNotBlank(getRequest().getStateMessage());
+        return StringUtils.isNotBlank(getRequest().getStateMessage()) && !isTechnicalCkeckedfailed();
     }
+
+    public boolean isTechnicalCkeckedfailed() {
+        TransactionVOWrapper wrapper = getRequest();
+        return wrapper.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY);
+    }
+
 
     protected AdminServices getRzmServices() {
         return getAdminServices();
@@ -112,7 +135,7 @@ public abstract class RequestDetails extends BaseRequestDetails {
         return getRequest().isPartOfEPPState();
     }
 
-    public void checkVerisignState(){
+    public void checkVerisignState() {
         try {
             String status = getAdminServices().getVerisignStatus(getRequest().getId());
             setVerisignStatus(status);
@@ -121,7 +144,7 @@ public abstract class RequestDetails extends BaseRequestDetails {
             page.handleNoObjectFoundException(e);
         } catch (InvalidEPPTransactionException e) {
             AdminPage page = (AdminPage) getPage();
-            page.setErrorMessage("Invalid EPP Transaction " +e.getMessage());
+            page.setErrorMessage("Invalid EPP Transaction " + e.getMessage());
         }
     }
 

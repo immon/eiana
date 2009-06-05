@@ -35,6 +35,9 @@ public abstract class RequestDetails extends BaseRequestDetails {
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
 
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"errors=prop:errors"})
+    public abstract IComponent getErrorListComponent();
+
     @InjectPage(RequestConfirmation.PAGE_NAME)
     public abstract RequestConfirmation getRequestConfirmation();
 
@@ -52,6 +55,10 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     protected UserServices getRzmServices() {
         return getUserServices();
+    }
+
+    public List<String>getErrors(){
+        return getUserServices().parseErrors(getRequest().getTechnicalErrors());
     }
 
     protected String getExceptionPage() {

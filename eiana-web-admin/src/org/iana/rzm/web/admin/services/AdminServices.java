@@ -7,6 +7,7 @@ import org.iana.rzm.facade.admin.trans.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.admin.*;
 import org.iana.rzm.web.admin.model.*;
 import org.iana.rzm.web.common.*;

@@ -7,6 +7,7 @@ import org.apache.tapestry.engine.state.*;
 import org.apache.tapestry.event.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.admin.pages.listeners.*;
 import org.iana.rzm.web.admin.services.*;
 import org.iana.rzm.web.common.*;
@@ -311,7 +312,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }
@@ -374,7 +375,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             } catch (SharedNameServersCollisionException e) {
                 adminPage.setErrorMessage(messageUtil.getSharedNameServersCollisionMessage(e.getNameServers()));
             } catch (RadicalAlterationException e) {
-                adminPage.setErrorMessage(messageUtil.getAllNameServersChangeMessage());
+                adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(e.getDomainName()));
             }
             cycle.activate(adminPage);
         }

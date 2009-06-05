@@ -22,6 +22,7 @@ import org.iana.rzm.facade.system.domain.types.*;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.notification.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.facade.system.trans.vo.*;
 import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.facade.user.*;
@@ -29,6 +30,7 @@ import org.iana.rzm.web.admin.*;
 import org.iana.rzm.web.admin.model.*;
 import org.iana.rzm.web.admin.query.*;
 import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.technical_check.DNSTechnicalCheckErrorsXmlParser;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.model.criteria.*;
 import org.iana.rzm.web.common.query.*;
@@ -52,6 +54,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     private DomainTypes domainTypesService;
     private AdminDNSService dnsServices;
     private PollMessagesService pollMessagesService;
+    private DNSTechnicalCheckErrorsXmlParser technicalErrorsXmlParser;
     
 
     private PasswordChangeService changePasswordService;
@@ -67,6 +70,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         domainTypesService = initializer.getBean("remoteDomainTypes", DomainTypes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
         dnsServices = initializer.getBean("remoteDnsService", AdminDNSService.class);
+        technicalErrorsXmlParser = initializer.getBean("technicalErrorsXmlParser", DNSTechnicalCheckErrorsXmlParser.class);
 
     }
 
@@ -140,6 +144,10 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             return false;
     }
 
+    public List<String> parseErrors(String technicalErrors) {
+        return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);
+    }
+
     public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain,
                                                                           boolean splitNameServerChange,
                                                                           RequestMetaParameters params)
@@ -148,7 +156,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         NoObjectFoundException,
         NoDomainModificationException,
         InvalidCountryCodeException,
-        DNSTechnicalCheckExceptionWrapper,
+            DNSTechnicalCheckExceptionWrapper,
         TransactionExistsException,
         NameServerChangeNotAllowedException,
         SharedNameServersCollisionException,
@@ -167,8 +175,6 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             return result;
         } catch (InfrastructureException e) {
             throw new RzmApplicationException(e);
-        } catch (DNSTechnicalCheckException e) {
-            throw new DNSTechnicalCheckExceptionWrapper(e);
         }
     }
 

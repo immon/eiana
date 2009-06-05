@@ -14,10 +14,12 @@ import org.iana.rzm.facade.services.*;
 import org.iana.rzm.facade.system.domain.*;
 import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.facade.system.trans.vo.*;
 import org.iana.rzm.facade.system.trans.vo.changes.*;
 import org.iana.rzm.facade.user.*;
 import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.technical_check.DNSTechnicalCheckErrorsXmlParser;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.model.criteria.*;
 import org.iana.rzm.web.common.query.resolver.*;
@@ -37,6 +39,7 @@ public class UserServicesImpl implements UserServices {
     private CountryCodes countryCodeService;
     private PasswordChangeService changePasswordService;
     private UserVOManager userManager;
+    private DNSTechnicalCheckErrorsXmlParser technicalErrorsXmlParser;
 
 
     public UserServicesImpl(ServiceInitializer<RZMStatefulService> initializer) {
@@ -46,6 +49,7 @@ public class UserServicesImpl implements UserServices {
         countryCodeService = initializer.getBean("remoteCc", CountryCodes.class);
         changePasswordService = initializer.getBean("remotePasswordChangeService", PasswordChangeService.class);
         userManager = initializer.getBean("remoteUserManager", UserVOManager.class);
+        technicalErrorsXmlParser = initializer.getBean("technicalErrorsXmlParser", DNSTechnicalCheckErrorsXmlParser.class);
     }
 
     public String getCountryName(String name) {
@@ -69,7 +73,10 @@ public class UserServicesImpl implements UserServices {
         }
 
         return false;
+    }
 
+    public List<String> parseErrors(String technicalErrors) {
+        return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);
     }
 
     public List<Value> getCountrys() {
@@ -196,8 +203,6 @@ public class UserServicesImpl implements UserServices {
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
-        } catch (DNSTechnicalCheckException e) {
-            throw new DNSTechnicalCheckExceptionWrapper(e);
         }
     }
 

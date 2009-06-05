@@ -143,7 +143,7 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
         }
 
         if (allChanged) {
-            setErrorMessage(getMessageUtil().getAllNameServersChangeMessage());
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(domain.getName()));
             return;
         }
 
