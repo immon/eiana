@@ -43,9 +43,17 @@
             depends="all.jar">
         <hibernatetool destdir="${hibernate.dir}">
             <classpath>
-                <fileset dir="${jar.output.dir}">
-                    <include name="**/*.jar"/>
-                </fileset>
+                <path location="${eiana-domains.output.dir}"/>
+                <path location="${eiana-util.output.dir}"/>
+                <path location="${eiana-users.output.dir}"/>
+                <path location="${eiana-trans.output.dir}"/>
+                <path location="${eiana-logs.output.dir}"/>
+                <path location="${eiana-notifications.output.dir}"/>
+                <path location="${tests.testoutput.dir}"/>
+                <path location="${common-objectdiff.output.dir}"/>
+                <path location="${common-codevalues.output.dir}"/>
+                <path location="${common-config.output.dir}"/>
+                <path location="${common-dns.output.dir}"/>
                 <fileset dir="${lib.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
