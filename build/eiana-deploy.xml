@@ -51,6 +51,9 @@
                 <path location="${eiana-notifications.output.dir}"/>
                 <path location="${tests.testoutput.dir}"/>
                 <path location="${common-objectdiff.output.dir}"/>
+                <path location="${common-codevalues.output.dir}"/>
+                <path location="${common-config.output.dir}"/>
+                <path location="${common-dns.output.dir}"/>
                 <fileset dir="${lib.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
