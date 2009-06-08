@@ -163,7 +163,7 @@ public class GuardedStatelessDoCTransactionService extends AbstractRZMStatelessS
         throw new AccessDeniedException("authenticated user not in the role IANA");
     }
 
-    public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
         throw new AccessDeniedException("authenticated user not in the role IANA");
     }
 

@@ -145,8 +145,8 @@ public class GuardedStatelessAdminTransactionService extends AbstractRZMStateles
         getService(authUser).rejectByUSDoC(id, authUser);
     }
 
-    public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        getService(authUser).withdrawTransaction(id, authUser);
+    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+        getService(authUser).withdrawTransaction(id, reason, authUser);
     }
 
     public void confirmByUSDoC(long id, boolean nsChange, boolean accept, AuthenticatedUser authUser) throws NoObjectFoundException, IllegalTransactionStateException, AccessDeniedException, InfrastructureException {

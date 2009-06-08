@@ -160,9 +160,9 @@ public class GuardedStatelessIanaTransactionService extends AbstractRZMStateless
         statelessAdminTransactionService.rejectByUSDoC(id, authUser);
     }
 
-    public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
         isIana(authUser);
-        statelessAdminTransactionService.withdrawTransaction(id, authUser);
+        statelessAdminTransactionService.withdrawTransaction(id, reason, authUser);
     }
 
     public void confirmByUSDoC(long id, boolean nsChange, boolean accept, AuthenticatedUser authUser) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException {

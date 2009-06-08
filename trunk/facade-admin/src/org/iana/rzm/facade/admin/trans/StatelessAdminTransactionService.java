@@ -76,7 +76,7 @@ public interface StatelessAdminTransactionService {
 
     public void confirmByUSDoC(long id, boolean nsChange, boolean accept, AuthenticatedUser authUser) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException;
 
-    void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+    void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
 
     public List<TransactionVO> getByTicketID(long id, AuthenticatedUser authenticatedUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 }

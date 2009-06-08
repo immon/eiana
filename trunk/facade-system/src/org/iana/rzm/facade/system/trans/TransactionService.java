@@ -33,6 +33,8 @@ public interface TransactionService extends RZMStatefulService, FinderService<Tr
 
     void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
 
+    void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+
     // temporary method - not to break the tests
 
     void moveTransactionToNextState(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, IllegalTransactionStateException;
