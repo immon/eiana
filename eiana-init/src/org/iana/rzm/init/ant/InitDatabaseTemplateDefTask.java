@@ -180,7 +180,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("third_party-consultation");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName}");
         templateDef.setContent(
                 "Dear {name} {title},\n" +
