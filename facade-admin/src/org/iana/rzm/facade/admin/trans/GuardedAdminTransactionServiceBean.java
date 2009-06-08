@@ -141,7 +141,11 @@ public class GuardedAdminTransactionServiceBean extends AbstractRZMStatefulServi
     }
 
     public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        statelessAdminTransactionService.withdrawTransaction(id, getAuthenticatedUser());
+        statelessAdminTransactionService.withdrawTransaction(id, null, getAuthenticatedUser());
+    }
+
+    public void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+        statelessAdminTransactionService.withdrawTransaction(id, reason, getAuthenticatedUser());
     }
 
     public void acceptTransaction(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {

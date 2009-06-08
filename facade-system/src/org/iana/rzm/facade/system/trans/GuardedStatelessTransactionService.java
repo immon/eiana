@@ -165,9 +165,9 @@ public class GuardedStatelessTransactionService extends AbstractRZMStatelessServ
         return statelessTransactionService.find(criteria, order, offset, limit, authUser);
     }
 
-    public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
         isUserInRole(id, authUser);
-        statelessTransactionService.withdrawTransaction(id, authUser);
+        statelessTransactionService.withdrawTransaction(id, reason, authUser);
     }
     
 }

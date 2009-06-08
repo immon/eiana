@@ -352,12 +352,13 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
                 TransactionState.Name.PENDING_SUPP_TECH_CHECK_REMEDY));
     }
 
-    public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
         try {
             Transaction trans = transactionManager.getTransaction(id);
             if (trans == null) throw new NoObjectFoundException(id, "transaction");
             if (!isAllowedToWithdraw(trans))
                 throw new TransactionCannotBeWithdrawnException(id, "" + trans.getState().getName());
+            trans.getData().setWidthdrawnReason(reason);
             trans.transitTo(userManager.get(authUser.getUserName()), TransactionState.Name.WITHDRAWN.toString());
             markModified(trans, authUser);
         } catch (NoSuchTransactionException e) {

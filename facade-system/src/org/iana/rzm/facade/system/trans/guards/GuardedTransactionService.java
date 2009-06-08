@@ -107,6 +107,10 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
     }
 
     public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        statelessTransactionService.withdrawTransaction(id, getAuthenticatedUser());
+        statelessTransactionService.withdrawTransaction(id, null, getAuthenticatedUser());
+    }
+
+    public void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+        statelessTransactionService.withdrawTransaction(id, reason, getAuthenticatedUser());
     }
 }
