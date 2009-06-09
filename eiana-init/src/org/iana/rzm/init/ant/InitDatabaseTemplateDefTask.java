@@ -15,7 +15,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         TemplateDef templateDef = new TemplateDef();
         templateDef.setType("contact-confirmation-newTLD");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC_CONFIRM", "TC_CONFIRM")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_CONFIRM", "TC_CONFIRM")));
         templateDef.setSubject("{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}");
         templateDef.setContent(
                 "Dear {name} {title},\n" +
@@ -59,7 +59,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("contact-confirmation");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC_CONFIRM", "TC_CONFIRM")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_CONFIRM", "TC_CONFIRM")));
         templateDef.setSubject("{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}");
         templateDef.setContent(
                 "Dear {name}{title},\n" +
