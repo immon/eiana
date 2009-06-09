@@ -1,19 +1,19 @@
 package org.iana.rzm.trans.confirmation.contact;
 
 import org.hibernate.annotations.Cascade;
+import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.trans.TransactionState;
 import org.iana.rzm.trans.confirmation.AbstractConfirmation;
 import org.iana.rzm.trans.confirmation.AlreadyAcceptedByUser;
-import org.iana.rzm.trans.confirmation.Identity;
 import org.iana.rzm.trans.confirmation.NotAcceptableByUser;
 import org.iana.rzm.user.SystemRole;
-import org.iana.rzm.common.validators.CheckTool;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * @author Jakub Laszkiewicz
  * @author Patrycja Wegrzynowicz
  */
 @Entity
@@ -40,22 +40,19 @@ public class ContactConfirmations extends AbstractConfirmation {
         this.outstandingConfirmations.addAll(confirmations);
     }
 
-    public boolean isAcceptableBy(Identity identity) {
+    public boolean isAcceptableBy(ContactIdentity identity) {
         return outstandingConfirmations.contains(identity);
     }
 
-    public boolean accept(Identity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser {
-        if (!isAcceptableBy(identity))
-            throw new NotAcceptableByUser();
+    public boolean accept(ContactIdentity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser {
         if (receivedConfirmations.contains(identity))
             throw new AlreadyAcceptedByUser();
-        for (ContactIdentity id : outstandingConfirmations) {
-            if (id != null && id.equals(identity)) {
-                outstandingConfirmations.remove(id);
-                receivedConfirmations.add(id.clone());
-                break;
-            }
-        }
+        if (!isAcceptableBy(identity))
+            throw new NotAcceptableByUser();
+        ContactIdentity id = findContactIdentity(identity.getToken(), outstandingConfirmations);
+        assert id != null;
+        outstandingConfirmations.remove(id);
+        receivedConfirmations.add(id.clone());
         return isReceived();
     }
 
@@ -63,8 +60,8 @@ public class ContactConfirmations extends AbstractConfirmation {
         return outstandingConfirmations.size() == 0;
     }
 
-    public Set<Identity> getUsersAbleToAccept() {
-        return new HashSet<Identity>(outstandingConfirmations);
+    public Set<ContactIdentity> getUsersAbleToAccept() {
+        return new HashSet<ContactIdentity>(outstandingConfirmations);
     }
 
     public Set<ContactIdentity> getIdentitiesSupposedToAccept() {
@@ -99,11 +96,40 @@ public class ContactConfirmations extends AbstractConfirmation {
     }
 
     private SystemRole find(String token, Set<ContactIdentity> confirmations) {
-        for (ContactIdentity id : confirmations) {
-            if (token.equals(id.getToken())) {
-                return new SystemRole(id.getType(), id.getDomainName());
+        ContactIdentity id = findContactIdentity(token, confirmations);
+        return id == null ?
+                null :
+                new SystemRole(id.getType(), id.getDomainName());
+    }
+
+    private ContactIdentity findContactIdentity(String token, Set<ContactIdentity> confirmations) {
+        if (token != null) {
+            for (ContactIdentity id : confirmations) {
+                if (token.equals(id.getToken())) {
+                    return id;
+                }
             }
         }
         return null;
     }
+
+
+    public String getNamesOfIdentitiesThatAccepted() {
+        StringBuilder ret = new StringBuilder();
+        for (ContactIdentity id : receivedConfirmations) {
+            ret.append(id.getNameOfIdentity()).append(" ");
+        }
+        return ret.toString();
+    }
+
+    public String getNameOfIdentity(ContactIdentity identity) {
+        if (identity == null) {
+            return null;
+        }
+        ContactIdentity found = findContactIdentity(identity.getToken(), outstandingConfirmations);
+        return found == null ?
+                null :
+                found.getNameOfIdentity();
+    }
+
 }

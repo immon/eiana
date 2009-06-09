@@ -206,11 +206,11 @@ public class Transaction implements TrackedObject {
             if (confirmation == null) {
                 throw new UserConfirmationNotExpected();
             }
-            if (!confirmation.accept(user)) {
-                return;
+            if (confirmation.accept(user)) {
+                // all confirmations received - we proceed further with this process
+                getData().setIdentityName(confirmation.getNamesOfIdentitiesThatAccepted());
+                processDAO.signal(pi, StateTransition.ACCEPT);
             }
-            getData().setIdentityName("AC/TC");
-            processDAO.signal(pi, StateTransition.ACCEPT);
         } catch (AlreadyAcceptedByUser e) {
             throw new UserAlreadyAccepted(e);
         } catch (NotAcceptableByUser e) {
@@ -225,7 +225,7 @@ public class Transaction implements TrackedObject {
             throw new UserConfirmationNotExpected();
         }
         if (confirmation.isAcceptableBy(user)) {
-            getData().setIdentityName("AC/TC");
+            getData().setIdentityName(confirmation.getNameOfIdentity(user));
             processDAO.signal(pi, StateTransition.REJECT);
         } else
             throw new UserConfirmationNotExpected();
@@ -262,8 +262,8 @@ public class Transaction implements TrackedObject {
         processDAO.signal(pi, EXCEPTION);
     }
 
-    public synchronized void transit(RZMUser user, String transitionName) throws TransactionException {
-        getData().setIdentityName(user.getLoginName());
+    public synchronized void transit(String userName, String transitionName) throws TransactionException {
+        getData().setIdentityName(userName);
         processDAO.signal(pi, transitionName);
     }
 
@@ -363,7 +363,7 @@ public class Transaction implements TrackedObject {
         return getData().getUSDoCConfirmation();
     }
 
-    public void confirmChangeByUSDoC(RZMUser identity, TransactionChangeType type, boolean accept) throws TransactionException {
+    public void confirmChangeByUSDoC(String identityName, TransactionChangeType type, boolean accept) throws TransactionException {
         if (getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) {
             throw new IllegalTransactionStateException(getState());
         }
@@ -382,9 +382,9 @@ public class Transaction implements TrackedObject {
         verifyMismatch(accept);
         if (confirmation.isReceived()) {
             if (confirmation.isAccepted()) {
-                transit(identity, "admin-accept");
+                transit(identityName, "admin-accept");
             } else {
-                transit(identity, "admin-reject");
+                transit(identityName, "admin-reject");
             }
         } else {
             logger.info("there still are outstanding confirmation present.");

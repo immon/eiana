@@ -199,7 +199,7 @@ public class TransactionTest extends RollbackableSpringContextTest {
                 trans.accept(token);
             assert trans.getState().getName().equals(TransactionState.Name.PENDING_MANUAL_REVIEW)
                     : "unexpected state: " + trans.getState().getName();
-            trans.transit(userManager.get("user-admin2trans"), "reject");
+            trans.transit("user-admin2trans", "reject");
             assert trans.getState().getName().equals(TransactionState.Name.REJECTED)
                     : "unexpected state: " + trans.getState().getName();
         } finally {

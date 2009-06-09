@@ -1,5 +1,7 @@
 package org.iana.rzm.trans.confirmation;
 
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
+
 import java.util.Set;
 
 /**
@@ -13,17 +15,16 @@ public interface Confirmation {
      * @return <code>true</code> when the <code>identity</code> is eligible to accept this <code>Confirmation</code>
      * or <code>false</code> otherwise.
      */
-    public boolean isAcceptableBy(Identity identity);
+    public boolean isAcceptableBy(ContactIdentity identity);
 
     /**
      * Accepts this <code>Confirmation</code> on behalf of the <code>user</code>.
-     * @param user who accepts this <code>Confirmation</code>.
-     * @return <code>true</code> when this <code>Confirmation</code> is accepted
-     * or <code>false</code> when there are still users, who have to accept this <code>Confirmation</code>.
+     * @param identity who accepts this <code>Confirmation</code>.
+     * @return true if all required confirmation have been received, false otherwise
      * @throws AlreadyAcceptedByUser when the <code>user</code> already accepted this <code>Confirmation</code>.
      * @throws NotAcceptableByUser when the <code>user</code> is not eligible to accept this <code>Confirmation</code>.
      */
-    public boolean accept(Identity user) throws AlreadyAcceptedByUser, NotAcceptableByUser;
+    public boolean accept(ContactIdentity identity) throws AlreadyAcceptedByUser, NotAcceptableByUser;
 
     /**
      * Checks whether this <code>Confirmation</code> is accepted.
@@ -36,5 +37,10 @@ public interface Confirmation {
      * Provides set of <code>RZMUser</code>s required or eligible to accept this <code>Confirmation</code>.
      * @return <code>Set</code> of <code>RZMUser</code>s required or eligible to accept this <code>Confirmation</code>.
      */
-    public Set<Identity> getUsersAbleToAccept();
+    public Set<ContactIdentity> getUsersAbleToAccept();
+
+    public String getNamesOfIdentitiesThatAccepted();
+
+    public String getNameOfIdentity(ContactIdentity identity);
+
 }
