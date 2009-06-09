@@ -20,7 +20,7 @@ public class TransactionTechnicalCheckTest extends CommonGuardedSystemTransactio
 
     }
 
-    @Test(expectedExceptions = DNSTechnicalCheckException.class)
+    @Test(expectedExceptions = DNSTechnicalCheckExceptionWrapper.class)
     public void testMinNumberOfNameServersTest() throws Exception {
         IDomainVO domain = getDomain("technicalcheck");
         domain.getNameServers().add(new HostVO("host"));

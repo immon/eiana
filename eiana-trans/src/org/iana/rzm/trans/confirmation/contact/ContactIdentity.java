@@ -114,4 +114,11 @@ public class ContactIdentity implements Identity, Cloneable {
     public String getDomainName() {
         return domainName;
     }
+
+    public String getNameOfIdentity() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("[").append(type).append(": ").append(name).append("]");
+        return ret.toString();
+    }
+
 }
