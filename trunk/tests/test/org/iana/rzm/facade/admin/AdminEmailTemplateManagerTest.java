@@ -21,7 +21,7 @@ public class AdminEmailTemplateManagerTest {
     @BeforeClass
     public void init() {
         ApplicationContext appCtx = SpringApplicationContext.getInstance().getContext();
-        statelessAdminEmailTemplateManager = (StatelessAdminEmailTemplateManager) appCtx.getBean("adminTemplatesManager");
+        statelessAdminEmailTemplateManager = (StatelessAdminEmailTemplateManager) appCtx.getBean("statelessAdminTemplatesManager");
     }
 
     @Test
