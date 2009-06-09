@@ -60,7 +60,6 @@ class BindExport {
 
     private void exportHeader(DNSZone zone) {
         _prints(zone.getFullyQualifiedName());
-        _prints(zone.getZoneTTL());
         _printt(IN);
         _printt(SOA);
         _prints(getPrimaryServer(zone).getFullyQualifiedName());
@@ -75,13 +74,17 @@ class BindExport {
     }
 
     private void exportHeaderNS(DNSZone zone) {
+        _prints(TTL);
+        _println(zone.getZoneNameServersTTL());
         exportDomain(zone, zone.getZoneNameServersTTL());
         flushGlue(zone.getZoneNameServersTTL());
     }
 
     private void exportDomains(DNSZone zone, long ttl) {
         Set<DNSDomain> domains = zone.getDomains();
-        if (domains != null) {
+        if (domains != null && !domains.isEmpty()) {
+            _prints(TTL);
+            _println(zone.getDefaultTTL());
             for (DNSDomain domain : zone.getDomains()) {
                 exportDomain(domain, ttl);
             }
@@ -104,7 +107,6 @@ class BindExport {
         String domainName = domain.getFullyQualifiedName();
         for (DNSHost host : domain.getNameServers()) {
             _prints(domainName);
-            _prints(ttl);
             _prints(IN);
             _prints(NS);
             _println(host.getFullyQualifiedName());
@@ -139,7 +141,6 @@ class BindExport {
         String hostName = host.getFullyQualifiedName();
         for (DNSIPAddress addr : host.getIPAddresses()) {
             _prints(hostName);
-            _prints(ttl);
             _prints(IN);
             switch (addr.getType()) {
                 case IPv4:
