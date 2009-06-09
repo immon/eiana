@@ -5,12 +5,11 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class DNSTechnicalCheckErrorsXmlParser implements DNSTechnicalCheckErrorMessageBuilder {
@@ -27,7 +26,7 @@ public class DNSTechnicalCheckErrorsXmlParser implements DNSTechnicalCheckErrorM
     @SuppressWarnings("unchecked")
     public List<String>getTechnicalCheckErrors(String xml){
 
-        ArrayList<String> result = new ArrayList<String>();
+        Set<String> result = new HashSet<String>();
 
         try {
             Document doc = new SAXBuilder().build(new StringReader(xml));
@@ -35,7 +34,7 @@ public class DNSTechnicalCheckErrorsXmlParser implements DNSTechnicalCheckErrorM
             Element domain = root.getChild(DOMAIN_ELEMENT);
 
             if(domain == null){
-                return result;
+                return new ArrayList<String>();
             }
 
             List<Element> exceptions = root.getChildren(EXCEPTION_ELEMENT);
@@ -46,12 +45,12 @@ public class DNSTechnicalCheckErrorsXmlParser implements DNSTechnicalCheckErrorM
                 }
             }
         } catch (JDOMException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            Logger.getLogger(getClass().getName()).error("XML Parsing error", e);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            Logger.getLogger(getClass().getName()).error("IOExcaption error", e);
         }
 
-        return result;
+        return new ArrayList<String>(result);
     }
 
     public String build(Element elm, String domain) {

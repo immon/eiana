@@ -114,7 +114,8 @@ public abstract class RequestDetails extends BaseRequestDetails {
     }
 
     public boolean isExceptionState() {
-        return StringUtils.isNotBlank(getRequest().getStateMessage()) && !isTechnicalCkeckedfailed();
+        TransactionVOWrapper wrapper = getRequest();
+        return wrapper.getState().equals(TransactionStateVOWrapper.State.EXCEPTION); 
     }
 
     public boolean isTechnicalCkeckedfailed() {

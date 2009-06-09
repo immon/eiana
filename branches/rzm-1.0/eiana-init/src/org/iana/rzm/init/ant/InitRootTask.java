@@ -21,83 +21,37 @@ public class InitRootTask extends HibernateTask {
         RZMUser user = createUser("root", "root", "root", "names&numbers", "simon.raveh@icann.org", new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(user);
 
-        user =
-            createUser("naelaAdmin",
-                       "Naela",
-                       "Sarras",
-                       "naelaAdmin",
-                       "naela.sarras@icann.org",
-                       new AdminRole(AdminRole.AdminType.IANA));
+        user = createUser("naelaAdmin",
+                        "Naela",
+                        "Sarras",
+                        "naelaAdmin",
+                        "naela.sarras@icann.org",
+                        new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(user);
 
-        user =
-            createUser("doc",
-                       "doc",
-                       "doc",
-                       "doc",
-                       "iana.doc@gmail.com",
-                       new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+        user = createUser("doc",
+                        "doc",
+                        "doc",
+                        "doc",
+                        "iana.doc@gmail.com",
+                        new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
         userManager.create(user);
-        user =
-            createUser("verisign",
-                       "verisign",
-                       "verisign",
-                       "verisign",
-                       "iana.verisign@gmail.com",
-                       new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
+        user = createUser("verisign",
+                        "verisign",
+                        "verisign",
+                        "verisign",
+                        "iana.verisign@gmail.com",
+                        new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         userManager.create(user);
-
-
-        //SystemRole systemRole = new SystemRole(SystemRole.SystemType.AC);
-        //systemRole.setNotify(true);
-        //systemRole.setAcceptFrom(true);
-        //systemRole.setName("example");
-        //user = createUser("naelas", "Naela", "Sarras", "naelas", "naela.sarras@icann.org", systemRole);
-        //userManager.create(user);
-        //
-        //systemRole = new SystemRole(SystemRole.SystemType.AC);
-        //systemRole.setNotify(true);
-        //systemRole.setAcceptFrom(true);
-        //systemRole.setName("int");
-        //user = createUser("sraveh", "Simon", "Raveh", "sraveh", "sraveh@gmail.com", systemRole);
-        //userManager.create(user);
-        //
-        //systemRole = new SystemRole(SystemRole.SystemType.AC);
-        //systemRole.setNotify(true);
-        //systemRole.setAcceptFrom(true);
-        //systemRole.setName("int");
-        //user = createUser("naelas", "Naela", "Sarras", "naelas", "naela.sarras@icann.org", systemRole);
-        //userManager.create(user);
 
         DomainManager domainManager = (DomainManager) SpringInitContext.getContext().getBean("domainManager");
-        //IanaTesters testers = new IanaTesters();
-        //testers.doExecute(SpringInitContext.getContext());
-
 
 
         for (DomainDecorator domainDecorator : getDomainsFromXML()) {
             Domain domain = domainDecorator.getDomain();
-//            List<IanaTester> list = testers.getTestersForDomain(domain.getName());
-//            domain.setEnableEmails(list.size() > 0);
-
-            //for (IanaTester ianaTester : list) {
-            //    List<TesterRole> roles = ianaTester.getRoles();
-            //    for (TesterRole role : roles) {
-            //        if(role.getDomain().equals(domain.getName())){
-            //            if(role.getType().equals("ac")){
-            //                domain.getAdminContact().setEmail(role.getEmail());
-            //            }else{
-            //                domain.getTechContact().setEmail(role.getEmail());
-            //            }
-            //        }
-            //    }
-            //}
-
+            domain.setEnableEmails(true);
             domainManager.create(domain);
         }
-
-        //createExampleDomain(domainManager);
-        setupConfigParams(session);
     }
 
     private RZMUser createUser(String loginName,
@@ -117,61 +71,7 @@ public class InitRootTask extends HibernateTask {
         return user;
     }
 
-    private void setupConfigParams(Session session) {
-        String subConfigName = "NotificationSenderBean.";
-        SingleParameter singleParam;
-        singleParam = new SingleParameter(subConfigName + "emailMailhost", "localhost");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-        singleParam = new SingleParameter(subConfigName + "emailMailer", "[RZM]");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-        singleParam = new SingleParameter(subConfigName + "emailFromAddress", "rzm@iana.org");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-        //singleParam = new SingleParameter(subConfigName + "emailUserName", "");
-        //singleParam.setOwner(Config.DEFAULT_OWNER);
-        //singleParam.setFromDate(System.currentTimeMillis());
-        //singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        //session.save(singleParam);
-        //singleParam = new SingleParameter(subConfigName + "emailUserPassword", "");
-        //singleParam.setOwner(Config.DEFAULT_OWNER);
-        //singleParam.setFromDate(System.currentTimeMillis());
-        //singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        //session.save(singleParam);
 
-        singleParam = new SingleParameter(subConfigName + "mailsmtpFrom", "rt-sender@rs.icann.org");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-    }
-
-    private void createExampleDomain(DomainManager domainManager) {
-        Domain d = new Domain("example");
-        d.setAdminContact(setupContact(new Contact(), "Naela Sarras", "simon.raveh@icann.org", "US"));
-        d.setTechContact(setupContact(new Contact(), "Naela Sarras", "simon.raveh@icann.org", "US"));
-        d.setSupportingOrg(setupContact(new Contact(), "Naela Sarras", "simon.raveh@icann.org", "US"));
-        Host ns1 = new Host("ns1.example.test.com");
-        Host ns2 = new Host("ns2.example.test.com");
-        ns1.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
-        ns1.addIPAddress(IPAddress.createIPv4Address("5.6.7.8"));
-        ns2.addIPAddress(IPAddress.createIPv4Address("1.2.3.5"));
-        ns2.addIPAddress(IPAddress.createIPv4Address("5.6.7.9"));
-        d.addNameServer(ns1);
-        d.addNameServer(ns2);
-        d.setStatus(Domain.Status.ACTIVE);
-        d.setWhoisServer("whois.example.com");
-        d.setRegistryUrl("http://www.registry.example.com");
-        d.setEnableEmails(true);
-        domainManager.create(d);
-    }
 
     public static void main(String[] args) {
         Locale.setDefault(Locale.ENGLISH);
@@ -198,11 +98,11 @@ public class InitRootTask extends HibernateTask {
 
 
     public List<DomainDecorator> getDomainsFromXML()
-        throws DynaXMLException, FileNotFoundException, UnsupportedEncodingException {
+            throws DynaXMLException, FileNotFoundException, UnsupportedEncodingException {
         Environment env = DPConfig.getEnvironment("test-data.properties");
         DynaXMLParser parser = new DynaXMLParser();
         DomainRegistryDecorator drd =
-            (DomainRegistryDecorator) parser.fromXML(createReader("test-data.xml"), env);
+                (DomainRegistryDecorator) parser.fromXML(createReader("test-data.xml"), env);
         return drd.getDomains();
     }
 

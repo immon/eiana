@@ -24,8 +24,8 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public static final Logger LOGGER = Logger.getLogger(ReviewDomainChanges.class.getName());
 
     @Component(id = "domainHeader",
-               type = "rzmLib:DomainHeader",
-               bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+            type = "rzmLib:DomainHeader",
+            bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
 
@@ -54,10 +54,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract IComponent getFormComponent();
 
     @Component(id = "submitter", type = "TextField", bindings = {
-        "value=prop:submitterEmail",
-        "displayName=literal:Email",
-        "clientValidationEnabled=literal:false",
-        "validators=validators:email"})
+            "value=prop:submitterEmail",
+            "displayName=literal:Email",
+            "clientValidationEnabled=literal:false",
+            "validators=validators:email"})
     public abstract IComponent getSubmitterFieldComponent();
 
     @Component(id = "isNotNameServer", type = "If", bindings = {"condition=prop:notNameServer"})
@@ -70,7 +70,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract IComponent getPendingRequestsComponent();
 
     @Component(id = "pendingRequestsMessage", type = "rzmLib:ShowPendingRequestsMessage",
-               bindings = {"listener=listener:viewPendingRequests"}
+            bindings = {"listener=listener:viewPendingRequests"}
     )
     public abstract IComponent getPendingRequestsMessageComponent();
 
@@ -78,9 +78,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract IComponent getIsGluePendingComponent();
 
     @Component(id = "pendingGlueMessage", type = "rzmLib:ShowPendingRequestsMessage", bindings = {
-        "listener=listener:viewGlueRequests",
-        "pendigRequestMessage=literal:This domain is part of a Glue change. Edits to Name Servers are disabled until the currently glue change is resolved "
-        })
+            "listener=listener:viewGlueRequests",
+            "pendigRequestMessage=literal:This domain is part of a Glue change. Edits to Name Servers are disabled until the currently glue change is resolved "
+            })
     public abstract IComponent getPendingGlueMessage();
 
     @Component(id = "isGlueChange", type = "If", bindings = {"condition=prop:glueChange", "element=literal:div"})
@@ -107,10 +107,12 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
     @Persist("client")
     public abstract long getDomainId();
+
     public abstract void setDomainId(long id);
 
     @Persist("client")
     public abstract void setTransactionChanges(TransactionActionsVOWrapper voWrapper);
+
     public abstract TransactionActionsVOWrapper getTransactionChanges();
 
     @Persist("client")
@@ -127,14 +129,17 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Persist("client")
     @InitialValue("literal:false")
     public abstract void setMustSplitRequest(boolean value);
+
     public abstract boolean isMustSplitRequest();
 
     @InitialValue("literal:false")
     public abstract void setTransactionPending(boolean value);
+
     public abstract boolean isTransactionPending();
 
     @InitialValue("literal:false")
     public abstract void setImpactedPartyPending(boolean b);
+
     public abstract boolean isImpactedPartyPending();
 
     public abstract ActionVOWrapper getAction();
@@ -144,14 +149,17 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public abstract String getDomainName();
 
     public abstract String getSubmitterEmail();
+
     public abstract void setSubmitterEmail(String email);
 
     public abstract void setDomainName(String domainName);
 
     public abstract void setCountryName(String name);
+
     public abstract String getCountryName();
 
     public abstract void setNameServerChange(boolean nameServerChange);
+
     public abstract boolean isNameServerChange();
 
     public List<ActionVOWrapper> getActionList() {
@@ -159,7 +167,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     }
 
     public boolean isAllowedToSubmit() {
-        return !isTransactionPending() && !isImpactedPartyPending();
+        return !isTransactionPending() && !isImpactedPartyPending() && !isHasErrors();
     }
 
     public boolean isNoTransaction() {
@@ -183,10 +191,16 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     }
 
     public void pageBeginRender(PageEvent event) {
+
         setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         DomainVOWrapper currentDomain = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(currentDomain.getName());
         setSubmitterEmail(getVisitState().getSubmitterEmail());
+
+        if (getCountryName() == null) {
+            setCountryName(getCountry());
+        }
+
         try {
             SystemDomainVOWrapper domain = getUserServices().getDomain(currentDomain.getId());
             setTransactionPending(domain.isOperationPending());
@@ -199,7 +213,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             boolean impactedParty = false;
             if (!domain.isOperationPending()) {
                 int count =
-                    getUserServices().getTransactionCount(QueryBuilderUtil.impactedParty(Arrays.asList(domain.getName())));
+                        getUserServices().getTransactionCount(QueryBuilderUtil.impactedParty(Arrays.asList(domain.getName())));
                 impactedParty = count > 0 && isNameServerChange();
             }
 
@@ -217,8 +231,8 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         return !isNameServerChange();
     }
 
-    public boolean isGlueChange(){
-        return getTransactionChanges().isGlueChange(); 
+    public boolean isGlueChange() {
+        return getTransactionChanges().isGlueChange();
     }
 
 
@@ -226,17 +240,17 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         DomainVOWrapper domain = getModifiedDomain();
         if (domain != null) {
             return new Object[]{getDomainId(),
+                    getTransactionChanges(),
+                    isSeparateRequest(),
+                    isMustSplitRequest(),
+                    getSubmitterEmail(),
+                    domain};
+        }
+        return new Object[]{getDomainId(),
                 getTransactionChanges(),
                 isSeparateRequest(),
                 isMustSplitRequest(),
-                getSubmitterEmail(),
-                domain};
-        }
-        return new Object[]{getDomainId(),
-            getTransactionChanges(),
-            isSeparateRequest(),
-            isMustSplitRequest(),
-            getSubmitterEmail()};
+                getSubmitterEmail()};
     }
 
 
@@ -244,7 +258,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0 || parameters.length < 5) {
             getExternalPageErrorHandler().handleExternalPageError(
-                getMessageUtil().getSessionRestorefailedMessage());
+                    getMessageUtil().getSessionRestorefailedMessage());
         }
 
         Long domainId = (Long) parameters[0];
@@ -259,7 +273,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
-                getMessageUtil().getSessionRestorefailedMessage());
+                    getMessageUtil().getSessionRestorefailedMessage());
             LOGGER.warn("NoObjectFoundException ", e);
         }
 
@@ -302,7 +316,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             log(LOGGER, "No Object Found Exception", Level.WARN);
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
-            setErrorMessage("You can not modified this Domain " + e.getDomainName() + " At This time");
+            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
@@ -320,7 +334,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public UserRequestsPerspective viewPendingRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsRetriver(Arrays.asList(getVisitState().getCurrentDomain(
-            getDomainId()).getName()), getUserServices()));
+                getDomainId()).getName()), getUserServices()));
         page.setCallback(createCallback());
         return page;
     }
@@ -328,10 +342,23 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     public UserRequestsPerspective viewGlueRequests() {
         UserRequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new ImpactedPartyTransactionRetriver(Arrays.asList(getVisitState().getCurrentDomain(
-            getDomainId()).getName()), getUserServices()));
+                getDomainId()).getName()), getUserServices()));
         page.setCallback(createCallback());
         page.setImpactedParty(true);
         return page;
+    }
+
+    public String getCountry() {
+        DomainVOWrapper wrapper = getDomain();
+        if (wrapper == null) {
+            return "";
+        }
+
+        return getUserServices().getCountryName(wrapper.getName());
+    }
+
+    public DomainVOWrapper getDomain() {
+        return getVisitState().getCurrentDomain(getDomainId());
     }
 }
 
