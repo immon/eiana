@@ -19,7 +19,7 @@ public class MessageUtil implements Serializable {
     }
 
     public String getDomainModificationErrorMessage(String domainName) {
-        return "You can't modify this Domain " + domainName + " At This time";
+        return "You can't modify this domain " + domainName + " at this time";
     }
 
     public String getRecoverUserNameMessage(){
@@ -52,11 +52,11 @@ public class MessageUtil implements Serializable {
     }
 
     public String getTicketNotAssignMessage() {
-        return "Ticket number is not assign yet";
+        return "Ticket number is not assigned yet";
     }
 
     public String getOnlyAdminErrorMessage() {
-        return "You must be admin to view this page";
+        return "You must have administrative rights to view this page";
     }
 
     public String getAdminLoginFromIcannNetwork() {
@@ -64,7 +64,7 @@ public class MessageUtil implements Serializable {
     }
 
     public String passwordChangeSuccessfull() {
-        return "Your Password was change successfully";
+        return "Your Password was changed successfully";
     }
 
     public String getInvalidCountryCodeErrorMessage(String countryCode) {
@@ -72,7 +72,7 @@ public class MessageUtil implements Serializable {
     }
 
     public String getInvalidDomainNameErrorMessage(String name, String reason) {
-        return "Invalid Domain name " + name + " " + reason;
+        return "Invalid domain name " + name + " " + reason;
     }
 
     public String getNoRollErrorMessage() {
@@ -84,7 +84,7 @@ public class MessageUtil implements Serializable {
     }
 
     public String getUserRollExsistForDomain(String role, String domain) {
-        return "You are already in  role  " + role + " for the domain " + domain;
+        return "You are already a " + role + " for domain " + domain;
     }
 
     public String getNameServerChangeNotAllowedErrorMessage() {
@@ -92,7 +92,7 @@ public class MessageUtil implements Serializable {
     }
 
     public String getStateChangeOKMessage() {
-        return "State change successfully";
+        return "State changed successfully";
     }
 
     public String getStateChangeErrorMessage(String state) {
@@ -100,11 +100,11 @@ public class MessageUtil implements Serializable {
     }
 
     public String getInvalidStateErrorMessage(String stateName) {
-        return "Invalid State " + stateName;
+        return "Invalid state " + stateName;
     }
 
     public String getNotificationSentOKMessage() {
-        return "The Notification was sent successfully";
+        return "The notification was sent successfully";
     }
 
     public String getUserNotFoundByUserNameErrorMessage(String userName) {
@@ -120,48 +120,43 @@ public class MessageUtil implements Serializable {
     }
 
     public String getTransactiomCannotBeWithdrawnErrorMessage() {
-        return  "This request can't be withdrawn online. Please contact IANA for more information";
+        return  "This request can't be withdrawn online. Please contact <a href='mailto:root-mgmt@iana.org'>IANA Root Management</a> for assistance.";
     }
 
     public String getPasswordChangeOkMessage() {
-        return "Your Password was change successfully";
+        return "Your password was changed successfully";
     }
 
     public String getPasswordMissmatchErrorMessage() {
-        return "The new password and Confirm new password are not the same.";
+        return "The values for the new password and confirmed new password are not the same.";
     }
 
     public String getPasswordResetOkMessage() {
-        return "Your Password was reset Successfully";
+        return "Your password was reset Successfully";
     }
 
     public String getOnlyUserErrorMessage() {
-        return "You tried to log in to the RZM User site using Admin Credential\n. Please use none admin Credential or use the RZM Admin website";
+        return "You tried to log in to the RZM User site using Admin Credential\n. Please use non-admin credential or use the RZM Admin website";
     }
 
     public String getMismatchSecureIdPinMessage() {
-        return "New Pin does not match Confirm Pin.";
+        return "New pin does not match confirmed pin.";
     }
 
     public String getSecureIdPinToLongMessage(int length) {
-        return "Your pin is to long. It's should be " + length + " max";
+        return "Your pin is tot long. The maximum value should be " + length ;
     }
 
     public String getSecureIdPinToShortMessage(int length) {
-        return "Your pin is to short. It's should be at least " + length + " long";
-    }
-
-
-    public String getPasswordMismatchMessage() {
-        return "new Password does not match Confirm Password.";
+        return "Your pin is too short. The minmum length should be at least " + length + " long";
     }
 
     public String getPasswordTheSameMessage() {
-        return "New Password must be different from Current Password.";
+        return "New password must be different from current password.";
     }
 
     public String getPasswordExpiredMessage(){
-        return "Your Password has bean expired.";
+        return "Your password has expired.";
     }
 
     public String getFirstLoginMessage(){
@@ -178,27 +173,27 @@ public class MessageUtil implements Serializable {
     }
 
     public String getEmptyIpAddressListMessage(String hosts) {
-        return "The folowing host does not seem to have have an ip address: " + "["+hosts+"].";
+        return "The following host does not seem to have an IP address: " + "["+hosts+"].";
     }
 
     public String getMaximumPayloadSizeMessage(String receivedPayload, String expectedPayload) {
-        return "The Response estimated size was " + receivedPayload +  " and it is greater than " + expectedPayload +  " bytes.";
+        return "The response estimated size was " + receivedPayload +  " and it is greater than " + expectedPayload +  " bytes.";
     }
 
     public String getNameServerUnreachableByTCPMessage(String host) {
-        return "The folowing host is not reachable by TCP: " + "["+host+"].";
+        return "The following host is not reachable by TCP: " + "["+host+"].";
     }
 
     public String getNameServerUnreachableMessage(String host) {
-        return "The folowing host is not reachable: " + "["+host+"].";
+        return "The following host is not reachable: " + "["+host+"].";
     }
 
     public String getNameServerUnreachableByUdpMessage(String host) {
-        return "The folowing host is not reachable by UDP: " + "["+host+"].";
+        return "The following host is not reachable by UDP: " + "["+host+"].";
     }
 
     public String getNotAuthoritativeNameServerMessage(String host, String domain) {
-        return "The folowing host: [" + host + "] is not Authoritative for the domain: " + domain  + ".";
+        return "The following host: [" + host + "] is not authoritative for domain: " + domain  + ".";
     }
 
     public String getNameServerCoherencyMessage(List<String> recivedNameServers, List<String> expectedNameServers, String host) {
@@ -217,18 +212,18 @@ public class MessageUtil implements Serializable {
     }
 
     public String getNotEnoughNameServersMessage(String expected, String actual) {
-        return "IANA Required a minimum of " +  expected + " name servers hosts you only have " + actual  + ".";
+        return "IANA Requires a minimum of " +  expected + " name servers. You only have " + actual  + " name server.";
     }
 
     public String getReservedIPv4Message(String host, List<String> ips) {
-        return "The following Name Server [" + host + "] is using a reserved IPV4 Address " + ips.toString() + ".";
+        return "The following name server [" + host + "] is using a reserved IPV4 address " + ips.toString() + ".";
     }
 
     public String getSerialNumberNotEqualMessage(List<String> serials) {
-        return "The Authoritative name servers SOA serial number does not match: " + serials.toString() + "." ;
+        return "The authoritative name servers SOA serial numbers do not match: " + serials.toString() + "." ;
     }
 
     public String getWhoIsIOExceptionMessage(String host, List<String> ips) {
-        return "We couldn't determine the autonomous system for Name Server [" +host+ "] IPV4 " + ips.toString() + ".";
+        return "We couldn't determine the autonomous system for name server [" +host+ "] IPV4 " + ips.toString() + ".";
     }
 }

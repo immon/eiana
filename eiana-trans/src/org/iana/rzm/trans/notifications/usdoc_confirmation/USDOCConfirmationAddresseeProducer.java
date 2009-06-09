@@ -8,10 +8,7 @@ import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.UserManager;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Piotr Tkaczyk
@@ -19,9 +16,15 @@ import java.util.Set;
 public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddresseeProducer {
 
     private UserManager userManager;
+    private Map<String, String> ccEmails;
 
     public USDOCConfirmationAddresseeProducer(UserManager userManager) {
+        this(userManager, new HashMap<String, String>());
+    }
+
+    public USDOCConfirmationAddresseeProducer(UserManager userManager, Map<String, String>ccEmails) {
         CheckTool.checkNull(userManager, "user manager is null");
+        this.ccEmails = ccEmails;
         this.userManager = userManager;
     }
 
@@ -37,6 +40,12 @@ public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddre
             boolean isZonePublisher = user.isInRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER), roleComparator);
             addressees.add(new PAddressee(user.getName(), user.getEmail(), isZonePublisher));
         }
+
+
+        for (String name : ccEmails.keySet()) {
+            addressees.add(new PAddressee(name, ccEmails.get(name), true));    
+        }
+
         return addressees;
     }
 }
