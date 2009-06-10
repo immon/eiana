@@ -57,7 +57,10 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
     private static final String EMAIL_IANA = "iana@no-mail.org";
     private static final String EMAIL_USDOC = "usdoc@no-mail.org";
     private static final String EMAIL_SUBJECT_PREFIX = "Re: ";
-    private static final String EMAIL_SUBJECT_STATE_AND_TOKEN = " | PENDING_CONTACT_CONFIRMATION | [RZM] | ";
+    private static final String EMAIL_SUBJECT_IANA = "[IANA #";
+    private static final String EMAIL_SUBJECT = "] Your confirmation requested to delegate ";
+    private static final String EMAIL_SUBJECT_TOKEN_PREFIX = " (%";
+    private static final String EMAIL_SUBJECT_TOKEN_POSTFIX = ")";
     private static final String PUBLIC_KEY_AC_FILE_NAME = "tester.pgp.asc";
     private static final String PUBLIC_KEY_TC_FILE_NAME = "tester1.pgp.asc";
     private static final String CONTENT_AC_FILE_NAME = "accept-message.txt.asc";
@@ -182,9 +185,9 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
             assert tokens.size() == 2 : "unexpected number of tokens: " + tokens.size();
             Iterator<String> tokenIterator = tokens.iterator();
 
-            String subject = EMAIL_SUBJECT_PREFIX + transaction.getTicketID() + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | AC | " + tokenIterator.next();
+            String subject = EMAIL_SUBJECT_PREFIX + EMAIL_SUBJECT_IANA + transaction.getTicketID() + EMAIL_SUBJECT + "mailrecdomain " + EMAIL_SUBJECT_TOKEN_PREFIX + tokenIterator.next() + EMAIL_SUBJECT_TOKEN_POSTFIX;
             mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
-            subject = EMAIL_SUBJECT_PREFIX + transaction.getTicketID() + EMAIL_SUBJECT_STATE_AND_TOKEN + "mailrecdomain | TC | " + tokenIterator.next();
+            subject = EMAIL_SUBJECT_PREFIX + EMAIL_SUBJECT_IANA + + transaction.getTicketID() + EMAIL_SUBJECT + "mailrecdomain " + EMAIL_SUBJECT_TOKEN_PREFIX + tokenIterator.next() + EMAIL_SUBJECT_TOKEN_POSTFIX;
             mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
@@ -285,7 +288,7 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
     public void deleteTransactions() {
         processDAO.deleteAll();
     }
-    
+
     protected void cleanUp() throws Exception {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

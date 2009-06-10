@@ -1272,13 +1272,12 @@
             <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
                 <constructor-arg>
                     <map>
-                        <entry key="ticket_id" value="2"/>
-                        <entry key="domain_name" value="3"/>
-                        <entry key="token" value="5"/>
+                        <entry key="ticket_id" value="1"/>
+                        <entry key="token" value="2"/>
                     </map>
                 </constructor-arg>
                 <constructor-arg>
-                    <value>([^:]*:)*\s*([\d]*) \| PENDING_CONTACT_CONFIRMATION \| \[RZM\] \| ([^\| ]*) \| (AC|TC) \| ([^\| ]*).*</value>
+                    <value>^.*\[IANA #(\d+)].*\(\%([a-zA-Z0-9\+\/]+)\)\s*$</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
