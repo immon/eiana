@@ -221,7 +221,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         return super.createTransactions(domain, authUser);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment, authUser);
     }
 
@@ -261,7 +261,6 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         }
         try {
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
-
             transaction.confirmChangeByUSDoC(authUser.getUserName(),
                     nsChange ? TransactionChangeType.NAMESERVER_CHANGE : TransactionChangeType.DATABASE_CHANGE,
                     accept);

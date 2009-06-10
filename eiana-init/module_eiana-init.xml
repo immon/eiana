@@ -37,8 +37,6 @@
     <pathelement location="${facade-admin.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
     <pathelement location="${facade-system.testoutput.dir}"/>
     <pathelement location="${module.eiana-init.basedir}/../conf/hibernate"/>
@@ -54,6 +52,8 @@
     <pathelement location="${common-dao.testoutput.dir}"/>
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${module.eiana-init.basedir}/../lib/quartz/quartz-all-1.6.0.jar"/>
     <pathelement location="${module.eiana-init.basedir}/../lib/mchange/c3p0-0.9.1.2.jar"/>
     <pathelement location="${eiana-startup.output.dir}"/>

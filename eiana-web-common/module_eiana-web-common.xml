@@ -15,8 +15,6 @@
   <path id="eiana-web-common.module.classpath">
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
     <pathelement location="${facade-system.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
@@ -41,10 +39,8 @@
     <path refid="library.apache-commons.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/javaee/javaee.jar"/>
     <path refid="library.spring.classpath"/>
-    <pathelement location="${module.eiana-web-common.basedir}/../lib/idn/libidn-1.8.jar"/>
-    <path refid="library.hibernate.classpath"/>
     <path refid="library.rzm-ui-components.classpath"/>
-    <path refid="library.secureid.classpath"/>
+    <pathelement location="${module.eiana-web-common.basedir}/../lib/idn/libidn-1.8.jar"/>
   </path>
   
   

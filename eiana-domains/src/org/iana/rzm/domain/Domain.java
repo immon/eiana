@@ -580,9 +580,4 @@ public class Domain implements TrackedObject, Cloneable {
         }
         return ret;
     }
-
-    public Contact[] getContacts(Contact.Role contactRole) {
-        return new Contact[]{contacts.get(contactRole)};
-    }
-
 }

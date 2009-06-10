@@ -26,8 +26,6 @@
     <orderEntry type="module" module-name="common-dns" />
     <orderEntry type="library" name="log4j" level="project" />
     <orderEntry type="module" module-name="facade-remote" />
-    <orderEntry type="module" module-name="common-config" />
-    <orderEntry type="module" module-name="common-mail" />
     <orderEntryProperties />
   </component>
 </module>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="eiana" default="all">
-  
-  
+
+
   <property file="eiana.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
-  <!-- 
+  <!--
   <property name="skip.tests" value="true"/>
    -->
-  
+
   <!-- Compiler options -->
-  
+
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
@@ -40,17 +40,15 @@
     <include name="**/?*.jks"/>
     <include name="**/?*.jwc"/>
     <include name="**/?*.library"/>
-    <include name="**/?*.ico"/>
-    <include name="**/?*.css"/>
   </patternset>
-  
-  
+
+
   <!-- Project Libraries -->
-  
+
   <path id="library.ant.classpath">
     <pathelement location="${basedir}/../lib/ant/ant.jar"/>
   </path>
-  
+
   <path id="library.apache-commons.classpath">
     <pathelement location="${basedir}/../lib/apache-commons/commons-beanutils-bean-collections.jar"/>
     <pathelement location="${basedir}/../lib/apache-commons/commons-beanutils-core.jar"/>
@@ -68,15 +66,15 @@
     <pathelement location="${basedir}/../lib/apache-commons/commons-lang-2.3.jar"/>
     <pathelement location="${basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar"/>
   </path>
-  
+
   <path id="library.cobertura.classpath">
     <pathelement location="${basedir}/../lib/cobertura/cobertura.jar"/>
   </path>
-  
+
   <path id="library.dom4j.classpath">
     <pathelement location="${basedir}/../lib/dom4j/dom4j-1.6.1.jar"/>
   </path>
-  
+
   <path id="library.hibernate.classpath">
     <pathelement location="${basedir}/../lib/hibernate/antlr-2.7.6.jar"/>
     <pathelement location="${basedir}/../lib/hibernate/asm.jar"/>
@@ -86,33 +84,32 @@
     <pathelement location="${basedir}/../lib/hibernate/hibernate-tools.jar"/>
     <pathelement location="${basedir}/../lib/hibernate/hibernate3.jar"/>
     <pathelement location="${basedir}/../lib/mchange/c3p0-0.9.1.2.jar"/>
-    <pathelement location="${basedir}/../lib/bsh/bsh-2.0b2.jar"/>
   </path>
-  
+
   <path id="library.jbpm.classpath">
     <pathelement location="${basedir}/../lib/jbpm/antlr-2.7.5H3.jar"/>
     <pathelement location="${basedir}/../lib/jbpm/jbpm-3.1.4.jar"/>
     <pathelement location="${basedir}/../lib/jbpm/jbpm-identity-3.1.4.jar"/>
   </path>
-  
+
   <path id="library.jdom.classpath">
     <pathelement location="${basedir}/../lib/jdom/jdom.jar"/>
   </path>
-  
+
   <path id="library.log4j.classpath">
     <pathelement location="${basedir}/../lib/log4j/log4j-1.2.14.jar"/>
   </path>
-  
+
   <path id="library.mysql.classpath">
     <pathelement location="${basedir}/../lib/mysql/mysql-connector-java-5.0.4-bin.jar"/>
   </path>
-  
+
   <path id="library.nask-commons.classpath">
     <pathelement location="${basedir}/../lib/nask-commons/dynaxml.jar"/>
     <pathelement location="${basedir}/../lib/nask-commons/util.jar"/>
     <pathelement location="${basedir}/../lib/nask-commons/common-cache.jar"/>
   </path>
-  
+
   <path id="library.spring.classpath">
     <pathelement location="${basedir}/../lib/spring/spring-aspects.jar"/>
     <pathelement location="${basedir}/../lib/spring/spring-mock.jar"/>
@@ -121,32 +118,32 @@
     <pathelement location="${basedir}/../lib/aspectj/aspectjweaver.jar"/>
     <pathelement location="${basedir}/../lib/quartz/quartz-all-1.6.0.jar"/>
   </path>
-  
+
   <path id="library.testng-5.5-jdk15.classpath">
     <pathelement location="${basedir}/../lib/cobertura/cobertura.jar"/>
     <pathelement location="${basedir}/../lib/testng/testng-5.7-jdk15.jar"/>
   </path>
-  
+
   <path id="library.javaee.classpath">
     <pathelement location="${basedir}/../lib/javaee/javaee.jar"/>
   </path>
-  
+
   <path id="library.mail.classpath">
     <pathelement location="${basedir}/../lib/mail/activation.jar"/>
     <pathelement location="${basedir}/../lib/mail/mail.jar"/>
   </path>
-  
+
   <path id="library.dnsjava.classpath">
     <pathelement location="${basedir}/../lib/dnsjava/dnsjava-2.0.3.jar"/>
   </path>
-  
+
   <path id="library.cryptix.classpath">
     <pathelement location="${basedir}/../lib/cryptix/cryptix-jce-provider.jar"/>
     <pathelement location="${basedir}/../lib/cryptix/cryptix-message-api.jar"/>
     <pathelement location="${basedir}/../lib/cryptix/cryptix-openpgp-provider.jar"/>
     <pathelement location="${basedir}/../lib/cryptix/cryptix-pki-api.jar"/>
   </path>
-  
+
   <path id="library.xerces.classpath">
     <pathelement location="${basedir}/../lib/xerces/resolver.jar"/>
     <pathelement location="${basedir}/../lib/xerces/serializer.jar"/>
@@ -154,40 +151,40 @@
     <pathelement location="${basedir}/../lib/xerces/xercesSamples.jar"/>
     <pathelement location="${basedir}/../lib/xerces/xml-apis.jar"/>
   </path>
-  
+
   <path id="library.junit.classpath">
     <pathelement location="${basedir}/../lib/junit/junit-4.3.1.jar"/>
   </path>
-  
+
   <path id="library.dnscheck.classpath">
     <pathelement location="${basedir}/../lib/dnscheck/dnscheck-client.jar"/>
   </path>
-  
+
   <path id="library.jaxrpc.classpath">
     <pathelement location="${basedir}/../lib/jaxrpc/jaxrpc-api.jar"/>
     <pathelement location="${basedir}/../lib/jaxrpc/jaxrpc-impl.jar"/>
     <pathelement location="${basedir}/../lib/jaxrpc/jaxrpc-spi.jar"/>
   </path>
-  
+
   <path id="library.saaj.classpath">
     <pathelement location="${basedir}/../lib/saaj/saaj-api.jar"/>
     <pathelement location="${basedir}/../lib/saaj/saaj-impl.jar"/>
   </path>
-  
+
   <path id="library.fastinfoset.classpath">
     <pathelement location="${basedir}/../lib/fastinfoset/FastInfoset.jar"/>
   </path>
-  
+
   <path id="library.rt-api.classpath">
-    <pathelement location="${basedir}/../lib/rt/rt-client-1.0.7.jar"/>
+    <pathelement location="${basedir}/../lib/rt/rt-api.jar"/>
   </path>
-  
+
   <path id="library.epp.classpath">
     <pathelement location="${basedir}/../lib/epp/epp-api.jar"/>
     <pathelement location="${basedir}/../lib/epp/epp-rootzone.jar"/>
     <pathelement location="${basedir}/../lib/epp/poolman-2.1-b1.jar"/>
   </path>
-  
+
   <path id="library.tapestry.classpath">
     <pathelement location="${basedir}/../lib/tapestry/manTap4Library-1.8.jar"/>
     <pathelement location="${basedir}/../lib/tapestry/oro-2.0.8.jar"/>
@@ -202,91 +199,88 @@
     <pathelement location="${basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar"/>
     <pathelement location="${basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar"/>
     <pathelement location="${basedir}/../lib/tapestry/Tapestry4Commons.jar"/>
+    <pathelement location="${basedir}/../lib/tapestry/rzmTapestry4components.jar"/>
   </path>
-  
-  <path id="library.rzm-ui-components.classpath">
-    <pathelement location="${basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar"/>
+
+
+  <!-- Global Libraries -->
+
+  <path id="library.log4j.classpath">
+    <pathelement location="/Users/simon/Dev/resources/java libraries/logger/log4j/logging-log4j-1.2.14/dist/lib/log4j-1.2.14.jar"/>
   </path>
-  
-  <path id="library.secureid.classpath">
-    <pathelement location="${basedir}/../lib/secureId/authapi.jar"/>
-    <pathelement location="${basedir}/../lib/secureId/SecureID.jar"/>
-  </path>
-  
-  
+
+
   <!-- Application Server Libraries -->
-  
+
   <!-- Modules -->
-  
-  <import file="${basedir}/../common-templates/module_common-templates.xml"/>
-  
+
   <import file="${basedir}/module_build.xml"/>
-  
-  <import file="${basedir}/../conf/module_conf.xml"/>
-  
-  <import file="${basedir}/../lib/module_lib.xml"/>
-  
-  <import file="${basedir}/../eiana-startup/module_eiana-startup.xml"/>
-  
+
   <import file="${basedir}/../common-pgp/module_common-pgp.xml"/>
-  
+
   <import file="${basedir}/../common-test/module_common-test.xml"/>
-  
+
   <import file="${basedir}/../common-config/module_common-config.xml"/>
-  
+
   <import file="${basedir}/../common-mail/module_common-mail.xml"/>
-  
-  <import file="${basedir}/../common-dns/module_common-dns.xml"/>
-  
-  <import file="${basedir}/../eiana-util/module_eiana-util.xml"/>
-  
-  <import file="${basedir}/../common-objectdiff/module_common-objectdiff.xml"/>
-  
-  <import file="${basedir}/../common-criteria/module_common-criteria.xml"/>
-  
-  <import file="${basedir}/../common-dao/module_common-dao.xml"/>
-  
-  <import file="${basedir}/../common-codevalues/module_common-codevalues.xml"/>
-  
-  <import file="${basedir}/../integration-rt/module_integration-rt.xml"/>
-  
-  <import file="${basedir}/../eiana-domains/module_eiana-domains.xml"/>
-  
-  <import file="${basedir}/../eiana-notifications/module_eiana-notifications.xml"/>
-  
-  <import file="${basedir}/../eiana-users/module_eiana-users.xml"/>
-  
-  <import file="${basedir}/../eiana-trans/module_eiana-trans.xml"/>
-  
-  <import file="${basedir}/../facade-common/module_facade-common.xml"/>
-  
+
   <import file="${basedir}/../integration-securid/module_integration-securid.xml"/>
-  
+
+  <import file="${basedir}/../common-dns/module_common-dns.xml"/>
+
+  <import file="${basedir}/../eiana-util/module_eiana-util.xml"/>
+
+  <import file="${basedir}/../common-criteria/module_common-criteria.xml"/>
+
+  <import file="${basedir}/../common-dao/module_common-dao.xml"/>
+
+  <import file="${basedir}/../common-codevalues/module_common-codevalues.xml"/>
+
+  <import file="${basedir}/../integration-rt/module_integration-rt.xml"/>
+
+  <import file="${basedir}/../eiana-domains/module_eiana-domains.xml"/>
+
+  <import file="${basedir}/../common-objectdiff/module_common-objectdiff.xml"/>
+
+  <import file="${basedir}/../eiana-notifications/module_eiana-notifications.xml"/>
+
+  <import file="${basedir}/../eiana-users/module_eiana-users.xml"/>
+
   <import file="${basedir}/../eiana-logs/module_eiana-logs.xml"/>
-  
+
+  <import file="${basedir}/../eiana-trans/module_eiana-trans.xml"/>
+
+  <import file="${basedir}/../facade-common/module_facade-common.xml"/>
+
   <import file="${basedir}/../facade-system/module_facade-system.xml"/>
-  
+
   <import file="${basedir}/../facade-admin/module_facade-admin.xml"/>
-  
-  <import file="${basedir}/../eiana-mail/module_eiana-mail.xml"/>
-  
+
   <import file="${basedir}/../eiana-web-common/module_eiana-web-common.xml"/>
-  
-  <import file="${basedir}/../eiana-web-user/module_eiana-web-user.xml"/>
-  
+
   <import file="${basedir}/../eiana-web-admin/module_eiana-web-admin.xml"/>
-  
+
+  <import file="${basedir}/../eiana-web-user/module_eiana-web-user.xml"/>
+
+  <import file="${basedir}/../conf/module_conf.xml"/>
+
+  <import file="${basedir}/../lib/module_lib.xml"/>
+
+  <import file="${basedir}/../eiana-startup/module_eiana-startup.xml"/>
+
+  <import file="${basedir}/../common-templates/module_common-templates.xml"/>
+
+  <import file="${basedir}/../eiana-mail/module_eiana-mail.xml"/>
+
   <import file="${basedir}/../tests/module_tests.xml"/>
-  
+
   <import file="${basedir}/../eiana-init/module_eiana-init.xml"/>
-  
-  <import file="${basedir}/../eiana-web-backend/module_eiana-web-backend.xml"/>
-  
+
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
-  
-  <target name="clean" depends="clean.module.common-templates, clean.module.build, clean.module.conf, clean.module.lib, clean.module.eiana-startup, clean.module.common-pgp, clean.module.common-test, clean.module.common-config, clean.module.common-mail, clean.module.common-dns, clean.module.eiana-util, clean.module.common-objectdiff, clean.module.common-criteria, clean.module.common-dao, clean.module.common-codevalues, clean.module.integration-rt, clean.module.eiana-domains, clean.module.eiana-notifications, clean.module.eiana-users, clean.module.eiana-trans, clean.module.facade-common, clean.module.integration-securid, clean.module.eiana-logs, clean.module.facade-system, clean.module.facade-admin, clean.module.eiana-mail, clean.module.eiana-web-common, clean.module.eiana-web-user, clean.module.eiana-web-admin, clean.module.tests, clean.module.eiana-init, clean.module.eiana-web-backend" description="cleanup all"/>
-  
-  <target name="all" depends="init, clean, compile.module.common-templates, compile.module.build, compile.module.conf, compile.module.lib, compile.module.eiana-startup, compile.module.common-pgp, compile.module.common-test, compile.module.common-config, compile.module.common-mail, compile.module.common-dns, compile.module.eiana-util, compile.module.common-objectdiff, compile.module.common-criteria, compile.module.common-dao, compile.module.common-codevalues, compile.module.integration-rt, compile.module.eiana-domains, compile.module.eiana-notifications, compile.module.eiana-users, compile.module.eiana-trans, compile.module.facade-common, compile.module.integration-securid, compile.module.eiana-logs, compile.module.facade-system, compile.module.facade-admin, compile.module.eiana-mail, compile.module.eiana-web-common, j2ee.build.eiana-web-user, j2ee.build.eiana-web-admin, compile.module.tests, compile.module.eiana-init, j2ee.build.eiana-web-backend" description="build all"/>
+
+  <target name="clean" depends="clean.module.build, clean.module.common-pgp, clean.module.common-test, clean.module.common-config, clean.module.common-mail, clean.module.integration-securid, clean.module.common-dns, clean.module.eiana-util, clean.module.common-criteria, clean.module.common-dao, clean.module.common-codevalues, clean.module.integration-rt, clean.module.eiana-domains, clean.module.common-objectdiff, clean.module.eiana-notifications, clean.module.eiana-users, clean.module.eiana-logs, clean.module.eiana-trans, clean.module.facade-common, clean.module.facade-system, clean.module.facade-admin, clean.module.eiana-web-common, clean.module.eiana-web-admin, clean.module.eiana-web-user, clean.module.conf, clean.module.lib, clean.module.eiana-startup, clean.module.common-templates, clean.module.eiana-mail, clean.module.tests, clean.module.eiana-init" description="cleanup all"/>
+
+  <target name="all" depends="init, clean, compile.module.build, compile.module.common-pgp, compile.module.common-test, compile.module.common-config, compile.module.common-mail, compile.module.integration-securid, compile.module.common-dns, compile.module.eiana-util, compile.module.common-criteria, compile.module.common-dao, compile.module.common-codevalues, compile.module.integration-rt, compile.module.eiana-domains, compile.module.common-objectdiff, compile.module.eiana-notifications, compile.module.eiana-users, compile.module.eiana-logs, compile.module.eiana-trans, compile.module.facade-common, compile.module.facade-system, compile.module.facade-admin, compile.module.eiana-web-common, j2ee.build.eiana-web-admin, j2ee.build.eiana-web-user, compile.module.conf, compile.module.lib, compile.module.eiana-startup, compile.module.common-templates, compile.module.eiana-mail, compile.module.tests, compile.module.eiana-init" description="build all"/>
 </project>

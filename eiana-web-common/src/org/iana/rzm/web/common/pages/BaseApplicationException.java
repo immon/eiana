@@ -27,6 +27,7 @@ import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.pages.Exception;
 import org.apache.tapestry.util.exception.*;
 import org.apache.tapestry.web.*;
+import org.apache.log4j.Logger;
 
 /**
  * A custom Exception page that shows a frendly error message in case of an unhanded Exception occur
@@ -80,6 +81,8 @@ public abstract class BaseApplicationException extends Exception {
             message = builder.toString();
         }
         setError(message);
+
+        Logger.getLogger(getClass().getName()).error(message, value);
     }
 
 }

@@ -1,30 +1,20 @@
 package org.iana.rzm.web.common.pages;
 
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IPage;
-import org.apache.tapestry.PageRedirectException;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.event.PageValidateListener;
-import org.apache.tapestry.web.WebRequest;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.RadicalAlterationException;
-import org.iana.rzm.facade.system.trans.SharedNameServersCollisionException;
-import org.iana.rzm.web.common.DomainChangeType;
-import org.iana.rzm.web.common.Visit;
-import org.iana.rzm.web.common.callback.RzmCallback;
-import org.iana.rzm.web.common.model.ActionVOWrapper;
-import org.iana.rzm.web.common.model.DomainVOWrapper;
-import org.iana.rzm.web.common.model.TransactionActionsVOWrapper;
-import org.iana.rzm.web.common.services.AccessDeniedHandler;
-import org.iana.rzm.web.common.services.ObjectNotFoundHandler;
-import org.iana.rzm.web.common.services.QueryExceptionHandler;
-import org.iana.rzm.web.common.services.RzmServices;
-import org.iana.rzm.web.tapestry.components.contact.ContactServices;
-import org.iana.web.tapestry.session.ApplicationLifecycle;
+import org.apache.tapestry.event.*;
+import org.apache.tapestry.web.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.callback.*;
+import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.common.services.*;
+import org.iana.rzm.web.tapestry.components.contact.*;
+import org.iana.web.tapestry.session.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
 public abstract class ProtectedPage extends RzmPage implements PageValidateListener {
 
@@ -148,7 +138,7 @@ public abstract class ProtectedPage extends RzmPage implements PageValidateListe
         }
 
         catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(domain.getName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }

@@ -3,34 +3,14 @@
  */
 package org.iana.notifications.template.def;
 
-import org.hibernate.annotations.CollectionOfElements;
-import org.iana.notifications.template.def.xml.AddresseeHelper;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Set;
-
-@Entity
 public class TemplateDef {
-    @Id
     private String type;
-    @Basic
-    @Column(length = 1024)
     private String subject;
-    @Basic
-    @Column(length = 4096)
     private String content;
-    @Basic
     private boolean signed;
-    @Basic
     private String keyFileName;
-    @Basic
     private String keyPassphrase;
 
-    @CollectionOfElements
-    private Set<String> addressees;
 
     public String getType() {
         return type;
@@ -84,15 +64,4 @@ public class TemplateDef {
         this.keyPassphrase = keyPassphrase;
     }
 
-    public Set<String> getAddressees() {
-        return addressees;
-    }
-
-    public void setAddressees(Set<String> addressees) {
-        this.addressees = addressees;
-    }
-
-    public void setAddressees(AddresseeHelper adrrHelp) {
-        this.addressees = adrrHelp.getAddreessees();
-    }
 }

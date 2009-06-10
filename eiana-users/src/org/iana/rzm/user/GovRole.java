@@ -2,6 +2,7 @@ package org.iana.rzm.user;
 
 import org.iana.rzm.common.validators.CheckTool;
 
+import javax.persistence.Enumerated;
 import javax.persistence.Entity;
 
 @Entity
@@ -23,10 +24,6 @@ public class GovRole extends Role implements Cloneable {
 
     final public boolean isAdmin() {
         return true;
-    }
-
-    public boolean isRoot() {
-        return false;
     }
 
     public boolean equals(Object object) {

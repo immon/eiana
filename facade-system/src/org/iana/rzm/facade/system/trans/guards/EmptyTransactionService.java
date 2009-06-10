@@ -152,10 +152,6 @@ public class EmptyTransactionService implements TransactionService {
 
     }
 
-    public void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-
-    }
-
     public List<TransactionVO> getByTicketID(long id) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
         return null;
     }

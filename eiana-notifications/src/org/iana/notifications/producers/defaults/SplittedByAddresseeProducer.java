@@ -1,15 +1,14 @@
 package org.iana.notifications.producers.defaults;
 
 import org.iana.notifications.PAddressee;
-import org.iana.notifications.PContent;
 import org.iana.notifications.PNotification;
+import org.iana.notifications.PContent;
 import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.notifications.producers.DataProducer;
 import org.iana.notifications.producers.NotificationProducerException;
 import org.iana.notifications.producers.TemplateNameProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
-import org.iana.notifications.template.TemplateNotFoundException;
 import org.iana.notifications.template.factory.TemplateFactory;
 
 import java.util.*;
@@ -30,15 +29,13 @@ public class SplittedByAddresseeProducer extends AbstractNotificationProducer {
     public List<PNotification> produce(Map<String, Object> dataSource) throws NotificationProducerException {
         try {
             List<PNotification> notifications = new ArrayList<PNotification>();
-            for (String templateName : templateNameProducer.produce(dataSource)) {
-                Template template = templateFactory.getTemplate(templateName);
-                AddresseeProducer addrProducer = template.getAddresseeProducer();
-                if (addrProducer == null) addrProducer = addresseeProducer;
-                for (PAddressee addreessee : addrProducer.produce(dataSource)) {
+            for (PAddressee addreessee : addresseeProducer.produce(dataSource)) {
+                for (String templateName : templateNameProducer.produce(dataSource)) {
                     // inject addressee into the data source map...
                     dataSource.put("addressee", addreessee);
                     // ...and pass it to the data producer
                     Map<String, String> values = dataProducer.getValuesMap(dataSource);
+                    Template template = templateFactory.getTemplate(templateName);
                     PContent content = template.instantiate(values);
                     Set<PAddressee> addressees = new HashSet<PAddressee>();
                     addressees.add(addreessee);
@@ -49,8 +46,6 @@ public class SplittedByAddresseeProducer extends AbstractNotificationProducer {
                 }
             }
             return notifications;
-        } catch (TemplateNotFoundException e) {
-            throw new NotificationProducerException(e);
         } catch (TemplateInstantiationException e) {
             throw new NotificationProducerException(e);
         }

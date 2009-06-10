@@ -99,7 +99,7 @@ public class GuardedStatelessTransactionService extends AbstractRZMStatelessServ
         return statelessTransactionService.createTransactions(domain, splitNameServerChange, submitterEmail, authUser);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         isUserInCreateTransactionRole(domain.getName(), authUser);
         return statelessTransactionService.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment, authUser);
     }
@@ -165,9 +165,9 @@ public class GuardedStatelessTransactionService extends AbstractRZMStatelessServ
         return statelessTransactionService.find(criteria, order, offset, limit, authUser);
     }
 
-    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+    public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
         isUserInRole(id, authUser);
-        statelessTransactionService.withdrawTransaction(id, reason, authUser);
+        statelessTransactionService.withdrawTransaction(id, authUser);
     }
     
 }

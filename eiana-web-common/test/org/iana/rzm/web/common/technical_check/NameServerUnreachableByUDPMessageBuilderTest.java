@@ -21,6 +21,6 @@ public class NameServerUnreachableByUDPMessageBuilderTest {
         Element element = document.getRootElement();
         NameServerUnreachableByUDPMessageBuilder builder = new NameServerUnreachableByUDPMessageBuilder();
         String errorMessage = builder.build(element, "domain");
-        Assert.assertEquals(errorMessage, "The folowing host is not reachable by UDP: [f.nic.de]" );
+        Assert.assertEquals(errorMessage, "The folowing host is not reachable by UDP: [f.nic.de]." );
     }
 }

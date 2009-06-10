@@ -107,10 +107,6 @@ public class TransactionData {
     @Embedded
     private USDoCConfirmation confirmation;
 
-    @Basic
-    @Column(length = 4096)
-    private String widthdrawnReason;
-
     public Long getObjId() {
         return objId;
     }
@@ -419,13 +415,5 @@ public class TransactionData {
             }
         }
         return false;
-    }
-
-    public String getWidthdrawnReason() {
-        return widthdrawnReason;
-    }
-
-    public void setWidthdrawnReason(String widthdrawnReason) {
-        this.widthdrawnReason = widthdrawnReason;
     }
 }

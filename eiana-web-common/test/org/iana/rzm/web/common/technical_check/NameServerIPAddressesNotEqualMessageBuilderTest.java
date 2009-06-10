@@ -37,6 +37,6 @@ public class NameServerIPAddressesNotEqualMessageBuilderTest {
         NameServerIPAddressesNotEqualMessageBuilder builder = new NameServerIPAddressesNotEqualMessageBuilder();
         Assert.assertEquals(builder.build(element, "root"),"The A and AAAA records [81.91.164.5, 2001:608:6:6:0:0:0:10]" +
                 " returned from the authoritative name server [c.de.net] are not the same as the supplied glue" +
-                " records [208.48.81.43]");
+                " records [208.48.81.43].");
     }
 }

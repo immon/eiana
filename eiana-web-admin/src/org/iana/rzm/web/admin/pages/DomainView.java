@@ -1,34 +1,22 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectObject;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.callback.ICallback;
-import org.apache.tapestry.callback.PageCallback;
-import org.apache.tapestry.engine.state.ApplicationStateManager;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
+import org.apache.tapestry.engine.state.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.admin.pages.listeners.PageEditorListener;
-import org.iana.rzm.web.admin.services.AdminServices;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
-import org.iana.rzm.web.common.MessageUtil;
-import org.iana.rzm.web.common.RequestMetaParameters;
-import org.iana.rzm.web.common.Visit;
-import org.iana.rzm.web.common.callback.RzmCallback;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.admin.pages.listeners.*;
+import org.iana.rzm.web.admin.services.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.callback.*;
 import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
-import org.iana.rzm.web.common.utils.WebUtil;
+import org.iana.rzm.web.common.query.retriver.*;
+import org.iana.rzm.web.common.utils.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public abstract class  DomainView extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
@@ -324,7 +312,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomain().getName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }
@@ -387,7 +375,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             } catch (SharedNameServersCollisionException e) {
                 adminPage.setErrorMessage(messageUtil.getSharedNameServersCollisionMessage(e.getNameServers()));
             } catch (RadicalAlterationException e) {
-                adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(domainVOWrapper.getName()));
+                adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(e.getDomainName()));
             }
             cycle.activate(adminPage);
         }

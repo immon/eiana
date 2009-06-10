@@ -8,7 +8,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -25,20 +24,6 @@ public class HibernateConfigDAO extends HibernateDaoSupport implements ConfigDAO
             Object[] queryParams = {owner, name, time, time};
             List<Parameter> ret = getHibernateTemplate().find(query, queryParams);
             return (ret != null && !ret.isEmpty()) ? ret.get(0) : null;
-        } catch (DataAccessException e) {
-            throw new ConfigException(e);
-        }
-    }
-
-    public List<Parameter> getParameters() throws ConfigException {
-        try {
-            String query = "from AbstractParameter ap where " +
-                    " (( ? between ap.fromDate and ap.toDate ) or ( ap.fromDate <= ? and ap.toDate is null ))" +
-                    " order by ap.name";
-            long time = System.currentTimeMillis();
-            Object[] queryParams = {time, time};
-            List<Parameter> ret = getHibernateTemplate().find(query, queryParams);
-            return ret == null ? new ArrayList<Parameter>() : ret;
         } catch (DataAccessException e) {
             throw new ConfigException(e);
         }

@@ -146,18 +146,6 @@ public class RZMUser  implements TrackedObject, Cloneable {
         return this.password.isValid(password);
     }
 
-    public boolean hasExpiredPassword() {
-        return this.password.isExpired();
-    }
-
-    public void setPasswordExDate(Timestamp exDate) {
-        this.password.setExDate(exDate);
-    }
-
-    public Timestamp getPasswordExDate() {
-        return this.password.getExDate();
-    }
-
     public boolean isSecurID() {
         return securID;
     }
@@ -260,19 +248,7 @@ public class RZMUser  implements TrackedObject, Cloneable {
         }
         return false;
     }
-
-    final public boolean isRoot() {
-        if (roles != null) {
-            for (Role role : roles) {
-                if (role.isRoot()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-        
+    
     final public boolean isInAnyRole(Collection<Role> roles, Comparator<? super Role> comparator) {
         if (roles != null) {
             for (Role role : roles) {
@@ -383,5 +359,4 @@ public class RZMUser  implements TrackedObject, Cloneable {
     public void resetPasswordChangeToken() {
         passwordChangeToken = null;
     }
-
 }

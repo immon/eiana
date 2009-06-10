@@ -1,13 +1,10 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IPage;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.callback.*;
 import org.iana.rzm.web.admin.pages.*;
-import org.iana.rzm.web.common.components.BaseBorder;
+import org.iana.rzm.web.common.components.*;
 
 @ComponentClass
 public abstract class Navigation extends BaseComponent {
@@ -15,8 +12,6 @@ public abstract class Navigation extends BaseComponent {
     public static final String REQUEST = "REQUESTS";
     public static final String DOMAINS = "DOMAINS";
     public static final String USERS = "USERS";
-    public static final String SYSTEM_SETTINGS = "SYSTEM_SETTINGS";
-    public static final String EMAIL_TEMPLATE = "EMAIL_TEMPLATE";
 
     @Component(id = "requestsLink", type = "SelectionLink", bindings = {"spanStyle=prop:requestsSpanStyle",
         "linkStyle=prop:requestsStyle", "linkText=literal:Requests", "listener=listener:viewRequests", "useDivStyle=literal:true"})
@@ -30,14 +25,6 @@ public abstract class Navigation extends BaseComponent {
         "linkStyle=prop:usersStyle", "linkText=literal:Users", "listener=listener:viewUsers", "useDivStyle=literal:true"})
     public abstract IComponent getUsersLinkComponent();
 
-    @Component(id = "systemLink", type = "SelectionLink", bindings = {"spanStyle=prop:systemSpanStyle",
-        "linkStyle=prop:systemStyle", "linkText=literal:System Settings", "listener=listener:viewSystemSettings", "useDivStyle=literal:true"})
-    public abstract IComponent getSystemLinkComponent();
-
-    @Component(id = "templates", type = "SelectionLink", bindings = {"spanStyle=prop:templatesSpanStyle",
-        "linkStyle=prop:templatesStyle", "linkText=literal:System Templates", "listener=listener:viewTemplates", "useDivStyle=literal:true"})
-    public abstract IComponent getTemplatesLinkComponent();
-
     @Component(id = "logout", type = "DirectLink", bindings = {"listener=listener:logout",
         "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getLogoutComponent();
@@ -49,10 +36,6 @@ public abstract class Navigation extends BaseComponent {
 
     @Component(id = "backOn", type = "If", bindings = {"condition=prop:backEnabled"})
     public abstract IComponent getBackOnComponent();
-
-    @Component(id = "root", type = "If", bindings = {"condition=prop:root"})
-    public abstract IComponent getRootComponent();
-
 
     @Parameter(required = false, defaultValue = "literal:REQUESTS")
     public abstract String getSelected();
@@ -78,13 +61,6 @@ public abstract class Navigation extends BaseComponent {
         return getStyle(USERS);
     }
 
-    public String getSystemStyle() {
-        return getStyle(SYSTEM_SETTINGS);
-    }
-
-    public String getTemplatesStyle() {
-        return getStyle(EMAIL_TEMPLATE);
-    }
 
     public String getRequestsSpanStyle() {
         return getRequestsStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
@@ -98,14 +74,6 @@ public abstract class Navigation extends BaseComponent {
         return getUsersStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
     }
 
-    public String getSystemSpanStyle() {
-        return getSystemStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
-    }
-
-    public String getTemplatesSpanStyle() {
-        return getTemplatesStyle().equals("buttonBlack") ? "leftBlack" : "leftGrey";
-    }
-
     private String getStyle(String page) {
         if (getSelected().equals(page)) {
             return "buttonBlack";
@@ -115,16 +83,8 @@ public abstract class Navigation extends BaseComponent {
     }
 
     public IPage logout() {
-        BaseBorder border = getBorder();
+        BaseBorder border = (BaseBorder) getPage().getComponent("border");
         return border.logout();
-    }
-
-    private BaseBorder getBorder() {
-        return (BaseBorder) getPage().getComponent("border");
-    }
-
-    public boolean isRoot(){
-        return getBorder().isRoot();        
     }
 
     public void back() {
@@ -152,20 +112,6 @@ public abstract class Navigation extends BaseComponent {
     public void viewUsers() {
         if (!isSamePage(Users.PAGE_NAME)) {
             getPage().getRequestCycle().activate(Users.PAGE_NAME);
-        }
-
-    }
-
-    public void viewSystemSettings() {
-        if (!isSamePage(SystemSettings.PAGE_NAME)) {
-            getPage().getRequestCycle().activate(SystemSettings.PAGE_NAME);
-        }
-
-    }
-
-    public void viewTemplates() {
-        if (!isSamePage(EmailTemplateSettings.PAGE_NAME)) {
-            getPage().getRequestCycle().activate(EmailTemplateSettings.PAGE_NAME);
         }
 
     }

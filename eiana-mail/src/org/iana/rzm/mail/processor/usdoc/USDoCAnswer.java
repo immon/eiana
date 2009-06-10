@@ -1,5 +1,6 @@
 package org.iana.rzm.mail.processor.usdoc;
 
+import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.pgp.PGPMessageData;
 import org.iana.rzm.mail.processor.ticket.TicketData;
 

@@ -84,8 +84,8 @@
   <component name="WebModuleBuildComponent">
     <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/exploded" />
     <setting name="EXPLODED_ENABLED" value="true" />
-    <setting name="JAR_URL" value="file://$MODULE_DIR$/rzm-backend.war" />
-    <setting name="JAR_ENABLED" value="false" />
+    <setting name="JAR_URL" value="file://$MODULE_DIR$/../build/dist/rzm-backend.war" />
+    <setting name="JAR_ENABLED" value="true" />
     <setting name="SYNC_EXPLODED_DIR" value="true" />
     <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
     <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />

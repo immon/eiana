@@ -1,7 +1,6 @@
 package org.iana.notifications.template.pgp;
 
 import org.iana.notifications.PContent;
-import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
 import org.iana.pgp.PGPUtils;
@@ -31,14 +30,6 @@ public class PGPTemplate implements Template {
         return new PContent(content.getSubject(), sign(content.getBody()));
     }
 
-    public AddresseeProducer getAddresseeProducer() {
-        return template.getAddresseeProducer();
-    }
-
-    public void setAddresseeProducer(AddresseeProducer producer) {
-        template.setAddresseeProducer(producer);
-    }
-
     private String sign(String text) throws TemplateInstantiationException {
         try {
             return PGPUtils.signMessage(text, key, keyPassphrase);
@@ -46,5 +37,4 @@ public class PGPTemplate implements Template {
             throw new TemplateInstantiationException("pgp signing failed", e);
         }
     }
-
 }

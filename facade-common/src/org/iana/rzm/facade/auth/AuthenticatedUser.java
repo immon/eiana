@@ -1,6 +1,6 @@
 package org.iana.rzm.facade.auth;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * <p>This class represents an authenticated user of the system i.e. an individual who provided valid credentials
@@ -24,7 +24,6 @@ public class AuthenticatedUser implements Serializable {
     private String userName;
 
     private boolean admin;
-    private boolean root;
     /**
      * A flag representing whether the user has been invalidated.
      */
@@ -43,14 +42,9 @@ public class AuthenticatedUser implements Serializable {
      * @throws IllegalArgumentException when user is null
      */
     public AuthenticatedUser(long objId, String userName, boolean admin) {
-        this(objId, userName, admin, false);
-    }
-
-    public AuthenticatedUser(long objId, String userName, boolean admin, boolean root) {
         this.objId = objId;
         this.userName = userName;
         this.admin = admin;
-        this.root = root;
     }
 
 
@@ -71,14 +65,10 @@ public class AuthenticatedUser implements Serializable {
         return userName;
     }
 
+
     public boolean isAdmin() {
         return admin;
     }
-
-    public boolean isRoot() {
-        return root;
-    }
-
 
     public boolean isInvalidated() {
         return invalidated;

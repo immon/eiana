@@ -5,10 +5,12 @@ import org.iana.dns.DNSIPv6Address;
 import org.iana.dns.DNSIPv4Address;
 import org.iana.dns.validator.InvalidIPAddressException;
 
+import java.io.Serializable;
+
 /**
  * @author Patrycja Wegrzynowicz
  */
-public abstract class DNSIPAddressImpl implements DNSIPAddress {
+public abstract class DNSIPAddressImpl implements DNSIPAddress, Serializable {
 
     protected String address;
 

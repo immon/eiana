@@ -1,28 +1,21 @@
 package org.iana.rzm.web.common.components;
 
-import org.apache.tapestry.BaseComponent;
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
-import org.iana.rzm.web.common.Visit;
-import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
-import org.iana.rzm.web.common.model.ActionVOWrapper;
-import org.iana.rzm.web.common.model.ChangeVOWrapper;
-import org.iana.rzm.web.common.model.SystemDomainVOWrapper;
-import org.iana.rzm.web.common.model.TransactionVOWrapper;
-import org.iana.rzm.web.common.pages.RzmPage;
-import org.iana.rzm.web.common.services.AccessDeniedHandler;
-import org.iana.rzm.web.common.services.ObjectNotFoundHandler;
-import org.iana.rzm.web.common.services.RzmServices;
-import org.iana.rzm.web.common.utils.CounterBean;
-import org.iana.web.tapestry.callback.MessagePropertyCallback;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.changes.*;
+import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.common.pages.*;
+import org.iana.rzm.web.common.services.*;
+import org.iana.rzm.web.common.utils.*;
+import org.iana.web.tapestry.callback.*;
 
-import java.util.List;
+import java.util.*;
 
 
 public abstract class BaseWithdrawRequestConfirmation extends BaseComponent implements PageBeginRenderListener {
@@ -50,8 +43,6 @@ public abstract class BaseWithdrawRequestConfirmation extends BaseComponent impl
     @Component(id = "title", type = "Insert", bindings = {"value=prop:action.title"})
     public abstract IComponent getTitleComponent();
 
-    @Component(id = "comment", type = "TextArea", bindings = {"value=prop:comment"})
-    public abstract IComponent getCommentComponent();
 
     @InjectObject("service:rzm.ObjectNotFoundHandler")
     public abstract ObjectNotFoundHandler getObjectNotFoundHandler();
@@ -97,14 +88,6 @@ public abstract class BaseWithdrawRequestConfirmation extends BaseComponent impl
 
     public String getDomainName(){
         return getRequest().getDomainName();
-    }
-
-    public String getComment(){
-        return null;
-    }
-
-    public void setComment(String comment){
-        
     }
 
     public void pageBeginRender(PageEvent event){

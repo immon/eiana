@@ -11,8 +11,8 @@ import org.jbpm.graph.exe.ExecutionContext;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.security.SecureRandom;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * @author Jakub Laszkiewicz
@@ -77,5 +77,4 @@ public class ContactConfirmationCalculator extends ActionExceptionHandler {
         while (ret.length() < 8) ret = "0"+ret;
         return ret;
     }
-
 }

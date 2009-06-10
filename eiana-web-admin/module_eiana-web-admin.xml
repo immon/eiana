@@ -13,13 +13,11 @@
   </path>
   
   <path id="eiana-web-admin.module.classpath">
-    <pathelement location="${module.eiana-web-admin.basedir}/../../../../Program Files/JetBrains/IntelliJ IDEA 6.0/lib/j2ee.jar"/>
+    <pathelement location="${module.eiana-web-admin.basedir}/../../../../../../Applications/IntelliJ IDEA 6.0.6.app/lib/j2ee.jar"/>
     <pathelement location="${eiana-web-common.output.dir}"/>
     <pathelement location="${eiana-web-common.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
     <pathelement location="${facade-system.testoutput.dir}"/>
     <pathelement location="${eiana-util.output.dir}"/>
@@ -75,47 +73,34 @@
     <pathelement location="${module.eiana-web-admin.basedir}/../lib/aspectj/aspectjrt.jar"/>
     <pathelement location="${module.eiana-web-admin.basedir}/../lib/aspectj/aspectjweaver.jar"/>
     <pathelement location="${module.eiana-web-admin.basedir}/../lib/quartz/quartz-all-1.6.0.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/idn/libidn-1.8.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/antlr-2.7.6.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/asm.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/cglib-2.1.3.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/ehcache-1.2.3.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate-annotations.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate-tools.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate3.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/mchange/c3p0-0.9.1.2.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/bsh/bsh-2.0b2.jar"/>
     <pathelement location="${module.eiana-web-admin.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/secureId/authapi.jar"/>
-    <pathelement location="${module.eiana-web-admin.basedir}/../lib/secureId/SecureID.jar"/>
+    <pathelement location="${module.eiana-web-admin.basedir}/../lib/idn/libidn-1.8.jar"/>
     <pathelement location="${facade-admin.output.dir}"/>
     <pathelement location="${facade-admin.testoutput.dir}"/>
     <path refid="library.tapestry.classpath"/>
     <pathelement location="${eiana-logs.output.dir}"/>
     <pathelement location="${eiana-logs.testoutput.dir}"/>
-    <pathelement location="${common-mail.output.dir}"/>
-    <pathelement location="${common-mail.testoutput.dir}"/>
   </path>
-  
-  
+
+
   <patternset id="excluded.from.module.eiana-web-admin">
     <patternset refid="ignored.files"/>
   </patternset>
-  
+
   <patternset id="excluded.from.compilation.eiana-web-admin">
     <patternset refid="excluded.from.module.eiana-web-admin"/>
   </patternset>
-  
+
   <path id="eiana-web-admin.module.sourcepath">
     <dirset dir="${module.eiana-web-admin.basedir}">
       <include name="src"/>
     </dirset>
   </path>
-  
-  
+
+
   <target name="compile.module.eiana-web-admin" depends="compile.module.eiana-web-admin.production,compile.module.eiana-web-admin.tests" description="Compile module eiana-web-admin"/>
-  
-  <target name="compile.module.eiana-web-admin.production" depends="compile.module.eiana-web-common,compile.module.facade-admin,compile.module.eiana-logs,compile.module.common-mail" description="Compile module eiana-web-admin; production classes">
+
+  <target name="compile.module.eiana-web-admin.production" depends="compile.module.eiana-web-common,compile.module.facade-admin,compile.module.eiana-logs" description="Compile module eiana-web-admin; production classes">
     <mkdir dir="${eiana-web-admin.output.dir}"/>
     <javac destdir="${eiana-web-admin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-web-admin}"/>
@@ -124,7 +109,7 @@
       <src refid="eiana-web-admin.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.eiana-web-admin"/>
     </javac>
-    
+
     <copy todir="${eiana-web-admin.output.dir}">
       <fileset dir="${module.eiana-web-admin.basedir}/src">
         <patternset refid="compiler.resources"/>
@@ -132,21 +117,25 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="compile.module.eiana-web-admin.tests" depends="compile.module.eiana-web-admin.production" description="compile module eiana-web-admin; test classes" unless="skip.tests"/>
-  
+
   <target name="clean.module.eiana-web-admin" description="cleanup module">
     <delete dir="${eiana-web-admin.output.dir}"/>
     <delete dir="${eiana-web-admin.testoutput.dir}"/>
   </target>
-  
+
   <property name="eiana-web-admin.dir.exploded" value="${module.eiana-web-admin.basedir}/exploded"/>
-  <target name="j2ee.build.eiana-web-admin" depends="compile.module.eiana-web-admin, compile.module.common-codevalues, compile.module.common-criteria, compile.module.common-mail, compile.module.common-objectdiff, compile.module.eiana-notifications, compile.module.eiana-util, compile.module.eiana-web-common, compile.module.facade-admin, compile.module.facade-common, compile.module.facade-system, compile.module.integration-rt, compile.module.integration-securid" description="Build configured Java EE directories and archives for module 'eiana-web-admin'">
+  <property name="eiana-web-admin.path.jar" value="${module.eiana-web-admin.basedir}/rzm-admin.war"/>
+  <target name="j2ee.build.eiana-web-admin" depends="compile.module.eiana-web-admin, compile.module.common-codevalues, compile.module.common-criteria, compile.module.common-dns, compile.module.common-objectdiff, compile.module.eiana-notifications, compile.module.eiana-util, compile.module.eiana-web-common, compile.module.facade-admin, compile.module.facade-common, compile.module.facade-system, compile.module.integration-rt, compile.module.integration-securid" description="Build configured Java EE directories and archives for module 'eiana-web-admin'">
     <antcall target="j2ee.build.exploded.eiana-web-admin">
       <param name="j2ee.dir.exploded" value="${eiana-web-admin.dir.exploded}"/>
     </antcall>
+    <antcall target="j2ee.build.jar.eiana-web-admin">
+      <param name="j2ee.path.jar" value="${eiana-web-admin.path.jar}"/>
+    </antcall>
   </target>
-  
+
   <!-- Call the target to build exploded directory for module 'eiana-web-admin'.
        Path to the exploded directory is specified by parameter 'j2ee.dir.exploded' -->
   <target name="j2ee.build.exploded.eiana-web-admin" description="Build exploded directory for module 'eiana-web-admin'">
@@ -169,11 +158,10 @@
     <copy file="${module.eiana-web-admin.basedir}/../lib/aspectj/aspectjrt.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/aspectjrt.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/spring/spring.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/spring.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/spring/spring-mock.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/spring-mock.jar"/>
-    <copy file="${module.eiana-web-admin.basedir}/../lib/secureId/SecureID.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/SecureID.jar"/>
-    <copy file="${module.eiana-web-admin.basedir}/../lib/secureId/authapi.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/authapi.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/rzmTapestry4components.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/nask-commons/common-cache.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/common-cache.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/nask-commons/util.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/util.jar"/>
+    <copy file="${module.eiana-web-admin.basedir}/../lib/log4j/log4j-1.2.14.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/log4j-1.2.14.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/jdom/jdom.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/jdom.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/bsh/bsh-2.0b2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/bsh-2.0b2.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/mchange/c3p0-0.9.1.2.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
@@ -184,6 +172,9 @@
     <copy file="${module.eiana-web-admin.basedir}/../lib/hibernate/cglib-2.1.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/cglib-2.1.3.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/hibernate/asm.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/asm.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/hibernate/antlr-2.7.6.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/antlr-2.7.6.jar"/>
+    <copy file="${module.eiana-web-admin.basedir}/../lib/epp/poolman-2.1-b1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/poolman-2.1-b1.jar"/>
+    <copy file="${module.eiana-web-admin.basedir}/../lib/epp/epp-rootzone.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/epp-rootzone.jar"/>
+    <copy file="${module.eiana-web-admin.basedir}/../lib/epp/epp-api.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/epp-api.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/dom4j/dom4j-1.6.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/dom4j-1.6.1.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
     <copy file="${module.eiana-web-admin.basedir}/../lib/apache-commons/commons-lang-2.3.jar" tofile="${j2ee.dir.exploded}/WEB-INF/lib/commons-lang-2.3.jar"/>
@@ -232,7 +223,7 @@
       <fileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-objectdiff"/>
     </copy>
     <copy todir="${j2ee.dir.exploded}/WEB-INF/classes">
-      <fileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-mail"/>
+      <fileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-dns"/>
     </copy>
     <copy todir="${j2ee.dir.exploded}/WEB-INF/classes">
       <fileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-criteria"/>
@@ -250,7 +241,7 @@
       <fileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/eiana-web-admin"/>
     </copy>
   </target>
-  
+
   <!-- Call the target to build war archive for module 'eiana-web-admin'.
        Path to the archive file is specified by parameter 'j2ee.path.jar' -->
   <target name="j2ee.build.jar.eiana-web-admin" description="Build Java EE archive for module 'eiana-web-admin'">
@@ -266,7 +257,7 @@
       <zipfileset dir="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF" prefix="WEB-INF"/>
       <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-codevalues" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-criteria" prefix="WEB-INF/classes"/>
-      <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-mail" prefix="WEB-INF/classes"/>
+      <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-dns" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/common-objectdiff" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/eiana-notifications" prefix="WEB-INF/classes"/>
       <zipfileset dir="${module.eiana-web-admin.basedir}/../build/classes/production/eiana-util" prefix="WEB-INF/classes"/>
@@ -296,26 +287,15 @@
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/apache-commons/commons-lang-2.3.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/apache-commons/commons-httpclient-3.0.1.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/dom4j/dom4j-1.6.1.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/antlr-2.7.6.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/asm.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/cglib-2.1.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/ehcache-1.2.3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate-annotations.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate-tools.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/mchange/c3p0-0.9.1.2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/bsh/bsh-2.0b2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/jdom/jdom.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/log4j/log4j-1.2.14.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/nask-commons/util.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/nask-commons/common-cache.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/rzm-ui-components/rzmTapestry4components.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/secureId/authapi.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/secureId/SecureID.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/spring/spring-mock.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/spring/spring.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/aspectj/aspectjrt.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/aspectj/aspectjweaver.jar" prefix="WEB-INF/lib"/>
-      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/quartz/quartz-all-1.6.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/tapestry/manTap4Library-1.8.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/tapestry/oro-2.0.8.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/tapestry/hivemind-1.1.1.jar" prefix="WEB-INF/lib"/>
@@ -329,6 +309,9 @@
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/tapestry/tapestry-annotations-4.0.2.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/tapestry/tapestry-spring-1.0.0.jar" prefix="WEB-INF/lib"/>
       <zipfileset file="${module.eiana-web-admin.basedir}/../lib/tapestry/Tapestry4Commons.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/hibernate/hibernate3.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/secureId/authapi.jar" prefix="WEB-INF/lib"/>
+      <zipfileset file="${module.eiana-web-admin.basedir}/../lib/secureId/SecureID.jar" prefix="WEB-INF/lib"/>  
       <zipfileset file="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/web.xml" prefix="WEB-INF"/>
     </jar>
   </target>

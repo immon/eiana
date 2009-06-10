@@ -35,8 +35,6 @@
     <pathelement location="${facade-admin.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${facade-system.output.dir}"/>
     <pathelement location="${facade-system.testoutput.dir}"/>
     <pathelement location="${integration-rt.output.dir}"/>
@@ -63,6 +61,8 @@
     <pathelement location="${common-test.output.dir}"/>
     <pathelement location="${common-test.testoutput.dir}"/>
     <path refid="library.junit.classpath"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
     <path refid="library.epp.classpath"/>

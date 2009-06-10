@@ -66,7 +66,7 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
 
         ValueDataDecorator otherHostName = new ValueDataDecorator(HOST, e.getOtherHost().getName());
         exceptionDataDecorator.addOther(otherHostName);
-        
+
         exceptions.add(exceptionDataDecorator);
     }
 

@@ -1,17 +1,16 @@
 package org.iana.rzm.trans.dns;
 
-import org.iana.dns.DNSDomain;
 import org.iana.dns.check.DNSCheckCollectionResult;
 import org.iana.dns.check.DNSExceptionMessagesVisitor;
 import org.iana.dns.check.DNSExceptionXMLVisitor;
 import org.iana.dns.check.MultipleDNSTechnicalCheckException;
+import org.iana.dns.DNSDomain;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.notifications.PAddressee;
 import org.iana.notifications.PContent;
 import org.iana.notifications.PNotification;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
-import org.iana.notifications.template.TemplateNotFoundException;
 import org.iana.notifications.template.factory.TemplateFactory;
 import org.iana.objectdiff.ChangeApplicator;
 import org.iana.objectdiff.DiffConfiguration;
@@ -19,11 +18,11 @@ import org.iana.objectdiff.ObjectChange;
 import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.notifications.Notification2Comment;
 import org.iana.rzm.trans.notifications.TransactionNotificationSender;
+import org.iana.rzm.trans.notifications.Notification2Comment;
 import org.iana.rzm.trans.process.general.ctx.NotificationContext;
-import org.iana.ticketing.TicketingException;
 import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.TicketingException;
 import org.jbpm.graph.exe.ExecutionContext;
 
 import java.util.*;
@@ -63,7 +62,7 @@ public class TechnicalCheckHelper implements CheckHelper {
                          Transaction trans,
                          TransactionNotificationSender sender,
                          TicketingService ticketingService,
-                                 DiffConfiguration diffConfig) throws NotificationSenderException, TemplateNotFoundException, TemplateInstantiationException {
+                                 DiffConfiguration diffConfig) throws NotificationSenderException, TemplateInstantiationException {
         Domain retrievedDomain = trans.getCurrentDomain().clone();
         ObjectChange change = trans.getDomainChange();
         if (change != null) {
@@ -81,7 +80,7 @@ public class TechnicalCheckHelper implements CheckHelper {
                          String period,
                          Transaction trans,
                          TicketingService ticketingService,
-                         TransactionNotificationSender sender) throws TemplateInstantiationException, TemplateNotFoundException, NotificationSenderException {
+                         TransactionNotificationSender sender) throws TemplateInstantiationException, NotificationSenderException {
         if (doTest) {
             DNSDomain dnsDomain = DNSConverter.toDNSDomain(domain);
             DNSCheckCollectionResult result = DNSTechnicalCheckFactory.getDomainCheck().checkWithResult(dnsDomain);
@@ -108,7 +107,7 @@ public class TechnicalCheckHelper implements CheckHelper {
         }
     }
 
-    private PNotification createNotification(Domain domain, Transaction trans, DNSCheckCollectionResult result, String period) throws TemplateInstantiationException, TemplateNotFoundException {
+    private PNotification createNotification(Domain domain, Transaction trans, DNSCheckCollectionResult result, String period) throws TemplateInstantiationException {
         Map<String, String> values = new HashMap<String, String>();
         values.put(TEMPLATE_VALUE_DOMAIN_NAME, domain.getName());
         values.put(TEMPLATE_VALUE_PASSED_LIST, getPassedMessages(result));

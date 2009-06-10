@@ -55,7 +55,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "All name servers have the same AS number 123");
+        Assert.assertEquals(list.get(0), "All name servers have the same AS number 123.");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The folowing host does not seem to have have an ip address: [g.nic.net]");
+        Assert.assertEquals(list.get(0), "The folowing host does not seem to have have an ip address: [g.nic.net].");
     }
 
     @Test
@@ -112,7 +112,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The Response estimated size was 623 and it is greater than 512 bytes");
+        Assert.assertEquals(list.get(0), "The Response estimated size was 623 and it is greater than 512 bytes.");
     }
 
     @Test
@@ -137,7 +137,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The folowing host is not reachable by TCP: [f.nic.de]");
+        Assert.assertEquals(list.get(0), "The folowing host is not reachable by TCP: [f.nic.de].");
     }
 
     @Test
@@ -162,7 +162,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The folowing host is not reachable by UDP: [f.nic.de]");
+        Assert.assertEquals(list.get(0), "The folowing host is not reachable by UDP: [f.nic.de].");
     }
 
     @Test
@@ -190,8 +190,8 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 2);
-        Assert.assertEquals(list.get(0), "The folowing host is not reachable by UDP: [f.nic.de]");
-        Assert.assertEquals(list.get(1), "The folowing host is not reachable by UDP: [g.nic.de]");
+        Assert.assertEquals(list.get(0), "The folowing host is not reachable by UDP: [f.nic.de].");
+        Assert.assertEquals(list.get(1), "The folowing host is not reachable by UDP: [g.nic.de].");
     }
 
 
@@ -217,7 +217,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The folowing host is not reachable: [f.nic.de]");
+        Assert.assertEquals(list.get(0), "The folowing host is not reachable: [f.nic.de].");
     }
 
     @Test
@@ -242,7 +242,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The folowing host: [f.nic.de] is not Authoritative for the domain: de");
+        Assert.assertEquals(list.get(0), "The folowing host: [f.nic.de] is not Authoritative for the domain: de.");
     }
 
 
@@ -277,7 +277,7 @@ public class TechnicalErrorsXmlParserTest {
         Assert.assertTrue(list.size() == 1);
         Assert.assertEquals(list.get(0), "The A and AAAA records [81.91.164.5, 2001:608:6:6:0:0:0:10]" +
                 " returned from the authoritative name server [c.de.net] are not the same as the supplied glue" +
-                " records [208.48.81.43]");
+                " records [208.48.81.43].");
     }
 
     @Test
@@ -331,7 +331,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The following name servers [a.nic.de, b.nic.de] share one or more IP Addresses");
+        Assert.assertEquals(list.get(0), "The following name servers [a.nic.de, b.nic.de] share one or more IP Addresses.");
     }
 
     @Test
@@ -361,7 +361,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "IANA Required a minimum of 3 name servers hosts you only have 2");
+        Assert.assertEquals(list.get(0), "IANA Required a minimum of 3 name servers hosts you only have 2.");
     }
 
     @Test
@@ -389,7 +389,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "The Authoritative name servers SOA serial number does not match: [232, 9345]");
+        Assert.assertEquals(list.get(0), "The Authoritative name servers SOA serial number does not match: [232, 9345].");
     }
 
     @Test
@@ -417,7 +417,7 @@ public class TechnicalErrorsXmlParserTest {
         DNSTechnicalCheckErrorsXmlParser parser = new DNSTechnicalCheckErrorsXmlParser(map);
         List<String> list = parser.getTechnicalCheckErrors(xml);
         Assert.assertTrue(list.size() == 1);
-        Assert.assertEquals(list.get(0), "We couldn't determine the autonomous system for Name Server [c.de.net] IPV4 [208.48.81.43]");
+        Assert.assertEquals(list.get(0), "We couldn't determine the autonomous system for Name Server [c.de.net] IPV4 [208.48.81.43].");
     }
 
 

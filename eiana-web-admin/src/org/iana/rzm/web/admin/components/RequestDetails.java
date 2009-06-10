@@ -1,32 +1,25 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.tapestry.IActionListener;
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IRequestCycle;
+import org.apache.commons.lang.*;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.admin.trans.InvalidEPPTransactionException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.admin.trans.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.admin.pages.*;
-import org.iana.rzm.web.admin.services.AdminServices;
-import org.iana.rzm.web.common.components.BaseRequestDetails;
-import org.iana.rzm.web.common.model.ConfirmationVOWrapper;
-import org.iana.rzm.web.common.model.NotificationVOWrapper;
-import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
-import org.iana.rzm.web.common.model.TransactionVOWrapper;
+import org.iana.rzm.web.admin.services.*;
+import org.iana.rzm.web.common.components.*;
+import org.iana.rzm.web.common.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @ComponentClass
 public abstract class RequestDetails extends BaseRequestDetails {
 
     @Component(id = "requestSummery", type = "RequestSummery", bindings = {
-        "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend",
-        "linkTragetPage=prop:editDomain"
-        })
+            "domainName=prop:domainName", "listener=prop:listener", "request=prop:request", "confirmationSenderListener=prop:resend",
+            "linkTragetPage=prop:editDomain"
+            })
     public abstract IComponent getRequestSummaryComponent();
 
     @Component(id = "exceptionState", type = "If", bindings = {"condition=prop:exceptionState"})
@@ -38,25 +31,25 @@ public abstract class RequestDetails extends BaseRequestDetails {
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
 
-    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"prop:errors"})
-    public abstract IComponent getErrorListComponent();
-
     @Component(id = "impactedPartiesConfirmations",
-               type = "rzmLib:ListRequestConfirmations",
-               bindings = {"confirmations=prop:impactedPartiesConfirmations"})
+            type = "rzmLib:ListRequestConfirmations",
+            bindings = {"confirmations=prop:impactedPartiesConfirmations"})
     public abstract IComponent getImpactedPartiesConfirmationsComponent();
 
     @Component(id = "displayVerisignCheck", type = "If", bindings = {"condition=prop:showPollLink"})
     public abstract IComponent getShowVerisignCheckComponent();
 
-    @Component(id="checkVerisignState", type="DirectLink", bindings = {
+    @Component(id = "checkVerisignState", type = "DirectLink", bindings = {
             "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER",
             "listener=listener:checkVerisignState", "parameters=prop:request.rtId"
             })
     public abstract IComponent getCheckVerisignStateComponent();
 
-    @Component(id="verisignStatus", type = "Insert", bindings = {"value=prop:verisignStatus"})
+    @Component(id = "verisignStatus", type = "Insert", bindings = {"value=prop:verisignStatus"})
     public abstract IComponent getVerisignStatusComponent();
+
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"errors=prop:errors"})
+    public abstract IComponent getErrorListComponent();
 
 
     @Asset(value = "WEB-INF/admin/RequestDetails.html")
@@ -79,34 +72,36 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     @Persist()
     public abstract void setNotifications(List<NotificationVOWrapper> list);
+
     public abstract List<NotificationVOWrapper> getNotifications();
 
     @Persist
     public abstract String getVerisignStatus();
+
     public abstract void setVerisignStatus(String status);
 
 
     public void pageBeginRender(PageEvent event) {
         super.pageBeginRender(event);
 
-        if(!getRequest().isPartOfEPPState()){
+        if (!getRequest().isPartOfEPPState()) {
             setVerisignStatus("Not Available");
-        }else{
+        } else {
             setVerisignStatus(getRequest().getVerisignStatus());
         }
 
-        if(getVerisignStatus() == null){
+        if (getVerisignStatus() == null) {
             setVerisignStatus("Not Available");
         }
 
     }
 
-    public List<String>getErrors(){
+    public List<String> getErrors() {
         String technicalErrors = getRequest().getTechnicalErrors();
-        if(StringUtils.isEmpty(technicalErrors)){
+        if (StringUtils.isEmpty(technicalErrors)) {
             return new ArrayList<String>();
         }
-        
+
         return getAdminServices().parseErrors(technicalErrors);
     }
 
@@ -119,19 +114,29 @@ public abstract class RequestDetails extends BaseRequestDetails {
     }
 
     public boolean isExceptionState() {
-        return StringUtils.isNotBlank(getRequest().getStateMessage()) && !isTechnicalCkeckedfailed();
+        TransactionVOWrapper wrapper = getRequest();
+        return wrapper.getState().equals(TransactionStateVOWrapper.State.EXCEPTION); 
     }
 
     public boolean isTechnicalCkeckedfailed() {
-            TransactionVOWrapper wrapper = getRequest();
-            return wrapper.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY);
+        TransactionVOWrapper wrapper = getRequest();
+        return wrapper.getState().equals(TransactionStateVOWrapper.State.PENDING_TECH_CHECK_REMEDY);
+    }
+
+
+    protected AdminServices getRzmServices() {
+        return getAdminServices();
+    }
+
+    protected String getExceptionPage() {
+        return GeneralError.PAGE_NAME;
     }
 
     public boolean isShowPollLink() {
         return getRequest().isPartOfEPPState();
     }
 
-    public void checkVerisignState(){
+    public void checkVerisignState() {
         try {
             String status = getAdminServices().getVerisignStatus(getRequest().getId());
             setVerisignStatus(status);
@@ -140,7 +145,7 @@ public abstract class RequestDetails extends BaseRequestDetails {
             page.handleNoObjectFoundException(e);
         } catch (InvalidEPPTransactionException e) {
             AdminPage page = (AdminPage) getPage();
-            page.setErrorMessage("Invalid EPP Transaction " +e.getMessage());
+            page.setErrorMessage("Invalid EPP Transaction " + e.getMessage());
         }
     }
 
@@ -164,16 +169,6 @@ public abstract class RequestDetails extends BaseRequestDetails {
         }
         return new EditRequestListener(getEditRequest(), getRequestId());
     }
-
-
-    protected AdminServices getRzmServices() {
-        return getAdminServices();
-    }
-
-    protected String getExceptionPage() {
-        return GeneralError.PAGE_NAME;
-    }
-    
 
     private static class EditRequestListener implements IActionListener {
 

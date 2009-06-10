@@ -23,6 +23,6 @@ public class MinimumNetworkDiversityMessageBuilderTest {
         Element element = document.getRootElement();
         MinimumNetworkDiversityMessageBuilder builder = new MinimumNetworkDiversityMessageBuilder();
         String errorMessage = builder.build(element, "domain");
-        Assert.assertEquals(errorMessage, "All name servers have the same AS number 123");
+        Assert.assertEquals(errorMessage, "All name servers have the same AS number 123.");
     }
 }

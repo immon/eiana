@@ -1,12 +1,9 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.*;
 import org.apache.tapestry.callback.ICallback;
-import org.iana.rzm.web.common.LinkTraget;
+import org.apache.tapestry.annotations.*;
+import org.iana.rzm.web.common.*;
 
 public abstract class WithdrawRequest extends AdminPage implements IExternalPage, LinkTraget {
 

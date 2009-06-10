@@ -12,13 +12,7 @@
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="integration-securid.module.classpath">
-    <path refid="library.secureid.classpath"/>
-    <pathelement location="${facade-common.output.dir}"/>
-    <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
-  </path>
+  <path id="integration-securid.module.classpath"/>
   
   
   <patternset id="excluded.from.module.integration-securid">
@@ -38,7 +32,7 @@
   
   <target name="compile.module.integration-securid" depends="compile.module.integration-securid.production,compile.module.integration-securid.tests" description="Compile module integration-securid"/>
   
-  <target name="compile.module.integration-securid.production" depends="compile.module.facade-common" description="Compile module integration-securid; production classes">
+  <target name="compile.module.integration-securid.production" description="Compile module integration-securid; production classes">
     <mkdir dir="${integration-securid.output.dir}"/>
     <javac destdir="${integration-securid.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.integration-securid}"/>

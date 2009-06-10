@@ -25,7 +25,7 @@ public class NotUniqueIPAddressMessageBuilderTest {
         Document document = new SAXBuilder().build(new StringReader(xml));
         Element element = document.getRootElement();
         NotUniqueIPAddressMessageBuilder builder = new NotUniqueIPAddressMessageBuilder();
-        Assert.assertEquals(builder.build(element, "root"), "The following name servers [a.nic.de, b.nic.de] share one or more IP Addresses");
+        Assert.assertEquals(builder.build(element, "root"), "The following name servers [a.nic.de, b.nic.de] share one or more IP Addresses.");
     }
 
 }

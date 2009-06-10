@@ -84,7 +84,6 @@ h5 {
 	}
 
 .label { font-weight: bold; }
-.edit .label { padding-right: 25px; }
 
 .grey { color: #999999; }
 .green { color: #579d4f; }
@@ -143,7 +142,6 @@ strong {
 
 .edit input.field, textarea.field { width: 350px; }
 select.field { width: 185px;}
-textarea.field { width: 500px; }
 
 .loginbox {
 
@@ -259,9 +257,8 @@ span.hidden { display:none }
 	.mainBox * { -moz-box-sizing: border-box; }
 	.containerBox { }
 	.containerBoxHeader { }
-/*	.boxContent { padding: 5px 10px 5px 10px; background: #F9F9F9; } */
-    .boxContent { padding: 5px 10px 5px 10px; background: #F9F9F9; width: 100%; overflow: hidden; }
-    .boxContentHeader { padding: 5px 10px 5px 10px; background: #F9F9F9; border-top: 25px solid #F4F4F4; }
+	.boxContent { padding: 5px 10px 5px 10px; background: #F9F9F9; }
+	.boxContentHeader { padding: 5px 10px 5px 10px; background: #F9F9F9; border-top: 25px solid #F4F4F4; }
 	.roundtop *, .roundbottom * { display: block; height: 1px; overflow: hidden; background: #F9F9F9; }
 	.topHeading { background: #F9F9F9; padding: 0 10px 4px 10px; font-weight: bold; color: #000; font-size: 1em; }
 	.round1 { margin: 0 5px; background: #F9F9F9; }

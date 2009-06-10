@@ -1,19 +1,14 @@
 package org.iana.ticketing.rt;
 
-import org.iana.codevalues.CodeValuesRetriever;
-import org.iana.rt.RTException;
-import org.iana.rt.RTStore;
-import org.iana.rt.RTStoreImpl;
+import org.iana.codevalues.*;
+import org.iana.rt.*;
 import org.iana.rt.queue.Queue;
-import org.iana.rt.ticket.Comment;
+import org.iana.rt.ticket.*;
 import org.iana.rt.ticket.Ticket;
-import org.iana.ticketing.TicketingException;
-import org.iana.ticketing.TicketingService;
+import org.iana.ticketing.*;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * <p/>
@@ -26,7 +21,6 @@ import java.util.Map;
  * @author Piotr Tkaczyk
  */
 public class RequestTrackerService implements TicketingService {
-
     private static final String QUEUE_NAME = "IANA-Root-Mgmt";
     private static final String TICKET_SUBJECT = "Root Zone Change request for .%tld% (%label%)";
     private static final String CUSTOM_FIELD_IANA_STATE = "IANA_State";
@@ -89,7 +83,7 @@ public class RequestTrackerService implements TicketingService {
             if (queue == null) {
                 throw new TicketingException("Queue does not exist: " + QUEUE_NAME);
             }
-
+            
             rtTicket.setQueue(queue);
             rtTicket.setStatus(Ticket.Status.Open);
             rtTicket.setSubject(TICKET_SUBJECT.replace("%tld%", ticket.getTld()).replace("%label%", getLabel(ticket.getTld())));
@@ -148,7 +142,7 @@ public class RequestTrackerService implements TicketingService {
             String currentState = convertNewLines(ticket.getCurrentStateComment());
             Comment currentStateComment = store.tickets().commentFactory().create(currentState);
             store.tickets().addComment(rtTicket, currentStateComment);
-
+            
             store.tickets().update(rtTicket);
         } catch (IOException e) {
             throw new TicketingException(e);

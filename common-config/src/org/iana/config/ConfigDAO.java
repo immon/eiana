@@ -3,7 +3,6 @@ package org.iana.config;
 import org.iana.config.impl.ConfigException;
 
 import java.util.Set;
-import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -13,8 +12,6 @@ public interface ConfigDAO {
 
     Parameter getParameter(String owner, String name) throws ConfigException;
 
-    List<Parameter> getParameters() throws ConfigException;
-    
     void addParameter(Parameter parameter) throws ConfigException;
 
     void removeParameter(Parameter parameter) throws ConfigException;

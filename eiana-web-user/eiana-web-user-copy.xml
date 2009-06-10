@@ -24,6 +24,12 @@
         <copy file="${module.eiana-web-user.basedir}/../conf/spring/dnscheck-errors-config.xml"
               todir="${module.eiana-web-user.basedir}/exploded/WEB-INF/" overwrite="true"/>
 
+        <copy file="${module.eiana-web-user.basedir}/../conf/log4j/log4j-user.properties"
+              tofile="${module.eiana-web-user.basedir}/exploded/WEB-INF/classes/log4j.properties" overwrite="true"/>
+
+        <copy file="${module.eiana-web-user.basedir}/../conf/log4j/log4j-user.properties"
+              tofile="${module.eiana-web-user.basedir}/rzm/WEB-INF/classes/log4j.properties" overwrite="true"/>
+
         <antcall target="copyBackendBeforeRun"/>
     </target>
 </project>

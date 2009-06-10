@@ -10,6 +10,9 @@ import org.iana.rzm.web.common.components.*;
 @ComponentClass
 public abstract class RequestSummery extends BaseRequestSummery {
 
+    @Asset(value = "WEB-INF/admin/RequestSummery.html")
+    public abstract IAsset get$template();
+    
     @Component(id = "pollMessageLink", type = "DirectLink", bindings = {
         "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER",
         "listener=listener:viewPollMessages", "parameters=prop:request.rtId"
@@ -22,9 +25,7 @@ public abstract class RequestSummery extends BaseRequestSummery {
     @InjectPage(PollMessagesPerspective.PAGE_NAME)
     public abstract PollMessagesPerspective getPerspective();
 
-    @Asset(value = "WEB-INF/admin/RequestSummery.html")
-    public abstract IAsset get$template();
-    
+
     public boolean isShowPollLink() {
         return getRequest().isPartOfEPPState();
     }

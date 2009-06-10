@@ -49,7 +49,7 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
         return statelessTransactionService.createTransactions(domain, splitNameServerChange, submitterEmail, getAuthenticatedUser());
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         return statelessTransactionService.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment, getAuthenticatedUser());
     }
 
@@ -103,10 +103,6 @@ public class TransactionServiceImpl extends AbstractRZMStatefulService implement
     }
 
     public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        statelessTransactionService.withdrawTransaction(id, null, getAuthenticatedUser());
-    }
-
-    public void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
-        statelessTransactionService.withdrawTransaction(id, reason, getAuthenticatedUser());
+        statelessTransactionService.withdrawTransaction(id, getAuthenticatedUser());
     }
 }

@@ -9,7 +9,7 @@
        default-lazy-init="false">
 
     <import resource="dnscheck-errors-config.xml"/>
-
+    
     <bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:remoting.properties" />
     </bean>

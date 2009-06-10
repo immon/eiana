@@ -9,12 +9,6 @@ package org.iana.rzm.facade.auth;
  */
 public interface AuthenticationService {
 
-    static final String USDOC_EMAIL = "usdocEmail";
-    static final String USDOC_PUBLIC_KEY = "usdocPublicKey";
-
-    static final String VERISIGN_EMAIL = "verisignEmail";
-    static final String VERISIGN_PUBLIC_KEY = "verisignPublicKey";
-
     /**
      * <p>Authenticates a user in the system. A user provided data containing a user name and an additional
      * part specific to am authentication method (for example, password for a simple password-based authentication).</p>

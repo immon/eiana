@@ -24,7 +24,7 @@ public class EmptyIPAddressListExceptionTest {
         Element element = document.getRootElement();
         EmptyIPAddressListMessageBuilder builder = new EmptyIPAddressListMessageBuilder();
         String message = builder.build(element, "domain");
-        Assert.assertEquals(message, "The folowing host does not seem to have have an ip address: [g.nic.net]" );
+        Assert.assertEquals(message, "The folowing host does not seem to have have an ip address: [g.nic.net]." );
     }
 
 }

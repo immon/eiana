@@ -22,6 +22,6 @@ public class NameServerUnreachableByTCPMessageBuilderTest {
         Element element = document.getRootElement();
         NameServerUnreachableByTCPMessageBuilder builder = new NameServerUnreachableByTCPMessageBuilder();
         String errorMessage = builder.build(element, "domain");
-        Assert.assertEquals(errorMessage, "The folowing host is not reachable by TCP: [f.nic.de]" );
+        Assert.assertEquals(errorMessage, "The folowing host is not reachable by TCP: [f.nic.de]." );
     }
 }

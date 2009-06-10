@@ -2,8 +2,8 @@ package org.iana.rzm.user;
 
 import org.iana.rzm.common.validators.CheckTool;
 
-import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.Entity;
 
 /**
  * <p>
@@ -18,7 +18,6 @@ import javax.persistence.Enumerated;
 @Entity
 public class AdminRole extends Role implements Cloneable {
     public enum AdminType implements Role.Type {
-        ROOT,
         IANA,
         GOV_OVERSIGHT,
         ZONE_PUBLISHER
@@ -46,10 +45,6 @@ public class AdminRole extends Role implements Cloneable {
 
     final public boolean isAdmin() {
         return true;
-    }
-
-    final public boolean isRoot(){
-        return type.equals(AdminType.ROOT);
     }
 
     public Object clone() throws CloneNotSupportedException {

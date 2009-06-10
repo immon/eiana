@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.admin.domain.dns;
 
-import org.iana.config.impl.ConfigException;
 import org.iana.dns.DNSZone;
 import org.iana.dns.exporter.DNSExporter;
 import org.iana.rzm.common.exceptions.InfrastructureException;
@@ -59,22 +58,16 @@ public class AdminDNSServiceImpl implements AdminDNSService {
             DNSZone zone = producer.getDNSZone();
             File output = getExportFile();
             exporter.export(zone, output);
-        } catch (ConfigException e) {
-            throw new InfrastructureException("dns export", e);
         } catch (RuntimeException e) {
-            throw new InfrastructureException("dns export", e);
+            throw new InfrastructureException("dsn export", e);
         }
     }
 
     public String exportZoneFile() throws  InfrastructureException {
-        try {
-            DNSZone zone = producer.getDNSZone();
-            StringWriter stringWriter = new StringWriter();
-            exporter.export(zone, stringWriter);
-            return stringWriter.getBuffer().toString();
-        } catch (ConfigException e) {
-            throw new InfrastructureException("dsn export", e);
-        }
+        DNSZone zone = producer.getDNSZone();
+        StringWriter stringWriter = new StringWriter();
+        exporter.export(zone, stringWriter);
+        return stringWriter.getBuffer().toString();
     }
 
     private File getExportFile() {

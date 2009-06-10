@@ -23,7 +23,7 @@ public class SerialNumberNotEqualmessageBuilderTest {
         Document document = new SAXBuilder().build(new StringReader(xml));
         Element element = document.getRootElement();
         SerialNumberNotEqualMessageBuilder builder = new SerialNumberNotEqualMessageBuilder();
-        Assert.assertEquals(builder.build(element, "root"), "The Authoritative name servers SOA serial number does not match: [232, 9345]");
+        Assert.assertEquals(builder.build(element, "root"), "The Authoritative name servers SOA serial number does not match: [232, 9345].");
 
     }
 

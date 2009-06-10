@@ -22,7 +22,7 @@
 
 
     <servlet-mapping>
-        <servlet-name>generateZoneFile</servlet-name>
+            <servlet-name>generateZoneFile</servlet-name>
         <url-pattern>/generateZoneFile</url-pattern>
     </servlet-mapping>
 

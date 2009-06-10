@@ -288,7 +288,7 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
     public void deleteTransactions() {
         processDAO.deleteAll();
     }
-    
+
     protected void cleanUp() throws Exception {
         for (RZMUser user : userManager.findAll())
             userManager.delete(user);

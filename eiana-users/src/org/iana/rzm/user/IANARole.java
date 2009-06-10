@@ -18,10 +18,6 @@ public class IANARole extends Role implements Cloneable {
         return true;
     }
 
-    public boolean isRoot() {
-        return false;
-    }
-
     public Type getType() {
         return IANAType.IANA;
     }

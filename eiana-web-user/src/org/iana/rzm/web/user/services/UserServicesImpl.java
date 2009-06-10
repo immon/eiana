@@ -1,41 +1,33 @@
 package org.iana.rzm.web.user.services;
 
-import org.apache.log4j.Logger;
-import org.iana.codevalues.Value;
-import org.iana.commons.ListUtil;
-import org.iana.criteria.Criterion;
-import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.common.cc.CountryCodes;
-import org.iana.rzm.facade.passwd.PasswordChangeException;
-import org.iana.rzm.facade.passwd.PasswordChangeService;
-import org.iana.rzm.facade.services.RZMStatefulService;
-import org.iana.rzm.facade.system.domain.SystemDomainService;
-import org.iana.rzm.facade.system.domain.vo.IDomainVO;
-import org.iana.rzm.facade.system.domain.vo.SimpleDomainVO;
+import org.apache.log4j.*;
+import org.iana.codevalues.*;
+import org.iana.commons.*;
+import org.iana.criteria.*;
+import org.iana.dns.check.*;
+import org.iana.rzm.common.exceptions.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.common.cc.*;
+import org.iana.rzm.facade.passwd.*;
+import org.iana.rzm.facade.services.*;
+import org.iana.rzm.facade.system.domain.*;
+import org.iana.rzm.facade.system.domain.vo.*;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.TransactionVO;
-import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
-import org.iana.rzm.facade.user.RoleVO;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.user.UserVOManager;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
-import org.iana.rzm.web.common.RzmApplicationException;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.model.criteria.SortOrder;
-import org.iana.rzm.web.common.query.resolver.RequestFieldNameResolver;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.facade.system.trans.vo.changes.*;
+import org.iana.rzm.facade.user.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.technical_check.DNSTechnicalCheckErrorsXmlParser;
-import org.iana.rzm.web.common.utils.CountryCodeSorter;
-import org.iana.web.tapestry.services.ServiceInitializer;
+import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.common.model.criteria.*;
+import org.iana.rzm.web.common.query.resolver.*;
+import org.iana.rzm.web.common.utils.*;
+import org.iana.web.tapestry.services.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 public class UserServicesImpl implements UserServices {
 
@@ -81,7 +73,6 @@ public class UserServicesImpl implements UserServices {
         }
 
         return false;
-
     }
 
     public List<String> parseErrors(String technicalErrors) {
@@ -140,8 +131,7 @@ public class UserServicesImpl implements UserServices {
         try {
             changePasswordService.changePassword(username,oldPassword, newPassword, confirmedNewPassword);
         } catch (InfrastructureException e) {
-            LOGGER.warn("InfrastructureException", e);
-            throw new RzmApplicationException(e);
+            e.printStackTrace();
         }
     }
 
@@ -213,8 +203,6 @@ public class UserServicesImpl implements UserServices {
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
-        } catch (DNSTechnicalCheckException e) {
-            throw new DNSTechnicalCheckExceptionWrapper(e);
         }
     }
 

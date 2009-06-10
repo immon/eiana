@@ -1,21 +1,15 @@
 package org.iana.rzm.web.user.components;
 
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.web.common.Visit;
-import org.iana.rzm.web.common.components.BaseRequestDetails;
-import org.iana.rzm.web.common.model.ConfirmationVOWrapper;
-import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
-import org.iana.rzm.web.common.model.TransactionVOWrapper;
-import org.iana.rzm.web.common.model.UserVOWrapper;
-import org.iana.rzm.web.user.pages.GeneralError;
-import org.iana.rzm.web.user.pages.RequestConfirmation;
-import org.iana.rzm.web.user.pages.UserPage;
-import org.iana.rzm.web.user.services.UserServices;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.components.*;
+import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.user.pages.*;
+import org.iana.rzm.web.user.services.*;
 
-import java.util.List;
+import java.util.*;
 
 @ComponentClass
 public abstract class RequestDetails extends BaseRequestDetails {
@@ -41,7 +35,7 @@ public abstract class RequestDetails extends BaseRequestDetails {
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
 
-    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"prop:errors"})
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"errors=prop:errors"})
     public abstract IComponent getErrorListComponent();
 
     @InjectPage(RequestConfirmation.PAGE_NAME)
@@ -63,6 +57,10 @@ public abstract class RequestDetails extends BaseRequestDetails {
         return getUserServices();
     }
 
+    public List<String>getErrors(){
+        return getUserServices().parseErrors(getRequest().getTechnicalErrors());
+    }
+
     protected String getExceptionPage() {
         return GeneralError.PAGE_NAME;
     }
@@ -78,10 +76,6 @@ public abstract class RequestDetails extends BaseRequestDetails {
 
     public String getSpaceerColspan() {
         return isActionEnabled() ? "6" : "5";
-    }
-
-    public List<String>getErrors(){
-        return getUserServices().parseErrors(getRequest().getTechnicalErrors());     
     }
 
     public boolean isTechnicalCkeckedfailed() {

@@ -65,7 +65,6 @@ public class UserConverter {
         userVO.setPublicKey(user.getPublicKey());
         userVO.setSecurID(user.isSecurID());
         userVO.setPassword(user.getPassword());
-        userVO.setPasswordExDate(user.getPasswordExDate());
 
         return userVO;
     }
@@ -115,8 +114,7 @@ public class UserConverter {
         rzmUser.setPublicKey(userVO.getPublicKey());
         //rzmUser.setPassword(userVO.getPassword());
         rzmUser.setSecurID(userVO.isSecurID());
-        rzmUser.setPasswordExDate(userVO.getPasswordExDate());
-        
+
         List<Role> roles = new ArrayList<Role>();
         for (RoleVO roleVO : userVO.getRoles()) {
             roles.add(RoleConverter.convertRole(roleVO));

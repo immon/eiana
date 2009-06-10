@@ -6,5 +6,7 @@
 <component-specification class="org.iana.rzm.web.tapestry.components.dns.DNSTechnicalCheckErrorList">
 
     <parameter name = "errors" required = "true"/>
+    <property name="error"/>
+    <property name="index"/>
 
 </component-specification>

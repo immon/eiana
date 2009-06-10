@@ -23,6 +23,6 @@ public class NotAuthoritativeNameServerMessageBuilderTest {
         Element element = document.getRootElement();
         NotAuthoritativeNameServerMessageBuilder builder = new NotAuthoritativeNameServerMessageBuilder();
         String errorMessage = builder.build(element, "de");
-        Assert.assertEquals(errorMessage, "The folowing host: [f.nic.de] is not Authoritative for the domain: de" );
+        Assert.assertEquals(errorMessage, "The folowing host: [f.nic.de] is not Authoritative for the domain: de." );
     }
 }

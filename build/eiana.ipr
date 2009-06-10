@@ -33,8 +33,6 @@
       <maximumHeapSize value="128" />
       <properties />
       <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-backend" />
-      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
-      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="Application" runConfigurationName="InitRoot" />
     </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
@@ -596,12 +594,10 @@
     </library>
     <library name="rt-api">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/../lib/rt/rt-client-1.0.7.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../lib/rt/rt-api.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$PROJECT_DIR$/../../rt-client/target/rt-client-1.0.7-sources.jar!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="epp">
       <CLASSES>

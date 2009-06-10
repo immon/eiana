@@ -15,8 +15,6 @@
   <path id="facade-admin.module.classpath">
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
-    <pathelement location="${common-config.output.dir}"/>
-    <pathelement location="${common-config.testoutput.dir}"/>
     <path refid="library.javaee.classpath"/>
     <path refid="library.nask-commons.classpath"/>
     <pathelement location="${facade-system.output.dir}"/>
@@ -43,8 +41,6 @@
     <pathelement location="${common-dns.output.dir}"/>
     <pathelement location="${common-dns.testoutput.dir}"/>
     <path refid="library.log4j.classpath"/>
-    <pathelement location="${common-mail.output.dir}"/>
-    <pathelement location="${common-mail.testoutput.dir}"/>
   </path>
   
   
@@ -65,7 +61,7 @@
   
   <target name="compile.module.facade-admin" depends="compile.module.facade-admin.production,compile.module.facade-admin.tests" description="Compile module facade-admin"/>
   
-  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.eiana-users,compile.module.eiana-domains,compile.module.eiana-util,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.common-criteria,compile.module.eiana-logs,compile.module.common-objectdiff,compile.module.common-dns,compile.module.common-config,compile.module.common-mail" description="Compile module facade-admin; production classes">
+  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.eiana-users,compile.module.eiana-domains,compile.module.eiana-util,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.common-criteria,compile.module.eiana-logs,compile.module.common-objectdiff,compile.module.common-dns" description="Compile module facade-admin; production classes">
     <mkdir dir="${facade-admin.output.dir}"/>
     <javac destdir="${facade-admin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.facade-admin}"/>

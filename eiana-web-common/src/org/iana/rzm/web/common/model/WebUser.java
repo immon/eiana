@@ -1,8 +1,8 @@
 package org.iana.rzm.web.common.model;
 
-import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.auth.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class WebUser extends ValueObject implements Serializable {
     private AuthenticatedUser user;
@@ -21,10 +21,6 @@ public class WebUser extends ValueObject implements Serializable {
 
     public boolean isAdmin() {
         return user.isAdmin();
-    }
-
-    public boolean isRoot() {
-        return user.isRoot();
     }
 
     public AuthenticatedUser getUser() {

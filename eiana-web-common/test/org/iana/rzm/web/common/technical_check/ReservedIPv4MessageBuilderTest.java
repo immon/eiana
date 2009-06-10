@@ -24,7 +24,7 @@ public class ReservedIPv4MessageBuilderTest {
         Document document = new SAXBuilder().build(new StringReader(xml));
         Element element = document.getRootElement();
         ReservedIPv4MessageBuilder builder = new ReservedIPv4MessageBuilder();
-        Assert.assertEquals(builder.build(element, "root"), "The following Name Server [b.nic.de] is using a reserved IPV4 Address [127.0.0.1]");
+        Assert.assertEquals(builder.build(element, "root"), "The following Name Server [b.nic.de] is using a reserved IPV4 Address [127.0.0.1].");
     }
 
 }

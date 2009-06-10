@@ -2,6 +2,7 @@ package org.iana.pgp;
 
 import java.io.InputStream;
 import java.security.PublicKey;
+import java.util.List;
 
 /**
  * @author Jakub Laszkiewicz

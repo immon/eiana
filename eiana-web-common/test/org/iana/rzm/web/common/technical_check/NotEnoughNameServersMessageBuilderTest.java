@@ -26,6 +26,6 @@ public class NotEnoughNameServersMessageBuilderTest {
         Document document = new SAXBuilder().build(new StringReader(xml));
         Element element = document.getRootElement();
         NotEnoughNameServersMessageBuilder builder = new NotEnoughNameServersMessageBuilder();
-        Assert.assertEquals(builder.build(element, "root"), "IANA Required a minimum of 3 name servers hosts you only have 2");
+        Assert.assertEquals(builder.build(element, "root"), "IANA Required a minimum of 3 name servers hosts you only have 2.");
     }
 }

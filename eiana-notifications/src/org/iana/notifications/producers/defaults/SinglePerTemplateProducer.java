@@ -3,14 +3,13 @@ package org.iana.notifications.producers.defaults;
 import org.iana.notifications.PAddressee;
 import org.iana.notifications.PContent;
 import org.iana.notifications.PNotification;
-import org.iana.notifications.producers.AddresseeProducer;
-import org.iana.notifications.producers.DataProducer;
 import org.iana.notifications.producers.NotificationProducerException;
 import org.iana.notifications.producers.TemplateNameProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
-import org.iana.notifications.template.TemplateNotFoundException;
 import org.iana.notifications.template.factory.TemplateFactory;
+import org.iana.notifications.producers.AddresseeProducer;
+import org.iana.notifications.producers.DataProducer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +36,10 @@ public class SinglePerTemplateProducer extends AbstractNotificationProducer {
     public List<PNotification> produce(Map<String, Object> dataSource) throws NotificationProducerException {
         try {
             List<PNotification> notifications = new ArrayList<PNotification>();
+            Set<PAddressee> addressees = addresseeProducer.produce(dataSource);
             for (String templateName : templateNameProducer.produce(dataSource)) {
-                Template template = templateFactory.getTemplate(templateName);
-                AddresseeProducer addrProducer = template.getAddresseeProducer();
-                if (addrProducer == null) addrProducer = addresseeProducer;
-                Set<PAddressee> addressees = addrProducer.produce(dataSource);
                 Map<String, String> values = dataProducer.getValuesMap(dataSource);
+                Template template = templateFactory.getTemplate(templateName);
                 PContent content = template.instantiate(values);
                 PNotification notification = new PNotification(
                         templateName, addressees, content, persistent
@@ -50,8 +47,6 @@ public class SinglePerTemplateProducer extends AbstractNotificationProducer {
                 notifications.add(notification);
             }
             return notifications;
-        } catch (TemplateNotFoundException e) {
-            throw new NotificationProducerException(e);
         } catch (TemplateInstantiationException e) {
             throw new NotificationProducerException(e);
         }

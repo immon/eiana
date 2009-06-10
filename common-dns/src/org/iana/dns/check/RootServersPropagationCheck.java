@@ -1,15 +1,12 @@
 package org.iana.dns.check;
 
-import org.iana.config.impl.ConfigException;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
-import org.iana.dns.RootServersProducer;
-import org.iana.dns.check.exceptions.InternalDNSCheckException;
 import org.iana.dns.check.exceptions.RootServersPropagationException;
 import org.iana.dns.obj.DNSHostImpl;
-import org.xbill.DNS.AAAARecord;
-import org.xbill.DNS.ARecord;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.ARecord;
+import org.xbill.DNS.AAAARecord;
 
 import java.util.*;
 
@@ -18,12 +15,11 @@ import java.util.*;
  */
 public class RootServersPropagationCheck extends AbstractDNSDomainTechnicalCheck {
 
-    private RootServersProducer rootServerProducer;
-
+    List<DNSHost> rootServers = new ArrayList<DNSHost>();
     private int dnsCheckRetries;
 
-    public void setRootServersProducer(RootServersProducer rootServersProducer) {
-        this.rootServerProducer = rootServersProducer;
+    public void setRootServers(List<DNSHost> rootServers) {
+        this.rootServers = rootServers;
     }
 
     public void setDnsCheckRetries(int dnsCheckRetries) {
@@ -31,7 +27,6 @@ public class RootServersPropagationCheck extends AbstractDNSDomainTechnicalCheck
     }
 
     public void doCheck(DNSDomain domain, Set<DNSNameServer> nameServers) throws DNSTechnicalCheckException {
-        List<DNSHost> rootServers = getRootServers();
         if (rootServers == null) throw new IllegalArgumentException("null root servers");
         for( DNSHost dnsHost : rootServers) {
             DNSNameServer nameServer = new DNSNameServer(domain, dnsHost, dnsCheckRetries);
@@ -69,13 +64,5 @@ public class RootServersPropagationCheck extends AbstractDNSDomainTechnicalCheck
             }
         }
         return new HashSet<DNSHost>(retHosts.values());
-    }
-
-    private List<DNSHost> getRootServers() throws DNSTechnicalCheckException {
-        try {
-            return rootServerProducer.getRootServers();
-        } catch (ConfigException e) {
-            throw new InternalDNSCheckException(e);
-        }
     }
 }

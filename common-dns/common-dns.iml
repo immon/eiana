@@ -21,8 +21,6 @@
     <orderEntry type="library" name="fastinfoset" level="project" />
     <orderEntry type="library" name="nask-commons" level="project" />
     <orderEntry type="library" name="jdom" level="project" />
-    <orderEntry type="module" module-name="common-config" />
-    <orderEntry type="library" name="hibernate" level="project" />
     <orderEntryProperties />
   </component>
 </module>

@@ -27,6 +27,6 @@ public class MaximumPayloadSizeExceededMessageBuilderTest {
         Element element = document.getRootElement();
         MaximumPayloadSizeMessageBuilder builder = new MaximumPayloadSizeMessageBuilder();
         String errorMessage = builder.build(element, "domain");
-        Assert.assertEquals(errorMessage, "The Response estimated size was 623 and it is greater than 512 bytes");
+        Assert.assertEquals(errorMessage, "The Response estimated size was 623 and it is greater than 512 bytes.");
     }
 }

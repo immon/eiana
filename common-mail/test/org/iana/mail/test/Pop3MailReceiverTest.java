@@ -27,25 +27,25 @@ public class Pop3MailReceiverTest {
     private static final String VALID_CONTENT = "Test content.";
 
     public void testGetMessages() throws MailReceiverException, MessagingException, IOException {
-        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, false, true);
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, "", false, true);
         List<MimeMessage> messages = receiver.getMessages();
         assertMessages(messages);
     }
 
     public void testGetMessagesPort() throws MailReceiverException, MessagingException, IOException {
-        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, false, true);
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, "", false, true);
         List<MimeMessage> messages = receiver.getMessages();
         assertMessages(messages);
     }
 
     public void testGetMessagesSSL() throws MailReceiverException, MessagingException, IOException {
-        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, true, true);
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_USER, MAIL_PASSWORD, "", true, true);
         List<MimeMessage> messages = receiver.getMessages();
         assertMessages(messages);
     }
 
     public void testGetMessagesPortSSL() throws MailReceiverException, MessagingException, IOException {
-        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, true, true);
+        MailReceiver receiver = new Pop3MailReceiver(MAIL_HOST, MAIL_HOST_PORT, MAIL_USER, MAIL_PASSWORD, "", true, true);
         List<MimeMessage> messages = receiver.getMessages();
         assertMessages(messages);
     }

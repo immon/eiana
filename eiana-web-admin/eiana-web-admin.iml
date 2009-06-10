@@ -24,14 +24,13 @@
     <orderEntry type="module" module-name="facade-admin" />
     <orderEntry type="library" name="tapestry" level="project" />
     <orderEntry type="module" module-name="eiana-logs" />
-    <orderEntry type="module" module-name="common-mail" />
     <orderEntryProperties />
   </component>
   <component name="WebModuleBuildComponent">
     <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/exploded" />
     <setting name="EXPLODED_ENABLED" value="true" />
-    <setting name="JAR_URL" value="file://$MODULE_DIR$/rzm-admin.war" />
-    <setting name="JAR_ENABLED" value="false" />
+    <setting name="JAR_URL" value="file://$MODULE_DIR$/../build/dist/rzm-admin.war" />
+    <setting name="JAR_ENABLED" value="true" />
     <setting name="SYNC_EXPLODED_DIR" value="true" />
     <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
     <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
@@ -55,8 +54,8 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="module" name="common-dns">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="module" name="common-mail">
       <attribute name="method" value="1" />
@@ -150,20 +149,14 @@
       <attribute name="URI" value="/WEB-INF/lib/libidn-1.8.jar" />
       <url>jar://$MODULE_DIR$/../lib/idn/libidn-1.8.jar!/</url>
     </containerElement>
-    <containerElement type="library" level="module">
+    <containerElement type="library" name="javaee" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
-      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/jbpm/jbpm-identity-3.1.4.jar!/</url>
-    </containerElement>
-    <containerElement type="library" level="module">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib/jdom.jar" />
-      <url>jar://$MODULE_DIR$/../lib/jdom/jdom.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="1" />
@@ -209,8 +202,8 @@
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="epp" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="fastinfoset" level="project">
       <attribute name="method" value="0" />
@@ -219,10 +212,6 @@
     <containerElement type="library" name="hibernate" level="project">
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
-    </containerElement>
-    <containerElement type="library" name="javaee" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />
@@ -233,16 +222,16 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="jdom" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib/jdom.jar" />
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="junit" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="log4j" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="mail" level="project">
       <attribute name="method" value="0" />
@@ -261,7 +250,7 @@
       <attribute name="URI" value="&lt;N/A&gt;" />
     </containerElement>
     <containerElement type="library" name="rzm-ui-components" level="project">
-      <attribute name="method" value="0" />
+      <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="saaj" level="project">

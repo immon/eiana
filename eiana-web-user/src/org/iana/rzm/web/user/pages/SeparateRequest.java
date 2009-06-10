@@ -1,27 +1,19 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InitialValue;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
-import org.iana.rzm.web.common.model.DomainVOWrapper;
-import org.iana.rzm.web.common.model.TransactionVOWrapper;
-import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
-import org.iana.rzm.web.user.query.retriver.ImpactedPartyTransactionRetriver;
-import org.iana.rzm.web.user.services.UserServices;
+import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.common.query.retriver.*;
+import org.iana.rzm.web.user.query.retriver.*;
+import org.iana.rzm.web.user.services.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public abstract class SeparateRequest extends UserPage implements PageBeginRenderListener, IExternalPage {
 
@@ -206,7 +198,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getModifiedDomain().getName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getMessage()));
         }
     }
 

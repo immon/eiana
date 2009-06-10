@@ -1,16 +1,13 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.tapestry.IAsset;
-import org.apache.tapestry.IComponent;
+import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.iana.rzm.web.admin.pages.EditDomain;
-import org.iana.rzm.web.admin.pages.GeneralError;
-import org.iana.rzm.web.admin.pages.Home;
-import org.iana.rzm.web.admin.services.AdminServices;
-import org.iana.rzm.web.common.LinkTraget;
-import org.iana.rzm.web.common.components.BaseWithdrawRequestConfirmation;
-import org.iana.rzm.web.common.services.RzmServices;
-import org.iana.web.tapestry.callback.MessagePropertyCallback;
+import org.iana.rzm.web.admin.pages.*;
+import org.iana.rzm.web.admin.services.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.components.*;
+import org.iana.rzm.web.common.services.*;
+import org.iana.web.tapestry.callback.*;
 
 @ComponentClass
 public abstract class WithdrawRequestConfirmation extends BaseWithdrawRequestConfirmation {

@@ -30,7 +30,7 @@ public class NameServerCoherencyMessageBuilderTest {
         NameServerCoherencyMessageBuilder builder = new NameServerCoherencyMessageBuilder();
         String message = builder.build(element, "domain");
         Assert.assertEquals(message, "The NS RR-set returned by the authoritative name servers [b.dns.net, a.dns.net] " +
-                "are not the same as the supplied ns records [c.dns.net, a.dns.net] for Name server: f.nic.de"  );
+                "are not the same as the supplied ns records [c.dns.net, a.dns.net] for Name server: f.nic.de."  );
 
     }
 }

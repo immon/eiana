@@ -2,14 +2,13 @@ package org.iana.rzm.web.common.components;
 
 import org.apache.tapestry.*;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.components.Insert;
-import org.apache.tapestry.engine.IEngineService;
-import org.apache.tapestry.html.Shell;
-import org.iana.rzm.web.common.Global;
-import org.iana.rzm.web.common.Visit;
-import org.iana.rzm.web.common.pages.BaseLogin;
-import org.iana.web.tapestry.callback.MessagePropertyCallback;
-import org.iana.web.tapestry.session.ApplicationLifecycle;
+import org.apache.tapestry.components.*;
+import org.apache.tapestry.engine.*;
+import org.apache.tapestry.html.*;
+import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.pages.*;
+import org.iana.web.tapestry.callback.*;
+import org.iana.web.tapestry.session.*;
 
 public abstract class BaseBorder extends BaseComponent {
 
@@ -84,7 +83,7 @@ public abstract class BaseBorder extends BaseComponent {
 
     private boolean isLoginPage() {
         String name = getPage().getPageName();
-        return name.equals("Login");
+        return name.equals("BaseLogin");
     }
 
     public String getUserTitle() {
@@ -93,10 +92,6 @@ public abstract class BaseBorder extends BaseComponent {
 
     public boolean isLoggedIn() {
         return getVisitExists() && getVisit().isUserLoggedIn();
-    }
-
-    public boolean isRoot(){
-        return isLoggedIn() && getVisit().getUser().isRoot();        
     }
 
     public IPage logout() {

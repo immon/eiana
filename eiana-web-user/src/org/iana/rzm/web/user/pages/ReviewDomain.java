@@ -1,29 +1,21 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.log4j.Logger;
-import org.apache.tapestry.IComponent;
-import org.apache.tapestry.IExternalPage;
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
-import org.apache.tapestry.callback.ICallback;
-import org.apache.tapestry.event.PageBeginRenderListener;
-import org.apache.tapestry.event.PageEvent;
-import org.iana.rzm.facade.auth.AccessDeniedException;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.RadicalAlterationException;
-import org.iana.rzm.facade.system.trans.SharedNameServersCollisionException;
-import org.iana.rzm.web.common.LinkTraget;
+import org.apache.log4j.*;
+import org.apache.tapestry.*;
+import org.apache.tapestry.annotations.*;
+import org.apache.tapestry.callback.*;
+import org.apache.tapestry.event.*;
+import org.iana.rzm.facade.auth.*;
+import org.iana.rzm.facade.common.*;
+import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.query.QueryBuilderUtil;
-import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
-import org.iana.rzm.web.common.utils.WebUtil;
-import org.iana.rzm.web.user.query.retriver.ImpactedPartyTransactionRetriver;
+import org.iana.rzm.web.common.query.*;
+import org.iana.rzm.web.common.query.retriver.*;
+import org.iana.rzm.web.common.utils.*;
+import org.iana.rzm.web.user.query.retriver.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public abstract class ReviewDomain extends UserPage implements PageBeginRenderListener, IExternalPage, LinkTraget {
@@ -256,7 +248,7 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomain().getName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }

@@ -6,11 +6,12 @@ import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSVisitor;
 
 import java.util.Set;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class DNSZoneImpl extends DNSDomainImpl implements DNSZone {
+public class DNSZoneImpl extends DNSDomainImpl implements DNSZone, Serializable {
 
     long zoneTTL;
 

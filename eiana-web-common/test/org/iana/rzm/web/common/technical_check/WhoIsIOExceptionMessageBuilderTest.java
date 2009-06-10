@@ -22,6 +22,6 @@ public class WhoIsIOExceptionMessageBuilderTest {
         Document document = new SAXBuilder().build(new StringReader(xml));
         Element element = document.getRootElement();
         WhoIsIOExceptionMessageBuilder builder = new WhoIsIOExceptionMessageBuilder();
-        Assert.assertEquals(builder.build(element, "root"), "We couldn't determine the autonomous system for Name Server [c.de.net] IPV4 [208.48.81.43]");
+        Assert.assertEquals(builder.build(element, "root"), "We couldn't determine the autonomous system for Name Server [c.de.net] IPV4 [208.48.81.43].");
     }
 }
