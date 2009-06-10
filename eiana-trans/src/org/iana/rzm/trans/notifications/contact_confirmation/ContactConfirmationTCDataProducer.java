@@ -52,7 +52,7 @@ public class ContactConfirmationTCDataProducer extends DefaultTransactionDataPro
             values.put("period", "" + dataSource.get("period"));
 
             RZMUser logInUser = userManager.get(td.getTrackData().getCreatedBy());
-            values.put("subbmiter", logInUser == null ? (td.getSubmitterEmail() != null ? td.getSubmitterEmail() : "") : logInUser.getName());
+            values.put("submitter", logInUser == null ? (td.getSubmitterEmail() != null ? td.getSubmitterEmail() : "") : logInUser.getName());
         }
         return values;
     }

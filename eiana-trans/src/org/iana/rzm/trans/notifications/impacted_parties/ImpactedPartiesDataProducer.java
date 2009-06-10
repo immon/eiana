@@ -35,7 +35,7 @@ public class ImpactedPartiesDataProducer extends DefaultTransactionDataProducer 
             // values.put("newContactOnly", isNewContact(td) ? newContactInfo(td) : "");
             values.put("url", "https://rzm.iana.org:8080/rzm");
             values.put("ticket", "" + td.getTicketID());
-            values.put("subbmiter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());
+            values.put("submitter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());
         }
         return values;
     }
