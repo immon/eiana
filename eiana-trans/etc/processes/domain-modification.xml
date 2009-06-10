@@ -282,6 +282,9 @@
             <event type="node-enter">
                 <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
                 </action>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>manualReviewNotificationProducer</notificationProducerName>
+                </action>
             </event>
             <transition name="accept" to="MATCHES_SI_BREAKPOINT_DECISION"/>
             <transition name="reject" to="REJECTED_TRANSPARENT"/>
