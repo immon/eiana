@@ -102,6 +102,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef.setSigned(false);
         session.save(templateDef);
 
+        //not used
         templateDef = new TemplateDef();
         templateDef.setType("technical-deficiencies");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
@@ -222,7 +223,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("completed-nschange");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC", "SUBMITTER")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName} | COMPLETED");
         templateDef.setContent(
                 "Hello,\n" +
@@ -259,7 +260,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("completed");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC", "SUBMITTER")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName} | COMPLETED");
         templateDef.setContent(
                 "Hello,\n" +
@@ -294,7 +295,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("withdrawn");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC", "SUBMITTER")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName} | WITHDRAWN");
         templateDef.setContent(
                 "Hello,\n" +
@@ -322,7 +323,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("admin-closed");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC", "SUBMITTER")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName} I ADMIN_CLOSED");
         templateDef.setContent(
                 "Hello,\n" +
@@ -349,7 +350,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("exception");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SYSTEM_ERRORS")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName} | EXCEPTION");
         templateDef.setContent(
                 "Hello,\n" +
@@ -387,7 +388,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("rejected");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC", "SUBMITTER")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("{ticket} | [RZM] | {domainName} | REJECTED");
         templateDef.setContent(
                 "Rejected.");
@@ -555,7 +556,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("technical-check-period");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC")));
         templateDef.setSubject("Domain {domainName} technical checks");
         templateDef.setContent(
                 "Technical checks for domain {domainName}:\n" +
@@ -567,7 +568,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
 
         templateDef = new TemplateDef();
         templateDef.setType("technical-check");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA", "AC", "TC")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC")));
         templateDef.setSubject("Domain {domainName} technical checks");
         templateDef.setContent(
                 "Technical checks for domain {domainName}:\n" +

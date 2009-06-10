@@ -879,7 +879,7 @@
             <value>true</value>
         </property>
         <property name="sendToAdmins">
-            <value>false</value>
+            <value>true</value>
         </property>
         <property name="additionalEmails">
             <list>
