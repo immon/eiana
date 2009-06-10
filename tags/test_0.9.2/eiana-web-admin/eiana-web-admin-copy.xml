@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_eiana-web-admin">
+
+    <import file="${basedir}/../eiana-web-backend/eiana-web-backend-copy.xml"/>
+
+    <dirname property="module.eiana-web-admin.basedir" file="${ant.file.module_eiana-web-admin}"/>
+
+    <target name="copyAdminBeforeRun">
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/admin-services-config.xml"
+              todir="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/remoting.properties"
+              todir="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/classes" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/admin-services-config.xml"
+              todir="${module.eiana-web-admin.basedir}/exploded/WEB-INF/" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/remoting.properties"
+              todir="${module.eiana-web-admin.basedir}/exploded/WEB-INF/classes" overwrite="true"/>
+
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/dnscheck-errors-config.xml"
+              todir="${module.eiana-web-admin.basedir}/exploded/WEB-INF/" overwrite="true"/>
+
+        <copy file="${module.eiana-web-admin.basedir}/../conf/spring/dnscheck-errors-config.xml"
+            todir="${module.eiana-web-admin.basedir}/rzm-admin/WEB-INF/" overwrite="true"/>
+
+
+        <antcall target="copyBackendBeforeRun"/>
+    </target>
+</project>

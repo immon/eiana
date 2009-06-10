@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-users" default="compile.module.eiana-users">
+  <dirname property="module.eiana-users.basedir" file="${ant.file.module_eiana-users}"/>
+  
+  
+  <property name="compiler.args.eiana-users" value="${compiler.args}"/>
+  
+  <property name="eiana-users.output.dir" value="${module.eiana-users.basedir}/../build/classes/production/eiana-users"/>
+  <property name="eiana-users.testoutput.dir" value="${module.eiana-users.basedir}/../build/classes/test/eiana-users"/>
+  
+  <path id="eiana-users.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-users.module.classpath">
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <pathelement location="${common-dao.output.dir}"/>
+    <pathelement location="${common-dao.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
+    <path refid="library.junit.classpath"/>
+    <pathelement location="${common-test.output.dir}"/>
+    <pathelement location="${common-test.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-users">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-users">
+    <patternset refid="excluded.from.module.eiana-users"/>
+  </patternset>
+  
+  <path id="eiana-users.module.sourcepath">
+    <dirset dir="${module.eiana-users.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-users" depends="compile.module.eiana-users.production,compile.module.eiana-users.tests" description="Compile module eiana-users"/>
+  
+  <target name="compile.module.eiana-users.production" depends="compile.module.eiana-util,compile.module.eiana-notifications,compile.module.common-criteria,compile.module.common-dao,compile.module.common-dns,compile.module.common-test" description="Compile module eiana-users; production classes">
+    <mkdir dir="${eiana-users.output.dir}"/>
+    <javac destdir="${eiana-users.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-users}"/>
+      <bootclasspath refid="eiana-users.module.bootclasspath"/>
+      <classpath refid="eiana-users.module.classpath"/>
+      <src refid="eiana-users.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-users"/>
+    </javac>
+    
+    <copy todir="${eiana-users.output.dir}">
+      <fileset dir="${module.eiana-users.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-users.tests" depends="compile.module.eiana-users.production" description="compile module eiana-users; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.eiana-users" description="cleanup module">
+    <delete dir="${eiana-users.output.dir}"/>
+    <delete dir="${eiana-users.testoutput.dir}"/>
+  </target>
+</project>

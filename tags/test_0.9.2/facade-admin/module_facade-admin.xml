@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_facade-admin" default="compile.module.facade-admin">
+  <dirname property="module.facade-admin.basedir" file="${ant.file.module_facade-admin}"/>
+  
+  
+  <property name="compiler.args.facade-admin" value="${compiler.args}"/>
+  
+  <property name="facade-admin.output.dir" value="${module.facade-admin.basedir}/../build/classes/production/facade-admin"/>
+  <property name="facade-admin.testoutput.dir" value="${module.facade-admin.basedir}/../build/classes/test/facade-admin"/>
+  
+  <path id="facade-admin.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="facade-admin.module.classpath">
+    <pathelement location="${facade-common.output.dir}"/>
+    <pathelement location="${facade-common.testoutput.dir}"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${facade-system.output.dir}"/>
+    <pathelement location="${facade-system.testoutput.dir}"/>
+    <pathelement location="${eiana-users.output.dir}"/>
+    <pathelement location="${eiana-users.testoutput.dir}"/>
+    <pathelement location="${eiana-domains.output.dir}"/>
+    <pathelement location="${eiana-domains.testoutput.dir}"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.hibernate.classpath"/>
+    <pathelement location="${eiana-notifications.output.dir}"/>
+    <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${eiana-trans.output.dir}"/>
+    <pathelement location="${eiana-trans.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <path refid="library.spring.classpath"/>
+    <pathelement location="${eiana-logs.output.dir}"/>
+    <pathelement location="${eiana-logs.testoutput.dir}"/>
+    <path refid="library.cobertura.classpath"/>
+    <pathelement location="${common-objectdiff.output.dir}"/>
+    <pathelement location="${common-objectdiff.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
+    <path refid="library.log4j.classpath"/>
+    <pathelement location="${common-mail.output.dir}"/>
+    <pathelement location="${common-mail.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.facade-admin">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.facade-admin">
+    <patternset refid="excluded.from.module.facade-admin"/>
+  </patternset>
+  
+  <path id="facade-admin.module.sourcepath">
+    <dirset dir="${module.facade-admin.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.facade-admin" depends="compile.module.facade-admin.production,compile.module.facade-admin.tests" description="Compile module facade-admin"/>
+  
+  <target name="compile.module.facade-admin.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.eiana-users,compile.module.eiana-domains,compile.module.eiana-util,compile.module.eiana-notifications,compile.module.eiana-trans,compile.module.common-criteria,compile.module.eiana-logs,compile.module.common-objectdiff,compile.module.common-dns,compile.module.common-config,compile.module.common-mail" description="Compile module facade-admin; production classes">
+    <mkdir dir="${facade-admin.output.dir}"/>
+    <javac destdir="${facade-admin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.facade-admin}"/>
+      <bootclasspath refid="facade-admin.module.bootclasspath"/>
+      <classpath refid="facade-admin.module.classpath"/>
+      <src refid="facade-admin.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.facade-admin"/>
+    </javac>
+    
+    <copy todir="${facade-admin.output.dir}">
+      <fileset dir="${module.facade-admin.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.facade-admin.tests" depends="compile.module.facade-admin.production" description="compile module facade-admin; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.facade-admin" description="cleanup module">
+    <delete dir="${facade-admin.output.dir}"/>
+    <delete dir="${facade-admin.testoutput.dir}"/>
+  </target>
+</project>

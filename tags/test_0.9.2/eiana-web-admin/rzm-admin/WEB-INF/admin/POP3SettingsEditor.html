@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/master.css"/>
+        <title>Root Zone Management</title>
+    </head>
+    <body jwcid="$content$">
+Pop3        <form action="#" name="pop" jwcid="popEditor">
+            <table class="edit" border="0" cellpadding="5" cellspacing="5" width="65%">
+                <tr>
+                    <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:host">Host:</span></td>
+                    <td align="left" valign="top"><input jwcid="host" type="text" name="textfield7" class="field"/></td>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:port">Port:</span></td>
+                    <td align="left" valign="top"><input jwcid="port" type="text" name="textfield7" class="field"/></td>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:user">User name:</span></td>
+                    <td align="left" valign="top"><input jwcid="user" type="text" name="textfield7" class="field"/></td>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><span jwcid="@FieldLabel" field="component:password">Password:</span></td>
+                    <td align="left" valign="top"><input jwcid="password" type="text" name="textfield7" class="field"/></td>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><label jwcid="sslLabel">Use  SSL:</label></td>
+                    <td align="left" valign="top"><input jwcid="ssl" type="checkbox" value=""/></td>
+                </tr>
+                <tr>
+                    <td valign="top" class="label green"><label jwcid="debugLabel">Use  Debug:</label></td>
+                    <td align="left" valign="top"><input jwcid="debug" type="checkbox" value=""/></td>
+                </tr>
+            </table>
+            <div class="buttonStyle" style="float: right;">
+                <b class="left"></b>
+                <b class="right" style="width: 130px;"><a href="#" jwcid="save" class="button" style="padding-left: 13px;"> Save Changes &gt;</a></b>
+            </div>
+            <div class="buttonStyle" style="margin: 0 10px 0 0; float: right;">
+                <b class="leftBlue"></b>
+                <b class="right" style="width: 130px;"><a href="#" jwcid="cancel" class="buttonBlue" style="padding-left: 8px;"> &lt; Revert Changes</a></b>
+            </div>
+        </form>
+    </body>
+</html>

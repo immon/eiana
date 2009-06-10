@@ -1,0 +1,633 @@
+<process-definition name="Domain Modification Transaction (Unified Workflow)">
+
+    <start-state>
+        <transition to="REQUEST_TRACKER_TICKET_CREATION"></transition>
+    </start-state>
+
+    <super-state name='LOGGED_STATE'>
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.process.general.ticketingservice.ProcessStateUpdater"/>
+        </event>
+        <event type='node-leave'>
+            <action class="org.iana.rzm.trans.process.general.logs.ProcessStateLogger">
+                <systemStates>
+                    <element>PENDING_TECH_CHECK</element>
+                    <element>PENDING_DATABASE_INSERTION</element>
+                    <element>PENDING_ZONE_INSERTION</element>
+                    <element>PENDING_ZONE_PUBLICATION</element>
+                    <element>PENDING_ZONE_TESTING</element>
+                    <element>PENDING_SUPP_TECH_CHECK</element>
+                </systemStates>
+                <contactStates>
+                    <element>PENDING_CONTACT_CONFIRMATION</element>
+                </contactStates>
+            </action>
+        </event>
+        <event type='node-enter'>
+            <action class="org.iana.rzm.trans.process.general.ticketingservice.ProcessStateUpdater"/>
+        </event>
+
+        <transition name="TRANSITION_PENDING_CREATION" to="PENDING_CREATION"/>
+        <transition name="TRANSITION_PENDING_TECH_CHECK" to="PENDING_TECH_CHECK"/>
+        <transition name="TRANSITION_PENDING_TECH_CHECK_REMEDY" to="PENDING_TECH_CHECK_REMEDY"/>
+        <transition name="TRANSITION_PENDING_CONTACT_CONFIRMATION" to="PENDING_CONTACT_CONFIRMATION"/>
+        <transition name="TRANSITION_PENDING_SOENDORSEMENT" to="PENDING_SOENDORSEMENT"/>
+        <transition name="TRANSITION_PENDING_IMPACTED_PARTIES" to="PENDING_IMPACTED_PARTIES"/>
+        <transition name="TRANSITION_PENDING_MANUAL_REVIEW" to="PENDING_MANUAL_REVIEW"/>
+        <transition name="TRANSITION_PENDING_EXT_APPROVAL" to="PENDING_EXT_APPROVAL"/>
+        <transition name="TRANSITION_PENDING_EVALUATION" to="PENDING_EVALUATION"/>
+        <transition name="TRANSITION_PENDING_IANA_CHECK" to="PENDING_IANA_CHECK"/>
+        <transition name="TRANSITION_PENDING_SUPP_TECH_CHECK" to="PENDING_SUPP_TECH_CHECK"/>
+        <transition name="TRANSITION_PENDING_SUPP_TECH_CHECK_REMEDY" to="PENDING_SUPP_TECH_CHECK_REMEDY"/>
+        <transition name="TRANSITION_PENDING_USDOC_APPROVAL" to="PENDING_USDOC_APPROVAL"/>
+        <transition name="TRANSITION_PENDING_ZONE_INSERTION" to="PENDING_ZONE_INSERTION"/>
+        <transition name="TRANSITION_PENDING_ZONE_PUBLICATION" to="PENDING_ZONE_PUBLICATION"/>
+        <transition name="TRANSITION_PENDING_ZONE_TESTING" to="PENDING_ZONE_TESTING"/>
+        <transition name="TRANSITION_PENDING_DATABASE_INSERTION" to="PENDING_DATABASE_INSERTION"/>
+        <transition name="TRANSITION_COMPLETED" to="COMPLETED_TRANSPARENT"/>
+        <transition name="TRANSITION_WITHDRAWN" to="WITHDRAWN_TRANSPARENT"/>
+        <transition name="TRANSITION_REJECTED" to="REJECTED_TRANSPARENT"/>
+        <transition name="TRANSITION_ADMIN_CLOSED" to="ADMIN_CLOSED_TRANSPARENT"/>
+        <transition name="TRANSITION_EXCEPTION" to="EXCEPTION"/>
+
+        <decision name="REQUEST_TRACKER_TICKET_CREATION">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
+                    <start>true</start>
+                </action>
+                <action class="org.iana.rzm.trans.notifications.review.SpecialReviewProcessStateNotifier">
+                    <notificationProducerName>specialReviewNotificationProducer</notificationProducerName>
+                </action>
+            </event>
+            <handler class="org.iana.rzm.trans.process.general.ticketingservice.TicketCreation"/>
+            <transition name="ok" to="FIRST_NSLINK_CHANGE_DECISION"/>
+            <transition name="failed" to="PENDING_CREATION"/>
+        </decision>
+
+        <state name="PENDING_CREATION">
+            <transition name="go-on" to="FIRST_NSLINK_CHANGE_DECISION"/>
+            <transition name="admin-accept" to="FIRST_NSLINK_CHANGE_DECISION"/>
+        </state>
+
+        <decision name="FIRST_NSLINK_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_tech_check.NSLinkChangeDecision"/>
+            <transition name="yes" to="PENDING_TECH_CHECK"/>
+            <transition name="no" to="PENDING_CONTACT_CONFIRMATION"/>
+        </decision>
+
+        <decision name="PENDING_TECH_CHECK">
+            <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck"/>
+            <transition name="test-ok" to="PENDING_CONTACT_CONFIRMATION"/>
+            <transition name="error" to="PENDING_TECH_CHECK_REMEDY"/>
+        </decision>
+
+        <state name="PENDING_TECH_CHECK_REMEDY">
+            <event type='node-leave'>
+                <event type='node-enter'>
+                    <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageCleaner'/>
+                </event>
+            </event>
+            <timer name="1d-check" duedate="1 day">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>6</period>
+                </action>
+            </timer>
+            <timer name="2d-check" duedate="2 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>5</period>
+                </action>
+            </timer>
+            <timer name="3d-check" duedate="3 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>4</period>
+                </action>
+            </timer>
+            <timer name="4d-check" duedate="4 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>3</period>
+                </action>
+            </timer>
+            <timer name="5d-check" duedate="5 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>2</period>
+                </action>
+            </timer>
+            <timer name="6d-check" duedate="6 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>1</period>
+                </action>
+            </timer>
+            <timer name="7d-check" duedate="7 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy"/>
+            </timer>
+            <timer name="7d-time-out" duedate="7 days" transition="close"></timer>
+            <transition name="accept" to="PENDING_CONTACT_CONFIRMATION"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="PENDING_CONTACT_CONFIRMATION"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <state name="PENDING_CONTACT_CONFIRMATION">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.confirmation.contact.ContactConfirmationCalculator"/>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationNotificationProducer</notificationProducerName>
+                </action>
+                <!--<action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">-->
+                    <!--<notificationProducerName>contactConfirmationTCNotificationProducer</notificationProducerName>-->
+                <!--</action>-->
+                <!--
+                            <action class="org.iana.rzm.trans.jbpm.handlers.ContactConfirmationCalculator"/>
+                            <action class="org.iana.rzm.trans.jbpm.handlers.ContactNotifier">
+                                <notification>contact-confirmation</notification>
+                            </action>
+                -->
+            </event>
+            <timer name="7d-time-out" duedate='7 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>23</value></entry>
+                    </additionalData>
+                </action>
+                <!-- Unused since template are stored in db -->
+                <!--<action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">-->
+                    <!--<notificationProducerName>contactConfirmationRemainderTCNotificationProducer</notificationProducerName>-->
+                    <!--<additionalData>-->
+                        <!--<entry><key>period</key><value>23</value></entry>-->
+                    <!--</additionalData>-->
+                <!--</action>-->
+            </timer>
+            <timer name="14d-time-out" duedate='14 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>16</value></entry>
+                    </additionalData>
+                </action>
+                <!-- Unused since template are stored in db -->
+                <!--<action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">-->
+                    <!--<notificationProducerName>contactConfirmationRemainderTCNotificationProducer</notificationProducerName>-->
+                    <!--<additionalData>-->
+                        <!--<entry><key>period</key><value>16</value></entry>-->
+                    <!--</additionalData>-->
+                <!--</action>-->
+            </timer>
+            <timer name="21d-time-out" duedate='21 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>contactConfirmationRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>9</value></entry>
+                    </additionalData>
+                </action>
+                <!-- Unused since template are stored in db -->
+                <!--<action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">-->
+                    <!--<notificationProducerName>contactConfirmationRemainderTCNotificationProducer</notificationProducerName>-->
+                    <!--<additionalData>-->
+                        <!--<entry><key>period</key><value>9</value></entry>-->
+                    <!--</additionalData>-->
+                <!--</action>-->
+            </timer>
+            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
+            <transition name="accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover">
+                    <notifications>
+                        <element>contact-confirmation</element>
+                    </notifications>
+                </action>
+            </transition>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="MODIFICATIONS_IN_CONTACT_DECISION">
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover">
+                    <notifications>
+                        <element>contact-confirmation</element>
+                    </notifications>
+                </action>
+            </transition>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <decision name="MODIFICATIONS_IN_CONTACT_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_soendorsement.ModificationsInContactDecision"/>
+            <transition name="yes" to="PENDING_SOENDORSEMENT"/>
+            <transition name="no" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
+        </decision>
+
+        <state name="PENDING_SOENDORSEMENT">
+            <transition name="accept" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="NS_SHARED_GLUE_CHANGE_DECISION"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <decision name="NS_SHARED_GLUE_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_impacted_parties.NSSharedGlueChangeDecision"/>
+            <transition name="yes" to="PENDING_IMPACTED_PARTIES"/>
+            <transition name="no" to="PENDING_MANUAL_REVIEW"/>
+        </decision>
+
+        <state name="PENDING_IMPACTED_PARTIES">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.confirmation.contact.ImpactedPartiesCalculator">
+                </action>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>impactedPartiesNotificationProducer</notificationProducerName>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ThirdPartyPending">
+                    <start>true</start>
+                </action>
+            </event>
+            <event type='node-leave'>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ThirdPartyPending">
+                    <start>false</start>
+                </action>
+            </event>
+            <timer name="7d-time-out" duedate='7 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>impactedPartiesRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>23</value></entry>
+                    </additionalData>
+                </action>
+            </timer>
+            <timer name="14d-time-out" duedate='14 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>impactedPartiesRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>16</value></entry>
+                    </additionalData>
+                </action>
+            </timer>
+            <timer name="21d-time-out" duedate='21 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>impactedPartiesRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>9</value></entry>
+                    </additionalData>
+                </action>
+            </timer>
+            <timer name="30d-time-out" duedate='30 days' transition='close'></timer>
+            <transition name="accept" to="PENDING_MANUAL_REVIEW"/>
+            <transition name="reject" to="EXCEPTION"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="PENDING_MANUAL_REVIEW"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <state name="PENDING_MANUAL_REVIEW">
+            <event type="node-enter">
+                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
+                </action>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>manualReviewNotificationProducer</notificationProducerName>
+                </action>
+            </event>
+            <transition name="accept" to="MATCHES_SI_BREAKPOINT_DECISION"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="MATCHES_SI_BREAKPOINT_DECISION"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <decision name="MATCHES_SI_BREAKPOINT_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_ext_approval.MatchesSIBreakpointDecision"/>
+            <transition name="yes" to="PENDING_EXT_APPROVAL"/>
+            <transition name="no" to="REDEL_FLAG_SET_DECISION"/>
+        </decision>
+
+        <state name="PENDING_EXT_APPROVAL">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
+                </action>
+            </event>
+            <timer name="30d-time-out" duedate='30 days' transition='alert'>
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
+            <transition name="accept" to="REDEL_FLAG_SET_DECISION"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="REDEL_FLAG_SET_DECISION"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <decision name="REDEL_FLAG_SET_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_evaluation.RedelFlagSetDecision"/>
+            <transition name="yes" to="PENDING_EVALUATION"/>
+            <transition name="no" to="PENDING_IANA_CHECK"/>
+        </decision>
+
+        <state name="PENDING_EVALUATION">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>pendingEvaluationNotificationProducer</notificationProducerName>
+                </action>
+            </event>
+            <transition name="accept" to="PENDING_IANA_CHECK"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="PENDING_IANA_CHECK"/>
+        </state>
+
+        <state name="PENDING_IANA_CHECK">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
+                </action>
+            </event>
+            <timer name="3d-time-out" duedate='3 days' transition='alert'>
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
+            <transition name="accept" to="SECOND_NSLINK_CHANGE_DECISION"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="alert" to="EXCEPTION"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="SECOND_NSLINK_CHANGE_DECISION"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <decision name="SECOND_NSLINK_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_tech_check.NSLinkChangeDecision"/>
+            <transition name="yes" to="PENDING_SUPP_TECH_CHECK"/>
+            <transition name="no" to="PENDING_USDOC_APPROVAL"/>
+        </decision>
+
+        <decision name="PENDING_SUPP_TECH_CHECK">
+            <handler class="org.iana.rzm.trans.process.pending_tech_check.TechnicalCheck">
+                <period>7</period>
+            </handler>
+            <transition name="test-ok" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="error" to="PENDING_SUPP_TECH_CHECK_REMEDY"/>
+        </decision>
+
+        <state name="PENDING_SUPP_TECH_CHECK_REMEDY">
+            <timer name="1d-check" duedate="1 day">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>6</period>
+                </action>
+            </timer>
+            <timer name="2d-check" duedate="2 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>5</period>
+                </action>
+            </timer>
+            <timer name="3d-check" duedate="3 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>4</period>
+                </action>
+            </timer>
+            <timer name="4d-check" duedate="4 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>3</period>
+                </action>
+            </timer>
+            <timer name="5d-check" duedate="5 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>2</period>
+                </action>
+            </timer>
+            <timer name="6d-check" duedate="6 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy">
+                    <period>1</period>
+                </action>
+            </timer>
+            <timer name="7d-check" duedate="7 days">
+                <action class="org.iana.rzm.trans.process.pending_tech_check_remedy.TechnicalCheckRemedy"/>
+            </timer>
+            <timer name="7d-time-out" duedate="7 days" transition="close"></timer>
+            <transition name="accept" to="PENDING_CONTACT_CONFIRMATION"/>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="close" to="ADMIN_CLOSED_TRANSPARENT"/>
+            <transition name="withdraw" to="WITHDRAWN_TRANSPARENT"/>
+            <transition name="admin-accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+        </state>
+
+        <state name="PENDING_USDOC_APPROVAL">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.process.pending_usdoc_approval.PendingUSDoCApprovalAction"/>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>usdocConfirmationNotificationProducer</notificationProducerName>
+                </action>
+            </event>
+            <timer name="5d-time-out" duedate='5 days'>
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>usdocConfirmationRemainderNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>9</value></entry>
+                    </additionalData>
+                </action>
+            </timer>
+            <timer name="14d-time-out" duedate='14 days' transition='alert'>
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
+            <transition name="accept" to="NS_CHANGE_DECISION">
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover">
+                    <notifications>
+                        <element>usdoc-confirmation</element>
+                        <element>usdoc-confirmation-nschange</element>
+                    </notifications>
+                </action>
+            </transition>
+            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="admin-accept" to="NS_CHANGE_DECISION">
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover">
+                    <notifications>
+                        <element>usdoc-confirmation</element>
+                        <element>usdoc-confirmation-nschange</element>
+                    </notifications>
+                </action>
+            </transition>
+            <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <decision name="NS_CHANGE_DECISION">
+            <handler class="org.iana.rzm.trans.process.pending_zone_insertion.NameServerChange"/>
+            <transition name="ns-change" to="PENDING_ZONE_INSERTION"/>
+            <transition name="no-ns-change" to="PENDING_DATABASE_INSERTION"/>
+        </decision>
+
+        <state name="PENDING_ZONE_INSERTION">
+            <event type="node-enter">
+                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
+                </action>
+            </event>
+            <timer name="7d-time-out" duedate="7 days">
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>zoneInsertionAlertNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>7</value></entry>
+                    </additionalData>
+                </action>
+            </timer>
+            <timer name="14d-time-out" duedate="14 days" transition="alert">
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
+            <transition name="accept" to="PENDING_ZONE_PUBLICATION"/>
+            <transition name="admin-accept" to="PENDING_ZONE_PUBLICATION"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <state name="PENDING_ZONE_PUBLICATION">
+            <event type="node-enter">
+                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
+                </action>
+            </event>
+            <timer name="3d-time-out" duedate="3 days">
+                <action class="org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier">
+                    <notificationProducerName>zonePublicationAlertNotificationProducer</notificationProducerName>
+                    <additionalData>
+                        <entry><key>period</key><value>4</value></entry>
+                    </additionalData>
+                </action>
+            </timer>
+            <timer name="7d-time-out" duedate="7 days" transition="alert">
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
+            <transition name="accept" to="PENDING_ZONE_TESTING"/>
+            <transition name="admin-accept" to="PENDING_ZONE_TESTING"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <state name="PENDING_ZONE_TESTING">
+            <event type="node-enter">
+                <action class="org.iana.rzm.trans.process.pending_zone_testing.ZoneTestingAction">
+                    <!--
+                    <rootServers>
+                        <element>ns.internic.net.net</element>
+                    </rootServers>
+                    -->
+                </action>
+                <action class="org.iana.rzm.trans.process.general.handlers.RoleCalculator">
+                </action>
+            </event>
+            <timer name="1d-periodic-check" repeat="yes" duedate="2 hours">
+                <action class="org.iana.rzm.trans.process.pending_zone_testing.ZoneTestingAction">
+                    <!--
+                    <rootServers>
+                        <element>ns.internic.net.net</element>
+                    </rootServers>
+                    -->
+                </action>
+            </timer>
+            <timer name="1d-time-out" duedate="1 day" transition="alert">
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageAlert'>
+                    <message>expired</message>
+                </action>
+            </timer>
+            <transition name="accept" to="PENDING_DATABASE_INSERTION"/>
+            <transition name="admin-accept" to="PENDING_DATABASE_INSERTION"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+        <node name='PENDING_DATABASE_INSERTION'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.process.pending_database_insertion.UpdateDomainAction'/>
+            </event>
+            <transition name='complete' to='COMPLETED_TRANSPARENT'>
+            </transition>
+        </node>
+
+        <!-- End states -->
+
+        <node name='COMPLETED_TRANSPARENT'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
+                    <notificationProducerName>completedNotificationProducer</notificationProducerName>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
+                    <start>false</start>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover"/>
+            </event>
+            <transition to="COMPLETED" />
+        </node>
+
+        <end-state name='COMPLETED' />
+
+        <node name="REJECTED_TRANSPARENT">
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
+                    <notificationProducerName>rejectedNotificationProducer</notificationProducerName>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
+                    <start>false</start>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover"/>
+            </event>
+            <transition to="REJECTED"/>
+        </node>
+
+        <end-state name='REJECTED' />
+
+        <node name='WITHDRAWN_TRANSPARENT'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
+                    <notificationProducerName>withdrawnNotificationProducer</notificationProducerName>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
+                    <start>false</start>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.ticketingservice.TicketCloser"/>
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover"/>
+            </event>
+            <transition to="WITHDRAWN" />
+        </node>
+
+        <end-state name='WITHDRAWN' />
+
+        <node name='ADMIN_CLOSED_TRANSPARENT'>
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.process.general.domainstate.ProcessLifecycle">
+                    <start>false</start>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover"/>
+                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
+                    <notificationProducerName>adminClosedNotificationProducer</notificationProducerName>
+                </action>
+                <action class="org.iana.rzm.trans.process.general.ticketingservice.TicketCloser"/>
+            </event>
+            <transition to="ADMIN_CLOSED" />
+        </node>
+
+        <end-state name="ADMIN_CLOSED" />
+
+        <state name='EXCEPTION'>
+            <event type='node-enter'>
+                <action class='org.iana.rzm.trans.process.general.ticketingservice.TicketExceptionStateAddComment'>
+                </action>
+                <action class='org.iana.rzm.trans.notifications.jbpm.ProcessStateNotifier'>
+                    <notificationProducerName>exceptionNotificationProducer</notificationProducerName>
+                    <notificationSender>transactionNotificationSender</notificationSender>
+                </action>
+            </event>
+            <event type='node-leave'>
+                <action class='org.iana.rzm.trans.process.general.logs.TransactionStateMessageCleaner'/>
+            </event>
+            <!-- manual transition allowed -->
+        </state>
+    </super-state>
+</process-definition>

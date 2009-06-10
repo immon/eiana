@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_common-config" default="compile.module.common-config">
+  <dirname property="module.common-config.basedir" file="${ant.file.module_common-config}"/>
+  
+  
+  <property name="compiler.args.common-config" value="${compiler.args}"/>
+  
+  <property name="common-config.output.dir" value="${module.common-config.basedir}/../build/classes/production/common-config"/>
+  <property name="common-config.testoutput.dir" value="${module.common-config.basedir}/../build/classes/test/common-config"/>
+  
+  <path id="common-config.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common-config.module.classpath">
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.dom4j.classpath"/>
+    <path refid="library.apache-commons.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.javaee.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.mysql.classpath"/>
+    <pathelement location="${common-test.output.dir}"/>
+    <pathelement location="${common-test.testoutput.dir}"/>
+    <path refid="library.junit.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common-config">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common-config">
+    <patternset refid="excluded.from.module.common-config"/>
+  </patternset>
+  
+  <path id="common-config.module.sourcepath">
+    <dirset dir="${module.common-config.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common-config" depends="compile.module.common-config.production,compile.module.common-config.tests" description="Compile module common-config"/>
+  
+  <target name="compile.module.common-config.production" depends="compile.module.common-test" description="Compile module common-config; production classes">
+    <mkdir dir="${common-config.output.dir}"/>
+    <javac destdir="${common-config.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.common-config}"/>
+      <bootclasspath refid="common-config.module.bootclasspath"/>
+      <classpath refid="common-config.module.classpath"/>
+      <src refid="common-config.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common-config"/>
+    </javac>
+    
+    <copy todir="${common-config.output.dir}">
+      <fileset dir="${module.common-config.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.common-config.tests" depends="compile.module.common-config.production" description="compile module common-config; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.common-config" description="cleanup module">
+    <delete dir="${common-config.output.dir}"/>
+    <delete dir="${common-config.testoutput.dir}"/>
+  </target>
+</project>

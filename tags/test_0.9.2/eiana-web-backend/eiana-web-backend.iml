@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="J2EE_WEB_MODULE">
+  <component name="AppServerSpecificValidatorsManager" />
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <exploded url="file://$MODULE_DIR$/exploded" />
+    <exclude-exploded />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/j2ee.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="common-codevalues" />
+    <orderEntry type="module" module-name="common-config" />
+    <orderEntry type="module" module-name="common-criteria" />
+    <orderEntry type="module" module-name="common-dao" />
+    <orderEntry type="module" module-name="common-dns" />
+    <orderEntry type="module" module-name="common-mail" />
+    <orderEntry type="module" module-name="common-objectdiff" />
+    <orderEntry type="module" module-name="common-pgp" />
+    <orderEntry type="module" module-name="common-templates" />
+    <orderEntry type="module" module-name="common-test" />
+    <orderEntry type="module" module-name="eiana-domains" />
+    <orderEntry type="module" module-name="eiana-init" />
+    <orderEntry type="module" module-name="eiana-logs" />
+    <orderEntry type="module" module-name="eiana-mail" />
+    <orderEntry type="module" module-name="eiana-notifications" />
+    <orderEntry type="module" module-name="eiana-startup" />
+    <orderEntry type="module" module-name="eiana-trans" />
+    <orderEntry type="module" module-name="eiana-users" />
+    <orderEntry type="module" module-name="eiana-util" />
+    <orderEntry type="module" module-name="facade-admin" />
+    <orderEntry type="module" module-name="facade-common" />
+    <orderEntry type="module" module-name="facade-system" />
+    <orderEntry type="module" module-name="integration-rt" />
+    <orderEntry type="module" module-name="integration-securid" />
+    <orderEntry type="library" name="cryptix" level="project" />
+    <orderEntry type="library" name="javaee" level="project" />
+    <orderEntry type="library" name="apache-commons" level="project" />
+    <orderEntry type="library" name="dnsjava" level="project" />
+    <orderEntry type="library" name="rt-api" level="project" />
+    <orderEntry type="library" name="mail" level="project" />
+    <orderEntry type="library" name="log4j" level="project" />
+    <orderEntry type="library" name="fastinfoset" level="project" />
+    <orderEntry type="library" name="jaxrpc" level="project" />
+    <orderEntry type="library" name="jdom" level="project" />
+    <orderEntry type="library" name="dnscheck" level="project" />
+    <orderEntry type="library" name="epp" level="project" />
+    <orderEntry type="library" name="hibernate" level="project" />
+    <orderEntry type="library" name="jbpm" level="project" />
+    <orderEntry type="library" name="dom4j" level="project" />
+    <orderEntry type="library" name="mysql" level="project" />
+    <orderEntry type="library" name="saaj" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="library" name="xerces" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../conf/jbpm" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../conf/hibernate" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntryProperties />
+  </component>
+  <component name="WebModuleBuildComponent">
+    <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/exploded" />
+    <setting name="EXPLODED_ENABLED" value="true" />
+    <setting name="JAR_URL" value="file://$MODULE_DIR$/rzm-backend.war" />
+    <setting name="JAR_ENABLED" value="false" />
+    <setting name="SYNC_EXPLODED_DIR" value="true" />
+    <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
+    <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
+    <setting name="RUN_JASPER_VALIDATION" value="true" />
+  </component>
+  <component name="WebModuleProperties">
+    <containerElement type="module" name="common-codevalues">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-config">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-criteria">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-dao">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-dns">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-mail">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-objectdiff">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-pgp">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-templates">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="common-test">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
+    <containerElement type="module" name="conf">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-domains">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-init">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-logs">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-mail">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-notifications">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-startup">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-trans">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-users">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="eiana-util">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="facade-admin">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="facade-common">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="facade-system">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="integration-rt">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="integration-securid">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="module" name="tests">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$APPLICATION_HOME_DIR$/lib/j2ee.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>file://$MODULE_DIR$/../conf/hibernate</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
+      <url>file://$MODULE_DIR$/../conf/jbpm</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>file://$MODULE_DIR$/../conf/spring</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/easymock/easymock.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/jbpm-identity-3.1.4.jar" />
+      <url>jar://$MODULE_DIR$/../lib/jbpm/jbpm-identity-3.1.4.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/c3p0-0.9.1.2.jar" />
+      <url>jar://$MODULE_DIR$/../lib/mchange/c3p0-0.9.1.2.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/dynaxml.jar" />
+      <url>jar://$MODULE_DIR$/../lib/nask-commons/dynaxml.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/quartz-all-1.6.0.jar" />
+      <url>jar://$MODULE_DIR$/../lib/quartz/quartz-all-1.6.0.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+      <url>jar://$MODULE_DIR$/../lib/spring-modules/spring-modules-jbpm31.jar!/</url>
+    </containerElement>
+    <containerElement type="library" level="module">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib/spring-aspects.jar" />
+      <url>jar://$MODULE_DIR$/../lib/spring/spring-aspects.jar!/</url>
+    </containerElement>
+    <containerElement type="library" name="ant" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="apache-commons" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="cobertura" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="cryptix" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="dnscheck" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="dnsjava" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="dom4j" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="epp" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="fastinfoset" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="hibernate" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="javaee" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
+    <containerElement type="library" name="jaxrpc" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="jbpm" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="jdom" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="junit" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="log4j" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="mail" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="mysql" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="nask-commons" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="rt-api" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="saaj" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="secureId" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="spring" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="testng-5.5-jdk15" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="xerces" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/rzm-backend/WEB-INF/web.xml" optional="false" version="2.3" />
+    <webroots>
+      <root url="file://$MODULE_DIR$/rzm-backend" relative="/" />
+      <root url="file://$MODULE_DIR$/rzm-backend/WEB-INF" relative="/WEB-INF" />
+    </webroots>
+  </component>
+  <component name="WeblogicWebModuleProperties" />
+</module>
+

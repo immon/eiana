@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_eiana-notifications" default="compile.module.eiana-notifications">
+  <dirname property="module.eiana-notifications.basedir" file="${ant.file.module_eiana-notifications}"/>
+  
+  
+  <property name="compiler.args.eiana-notifications" value="${compiler.args}"/>
+  
+  <property name="eiana-notifications.output.dir" value="${module.eiana-notifications.basedir}/../build/classes/production/eiana-notifications"/>
+  <property name="eiana-notifications.testoutput.dir" value="${module.eiana-notifications.basedir}/../build/classes/test/eiana-notifications"/>
+  
+  <path id="eiana-notifications.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="eiana-notifications.module.classpath">
+    <path refid="library.javaee.classpath"/>
+    <pathelement location="${eiana-util.output.dir}"/>
+    <pathelement location="${eiana-util.testoutput.dir}"/>
+    <path refid="library.log4j.classpath"/>
+    <path refid="library.jdom.classpath"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
+    <path refid="library.hibernate.classpath"/>
+    <path refid="library.spring.classpath"/>
+    <path refid="library.nask-commons.classpath"/>
+    <pathelement location="${common-mail.output.dir}"/>
+    <pathelement location="${common-mail.testoutput.dir}"/>
+    <pathelement location="${common-dao.output.dir}"/>
+    <pathelement location="${common-dao.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <pathelement location="${common-config.output.dir}"/>
+    <pathelement location="${common-config.testoutput.dir}"/>
+    <pathelement location="${common-pgp.output.dir}"/>
+    <pathelement location="${common-pgp.testoutput.dir}"/>
+    <pathelement location="${module.eiana-notifications.basedir}/../lib/easymock/easymock.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.eiana-notifications">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.eiana-notifications">
+    <patternset refid="excluded.from.module.eiana-notifications"/>
+  </patternset>
+  
+  <path id="eiana-notifications.module.sourcepath">
+    <dirset dir="${module.eiana-notifications.basedir}">
+      <include name="etc"/>
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="eiana-notifications.module.test.sourcepath">
+    <dirset dir="${module.eiana-notifications.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.eiana-notifications" depends="compile.module.eiana-notifications.production,compile.module.eiana-notifications.tests" description="Compile module eiana-notifications"/>
+  
+  <target name="compile.module.eiana-notifications.production" depends="compile.module.eiana-util,compile.module.common-mail,compile.module.common-dao,compile.module.common-criteria,compile.module.common-config,compile.module.common-pgp" description="Compile module eiana-notifications; production classes">
+    <mkdir dir="${eiana-notifications.output.dir}"/>
+    <javac destdir="${eiana-notifications.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-notifications}"/>
+      <bootclasspath refid="eiana-notifications.module.bootclasspath"/>
+      <classpath refid="eiana-notifications.module.classpath"/>
+      <src refid="eiana-notifications.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-notifications"/>
+    </javac>
+    
+    <copy todir="${eiana-notifications.output.dir}">
+      <fileset dir="${module.eiana-notifications.basedir}/etc">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.eiana-notifications.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.eiana-notifications.tests" depends="compile.module.eiana-notifications.production" description="compile module eiana-notifications; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-notifications.testoutput.dir}"/>
+    <javac destdir="${eiana-notifications.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-notifications}"/>
+      <classpath refid="eiana-notifications.module.classpath"/>
+      <classpath location="${eiana-notifications.output.dir}"/>
+      <src refid="eiana-notifications.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-notifications"/>
+    </javac>
+    
+    <copy todir="${eiana-notifications.testoutput.dir}">
+      <fileset dir="${module.eiana-notifications.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.eiana-notifications" description="cleanup module">
+    <delete dir="${eiana-notifications.output.dir}"/>
+    <delete dir="${eiana-notifications.testoutput.dir}"/>
+  </target>
+</project>

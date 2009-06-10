@@ -1,0 +1,311 @@
+/*
+
+	www.iana.org -- Screen Stylesheet
+
+	Author:	Kim Davies
+	Update: 5 May 2006
+
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: url( ../images/bg-stripe.png ) top repeat-x;
+    line-height: 1.3em;
+    font-family: Arial, Verdana, sans-serif;
+    font-size: 12px;
+	padding: 0 40px 40px 40px;
+	color: #424242;
+}
+
+TD { font-size: 12px; }
+
+a:link, a:visited {
+    color: #235FB3
+}
+a:hover, a:active { color: #73cff1; }
+
+a.blue:link, a.blue:visited { color: #73cff1; font-weight: bold; }
+a.blue:hover, alblue:active { font-weight: bold; color: #235FB3; }
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 2.0em;
+    margin: 20px 0 15px 0;
+	color: #579d4f;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 40px 0 15px 0;
+}
+
+h3 {
+	font-size: 1em;
+	font-weight: bold;
+	}
+
+h4 {
+    font-size: 1.5em;
+    margin: 40px 0 3px 0;
+	color: #579d4f;
+}
+
+h5 {
+    font-size: 1.5em;
+    margin: 0 0 10px 0;
+	color: #579d4f;
+}
+
+.marginTop40 { margin-top: 40px; }
+
+.domainLabelBig {
+	font-size: 2.0em;
+	font-weight: bold;
+	}
+
+.domainLabelSmall {
+	font-size: 1.3em;
+	}
+
+.lastUpdate {
+	font-size: 12px;
+	color: #999999;
+	}
+
+.small-text {
+	font-size: 11px;
+	}
+
+.label { font-weight: bold; }
+.edit .label { padding-right: 25px; }
+
+.grey { color: #999999; }
+.green { color: #579d4f; }
+.orange { color: orange; }
+.darkBlue { color: #235FB3; }
+
+.alert { color: #E18D89; }
+.edited { color: #FBB466; }
+.strikethrough { color: #FC9B8E; text-decoration: line-through; }
+
+.errorMessageBox { border: 1px solid #FF0000; }
+.errorMessage { color: #FF0000; }
+.errorMessageField { width: 350px; color: White; background-color: Red; font-weight: Bold;}
+.bordererrorMessageField { width: 200px; color: White; background-color: Red; font-weight: Bold;}
+.infoMessageBox { border: 1px solid #009900; }
+.infoMessage { color: #009900; }
+.warningMessageBox { border: 1px solid #FFCC00; }
+.warningMessage { color: #FF9900; }
+
+
+.links { margin: 10px 0 0 0; height: 15px; }
+
+modified {
+    color: red;
+    font-weight: bold;
+}
+
+strong {
+    color: #000;
+    font-weight: bold;
+}
+
+.numList OL { margin: 10px 0 20px 40px; color: #B7B7B7; }
+.numList LI { margin: 4px 0 4px 0; }
+
+/* Specific Colour-codings for the 3 principal areas */
+
+.section-dns h1, h2, h3 {
+    color: #579d4f;
+}
+
+/* regions */
+
+#main {
+    width: 800px;
+    margin: 0px auto;
+	float: left;
+}
+
+#header {
+    width: 800px;
+    margin: 0 0 20px 0;
+}
+
+/* page specific: [rzm-loginpage] */
+
+.edit input.field, textarea.field { width: 350px; }
+select.field { width: 185px;}
+textarea.field { width: 500px; }
+
+.loginbox {
+
+}
+
+.loginbox td {
+    padding: 10px;
+}
+
+.loginbox input {
+    width: 300px;
+    font-size: 1.4em;
+}
+
+.loginbox input.button {
+    width: auto;
+    padding: 3px;
+	color: #FFFFFF;
+	background: #AEABAE;
+	border: 0;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.loginbox .keylabel {
+    font-size: 1.1em;
+    color: #579d4f;
+}
+
+.rzm-securid-login {
+    margin: 10px 0px -20px 150px;
+}
+
+DIV.error {
+    font-weight: bold;
+    color: Red;
+    border-color: Red;
+    border-style: solid;
+    padding: 4px;
+    width: 500px;
+    text-align: left;
+    border-width: 2px;
+}
+
+SPAN.invalid-field {
+    color: Red;
+}
+
+INPUT.error {
+    color: White;
+    background-color: Red;
+    font-weight: Bold;
+}
+
+DIV.message {
+    font-weight: bold;
+    color: Blue;
+    border-width: 1;
+    border-color: Blue;
+    border-style: solid;
+    padding: 4px;
+    width: 500px;
+}
+
+SPAN.message {
+    font-weight: bold;
+    color: Blue;
+}
+
+SPAN.error {
+    font-weight: bold;
+    color: Red;
+}
+
+.warning {
+    color: orange;
+    text-align: center;
+}
+
+.info {
+    color: green;
+    text-align: center;
+}
+
+.specialReview {
+    font-weight: bold;
+    color:yellow
+}
+
+widgettabdocumentation {
+    color: #fff;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 28px;
+    background-color: #adbccd;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+}
+
+td.divider {
+    background-color: #fff;
+    height: 24px;
+}
+
+tr.hidden  td, tr.hidden  th { display:none }
+span.hidden { display:none } 
+
+
+/* Grey box */
+
+	.mainBox * { -moz-box-sizing: border-box; }
+	.containerBox { }
+	.containerBoxHeader { }
+/*	.boxContent { padding: 5px 10px 5px 10px; background: #F9F9F9; } */
+    .boxContent { padding: 5px 10px 5px 10px; background: #F9F9F9; width: 100%; overflow: hidden; }
+    .boxContentHeader { padding: 5px 10px 5px 10px; background: #F9F9F9; border-top: 25px solid #F4F4F4; }
+	.roundtop *, .roundbottom * { display: block; height: 1px; overflow: hidden; background: #F9F9F9; }
+	.topHeading { background: #F9F9F9; padding: 0 10px 4px 10px; font-weight: bold; color: #000; font-size: 1em; }
+	.round1 { margin: 0 5px; background: #F9F9F9; }
+	.round2 { margin: 0 3px; }
+	.round3 { margin: 0 2px; }
+	.round4 { margin: 0 1px; height: 2px; }
+	.roundTop1 { margin: 0 5px; background: #F9F9F9; }
+	.roundTop2 { margin: 0 3px; background: #F9F9F9; }
+	.roundTop3 { margin: 0 2px; background: #F9F9F9; }
+	.roundTop4 { margin: 0 1px; height: 2px; background: #F9F9F9; }
+	.containerBoxHeader .roundtop * { display: block; height: 1px; overflow: hidden; background: #F4F4F4; }
+	.containerBoxHeader .roundTop1 { margin: 0 5px; background: #F4F4F4; }
+	.containerBoxHeader .roundTop2 { margin: 0 3px; background: #F4F4F4; }
+	.containerBoxHeader .roundTop3 { margin: 0 2px; background: #F4F4F4; }
+	.containerBoxHeader .roundTop4 { margin: 0 1px; height: 2px; background: #F4F4F4; }
+
+/* Button */
+
+.buttonStyle 			{ font-size: 12px; font-style:bold; font-weight:600; font-family:Arial, Helvetica, sans-serif; line-height:normal; white-space: nowrap; margin: 0; }
+.buttonStyle b.left		{ float:left; background:url( "../images/button_left.png" ) no-repeat left top; width: 9px; height: 25px; white-space: nowrap; }
+.buttonStyle b.right 	{ float: left; margin: 0; white-space: nowrap; }
+.buttonStyle a.button	{ display:block; background:url( "../images/button_right.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }
+.buttonStyle b.leftRed		{ float:left; background:url( "../images/button_left_red.png" ) no-repeat left top; width: 9px; height: 25px; }
+.buttonStyle a.buttonRed	{ display:block; background:url( "../images/button_right_red.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }
+.buttonStyle b.leftGreen		{ float:left; background:url( "../images/button_left_green.png" ) no-repeat left top; width: 9px; height: 25px; }
+.buttonStyle a.buttonGreen	{ display:block; background:url( "../images/button_right_green.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }
+.buttonStyle b.leftBlue		{ float:left; background:url( "../images/button_left_blue.png" ) no-repeat left top; width: 9px; height: 25px; }
+.buttonStyle a.buttonBlue	{ display:block; background:url( "../images/button_right_blue.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }
+.buttonStyle b.leftGrey		{ float:left; background:url( "../images/button_left_grey.png" ) no-repeat left top; width: 9px; height: 25px; }
+.buttonStyle a.buttonGrey	{ display:block; background:url( "../images/button_right_grey.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#000000; }
+.buttonStyle b.leftDot		{ float:left; background:url( "../images/button_left_dot.png" ) no-repeat left top; width: 9px; height: 25px; }
+.buttonStyle a.buttonDot	{ display:block; background:url( "../images/button_right_dot.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#000000; }
+.buttonStyle b.leftBlack	{ float:left; background:url( "../images/button_left_black.png" ) no-repeat left top; width: 9px; height: 25px; }
+.buttonStyle a.buttonBlack	{ display:block; background:url( "../images/button_right_black.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#FFFFFF; }
+.buttonStyle b.rightDisabled    { display:block; background:url( "../images/button_right_grey.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#999999; float: left; margin: 0; white-space: nowrap; }
+.buttonStyle a.buttonDisabled    { display:block; background:url( "../images/button_right_grey.png" ) no-repeat right top; padding: 4px 8px 8px 0px; text-decoration:none; color:#999999; }
+.buttonStyle b.leftDisabled		{ float:left; background:url( "../images/button_left_grey.png" ) no-repeat left top; width: 9px; height: 25px; white-space: nowrap; }
+
+
+/*---Tooltip--*/
+.tooltip{
+	     font-size:10pt;
+		 background:#fffff0;
+		 border:1px solid blue;
+	     width:450px;
+		 padding:3px;
+}

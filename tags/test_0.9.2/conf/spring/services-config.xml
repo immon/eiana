@@ -1,0 +1,2178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+       default-lazy-init="false">
+
+    <!-- beans to replace during tests -->
+
+    <bean id="zoneTestingCheck" class="org.iana.dns.check.DNSTechnicalCheck">
+        <property name="domainChecks">
+            <list>
+                <ref bean="rootServersPropagationCheck"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="whiteListNotificationSender" class="org.iana.notifications.WhiteListNotificationSender">
+        <constructor-arg ref="persistentNotificationSender"/>
+        <property name="whiteList">
+            <list>
+                <value>iana.doc@gmail.com</value>
+                <value>iana.verisign@gmail.com</value>
+                <value>naela.sarras@icann.org</value>
+                <value>simon.raveh@icann.org</value>
+                <value>kim.davies@icann.org></value>
+            </list>
+        </property>
+        <property name="defaultEmail" value="rzm-test@iana.org"/>
+    </bean>
+
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
+        <constructor-arg ref="NotificationSenderBean"/>
+        <constructor-arg ref="notificationDAO"/>
+    </bean>
+
+    <bean id="eppClientFactory" class="org.iana.rzm.trans.epp.EPPClientFactory">
+        <property name="path" value="conf/epp/epp.rootzone.config"/>
+    </bean>
+
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
+        <constructor-arg ref="templateFactory"/>
+        <constructor-arg ref="noHostDiffConfig"/>
+        <property name="doTest">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="radicalAlterationTechnicalCheckBean" class="org.iana.rzm.trans.check.RadicalAlterationImpl">
+        <constructor-arg ref="technicalCheckBeanWithRadicalAlterationCheck"/>
+    </bean>
+
+    <bean id="eppClient" class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
+
+    <!-- end of test bean section -->
+
+    <!--<bean id="eppClient" factory-bean="eppClientFactory" factory-method="getInstance"/>-->
+
+    <!--<bean id="ticketingService" class="org.iana.ticketing.rt.RequestTrackerService">-->
+    <!--<constructor-arg index="0" value="http://208.77.191.164"/>-->
+    <!--<constructor-arg index="1" value="rzm"/>-->
+    <!--<constructor-arg index="2" value="rzmrzm"/>-->
+    <!--<constructor-arg index="3" ref="cachedCodeValues"/>-->
+    <!--<property name="customFieldsKeys">-->
+    <!--<map>-->
+    <!--<entry>-->
+    <!--<key>-->
+    <!--<value>tld</value>-->
+    <!--</key>-->
+    <!--<value>tld</value>-->
+    <!--</entry>-->
+    <!--<entry>-->
+    <!--<key>-->
+    <!--<value>state</value>-->
+
+    <!--</key>-->
+    <!--<value>iana_state</value>-->
+    <!--</entry>-->
+    <!--<entry>-->
+    <!--<key>-->
+    <!--<value>type</value>-->
+    <!--</key>-->
+    <!--<value>request_type</value>-->
+    <!--</entry>-->
+    <!--</map>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+
+    <!-- facade services configuration -->
+
+    <!-- ######################################################################## -->
+
+
+    <bean id="adminConfigManager" class="org.iana.rzm.facade.admin.config.impl.StatelessAdminConfigManagerImpl">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="hibernateConfigDAO"/>
+        <constructor-arg>
+            <bean class="org.iana.rzm.facade.admin.config.impl.SimpleParameterRetriever">
+                <constructor-arg ref="NotificationSenderBean"/>
+                <constructor-arg ref="mailReceiver"/>    
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="rootServersProducerBean"/>
+    </bean>
+
+    <bean id="statelessAdminTemplatesManager" class="org.iana.rzm.facade.admin.config.impl.StatelessAdminEmailTemplateManagerImpl">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="templatesConfigLoader"/>
+    </bean>
+
+    <bean id="dbTemplatesConfig" class="org.iana.notifications.template.def.dao.HibernateTemplateDefDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="xmlTemplatesConfig" class="org.iana.notifications.template.def.xml.XMLTemplateDefLoader">
+        <constructor-arg index="0" value="iana-templates.properties"/>
+        <constructor-arg index="1" value="templates.xml"/>
+    </bean>
+
+    <bean id="templatesConfigLoader" class="org.iana.notifications.template.def.TemplateDefConfigLoader">
+        <constructor-arg>
+            <list>
+                <ref bean="dbTemplatesConfig"/>
+                <ref bean="xmlTemplatesConfig"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+
+
+    <!-- ######################################################################## -->
+
+    <bean id="GuardedAdminTransactionServiceBean"
+          class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="guardedStatelessIanaTransactionService"/>
+    </bean>
+
+    <bean id="guardedAdminTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="statelessAdminTransactionService"/>
+    </bean>
+
+    <bean id="guardedStatelessAdminTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedStatelessAdminTransactionService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="guardedStatelessIanaTransactionService"/>
+        <constructor-arg index="2" ref="guardedStatelessDoCTransactionService"/>
+    </bean>
+
+    <bean id="guardedStatelessIanaTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedStatelessIanaTransactionService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminTransactionService"/>
+    </bean>
+
+    <bean id="guardedStatelessDoCTransactionService"
+          class="org.iana.rzm.facade.admin.trans.GuardedStatelessDoCTransactionService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminTransactionService"/>
+    </bean>
+
+    <bean id="statelessAdminTransactionService"
+          class="org.iana.rzm.facade.admin.trans.StatelessAdminTransactionServiceImpl">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="transactionManagerBean"/>
+        <constructor-arg index="2" ref="domainManager"/>
+        <constructor-arg index="3" ref="adminDetectorService"/>
+        <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
+        <constructor-arg index="5" ref="eppReceiverAction"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <bean id="detectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="statelessDetectorService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="adminDetectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="statelessAdminDetectorService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="adminDetectorService2" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="statelessAdminDetectorService"/>
+    </bean>
+
+    <bean id="statelessDetectorService"
+          class="org.iana.rzm.facade.system.trans.StatelessTransactionDetectorServiceImpl">
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="diffConfig"/>
+        <constructor-arg index="2" ref="radicalAlterationTechnicalCheckBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="statelessAdminDetectorService"
+          class="org.iana.rzm.facade.system.trans.StatelessTransactionDetectorServiceImpl">
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="adminDiffConfig"/>
+        <constructor-arg index="2" ref="radicalAlterationTechnicalCheckBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <bean id="notificationService" class="org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="guardedStatelessAdminNotificationService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedStatelessAdminNotificationService"
+          class="org.iana.rzm.facade.admin.trans.notifications.GuardedStatelessAdminNotificationServiceImpl">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminNotificationService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="statelessAdminNotificationService"
+          class="org.iana.rzm.facade.admin.trans.notifications.StatelessAdminNotificationServiceImpl">
+        <constructor-arg index="0" ref="whiteListNotificationSender"/>
+        <constructor-arg index="1" ref="transactionManagerBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <bean id="GuardedAdminRoleServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean"
+          scope="session">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="guardedStatelessAdminRoleServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedStatelessAdminRoleServiceBean"
+          class="org.iana.rzm.facade.admin.users.GuardedStatelessAdminRoleServiceBean">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminRoleServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="statelessAdminRoleServiceBean" class="org.iana.rzm.facade.admin.users.StatelessAdminRoleServiceImpl">
+        <constructor-arg index="0" ref="roleManager"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <bean id="GuardedAdminUserServiceBean" class="org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="guardedStatelessAdminUserServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedStatelessAdminUserServiceBean"
+          class="org.iana.rzm.facade.admin.users.GuardedStatelessAdminUserServiceImpl">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminUserServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="statelessAdminUserServiceBean" class="org.iana.rzm.facade.admin.users.StatelessAdminUserServiceImpl">
+        <constructor-arg index="0" ref="userManager"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <bean id="GuardedAdminDomainServiceBean" class="org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="guardedStatelessAdminDomainServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedStatelessAdminDomainServiceBean"
+          class="org.iana.rzm.facade.admin.domain.GuardedStatelessAdminDomainService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessAdminDomainServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="statelessAdminDomainServiceBean" class="org.iana.rzm.facade.admin.domain.StatelessAdminDomainServiceImpl">
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="domainExporter"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+
+    <!-- authentication service -->
+
+    <bean id="authenticationServiceBean" class="org.iana.rzm.facade.auth.AuthenticationServiceBean">
+        <constructor-arg index="0" ref="statelessAuthenticationServiceBean"/>
+    </bean>
+
+    <bean id="statelessAuthenticationServiceBean" class="org.iana.rzm.facade.auth.StatelessAuthenticationServiceBean">
+        <constructor-arg>
+            <map>
+                <entry key="org.iana.rzm.facade.auth.PasswordAuth" value-ref="passwordAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.securid.SecurIDAuth" value-ref="securIDAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.MailAuth" value-ref="mailAuthenticator"/>
+                <entry key="org.iana.rzm.facade.auth.PgpMailAuth" value-ref="pgpMailAuthenticator"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="passwordAuthenticator" class="org.iana.rzm.facade.auth.PasswordAuthenticator">
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="securIDAuthenticator" class="org.iana.rzm.facade.auth.securid.SecurIDAuthenticator">
+        <constructor-arg>
+            <ref bean="securID"/>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="statelessSecureIdServiceBean" class="org.iana.securid.StatelessSecureIdServiceBean">
+        <constructor-arg ref="securID"/>
+    </bean>
+
+    <bean id="securID" class="org.iana.securid.MockSecurIDService"/>
+
+    <!--<bean id="securIDAuthenticationFactory" class=" org.iana.rzm.facade.auth.securid.SecurIDAuthenticationFactoryImpl"/>-->
+
+    <!--<bean id="securID" class=" org.iana.rzm.facade.auth.securid.StaticSecurIDService">-->
+    <!--<constructor-arg ref="securIDAuthenticationFactory"/>-->
+    <!--<constructor-arg value="conf/secureId/rsa_api.properties"/>-->
+    <!--<constructor-arg ref="userManager"/>-->
+    <!--</bean>-->
+
+    <bean id="mailAuthenticator" class="org.iana.rzm.facade.auth.MailAuthenticator">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="parameterManager"/>
+    </bean>
+
+    <bean id="pgpMailAuthenticator" class="org.iana.rzm.facade.auth.PgpMailAuthenticator">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="parameterManager"/>
+    </bean>
+
+    <!-- system domain service -->
+
+    <!-- ######################################################################## -->
+
+    <bean id="GuardedSystemDomainService" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService"
+          scope="session">
+        <constructor-arg index="0" ref="userVOManager"/>
+        <constructor-arg index="1" ref="guardedStatelessSystemDomainService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedStatelessSystemDomainService"
+          class="org.iana.rzm.facade.system.domain.GuardedStatelessSystemDomainService">
+        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" ref="statelessSystemDomainService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="statelessSystemDomainService" class="org.iana.rzm.facade.system.domain.StatelessSystemDomainServiceImpl">
+        <constructor-arg index="0" ref="SystemDomainServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <bean id="abstractTransSystemService" abstract="true"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="get*">PROPAGATION_REQUIRED, readOnly,
+                    -org.iana.rzm.facade.admin.trans.FacadeTransactionException,
+                    -org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                    -org.iana.rzm.facade.admin.trans.NoTransactionException,
+                    -org.iana.rzm.facade.admin.trans.StateUnreachableException,
+                    -org.iana.rzm.facade.auth.AccessDeniedException,
+                    -org.iana.rzm.facade.auth.AuthenticationException,
+                    -org.iana.rzm.facade.auth.AuthenticationFailedException,
+                    -org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                    -org.iana.rzm.facade.auth.UserInvalidatedException,
+                    -org.iana.rzm.facade.common.NoObjectFoundException,
+                    -org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                    -org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                    -org.iana.rzm.facade.system.trans.NoDomainSystemUsersException
+                </prop>
+                <prop key="*">PROPAGATION_REQUIRED,
+                    -org.iana.rzm.facade.admin.trans.FacadeTransactionException,
+                    -org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                    -org.iana.rzm.facade.admin.trans.NoTransactionException,
+                    -org.iana.rzm.facade.admin.trans.StateUnreachableException,
+                    -org.iana.rzm.facade.auth.AccessDeniedException,
+                    -org.iana.rzm.facade.auth.AuthenticationException,
+                    -org.iana.rzm.facade.auth.AuthenticationFailedException,
+                    -org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                    -org.iana.rzm.facade.auth.UserInvalidatedException,
+                    -org.iana.rzm.facade.common.NoObjectFoundException,
+                    -org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                    -org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                    -org.iana.rzm.facade.system.trans.NoDomainSystemUsersException
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transSystemDomainService" parent="abstractTransSystemService">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.domain.SystemDomainService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="GuardedSystemDomainService"/>
+        </property>
+    </bean>
+
+    <bean id="transSystemTransactionService" parent="abstractTransSystemService">
+        <property name="proxyInterfaces">
+            <list>
+                <value>org.iana.rzm.facade.system.trans.TransactionService</value>
+            </list>
+        </property>
+        <property name="target">
+            <ref bean="SystemTransactionServiceBean"/>
+        </property>
+        <property name="preInterceptors">
+            <list>
+                <ref bean="jbpmInterceptor"/>
+            </list>
+        </property>
+        <property name="postInterceptors">
+            <list>
+                <ref bean="systemTransactionLoggerInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SystemDomainServiceBean" class="org.iana.rzm.facade.system.domain.SystemDomainServiceBean">
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="userManager"/>
+    </bean>
+
+    <bean id="jbpmInterceptor" class="org.iana.rzm.trans.process.general.springsupport.JbpmInterceptor">
+        <property name="processDAO">
+            <ref bean="processDAO"/>
+        </property>
+    </bean>
+
+    <bean id="systemTransactionLoggerInterceptor"
+          class="org.iana.rzm.facade.system.trans.loggers.SystemTransactionLoggerInterceptor">
+        <constructor-arg index="0" ref="transactionManagerBean"/>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
+    <!-- transaction service -->
+    <!-- ######################################################################## -->
+
+    <bean id="GuardedSystemTransactionService"
+          class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService">
+        <constructor-arg ref="userVOManager"/>
+        <constructor-arg ref="guardedStatelessSystemTransactionService"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="guardedStatelessSystemTransactionService"
+          class="org.iana.rzm.facade.system.trans.GuardedStatelessTransactionService">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="SystemTransactionServiceBean"/>
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="statelessSystemTransactionServiceBean"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+
+    <bean id="SystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.TransactionServiceImpl">
+        <constructor-arg ref="userVOManager"/>
+        <constructor-arg ref="statelessSystemTransactionServiceBean"/>
+    </bean>
+
+    <bean id="statelessSystemTransactionServiceBean"
+          class="org.iana.rzm.facade.system.trans.StatelessTransactionServiceImpl">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="domainManager"/>
+        <constructor-arg ref="detectorService"/>
+        <constructor-arg ref="dnsTechnicalCheckBean"/>
+    </bean>
+
+    <!-- ######################################################################## -->
+
+    <!-- end of facade services configuration -->
+
+    <!-- Technical Checks -->
+
+    <bean id="rootServersPropagationCheck" class="org.iana.dns.check.RootServersPropagationCheck">
+        <property name="rootServersProducer" ref="rootServersProducerBean"/>
+        <property name="dnsCheckRetries">
+            <value>3</value>
+        </property>
+    </bean>
+
+    <!-- Content -->
+
+    <bean id="templateFactory" class="org.iana.notifications.template.factory.DefaultTemplateFactory">
+        <constructor-arg index="0" ref="templatesConfigLoader"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm"/>
+        </constructor-arg>
+        <property name="producers">
+            <map>
+                <entry key="IANA">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients">
+                        <constructor-arg index="0" value="IANA"/>
+                    </bean>
+                </entry>
+                <entry key="AC">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
+                        <constructor-arg index="0" value="AC"/>
+                    </bean>
+                </entry>
+                <entry key="TC">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
+                        <constructor-arg index="0" value="TC"/>
+                    </bean>
+                </entry>
+                <entry key="SO">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactRecipients">
+                        <constructor-arg index="0" value="SO"/>
+                    </bean>
+                </entry>
+                <entry key="AC_CONFIRM">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
+                        <constructor-arg index="0" value="AC"/>
+                    </bean>
+                </entry>
+                <entry key="TC_CONFIRM">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
+                        <constructor-arg index="0" value="TC"/>
+                    </bean>
+                </entry>
+                <entry key="SO_CONFIRM">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ContactConfirmationRecipients">
+                        <constructor-arg index="0" value="SO"/>
+                    </bean>
+                </entry>
+                <entry key="AC_NEW">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
+                        <constructor-arg index="0" value="AC"/>
+                    </bean>
+                </entry>
+                <entry key="TC_NEW">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
+                        <constructor-arg index="0" value="TC"/>
+                    </bean>
+                </entry>
+                <entry key="SO_NEW">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.NewContactRecipients">
+                        <constructor-arg index="0" value="SO"/>
+                    </bean>
+                </entry>
+                <entry key="AC_IMPACTED_PARTIES">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
+                        <constructor-arg index="0" value="AC"/>
+                    </bean>
+                </entry>
+                <entry key="TC_IMPACTED_PARTIES">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
+                        <constructor-arg index="0" value="TC"/>
+                    </bean>
+                </entry>
+                <entry key="SO_IMPACTED_PARTIES">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.ImpactedPartiesRecipients">
+                        <constructor-arg index="0" value="SO"/>
+                    </bean>
+                </entry>
+                <entry key="SUBMITTER">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.SubmitterRecipients"/>
+                </entry>
+                <entry key="GOV_OVERSIGHT">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients">
+                        <constructor-arg index="0" value="GOV_OVERSIGHT"/>
+                    </bean>
+                </entry>
+                <entry key="SYSTEM_ERRORS">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.EmailRecipients">
+                        <constructor-arg index="0" value="system-errors@iana.org"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- transaction notification sender -->
+
+    <bean id="transactionNotificationSender" class="org.iana.rzm.trans.notifications.TransactionNotificationSender">
+        <constructor-arg ref="whiteListNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <!--
+        <bean id="transactionNotificationResender" class="org.iana.rzm.trans.notifications.PersistentTransactionNotificationSender">
+            <constructor-arg ref="transactionNotificationDAO"/>
+            <constructor-arg ref="transactionNotificationSender"/>
+            <constructor-arg ref="transactionManagerBean"/>
+        </bean>
+    -->
+
+    <bean id="transactionNotificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.rzm.trans.notifications.TransactionNotification" type="java.lang.Class"/>
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <!-- Notification producers -->
+
+    <bean id="adminClosedNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
+        <constructor-arg index="2" ref="adminClosedTemplateProducer"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+    </bean>
+
+    <bean id="emptyNotificationProducer"
+          class="org.iana.notifications.producers.defaults.EmptyNotificationProducer"/>
+
+    <bean id="completedNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
+        <constructor-arg index="2" ref="completedTemplateProducer"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+    </bean>
+
+    <bean id="specialReviewNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="adminAddresseeProducer"/>
+        <constructor-arg index="2" ref="specialReviewTemplateProducer"/>
+        <constructor-arg index="3" ref="specialReviewDataProducer"/>
+    </bean>
+
+    <bean id="manualReviewNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="adminAddresseeProducer"/>
+        <constructor-arg index="2" ref="manualReviewTemplateProducer"/>
+        <constructor-arg index="3" ref="manualReviewDataProducer"/>
+    </bean>
+
+    <bean id="contactConfirmationNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
+        <constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>
+        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
+    <!-- Unused since template are stored in db -->
+    <!--<bean id="contactConfirmationACNotificationProducer"-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="contactConfirmationTCNotificationProducer"-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationTCAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationTCDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
+
+    <bean id="contactConfirmationRemainderNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>
+        <constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>
+        <constructor-arg index="3" ref="contactConfirmationACDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
+    <!-- Unused since template are stored in db -->
+    <!--<bean id="contactConfirmationRemainderACNotificationProducer"-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="contactConfirmationRemainderTCNotificationProducer"-->
+    <!--class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">-->
+    <!--<constructor-arg index="0" ref="templateFactory"/>-->
+    <!--<constructor-arg index="1" ref="contactConfirmationACAddresseeProducer"/>-->
+    <!--<constructor-arg index="2" ref="contactConfirmationRemainderTemplateProducer"/>-->
+    <!--<constructor-arg index="3" ref="contactConfirmationACDataProducer"/>-->
+    <!--<property name="persistent" value="true"/>-->
+    <!--</bean>-->
+
+    <bean id="exceptionNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="exceptionAddresseeProducer"/>
+        <constructor-arg index="2" ref="exceptionTemplateProducer"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+    </bean>
+
+    <bean id="impactedPartiesNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SplittedByAddresseeProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="impactedPartiesAddresseeProducer"/>
+        <constructor-arg index="2" value="impacted_parties-confirmation"/>
+        <constructor-arg index="3" ref="impactedPartiesDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
+    <bean id="impactedPartiesRemainderNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="2" value="impacted_parties-confirmation-remainder"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
+    <bean id="pendingEvaluationNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="defaultAddresseeProducer"/>
+        <constructor-arg index="2" ref="pendingEvaluationTemplateProducer"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+    </bean>
+
+    <bean id="rejectedNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
+        <constructor-arg index="2" ref="rejectedTemplateProducer"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+    </bean>
+
+    <bean id="usdocConfirmationNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="usdocConfirmationAddresseeProducer"/>
+        <constructor-arg index="2" ref="usdocConfirmationTemplateProducer"/>
+        <constructor-arg index="3" ref="usdocConfirmationDataProducer"/>
+        <property name="persistent" value="true"/>
+    </bean>
+
+    <bean id="usdocConfirmationRemainderNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="usdocConfirmationRemainderAddresseeProducer"/>
+        <constructor-arg index="2" ref="usdocConfirmationRemainderTemplateProducer"/>
+        <constructor-arg index="3" ref="usdocConfirmationRemainderDataProducer"/>
+    </bean>
+
+    <bean id="withdrawnNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="allAddresseeProducer"/>
+        <constructor-arg index="2" ref="withdrawnTemplateProducer"/>
+        <constructor-arg index="3" ref="defaultDataProducer"/>
+    </bean>
+
+    <bean id="zoneInsertionAlertNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="zoneInsertionAlertAddresseeProducer"/>
+        <constructor-arg index="2" ref="zoneInsertionAlertTemplateProducer"/>
+        <constructor-arg index="3" ref="zoneInsertionAlertDataProducer"/>
+    </bean>
+
+    <bean id="zonePublicationAlertNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1" ref="zonePublicationAlertAddresseeProducer"/>
+        <constructor-arg index="2" ref="zonePublicationAlertTemplateProducer"/>
+        <constructor-arg index="3" ref="zonePublicationAlertDataProducer"/>
+    </bean>
+
+    <!-- Addressee producers -->
+
+
+    <bean id="contactConfirmationACAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACAddresseeProducer"/>
+
+    <bean id="contactConfirmationTCAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCAddresseeProducer"/>
+
+    <bean id="impactedPartiesAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesAddresseeProducer"/>
+
+    <bean id="defaultAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToAdmins">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="adminAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToAdmins">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="submitterAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToAdmins">
+            <value>false</value>
+        </property>
+        <property name="sendToSubmitter">
+            <value>true</value>
+        </property>
+        <property name="sendToImpactedParties">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="allAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionAddresseeProducer">
+        <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToNewContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToAdmins">
+            <value>false</value>
+        </property>
+        <property name="sendToSubmitter">
+            <value>true</value>
+        </property>
+        <property name="sendToImpactedParties">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="exceptionAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.final_state.ExceptionAddresseeProducer">
+        <property name="sendToContacts">
+            <value>true</value>
+        </property>
+        <property name="sendToAdmins">
+            <value>true</value>
+        </property>
+        <property name="additionalEmails">
+            <list>
+                <value>system-errors@iana.org</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="usdocConfirmationAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationAddresseeProducer">
+        <constructor-arg index="0" ref="userManager"/>
+    </bean>
+
+    <bean id="usdocConfirmationRemainderAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationRemainderAddresseeProducer">
+        <constructor-arg index="0" ref="userManager"/>
+    </bean>
+
+    <bean id="zoneInsertionAlertAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.zone_insertion.ZoneInsertionAlertAddresseeProducer"/>
+
+    <bean id="zonePublicationAlertAddresseeProducer"
+          class="org.iana.rzm.trans.notifications.zone_publication.ZonePublicationAlertAddresseeProducer"/>
+
+    <!-- Template producers -->
+
+    <bean id="specialReviewTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>special-review</value>
+        </property>
+    </bean>
+
+    <bean id="manualReviewTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>manual-review</value>
+        </property>
+    </bean>
+
+    <bean id="adminClosedTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>admin-closed</value>
+        </property>
+    </bean>
+
+    <bean id="completedTemplateProducer"
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.ChangeTypeBasedTemplateNameProducer">
+        <constructor-arg value="completed-nschange"/>
+        <constructor-arg value="completed"/>
+    </bean>
+
+    <bean id="contactConfirmationTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>contact-confirmation</value>
+        </property>
+    </bean>
+
+    <bean id="contactConfirmationRemainderTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>contact-confirmation-remainder</value>
+        </property>
+    </bean>
+
+    <bean id="exceptionTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>exception</value>
+        </property>
+    </bean>
+
+    <bean id="pendingEvaluationTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>normal_redelegation-processing</value>
+        </property>
+    </bean>
+
+    <bean id="rejectedTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>rejected</value>
+        </property>
+    </bean>
+
+    <bean id="usdocConfirmationTemplateProducer"
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.ChangeTypeBasedTemplateNameProducer">
+        <constructor-arg value="usdoc-confirmation-nschange"/>
+        <constructor-arg value="usdoc-confirmation"/>
+    </bean>
+
+    <bean id="usdocConfirmationRemainderTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>usdoc-confirmation-remainder</value>
+        </property>
+    </bean>
+
+    <bean id="withdrawnTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>withdrawn</value>
+        </property>
+    </bean>
+
+    <bean id="zoneInsertionAlertTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>zone-insertion-alert</value>
+        </property>
+    </bean>
+
+    <bean id="zonePublicationAlertTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>zone-publication-alert</value>
+        </property>
+    </bean>
+
+    <!-- Data producers -->
+
+
+    <bean id="contactConfirmationACDataProducer"
+          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationACDataProducer">
+        <constructor-arg ref="userManager"/>
+        <property name="stateMaxPeriod" value="30"/>
+    </bean>
+
+    <bean id="contactConfirmationTCDataProducer"
+          class="org.iana.rzm.trans.notifications.contact_confirmation.ContactConfirmationTCDataProducer">
+        <constructor-arg ref="userManager"/>
+        <property name="stateMaxPeriod" value="30"/>
+    </bean>
+
+    <bean id="impactedPartiesDataProducer"
+          class="org.iana.rzm.trans.notifications.impacted_parties.ImpactedPartiesDataProducer"/>
+
+    <bean id="defaultDataProducer"
+          class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer"/>
+
+    <bean id="usdocConfirmationDataProducer"
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationDataProducer"/>
+
+    <bean id="usdocConfirmationRemainderDataProducer"
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationRemainderDataProducer">
+        <property name="stateMaxPeriod" value="14"/>
+    </bean>
+
+    <bean id="zoneInsertionAlertDataProducer"
+          class="org.iana.rzm.trans.notifications.zone_insertion.ZoneInsertionAlertDataProducer"/>
+
+    <bean id="zonePublicationAlertDataProducer"
+          class="org.iana.rzm.trans.notifications.zone_publication.ZonePublicationAlertDataProducer"/>
+
+    <bean id="specialReviewDataProducer"
+          class="org.iana.rzm.trans.notifications.review.SpecialReviewDataProducer"/>
+
+    <bean id="manualReviewDataProducer"
+          class="org.iana.rzm.trans.notifications.review.ManualReviewDataProducer"/>
+
+    <!-- Technical checks -->
+
+    <bean id="dnsTechnicalCheckBean" class="org.iana.dns.check.DNSTechnicalCheck">
+        <property name="domainChecks">
+            <list>
+                <ref bean="minimumNameServersAndNoReservedIPsCheck"/>
+            </list>
+        </property>
+        <property name="dnsCheckRetries">
+            <value>3</value>
+        </property>
+    </bean>
+
+    <bean id="minimumNameServersAndNoReservedIPsCheck"
+          class="org.iana.dns.check.MinimumNameServersAndNoReservedIPsCheck"/>
+
+    <bean id="technicalCheckBeanWithRadicalAlterationCheck" class="org.iana.dns.check.DNSTechnicalCheck">
+        <property name="domainChecks">
+            <list>
+                <ref bean="radicalAlterationCheck"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="radicalAlterationCheck" class="org.iana.rzm.trans.check.RadicalAlterationCheck">
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="radicalDiffConfig"/>
+    </bean>
+
+    <!-- end of technical checks-->
+
+    <bean id="notificationDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.notifications.PNotification" type="java.lang.Class"/>
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="NotificationSenderBean" class="org.iana.notifications.email.EmailSender">
+        <constructor-arg index="0" value="localhost"/>
+        <constructor-arg index="1" value="[RZM]"/>
+        <constructor-arg index="2" value="rzm-dev@iana.org"/>
+        <constructor-arg index="3" value=""/>
+        <constructor-arg index="4" value=""/>
+        <property name="config">
+            <ref bean="parameterManager"/>
+        </property>
+        <property name="mailSmtpFrom">
+            <value>simon.raveh@icann.org</value>
+        </property>
+        <!--
+        <property name="port">
+            <value>995</value>
+        </property>
+        <property name="ssl">
+            <value>true</value>
+        </property>
+        <property name="tls">
+            <value>true</value>
+        </property>
+        -->
+    </bean>
+
+    <bean id="logger" class="org.iana.rzm.log.LoggerBean">
+        <constructor-arg index="0" ref="diffConfig"/>
+        <constructor-arg index="1" ref="logDAO"/>
+    </bean>
+
+    <bean id="logDAO" class="org.iana.rzm.log.dao.HibernateLogDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="domainManager" class="org.iana.rzm.domain.DomainManagerBean">
+        <constructor-arg ref="domainDAO"/>
+        <constructor-arg ref="hostManager"/>
+        <constructor-arg ref="domainExporter"/>
+    </bean>
+
+    <bean id="domainExporter" class="org.iana.rzm.domain.exporter.DomainExporter">
+        <constructor-arg index="0">
+            <value>domainExporter.properties</value>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <value>exportedDomains.xml</value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="domainDAO" class="org.iana.rzm.domain.dao.HibernateDomainDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="hostManager" class="org.iana.rzm.domain.HostManagerBean">
+        <constructor-arg ref="hostDAO"/>
+    </bean>
+
+    <bean id="hostDAO" class="org.iana.rzm.domain.dao.HibernateHostDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="diffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
+        <constructor-arg ref="hostInstantiator"/>
+    </bean>
+
+    <bean id="radicalDiffConfig" class="org.iana.rzm.trans.check.RadicalAlterationDiffConfiguration">
+    </bean>
+
+    <bean id="hostInstantiator" class="org.iana.rzm.trans.change.HostInstantiator">
+        <constructor-arg ref="hostManager"/>
+    </bean>
+
+    <bean id="noHostDiffConfig" class="org.iana.rzm.trans.change.DomainDiffConfiguration">
+        <constructor-arg ref="clonedHostInstantiator"/>
+    </bean>
+
+    <bean id="clonedHostInstantiator" class="org.iana.rzm.trans.change.ClonedHostInstantiator">
+        <constructor-arg ref="hostManager"/>
+    </bean>
+
+    <bean id="adminDiffConfig" class="org.iana.rzm.facade.admin.trans.AdminDomainDiffConfiguration">
+        <constructor-arg ref="hostInstantiator"/>
+    </bean>
+
+    <bean id="transactionManagerBean" class="org.iana.rzm.trans.TransactionManagerBean">
+        <constructor-arg ref="processDAO"/>
+        <constructor-arg ref="domainManager"/>
+        <constructor-arg ref="diffConfig"/>
+        <constructor-arg ref="eppClient"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="configLocation">
+            <value>classpath:eiana-hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="transactionAttribute"
+          class="org.springframework.transaction.interceptor.DefaultTransactionAttribute">
+        <property name="propagationBehaviorName">
+            <value>PROPAGATION_REQUIRED</value>
+        </property>
+        <property name="isolationLevelName">
+            <value>ISOLATION_READ_COMMITTED</value>
+        </property>
+    </bean>
+
+    <bean id="transactionAttributeSource"
+          class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+        <property name="transactionAttribute">
+            <ref bean="transactionAttribute"/>
+        </property>
+    </bean>
+
+    <!-- Config configuration -->
+
+    <bean id="parameterManager" class="org.iana.config.impl.ParameterManagerImpl">
+        <constructor-arg>
+            <ref bean="hibernateConfigDAO"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="hibernateConfigDAO" class="org.iana.config.impl.HibernateConfigDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <!-- jBPM configuration -->
+
+    <bean id="jbpmObjectFactory"
+          class="org.iana.rzm.trans.process.general.springsupport.JbpmSpringObjectFactory">
+    </bean>
+
+    <bean id="dbService" class="org.jbpm.persistence.db.DbPersistenceServiceFactory">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+        <property name="transactionEnabled" value="false"/>
+        <property name="currentSessionEnabled" value="true"/>
+    </bean>
+
+    <bean id="scheduler" class="org.jbpm.scheduler.db.DbSchedulerServiceFactory"/>
+
+    <bean id="message" class="org.jbpm.msg.db.DbMessageServiceFactory"/>
+
+    <bean id="jbpmConfiguration"
+          class="org.jbpm.JbpmConfiguration">
+        <constructor-arg index="0" ref="jbpmObjectFactory"/>
+    </bean>
+
+    <bean id="jbpmCommandExecutor"
+          class="org.iana.rzm.startup.jbpm.JbpmCommandExecutorThread">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.startup.jbpm.JbpmCommandExecutor">
+                <constructor-arg index="0" ref="jbpmConfiguration"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="org.iana.rzm.startup.jbpm.JbpmExceptionHandler">
+                <constructor-arg index="0" ref="jbpmConfiguration"/>
+            </bean>
+        </constructor-arg>
+        <property name="interval" value="5000000"/>
+        <property name="priority" value="1"/>
+    </bean>
+
+    <bean id="jbpmScheduler"
+          class="org.iana.rzm.startup.jbpm.JbpmSchedulerThread">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.startup.jbpm.JbpmTimerExecutor">
+                <constructor-arg index="0" ref="jbpmConfiguration"/>
+                <property name="maxResultCount" value="1"/>
+            </bean>
+        </constructor-arg>
+        <property name="interval" value="5000000"/>
+        <property name="priority" value="1"/>
+    </bean>
+
+    <bean id="services" class="org.jbpm.svc.Services" scope="prototype">
+        <constructor-arg index="0">
+            <map>
+                <entry key="persistence">
+                    <ref local="dbService"/>
+                </entry>
+                <entry key="scheduler">
+                    <ref local="scheduler"/>
+                </entry>
+                <entry key="message">
+                    <ref local="message"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="default.jbpm.context" class="org.jbpm.JbpmContext" scope="prototype">
+        <constructor-arg index="0" ref="services"/>
+        <constructor-arg index="1" ref="jbpmObjectFactory"/>
+    </bean>
+
+    <bean id="resource.business.calendar" class="java.lang.String">
+        <constructor-arg value="org/jbpm/calendar/jbpm.business.calendar.properties"/>
+    </bean>
+
+    <bean id="resource.default.modules" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/def/jbpm.default.modules.properties"/>
+    </bean>
+
+    <bean id="resource.action.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/action/action.types.xml"/>
+    </bean>
+
+    <bean id="resource.node.types" class="java.lang.String">
+        <constructor-arg value="org/jbpm/graph/node/node.types.xml"/>
+    </bean>
+
+    <bean id="resource.converter" class="java.lang.String">
+        <constructor-arg value="org/jbpm/db/hibernate/jbpm.converter.properties"/>
+    </bean>
+
+    <bean id="resource.varmapping" class="java.lang.String">
+        <!--<constructor-arg value="eiana-trans.jbpm.varmapping.xml"/>-->
+        <constructor-arg value="org/jbpm/context/exe/jbpm.varmapping.xml"/>
+    </bean>
+
+    <!--
+        <bean name="jbpm.byte.block.size" class="java.lang.Integer">
+            <constructor-arg value="1024"/>
+        </bean>
+
+        <bean name="jbpm.task.instance.factory" class="org.jbpm.taskmgmt.impl.DefaultTaskInstanceFactoryImpl" />
+
+        <bean name="jbpm.variable.resolver" class="org.jbpm.jpdl.el.impl.JbpmVariableResolver" />
+    -->
+
+    <bean name="jbpm.msg.wait.timout" class="java.lang.Long">
+        <constructor-arg value="5000"/>
+    </bean>
+
+    <bean id="jbpmContextFactory"
+          class="org.iana.rzm.trans.process.general.springsupport.JbpmContextFactoryBean">
+        <constructor-arg index="0" ref="jbpmConfiguration"/>
+    </bean>
+
+    <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+    </bean>
+    <!--
+    <bean id="processDAO" class="org.iana.rzm.trans.dao.JbpmProcessDAO" scope="request">
+        <constructor-arg index="0" ref="jbpmContextFactory"/>
+        <aop:scoped-proxy proxy-target-class="false"/>
+    </bean>
+    -->
+    <bean id="userVOManager" class="org.iana.rzm.facade.user.UserVOManagerImpl">
+        <constructor-arg index="0" ref="userManager"/>
+    </bean>
+
+    <bean id="userManager" class="org.iana.rzm.user.UserManagerBean">
+        <constructor-arg index="0" ref="userDAO"/>
+    </bean>
+
+    <bean id="userDAO" class="org.iana.rzm.user.dao.HibernateUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="roleManager" class="org.iana.rzm.user.RoleManagerBean">
+        <constructor-arg index="0" ref="roleDAO"/>
+    </bean>
+
+    <bean id="roleDAO" class="org.iana.rzm.user.dao.HibernateRoleDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
+        <constructor-arg index="0" value="m00.icann.org"/>
+        <constructor-arg index="1" value="rzm-dev"/>
+        <constructor-arg index="2" value="upowilgeod"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
+        </property>
+        <property name="port">
+            <value>995</value>
+        </property>
+        <property name="debug">
+            <value>true</value>
+        </property>
+        <property name="ssl">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <!-- mails processing configuration -->
+
+    <bean id="templatesManager" class="org.iana.templates.def.parser.TemplatesManager">
+        <constructor-arg index="0" value="mail-templates.xml"/>
+    </bean>
+
+    <bean id="templatesService" class="org.iana.templates.TemplatesServiceBean">
+        <constructor-arg index="0" ref="templatesManager"/>
+    </bean>
+
+    <bean id="mailParser" class="org.iana.rzm.mail.parser.MailParserImpl">
+        <constructor-arg index="0" ref="templatesService"/>
+    </bean>
+
+    <!--
+        <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.MailsProcessorBean">
+            <constructor-arg index="0" ref="mailParser"/>
+            <constructor-arg index="1" ref="authenticationServiceBean"/>
+            <constructor-arg index="2" ref="transSystemTransactionService"/>
+            <constructor-arg index="3" ref="transSystemDomainService"/>
+            <constructor-arg index="4" ref="ticketCommentNotificationSender"/>
+            <constructor-arg index="5" ref="NotificationManagerBean"/>
+            <constructor-arg index="6" ref="userManager"/>
+        </bean>
+
+    -->
+
+    <bean id="mailLogger" class="org.iana.rzm.mail.processor.simple.logger.RTLogger">
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="contactAnswerParser" class="org.iana.rzm.mail.processor.contact.ContactAnswerParser">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="1"/>
+                        <entry key="token" value="2"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>^.*\[IANA #(\d+)].*\(\%([a-zA-Z0-9\+\/]+)\)\s*$</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="accept" value="1"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>(.+)Dear.+</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2" value="I ACCEPT"/>
+        <constructor-arg index="3" value="I DECLINE"/>
+    </bean>
+
+    <bean id="impactedPartyAnswerParser" class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerParser">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="domain_name" value="3"/>
+                        <entry key="token" value="5"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*([\d]*) \| nameserver change for \| ([^\| ]*) \| \[RZM\] \| (AC|TC) \| ([^\|]*).*</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="accept" value="1"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>(.+)Dear.+</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2" value="I ACCEPT"/>
+        <constructor-arg index="3" value="I DECLINE"/>
+    </bean>
+
+    <bean id="plainUSDoCAnswerParser" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerParser">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="epp_id" value="3"/>
+                        <entry key="domain_name" value="4"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*\[Root change ([\d]+):([^\]]+)\] Name server change to ([^\s]+)</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="ticket_id" value="2"/>
+                        <entry key="domain_name" value="3"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>([^:]*:)*\s*\[Root change ([\d]+)] Database change to ([^\s]+)</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="accept" value="1"/>
+                        <entry key="change_summary" value="2"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>.+Authorized:(.+)\[\+\] Begin Change Request Summary: DO NOT EDIT BELOW(.+)\[-\] End Change Request Summary: DO NOT EDIT ABOVE.*</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="3" value="yes"/>
+        <constructor-arg index="4" value="no"/>
+    </bean>
+
+    <bean id="usdocAnswerParser" class="org.iana.rzm.mail.processor.simple.pgp.PGPParser">
+        <constructor-arg ref="plainUSDoCAnswerParser"/>
+        <property name="pgp" value="false"/>
+    </bean>
+
+    <bean id="verisignMailParser" class="org.iana.rzm.mail.processor.simple.pgp.PGPParser">
+        <constructor-arg ref="plainVerisignMailParser"/>
+        <property name="pgp" value="false"/>
+    </bean>
+
+    <bean id="plainVerisignMailParser" class="org.iana.rzm.mail.processor.verisign.VeriSignMailParser">
+        <!--<constructor-arg index="0" value="rzmsdev@lnxdev-rz163.vrsn.com"/> Verisign email address is now stored in database-->
+        <constructor-arg index="0" ref="parameterManager"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
+                <constructor-arg>
+                    <map>
+                        <entry key="domain_name" value="1"/>
+                    </map>
+                </constructor-arg>
+                <constructor-arg>
+                    <value>.+\.([^\s]+)\s*</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="usdocAnswerProcessor" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerProcessor">
+        <constructor-arg ref="authenticationServiceBean"/>
+        <constructor-arg ref="guardedAdminTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
+    </bean>
+
+    <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
+        <constructor-arg ref="transSystemTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
+    </bean>
+
+    <bean id="impactedPartyAnswerProcessor"
+          class="org.iana.rzm.mail.processor.impactedparty.ImpactedPartyAnswerProcessor">
+        <constructor-arg ref="transSystemTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
+    </bean>
+
+    <bean id="verisignMailProcessor" class="org.iana.rzm.mail.processor.verisign.VeriSignMailProcessor">
+        <constructor-arg ref="transSystemTransactionService"/>
+        <constructor-arg ref="mailLogger"/>
+        <constructor-arg ref="authenticationServiceBean"/>
+    </bean>
+
+    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.simple.parser.CompositeEmailParser">
+                <constructor-arg>
+                    <list>
+                        <ref bean="contactAnswerParser"/>
+                        <ref bean="usdocAnswerParser"/>
+                        <ref bean="impactedPartyAnswerParser"/>
+                        <ref bean="verisignMailParser"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.simple.processor.CompositeEmailProcessor">
+                <constructor-arg>
+                    <list>
+                        <ref bean="impactedPartyAnswerProcessor"/>
+                        <ref bean="contactAnswerProcessor"/>
+                        <ref bean="usdocAnswerProcessor"/>
+                        <ref bean="verisignMailProcessor"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
+                <constructor-arg ref="whiteListNotificationSender"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- code values -->
+
+    <bean id="domainTypes" class="org.iana.rzm.facade.system.domain.types.DomainTypesImpl">
+        <constructor-arg index="0" ref="cachedCodeValues"/>
+    </bean>
+
+    <bean id="cc" class="org.iana.rzm.facade.common.cc.CountryCodesImpl">
+        <constructor-arg index="0" ref="cachedCodeValues"/>
+    </bean>
+
+    <bean id="ccManager" class="org.iana.rzm.facade.common.cc.CountryCodesManagerImpl">
+        <constructor-arg ref="cachedCodeValues"/>
+        <constructor-arg ref="codeValues"/>
+    </bean>
+
+    <bean id="cachedCodeValues" class="org.iana.codevalues.CachedCodeValuesRetriever">
+        <constructor-arg index="0" ref="codeValues"/>
+        <constructor-arg index="1" ref="cache"/>
+    </bean>
+
+    <bean id="codeValues" class="org.iana.codevalues.HibernateCodeValuesRetriever">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="cache" class="pl.nask.cache.PrototypeCache">
+        <constructor-arg index="0">
+            <map>
+                <entry key="cc" value-ref="timeoutEntry1"/>
+                <entry key="code1" value-ref="timeoutEntry2"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1" type="int" value="100"/>
+        <!-- max -->
+    </bean>
+
+    <bean id="timeoutEntry1" class="pl.nask.cache.TimeOutCacheEntry">
+        <constructor-arg index="0" value="cc"/>
+        <constructor-arg index="1" type="long" value="86400000"/>
+        <!-- 24h cache -->
+    </bean>
+
+    <bean id="timeoutEntry2" class="pl.nask.cache.TimeOutCacheEntry">
+        <constructor-arg index="0" value="code1"/>
+        <constructor-arg index="1" type="long" value="86400000"/>
+        <!-- 24h cache -->
+    </bean>
+
+    <aop:config>
+        <aop:pointcut id="transactionalOperation"
+                      expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.services.AbstractFinderService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.StatelessTransactionService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.TransactionDetectorService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.trans.StatelessTransactionDetectorService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.trans.StatelessAdminTransactionService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.trans.notifications.AdminNotificationService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.trans.notifications.StatelessAdminNotificationService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.domain.StatelessAdminDomainService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.users.StatelessAdminRoleService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.users.StatelessAdminUserService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.auth.StatelessAuthenticationServiceBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.system.domain.StatelessSystemDomainService.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.auth.securid.SecurIDService.*(..)) ||
+                                  execution(public * org.iana.rzm.log.LoggerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.domain.DomainManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.domain.dao.HibernateDomainDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.domain.dao.HibernateHostDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.TransactionManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.user.UserManagerBean.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.user.UserVOManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.user.RoleManagerBean.*(..)) ||
+                                  execution(public * org.iana.dao.hibernate.HibernateDAO.*(..)) ||
+                                  execution(public * org.iana.codevalues.HibernateCodeValuesRetriever.*(..)) ||
+                                  execution(public * org.iana.config.ConfigDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.epp.info.EPPChangeInfoProcessor.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.epp.poll.EPPPollMsgProcessor.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.StatelessAdminEmailTemplateManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.AdminEmailTemplateManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
+                                  execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
+                                  execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||
+                                  execution(public * org.iana.rzm.trans.dns.TechnicalCheckHelper.*(..)) ||
+                                  execution(public * org.iana.config.impl.ParameterManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.StatelessAdminConfigManagerImpl.*(..))"/>
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut-ref="transactionalOperation"
+                     order="1"/>
+
+        <aop:aspect id="jbpmAspect" ref="jbpmAdvisor">
+            <aop:pointcut id="jbpmOperation"
+                          expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
+                                      execution(* org.iana.rzm.facade.system.trans.TransactionServiceImpl.*(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.notifications.AdminNotificationServiceImpl.*(..))"/>
+            <aop:after method="close" pointcut-ref="jbpmOperation"/>
+        </aop:aspect>
+        <aop:aspect id="systemTransactionLoggerAspect" ref="systemTransactionLoggerAdvisor">
+            <aop:pointcut id="loggedSystemTransactionCreation"
+                          expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.createTransactions(..))"/>
+            <aop:pointcut id="loggedSystemTransactionModification"
+                          expression="execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.acceptTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.rejectTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.transitTransaction(..))"/>
+            <aop:around method="logObjectCreation" pointcut-ref="loggedSystemTransactionCreation"/>
+            <aop:around method="logObjectChange" pointcut-ref="loggedSystemTransactionModification"/>
+        </aop:aspect>
+        <aop:aspect id="adminTransactionLoggerAspect" ref="adminTransactionLoggerAdvisor">
+            <aop:pointcut id="loggedAdminTransactionCreation"
+                          expression="execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.createDomainCreationTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.createDomainModificationTransaction(..))"/>
+            <aop:pointcut id="loggedAdminTransactionModification"
+                          expression="execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.acceptTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.rejectTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.transitTransaction(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.transitTransactionToState(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.setTransactionTicketId(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.deleteTransaction(..))"/>
+            <aop:around method="logObjectCreation" pointcut-ref="loggedAdminTransactionCreation"/>
+            <aop:around method="logObjectChange" pointcut-ref="loggedAdminTransactionModification"/>
+        </aop:aspect>
+        <aop:aspect id="userLoggerAspect" ref="userLoggerAdvisor">
+            <aop:pointcut id="loggedUserOperation"
+                          expression="execution(* org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.createUser(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.deleteUser(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.updateUser(..))"/>
+            <aop:around method="log" pointcut-ref="loggedUserOperation"/>
+        </aop:aspect>
+        <aop:aspect id="domainLoggerAspect" ref="domainLoggerAdvisor">
+            <aop:pointcut id="loggedDomainOperation"
+                          expression="execution(* org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.createDomain(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.deleteDomain(..)) ||
+                                      execution(* org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.updateDomain(..))"/>
+            <aop:around method="log" pointcut-ref="loggedDomainOperation"/>
+        </aop:aspect>
+        <aop:aspect id="hibernateExceptionAspect" ref="hibernateExceptionAdvisor">
+            <aop:pointcut id="hibernateExceptionOperation"
+                          expression="execution(public * org.iana.rzm.facade.services.AbstractRZMStatefulService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.services.AbstractFinderService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.system.trans.guards.GuardedTransactionService.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.trans.GuardedAdminTransactionServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.domain.GuardedAdminDomainServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.users.GuardedAdminRoleServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.admin.users.GuardedAdminUserServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.passwd.PasswordChangeServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.auth.AuthenticationServiceBean.*(..)) ||
+                                      execution(public * org.iana.rzm.facade.system.domain.GuardedSystemDomainService.*(..))"/>
+            <aop:around method="proceed" pointcut-ref="hibernateExceptionOperation"/>
+        </aop:aspect>
+
+        <aop:aspect id="updateDomainAspect" ref="updateDomainAdvisor">
+            <aop:pointcut id="updateDomain"
+                          expression="execution(public * org.iana.rzm.domain.DomainManagerBean.update(..))"/>
+            <aop:around
+                    pointcut-ref="updateDomain"
+                    method="setUpdateDate"/>
+        </aop:aspect>
+    </aop:config>
+
+    <!-- advisors -->
+
+    <bean id="jbpmAdvisor" class="org.iana.rzm.trans.process.general.springsupport.JbpmAdvisor">
+        <property name="order" value="2"/>
+        <property name="processDAO">
+            <ref bean="processDAO"/>
+        </property>
+    </bean>
+
+    <tx:advice id="txAdvice">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"
+                       rollback-for="org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                                     org.iana.rzm.facade.admin.trans.NoObjectFoundException,
+                                     org.iana.rzm.facade.admin.trans.StateUnreachableException,
+                                     org.iana.rzm.facade.auth.AccessDeniedException,
+                                     org.iana.rzm.facade.auth.AuthenticationException,
+                                     org.iana.rzm.facade.auth.AuthenticationFailedException,
+                                     org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                                     org.iana.rzm.facade.auth.UserInvalidatedException,
+                                     org.iana.rzm.facade.common.NoObjectFoundException,
+                                     org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                                     org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                                     org.iana.rzm.facade.system.trans.NoDomainSystemUsersException"/>
+            <tx:method name="*"
+                       rollback-for="org.iana.rzm.facade.admin.trans.NoSuchStateException,
+                                     org.iana.rzm.facade.admin.trans.NoTransactionException,
+                                     org.iana.rzm.facade.admin.trans.StateUnreachableException,
+                                     org.iana.rzm.facade.auth.AccessDeniedException,
+                                     org.iana.rzm.facade.auth.AuthenticationException,
+                                     org.iana.rzm.facade.auth.AuthenticationFailedException,
+                                     org.iana.rzm.facade.auth.AuthenticationRequiredException,
+                                     org.iana.rzm.facade.auth.UserInvalidatedException,
+                                     org.iana.rzm.facade.common.NoObjectFoundException,
+                                     org.iana.rzm.facade.system.domain.TechnicalCheckException,
+                                     org.iana.rzm.facade.system.trans.NoDomainModificationException,
+                                     org.iana.rzm.facade.system.trans.NoDomainSystemUsersException"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--<bean id="transactionNotificationAdvisor" class="org.iana.rzm.facade.system.trans.notifications.TransactionNotificationAdvisor">-->
+    <!--<constructor-arg ref="transactionNotificationResender"/>-->
+    <!--<property name="order" value="2"/>-->
+    <!--</bean>-->
+
+    <bean id="systemTransactionLoggerAdvisor"
+          class="org.iana.rzm.facade.system.trans.loggers.SystemTransactionLoggerAdvisor">
+        <constructor-arg index="0" ref="transactionManagerBean"/>
+        <property name="order" value="3"/>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
+    <bean id="adminTransactionLoggerAdvisor"
+          class="org.iana.rzm.facade.admin.trans.loggers.AdminTransactionLoggerAdvisor">
+        <constructor-arg index="0" ref="transactionManagerBean"/>
+        <property name="order" value="3"/>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
+    <bean id="userLoggerAdvisor"
+          class="org.iana.rzm.facade.admin.users.loggers.UserLoggerAdvisor">
+        <property name="order" value="3"/>
+        <property name="userManager">
+            <ref bean="userManager"/>
+        </property>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
+    <bean id="domainLoggerAdvisor"
+          class="org.iana.rzm.facade.admin.domain.loggers.DomainLoggerAdvisor">
+        <property name="order" value="3"/>
+        <property name="domainManager">
+            <ref bean="domainManager"/>
+        </property>
+        <property name="logger">
+            <ref bean="logger"/>
+        </property>
+    </bean>
+
+    <bean id="hibernateExceptionAdvisor"
+          class="org.iana.rzm.facade.common.HibernateExceptionAdvisor">
+        <property name="order" value="4"/>
+    </bean>
+
+    <bean id="updateDomainAdvisor"
+          class="org.iana.rzm.trans.change.DomainUpdateAdvisor">
+        <constructor-arg ref="diffConfig"/>
+    </bean>
+
+    <bean id="passwordChangeService" class="org.iana.rzm.facade.passwd.PasswordChangeServiceBean">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="whiteListNotificationSender"/>
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value
+                        ="password-change"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- quartz scheduler -->
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="dnsTrigger"/>
+                <ref bean="mailsReceiverTrigger"/>
+                <ref bean="eppReceiverTrigger"/>
+                <ref bean="eppPollTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="mailsReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="mailsReceiver"/>
+        <!-- 10s delay -->
+        <property name="startDelay" value="10000"/>
+        <!-- every 5min -->
+        <property name="repeatInterval" value="360000"/>
+    </bean>
+
+    <bean id="mailsReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="mailsReceiverAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="mailsReceiverAction" class="org.iana.rzm.mail.MailsProcessingAction">
+        <constructor-arg ref="mailReceiver"/>
+        <constructor-arg ref="mailsProcessor"/>
+    </bean>
+
+    <bean id="eppReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="eppReceiver"/>
+        <!-- 10s delay -->
+        <property name="startDelay" value="10000"/>
+        <!-- every 5min -->
+        <property name="repeatInterval" value="360000"/>
+    </bean>
+
+    <bean id="eppReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="eppReceiverAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="eppReceiverAction" class="org.iana.rzm.trans.epp.info.EPPChangeInfoAction">
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="eppChangeInfoProcessor"/>
+    </bean>
+
+    <bean id="eppChangeInfoProcessor" class="org.iana.rzm.trans.epp.info.EPPChangeInfoProcessor">
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="eppClient"/>
+        <constructor-arg ref="eppErrorHandler"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <!-- EPP Poll Receiver -->
+
+    <bean id="eppPollTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="eppPoll"/>
+        <!-- 10s delay -->
+        <property name="startDelay" value="10000"/>
+        <!-- every 5min -->
+        <property name="repeatInterval" value="360000"/>
+    </bean>
+
+    <bean id="eppPoll" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="eppPollAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="eppPollAction" class="org.iana.rzm.trans.epp.poll.EPPPollMsgAction">
+        <constructor-arg ref="eppClient"/>
+        <constructor-arg ref="eppPollMsgProcessor"/>
+    </bean>
+
+    <bean id="eppPollMsgProcessor" class="org.iana.rzm.trans.epp.poll.EPPPollMsgProcessor">
+        <constructor-arg ref="transactionManagerBean"/>
+        <constructor-arg ref="pollManager"/>
+        <constructor-arg ref="eppErrorHandler"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="pollManager" class="org.iana.rzm.trans.epp.poll.PollMsgManagerImpl">
+        <constructor-arg ref="pollDAO"/>
+    </bean>
+
+    <bean id="pollMessagesService" class="org.iana.rzm.facade.admin.msgs.PollMessagesServiceImpl">
+        <constructor-arg ref="userVOManager"/>
+        <constructor-arg ref="statelessPollMessagesService"/>
+    </bean>
+
+    <bean id="statelessPollMessagesService" class="org.iana.rzm.facade.admin.msgs.StatelessPollMessagesServiceImpl">
+        <constructor-arg ref="pollManager"/>
+    </bean>
+
+    <bean id="pollDAO" class="org.iana.dao.hibernate.HibernateDAO">
+        <constructor-arg value="org.iana.rzm.trans.epp.poll.PollMsg" type="java.lang.Class"/>
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <!-- DNS Export Configuration -->
+
+    <bean id="dnsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="dnsExport"/>
+        <!-- 10s delay -->
+        <property name="startDelay" value="10000"/>
+        <!-- every 12h -->
+        <property name="repeatInterval" value="43200000"/>
+    </bean>
+
+    <bean id="dnsExport" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="dnsService"/>
+        <property name="targetMethod" value="exportAll"/>
+    </bean>
+
+    <bean id="dnsService" class="org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl">
+        <constructor-arg ref="zoneProducer"/>
+        <constructor-arg ref="zoneExporter"/>
+        <property name="exportDirectory" value="dnsexport"/>
+        <property name="exportFilenamePrefix" value="export"/>
+    </bean>
+
+    <bean id="zoneProducer" class="org.iana.rzm.facade.admin.domain.dns.DNSZoneProducerImpl">
+        <constructor-arg index="0" ref="domainManager"/>
+        <constructor-arg index="1" ref="rootServersProducerBean"/>
+        <property name="zoneTTL" value="86400"/>
+        <property name="zoneNameServersTTL" value="518400"/>
+        <property name="defaultTTL" value="172800"/>
+        <property name="refresh" value="1800"/>
+        <property name="retry" value="900"/>
+        <property name="expire" value="604800"/>
+        <property name="minimum" value="86400"/>
+        <property name="adminAddress" value="NSTLD.VERISIGN-GRS.COM."/>
+
+        <property name="description" value="empty description"/>
+    </bean>
+
+    <bean id="rootServersProducerBean" class="org.iana.dns.RootServersProducerImpl">
+        <constructor-arg index="0" ref="parameterManager"/>
+        <constructor-arg ref="rootServersList"/>
+    </bean>
+
+    <bean id="rootServersList" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="A.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>198.41.0.4</value>
+                            <value>2001:503:BA3E:0:0:0:2:30</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="H.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>128.63.2.53</value>
+                            <value>2001:500:1:0:0:0:803F:235</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="C.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.33.4.12</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="G.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.112.36.4</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="F.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.5.5.241</value>
+                            <value>2001:500:2F:0:0:0:0:F</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="B.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.228.79.201</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="J.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.58.128.30</value>
+                            <value>2001:503:C27:0:0:0:2:30</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="K.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>193.0.14.129</value>
+                            <value>2001:7FD:0:0:0:0:0:1</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="L.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>199.7.83.42</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="M.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>202.12.27.33</value>
+                            <value>2001:DC3:0:0:0:0:0:35</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="I.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.36.148.17</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="E.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>192.203.230.10</value>
+                        </set>
+                    </property>
+                </bean>
+                <bean class="org.iana.dns.obj.DNSHostImpl">
+                    <constructor-arg value="D.ROOT-SERVERS.NET."/>
+                    <property name="IPAddressesAsStrings">
+                        <set>
+                            <value>128.8.10.90</value>
+                        </set>
+                    </property>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="zoneExporter" class="org.iana.dns.exporter.BindExporter"/>
+
+    <!-- epp error -->
+
+    <bean id="eppErrorHandler" class="org.iana.rzm.trans.errors.AdminErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg index="0" ref="templateFactory"/>
+                <constructor-arg index="1">
+                    <list>
+                        <value>system-errors@iana.org</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg index="2" value="epp-error"/>
+                <constructor-arg index="3" ref="defaultDataProducer"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="NotificationSenderBean"/>
+    </bean>
+
+</beans>

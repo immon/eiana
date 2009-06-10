@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_eiana-web-backend">
+
+    <dirname property="module.eiana-web-backend.basedir" file="${ant.file.module_eiana-web-backend}"/>
+
+    <target name="copyBackendBeforeRun">
+        <copy file="${module.eiana-web-backend.basedir}/../conf/spring/services-config.xml"
+              todir="${module.eiana-web-backend.basedir}/rzm-backend/WEB-INF/" overwrite="true"/>
+        <copy file="${module.eiana-web-backend.basedir}/../conf/spring/services-config.xml"
+              todir="${module.eiana-web-backend.basedir}/exploded/WEB-INF/" overwrite="true"/>
+        <copy file="${module.eiana-web-backend.basedir}/../conf/spring/remoting-servlet.xml"
+              todir="${module.eiana-web-backend.basedir}/rzm-backend/WEB-INF/" overwrite="true"/>
+        <copy file="${module.eiana-web-backend.basedir}/../conf/spring/remoting-servlet.xml"
+              todir="${module.eiana-web-backend.basedir}/exploded/WEB-INF/" overwrite="true"/>
+        <copy file="${module.eiana-web-backend.basedir}/../conf/hibernate/log4j.properties"
+              todir="${module.eiana-web-backend.basedir}/exploded/WEB-INF/classes" overwrite="true"/>
+    </target>
+</project>
