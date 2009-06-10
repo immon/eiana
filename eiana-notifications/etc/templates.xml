@@ -484,7 +484,7 @@ listed as a party to this request.
 <iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
 <iana:content>
 Dear {name},
-    
+
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to alter the
 IP address of an authoritative nameserver. As this nameserver
@@ -728,7 +728,6 @@ The following exception happened:
 </iana:template>
 
 
-<!--TODO subject and body-->
 <iana:template>
 <iana:type>special-review</iana:type>
 <iana:addressees>
@@ -741,7 +740,6 @@ Current domain: {domainName} has special review flag set on.
 <iana:signed>false</iana:signed>
 </iana:template>
 
-    <!--TODO subject and body-->
 <iana:template>
 <iana:type>manual-review</iana:type>
 <iana:addressees>
@@ -749,13 +747,12 @@ Current domain: {domainName} has special review flag set on.
 </iana:addressees>
 <iana:subject>Request {ticket} for domain {domainName} in manual review state</iana:subject>
 <iana:content>
-Dear Admin,
+IANA staff:
 
-There is a new request created by {subbmiter} for domain {domainName}.
-
+There is a new request created by {submitter} for domain {domainName}.
 Domain has special review flag set {specialReviewFlag}.
-
-Domain special instructions: {specialInstructions}.
+Domain special instructions:
+{specialInstructions}
 
 Request change data:
 {changes}
@@ -763,4 +760,5 @@ Request change data:
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
+
 </iana:templates>
