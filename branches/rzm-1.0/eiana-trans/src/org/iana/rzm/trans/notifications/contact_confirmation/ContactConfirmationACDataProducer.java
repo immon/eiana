@@ -55,7 +55,7 @@ public class ContactConfirmationACDataProducer extends DefaultTransactionDataPro
 
 
             RZMUser logInUser = userManager.get(td.getTrackData().getCreatedBy());
-            values.put("subbmiter",
+            values.put("submitter",
                        logInUser == null ?
                        (td.getSubmitterEmail() != null ? td.getSubmitterEmail() : "") :
                        logInUser.getName());

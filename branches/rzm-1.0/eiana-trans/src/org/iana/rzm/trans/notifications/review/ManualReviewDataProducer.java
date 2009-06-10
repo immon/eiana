@@ -25,7 +25,7 @@ public class ManualReviewDataProducer implements DataProducer {
 
         values.put("ticket", "" + td.getTicketID());
 
-        values.put("subbmiter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());
+        values.put("submitter", td.getSubmitterEmail() == null ? td.getTrackData().getCreatedBy() : td.getSubmitterEmail());
 
         values.put("specialReviewFlag", currentDomain.getSpecialReview()? "on" : "off");
 
