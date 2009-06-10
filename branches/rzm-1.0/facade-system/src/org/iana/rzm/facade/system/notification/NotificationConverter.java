@@ -57,7 +57,7 @@ public class NotificationConverter {
         notificationVOType.put("admin-closed", NotificationVO.Type.ADMIN_CLOSED);
         notificationVOType.put("exception", NotificationVO.Type.EXCEPTION);
         notificationVOType.put("technical-check-period", NotificationVO.Type.TECHNICAL_CHECK_PERIOD);
-        notificationVOType.put("technical-check", NotificationVO.Type.TECHNICAL_CHECK);
+        notificationVOType.put("technical-deficiencies", NotificationVO.Type.TECHNICAL_CHECK);
         notificationVOType.put("text", NotificationVO.Type.TEXT);
 
         for (Map.Entry<String, NotificationVO.Type> entry : notificationVOType.entrySet())
