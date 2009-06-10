@@ -16,16 +16,18 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         TemplateDef templateDef = new TemplateDef();
         templateDef.setType("contact-confirmation-newTLD");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_CONFIRM", "TC_CONFIRM")));
-        templateDef.setSubject("{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}");
+        templateDef.setSubject("[IANA #{ticket}] Your confirmation requested to delegate {domainName} domain (%{token})");
         templateDef.setContent(
-                "Dear {name} {title},\n" +
+                "Dear {name} ({title}),\n" +
                 "\n" +
                 "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
                 "manager of the DNS root zone, has received a request to delegate\n" +
-                "the {domainName} domain from {subbmiter}.The proposed data associated with\n" +
-                "this domain is as follows:\n" +
+                "the {domainName} domain from {submitter}.\n" +
+                "\n" +
+                "The proposed data associated with this domain is as follows:\n" +
                 "\n" +
                 "{changes}\n" +
+                "\n" +
                 "As a proposed new contact for this domain you must consent to this\n" +
                 "change.\n" +
                 "\n" +
@@ -38,9 +40,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "\"I DECLINE\" on the first line.\n" +
                 "\n" +
                 "For your reference, this request has been assigned ticket number\n" +
-                "{ticket}. Current administrative and technical contacts for a domain\n" +
-                "can review the status of this request at any time at our website at\n" +
-                "{url}\n" +
+                "{ticket}.\n" +
                 "\n" +
                 "If you have any questions regarding this request, please reply to\n" +
                 "this email and we will try to assist you. Please ensure you do not\n" +
@@ -60,16 +60,17 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("contact-confirmation");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_CONFIRM", "TC_CONFIRM")));
-        templateDef.setSubject("{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}");
+        templateDef.setSubject("[IANA #{ticket}] Your confirmation requested to alter {domainName} domain (%{token})");
         templateDef.setContent(
-                "Dear {name}{title},\n" +
+                "Dear {name} ({title}),\n" +
                 "\n" +
                 "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
                 "manager of the DNS root zone, has received a request to alter the\n" +
-                "information associated with the {domainName} domain from {subbmiter}. The\n" +
+                "information associated with the {domainName} domain from {submitter}. The\n" +
                 "changes requested are as follows:\n" +
                 "\n" +
                 "{changes}\n" +
+                "\n" +
                 "As a listed contact, or proposed new contact, for this domain you\n" +
                 "must consent to this change.\n" +
                 "\n" +
@@ -106,12 +107,12 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("technical-deficiencies");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName}");
+        templateDef.setSubject("[IANA #{ticket}] Please remedy technical problems for {domainName}");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
                 "This is an update regarding the IANA Root Zone Management request\n" +
-                "{ticket}.\n" +
+                "with reference number {ticket}.\n" +
                 "\n" +
                 "We have detected that there are technical problems with the request\n" +
                 "you have submitted. The following errors were identified:\n" +
@@ -121,6 +122,9 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "We are unable to proceed until either these errors are remedied,\n" +
                 "or you provide an explanation why this is desired behaviour and\n" +
                 "why the request can proceed.\n" +
+                "\n" +
+                "Please read our technical requirements at\n" +
+                "    http://www.iana.org/procedures/nameserver-requirements.html\n" +
                 "\n" +
                 "You can retest your servers, or provide this reasoning, through\n" +
                 "the website at the following URL:\n" +
@@ -150,7 +154,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("normal_redelegation-processing");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SO")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName}");
+        templateDef.setSubject("[IANA #{ticket}] Processing has commenced for {domainName} request");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
@@ -182,9 +186,9 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("third_party-consultation");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName}");
+        templateDef.setSubject("[IANA #{ticket}] Your consent is required to alter {domainName} domain ({token})");
         templateDef.setContent(
-                "Dear {name} {title},\n" +
+                "Dear {name},\n" +
                 "\n" +
                 "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
                 "manager of the DNS root zone, has received a request to alter the\n" +
@@ -192,6 +196,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "requested are as follows:\n" +
                 "\n" +
                 "{changes}\n" +
+                "\n" +
                 "We have marked in our database a \"special instruction\" that your\n" +
                 "or your organisation must consent to this change before it can\n" +
                 "proceed.\n" +
@@ -199,12 +204,13 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "Please review this change to ensure it is correct, and then indicate\n" +
                 "your approval or disapproval by visiting the following link:\n" +
                 "\n" +
-                "{url}\n" +
+                "    {url}\n" +
                 "\n" +
                 "For your reference, this request has been assigned ticket number\n" +
                 "{ticket}. Current administrative and technical contacts for a domain\n" +
                 "can review the status of this request at any time at our website at\n" +
-                "{url}\n" +
+                "\n" +
+                "    {url}\n" +
                 "\n" +
                 "If you have any questions regarding this request, please reply to\n" +
                 "this email and we will try to assist you. Please ensure you do not\n" +
@@ -224,7 +230,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("completed-nschange");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName} | COMPLETED");
+        templateDef.setSubject("[IANA #{ticket}] Change to {domainName} domain completed");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
@@ -261,7 +267,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("completed");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName} | COMPLETED");
+        templateDef.setSubject("[IANA #{ticket}] Change to {domainName} domain completed");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
@@ -274,8 +280,8 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "if you notice any errors please contact IANA Root Zone Management at\n" +
                 "root-mgmt@iana.org.\n" +
                 "\n" +
-                "Please note: It can take up to a day for all public databases and\n" +
-                "name servers to be fully updated.\n" +
+                "Please note: It can take up to a day for all public databases to\n" +
+                "be fully updated.\n" +
                 "\n" +
                 "For your information, this is the chronology of the request:\n" +
                 "\n" +
@@ -296,12 +302,12 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("withdrawn");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName} | WITHDRAWN");
+        templateDef.setSubject("[IANA #{ticket}] Change request withdrawn for {domainName} domain");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
                 "This is an update regarding the IANA Root Zone Management request\n" +
-                "{ticket}.\n" +
+                "with reference number {ticket}.\n" +
                 "\n" +
                 "We have been requested to withdraw this request, and therefore this\n" +
                 "request has been closed without prejudice.\n" +
@@ -324,14 +330,14 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("admin-closed");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName} I ADMIN_CLOSED");
+        templateDef.setSubject("[IANA #{ticket}] Change request administratively closed for {domainName} domain");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
                 "This is an update regarding the IANA Root Zone Management request\n" +
-                "{ticket}.\n" +
+                "with reference number {ticket}.\n" +
                 "\n" +
-                "We have administratively closed this request without prejudice\n" +
+                "We have administratively closed this request without prejudice.\n" +
                 "\n" +
                 "If you have any questions regarding this request, please reply to\n" +
                 "this email and we will try to assist you. Please ensure you do not\n" +
@@ -351,12 +357,12 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("exception");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName} | EXCEPTION");
+        templateDef.setSubject("[IANA #{ticket}] Status update for {domainName} domain");
         templateDef.setContent(
                 "Hello,\n" +
                 "\n" +
                 "This is an update regarding the IANA Root Zone Management request\n" +
-                "{ticket}.\n" +
+                "with reference number {ticket}.\n" +
                 "\n" +
                 "We have moved your request into an \"exception\" state. This means\n" +
                 "that for some reason our automated workflow system is not able to\n" +
@@ -389,16 +395,35 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("rejected");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName} | REJECTED");
+        templateDef.setSubject("[IANA #{ticket}] Change request rejected for {domainName} domain");
         templateDef.setContent(
-                "Rejected.");
+                "Hello,\n" +
+                "\n" +
+                "This is an update regarding the IANA Root Zone Management request\n" +
+                "with reference number {ticket}.\n" +
+                "\n" +
+                "One of the contact persons for this domain have rejected this change,\n" +
+                "and therefore this request has been closed.\n" +
+                "\n" +
+                "If you have any questions regarding this request, please reply to\n" +
+                "this email and we will try to assist you. Please ensure you do not\n" +
+                "modify the subject as we need the reference number intact to ensure\n" +
+                "the speediest processing of your enquiry.\n" +
+                "\n" +
+                "With kindest regards,\n" +
+                "\n" +
+                "Root Zone Management\n" +
+                "Internet Assigned Numbers Authority\n" +
+                "\n" +
+                "NOTE: This has been an automated message, sent to you as you are\n" +
+                "listed as a party to this request.");
         templateDef.setSigned(false);
         session.save(templateDef);
 
         templateDef = new TemplateDef();
         templateDef.setType("contact-confirmation-remainder");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC")));
-        templateDef.setSubject("{ticket} | [RZM] | {domainName}");
+        templateDef.setSubject("[IANA #{ticket}] REMINDER: Your confirmation requested to alter {domainName} domain (%{token})");
         templateDef.setContent(
                 "Dear {name} {title},\n" +
                 "\n" +
@@ -420,16 +445,18 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "{changes}\n" +
                 "\n" +
                 "As a {currentOrNewContact}, for this domain you must consent to this change.\n" +
+                "\n" +
                 "{newContactOnly}\n" +
                 "Please review this change to ensure it is correct, and then indicate\n" +
                 "your approval or disapproval by visiting the following link:\n" +
                 "\n" +
-                "{url}\n" +
+                "    {url}\n" +
                 "\n" +
                 "For your reference, this request has been assigned ticket number\n" +
                 "{ticket}. Current administrative and technical contacts for a domain\n" +
                 "can review the status of this request at any time at our website at\n" +
-                "{url}\n" +
+                "\n" +
+                "    {url}\n" +
                 "\n" +
                 "If you have any questions regarding this request, please reply to\n" +
                 "this email and we will try to assist you. Please ensure you do not\n" +
@@ -449,10 +476,10 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("impacted_parties-confirmation");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_IMPACTED_PARTIES", "TC_IMPACTED_PARTIES")));
-        templateDef.setSubject("{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}");
+        templateDef.setSubject("[IANA #{ticket}] Your confirmation requested to update your nameserver(s) ({token})");
         templateDef.setContent(
                 "Dear {name},\n" +
-                "    \n" +
+                "\n" +
                 "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
                 "manager of the DNS root zone, has received a request to alter the\n" +
                 "IP address of an authoritative nameserver. As this nameserver\n" +
@@ -469,7 +496,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "Please review this change to ensure it is correct, and then indicate\n" +
                 "your approval or disapproval by visiting the following link:\n" +
                 "\n" +
-                "{url}\n" +
+                "    {url}\n" +
                 "\n" +
                 "or you can simply reply to this email with the words \"I ACCEPT\" or\n" +
                 "\"I DECLINE\" on the first line.\n" +
@@ -497,7 +524,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("impacted_parties-confirmation-remainder");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_IMPACTED_PARTIES", "TC_IMPACTED_PARTIES")));
-        templateDef.setSubject("{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}");
+        templateDef.setSubject("[IANA #{ticket}] REMINDER: Your confirmation requested to update your nameserver(s) (%{token})");
         templateDef.setContent(
                 "Dear {name} {title},\n" +
                 "\n" +
@@ -507,6 +534,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "requested are as follows:\n" +
                 "\n" +
                 "{changes}\n" +
+                "\n" +
                 "We have marked in our database a \"special instruction\" that your\n" +
                 "or your organisation must consent to this change before it can\n" +
                 "proceed.\n" +
@@ -514,12 +542,13 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "Please review this change to ensure it is correct, and then indicate\n" +
                 "your approval or disapproval by visiting the following link:\n" +
                 "\n" +
-                "{url}\n" +
+                "    {url}\n" +
                 "\n" +
                 "For your reference, this request has been assigned ticket number\n" +
                 "{ticket}. Current administrative and technical contacts for a domain\n" +
                 "can review the status of this request at any time at our website at\n" +
-                "{url}\n" +
+                "\n" +
+                "    {url}\n" +
                 "\n" +
                 "If you have any questions regarding this request, please reply to\n" +
                 "this email and we will try to assist you. Please ensure you do not\n" +
@@ -597,6 +626,8 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "\n" +
                 "{notes}\n" +
                 "\n" +
+                "%IANACHECKBLURB%\n" +
+                "\n" +
                 "This message has been automatically generated. If you have any\n" +
                 "questions or concerns, please email them to root-mgmt@iana.org\n" +
                 "with a subject of \"[IANA #{ticket}]\".\n" +
@@ -637,6 +668,8 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "\n" +
                 "{notes}\n" +
                 "\n" +
+                "%IANACHECKBLURB%\n" +
+                "\n" +
                 "This message has been automatically generated. If you have any\n" +
                 "questions or concerns, please email them to root-mgmt@iana.org\n" +
                 "with a subject of \"[IANA #{ticket}]\".\n" +
@@ -648,7 +681,9 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "\n" +
                 "Authorized:\n" +
                 "\n" +
-                "{receipt}");
+                "[+] Begin Change Request Summary: DO NOT EDIT BELOW\n" +
+                "{change}\n" +
+                "[-] End Change Request Summary: DO NOT EDIT ABOVE");
         templateDef.setSigned(true);
         templateDef.setKeyFileName("eiana.secret.pgp.asc");
         templateDef.setKeyPassphrase("tester");
@@ -657,12 +692,17 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef = new TemplateDef();
         templateDef.setType("usdoc-confirmation-remainder");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("GOV_OVERSIGHT")));
-        templateDef.setSubject("{domainName} USDoC confirmation reminder");
+        templateDef.setSubject("[IANA #{ticket}] NTIA authorisation reminder for {domainName}");
         templateDef.setContent(
-                "{domainName} USDoC confirmation reminder\n" +
-                "transaction ID: {transactionId}\n" +
-                "state: {stateName}\n" +
-                "period: {period}");
+                "Hello,\n" +
+                "\n" +
+                "This is a reminder that we have not received a response on the authorisation\n" +
+                "request for {domainName} with ticket number {ticket} and\n" +
+                "transaction ID {transactionId}.\n" +
+                "\n" +
+                "Root Zone Management\n" +
+                "\n" +
+                "NOTE: This is an automated message.");
         templateDef.setSigned(true);
         templateDef.setKeyFileName("eiana.secret.pgp.asc");
         templateDef.setKeyPassphrase("tester");
@@ -672,8 +712,26 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef.setType("password-change");
         templateDef.setSubject("Password change");
         templateDef.setContent(
-                "{userName}\n" +
-                "{link}");
+                "Hello,\n" +
+                "\n" +
+                "We have received a request to recover the password for this email address's\n" +
+                "account on the IANA Root Zone Management Interface.\n" +
+                "\n" +
+                "Your username is \"{userName}\".\n" +
+                "\n" +
+                "To set a new password, please visit the following link:\n" +
+                "\n" +
+                "    {link}\n" +
+                "\n" +
+                "If you did not request this, you may safely ignore this email.\n" +
+                "\n" +
+                "With kindest regards,\n" +
+                "\n" +
+                "Root Zone Management\n" +
+                "Internet Assigned Numbers Authority\n" +
+                "\n" +
+                "NOTE: This has been an automated message, sent to you as you as someone\n" +
+                "requested the recover the password for this account via our website.");
         templateDef.setSigned(false);
         session.save(templateDef);
 
@@ -700,13 +758,12 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
         templateDef.setSubject("Request {ticket} for domain {domainName} in manual review state");
         templateDef.setContent(
-                "Dear Admin,\n" +
+                "IANA staff:\n" +
                 "\n" +
-                "There is a new request created by {subbmiter} for domain {domainName}.\n" +
-                "\n" +
+                "There is a new request created by {submitter} for domain {domainName}.\n" +
                 "Domain has special review flag set {specialReviewFlag}.\n" +
-                "\n" +
-                "Domain special instructions: {specialInstructions}.\n" +
+                "Domain special instructions:\n" +
+                "{specialInstructions}\n" +
                 "\n" +
                 "Request change data:\n" +
                 "{changes}");
