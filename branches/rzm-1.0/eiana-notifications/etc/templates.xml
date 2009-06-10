@@ -8,19 +8,77 @@
 
 <iana:template>
 <iana:type>contact-confirmation-newTLD</iana:type>
-<iana:subject>{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}</iana:subject>
+<iana:addressees>
+<iana:addressee>AC_CONFIRM</iana:addressee>
+<iana:addressee>TC_CONFIRM</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Your confirmation requested to delegate {domainName} domain (%{token})</iana:subject>
 <iana:content>
-Dear {name} {title},
+Dear {name} ({title}),
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to delegate
-the {domainName} domain from {subbmiter}.The proposed data associated with
-this domain is as follows:
+the {domainName} domain from {submitter}.
+
+The proposed data associated with this domain is as follows:
 
 {changes}
+
 As a proposed new contact for this domain you must consent to this
 change.
 
+Please review this change to ensure it is correct, and then indicate
+your approval or disapproval by visiting the following link:
+
+{url}
+
+or you can simply reply to this email with the words "I ACCEPT" or
+"I DECLINE" on the first line.
+
+For your reference, this request has been assigned ticket number
+{ticket}.
+
+If you have any questions regarding this request, please reply to
+this email and we will try to assist you. Please ensure you do not
+modify the subject as we need the reference number intact to ensure
+the speediest processing of your enquiry.
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message, sent to you as you are
+listed as a party to this request.
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+<!--=====================================================================-->
+<!--2. Contact confirmation template-->
+<!--=====================================================================-->
+
+<iana:template>
+<iana:type>contact-confirmation</iana:type>
+<iana:addressees>
+<iana:addressee>AC_CONFIRM</iana:addressee>
+<iana:addressee>TC_CONFIRM</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
+<iana:content>
+Dear {name} ({title}),
+
+The Internet Assigned Numbers Authority (IANA), in its role as
+manager of the DNS root zone, has received a request to alter the
+information associated with the {domainName} domain from {submitter}. The
+changes requested are as follows:
+
+{changes}
+
+As a listed contact, or proposed new contact, for this domain you
+must consent to this change.
+
+{newContactOnly}
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
 
@@ -51,66 +109,20 @@ listed as a party to this request.
 </iana:template>
 
 <!--=====================================================================-->
-<!--2. Contact confirmation template-->
-<!--=====================================================================-->
-
-<iana:template>
-<iana:type>contact-confirmation</iana:type>
-<iana:subject>{ticket} | {stateName} | [RZM] | {domainName} | {roleName} | {token}</iana:subject>
-<iana:content>
-    Dear {name}{title},
-
-    The Internet Assigned Numbers Authority (IANA), in its role as
-    manager of the DNS root zone, has received a request to alter the
-    information associated with the {domainName} domain from {subbmiter}. The
-    changes requested are as follows:
-
-    {changes}
-    As a listed contact, or proposed new contact, for this domain you
-    must consent to this change.
-
-    {newContactOnly}
-    Please review this change to ensure it is correct, and then indicate
-    your approval or disapproval by visiting the following link:
-
-    {url}
-
-    or you can simply reply to this email with the words "I ACCEPT" or
-    "I DECLINE" on the first line.
-
-    For your reference, this request has been assigned ticket number
-    {ticket}. Current administrative and technical contacts for a domain
-    can review the status of this request at any time at our website at
-    {url}
-
-    If you have any questions regarding this request, please reply to
-    this email and we will try to assist you. Please ensure you do not
-    modify the subject as we need the reference number intact to ensure
-    the speediest processing of your enquiry.
-
-    With kindest regards,
-
-    Root Zone Management
-    Internet Assigned Numbers Authority
-
-    NOTE: This has been an automated message, sent to you as you are
-    listed as a party to this request.
-</iana:content>
-<iana:signed>false</iana:signed>
-</iana:template>
-
-<!--=====================================================================-->
 <!--3. Template to notify applicant of technical deficiencies-->
 <!--=====================================================================-->
-
+<!-- not used-->
 <iana:template>
 <iana:type>technical-deficiencies</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName}</iana:subject>
+<iana:addressees>
+<iana:addressee>IANA</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Please remedy technical problems for {domainName}</iana:subject>
 <iana:content>
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}.
+with reference number {ticket}.
 
 We have detected that there are technical problems with the request
 you have submitted. The following errors were identified:
@@ -120,6 +132,9 @@ you have submitted. The following errors were identified:
 We are unable to proceed until either these errors are remedied,
 or you provide an explanation why this is desired behaviour and
 why the request can proceed.
+
+Please read our technical requirements at
+    http://www.iana.org/procedures/nameserver-requirements.html
 
 You can retest your servers, or provide this reasoning, through
 the website at the following URL:
@@ -153,7 +168,12 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>normal_redelegation-processing</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName}</iana:subject>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SO</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Processing has commenced for {domainName} request</iana:subject>
 <iana:content>
 Hello,
 
@@ -189,9 +209,14 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>third_party-consultation</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName}</iana:subject>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Your consent is required to alter {domainName} domain ({token})</iana:subject>
 <iana:content>
-Dear {name} {title},
+Dear {name},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to alter the
@@ -199,6 +224,7 @@ information associated with the {domainName} domain. The changes
 requested are as follows:
 
 {changes}
+
 We have marked in our database a "special instruction" that your
 or your organisation must consent to this change before it can
 proceed.
@@ -206,12 +232,13 @@ proceed.
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
 
-{url}
+    {url}
 
 For your reference, this request has been assigned ticket number
 {ticket}. Current administrative and technical contacts for a domain
 can review the status of this request at any time at our website at
-{url}
+
+    {url}
 
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not
@@ -235,7 +262,12 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>completed-nschange</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName} | COMPLETED</iana:subject>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Change to {domainName} domain completed</iana:subject>
 <iana:content>
 Hello,
 
@@ -272,7 +304,10 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>completed</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName} | COMPLETED</iana:subject>
+<iana:addressees>
+<iana:addressee>IANA</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Change to {domainName} domain completed</iana:subject>
 <iana:content>
 Hello,
 
@@ -285,8 +320,8 @@ Please verify that your request has been properly implemented, and
 if you notice any errors please contact IANA Root Zone Management at
 root-mgmt@iana.org.
 
-Please note: It can take up to a day for all public databases and
-name servers to be fully updated.
+Please note: It can take up to a day for all public databases to
+be fully updated.
 
 For your information, this is the chronology of the request:
 
@@ -310,12 +345,17 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>withdrawn</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName} | WITHDRAWN</iana:subject>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Change request withdrawn for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}.
+with reference number {ticket}.
 
 We have been requested to withdraw this request, and therefore this
 request has been closed without prejudice.
@@ -342,14 +382,19 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>admin-closed</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName} I ADMIN_CLOSED</iana:subject>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Change request administratively closed for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}.
+with reference number {ticket}.
 
-We have administratively closed this request without prejudice
+We have administratively closed this request without prejudice.
 
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not
@@ -373,12 +418,15 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>exception</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName} | EXCEPTION</iana:subject>
+<iana:addressees>
+<iana:addressee>IANA</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Status update for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}.
+with reference number {ticket}.
 
 We have moved your request into an "exception" state. This means
 that for some reason our automated workflow system is not able to
@@ -415,9 +463,33 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>rejected</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName} | REJECTED</iana:subject>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Change request rejected for {domainName} domain</iana:subject>
 <iana:content>
-Rejected.
+Hello,
+
+This is an update regarding the IANA Root Zone Management request
+with reference number {ticket}.
+
+One of the contact persons for this domain have rejected this change,
+and therefore this request has been closed.
+
+If you have any questions regarding this request, please reply to
+this email and we will try to assist you. Please ensure you do not
+modify the subject as we need the reference number intact to ensure
+the speediest processing of your enquiry.
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message, sent to you as you are
+listed as a party to this request.
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
@@ -427,8 +499,12 @@ Rejected.
 <!--===================================================================== -->
 
 <iana:template>
-<iana:type>contact-confirmation-remainder</iana:type>
-<iana:subject>{ticket} | [RZM] | {domainName}</iana:subject>
+<iana:type>contact-confirmation-reminder</iana:type>
+<iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] REMINDER: Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
 
@@ -450,16 +526,18 @@ requested are as follows:
 {changes}
 
 As a {currentOrNewContact}, for this domain you must consent to this change.
+
 {newContactOnly}
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
 
-{url}
+    {url}
 
 For your reference, this request has been assigned ticket number
 {ticket}. Current administrative and technical contacts for a domain
 can review the status of this request at any time at our website at
-{url}
+
+    {url}
 
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not
@@ -481,7 +559,11 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation</iana:type>
-<iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
+<iana:addressees>
+<iana:addressee>AC_IMPACTED_PARTIES</iana:addressee>
+<iana:addressee>TC_IMPACTED_PARTIES</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] Your confirmation requested to update your nameserver(s) ({token})</iana:subject>
 <iana:content>
 Dear {name},
 
@@ -501,7 +583,7 @@ The changes requested are as follows:
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
 
-{url}
+    {url}
 
 or you can simply reply to this email with the words "I ACCEPT" or
 "I DECLINE" on the first line.
@@ -529,7 +611,11 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation-remainder</iana:type>
-<iana:subject>{ticket} | nameserver change for | {domainName} | [RZM] | {roleName} | {token}</iana:subject>
+<iana:addressees>
+<iana:addressee>AC_IMPACTED_PARTIES</iana:addressee>
+<iana:addressee>TC_IMPACTED_PARTIES</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] REMINDER: Your confirmation requested to update your nameserver(s) (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
 
@@ -539,6 +625,7 @@ information associated with the {domainName} domain. The changes
 requested are as follows:
 
 {changes}
+
 We have marked in our database a "special instruction" that your
 or your organisation must consent to this change before it can
 proceed.
@@ -546,12 +633,13 @@ proceed.
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
 
-{url}
+    {url}
 
 For your reference, this request has been assigned ticket number
 {ticket}. Current administrative and technical contacts for a domain
 can review the status of this request at any time at our website at
-{url}
+
+    {url}
 
 If you have any questions regarding this request, please reply to
 this email and we will try to assist you. Please ensure you do not
@@ -571,6 +659,9 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>zone-insertion-alert</iana:type>
+<iana:addressees>
+<iana:addressee>IANA</iana:addressee>
+</iana:addressees>
 <iana:subject>Domain modification</iana:subject>
 <iana:content>Zone Insertion Alert for {domainName}. Only {period} days left.</iana:content>
 <iana:signed>false</iana:signed>
@@ -578,44 +669,20 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>zone-publication-alert</iana:type>
+<iana:addressees>
+<iana:addressee>IANA</iana:addressee>
+</iana:addressees>
 <iana:subject>Domain modification</iana:subject>
 <iana:content>Zone Publication Alert for {domainName}. Only {period} days left.</iana:content>
-<iana:signed>false</iana:signed>
-</iana:template>
-
-<iana:template>
-<iana:type>rejected</iana:type>
-<iana:subject>Domain modification</iana:subject>
-<iana:content>Rejected.</iana:content>
-<iana:signed>false</iana:signed>
-</iana:template>
-
-<iana:template>
-<iana:type>technical-check-period</iana:type>
-<iana:subject>Domain {domainName} technical checks</iana:subject>
-<iana:content>
-Technical checks for domain {domainName}:
-{passedList}
-{errorList}
-You have {days} day(s) left to make everything working properly.
-</iana:content>
-<iana:signed>false</iana:signed>
-</iana:template>
-
-<iana:template>
-<iana:type>technical-check</iana:type>
-<iana:subject>Domain {domainName} technical checks</iana:subject>
-<iana:content>
-Technical checks for domain {domainName}:
-{passedList}
-{errorList}
-</iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
 <!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation</iana:type>
+<iana:addressees>
+<iana:addressee>GOV_OVERSIGHT</iana:addressee>
+</iana:addressees>
 <iana:subject>[Root change {ticket}] Database change to {domainName}</iana:subject>
 <iana:content>
 Dear NTIA:
@@ -632,6 +699,8 @@ authorized, the change will be implemented.
 IANA has provided the following additional notes on this change:
 
 {notes}
+
+%IANACHECKBLURB%
 
 This message has been automatically generated. If you have any
 questions or concerns, please email them to root-mgmt@iana.org
@@ -656,6 +725,9 @@ Authorized:
 <!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation-nschange</iana:type>
+<iana:addressees>
+<iana:addressee>GOV_OVERSIGHT</iana:addressee>
+</iana:addressees>
 <iana:subject>[Root change {ticket}:{retry}] Name server change to {domainName}</iana:subject>
 <iana:content>
 Dear NTIA:
@@ -674,6 +746,8 @@ IANA has provided the following additional notes on this change:
 
 {notes}
 
+%IANACHECKBLURB%
+
 This message has been automatically generated. If you have any
 questions or concerns, please email them to root-mgmt@iana.org
 with a subject of "[IANA #{ticket}]".
@@ -685,7 +759,9 @@ Internet Assigned Numbers Authority
 
 Authorized:
 
-{receipt}
+[+] Begin Change Request Summary: DO NOT EDIT BELOW
+{change}
+[-] End Change Request Summary: DO NOT EDIT ABOVE
 </iana:content>
 <iana:signed>true</iana:signed>
 <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
@@ -695,12 +771,20 @@ Authorized:
 <!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation-remainder</iana:type>
-<iana:subject>{domainName} USDoC confirmation reminder</iana:subject>
+<iana:addressees>
+<iana:addressee>GOV_OVERSIGHT</iana:addressee>
+</iana:addressees>
+<iana:subject>[IANA #{ticket}] NTIA authorisation reminder for {domainName}</iana:subject>
 <iana:content>
-{domainName} USDoC confirmation reminder
-transaction ID: {transactionId}
-state: {stateName}
-period: {period}
+Hello,
+
+This is a reminder that we have not received a response on the authorisation
+request for {domainName} with ticket number {ticket} and
+transaction ID {transactionId}.
+
+Root Zone Management
+
+NOTE: This is an automated message.
 </iana:content>
 <iana:signed>true</iana:signed>
 <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
@@ -711,8 +795,26 @@ period: {period}
 <iana:type>password-change</iana:type>
 <iana:subject>Password change</iana:subject>
 <iana:content>
-{userName}
-{link}
+Hello,
+
+We have received a request to recover the password for this email address's
+account on the IANA Root Zone Management Interface.
+
+Your username is "{userName}".
+
+To set a new password, please visit the following link:
+
+    {link}
+
+If you did not request this, you may safely ignore this email.
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message, sent to you as you as someone
+requested the recover the password for this account via our website.
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
@@ -726,7 +828,6 @@ The following exception happened:
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
-
 
 <iana:template>
 <iana:type>special-review</iana:type>
