@@ -31,8 +31,8 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  */
 public class TechnicalCheckHelper implements CheckHelper {
-    private static final String TEMPLATE_PERIOD_NAME = "technical-check-period";
-    private static final String TEMPLATE_NAME = "technical-check";
+    private static final String TEMPLATE_PERIOD_NAME = "technical-deficiencies";
+    private static final String TEMPLATE_NAME = "technical-deficiencies";
     private static final String TEMPLATE_VALUE_DOMAIN_NAME = "domainName";
     private static final String TEMPLATE_VALUE_PASSED_LIST = "passedList";
     private static final String TEMPLATE_VALUE_ERROR_LIST = "errorList";
