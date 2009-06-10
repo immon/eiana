@@ -23,10 +23,9 @@ public class ContactParserTest {
     @BeforeClass
     public void init() {
         Map<String, Integer> subjectGroups = new HashMap<String, Integer>();
-        subjectGroups.put(ContactAnswerParser.TICKET_ID, 2);
-        subjectGroups.put(ContactAnswerParser.DOMAIN_NAME, 3);
-        subjectGroups.put(ContactAnswerParser.TOKEN, 5);
-        String subjectPattern = "([^:]*:)*\\s*([\\d]*) \\| PENDING_CONTACT_CONFIRMATION \\| \\[RZM\\] \\| ([^\\| ]*) \\| (AC|TC) \\| ([^\\| ]*)";
+        subjectGroups.put(ContactAnswerParser.TICKET_ID, 1);
+        subjectGroups.put(ContactAnswerParser.TOKEN, 2);
+        String subjectPattern = "^.*\\[IANA #(\\d+)].*\\(\\%([a-zA-Z0-9\\+\\/]+)\\)\\s*$";
         RegexParser subjectParser = new RegexParser(subjectGroups, subjectPattern);
 
         Map<String, Integer> contentGroups = new HashMap<String, Integer>();
@@ -39,40 +38,37 @@ public class ContactParserTest {
 
     @Test
     public void testValidAccept() throws Exception {
-        String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "[IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I accept \n > Dear content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
         assert 1 == answer.getTicketID();
-        assert "us".equals(answer.getDomainName());
-        assert "1234".equals(answer.getToken());
+        assert "1sa2d3".equals(answer.getToken());
         assert answer.isAccept();
     }
 
     @Test
     public void testValidDecline() throws Exception {
-        String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "[IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I decline Dear content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
         assert 1 == answer.getTicketID();
-        assert "us".equals(answer.getDomainName());
-        assert "1234".equals(answer.getToken());
+        assert "1sa2d3".equals(answer.getToken());
         assert !answer.isAccept();
     }
 
     @Test
     public void testValidRePrefix() throws Exception {
-        String subject = "Re: Odp: 1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "Re: Odp: [IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I accept \n > Dear content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
         assert 1 == answer.getTicketID();
-        assert "us".equals(answer.getDomainName());
-        assert "1234".equals(answer.getToken());
+        assert "1sa2d3".equals(answer.getToken());
         assert answer.isAccept();
     }
 
     @Test
     public void testInvalidAccept() throws Exception {
-        String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "[IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I'm trying to accept content... Dear sdadas";
         TicketData data = (TicketData) parser.parse("a@example.tld",  subject, content);
         assert 1 == data.getTicketID();
@@ -81,7 +77,7 @@ public class ContactParserTest {
 
     @Test
     public void testInvalidDecline() throws Exception {
-        String subject = "1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "[IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = " I'm trying to decline content... Dear sdsdsd";
         MessageData data = parser.parse("a@example.tld",  subject, content);
         assert !(data instanceof ContactAnswer);
@@ -90,7 +86,7 @@ public class ContactParserTest {
 
     @Test
     public void testAcceptAndDeclinePresent() throws Exception {
-        String subject = "Re: Odp: 1 | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "Re: Odp: [IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I accept I decline \n > Dear content...";
         TicketData data = (TicketData) parser.parse("a@example.tld",  subject, content);
         assert 1 == data.getTicketID();
@@ -99,7 +95,7 @@ public class ContactParserTest {
 
     @Test(expectedExceptions = EmailParseException.class)
     public void testInvalidTicketID() throws Exception {
-        String subject = "Re: TicketID | PENDING_CONTACT_CONFIRMATION | [RZM] | us | AC | 1234";
+        String subject = "Re: [IANA #TicketId] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I ACCEPT content...";
         ContactAnswer answer = (ContactAnswer) parser.parse("a@example.tld",  subject, content);
     }
