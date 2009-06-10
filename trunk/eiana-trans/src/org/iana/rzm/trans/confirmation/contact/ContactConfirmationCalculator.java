@@ -11,6 +11,8 @@ import org.jbpm.graph.exe.ExecutionContext;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author Jakub Laszkiewicz
@@ -64,16 +66,16 @@ public class ContactConfirmationCalculator extends ActionExceptionHandler {
         trans.setContactConfirmations(new ContactConfirmations(contacts));
     }
 
-    public String generateToken() {
-        String stime = Long.toString(System.currentTimeMillis(), Character.MAX_RADIX);
-        if (stime.length() > 6) stime = stime.substring(stime.length()-6);
-        int max = (int) Math.pow(Character.MAX_RADIX, 8-stime.length());
+    public static String generateToken() throws NoSuchAlgorithmException {
+        Random random = SecureRandom.getInstance("SHA1PRNG");
+        String sTime = Long.toString(random.nextInt(), Character.MAX_RADIX);
+        if (sTime.length() > 6) sTime = sTime.substring(sTime.length()-6);
+        int max = (int) Math.pow(Character.MAX_RADIX, 8-sTime.length());
         int pre = random.nextInt(max);
         String rand = Integer.toString(pre, Character.MAX_RADIX);
-        String ret = rand+stime;
+        String ret = rand+sTime;
         while (ret.length() < 8) ret = "0"+ret;
         return ret;
     }
-    
-    static Random random = new Random(System.currentTimeMillis());
+
 }
