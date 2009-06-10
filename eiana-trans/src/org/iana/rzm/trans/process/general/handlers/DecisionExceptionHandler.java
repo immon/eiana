@@ -6,6 +6,7 @@ import org.iana.rzm.trans.process.general.ctx.TransactionContext;
 import org.iana.rzm.trans.dns.CheckHelper;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.node.DecisionHandler;
+import org.apache.log4j.Logger;
 
 /**
  * This is a superclass for <code>DecisionHandler</code>s,
@@ -24,6 +25,8 @@ public abstract class DecisionExceptionHandler implements DecisionHandler {
         try {
             return doDecide(executionContext);
         } catch (Exception e) {
+            e.printStackTrace();
+            Logger.getLogger(getClass()).error("in jbpm decision", e);
             TransactionData td = (TransactionData) executionContext.getContextInstance().getVariable("TRANSACTION_DATA");
             td.setStateMessage(e.getMessage());
             executionContext.getToken().setNode(executionContext.getProcessDefinition().getNode("EXCEPTION"));
