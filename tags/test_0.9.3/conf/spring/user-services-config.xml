@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+       default-lazy-init="false">
+
+    <import resource="dnscheck-errors-config.xml"/>
+    
+    <bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:remoting.properties" />
+    </bean>
+
+    <!-- ##### SSL Configuration #####  -->
+
+    <!--<bean id="userSSLSocketFactory" class="org.iana.rzm.web.common.ssl.SSLSocketFactory">-->
+        <!--<constructor-arg index="0" value="c:/TMP/santa.p12" />--><!-- key store location -->
+        <!--<constructor-arg index="1" value="qwe123" />--><!-- key store password -->
+        <!--<constructor-arg index="2" value="PKCS12" />--><!-- key store type -->
+        <!--<constructor-arg index="3" value="c:/TMP/cert/trust4.jks" />--><!-- trusted store location -->
+        <!--<constructor-arg index="4" value="qwe123" />--><!-- trusted store password -->
+        <!--<constructor-arg index="5" value="JKS" />--><!-- trusted store type -->
+        <!--<constructor-arg index="6" value="TLS" />--><!-- ssl context -->
+    <!--</bean>-->
+
+    <!--<bean id="userHttpsProtocol" class="org.apache.commons.httpclient.protocol.Protocol">-->
+        <!--<constructor-arg index="0" value="${remoting.protocol.ssl}" />--><!-- SSL protocol -->
+        <!--<constructor-arg index="1" ref="userSSLSocketFactory" />-->
+        <!--<constructor-arg index="2" value="${remoting.port.ssl}" />--><!-- SSL port -->
+    <!--</bean>-->
+
+    <!-- Secure SSL host configuration-->
+    <!--<bean id="secureUserHost" class="org.apache.commons.httpclient.HttpHost">-->
+        <!--<constructor-arg index="0" value="${remoting.host}" />-->
+        <!--<constructor-arg index="1" value="${remoting.port.ssl}" />--><!-- service port -->
+        <!--<constructor-arg index="2" ref="userHttpsProtocol" />-->
+    <!--</bean>-->
+
+    <!-- Plain http host configuration -->
+    <bean id="plainUserHost" class="org.apache.commons.httpclient.HttpHost">
+        <constructor-arg index="0" value="${remoting.host}" />
+        <constructor-arg index="1" value="${remoting.port.http}" /><!-- service port -->
+    </bean>
+
+    <bean id="userHostConfig" class="org.iana.rzm.web.common.ssl.FixedHostConfiguration">
+        <constructor-arg index="0" ref="plainUserHost" />
+    </bean>
+
+    <bean id="userHttpClient" class="org.apache.commons.httpclient.HttpClient">
+        <constructor-arg>
+            <bean class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager" />
+        </constructor-arg>
+        <property name="hostConfiguration" ref="userHostConfig" />
+    </bean>
+
+    <bean id="userInvokerRequestExecutor" class="org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor" >
+        <constructor-arg index="0" ref="userHttpClient" />
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteGuardedSystemDomainService" class="org.iana.rzm.facade.system.domain.GuardedSystemDomainService" scope="session">
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedSystemDomainService"/>
+    </bean>
+
+    <bean id="remoteStatelessGuardedSystemDomainService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="${remoting.url}/remoteGuardedSystemDomainServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.system.domain.StatelessSystemDomainService"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteGuardedSystemTransactionServiceBean" class="org.iana.rzm.facade.system.trans.guards.GuardedTransactionService" scope="session">
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessGuardedSystemTransactionServiceBean"/>
+    </bean>
+
+    <bean id="remoteStatelessGuardedSystemTransactionServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="${remoting.url}/remoteGuardedSystemTransactionServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.system.trans.StatelessTransactionService"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteDetectorService" class="org.iana.rzm.facade.system.trans.TransactionDetectorImpl" scope="session">
+        <constructor-arg index="0" ref="remoteUserManager"/>
+        <constructor-arg index="1" ref="remoteStatelessDetectorService"/>
+    </bean>
+
+    <bean id="remoteStatelessDetectorService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="${remoting.url}/remoteDetectorService"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.system.trans.StatelessTransactionDetectorService"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteCc" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteCc"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.common.cc.CountryCodes"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <bean id="remotePasswordChangeService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remotePasswordChangeService"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.passwd.PasswordChangeService"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <bean id="remoteAuthenticationServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteAuthenticationServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.auth.AuthenticationService"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <bean id="remoteSecureIdServiceBean" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteSecureIdServiceBean"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.auth.securid.SecurIDService"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+    <!-- ############################# -->
+
+    <bean id="remoteUserManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" scope="session">
+        <property name="serviceUrl" value="${remoting.url}/remoteUserManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.user.UserVOManager"/>
+        <property name="httpInvokerRequestExecutor" ref="userInvokerRequestExecutor" />
+    </bean>
+
+</beans>

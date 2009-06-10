@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+       default-lazy-init="false">
+
+    <bean id="emptyIPAddressListMessageBuilder" class="org.iana.rzm.web.common.technical_check.EmptyIPAddressListMessageBuilder"/>
+    <bean id="maximumPayloadSizeMessageBuilder" class="org.iana.rzm.web.common.technical_check.MaximumPayloadSizeMessageBuilder"/>
+    <bean id="minimumNetworkDiversityMessageBuilder" class="org.iana.rzm.web.common.technical_check.MinimumNetworkDiversityMessageBuilder"/>
+    <bean id="nameServerCoherencyMessageBuilder" class="org.iana.rzm.web.common.technical_check.NameServerCoherencyMessageBuilder"/>
+    <bean id="nameServerUnreachableByTCPMessageBuilder" class="org.iana.rzm.web.common.technical_check.NameServerUnreachableByTCPMessageBuilder"/>
+    <bean id="nameServerUnreachableByUDPMessageBuilder" class="org.iana.rzm.web.common.technical_check.NameServerUnreachableByUDPMessageBuilder"/>
+    <bean id="nameServerUnreachableMessageBuilder" class="org.iana.rzm.web.common.technical_check.NameServerUnreachableMessageBuilder"/>
+    <bean id="notAuthoritativeNameServerMessageBuilder" class="org.iana.rzm.web.common.technical_check.NotAuthoritativeNameServerMessageBuilder"/>
+    <bean id="nameServerIPAddressesNotEqualMessageBuilder" class="org.iana.rzm.web.common.technical_check.NameServerIPAddressesNotEqualMessageBuilder"/>
+    <bean id="radicalAlterationCheckMessageBuilder" class="org.iana.rzm.web.common.technical_check.RadicalAlterationCheckMessageBuilder"/>
+    <bean id="notUniqueIPAddressMessageBuilder" class="org.iana.rzm.web.common.technical_check.NotUniqueIPAddressMessageBuilder"/>
+    <bean id="notEnoughNameServersException" class="org.iana.rzm.web.common.technical_check.NotEnoughNameServersMessageBuilder"/>
+    <bean id="serialNumberNotEqualException" class="org.iana.rzm.web.common.technical_check.SerialNumberNotEqualMessageBuilder"/>
+    <bean id="whoIsIOExceptionMessageBuilder" class="org.iana.rzm.web.common.technical_check.WhoIsIOExceptionMessageBuilder"/>
+
+
+    <bean id="technicalErrorsXmlParser" class="org.iana.rzm.web.common.technical_check.DNSTechnicalCheckErrorsXmlParser">
+        <constructor-arg>
+            <map>
+                <entry key="EmptyIPAddressListException" value-ref="emptyIPAddressListMessageBuilder"/>
+                <entry key="MaximumPayloadSizeExceededException" value-ref="maximumPayloadSizeMessageBuilder"/>
+                <entry key="MinimumNetworkDiversityException" value-ref="minimumNetworkDiversityMessageBuilder"/>
+                <entry key="NameServerCoherencyException" value-ref="nameServerCoherencyMessageBuilder"/>
+                <entry key="NameServerUnreachableByTCPException" value-ref="nameServerUnreachableByTCPMessageBuilder"/>
+                <entry key="NameServerUnreachableByUDPException" value-ref="nameServerUnreachableByUDPMessageBuilder"/>
+                <entry key="NameServerUnreachableException" value-ref="nameServerUnreachableMessageBuilder"/>
+                <entry key="NotAuthoritativeNameServerException" value-ref="notAuthoritativeNameServerMessageBuilder"/>                
+                <entry key="NameServerIPAddressesNotEqualException" value-ref="nameServerIPAddressesNotEqualMessageBuilder"/>
+                <entry key="RadicalAlterationCheckException" value-ref="radicalAlterationCheckMessageBuilder"/>                
+                <entry key="NotUniqueIPAddressException" value-ref="notUniqueIPAddressMessageBuilder"/>
+                <entry key="NotEnoughNameServersException" value-ref="notEnoughNameServersException"/>
+                <entry key="SerialNumberNotEqualException" value-ref="serialNumberNotEqualException"/>
+                <entry key="WhoIsIOException" value-ref="whoIsIOExceptionMessageBuilder"/>                
+            </map>
+        </constructor-arg>
+    </bean>
+</beans>

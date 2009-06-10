@@ -1,0 +1,5 @@
+<configuration xmlns="http://java.sun.com/xml/ns/jax-rpc/ri/config">
+    <wsdl
+            location="dist/dnscheck/TechnicalCheck.wsdl"
+            packageName="org.iana.dns.check.remote.client"/>
+</configuration>

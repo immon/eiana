@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+       default-lazy-init="true">
+
+
+    <bean id="zoneTestingCheck" class="org.iana.dns.check.EmptyDNSTechnicalCheck">
+        <property name="domainChecks">
+            <list><ref bean="rootServersPropagationCheck" /></list>
+        </property>
+    </bean>
+
+    <bean id="persistentNotificationSender" class="org.iana.notifications.PersistentNotificationSender">
+        <constructor-arg ref="notificationDAO"/>
+    </bean>
+
+    <bean id="ticketingService" class="org.iana.ticketing.MockTicketingService"/>
+
+    <bean id="eppClient"  class="org.iana.rzm.trans.epp.mock.MockEPPClient"/>
+
+    <bean id="technicalCheckHelperBean" class="org.iana.rzm.trans.dns.TechnicalCheckHelper">
+        <constructor-arg ref="templateFactory"/>
+        <constructor-arg ref="noHostDiffConfig"/>
+        <property name="doTest"><value>false</value></property>
+    </bean>
+
+    <bean id="radicalAlterationTechnicalCheckBean" class="org.iana.rzm.trans.check.RadicalAlterationImpl">
+        <constructor-arg ref="zoneTestingCheck" />
+    </bean>
+
+    <bean id="whiteListNotificationSender" class="org.iana.notifications.WhiteListNotificationSender">
+        <constructor-arg ref="persistentNotificationSender"/>
+        <property name="whiteList">
+            <list>
+                <value>correct1@test.iana.org</value>
+                <value>correct2@test.iana.org</value>
+            </list>
+        </property>
+        <property name="defaultEmail" value="default@test.iana.org" />
+    </bean>
+
+</beans>

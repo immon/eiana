@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../../../../../../../../eiana-web-user/rzm/css/master.css"/>
+    </head>
+    <body jwcid="$content$">
+        <div class="mainBox" style="margin: 20px 0 0 0;">
+            <span jwcid="container@tapestry4lib:GrayContainer">
+                <span jwcid="editible">
+                    <div class="buttonStyle" style="float: right; margin-bottom: 15px;">
+                        <b class="left"></b>
+                        <b class="right"><a jwcid="edit" href="#" class="button">Edit Record ></a></b>
+                    </div>
+                </span>
+                <table width="85%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td valign="top">
+                            <strong><span jwcid="type">Administrative</span></strong>
+                            <span jwcid="@If" condition="prop:role"><br/><span jwcid="@Insert" class="prop:roleAccountClass" value="literal:Role Account">Role Account</span></span>
+                            <span jwcid="userRole"></span>
+                        </td>
+                        <td valign="top">
+                            <strong><span jwcid="contactName">Chris Disspain</span></strong><br/>
+                            <span jwcid="jobTitleSpan">
+                                <span jwcid="jobTitle">"ceo@auda.org.au</span>
+                                <span jwcid=@If condition="prop:useJobTitle"><br/></span>
+                            </span>
+                            <span jwcid=@If condition="prop:techOrAdminContact"><span jwcid="org">org</span></span>
+                            <span jwcid="@Any" class="prop:addressClass">
+                                <span jwcid="address">
+                                    107 Faraday Street<br/> Melbourne VIC 3053
+                                </span>
+                            </span>
+                            <span jwcid="country"> Australia</span>
+                        </td>
+                        <td valign="top">
+                            <span jwcid="email">"ceo@auda.org.au</span><br/>
+                            <span jwcid="privateEmailSpan"><span jwcid="privateEmail">"ceo@auda.org.au</span>
+                                <span jwcid=@If condition="prop:usePrivateEmail">(private)<br/></span></span>
+                            <span jwcid="phone">+61-3-9349-4711 (v)</span><span jwcid="phoneSefix">(v)<br/></span>
+                            <span jwcid="altPhoneSpan"><span jwcid="altPhone">+61-3-9349-4711</span>(Alternate v)
+                                <span jwcid=@If condition="prop:useAltPhone"><br/></span>
+                            </span>
+                            <span jwcid="fax">+61-9349-5711(f)</span><span jwcid="faxSefix">(f)<br/></span>
+                            <span jwcid="altFaxSpan"><span jwcid="altFax">+61-9349-5711(f)</span>(Alternate f)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lastUpdate"><em><span jwcid="lastUpdated">Last updated 3 January 2001</span></em></td>
+                    </tr>
+                </table>
+            </span>
+        </div>
+    </body>
+</html>
+            
