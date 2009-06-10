@@ -33,6 +33,9 @@ public class ContactIdentity implements Identity, Cloneable {
     }
 
     public ContactIdentity(String token) {
+        if (token != null && token.startsWith("%")) {
+            token = token.substring(1);
+        }
         this.token = token;
     }
 
