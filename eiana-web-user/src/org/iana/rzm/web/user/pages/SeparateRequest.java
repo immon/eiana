@@ -12,7 +12,6 @@ import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.model.DomainVOWrapper;
 import org.iana.rzm.web.common.model.TransactionVOWrapper;
 import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;

@@ -1,6 +1,7 @@
-package org.iana.rzm.web.common;
+package org.iana.rzm.facade.system.trans;
 
-import org.iana.dns.check.*;
+import org.iana.dns.check.DNSExceptionMessagesVisitor;
+import org.iana.dns.check.DNSTechnicalCheckException;
 
 
 public class DNSTechnicalCheckExceptionWrapper extends Exception {
@@ -16,5 +17,5 @@ public class DNSTechnicalCheckExceptionWrapper extends Exception {
     public String getMessage(){
         return message;
     }
-    
+
 }

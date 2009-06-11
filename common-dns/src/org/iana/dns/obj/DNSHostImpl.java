@@ -1,19 +1,20 @@
 package org.iana.dns.obj;
 
+import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSHost;
 import org.iana.dns.DNSIPAddress;
-import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSVisitor;
 import org.iana.dns.validator.InvalidIPAddressException;
 
-import java.util.Set;
+import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class DNSHostImpl implements DNSHost {
+public class DNSHostImpl implements DNSHost, Serializable {
 
     private Name name;
     private Set<DNSIPAddress> addresses = new TreeSet<DNSIPAddress>();

@@ -104,8 +104,8 @@
       <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="module" name="eiana-web-components">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/classes" />
     </containerElement>
     <containerElement type="module" name="facade-common">
       <attribute name="method" value="1" />
@@ -143,20 +143,18 @@
       <attribute name="URI" value="/WEB-INF/lib/libidn-1.8.jar" />
       <url>jar://$MODULE_DIR$/../lib/idn/libidn-1.8.jar!/</url>
     </containerElement>
-    <containerElement type="library" level="module">
+    <containerElement type="library" name="javaee" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
-      <url>jar://$MODULE_DIR$/../lib/javaee/javaee.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
       <url>jar://$MODULE_DIR$/../lib/jbpm/jbpm-identity-3.1.4.jar!/</url>
     </containerElement>
-    <containerElement type="library" level="module">
+    <containerElement type="library" name="jdom" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="/WEB-INF/lib/jdom.jar" />
-      <url>jar://$MODULE_DIR$/../lib/jdom/jdom.jar!/</url>
     </containerElement>
     <containerElement type="library" level="module">
       <attribute name="method" value="1" />
@@ -218,10 +216,6 @@
       <attribute name="method" value="1" />
       <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
-    <containerElement type="library" name="javaee" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="&lt;N/A&gt;" />
-    </containerElement>
     <containerElement type="library" name="jaxrpc" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
@@ -229,10 +223,6 @@
     <containerElement type="library" name="jbpm" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
-    </containerElement>
-    <containerElement type="library" name="jdom" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib/jdom.jar" />
     </containerElement>
     <containerElement type="library" name="junit" level="project">
       <attribute name="method" value="0" />
@@ -257,10 +247,6 @@
     <containerElement type="library" name="rt-api" level="project">
       <attribute name="method" value="0" />
       <attribute name="URI" value="&lt;N/A&gt;" />
-    </containerElement>
-    <containerElement type="library" name="rzm-ui-components" level="project">
-      <attribute name="method" value="0" />
-      <attribute name="URI" value="/WEB-INF/lib" />
     </containerElement>
     <containerElement type="library" name="saaj" level="project">
       <attribute name="method" value="0" />

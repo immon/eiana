@@ -4,7 +4,6 @@ import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
 import org.iana.criteria.Or;
 import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -147,7 +146,7 @@ public class GuardedStatelessDoCTransactionService extends AbstractRZMStatelessS
         throw new AccessDeniedException("authenticated user not in the role IANA");
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         throw new AccessDeniedException("authenticated user not in the role IANA");
     }
 

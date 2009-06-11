@@ -1,14 +1,22 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.iana.rzm.web.admin.model.*;
-import org.iana.rzm.web.common.model.*;
+import org.apache.tapestry.IAsset;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.annotations.Asset;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.ComponentClass;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.iana.commons.ListUtil;
+import org.iana.rzm.web.admin.model.AdminRoleVOWrapper;
+import org.iana.rzm.web.admin.model.AdminUserVOWraper;
+import org.iana.rzm.web.common.model.RoleVOWrapper;
+import org.iana.rzm.web.common.model.UserVOWrapper;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @ComponentClass
 public abstract class AdminUserEditor extends UserEditor {
@@ -69,7 +77,12 @@ public abstract class AdminUserEditor extends UserEditor {
         private AdminRoleVOWrapper.AdminType[] roles;
 
         public RolesSelectionModel() {
-            roles = AdminRoleVOWrapper.AdminType.values();
+            roles = ListUtil.findMultiple(Arrays.asList(AdminRoleVOWrapper.AdminType.values()),
+                    new ListUtil.Predicate<AdminRoleVOWrapper.AdminType>(){
+                        public boolean evaluate(AdminRoleVOWrapper.AdminType o) {
+                            return o.ordinal() != AdminRoleVOWrapper.AdminType.ROOT.ordinal();
+                        }
+                    }).toArray(new AdminRoleVOWrapper.AdminType[0]);
         }
 
         public int getOptionCount() {
