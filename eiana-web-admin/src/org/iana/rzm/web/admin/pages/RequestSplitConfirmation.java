@@ -23,14 +23,14 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
     @Component(id = "form", type = "Form")
     public abstract IComponent getFormComponent();
 
-     @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+     @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
     @Component(id = "splitRequest", type = "RadioGroup", bindings = {"selected=prop:splitRequest", "disabled=prop:mustSplit"})
     public abstract IComponent getSplitRequestComponent();
 
     @Component(id = "oneRequest", type = "Radio", bindings = {
-        "value=ognl:@org.iana.rzm.web..admin.pages.RequestSplitConfirmation@ONE_RQUEST"
+        "value=ognl:@org.iana.rzm.web.admin.pages.RequestSplitConfirmation@ONE_RQUEST"
         })
     public abstract IComponent getOneRequestComponent();
 

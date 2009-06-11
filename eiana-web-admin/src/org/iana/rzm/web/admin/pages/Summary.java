@@ -15,7 +15,7 @@ public abstract class Summary extends AdminPage implements PageBeginRenderListen
 
     public static final String PAGE_NAME = "Summary";
 
-    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
     @Component(id = "summary", type = "For", bindings = {"source=ognl:summaryList", "value=ognl:summaryValue"})

@@ -226,4 +226,8 @@ public class MessageUtil implements Serializable {
     public String getWhoIsIOExceptionMessage(String host, List<String> ips) {
         return "We couldn't determine the autonomous system for name server [" +host+ "] IPV4 " + ips.toString() + ".";
     }
+
+    public String getDoaminDoesNotExsitMessage(String domain) {
+        return "Can't find domain with name "  + domain;
+    }
 }
