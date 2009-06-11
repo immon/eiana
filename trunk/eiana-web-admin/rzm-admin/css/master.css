@@ -143,7 +143,7 @@ strong {
 
 .edit input.field, textarea.field { width: 350px; }
 select.field { width: 185px;}
-textarea.field { width: 500px; }
+textarea.pgp { width: 500px; }
 
 .loginbox {
 

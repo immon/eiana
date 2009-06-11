@@ -12,7 +12,6 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.admin.RzmServerException;
 import org.iana.rzm.web.admin.model.*;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.RequestMetaParameters;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.model.criteria.SortOrder;

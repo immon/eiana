@@ -33,7 +33,7 @@ public class WhiteListNotificationSender implements NotificationSender {
                 addressee.setEmail(defaultEmail);
             }
         }
-
+        
         notificationSender.send(notification);
     }
 

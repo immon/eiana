@@ -25,6 +25,7 @@
     <component-type type="CreateNewPasswordEditor" specification-path="password/CreateNewPasswordEditor.jwc"/>
     <component-type type="SubDomain" specification-path="subdomain/SubDomain.jwc"/>
     <component-type type="SubDomainEditor" specification-path="subdomain/SubDomainEditor.jwc"/>
+    <component-type type="DNSTechnicalCheckErrorList" specification-path="dns/DNSTechnicalCheckErrorList.jwc"/>
 
 
     <library id="tapestry4lib" specification-path="/org/iana/web/tapestry/components/Tapestry4Commons.library"/>

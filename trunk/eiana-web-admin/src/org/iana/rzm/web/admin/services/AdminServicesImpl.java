@@ -6,7 +6,6 @@ import org.iana.commons.ListUtil;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Equal;
 import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
@@ -37,7 +36,6 @@ import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.web.admin.RzmServerException;
 import org.iana.rzm.web.admin.model.*;
 import org.iana.rzm.web.admin.query.AdminQueryUtil;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.RequestMetaParameters;
 import org.iana.rzm.web.common.RzmApplicationError;
 import org.iana.rzm.web.common.RzmApplicationException;
@@ -194,9 +192,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             return result;
         } catch (InfrastructureException e) {
             throw new RzmApplicationException(e);
-        } catch (DNSTechnicalCheckException e) {
-            throw new DNSTechnicalCheckExceptionWrapper(e);
-        }
+        }        
     }
 
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException {

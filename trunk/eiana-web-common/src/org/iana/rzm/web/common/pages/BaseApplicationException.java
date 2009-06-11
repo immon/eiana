@@ -23,25 +23,27 @@
 // either expressed or implied, of ICANN.package org.iana.rzm.web;
 package org.iana.rzm.web.common.pages;
 
-import org.apache.tapestry.annotations.*;
+import org.apache.log4j.Logger;
+import org.apache.tapestry.annotations.InjectObject;
 import org.apache.tapestry.pages.Exception;
-import org.apache.tapestry.util.exception.*;
-import org.apache.tapestry.web.*;
+import org.apache.tapestry.util.exception.ExceptionAnalyzer;
+import org.apache.tapestry.util.exception.ExceptionDescription;
+import org.apache.tapestry.web.WebRequest;
 
 /**
  * A custom Exception page that shows a frendly error message in case of an unhanded Exception occur
  */
 public abstract class BaseApplicationException extends Exception {
 
+    private final Logger LOGGER = Logger.getLogger(getClass().getName());
+
     @InjectObject("infrastructure:request")
     public abstract WebRequest getRequest();
 
     public abstract void setError(String error);
-
     public abstract String getError();
 
     public abstract void setExceptionName(String name);
-
     public abstract String getExceptionName();
 
     public boolean isRzmApplicationException() {
@@ -80,6 +82,7 @@ public abstract class BaseApplicationException extends Exception {
             message = builder.toString();
         }
         setError(message);
+        LOGGER.error(message, value);
     }
 
 }

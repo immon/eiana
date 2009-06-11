@@ -5,7 +5,6 @@ import org.iana.codevalues.Value;
 import org.iana.commons.ListUtil;
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
@@ -22,7 +21,6 @@ import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
 import org.iana.rzm.facade.user.RoleVO;
 import org.iana.rzm.facade.user.UserVO;
 import org.iana.rzm.facade.user.UserVOManager;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.RzmApplicationException;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.model.criteria.SortOrder;
@@ -213,8 +211,6 @@ public class UserServicesImpl implements UserServices {
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
-        } catch (DNSTechnicalCheckException e) {
-            throw new DNSTechnicalCheckExceptionWrapper(e);
         }
     }
 

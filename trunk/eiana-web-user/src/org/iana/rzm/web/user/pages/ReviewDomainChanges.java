@@ -12,7 +12,6 @@ import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.query.QueryBuilderUtil;
@@ -164,7 +163,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     }
 
     public boolean isAllowedToSubmit() {
-        return !isTransactionPending() && !isImpactedPartyPending();
+        return !isTransactionPending() && !isImpactedPartyPending() && !isHasErrors();
     }
 
     public boolean isNoTransaction() {
@@ -191,6 +190,11 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         setModifiedDomain(getVisitState().getModifiedDomain(getDomainId()));
         DomainVOWrapper currentDomain = getVisitState().getCurrentDomain(getDomainId());
         setDomainName(currentDomain.getName());
+
+        if(getCountryName() == null){
+            setCountryName(getCountry());
+        }
+
         setSubmitterEmail(getVisitState().getSubmitterEmail());
         try {
             SystemDomainVOWrapper domain = getUserServices().getDomain(currentDomain.getId());
@@ -337,6 +341,19 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         page.setCallback(createCallback());
         page.setImpactedParty(true);
         return page;
+    }
+
+    public String getCountry() {
+        DomainVOWrapper wrapper = getDomain();
+        if(wrapper == null){
+            return "";
+        }
+
+        return getUserServices().getCountryName(wrapper.getName());
+    }
+
+    public DomainVOWrapper getDomain() {
+        return getVisitState().getCurrentDomain(getDomainId());
     }
 }
 

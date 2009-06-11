@@ -1,5 +1,6 @@
 package org.iana.notifications;
 
+import org.apache.log4j.Logger;
 import org.iana.dao.DataAccessObject;
 import org.iana.rzm.common.validators.CheckTool;
 
@@ -20,6 +21,13 @@ public class PNotificationStore implements NotificationSender {
     }
 
     public void send(PNotification notification) throws NotificationSenderException {
+
+        if(notification.getAddressees().size() == 0){
+            Logger.getLogger(getClass()).error("Trying to send notification to an empty address list " +
+                    notification.getType() + " " + notification.getContent().getBody());
+            return;
+        }
+        
         sender.send(notification);
         notification.markAsSent();
         if (notification.isPersistent()) {

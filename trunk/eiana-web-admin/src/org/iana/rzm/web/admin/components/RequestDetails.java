@@ -38,7 +38,7 @@ public abstract class RequestDetails extends BaseRequestDetails {
     @Component(id = "stateMessage", type = "Insert", bindings = {"value=prop:request.stateMessage"})
     public abstract IComponent getStateMessageComponent();
 
-    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"prop:errors"})
+    @Component(id = "errorList", type = "rzmLib:DNSTechnicalCheckErrorList", bindings = {"errors=prop:errors"})
     public abstract IComponent getErrorListComponent();
 
     @Component(id = "impactedPartiesConfirmations",

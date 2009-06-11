@@ -1,16 +1,24 @@
 package org.iana.rzm.web.admin.components;
 
-import org.apache.commons.lang.*;
-import org.apache.tapestry.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tapestry.IAsset;
+import org.apache.tapestry.IComponent;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.iana.dns.validator.*;
-import org.iana.rzm.web.common.*;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IFormComponent;
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.iana.criteria.Criterion;
+import org.iana.dns.validator.DomainNameValidator;
+import org.iana.dns.validator.InvalidDomainNameException;
+import org.iana.rzm.web.common.MessageUtil;
 import org.iana.rzm.web.common.model.*;
+import org.iana.rzm.web.common.query.QueryBuilderUtil;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @ComponentClass()
 public abstract class SystemUserEditor extends UserEditor implements PageBeginRenderListener {
@@ -137,6 +145,13 @@ public abstract class SystemUserEditor extends UserEditor implements PageBeginRe
 
         try {
             DomainNameValidator.validateName(domain);
+            DomainNameValidator.validateName(domain);
+            Criterion criterion = QueryBuilderUtil.domainsByName(domain);
+            List<DomainVOWrapper> list = getListener().getAdminServices().getDomains(criterion);
+            if(list == null || list.size() == 0){
+                getListener().setErrorField(getNewDomainField(), getMessageUtil().getDoaminDoesNotExsitMessage(domain));
+                return;
+            }
         } catch (InvalidDomainNameException e) {
             getListener().setErrorField(getNewDomainField(), getMessageUtil().getInvalidDomainNameErrorMessage(e.getName(), e.getReason().name()));
             return;

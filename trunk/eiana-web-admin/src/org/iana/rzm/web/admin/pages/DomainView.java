@@ -17,7 +17,6 @@ import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.web.admin.pages.listeners.PageEditorListener;
 import org.iana.rzm.web.admin.services.AdminServices;
-import org.iana.rzm.web.common.DNSTechnicalCheckExceptionWrapper;
 import org.iana.rzm.web.common.MessageUtil;
 import org.iana.rzm.web.common.RequestMetaParameters;
 import org.iana.rzm.web.common.Visit;

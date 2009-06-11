@@ -1,21 +1,29 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.changes.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.utils.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Bean;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.web.common.SummaryBean;
+import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
+import org.iana.rzm.web.common.model.ActionVOWrapper;
+import org.iana.rzm.web.common.model.ChangeVOWrapper;
+import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
+import org.iana.rzm.web.common.utils.CounterBean;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Summary extends AdminPage implements PageBeginRenderListener{
 
     public static final String PAGE_NAME = "Summary";
 
-    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
+    @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
     @Component(id = "summary", type = "For", bindings = {"source=ognl:summaryList", "value=ognl:summaryValue"})
