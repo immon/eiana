@@ -7,7 +7,9 @@ import org.apache.tapestry.event.*;
 import org.apache.tapestry.form.*;
 import org.iana.dns.validator.*;
 import org.iana.rzm.web.common.*;
+import org.iana.rzm.web.common.query.QueryBuilderUtil;
 import org.iana.rzm.web.common.model.*;
+import org.iana.criteria.Criterion;
 
 import java.io.*;
 import java.util.*;
@@ -82,17 +84,14 @@ public abstract class SystemUserEditor extends UserEditor implements PageBeginRe
     public abstract List<RoleUserDomain> getUserDomains();
 
     public abstract void setUserDomain(RoleUserDomain domain);
-
     public abstract RoleUserDomain getUserDomain();
 
     public abstract String getListenerTag();
 
     public abstract String getNewDomain();
-
     public abstract void setNewDomain(String domain);
 
     public abstract void setRole(SystemRoleVOWrapper.SystemType type);
-
     public abstract SystemRoleVOWrapper.SystemType getRole();
 
     public abstract boolean isNotify();
@@ -136,7 +135,14 @@ public abstract class SystemUserEditor extends UserEditor implements PageBeginRe
         }
 
         try {
+
             DomainNameValidator.validateName(domain);
+            Criterion criterion = QueryBuilderUtil.domainsByName(domain);
+            List<DomainVOWrapper> list = getListener().getAdminServices().getDomains(criterion);
+            if(list == null || list.size() == 0){
+                getListener().setErrorField(getNewDomainField(), getMessageUtil().getDoaminDoesNotExsitMessage(domain));
+                return;
+            }
         } catch (InvalidDomainNameException e) {
             getListener().setErrorField(getNewDomainField(), getMessageUtil().getInvalidDomainNameErrorMessage(e.getName(), e.getReason().name()));
             return;

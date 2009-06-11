@@ -18,7 +18,8 @@ public class InitRootTask extends HibernateTask {
 
     public void doExecute(Session session) throws Exception {
         UserManager userManager = (UserManager) SpringInitContext.getContext().getBean("userManager");
-        RZMUser user = createUser("root", "root", "root", "names&numbers", "simon.raveh@icann.org", new AdminRole(AdminRole.AdminType.IANA));
+        RZMUser user =
+                createUser("root", "root", "root", "names&numbers", "simon.raveh@icann.org", new AdminRole(AdminRole.AdminType.IANA));
         userManager.create(user);
 
         user = createUser("naelaAdmin",
@@ -79,23 +80,6 @@ public class InitRootTask extends HibernateTask {
         task.setAnnotationConfiguration("hibernate.cfg.xml");
         task.execute();
     }
-
-    private Address setupAddress(Address address, String prefix, String countryCode) {
-        address.setTextAddress(prefix + " text address");
-        address.setCountryCode(countryCode);
-        return address;
-    }
-
-    private Contact setupContact(Contact contact, String name, String email, String countryCode) {
-        contact.setName(name);
-        contact.setOrganization("TestOrg");
-        contact.setAddress(setupAddress(new Address(), "contact", countryCode));
-        contact.setEmail(email);
-        contact.setFaxNumber("+1234567890");
-        contact.setPhoneNumber("+1234567891");
-        return contact;
-    }
-
 
     public List<DomainDecorator> getDomainsFromXML()
             throws DynaXMLException, FileNotFoundException, UnsupportedEncodingException {
