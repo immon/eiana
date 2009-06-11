@@ -32,11 +32,13 @@ import java.util.*;
  * @author Jakub Laszkiewicz
  */
 public class TechnicalCheckHelper implements CheckHelper {
-    private static final String TEMPLATE_PERIOD_NAME = "technical-check-period";
-    private static final String TEMPLATE_NAME = "technical-check";
+    private static final String TEMPLATE_PERIOD_NAME = "technical-deficiencies";
+    private static final String TEMPLATE_NAME = "technical-deficiencies";
+    private static final String TICKET = "ticket";
+    private static final String URL = "url";
     private static final String TEMPLATE_VALUE_DOMAIN_NAME = "domainName";
     private static final String TEMPLATE_VALUE_PASSED_LIST = "passedList";
-    private static final String TEMPLATE_VALUE_ERROR_LIST = "errorList";
+    private static final String TEMPLATE_VALUE_ERROR_LIST = "errors";
     private static final String TEMPLATE_VALUE_DAYS = "days";
 
     private TemplateFactory templateFactory;
@@ -110,6 +112,8 @@ public class TechnicalCheckHelper implements CheckHelper {
 
     private PNotification createNotification(Domain domain, Transaction trans, DNSCheckCollectionResult result, String period) throws TemplateInstantiationException, TemplateNotFoundException {
         Map<String, String> values = new HashMap<String, String>();
+        values.put(TICKET, String.valueOf(trans.getTicketID()));
+        values.put(URL, "https://rzm.iana.org/rzm");
         values.put(TEMPLATE_VALUE_DOMAIN_NAME, domain.getName());
         values.put(TEMPLATE_VALUE_PASSED_LIST, getPassedMessages(result));
         values.put(TEMPLATE_VALUE_ERROR_LIST, getErrorMessages(domain, trans, result));

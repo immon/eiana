@@ -700,8 +700,6 @@ IANA has provided the following additional notes on this change:
 
 {notes}
 
-%IANACHECKBLURB%
-
 This message has been automatically generated. If you have any
 questions or concerns, please email them to root-mgmt@iana.org
 with a subject of "[IANA #{ticket}]".
@@ -745,8 +743,6 @@ commence implementation of this change.
 IANA has provided the following additional notes on this change:
 
 {notes}
-
-%IANACHECKBLURB%
 
 This message has been automatically generated. If you have any
 questions or concerns, please email them to root-mgmt@iana.org
