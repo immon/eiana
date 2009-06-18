@@ -180,7 +180,7 @@ public abstract class CommonGuardedSystemTransaction extends RollbackableSpringC
     protected void rejectUSDOC_APPROVAL(RZMUser user, long transId) throws Exception {
         setUser(user);  //USDoC
         assert isTransactionInDesiredState("PENDING_USDOC_APPROVAL", transId);
-        GuardedSystemTransactionService.transitTransaction(transId, "alert");
+        GuardedSystemTransactionService.transitTransaction(transId, "reject");
         assert isTransactionInDesiredState("EXCEPTION", transId);
         closeServices();
     }
