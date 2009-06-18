@@ -532,4 +532,5 @@ public class Transaction implements TrackedObject {
     public boolean requiresSpecialReview() {
         return getData().requiresSpecialReview();
     }
+
 }

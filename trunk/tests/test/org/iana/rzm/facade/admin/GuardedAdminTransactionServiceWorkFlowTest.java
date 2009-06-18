@@ -335,7 +335,7 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     private void rejectPENDING_USDOC_APPROVAL() throws Exception {
         isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
         gAdminTransactionServ.rejectByUSDoC(transactionID);
-        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.REJECTED);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.EXCEPTION);
     }
 
     private void acceptPENDING_USDOC_APPROVAL() throws Exception {
