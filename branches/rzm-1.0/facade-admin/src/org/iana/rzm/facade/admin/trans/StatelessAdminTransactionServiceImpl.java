@@ -5,7 +5,6 @@ import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
 import org.iana.criteria.SortCriterion;
 import org.iana.dns.check.DNSTechnicalCheck;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -230,7 +229,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
-            transaction.transit(authUser.getUserName(), "admin-accept");
+            transaction.transit(authUser.getUserName(), "accept");
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
@@ -243,7 +242,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         try {
             Transaction transaction = transactionManager.getTransaction(id);
             if (transaction.getState().getName() != TransactionState.Name.PENDING_USDOC_APPROVAL) throw new org.iana.rzm.facade.system.trans.IllegalTransactionStateException(transaction.getTransactionID(), ""+transaction.getState().getName());
-            transaction.transit(authUser.getUserName(), "admin-reject");
+            transaction.transit(authUser.getUserName(), "reject");
             markModified(transaction, authUser);
         } catch (NoSuchTransactionException e) {
             throw new NoObjectFoundException("transaction", "" + e.getId());
