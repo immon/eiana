@@ -442,7 +442,10 @@
                     </notifications>
                 </action>
             </transition>
-            <transition name="reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="reject" to="EXCEPTION">
+                <action class="org.iana.rzm.trans.process.pending_usdoc_approval.RejectedByUSDoCAction">
+                </action>
+            </transition>
             <transition name="admin-accept" to="NS_CHANGE_DECISION">
                 <action class="org.iana.rzm.trans.process.general.handlers.TransactionNotificationRemover">
                     <notifications>
