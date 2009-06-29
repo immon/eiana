@@ -217,6 +217,12 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
         exceptions.add(exceptionDataDecorator);
     }
 
+    public void acceptRootServersPropagationException(RootServersPropagationException e) {
+        ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
+        exceptionDataDecorator.setHostName(e.getHostName());
+        exceptions.add(exceptionDataDecorator);
+    }
+
     public void acceptDomainTechnicalCheckException(DomainTechnicalCheckException e) {
         //unused
     }

@@ -133,6 +133,9 @@ public class DNSExceptionXMLVisitorTest {
             "\t\t</other>\n" +
             "\t</exception>\n" +
             "\t<exception name=\"InternalDNSCheckException\" />\n" +
+            "\t<exception name=\"RootServersPropagationException\">\n" +
+            "\t\t<host>a.root-server.net</host>\n" +
+            "\t</exception>\n" +
             "</exceptions>";
 
     @Test
@@ -229,6 +232,8 @@ public class DNSExceptionXMLVisitorTest {
         e = new Exception("DataAccessException");
 
         multiEx.addException(new InternalDNSCheckException(e));
+
+        multiEx.addException(new RootServersPropagationException(domain, new DNSHostImpl("A.ROOT-SERVER.NET")));
 
         DNSExceptionXMLVisitor visitor = new DNSExceptionXMLVisitor(domain);
         multiEx.accept(visitor);

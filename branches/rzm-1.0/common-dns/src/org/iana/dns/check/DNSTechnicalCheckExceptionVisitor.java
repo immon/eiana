@@ -47,4 +47,6 @@ public interface DNSTechnicalCheckExceptionVisitor {
     public void acceptRadicalAlterationException(RadicalAlterationCheckException e);
 
     public void acceptInternalDNSCheckException(InternalDNSCheckException e);
+
+    public void acceptRootServersPropagationException(RootServersPropagationException e);
 }
