@@ -856,4 +856,16 @@ Request change data:
 <iana:signed>false</iana:signed>
 </iana:template>
 
+<iana:template>
+<iana:type>usdoc-authentication-failure</iana:type>
+<iana:subject>Re: {subject}</iana:subject>
+<iana:content>
+The authentication process failed for the email:
+
+{content}
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+
 </iana:templates>
