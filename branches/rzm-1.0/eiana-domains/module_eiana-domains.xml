@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_eiana-domains" default="compile.module.eiana-domains">
-  <dirname property="module.eiana-domains.basedir" file="${ant.file.module_eiana-domains}"/>
+
+<dirname property="module.eiana-domains.basedir" file="${ant.file.module_eiana-domains}"/>
 
 
   <property name="compiler.args.eiana-domains" value="${compiler.args}"/>
@@ -48,12 +49,6 @@
     </dirset>
   </path>
 
-  <path id="eiana-domains.module.test.sourcepath">
-    <dirset dir="${module.eiana-domains.basedir}">
-      <include name="test/hibernate"/>
-    </dirset>
-  </path>
-
 
   <target name="compile.module.eiana-domains" depends="compile.module.eiana-domains.production,compile.module.eiana-domains.tests" description="Compile module eiana-domains"/>
 
@@ -75,26 +70,11 @@
     </copy>
   </target>
 
-  <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production" description="compile module eiana-domains; test classes" unless="skip.tests">
-    <mkdir dir="${eiana-domains.testoutput.dir}"/>
-    <javac destdir="${eiana-domains.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.eiana-domains}"/>
-      <classpath refid="eiana-domains.module.classpath"/>
-      <classpath location="${eiana-domains.output.dir}"/>
-      <src refid="eiana-domains.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.eiana-domains"/>
-    </javac>
-
-    <copy todir="${eiana-domains.testoutput.dir}">
-      <fileset dir="${module.eiana-domains.basedir}/test/hibernate">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
+  <target name="compile.module.eiana-domains.tests" depends="compile.module.eiana-domains.production" description="compile module eiana-domains; test classes" unless="skip.tests"/>
 
   <target name="clean.module.eiana-domains" description="cleanup module">
     <delete dir="${eiana-domains.output.dir}"/>
     <delete dir="${eiana-domains.testoutput.dir}"/>
   </target>
-</project>
+
+  </project>

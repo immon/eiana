@@ -276,7 +276,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
 
     public boolean isDomainExist(String domainName){
         try {
-            return domainService.count(QueryBuilderUtil.domainsByName(domainName)) >= 1;
+            return domainService.count(QueryBuilderUtil.domainsByName(domainName.toLowerCase())) >= 1;
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);

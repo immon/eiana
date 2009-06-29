@@ -43,7 +43,10 @@ public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddre
 
 
         for (String name : ccEmails.keySet()) {
-            addressees.add(new PAddressee(name, ccEmails.get(name), true));    
+            String email = ccEmails.get(name);
+            if(email != null){
+                addressees.add(new PAddressee(name, email, true));
+            }
         }
 
         return addressees;

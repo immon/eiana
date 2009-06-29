@@ -23,6 +23,10 @@ public abstract class UserPage extends ProtectedPage {
         return getErrorPage().getPageName();
     }
 
+    public boolean isUserPage(){
+        return true;
+    }
+
 
     public void pageValidate(PageEvent event) {
         super.pageValidate(event);

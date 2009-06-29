@@ -136,10 +136,6 @@ why the request can proceed.
 Please read our technical requirements at
     http://www.iana.org/procedures/nameserver-requirements.html
 
-You can retest your servers, or provide this reasoning, through
-the website at the following URL:
-
-{url}
 
 You have 30 days to remedy this, or we will automatically close
 your request without prejudice. After this time you are free to
@@ -717,7 +713,7 @@ Authorized:
 </iana:content>
 <iana:signed>true</iana:signed>
 <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
-<iana:keyPassphrase>tester</iana:keyPassphrase>
+<iana:keyPassphrase>woolamal00rrxv</iana:keyPassphrase>
 </iana:template>
 
 <!--todo-->
@@ -759,7 +755,7 @@ Authorized:
 </iana:content>
 <iana:signed>true</iana:signed>
 <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
-<iana:keyPassphrase>tester</iana:keyPassphrase>
+<iana:keyPassphrase>woolamal00rrxv</iana:keyPassphrase>
 </iana:template>
 
 <!--todo-->
@@ -782,7 +778,7 @@ NOTE: This is an automated message.
 </iana:content>
 <iana:signed>true</iana:signed>
 <iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
-<iana:keyPassphrase>tester</iana:keyPassphrase>
+<iana:keyPassphrase>woolamal00rrxv</iana:keyPassphrase>
 </iana:template>
 
 <iana:template>

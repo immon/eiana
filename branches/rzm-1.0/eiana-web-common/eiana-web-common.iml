@@ -20,7 +20,6 @@
     <orderEntry type="module" module-name="common-dns" exported="" />
     <orderEntry type="module" module-name="eiana-notifications" exported="" />
     <orderEntry type="library" exported="" name="tapestry" level="project" />
-    <orderEntry type="library" exported="" name="rzm-ui-components" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>

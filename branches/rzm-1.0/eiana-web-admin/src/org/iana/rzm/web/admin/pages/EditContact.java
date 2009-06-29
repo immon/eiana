@@ -8,7 +8,8 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.query.retriver.*;
-import org.iana.rzm.web.editors.*;
+import org.iana.rzm.web.tapestry.editors.AttributesEditor;
+import org.iana.rzm.web.tapestry.editors.ContactAttributesEditor;
 
 import java.util.*;
 
@@ -117,8 +118,25 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
     }
 
     public void save(Map<String, String> attributes) {
+
         String type = getContactType();
         DomainChangeType changeType = DomainChangeType.fromString(type);
+
+        if(!changeType.equals(DomainChangeType.SO)){
+
+            if(!attributes.containsKey(ContactVOWrapper.NAME)){
+                setErrorMessage(getMessageUtil().missingrequiredFieldMessage("Contact Name"));
+            }
+
+            if(attributes.get(ContactVOWrapper.NAME) == null){
+                setErrorMessage(getMessageUtil().missingrequiredFieldMessage("Contact Name"));
+            }
+
+            if(isHasErrors()){
+                return;
+            }
+        }
+        
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
 

@@ -65,7 +65,7 @@ public class QueryBuilderUtil {
     }
 
     public static Criterion domainsByName(String entity) {
-        return new Like(new DomainFieldNameResolver().resolve("domainName"), entity);
+        return new Like(new DomainFieldNameResolver().resolve("domainName"), entity.toLowerCase());
     }
 
     public static Criterion usersForDomains(List<String> domains) {

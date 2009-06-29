@@ -39,7 +39,7 @@ public class DomainsFinderListener implements Finder {
             list = services.getDomains(null);
             ListUtil.filter(list, new ListUtil.Predicate<DomainVOWrapper>() {
                 public boolean evaluate(DomainVOWrapper object) {
-                    return object.getName().startsWith(entity);
+                    return object.getName().startsWith(entity.toLowerCase());
                 }
             });
         }

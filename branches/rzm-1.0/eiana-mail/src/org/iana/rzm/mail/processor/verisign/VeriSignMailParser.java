@@ -5,6 +5,7 @@ import org.iana.rzm.mail.processor.regex.RegexParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
+import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 
@@ -12,6 +13,8 @@ import java.text.ParseException;
  * @author Patrycja Wegrzynowicz
  */
 public class VeriSignMailParser implements EmailParser {
+
+    private static final Logger LOGGER = Logger.getLogger(VeriSignMailParser.class.getName());
 
     public static final String DOMAIN_NAME = "domain_name";
 
@@ -27,7 +30,17 @@ public class VeriSignMailParser implements EmailParser {
     }
 
     public MessageData parse(String from, String subject, String content) throws EmailParseException {
-        if (!verisignAddress.equals(from)) throw new EmailParseException("The from address [" + from + "] does not match the verisign address [" + verisignAddress + "]");
+        StringBuilder builder = new StringBuilder("Cannot parse USDoC Email Content")
+                .append("\n").append("From: ").append(from)
+                .append("\n").append("Subject:").append(subject)
+                .append("\n").append("Content: ").append(content);
+
+        LOGGER.debug(builder.toString());
+        if (!verisignAddress.equals(from)) {
+            LOGGER.debug("The from address [" + from + "] does not match the verisign address [" + verisignAddress + "]");
+            throw new EmailParseException("The from address [" + from + "] does not match the verisign address [" + verisignAddress + "]");
+        }
+
         RegexParser.Tokens subjectTokens = parseSubject(subject);
         String domainName = subjectTokens.token(DOMAIN_NAME);
         return new VeriSignMail(domainName);
@@ -37,6 +50,7 @@ public class VeriSignMailParser implements EmailParser {
         try {
             return subjectPattern.parse(subject);
         } catch (ParseException e) {
+            LOGGER.warn("The Subject " + subject + " does not match contact confirmation subject pattern", e);
             throw new EmailParseException("Subject does not match contact confirmation subject pattern", e);
         }
     }

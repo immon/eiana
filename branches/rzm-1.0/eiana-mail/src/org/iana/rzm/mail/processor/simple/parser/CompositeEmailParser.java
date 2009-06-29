@@ -2,6 +2,7 @@ package org.iana.rzm.mail.processor.simple.parser;
 
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class CompositeEmailParser implements EmailParser {
 
     private List<EmailParser> parsers;
+    private static final Logger logger = Logger.getLogger(CompositeEmailParser.class.getName());
 
     public CompositeEmailParser(List<EmailParser> parsers) {
         CheckTool.checkCollectionNull(parsers, "email parsers");
@@ -24,6 +26,7 @@ public class CompositeEmailParser implements EmailParser {
             try {
                 return parser.parse(from, subject, content);
             } catch (EmailParseException e) {
+                logger.debug("CompositeEmailParser: Cought EmailParserException  Moving to next parser ", e);
                 // try next parser
             }
         }

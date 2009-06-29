@@ -1,11 +1,12 @@
 package org.iana.rzm.facade.admin.msgs;
 
 import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
-public class PollMsgVO {
+public class PollMsgVO implements Serializable {
 
     private long id;
 
