@@ -143,6 +143,11 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
     public void acceptDomainTechnicalCheckException(DomainTechnicalCheckException e) {
     }
 
+    public void acceptRootServersPropagationException(RootServersPropagationException e) {
+        buffer.append("Root servers propagation error for domain ").append(e.getDomainName())
+                .append(" on root server ").append(e.getHostName());
+    }
+
     public String getMessages() {
         return buffer.toString();
     }
