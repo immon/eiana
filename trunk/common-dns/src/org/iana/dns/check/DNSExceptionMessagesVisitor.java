@@ -136,6 +136,11 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
         buffer.append("Internal Exception ").append(e.getMessage());
     }
 
+    public void acceptRootServersPropagationException(RootServersPropagationException e) {
+        buffer.append("Root servers propagation error for domain ").append(e.getDomainName())
+                .append(" on root server ").append(e.getHostName());
+    }
+
     public void acceptMultipleDNSTechnicalCheckException(MultipleDNSTechnicalCheckException e) {
         for (DNSTechnicalCheckException subEx : e.getExceptions()) subEx.accept(this);
     }
