@@ -130,6 +130,10 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
         return state.getStateName();
     }
 
+    public String getCurentUserStateAsString() {
+        return state.getUserStateName();
+    }
+
     public TransactionStateVOWrapper.State getState() {
         return state.getState();
     }

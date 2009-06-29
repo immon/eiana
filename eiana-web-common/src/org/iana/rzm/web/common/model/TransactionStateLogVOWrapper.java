@@ -23,6 +23,10 @@ public class TransactionStateLogVOWrapper extends ValueObject implements Compara
         return state.getStateName();
     }
 
+    public String getUserState(){
+        return state.getUserStateName();
+    }
+
     public String getStart(){
         return state.getStart();
     }

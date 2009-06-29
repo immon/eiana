@@ -43,7 +43,7 @@ public class SinglePerTemplateProducer extends AbstractNotificationProducer {
                 PContent content = template.instantiate(values);
                 PNotification notification = new PNotification(
                         templateName, addressees, content, persistent
-                );
+              );
                 notifications.add(notification);
             }
             return notifications;

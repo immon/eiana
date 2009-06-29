@@ -6,7 +6,7 @@ import org.iana.rzm.web.common.pages.*;
 
 public abstract class Login extends BaseLogin {
 
-    public static final String USER_COOKIE_NAME = " org.iana.rzm.web.user.pages.username";
+    public static final String USER_COOKIE_NAME = "org.iana.rzm.web.user.pages.username";
 
     @Persist("client")
     public abstract void setUserLoginError(String message);

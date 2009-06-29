@@ -61,6 +61,11 @@ public class USDoCAnswerParser implements EmailParser {
                 String accept = contentTokens.token(ACCEPT);
                 return new USDoCAnswer(ticketID, eppID, changeSummary, answerParser.check(accept), nameserver);
             } catch (EmailParseException e) {
+                StringBuilder builder = new StringBuilder("Cannot parse USDoC Email Content")
+                        .append("\n").append("From: ").append(from)
+                        .append("\n").append("Subject:").append(subject)
+                        .append("\n").append("Content: ").append(content);
+                logger.warn(builder.toString());
                 logger.error("cannot parse USDoC email content", e);
                 return new TicketData(ticketID);
             }

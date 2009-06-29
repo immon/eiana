@@ -230,4 +230,8 @@ public class MessageUtil implements Serializable {
     public String getDoaminDoesNotExsitMessage(String domain) {
         return "Can't find domain with name "  + domain;
     }
+
+    public String missingrequiredFieldMessage(String fieldName) {
+        return "Please specify value for " + fieldName;
+    }
 }

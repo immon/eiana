@@ -16,5 +16,11 @@
               tofile="${module.eiana-web-backend.basedir}/exploded/WEB-INF/classes/log4j.properties" overwrite="true"/>
         <copy file="${module.eiana-web-backend.basedir}/../conf/log4j/log4j-backend.properties"
               tofile="${module.eiana-web-backend.basedir}/rzm-backend/WEB-INF/classes/log4j.properties" overwrite="true"/>
+
+        <copy file="${module.eiana-web-backend.basedir}/../conf/epp/epp.rootzone.config"
+              todir="${module.eiana-web-backend.basedir}/rzm-backend/conf/epp" overwrite="true"/>
+        <copy file="${module.eiana-web-backend.basedir}/../conf/epp/epp.rootzone.config"
+              todir="${module.eiana-web-backend.basedir}/exploded/conf/epp" overwrite="true"/>
+
     </target>
 </project>

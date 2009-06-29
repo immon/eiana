@@ -11,7 +11,7 @@ public abstract class BaseRequestSummery extends BaseComponent {
     @Component(id = "rt", type = "Insert", bindings = {"value=prop:request.rtIdAsString"})
     public abstract IComponent getRtComponent();
 
-    @Component(id = "state", type = "Insert", bindings = {"value=prop:request.currentStateAsString"})
+    @Component(id = "state", type = "Insert", bindings = {"value=prop:currentStateAsString"})
     public abstract IComponent getStateComponent();
 
     @Component(id = "created", type = "Insert", bindings = {"value=prop:request.created"})
@@ -100,6 +100,10 @@ public abstract class BaseRequestSummery extends BaseComponent {
         LinkTraget target = getLinkTragetPage();
         target.setIdentifier(getDomainName());
         getPage().getRequestCycle().activate(target);
+    }
+
+    public String getCurrentStateAsString(){
+        return getRequest().getCurrentStateAsString();
     }
 
 }

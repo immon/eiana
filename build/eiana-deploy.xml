@@ -39,18 +39,12 @@
      CREATE DATABASE eiana;
 
     -->
-    <target name="database.create"
-            depends="all.jar">
+    <target name="database.create" depends="all.jar">
         <hibernatetool destdir="${hibernate.dir}">
             <classpath>
-                <path location="${eiana-domains.output.dir}"/>
-                <path location="${eiana-util.output.dir}"/>
-                <path location="${eiana-users.output.dir}"/>
-                <path location="${eiana-trans.output.dir}"/>
-                <path location="${eiana-logs.output.dir}"/>
-                <path location="${eiana-notifications.output.dir}"/>
-                <path location="${tests.testoutput.dir}"/>
-                <path location="${common-objectdiff.output.dir}"/>
+                <fileset dir="${jar.output.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
                 <path location="${common-codevalues.output.dir}"/>
                 <path location="${common-config.output.dir}"/>
                 <path location="${common-dns.output.dir}"/>
@@ -171,7 +165,7 @@
         </java>
     </target>
 
-    <target name="database.init.root" depends="database.create.test, all.jar, jbpm.init, cc.init">
+    <target name="database.init.root" depends="all.jar, jbpm.init, cc.init">
         <!--<java classname="org.iana.rzm.init.ant.InitRootTask">-->
             <!--<classpath refid="inittools.classpath"/>-->
         <!--</java>-->

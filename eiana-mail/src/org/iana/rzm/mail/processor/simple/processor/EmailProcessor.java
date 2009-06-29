@@ -7,6 +7,6 @@ import org.iana.rzm.mail.processor.simple.data.Message;
  */
 public interface EmailProcessor {
 
-    void process(Message msg) throws EmailProcessException;
+    void  process(Message msg) throws EmailProcessException;
     
 }

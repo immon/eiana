@@ -8,5 +8,9 @@ public abstract class RequestSummery extends BaseRequestSummery {
 
     @Asset(value = "WEB-INF/user/RequestSummery.html")
     public abstract IAsset get$template();
+
+    public String getCurrentStateAsString(){
+        return getRequest().getCurentUserStateAsString();
+    }
     
 }

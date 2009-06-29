@@ -24,7 +24,7 @@ public class WebWhoisValidator implements Validator {
              throw new ValidatorException("Invalid Whois server " + object.toString());
         }
         catch (IOException e) {
-            throw new ValidatorException("Invalid Whois server" + object.toString());
+            throw new ValidatorException("Invalid Whois server " + object.toString());
         }
     }
 

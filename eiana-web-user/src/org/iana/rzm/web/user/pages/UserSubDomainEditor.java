@@ -8,7 +8,7 @@ import org.iana.rzm.facade.common.*;
 import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.query.retriver.*;
-import org.iana.rzm.web.editors.*;
+import org.iana.rzm.web.tapestry.editors.SubDomainAttributeEditor;
 
 import java.util.*;
 

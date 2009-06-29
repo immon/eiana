@@ -2,6 +2,7 @@ package org.iana.rzm.web.common.utils;
 
 import org.iana.commons.*;
 import org.iana.rzm.web.common.model.*;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -180,6 +181,10 @@ public class WebUtil {
         }
 
         return 443;
+    }
+
+    public static String stripPricentageFromToken(String token){
+        return StringUtils.stripStart(token, "%");
     }
 
 

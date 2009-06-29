@@ -10,7 +10,7 @@ public abstract class ViewPollMessage extends AdminPage implements PageBeginRend
 
     public static final String PAGE_NAME = "ViewPollMessage";
 
-    @Component(id = "domainHeader", type = "DomainHeader", bindings = {"domainName=prop:domainName", "countryName=prop:country"})
+    @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"domainName=prop:domainName", "countryName=prop:country"})
     public abstract IComponent getDomainHeaderComponent();
 
     @Component(id = "rt", type = "Insert", bindings = {"value=prop:rtId"})
@@ -29,11 +29,11 @@ public abstract class ViewPollMessage extends AdminPage implements PageBeginRend
     public abstract IComponent getMessageComponent();
 
     @Component(id = "delete", type = "DirectLink", bindings = {
-        "listener=listener:delete", "parameters=prop:eppMessageId", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+        "listener=listener:delete", "parameters=prop:eppMessageId", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getDeleteComponent();
 
     @Component(id = "back", type = "DirectLink", bindings = {
-        "listener=listener:back", "renderer=ognl:@org.iana.rzm.web.tapestry.form.FormLinkRenderer@RENDERER"})
+        "listener=listener:back", "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getBackComponent();
 
     @InjectPage(PollMessagesPerspective.PAGE_NAME)

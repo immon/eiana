@@ -57,12 +57,20 @@ public abstract class RequestDetails extends BaseRequestDetails {
         return getUserServices();
     }
 
-    public List<String>getErrors(){
-        return getUserServices().parseErrors(getRequest().getTechnicalErrors());
-    }
-
     protected String getExceptionPage() {
         return GeneralError.PAGE_NAME;
+    }
+
+    public String getCurrentStateAsString(){
+        return getRequest().getCurentUserStateAsString();
+    }
+
+    public String getStateName(){
+        return getStateInfo().getUserState();
+    }
+
+    public List<String>getErrors(){
+        return getUserServices().parseErrors(getRequest().getTechnicalErrors());
     }
 
     public void pageBeginRender(PageEvent event) {

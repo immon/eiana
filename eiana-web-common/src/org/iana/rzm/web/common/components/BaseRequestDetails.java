@@ -35,7 +35,7 @@ public abstract class BaseRequestDetails extends BaseComponent implements PageBe
     @Component(id = "rt", type = "Insert", bindings = {"value=prop:request.rtIdAsString"})
     public abstract IComponent getRtComponent();
 
-    @Component(id = "state", type = "Insert", bindings = {"value=prop:request.currentStateAsString"})
+    @Component(id = "state", type = "Insert", bindings = {"value=prop:currentStateAsString"})
     public abstract IComponent getStateComponent();
 
     @Component(id = "created", type = "Insert", bindings = {"value=prop:request.created"})
@@ -50,7 +50,7 @@ public abstract class BaseRequestDetails extends BaseComponent implements PageBe
     @Component(id = "states", type = "For", bindings = {"source=prop:states", "value=prop:stateInfo", "element=literal:tr"})
     public abstract IComponent getForDomainComponent();
 
-    @Component(id="stateName", type="Insert", bindings = {"value=prop:stateInfo.state"})
+    @Component(id="stateName", type="Insert", bindings = {"value=prop:stateName"})
     public abstract IComponent getStateNameComponent();
 
     @Component(id="start", type="Insert", bindings = {"value=prop:stateInfo.start"})
@@ -131,6 +131,14 @@ public abstract class BaseRequestDetails extends BaseComponent implements PageBe
         } catch(AccessDeniedException e){
             getAccessDeniedHandler().handleAccessDenied( e, getExceptionPage());
         }
+    }
+
+    public String getCurrentStateAsString(){
+        return getRequest().getCurrentStateAsString();
+    }
+
+    public String getStateName(){
+        return getStateInfo().getState();
     }
 
     protected abstract RzmServices getRzmServices();

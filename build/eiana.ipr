@@ -15,8 +15,9 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-admin" />
       <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
+      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="RZM-Admin" />
+      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-admin" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/../eiana-web-user/eiana-web-user-copy.xml">
       <additionalClassPath />
@@ -25,6 +26,7 @@
       <maximumHeapSize value="128" />
       <properties />
       <executeOn event="beforeRun" target="copyUserBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-user" />
+      <executeOn event="beforeRun" target="copyUserBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="RZM-User" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/../eiana-web-backend/eiana-web-backend-copy.xml">
       <additionalClassPath />
@@ -32,6 +34,7 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
+      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-all" />
       <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-backend" />
     </buildFile>
   </component>
@@ -597,7 +600,9 @@
         <root url="jar://$PROJECT_DIR$/../lib/rt/rt-api.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../rt-client/src/main/java" />
+      </SOURCES>
     </library>
     <library name="epp">
       <CLASSES>

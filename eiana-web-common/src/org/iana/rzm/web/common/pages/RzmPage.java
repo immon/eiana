@@ -19,7 +19,6 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
     @Bean(org.iana.rzm.web.common.MessageUtil.class)
     public abstract MessageUtil getMessageUtil();
 
-
     @InitialValue("ognl:null")
     public abstract void setInfoMessage(String value);
 
@@ -32,6 +31,20 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
 
     public boolean isHasErrors(){
         return StringUtil.isNotBlank(getErrorMessage());
+    }
+
+    public void setErrorField(IFormComponent component, String message) {
+        IValidationDelegate delegate = getValidationDelegate();
+        delegate.setFormComponent(component);
+        delegate.record(message, null);
+    }
+
+    public void activate() {
+        getRequestCycle().activate(this);
+    }
+
+    public boolean hasErrors() {
+        return getValidationDelegate().getHasErrors() || getErrorMessage() != null ;
     }
 
     protected void log(Logger logger, String msg, Level level) {
@@ -49,18 +62,8 @@ public abstract class RzmPage extends BasePage implements MessageProperty {
         delegate.record(message, null);
     }
 
-    public void setErrorField(IFormComponent component, String message) {
-        IValidationDelegate delegate = getValidationDelegate();
-        delegate.setFormComponent(component);
-        delegate.record(message, null);
-    }
-
-    public void activate() {
-        getRequestCycle().activate(this);
-    }
-
-    public boolean hasErrors() {
-        return getValidationDelegate().getHasErrors() || getErrorMessage() != null ;
+    public boolean isUserPage(){
+        return false;
     }
 
 }

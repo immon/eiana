@@ -10,7 +10,7 @@ import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.query.retriver.*;
 import org.iana.rzm.web.common.utils.*;
-import org.iana.rzm.web.editors.*;
+import org.iana.rzm.web.tapestry.editors.NameServerAttributesEditor;
 
 import java.util.*;
 
