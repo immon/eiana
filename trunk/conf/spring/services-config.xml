@@ -1558,6 +1558,20 @@
         <constructor-arg ref="authenticationServiceBean"/>
         <constructor-arg ref="guardedAdminTransactionService"/>
         <constructor-arg ref="mailLogger"/>
+        <constructor-arg ref="ticketingService"/>
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="usdoc-authentication-failure"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="whiteListNotificationSender"/>
     </bean>
 
     <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
