@@ -1023,6 +1023,9 @@
     <bean id="defaultDataProducer"
           class="org.iana.rzm.trans.notifications.default_producer.DefaultTransactionDataProducer"/>
 
+    <bean id="eppErrorDataProducer"
+          class="org.iana.rzm.trans.notifications.epp.EppErrorDataProducer"/>
+
     <bean id="usdocConfirmationDataProducer"
           class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationDataProducer"/>
 
@@ -2183,7 +2186,7 @@
                     </list>
                 </constructor-arg>
                 <constructor-arg index="2" value="epp-error"/>
-                <constructor-arg index="3" ref="defaultDataProducer"/>
+                <constructor-arg index="3" ref="eppErrorDataProducer"/>
             </bean>
         </constructor-arg>
         <constructor-arg ref="NotificationSenderBean"/>
