@@ -23,7 +23,12 @@ public class USDOCConfirmationDataProducer extends DefaultTransactionDataProduce
         values.put("stateName", "" + dataSource.get("stateName"));
         values.put("receipt", "" + dataSource.get("receipt"));
         values.put("ticket", "" + td.getTicketID());
-        values.put("notes", td.getUsdocNotes());
+
+        String notes = td.getUsdocNotes();
+        if (notes == null || notes.trim().length() == 0)
+            notes = "(none supplied)";
+
+        values.put("notes", notes);
         values.put("eppid", "" + dataSource.get("eppID"));
         values.put("change", DomainChangePrinter.print(td.getDomainChange()));
         values.put("retry", "" + td.getEPPRetries());
