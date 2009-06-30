@@ -92,8 +92,7 @@
      GRANT ALL PRIVILEGES ON *.* TO 'rzm'@'localhost' IDENTIFIED BY 'names&numbers' WITH GRANT OPTION;
 
      -->
-    <target name="database.create.test"
-            depends="all.jar, database.test.dropCreate">
+    <target name="database.create.test" depends="all.jar">
         <hibernatetool destdir="${hibernate.test.dir}">
             <classpath>
                 <fileset dir="${jar.output.dir}">
