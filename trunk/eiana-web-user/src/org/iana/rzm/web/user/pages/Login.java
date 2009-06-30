@@ -1,12 +1,12 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.web.common.pages.*;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.web.common.pages.BaseLogin;
 
 public abstract class Login extends BaseLogin {
 
-    public static final String USER_COOKIE_NAME = " org.iana.rzm.web.user.pages.username";
+    public static final String USER_COOKIE_NAME = "org.iana.rzm.web.user.pages.username";
 
     @Persist("client")
     public abstract void setUserLoginError(String message);

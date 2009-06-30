@@ -1,10 +1,14 @@
 package org.iana.rzm.web.common.model;
 
-import org.iana.commons.*;
-import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.facade.system.trans.vo.changes.*;
-import org.iana.rzm.facade.user.*;
-import org.iana.web.tapestry.components.browser.*;
+import org.apache.commons.lang.StringUtils;
+import org.iana.commons.DateUtil;
+import org.iana.rzm.facade.system.trans.vo.ConfirmationVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionVO;
+import org.iana.rzm.facade.user.SystemRoleVO;
+import org.iana.web.tapestry.components.browser.PaginatedEntity;
 
 import java.util.*;
 
@@ -56,7 +60,7 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
     }
 
     public String getDomainName() {
-        return vo.getDomainName();
+        return StringUtils.upperCase(vo.getDomainName());
     }
 
 
@@ -128,6 +132,10 @@ public class TransactionVOWrapper extends ValueObject implements PaginatedEntity
 
     public String getCurrentStateAsString() {
         return state.getStateName();
+    }
+
+    public String getCurrentUserStateAsString() {
+        return state.getUserStateName();
     }
 
     public TransactionStateVOWrapper.State getState() {

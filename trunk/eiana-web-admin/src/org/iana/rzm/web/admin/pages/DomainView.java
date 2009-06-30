@@ -276,7 +276,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         editSubDomain.setOriginalWhoisServer(getOriginalDomain().getWhoisServer());
         editSubDomain.setRegistryUrl(getVisitState().getCurrentDomain(getDomainId()).getRegistryUrl());
         editSubDomain.setWhoisServer(getVisitState().getCurrentDomain(getDomainId()).getWhoisServer());
-        editSubDomain.setCallback(createCallback());
+        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(),getLogedInUserId()));
         getRequestCycle().activate(editSubDomain);
     }
 
@@ -388,7 +388,6 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             } catch (RadicalAlterationException e) {
                 adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(domainVOWrapper.getName()));
             }
-            cycle.activate(adminPage);
         }
 
         public void cancel(IRequestCycle cycle) {

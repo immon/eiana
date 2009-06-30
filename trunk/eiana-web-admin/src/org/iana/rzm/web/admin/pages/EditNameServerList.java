@@ -1,18 +1,27 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.query.retriver.*;
-import org.iana.rzm.web.common.utils.*;
-import org.iana.rzm.web.editors.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IFormComponent;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.DomainChangeType;
+import org.iana.rzm.web.common.model.DomainVOWrapper;
+import org.iana.rzm.web.common.model.NameServerVOWrapper;
+import org.iana.rzm.web.common.model.NameServerValue;
+import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
+import org.iana.rzm.web.common.utils.WebUtil;
+import org.iana.rzm.web.tapestry.editors.NameServerAttributesEditor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class EditNameServerList extends AdminPage implements PageBeginRenderListener, NameServerAttributesEditor, IExternalPage {
 
