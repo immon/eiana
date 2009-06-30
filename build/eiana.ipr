@@ -33,8 +33,8 @@
       <maximumHeapSize value="128" />
       <properties />
       <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-backend" />
-      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
       <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="Application" runConfigurationName="InitRoot" />
+      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Unnamed" />
     </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
@@ -343,6 +343,7 @@
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-admin/eiana-web-admin.iml" filepath="$PROJECT_DIR$/../eiana-web-admin/eiana-web-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-backend/eiana-web-backend.iml" filepath="$PROJECT_DIR$/../eiana-web-backend/eiana-web-backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-common/eiana-web-common.iml" filepath="$PROJECT_DIR$/../eiana-web-common/eiana-web-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../eiana-web-components/eiana-web-components.iml" filepath="$PROJECT_DIR$/../eiana-web-components/eiana-web-components.iml" />
       <module fileurl="file://$PROJECT_DIR$/../eiana-web-user/eiana-web-user.iml" filepath="$PROJECT_DIR$/../eiana-web-user/eiana-web-user.iml" />
       <module fileurl="file://$PROJECT_DIR$/../facade-admin/facade-admin.iml" filepath="$PROJECT_DIR$/../facade-admin/facade-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../facade-common/facade-common.iml" filepath="$PROJECT_DIR$/../facade-common/facade-common.iml" />
@@ -641,15 +642,6 @@
         <root url="file://$PROJECT_DIR$/../../Web/Tapestry4Commons/src" />
         <root url="file://$PROJECT_DIR$/../../../resources/java libraries/web frameworks/Tapestry/hivemind-1.1.1/framework/src/java" />
         <root url="file://$PROJECT_DIR$/../../../resources/java libraries/web frameworks/Tapestry/hivemind-1.1.1/library/src/java" />
-      </SOURCES>
-    </library>
-    <library name="rzm-ui-components">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/../lib/rzm-ui-components/rzmTapestry4components.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES>
-        <root url="file://$PROJECT_DIR$/../eiana-web-components/src" />
       </SOURCES>
     </library>
     <library name="secureId">

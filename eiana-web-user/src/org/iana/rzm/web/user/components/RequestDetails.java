@@ -59,6 +59,14 @@ public abstract class RequestDetails extends BaseRequestDetails {
     public abstract void setUser(UserVOWrapper user);
     public abstract UserVOWrapper getUser();
 
+    public String getStateName(){
+        return getStateInfo().getUserState();
+    }
+
+    public String getCurrentStateAsString(){
+        return getRequest().getCurrentUserStateAsString();
+    }
+
     protected UserServices getRzmServices() {
         return getUserServices();
     }

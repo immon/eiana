@@ -21,14 +21,14 @@ import org.iana.rzm.web.common.model.NameServerValue;
 import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
 import org.iana.rzm.web.common.render.JavaScriptDelegator;
 import org.iana.rzm.web.common.utils.WebUtil;
-import org.iana.rzm.web.editors.NameServerAttributesEditor;
+import org.iana.rzm.web.tapestry.editors.NameServerAttributesEditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class UserNameServerListEditor extends UserPage implements PageBeginRenderListener,
-                                                                           NameServerAttributesEditor, IExternalPage {
+        NameServerAttributesEditor, IExternalPage {
 
     public static final String PAGE_NAME = "UserNameServerListEditor";
     public static final Logger LOGGER = Logger.getLogger(UserNameServerListEditor.class.getName());

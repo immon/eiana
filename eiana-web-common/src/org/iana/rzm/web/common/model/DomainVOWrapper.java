@@ -1,8 +1,11 @@
 package org.iana.rzm.web.common.model;
 
-import org.iana.commons.*;
-import org.iana.rzm.facade.system.domain.vo.*;
-import org.iana.web.tapestry.components.browser.*;
+import org.apache.commons.lang.StringUtils;
+import org.iana.commons.DateUtil;
+import org.iana.commons.ListUtil;
+import org.iana.rzm.facade.system.domain.vo.HostVO;
+import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.web.tapestry.components.browser.PaginatedEntity;
 
 import java.util.*;
 
@@ -55,6 +58,11 @@ public abstract class DomainVOWrapper extends ValueObject implements PaginatedEn
 
     public String getName() {
         return vo.getName();
+    }
+
+    public String getDisplayName(){
+        String name = StringUtils.upperCase(vo.getName());
+        return vo.getName().startsWith(".") ? name : "." + name;
     }
 
     public void setName(String name){

@@ -1,13 +1,13 @@
 package org.iana.rzm.mail.processor.usdoc;
 
+import org.apache.log4j.Logger;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.mail.processor.regex.RegexParser;
+import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
-import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.ticket.TicketData;
-import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 
@@ -62,6 +62,7 @@ public class USDoCAnswerParser implements EmailParser {
                 return new USDoCAnswer(ticketID, eppID, changeSummary, answerParser.check(accept), nameserver);
             } catch (EmailParseException e) {
                 logger.error("cannot parse USDoC email content", e);
+                logger.error("Email content is: " + content);
                 return new TicketData(ticketID);
             }
         } catch (NumberFormatException e) {

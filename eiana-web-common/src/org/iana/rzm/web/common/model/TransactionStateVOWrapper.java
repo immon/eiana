@@ -1,9 +1,9 @@
 package org.iana.rzm.web.common.model;
 
-import org.iana.commons.*;
-import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.commons.DateUtil;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
 
-import java.util.*;
+import java.util.Date;
 
 public class TransactionStateVOWrapper extends ValueObject {
     private TransactionStateVO vo;
@@ -15,7 +15,7 @@ public class TransactionStateVOWrapper extends ValueObject {
         PENDING_CONTACT_CONFIRMATION("Pending Contact Confirmation"),
         PENDING_SOENDORSEMENT("PENDING_SOENDORSEMENT"),
         PENDING_IMPACTED_PARTIES("Pending Impacted Parties"),
-        PENDING_MANUAL_REVIEW("Pending manual Review"),
+        PENDING_MANUAL_REVIEW("Pending manual Review", "Pending IANA Staff Review"),
         PENDING_EXT_APPROVAL("Pending Ext Approval"),
         PENDING_EVALUATION("Pending Evaluation"),
         PENDING_IANA_CHECK("Pending IANA Check"),
@@ -34,9 +34,15 @@ public class TransactionStateVOWrapper extends ValueObject {
         PENDING_IANA_CONFIRMATION("Pending Iana Confirmation");
 
         private String displayName;
+        private String userDisplayName;
 
         State(String displayName) {
+            this(displayName, displayName);
+        }
+
+        State(String displayName, String userDisplayName) {
             this.displayName = displayName;
+            this.userDisplayName = userDisplayName;
         }
 
         public TransactionStateVO.Name getVOName() {
@@ -45,6 +51,10 @@ public class TransactionStateVOWrapper extends ValueObject {
 
         public String getDisplayName() {
             return displayName;
+        }
+
+        public String getUserDisplayName(){
+            return userDisplayName;
         }
     }
 
@@ -55,6 +65,10 @@ public class TransactionStateVOWrapper extends ValueObject {
 
     public String getStateName(){
         return State.values()[vo.getName().ordinal()].getDisplayName();
+    }
+
+    public String getUserStateName(){
+        return State.values()[vo.getName().ordinal()].getUserDisplayName();
     }
 
     public State getState(){

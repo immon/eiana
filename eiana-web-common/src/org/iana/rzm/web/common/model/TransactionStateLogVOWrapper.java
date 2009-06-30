@@ -1,6 +1,6 @@
 package org.iana.rzm.web.common.model;
 
-import org.iana.rzm.facade.system.trans.vo.*;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateLogEntryVO;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,5 +37,9 @@ public class TransactionStateLogVOWrapper extends ValueObject implements Compara
 
     public int compareTo(TransactionStateLogVOWrapper o) {
         return o.state.getEndDate().compareTo(state.getEndDate());
+    }
+
+    public String getUserState() {
+        return state.getUserStateName();
     }
 }
