@@ -14,8 +14,8 @@ import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
  */
 public interface StatelessTransactionDetectorService {
 
-    TransactionActionsVO detectTransactionActions(IDomainVO domain, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
+    TransactionActionsVO detectTransactionActions(IDomainVO domain, AuthenticatedUser authUser, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
 
-    TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
+    TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config, AuthenticatedUser authUser, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
 
 }

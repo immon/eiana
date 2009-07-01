@@ -39,8 +39,8 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
 
     private UserManager userManager;
 
-    public StatelessAdminTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, EPPStatusQuery query) {
-        super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck);
+    public StatelessAdminTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, DNSTechnicalCheck dnsTechnicalCheckNoRA, EPPStatusQuery query) {
+        super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck, dnsTechnicalCheckNoRA);
         CheckTool.checkNull(query, "null epp status query");
         this.query = query;
         this.transactionManager = transactionManager;
@@ -220,7 +220,7 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
         return super.createTransactions(domain, authUser);
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, PerformTechnicalCheck performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         return super.createTransactions(domain, splitNameServerChange, submitterEmail, performTechnicalCheck, comment, authUser);
     }
 

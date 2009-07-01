@@ -26,7 +26,7 @@ public class TransactionTechnicalCheckTest extends CommonGuardedSystemTransactio
         domain.getNameServers().add(new HostVO("host"));
 
         setDefaultUser();
-        GuardedSystemTransactionService.createTransactions(domain, false, "", true, "");
+        GuardedSystemTransactionService.createTransactions(domain, false, "", PerformTechnicalCheck.ON, "");
     }
 
     @AfterClass(alwaysRun = true)

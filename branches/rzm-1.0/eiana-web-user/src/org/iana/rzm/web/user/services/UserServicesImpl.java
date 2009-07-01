@@ -198,7 +198,7 @@ public class UserServicesImpl implements UserServices {
         RadicalAlterationException {
 
         try {
-            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, true, null);
+            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, PerformTechnicalCheck.ON, null);
             return new TransactionVOWrapper(list.get(0));
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
