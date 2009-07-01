@@ -18,6 +18,10 @@ public interface TransactionDetectorService extends RZMStatefulService {
 
     TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
 
+    TransactionActionsVO detectTransactionActions(IDomainVO domain, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
+
     TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
+
+    TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException;
 
 }

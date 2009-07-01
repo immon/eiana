@@ -117,7 +117,8 @@
         <constructor-arg index="2" ref="domainManager"/>
         <constructor-arg index="3" ref="adminDetectorService"/>
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
-        <constructor-arg index="5" ref="eppReceiverAction"/>
+        <constructor-arg index="5" ref="dnsTechnicalCheckBeanNoRadicalAlteration"/>
+        <constructor-arg index="6" ref="eppReceiverAction"/>
     </bean>
 
     <!-- ######################################################################## -->
@@ -449,6 +450,7 @@
         <constructor-arg ref="domainManager"/>
         <constructor-arg ref="detectorService"/>
         <constructor-arg ref="dnsTechnicalCheckBean"/>
+        <constructor-arg ref="dnsTechnicalCheckBeanNoRadicalAlteration"/>
     </bean>
 
     <!-- ######################################################################## -->
@@ -895,6 +897,18 @@
     <!-- Technical checks -->
 
     <bean id="dnsTechnicalCheckBean" class="org.iana.dns.check.DNSTechnicalCheck">
+        <property name="domainChecks">
+            <list>
+                <ref bean="minimumNameServersAndNoReservedIPsCheck"/>
+                <ref bean="radicalAlterationCheck"/>
+            </list>
+        </property>
+        <property name="dnsCheckRetries">
+            <value>3</value>
+        </property>
+    </bean>
+
+    <bean id="dnsTechnicalCheckBeanNoRadicalAlteration" class="org.iana.dns.check.DNSTechnicalCheck">
         <property name="domainChecks">
             <list>
                 <ref bean="minimumNameServersAndNoReservedIPsCheck"/>

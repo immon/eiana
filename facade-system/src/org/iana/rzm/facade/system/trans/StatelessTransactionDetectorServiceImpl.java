@@ -34,11 +34,11 @@ public class StatelessTransactionDetectorServiceImpl implements StatelessTransac
         this.diffConfiguration = diffConfiguration;
     }
 
-    public TransactionActionsVO detectTransactionActions(IDomainVO domain, AuthenticatedUser authUSer) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
-        return detectTransactionActions(domain, diffConfiguration, authUSer);
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, AuthenticatedUser authUSer, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
+        return detectTransactionActions(domain, diffConfiguration, authUSer, performTechnicalCheck);
     }
 
-    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config, AuthenticatedUser authUSer) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config, AuthenticatedUser authUSer, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
         CheckTool.checkNull(domain, "null domain");
 
         Domain currentDomain = domainManager.get(domain.getName());
@@ -48,7 +48,7 @@ public class StatelessTransactionDetectorServiceImpl implements StatelessTransac
         Domain modifiedDomain = DomainFromVOConverter.toDomain(domain);
         ObjectChange change = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, config);
 
-        checkForRadicalAlteration(modifiedDomain);
+        checkForRadicalAlteration(modifiedDomain, performTechnicalCheck);
         detectNameServersCollision(change);
 
         List<TransactionActionVO> actions = TransactionConverter.toTransactionActionVO(change);
@@ -57,9 +57,11 @@ public class StatelessTransactionDetectorServiceImpl implements StatelessTransac
         return ret;
     }
 
-    private void checkForRadicalAlteration(Domain modifiedDomain) throws RadicalAlterationException {
+    private void checkForRadicalAlteration(Domain modifiedDomain, PerformTechnicalCheck performTechnicalCheck) throws RadicalAlterationException {
         try {
-            radicalCheck.check(modifiedDomain);
+            if (PerformTechnicalCheck.ON.equals(performTechnicalCheck)) {
+                radicalCheck.check(modifiedDomain);
+            }
         } catch (RadicalAlterationCheckException e) {
             throw new RadicalAlterationException(e.getDomainName());
         }
