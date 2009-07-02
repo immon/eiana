@@ -40,18 +40,22 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
 
     protected DNSTechnicalCheck technicalCheck;
 
+    protected DNSTechnicalCheck technicalCheckNoRadicalAlteration;
+
     private UserManager userManager;
 
-    public StatelessTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck) {
+    public StatelessTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, DNSTechnicalCheck dnsTechnicalCheckNoRA) {
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
         CheckTool.checkNull(transactionDetectorService, "change detector");
         CheckTool.checkNull(dnsTechnicalCheck, "technical check");
+        CheckTool.checkNull(dnsTechnicalCheckNoRA, "technical check no radical alteration");
         this.userManager = userManager;
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
         this.transactionDetectorService = transactionDetectorService;
         this.technicalCheck = dnsTechnicalCheck;
+        this.technicalCheckNoRadicalAlteration = dnsTechnicalCheckNoRA;
     }
 
     public TransactionVO get(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -70,7 +74,7 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
 
     public List<TransactionVO> createTransactions(IDomainVO domain, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
-            return createTransactions(domain, false, null, false, null, authUser);
+            return createTransactions(domain, false, null, PerformTechnicalCheck.OFF, null, authUser);
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             // impossible
             throw new IllegalStateException("should not perform technical check");
@@ -79,7 +83,7 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
-            return createTransactions(domain, splitNameServerChange, null, false, null, authUser);
+            return createTransactions(domain, splitNameServerChange, null, PerformTechnicalCheck.OFF, null, authUser);
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             // impossible
             throw new IllegalStateException("should not perform technical check");
@@ -88,14 +92,15 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
 
     public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
-            return createTransactions(domain, splitNameServerChange, submitterEmail, false, null, authUser);
+            return createTransactions(domain, splitNameServerChange, submitterEmail, PerformTechnicalCheck.OFF, null, authUser);
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             // impossible
             throw new IllegalStateException("should not perform technical check");
         }
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, PerformTechnicalCheck performTechnicalCheck, String comment, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException, DNSTechnicalCheckExceptionWrapper, TransactionExistsException, NameServerChangeNotAllowedException, SharedNameServersCollisionException, RadicalAlterationException {
+
         CheckTool.checkNull(domain, "null domain");
 
         existsTransaction(domain.getName());
@@ -106,10 +111,10 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
             Domain modifiedDomain = DomainFromVOConverter.toDomain(domain);
 
             List<TransactionVO> ret = new ArrayList<TransactionVO>();
-            TransactionActionsVO actions = transactionDetectorService.detectTransactionActions(domain);
+            TransactionActionsVO actions = transactionDetectorService.detectTransactionActions(domain, performTechnicalCheck);
 
-            if (actions.containsNameServerAction() && performTechnicalCheck) {
-                performTechnicalCheck(modifiedDomain);
+            if (actions.containsNameServerAction()) {
+                performTechnicalCheck(modifiedDomain, performTechnicalCheck);
             }
 
             for (TransactionActionGroupVO group : actions.getGroups()) {
@@ -143,7 +148,7 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
         if (list.size() > 0) throw new TransactionExistsException(domainName);
     }
 
-    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, boolean performTechnicalCheck, String comment, AuthenticatedUser authUser) throws NoModificationException, CloneNotSupportedException {
+    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, PerformTechnicalCheck performTechnicalCheck, String comment, AuthenticatedUser authUser) throws NoModificationException, CloneNotSupportedException {
         Domain md = currentDomain.clone();
         for (TransactionActionVO action : actions) {
             if (TransactionActionVO.MODIFY_TC.equals(action.getName())) {
@@ -330,9 +335,16 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
         }
     }
 
-    private void performTechnicalCheck(Domain domain) throws DNSTechnicalCheckException {
+    private void performTechnicalCheck(Domain domain, PerformTechnicalCheck performTechnicalCheck) throws DNSTechnicalCheckException {
         DNSDomain dns = DNSConverter.toDNSDomain(domain);
-        technicalCheck.check(dns);
+
+        if (PerformTechnicalCheck.OFF.equals(performTechnicalCheck)) return;
+
+        if (PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION.equals(performTechnicalCheck)) {
+            technicalCheckNoRadicalAlteration.check(dns);
+        } else {
+            technicalCheck.check(dns);
+        }
     }
 
 

@@ -25,11 +25,20 @@ public class TransactionDetectorImpl extends AbstractRZMStatefulService implemen
         this.statelessTransactionDetectorService = statelessTransactionDetectorService;
     }
 
+
     public TransactionActionsVO detectTransactionActions(IDomainVO domain) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
-        return statelessTransactionDetectorService.detectTransactionActions(domain, getAuthenticatedUser());
+        return detectTransactionActions(domain, PerformTechnicalCheck.ON);
+    }
+
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
+        return statelessTransactionDetectorService.detectTransactionActions(domain, getAuthenticatedUser(), performTechnicalCheck);
     }
 
     public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
-        return statelessTransactionDetectorService.detectTransactionActions(domain, config, getAuthenticatedUser());
+        return detectTransactionActions(domain, config, PerformTechnicalCheck.ON);
+    }
+
+    public TransactionActionsVO detectTransactionActions(IDomainVO domain, DiffConfiguration config, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, InfrastructureException, InvalidCountryCodeException, SharedNameServersCollisionException, RadicalAlterationException {
+        return statelessTransactionDetectorService.detectTransactionActions(domain, config, getAuthenticatedUser(), performTechnicalCheck);
     }
 }

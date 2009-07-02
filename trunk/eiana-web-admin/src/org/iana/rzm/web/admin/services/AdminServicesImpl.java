@@ -183,8 +183,9 @@ public class AdminServicesImpl implements AdminServices, Serializable {
                     transactionService.createTransactions(domain.getDomainVO(),
                             splitNameServerChange,
                             params.getEmail(),
-                            false,
+                            PerformTechnicalCheck.OFF,
                             params.getComment());
+            
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
