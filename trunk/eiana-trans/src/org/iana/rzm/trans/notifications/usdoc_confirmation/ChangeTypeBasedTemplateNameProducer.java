@@ -24,7 +24,7 @@ public class ChangeTypeBasedTemplateNameProducer implements TemplateNameProducer
     public List<String> produce(Map dataSource) {
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
         if (td.isNameServerChange())
-            return Arrays.asList(nsChangeTemplateName);
+            return Arrays.asList(nsChangeTemplateName, databaseChangeTemplateName);
         else
             return Arrays.asList(databaseChangeTemplateName);
     }
