@@ -5,12 +5,16 @@ import org.iana.rzm.domain.Contact;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.facade.system.domain.vo.HostVO;
 import org.iana.rzm.facade.system.domain.vo.IDomainVO;
+import org.iana.rzm.facade.system.domain.vo.IPAddressVO;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
 
 /**
  * @author Patrycja Wegrzynowicz
  */
+@Test
 public class TransactionTechnicalCheckTest extends CommonGuardedSystemTransaction {
 
     protected void initTestData() {
@@ -20,13 +24,17 @@ public class TransactionTechnicalCheckTest extends CommonGuardedSystemTransactio
 
     }
 
-    @Test(expectedExceptions = DNSTechnicalCheckException.class)
+    @Test(expectedExceptions = DNSTechnicalCheckExceptionWrapper.class)
     public void testMinNumberOfNameServersTest() throws Exception {
         IDomainVO domain = getDomain("technicalcheck");
-        domain.getNameServers().add(new HostVO("host"));
+        HostVO host1 = new HostVO("host1");
 
+        HostVO host2 = new HostVO("host2");
+        
+        domain.setNameServers(Arrays.asList(host1, host2));
+        
         setDefaultUser();
-        GuardedSystemTransactionService.createTransactions(domain, false, "", true, "");
+        GuardedSystemTransactionService.createTransactions(domain, false, "", PerformTechnicalCheck.ON, "");
     }
 
     @AfterClass(alwaysRun = true)

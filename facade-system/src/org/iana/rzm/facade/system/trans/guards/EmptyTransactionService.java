@@ -13,6 +13,7 @@ import org.iana.rzm.facade.system.domain.vo.IDomainVO;
 import org.iana.rzm.facade.system.trans.NoDomainModificationException;
 import org.iana.rzm.facade.system.trans.TransactionCannotBeWithdrawnException;
 import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.PerformTechnicalCheck;
 import org.iana.rzm.facade.system.trans.vo.TransactionCriteriaVO;
 import org.iana.rzm.facade.system.trans.vo.TransactionVO;
 import org.iana.rzm.facade.system.trans.vo.changes.TransactionActionsVO;
@@ -139,12 +140,12 @@ public class EmptyTransactionService implements TransactionService {
         return null;
     }
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, PerformTechnicalCheck performTechnicalCheck) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         return null;
     }
 
 
-    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, boolean performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
+    public List<TransactionVO> createTransactions(IDomainVO domain, boolean splitNameServerChange, String submitterEmail, PerformTechnicalCheck performTechnicalCheck, String comment) throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, InfrastructureException, InvalidCountryCodeException {
         return null;
     }
 
