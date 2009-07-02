@@ -230,7 +230,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 2);
         checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
     }
 
@@ -251,9 +251,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 2);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
-        assertPersistentNotifications(transId, 1);
+        assertPersistentNotifications(transId, 2);
         checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
 
@@ -296,7 +296,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 2);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
         assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 0);
         assertPersistentNotifications(transId, 0);
