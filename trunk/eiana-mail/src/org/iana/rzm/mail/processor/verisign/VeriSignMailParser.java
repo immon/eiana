@@ -8,8 +8,8 @@ import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.facade.auth.AuthenticationService;
 import org.iana.rzm.mail.processor.regex.RegexParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
-import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
+import org.iana.rzm.mail.processor.simple.parser.VerisignEmailParseException;
 
 import java.text.ParseException;
 
@@ -31,24 +31,24 @@ public class VeriSignMailParser implements EmailParser {
         this.subjectPattern = subjectPattern;
     }
 
-    public MessageData parse(String from, String subject, String content) throws EmailParseException {
+    public MessageData parse(String from, String subject, String content) throws VerisignEmailParseException {
         try {
             String email = config.getParameter(AuthenticationService.VERISIGN_EMAIL);
-            if (email == null) throw new EmailParseException("Verisign email address stored in db is null.");
-            if (!email.equals(from)) throw new EmailParseException("The from address [" + from + "] does not match the verisign address [" + email + "]");
+            if (email == null) throw new VerisignEmailParseException("Verisign email address stored in db is null.");
+            if (!email.equals(from)) throw new VerisignEmailParseException("The from address [" + from + "] does not match the verisign address [" + email + "]");
             RegexParser.Tokens subjectTokens = parseSubject(subject);
             String domainName = subjectTokens.token(DOMAIN_NAME);
             return new VeriSignMail(domainName);
         } catch (ConfigException e) {
-            throw new EmailParseException(e);
+            throw new VerisignEmailParseException(e);
         }
     }
 
-    private RegexParser.Tokens parseSubject(String subject) throws EmailParseException {
+    private RegexParser.Tokens parseSubject(String subject) throws VerisignEmailParseException {
         try {
             return subjectPattern.parse(subject);
         } catch (ParseException e) {
-            throw new EmailParseException("Subject does not match contact confirmation subject pattern", e);
+            throw new VerisignEmailParseException("Subject does not match contact confirmation subject pattern", e);
         }
     }
 
