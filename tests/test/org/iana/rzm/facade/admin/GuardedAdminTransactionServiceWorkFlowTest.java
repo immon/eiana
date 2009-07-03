@@ -205,21 +205,21 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
     @Test(dependsOnMethods = "testAcceptPENDING_USDOC_APPROVAL")
     public void testAcceptPENDING_ZONE_INSERTION() throws Exception {
-        createDomainModificationProcessNSChage();
+        createDomainModificationProcessNSDataBaseChage();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
-        acceptPENDING_USDOC_APPROVALNSCHANGE();
+        acceptPENDING_USDOC_APPROVALNSDATABASECHANGE();
         acceptPENDING_ZONE_INSERTION();
     }
 
     @Test(dependsOnMethods = "testAcceptPENDING_ZONE_INSERTION")
     public void testAcceptPENDING_ZONE_PUBLICATION() throws Exception {
-        createDomainModificationProcessNSChage();
+        createDomainModificationProcessNSDataBaseChage();
         acceptPENDING_CONTACT_CONFIRMATION();
         acceptMANUAL_REVIEW();
         acceptPENDING_IANA_CHECK();
-        acceptPENDING_USDOC_APPROVALNSCHANGE();
+        acceptPENDING_USDOC_APPROVALNSDATABASECHANGE();
         acceptPENDING_ZONE_INSERTION();
         acceptPENDING_ZONE_PUBLICATION();
     }
@@ -245,6 +245,26 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
     }
 
     private void createDomainModificationProcessNSChage() throws Exception {
+        AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
+        gAdminTransactionServ.setUser(testAuthUser);
+
+        Domain domain = createTestDomain(DOMAIN_NAME);
+        Host newHost = new Host("ns123.ultra.net");
+        newHost.addIPAddress("81.10.10.50");
+        domain.addNameServer(newHost);
+
+        TransactionVO transactionVO = gAdminTransactionServ.createTransactions(DomainToVOConverter.toDomainVO(domain)).get(0);
+        transactionID = transactionVO.getTransactionID();
+
+        transactionVO = gAdminTransactionServ.get(transactionID);
+
+        assert transactionVO != null;
+
+        assert transactionVO.getDomainName().equals(DOMAIN_NAME);
+        assert transactionVO.getName().equals(PROCESS_NAME);
+    }
+
+    private void createDomainModificationProcessNSDataBaseChage() throws Exception {
         AuthenticatedUser testAuthUser = new TestAuthenticatedUser(UserConverter.convert(user)).getAuthUser();
         gAdminTransactionServ.setUser(testAuthUser);
 
@@ -340,15 +360,23 @@ public class GuardedAdminTransactionServiceWorkFlowTest {
 
     private void acceptPENDING_USDOC_APPROVAL() throws Exception {
         isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
-        gAdminTransactionServ.approveByUSDoC(transactionID);
+        gAdminTransactionServ.confirmByUSDoC(transactionID, false, true);
         isTransactionInDesiredState(transactionID, TransactionStateVO.Name.COMPLETED);
     }
 
     private void acceptPENDING_USDOC_APPROVALNSCHANGE() throws Exception {
         isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
-        gAdminTransactionServ.approveByUSDoC(transactionID);
+        gAdminTransactionServ.confirmByUSDoC(transactionID, true, true);
         isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
     }
+
+    private void acceptPENDING_USDOC_APPROVALNSDATABASECHANGE() throws Exception {
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_USDOC_APPROVAL);
+        gAdminTransactionServ.confirmByUSDoC(transactionID, true, true);
+        gAdminTransactionServ.confirmByUSDoC(transactionID, false, true);
+        isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
+    }
+
 
     private void acceptPENDING_ZONE_INSERTION() throws Exception {
         isTransactionInDesiredState(transactionID, TransactionStateVO.Name.PENDING_ZONE_INSERTION);
