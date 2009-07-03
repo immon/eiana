@@ -67,7 +67,7 @@ public class USDoCAnswerParser implements EmailParser {
                         .append("\n").append("Content: ").append(content);
                 logger.warn(builder.toString());
                 logger.error("cannot parse USDoC email content", e);
-                return new TicketData(ticketID);
+                throw e;
             }
         } catch (NumberFormatException e) {
             throw new EmailParseException(e);
