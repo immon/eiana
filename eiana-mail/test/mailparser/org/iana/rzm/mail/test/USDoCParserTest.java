@@ -75,7 +75,7 @@ public class USDoCParserTest {
         assert answer.isNameserverChange();
     }
 
-    @Test
+    @Test (expectedExceptions = EmailParseException.class)
     public void testInvalidNameserverAcceptAndDecline() throws Exception {
         String subject = "Re: [Root change 11:22] Name server change to us";
         String content = "Content " +
@@ -88,7 +88,7 @@ public class USDoCParserTest {
         assert !(answer instanceof USDoCAnswer);
     }
 
-    @Test
+    @Test (expectedExceptions = EmailParseException.class)
     public void testInvalidNameserverAccept() throws Exception {
         String subject = "Re: [Root change 11:22] Name server change to us";
         String content = "Content " +
