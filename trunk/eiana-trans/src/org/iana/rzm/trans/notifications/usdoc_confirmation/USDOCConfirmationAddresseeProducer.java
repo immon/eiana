@@ -19,16 +19,20 @@ import java.util.Set;
 public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddresseeProducer {
 
     private UserManager userManager;
+    private String nsChangeTemplateName;
 
-    public USDOCConfirmationAddresseeProducer(UserManager userManager) {
+    public USDOCConfirmationAddresseeProducer(UserManager userManager, String nsChangeTemplateName) {
         CheckTool.checkNull(userManager, "user manager is null");
         this.userManager = userManager;
+        this.nsChangeTemplateName = nsChangeTemplateName;
     }
 
     public Set<PAddressee> produceAddressee(Map dataSource) {
-        TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
+
+        String templateName = (String) dataSource.get(USDOCConfirmationNotificationProducer.TEMPLATE_NAME);
+
         List<RZMUser> users = userManager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
-        if (td.isNameServerChange()) {
+        if (nsChangeTemplateName.equals(templateName)) {
             users.addAll(userManager.findUsersInAdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         }
 

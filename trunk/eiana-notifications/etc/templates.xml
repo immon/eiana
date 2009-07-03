@@ -725,6 +725,7 @@ Authorized:
 <iana:type>usdoc-confirmation-nschange</iana:type>
 <iana:addressees>
 <iana:addressee>GOV_OVERSIGHT</iana:addressee>
+<iana:addressee>ZONE_PUBLISHER</iana:addressee>
 </iana:addressees>
 <iana:subject>[Root change {ticket}:{retry}] Name server change to {domainName}</iana:subject>
 <iana:content>
