@@ -604,6 +604,11 @@
                         <constructor-arg index="0" value="GOV_OVERSIGHT"/>
                     </bean>
                 </entry>
+                <entry key="ZONE_PUBLISHER">
+                    <bean class="org.iana.rzm.trans.notifications.recipients.AdminRecipients">
+                        <constructor-arg index="0" value="ZONE_PUBLISHER"/>
+                    </bean>
+                </entry>
                 <entry key="SYSTEM_ERRORS">
                     <bean class="org.iana.rzm.trans.notifications.recipients.EmailRecipients">
                         <constructor-arg index="0" value="system-errors@iana.org"/>
@@ -771,7 +776,7 @@
     </bean>
 
     <bean id="usdocConfirmationNotificationProducer"
-          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+          class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationNotificationProducer">
         <constructor-arg index="0" ref="templateFactory"/>
         <constructor-arg index="1" ref="usdocConfirmationAddresseeProducer"/>
         <constructor-arg index="2" ref="usdocConfirmationTemplateProducer"/>
@@ -893,6 +898,7 @@
     <bean id="usdocConfirmationAddresseeProducer"
           class="org.iana.rzm.trans.notifications.usdoc_confirmation.USDOCConfirmationAddresseeProducer">
         <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="1" value="usdoc-confirmation-nschange"/>
     </bean>
 
     <bean id="usdocConfirmationRemainderAddresseeProducer"
