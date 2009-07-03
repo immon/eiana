@@ -17,21 +17,25 @@ public class USDOCConfirmationAddresseeProducer extends AbstractTransactionAddre
 
     private UserManager userManager;
     private Map<String, String> ccEmails;
+    private String nsChangeTemplateName;
 
-    public USDOCConfirmationAddresseeProducer(UserManager userManager) {
-        this(userManager, new HashMap<String, String>());
+    public USDOCConfirmationAddresseeProducer(UserManager userManager, String nsChangeTemplateName) {
+        this(userManager, new HashMap<String, String>(), nsChangeTemplateName);
     }
 
-    public USDOCConfirmationAddresseeProducer(UserManager userManager, Map<String, String>ccEmails) {
+    public USDOCConfirmationAddresseeProducer(UserManager userManager, Map<String, String>ccEmails, String nsChangeTemplateName) {
         CheckTool.checkNull(userManager, "user manager is null");
         this.ccEmails = ccEmails;
         this.userManager = userManager;
+        this.nsChangeTemplateName = nsChangeTemplateName;
     }
 
     public Set<PAddressee> produceAddressee(Map dataSource) {
-        TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
+
+        String templateName = (String) dataSource.get(USDOCConfirmationNotificationProducer.TEMPLATE_NAME);
+
         List<RZMUser> users = userManager.findUsersInAdminRole(AdminRole.AdminType.GOV_OVERSIGHT);
-        if (td.isNameServerChange()) {
+        if (nsChangeTemplateName.equals(templateName)) {
             users.addAll(userManager.findUsersInAdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         }
 

@@ -6,6 +6,7 @@ import org.iana.rzm.trans.TransactionData;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * @author Piotr Tkaczyk
@@ -24,9 +25,16 @@ public class ChangeTypeBasedTemplateNameProducer implements TemplateNameProducer
     public List<String> produce(Map dataSource) {
         TransactionData td = (TransactionData) dataSource.get("TRANSACTION_DATA");
 
-        if (td.isNameServerChange())
-            return Arrays.asList(nsChangeTemplateName, databaseChangeTemplateName);
-        else
-            return Arrays.asList(databaseChangeTemplateName);
+        List<String> templates = new ArrayList<String>();
+
+        if (td.isNameServerChange()) {
+            templates.add(nsChangeTemplateName);
+        }
+
+        if (td.isDatabaseChange()) {
+            templates.add(databaseChangeTemplateName);
+        }
+
+        return templates;
     }
 }

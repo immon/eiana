@@ -25,8 +25,8 @@ import java.util.List;
 @Test(sequential = true, groups = {"facade-system", "GuardedSystemTransactionWorkFlowTest"})
 public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTransaction {
 
-    RZMUser userAC, userTC, userIANA, userUSDoC;
-    DomainVO domainVONS, domainVO;
+    RZMUser userAC, userTC, userIANA, userUSDoC, userVeri;
+    DomainVO domainVONS, domainVO, domainVONSDataChange;
     Domain domainNS, domain;
 
     final static String DOMAIN_NAME = "org";
@@ -67,6 +67,14 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         userUSDoC.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
         userManager.create(userUSDoC);
 
+        userVeri = new RZMUser();
+        userVeri.setLoginName("gstsignalveris");
+        userVeri.setFirstName("VerisignUser");
+        userVeri.setLastName("lastName");
+        userVeri.setEmail("verisign@some.com");
+        userVeri.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
+        userManager.create(userVeri);
+
         domain = createDomain(DOMAIN_NAME);
         domain.addNameServer(setupFirstHost("pr1"));
         domain.addNameServer(setupSecondHost("pr2"));
@@ -97,6 +105,19 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         newDomainNS.addNameServer(nameServer);
 
         domainVONS = DomainToVOConverter.toDomainVO(newDomainNS);
+
+        Domain newDomainNSDataChange = domainNS.clone();
+
+        nameServer = new Host("ns1.gstsnewnameserver");
+        nameServer.addIPAddress("81.50.50.10");
+        newDomainNSDataChange.addNameServer(nameServer);
+        nameServer = new Host("ns2.gstsnewnameserver");
+        nameServer.addIPAddress("82.50.50.10");
+        newDomainNSDataChange.addNameServer(nameServer);
+
+        newDomainNSDataChange.setRegistryUrl("newregurl.org");
+
+        domainVONSDataChange = DomainToVOConverter.toDomainVO(newDomainNSDataChange);
 
     }
 
@@ -230,7 +251,7 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 2);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         checkStateLog(userIANA, transId, ACCEPT_IANA_CHECKLog);
     }
 
@@ -251,9 +272,9 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 2);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         rejectUSDOC_APPROVAL(userUSDoC, transId);
-        assertPersistentNotifications(transId, 2);
+        assertPersistentNotifications(transId, 1);
         checkStateLog(userIANA, transId, REJECT_USDOC_APPROVALLog);
     }
 
@@ -296,9 +317,24 @@ public class GuardedSystemTransactionWorkFlowTest extends CommonGuardedSystemTra
         assertPersistentNotifications(transId, "contact-confirmation", 0);
         acceptMANUAL_REVIEW(userIANA, transId);
         acceptIANA_CHECK(userIANA, transId);
-        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 2);
+        assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 1);
         acceptUSDOC_APPROVAL(userUSDoC, transId);
         assertPersistentNotifications(transId, "usdoc-confirmation-nschange", 0);
+        assertPersistentNotifications(transId, 0);
+        checkStateLog(userIANA, transId, workFlowWithNSChangeLog);
+    }
+
+    @Test(dependsOnMethods = {"testWorkFlowWithNSChange"})
+    public void testWorkFlowWithNSAndDataChange() throws Exception {
+        Long transId = createTransaction(domainVONSDataChange, userAC).getTransactionID();
+        assertPersistentNotifications(transId, "contact-confirmation", 2);
+        acceptPENDING_CONTACT_CONFIRMATION(userIANA, transId, 2);
+        assertPersistentNotifications(transId, "contact-confirmation", 0);
+        acceptMANUAL_REVIEW(userIANA, transId);
+        acceptIANA_CHECK(userIANA, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 2);
+        acceptUSDOC_APPROVAL(userUSDoC, transId);
+        assertPersistentNotifications(transId, "usdoc-confirmation", 0);
         assertPersistentNotifications(transId, 0);
         checkStateLog(userIANA, transId, workFlowWithNSChangeLog);
     }

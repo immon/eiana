@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author Piotr Tkaczyk
  */
-abstract class AbstractNotificationProducer implements NotificationProducer {
+public abstract class AbstractNotificationProducer implements NotificationProducer {
 
     protected TemplateFactory templateFactory;
 
