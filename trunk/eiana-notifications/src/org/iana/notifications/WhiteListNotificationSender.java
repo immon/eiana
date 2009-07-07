@@ -27,14 +27,19 @@ public class WhiteListNotificationSender implements NotificationSender {
 
     public void send(PNotification notification) throws NotificationSenderException {
         Set<PAddressee> addressees = notification.getAddressees();
+        Set<PAddressee> newAddressees = new HashSet<PAddressee>();
         for (PAddressee addressee : addressees) {
             if(!isOnWhiteList(addressee)) {
                 logger.debug("Email addreessee not on white list (" + addressee.getEmail() + " replaced to " + defaultEmail + ")");
-                addressee.setEmail(defaultEmail);
+                PAddressee newAddressee = new PAddressee(addressee.getName(), defaultEmail, addressee.isCCEmailAddressee());
+                newAddressees.add(newAddressee);
+            } else {
+                newAddressees.add(addressee);
             }
         }
-        
-        notificationSender.send(notification);
+
+        PNotification newNotif = new PNotification(newAddressees, notification.getContent().getSubject(), notification.getContent().getBody());
+        notificationSender.send(newNotif);
     }
 
     public void setWhiteList(List<String> whiteList) {
