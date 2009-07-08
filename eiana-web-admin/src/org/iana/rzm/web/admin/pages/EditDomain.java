@@ -239,7 +239,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
         getVisitState().resetModifiedDomain(getDomainId());
     }
 
-    private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
+    private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> {
 
         private AdminServices services;
         private ICallback callback;
@@ -253,7 +253,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
             this.stateManager = stateManager;
         }
 
-        public void saveEntity(AdminPage adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle) {
+        public void saveEntity(DomainChangesConfirmation adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle, boolean checkRadicalChanges) {
             services.updateDomain(domainVOWrapper);
             Visit visit = (Visit) stateManager.get("visit");
             visit.markAsNotVisited(domainVOWrapper.getId());

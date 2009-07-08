@@ -15,9 +15,9 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
       <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="RZM-Admin" />
       <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-admin" />
+      <executeOn event="beforeRun" target="copyAdminBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/../eiana-web-user/eiana-web-user-copy.xml">
       <additionalClassPath />
@@ -34,8 +34,8 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <properties />
-      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-all" />
       <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-backend" />
+      <executeOn event="beforeRun" target="copyBackendBeforeRun" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="Tomcat-all" />
     </buildFile>
   </component>
   <component name="BuildJarProjectSettings">

@@ -109,6 +109,9 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         })
     public abstract IComponent getSaveEditComponent();
 
+    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+    public abstract IComponent getPendingRadicalChangesComponent();
+
     @InjectObject("infrastructure:applicationStateManager")
     public abstract ApplicationStateManager getApplicationStateManager();
 
@@ -154,15 +157,21 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     public abstract void setRequestMetaParameters(RequestMetaParameters metaParameters);
     public abstract RequestMetaParameters getRequestMetaParameters();
 
+    @InitialValue("literal:false")
+    @Persist("client")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
+    
+
     public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
     }
 
     protected Object[] getExternalParameters() {
         if (getModifiedDomain() != null) {
-            return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), getModifiedDomain()};
+            return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(),isDisplayRadicalChangesMessage(), getModifiedDomain()};
         }
-        return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters()};
+        return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), isDisplayRadicalChangesMessage()};
     }
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
@@ -175,11 +184,12 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         setDomainId(id);
         setCallback((ICallback) parameters[1]);
         setRequestMetaParameters((RequestMetaParameters) parameters[2]);
+        setDisplayRadicalChangesMessage(Boolean.valueOf(parameters[3].toString()));
 
 
         try {
-            if (parameters.length == 4) {
-                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
+            if (parameters.length == 5) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[4]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
@@ -270,7 +280,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     }
 
     private Object[] getListenerParmeters() {
-         return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters()};
+         return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), isDisplayRadicalChangesMessage()};
     }
 
     public void back() {
@@ -300,19 +310,21 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     public void saveEdit() {
 
         try {
-           TransactionActionsVOWrapper  changes = getAdminServices().getChanges(getDomain());
+            boolean useRadicalChangesCheck = !isDisplayRadicalChangesMessage();
+            TransactionActionsVOWrapper  changes = getAdminServices().getChanges(getDomain(), useRadicalChangesCheck);
             RzmCallback callback = new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId());
-            TransactionDomainEntityEditorListener editor = new TransactionDomainEntityEditorListener(getAdminServices(), changes, callback, getApplicationStateManager());
-            editor.setMessageUtil(getMessageUtil());
+            TransactionDomainEntityEditorListener listener = new TransactionDomainEntityEditorListener(getAdminServices(), changes, callback, getApplicationStateManager());
+            listener.setMessageUtil(getMessageUtil());
             DomainChangesConfirmation page = getDomainChangesConfirmation();
-            page.setEditor(editor);
+            page.setEditor(listener);
             page.setDomainId(getDomainId());
             page.setBorderHeader("REQUESTS");
+            page.setDisplayRadicalChangesMessage(false);
             getRequestCycle().activate(page);
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
+            setDisplayRadicalChangesMessage(true);
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }
@@ -324,7 +336,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     }
 
 
-    private static class TransactionDomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
+    private static class TransactionDomainEntityEditorListener implements PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> {
 
         private AdminServices services;
         private TransactionActionsVOWrapper changes;
@@ -339,12 +351,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             this.manager = manager;
         }
 
-        public void saveEntity(AdminPage adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle)
-            throws
-            NoObjectFoundException,
-            NoDomainModificationException,
-            TransactionExistsException,
-            NameServerChangeNotAllowedException {
+        public void saveEntity(DomainChangesConfirmation adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle, boolean checkRadicalChanges) throws NoObjectFoundException {
 
 
             if (changes.offerSeparateRequest() || changes.mustSplitrequest()) {
@@ -353,6 +360,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
                 page.setDomainId(domainVOWrapper.getId());
                 page.setDomainName(domainVOWrapper.getName());
                 page.setCallback(callback);
+                page.setDisplayRadicalChangesMessage(false);
                 page.setMustSplit(changes.mustSplitrequest());
                 cycle.activate(page);
                 return;
@@ -366,7 +374,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             List<TransactionVOWrapper> list = null;
             Visit visit = (Visit) manager.get("visit");
             try {
-                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, visit.getRequestMetaParameters());
+                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, visit.getRequestMetaParameters(), checkRadicalChanges);
                 visit.markAsNotVisited(domainVOWrapper.getId());
                 page.setTikets(list);
                 cycle.activate(page);
@@ -376,6 +384,12 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
                 adminPage.setErrorMessage(messageUtil.getSharedNameServersCollisionMessage(e.getNameServers()));
             } catch (RadicalAlterationException e) {
                 adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(e.getDomainName()));
+            } catch (NoDomainModificationException e) {
+                adminPage.setErrorMessage(messageUtil.getNoDomainModificationMessage(e.getDomainName()));
+            } catch (NameServerChangeNotAllowedException e) {
+                adminPage.setErrorMessage(messageUtil.getNameServerChangeNotAllowedErrorMessage());
+            } catch (TransactionExistsException e) {
+                adminPage.setErrorMessage(messageUtil.getTransactionExistMessage(e.getDomainName()));
             }
         }
 

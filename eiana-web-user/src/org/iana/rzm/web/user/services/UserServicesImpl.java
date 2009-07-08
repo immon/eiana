@@ -4,7 +4,6 @@ import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.commons.*;
 import org.iana.criteria.*;
-import org.iana.dns.check.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
@@ -186,7 +185,7 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail)
+    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail, boolean useRadicalChangesCheck)
         throws
         AccessDeniedException,
         NoObjectFoundException,
@@ -197,8 +196,10 @@ public class UserServicesImpl implements UserServices {
         SharedNameServersCollisionException,
         RadicalAlterationException {
 
+        PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+
         try {
-            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, PerformTechnicalCheck.ON, null);
+            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, type, null);
             return new TransactionVOWrapper(list.get(0));
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
@@ -206,20 +207,26 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail)
-            throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, TransactionExistsException, NameServerChangeNotAllowedException,
-    SharedNameServersCollisionException,RadicalAlterationException{
+    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail, boolean useRadicalChangesCheck)
+            throws
+            AccessDeniedException,
+            NoObjectFoundException,
+            NoDomainModificationException,
+            TransactionExistsException,
+            NameServerChangeNotAllowedException,
+            SharedNameServersCollisionException,
+            RadicalAlterationException,
+            DNSTechnicalCheckExceptionWrapper
+    {
         try {
-            List<TransactionVO> list;
-            if (submitterEmail != null) {
-                list = transactionService.createTransactions(domain.getDomainVO(), true, submitterEmail);
-            } else {
-                list = transactionService.createTransactions(domain.getDomainVO(), true);
-            }
+            PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+            List<TransactionVO> list = null;
+            list = transactionService.createTransactions(domain.getDomainVO(), true, submitterEmail, type, null);
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
             }
+
             return result;
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
@@ -268,10 +275,11 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain)
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain, boolean useRadicalChangesCheck)
         throws NoObjectFoundException, AccessDeniedException,SharedNameServersCollisionException,RadicalAlterationException {
         try {
-            TransactionActionsVO vo = detectorService.detectTransactionActions(modifiedDomain.getDomainVO());
+            PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+            TransactionActionsVO vo = detectorService.detectTransactionActions(modifiedDomain.getDomainVO(), type);
             return new TransactionActionsVOWrapper(vo);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);

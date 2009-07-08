@@ -53,6 +53,7 @@
     <orderEntry type="library" exported="" name="hibernate" level="project" />
     <orderEntry type="library" exported="" name="secureId" level="project" />
     <orderEntry type="library" exported="" name="jdom" level="project" />
+    <orderEntry type="module" module-name="common-objectdiff" exported="" />
     <orderEntry type="library" name="testng-5.5-jdk15" level="project" />
     <orderEntryProperties />
   </component>

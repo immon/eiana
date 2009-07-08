@@ -118,14 +118,14 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             })
     public abstract IComponent getPendingGlueMessage();
 
-
-
-    @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
-    public abstract IComponent getCountryNameComponent();
+//    @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
+//    public abstract IComponent getCountryNameComponent();
 
     @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domain.name"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
+    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+    public abstract IComponent getPendingRadicalChangesComponent();
 
     @InjectPage(UserContactEditor.PAGE_NAME)
     public abstract UserContactEditor getEditContactPage();
@@ -152,6 +152,11 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
+
+    @InitialValue("literal:false")
+    @Persist("client")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
 
     public abstract boolean isGlueMember();
     public abstract void setGlueMember(boolean value);
@@ -240,15 +245,16 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
 
     public ReviewDomainChanges saveEdit(long domainId) {
         try {
+            boolean useRadicalChangesCheck = !isDisplayRadicalChangesMessage();
             ReviewDomainChanges page = getReviewChangesPage();
             page.setDomainId(getDomainId());
             page.setCountryName(getCountry());
-            page.setTransactionChanges(getUserServices().getChanges(getDomain()));
+            page.setTransactionChanges(getUserServices().getChanges(getDomain(),useRadicalChangesCheck));
             return page;
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
+            setDisplayRadicalChangesMessage(true);
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }

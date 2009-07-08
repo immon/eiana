@@ -112,7 +112,7 @@ public abstract class ProtectedPage extends RzmPage implements PageValidateListe
         getVisitState().markAsVisited(domain);
         TransactionActionsVOWrapper transactionActionsVOWrapper = null;
         try {
-            transactionActionsVOWrapper = getRzmServices().getChanges(domain);
+            transactionActionsVOWrapper = getRzmServices().getChanges(domain, false);
             if (transactionActionsVOWrapper.getChanges().size() > 0) {
                 if (getVisitState().getModifiedDomain(domain.getId()) == null) {
                     getVisitState().storeDomain(domain);
