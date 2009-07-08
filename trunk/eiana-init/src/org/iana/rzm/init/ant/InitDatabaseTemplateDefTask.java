@@ -18,7 +18,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_CONFIRM", "TC_CONFIRM")));
         templateDef.setSubject("[IANA #{ticket}] Your confirmation requested to delegate {domainName} domain (%{token})");
         templateDef.setContent(
-                "Dear {name} ({title}),\n" +
+                "Dear {name} {title},\n" +
                 "\n" +
                 "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
                 "manager of the DNS root zone, has received a request to delegate\n" +
@@ -62,7 +62,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC_CONFIRM", "TC_CONFIRM")));
         templateDef.setSubject("[IANA #{ticket}] Your confirmation requested to alter {domainName} domain (%{token})");
         templateDef.setContent(
-                "Dear {name} ({title}),\n" +
+                "Dear {name} {title},\n" +
                 "\n" +
                 "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
                 "manager of the DNS root zone, has received a request to alter the\n" +

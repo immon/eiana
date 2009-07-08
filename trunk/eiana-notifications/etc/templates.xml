@@ -14,7 +14,7 @@
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Your confirmation requested to delegate {domainName} domain (%{token})</iana:subject>
 <iana:content>
-Dear {name} ({title}),
+Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to delegate
@@ -66,7 +66,7 @@ listed as a party to this request.
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
 <iana:content>
-Dear {name} ({title}),
+Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to alter the
