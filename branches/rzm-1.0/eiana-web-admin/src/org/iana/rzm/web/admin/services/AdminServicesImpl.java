@@ -4,7 +4,6 @@ import org.apache.log4j.*;
 import org.iana.codevalues.*;
 import org.iana.commons.*;
 import org.iana.criteria.*;
-import org.iana.dns.check.*;
 import org.iana.notifications.*;
 import org.iana.rzm.common.exceptions.*;
 import org.iana.rzm.facade.admin.domain.*;
@@ -105,10 +104,11 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain)
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain, boolean useRadicalChangesCheck)
         throws NoObjectFoundException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
-            TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO());
+            PerformTechnicalCheck check = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+            TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO(), check);
             return new TransactionActionsVOWrapper(vo);
         } catch (NoObjectFoundException e) {
             LOGGER.warn("NoObjectFoundException", e);
@@ -148,25 +148,29 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);
     }
 
-    public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain,
-                                                                          boolean splitNameServerChange,
-                                                                          RequestMetaParameters params)
-        throws
+    public List<TransactionVOWrapper>
+    createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params, boolean checkRadicalChanges)
+            throws
         AccessDeniedException,
         NoObjectFoundException,
         NoDomainModificationException,
         InvalidCountryCodeException,
-            DNSTechnicalCheckExceptionWrapper,
+        DNSTechnicalCheckExceptionWrapper,
         TransactionExistsException,
         NameServerChangeNotAllowedException,
         SharedNameServersCollisionException,
         RadicalAlterationException {
+
+
         try {
+
+            PerformTechnicalCheck check = checkRadicalChanges ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+
             List<TransactionVO> list =
                 transactionService.createTransactions(domain.getDomainVO(),
                                                       splitNameServerChange,
                                                       params.getEmail(),
-                                                      PerformTechnicalCheck.OFF,
+                                                      check,
                                                       params.getComment());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {

@@ -13,7 +13,7 @@ import org.iana.rzm.web.common.utils.*;
 
 import java.util.*;
 
-public abstract class DomainChangesConfirmation extends AdminPage implements PageBeginRenderListener {
+public abstract class DomainChangesConfirmation extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
     public static final String PAGE_NAME = "DomainChangesConfirmation" ;
 
@@ -45,6 +45,9 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     @Component(id = "form", type = "Form")
     public abstract IComponent getFormComponent();
 
+    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+    public abstract IComponent getPendingRadicalChangesComponent();
+
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
 
@@ -60,19 +63,24 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     public abstract void setActionList(List<ActionVOWrapper> list);
 
     @Persist("client")
-    public abstract PageEditorListener<DomainVOWrapper> getEditor();
-    public abstract void setEditor(PageEditorListener<DomainVOWrapper> editor);
+    public abstract PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> getEditor();
+    public abstract void setEditor(PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> editor);
 
     @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
 
     @Persist("client")
+    public abstract String getBorderHeader();
+    public abstract void setBorderHeader(String header);
+
+    @InitialValue("literal:false")
+    @Persist("client")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
+
     public abstract String getCountryName();
     public abstract void setCountryName(String name);
 
-    @Persist("client")
-    public abstract String getBorderHeader();
-    public abstract void setBorderHeader(String header);
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
@@ -106,7 +114,7 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
         setCountryName(getAdminServices().getCountryName(currentDomain.getName()));
         try {
             if (getActionList() == null) {
-                TransactionActionsVOWrapper transactionActions = getAdminServices().getChanges(currentDomain);
+                TransactionActionsVOWrapper transactionActions = getAdminServices().getChanges(currentDomain, false);
                 setActionList(transactionActions.getChanges());
             }
         } catch (NoObjectFoundException e) {
@@ -124,28 +132,39 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     protected Object[] getExternalParameters() {
         DomainVOWrapper domain = getModifiedDomain();
         if (domain != null) {
-            return new Object[]{getDomainId(), getActionList(), domain};
+            return new Object[]{getDomainId(), getActionList(), isDisplayRadicalChangesMessage(), domain};
         }
-        return new Object[]{getDomainId(), getActionList()};
+        return new Object[]{getDomainId(), getActionList(),isDisplayRadicalChangesMessage()};
+    }
+
+    @SuppressWarnings("unchecked")
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+
+        if (parameters.length < 3) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
+
+        setDomainId(Long.valueOf(parameters[0].toString()));
+        setActionList((List<ActionVOWrapper>) parameters[1]);
+        setDisplayRadicalChangesMessage(Boolean.valueOf(parameters[2].toString()));
+        try {
+            restoreCurrentDomain(getDomainId());
+            if (parameters.length > 3 && parameters[3] != null) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
+            }
+        } catch (NoObjectFoundException e) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
     }
 
 
     public void proceed() {
         try {
-            getEditor().saveEntity(this,getVisitState().getModifiedDomain(getDomainId()), getRequestCycle());
+            getEditor().saveEntity(this,getVisitState().getModifiedDomain(getDomainId()), getRequestCycle(), isDisplayRadicalChangesMessage());
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
-        } catch (NoDomainModificationException e) {
-            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
-        } catch (TransactionExistsException e) {
-            // todo: properly handle this exception in the UI
-        } catch (NameServerChangeNotAllowedException e) {
-            // todo: proper handling of this exception
-            setErrorMessage(getMessageUtil().getNameServerChangeNotAllowedErrorMessage());
-        } catch (SharedNameServersCollisionException e) {
-            e.printStackTrace();
-        } catch (RadicalAlterationException e) {
-            e.printStackTrace();
         }
     }
 

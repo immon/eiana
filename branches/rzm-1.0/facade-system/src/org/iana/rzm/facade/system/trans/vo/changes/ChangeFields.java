@@ -91,4 +91,5 @@ public interface ChangeFields {
 
     public static final String REGISTRY_URL = "registryUrl";
 
+    public static final String NAME_SERVERS = "nameServers";
 }

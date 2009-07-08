@@ -11,7 +11,7 @@ import java.util.*;
 
 public interface UserServices extends RzmServices {
 
-    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail)
+    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail, boolean useRadicalChangesCheck)
         throws
         NoObjectFoundException,
         NoDomainModificationException,
@@ -21,8 +21,15 @@ public interface UserServices extends RzmServices {
         SharedNameServersCollisionException,
         RadicalAlterationException;
 
-    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail)
-        throws NoObjectFoundException, NoDomainModificationException, TransactionExistsException, NameServerChangeNotAllowedException,SharedNameServersCollisionException,RadicalAlterationException;
+    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail, boolean useRadicalChangesCheck)
+        throws
+            NoObjectFoundException,
+            NoDomainModificationException,
+            TransactionExistsException,
+            NameServerChangeNotAllowedException,
+            SharedNameServersCollisionException,
+            DNSTechnicalCheckExceptionWrapper,
+            RadicalAlterationException;
 
     public List<UserDomain> getUserDomains();
 

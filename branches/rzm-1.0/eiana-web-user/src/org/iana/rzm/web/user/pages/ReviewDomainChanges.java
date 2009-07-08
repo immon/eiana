@@ -8,7 +8,6 @@ import org.iana.rzm.facade.auth.*;
 import org.iana.rzm.facade.common.*;
 import org.iana.rzm.facade.system.trans.*;
 import org.iana.rzm.facade.system.trans.DNSTechnicalCheckExceptionWrapper;
-import org.iana.rzm.web.common.*;
 import org.iana.rzm.web.common.changes.*;
 import org.iana.rzm.web.common.model.*;
 import org.iana.rzm.web.common.query.*;
@@ -86,6 +85,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Component(id = "isGlueChange", type = "If", bindings = {"condition=prop:glueChange", "element=literal:div"})
     public abstract IComponent getIsGlueChange();
 
+//    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+//    public abstract IComponent getPendingRadicalChangesComponent();
+
 
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
@@ -112,54 +114,48 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
 
     @Persist("client")
     public abstract void setTransactionChanges(TransactionActionsVOWrapper voWrapper);
-
     public abstract TransactionActionsVOWrapper getTransactionChanges();
 
     @Persist("client")
     @InitialValue("literal:false")
     public abstract void setSeparateRequest(boolean value);
-
     public abstract boolean isSeparateRequest();
 
     @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
-
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
     @Persist("client")
     @InitialValue("literal:false")
     public abstract void setMustSplitRequest(boolean value);
-
     public abstract boolean isMustSplitRequest();
 
     @InitialValue("literal:false")
     public abstract void setTransactionPending(boolean value);
-
     public abstract boolean isTransactionPending();
 
     @InitialValue("literal:false")
     public abstract void setImpactedPartyPending(boolean b);
-
     public abstract boolean isImpactedPartyPending();
+
+//    @InitialValue("literal:false")
+//    public abstract void setDisplayRadicalChangesMessage(boolean b);
+//    public abstract boolean isDisplayRadicalChangesMessage();
 
     public abstract ActionVOWrapper getAction();
 
     public abstract ChangeVOWrapper getChange();
 
-    public abstract String getDomainName();
-
     public abstract String getSubmitterEmail();
-
     public abstract void setSubmitterEmail(String email);
 
+    public abstract String getDomainName();
     public abstract void setDomainName(String domainName);
 
     public abstract void setCountryName(String name);
-
     public abstract String getCountryName();
 
     public abstract void setNameServerChange(boolean nameServerChange);
-
     public abstract boolean isNameServerChange();
 
     public List<ActionVOWrapper> getActionList() {
@@ -306,7 +302,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     private void returnSummaryPage() {
         try {
             DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
-            TransactionVOWrapper transaction = getUserServices().createTransaction(domain, getSubmitterEmail());
+            TransactionVOWrapper transaction = getUserServices().createTransaction(domain, getSubmitterEmail(), false);
             Summary summaryPage = getSummaryPage();
             summaryPage.setTikets(Arrays.asList(transaction));
             summaryPage.setDomainName(domain.getName());
@@ -316,7 +312,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             log(LOGGER, "No Object Found Exception", Level.WARN);
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
-            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
+            setErrorMessage(getMessageUtil().getNoDomainModificationMessage(e.getDomainName()));
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {

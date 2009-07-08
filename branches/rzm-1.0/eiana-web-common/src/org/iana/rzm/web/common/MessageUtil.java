@@ -234,4 +234,12 @@ public class MessageUtil implements Serializable {
     public String missingrequiredFieldMessage(String fieldName) {
         return "Please specify value for " + fieldName;
     }
+
+    public String getTransactionExistMessage(String domainName) {
+        return "Can't create a new request. There are requests pending for domain " + domainName ;
+    }
+
+    public String getNoDomainModificationMessage(String domainName) {
+        return "You are trying to submit a request to change domain " + domainName + " with no changes";
+    }
 }

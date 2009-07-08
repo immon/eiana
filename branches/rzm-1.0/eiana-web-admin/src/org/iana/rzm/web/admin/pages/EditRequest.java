@@ -140,13 +140,21 @@ public abstract class EditRequest extends AdminPage implements PageBeginRenderLi
 
     public void nextState(){
         try {
-            getAdminServices().moveTransactionNextState(getRequestId());
+            saveChangesAndMoveToNextState();
             setInfoMessage(getMessageUtil().getStateChangeOKMessage());
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (IllegalTransactionStateException e) {
             setErrorMessage(getMessageUtil().getStateChangeErrorMessage(e.getState()) );
+        } catch (RzmServerException e) {
+            setErrorMessage(e.getMessage());
         }
+    }
+
+    private void saveChangesAndMoveToNextState() throws RzmServerException, NoObjectFoundException, IllegalTransactionStateException {
+        TransactionVOWrapper transaction = getRequest();
+        getAdminServices().updateTransaction(transaction);//This needs to be done first to save changes before chnging state
+        getAdminServices().moveTransactionNextState(getRequestId());
     }
 
     public void chooseState(){

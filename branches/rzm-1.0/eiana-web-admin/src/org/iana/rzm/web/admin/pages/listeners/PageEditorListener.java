@@ -7,15 +7,8 @@ import org.iana.rzm.web.admin.pages.*;
 
 import java.io.*;
 
-public interface PageEditorListener<EntityT> extends Serializable {
+public interface PageEditorListener<EntityT, EntityY extends AdminPage> extends Serializable {
 
-    public void saveEntity(AdminPage adminPage, EntityT entityT, IRequestCycle cycle) throws
-                                                                 NoObjectFoundException,
-                                                                 NoDomainModificationException,
-                                                                 TransactionExistsException,
-                                                                 NameServerChangeNotAllowedException,
-                                                                 SharedNameServersCollisionException,
-                                                                 RadicalAlterationException;
-
+    public void saveEntity(EntityY adminPage, EntityT entityT, IRequestCycle cycle, boolean checkRadicalChanges)throws NoObjectFoundException;
     public void cancel(IRequestCycle requestCycle);
 }
