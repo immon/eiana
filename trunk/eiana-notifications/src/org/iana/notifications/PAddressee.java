@@ -69,10 +69,14 @@ public class PAddressee implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("\"");
 
-        if (getName() == null)
+        if (getName() == null) {
             sb.append("");
-        else
-            sb.append(getName().replaceAll("\"", ""));
+        } else {
+            String name = getName();
+            name = name.replaceAll("\"", "");
+            name = name.replaceAll("[\\s]+", " ");
+            sb.append(name);
+        }
 
         sb.append("\"");
         sb.append("<");
