@@ -30,7 +30,9 @@ public class USDOCConfirmationDataProducer extends DefaultTransactionDataProduce
 
         values.put("notes", notes);
         values.put("eppid", "" + dataSource.get("eppID"));
-        values.put("change", DomainChangePrinter.print(td.getDomainChange()));
+        values.put("ns-change", DomainChangePrinter.printNsChage(td.getDomainChange()));
+        values.put("db-change", DomainChangePrinter.printDbChange(td.getDomainChange()));
+
         values.put("retry", "" + td.getEPPRetries());
 
         return values;
