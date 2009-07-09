@@ -86,6 +86,7 @@ public abstract class RequestConfirmation extends UserPage implements PageBeginR
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
         if(parameters.length == 0){
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         String idAsString = parameters[0].toString();

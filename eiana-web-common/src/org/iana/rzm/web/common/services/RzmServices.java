@@ -35,7 +35,7 @@ public interface RzmServices extends Serializable {
 
     public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length, SortOrder sort);
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain)
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain, boolean useRadicalChangesCheck)
         throws NoObjectFoundException, AccessDeniedException,
                RadicalAlterationException, SharedNameServersCollisionException;
 

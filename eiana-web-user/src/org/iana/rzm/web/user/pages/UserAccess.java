@@ -1,11 +1,20 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.web.common.model.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.web.common.model.UserVOWrapper;
+import org.iana.rzm.web.common.model.ValueObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class UserAccess extends UserPage implements PageBeginRenderListener, IExternalPage {
     public static final String PAGE_NAME = "UserAccess";
@@ -67,6 +76,7 @@ public abstract class UserAccess extends UserPage implements PageBeginRenderList
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0 || parameters.length < 2) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         Long id = Long.parseLong(parameters[0].toString());

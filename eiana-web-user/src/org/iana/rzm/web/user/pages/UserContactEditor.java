@@ -111,6 +111,7 @@ public abstract class UserContactEditor extends UserPage implements PageBeginRen
 
         if(parameters.length == 0 || parameters.length < 3){
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         setContactAttributes((Map<String, String>) parameters[0]);

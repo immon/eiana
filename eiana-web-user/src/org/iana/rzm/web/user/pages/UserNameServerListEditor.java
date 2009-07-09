@@ -144,18 +144,18 @@ public abstract class UserNameServerListEditor extends UserPage implements PageB
         List<NameServerVOWrapper> vos = WebUtil.convertToVos(list);
         List<NameServerValue> nsv = WebUtil.buildNameServerList(oldList, vos);
 
-        boolean allChanged = true;
-        for (NameServerValue nameServerValue : nsv) {
-            if (nameServerValue.isNewOrModified() || nameServerValue.isDelete()) {
-                continue;
-            }
-            allChanged = false;
-        }
-
-        if (allChanged) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(domain.getName()));
-            return;
-        }
+//        boolean allChanged = true;
+//        for (NameServerValue nameServerValue : nsv) {
+//            if (nameServerValue.isNewOrModified() || nameServerValue.isDelete()) {
+//                continue;
+//            }
+//            allChanged = false;
+//        }
+//
+//        if (allChanged) {
+//            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(domain.getName()));
+//            return;
+//        }
 
         domain.updateNameServers(nameServers);
 

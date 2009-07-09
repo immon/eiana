@@ -79,7 +79,7 @@
         <invoke-factory>
             <construct class="org.iana.rzm.web.common.services.ExternalPageErrorHandlerImpl">
                 <set-object property="requestCycle" value="infrastructure:requestCycle"/>
-                <set-object property="pageName" value="AdminGeneralError"/>
+                <set property="pageName" value="GeneralError"/>
             </construct>
         </invoke-factory>
     </service-point>

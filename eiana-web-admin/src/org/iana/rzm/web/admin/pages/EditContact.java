@@ -85,6 +85,7 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
         if (parameters.length < 4) {
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
         Long domainId = (Long) parameters[0];
         setDomainId(domainId);
@@ -128,6 +129,23 @@ public abstract class EditContact extends AdminPage implements PageBeginRenderLi
     public void save(Map<String, String> attributes) {
         String type = getContactType();
         DomainChangeType changeType = DomainChangeType.fromString(type);
+
+        if(!changeType.equals(DomainChangeType.SO)){
+
+            if(!attributes.containsKey(ContactVOWrapper.NAME)){
+                setErrorMessage(getMessageUtil().missingrequiredFieldMessage("Contact Name"));
+            }
+
+            if(attributes.get(ContactVOWrapper.NAME) == null){
+                setErrorMessage(getMessageUtil().missingrequiredFieldMessage("Contact Name"));
+            }
+
+            if(isHasErrors()){
+                return;
+            }
+        }
+
+
         DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
         domain.updateContactAttributes(attributes, type);
 

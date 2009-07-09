@@ -4,10 +4,7 @@ import org.apache.tapestry.IComponent;
 import org.apache.tapestry.IExternalPage;
 import org.apache.tapestry.IPage;
 import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.annotations.Component;
-import org.apache.tapestry.annotations.InjectObject;
-import org.apache.tapestry.annotations.InjectPage;
-import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.annotations.*;
 import org.apache.tapestry.callback.ICallback;
 import org.apache.tapestry.callback.PageCallback;
 import org.apache.tapestry.engine.state.ApplicationStateManager;
@@ -29,96 +26,99 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class  DomainView extends AdminPage implements PageBeginRenderListener, IExternalPage {
+public abstract class DomainView extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
     public static final String PAGE_NAME = "DomainView";
 
     @Component(id = "domainHeader", type = "rzmLib:DomainHeader",
-               bindings = {"countryName=prop:countryName", "domainName=prop:domain.name"})
+            bindings = {"countryName=prop:countryName", "domainName=prop:domain.name"})
     public abstract IComponent getDomainHeaderComponentComponent();
 
     @Component(id = "pendingRequests", type = "If", bindings = {"condition=prop:requestPending"})
     public abstract IComponent getPendingRequestsComponent();
 
     @Component(id = "pendingRequestsMessage", type = "rzmLib:ShowPendingRequestsMessage",
-               bindings = {"listener=listener:viewPendingRequests", "pendigRequestMessage=literal:There is Request Pending for this domain."}
+            bindings = {"listener=listener:viewPendingRequests", "pendigRequestMessage=literal:There is Request Pending for this domain."}
     )
     public abstract IComponent getPendingRequestsMessageComponent();
 
     @Component(id = "overview", type = "DirectLink", bindings = {"listener=listener:back",
-        "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
+            "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"})
     public abstract IComponent getHomeLinkComponent();
 
 
     @Component(id = "subDomain", type = "rzmLib:SubDomain", bindings = {
-        "registryUrl=prop:domain.registryUrl",
-        "originalRegistryUrl=prop:originalDomain.registryUrl",
-        "whoisServer=prop:domain.whoisServer",
-        "originalWhoisServer=prop:originalDomain.whoisServer",
-        "listener=listener:editSubDomain",
-        "editible=literal:true"
-        })
+            "registryUrl=prop:domain.registryUrl",
+            "originalRegistryUrl=prop:originalDomain.registryUrl",
+            "whoisServer=prop:domain.whoisServer",
+            "originalWhoisServer=prop:originalDomain.whoisServer",
+            "listener=listener:editSubDomain",
+            "editible=literal:true"
+            })
     public abstract IComponent getSubDomainComponent();
 
     @Component(id = "so", type = "DomainContactEditor",
-               bindings = {
-                   "contactType=literal:Sponsoring Organization",
-                   "domainId=prop:domainId",
-                   "originalContact=prop:soOriginalContact",
-                   "contact=prop:soContact",
-                   "contactListener=listener:editContact"
-                   }
+            bindings = {
+                    "contactType=literal:Sponsoring Organization",
+                    "domainId=prop:domainId",
+                    "originalContact=prop:soOriginalContact",
+                    "contact=prop:soContact",
+                    "contactListener=listener:editContact"
+                    }
     )
     public abstract IComponent getSoContactComponent();
 
     @Component(id = "ac", type = "DomainContactEditor",
-               bindings = {
-                   "contactType=literal:Administrative",
-                   "domainId=prop:domainId",
-                   "originalContact=prop:acOriginalContact",
-                   "contact=prop:acContact",
-                   "contactListener=listener:editContact"
-                   }
+            bindings = {
+                    "contactType=literal:Administrative",
+                    "domainId=prop:domainId",
+                    "originalContact=prop:acOriginalContact",
+                    "contact=prop:acContact",
+                    "contactListener=listener:editContact"
+                    }
     )
     public abstract IComponent getAcContactComponent();
 
     @Component(id = "tc", type = "DomainContactEditor",
-               bindings = {
-                   "contactType=literal:Technical",
-                   "domainId=prop:domainId",
-                   "originalContact=prop:tcOriginalContact",
-                   "contact=prop:tcContact",
-                   "contactListener=listener:editContact"
-                   }
+            bindings = {
+                    "contactType=literal:Technical",
+                    "domainId=prop:domainId",
+                    "originalContact=prop:tcOriginalContact",
+                    "contact=prop:tcContact",
+                    "contactListener=listener:editContact"
+                    }
     )
     public abstract IComponent getTcContactComponent();
 
     @Component(id = "listNameServers", type = "rzmLib:ListNameServers", bindings = {
-        "nameServers=prop:nameServers",
-        "domainId=prop:domain.id",
-        "listener=listener:editNameServerList",
-        "editible=literal:true"
-        })
+            "nameServers=prop:nameServers",
+            "domainId=prop:domain.id",
+            "listener=listener:editNameServerList",
+            "editible=literal:true"
+            })
     public abstract IComponent getListNameServerComponent();
 
     @Component(id = "isModified", type = "If", bindings = {
-        "condition=prop:modified"
-        })
+            "condition=prop:modified"
+            })
     public abstract IComponent getIsModifiedComponent();
 
     @Component(id = "cancelEdit", type = "DirectLink", bindings = {
-        "listener=listener:cancelEdit",
-        "parameters=prop:domainId",
-        "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"
-        })
+            "listener=listener:cancelEdit",
+            "parameters=prop:domainId",
+            "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"
+            })
     public abstract IComponent getCancelEditComponent();
 
     @Component(id = "completeEdit", type = "DirectLink", bindings = {
-        "listener=listener:saveEdit",
-        "parameters=prop:domainId",
-        "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"
-        })
+            "listener=listener:saveEdit",
+            "parameters=prop:domainId",
+            "renderer=ognl:@org.iana.web.tapestry.form.FormLinkRenderer@RENDERER"
+            })
     public abstract IComponent getSaveEditComponent();
+
+    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+    public abstract IComponent getPendingRadicalChangesComponent();
 
     @InjectObject("infrastructure:applicationStateManager")
     public abstract ApplicationStateManager getApplicationStateManager();
@@ -165,36 +165,42 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     public abstract void setRequestMetaParameters(RequestMetaParameters metaParameters);
     public abstract RequestMetaParameters getRequestMetaParameters();
 
+    @InitialValue("literal:false")
+    @Persist("client")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
+
     public DomainVOWrapper getDomain() {
         return getVisitState().getCurrentDomain(getDomainId());
     }
 
     protected Object[] getExternalParameters() {
         if (getModifiedDomain() != null) {
-            return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), getModifiedDomain()};
+            return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(),isDisplayRadicalChangesMessage(),  getModifiedDomain()};
         }
-        return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters()};
+        return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), isDisplayRadicalChangesMessage()};
     }
 
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
-        if (parameters.length < 2) {
+        if (parameters.length < 4) {
             getExternalPageErrorHandler().handleExternalPageError(
-                getMessageUtil().getSessionRestorefailedMessage());
+                    getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         Long id = (Long) parameters[0];
         setDomainId(id);
         setCallback((ICallback) parameters[1]);
         setRequestMetaParameters((RequestMetaParameters) parameters[2]);
-
+        setDisplayRadicalChangesMessage(Boolean.valueOf(parameters[3].toString()));
 
         try {
-            if (parameters.length == 4) {
-                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
+            if (parameters.length == 5) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[4]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
-                getMessageUtil().getSessionRestorefailedMessage());
+                    getMessageUtil().getSessionRestorefailedMessage());
         }
 
         getVisitState().setRequestMetaParameters(getRequestMetaParameters());
@@ -258,14 +264,14 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         page.setContactAttributes(contact.getMap());
         page.setDomainId(domain.getId());
         page.setContactType(type);
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(),getLogedInUserId()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(), getLogedInUserId()));
         getRequestCycle().activate(page);
     }
 
     public void editNameServerList() {
         EditNameServerList page = getEditNameServerList();
         page.setDomainId(getDomainId());
-        page.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(),getLogedInUserId()));
+        page.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(), getLogedInUserId()));
         getRequestCycle().activate(page);
     }
 
@@ -276,12 +282,12 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
         editSubDomain.setOriginalWhoisServer(getOriginalDomain().getWhoisServer());
         editSubDomain.setRegistryUrl(getVisitState().getCurrentDomain(getDomainId()).getRegistryUrl());
         editSubDomain.setWhoisServer(getVisitState().getCurrentDomain(getDomainId()).getWhoisServer());
-        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(),getLogedInUserId()));
+        editSubDomain.setCallback(new RzmCallback(PAGE_NAME, true, getListenerParmeters(), getLogedInUserId()));
         getRequestCycle().activate(editSubDomain);
     }
 
     private Object[] getListenerParmeters() {
-         return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters()};
+        return new Object[]{getDomainId(), getCallback(), getRequestMetaParameters(), isDisplayRadicalChangesMessage()};
     }
 
     public void back() {
@@ -291,7 +297,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     public RequestsPerspective viewPendingRequests() {
         RequestsPerspective page = getRequestsPerspective();
         page.setEntityFetcher(new OpenTransactionForDomainsRetriver(Arrays.asList(getDomain().getName()),
-                                                                   getRzmServices()));
+                getRzmServices()));
         return page;
     }
 
@@ -311,7 +317,8 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     public void saveEdit() {
 
         try {
-           TransactionActionsVOWrapper  changes = getAdminServices().getChanges(getDomain());
+            boolean useRadicalChangesCheck = !isDisplayRadicalChangesMessage();
+            TransactionActionsVOWrapper changes = getAdminServices().getChanges(getDomain(),useRadicalChangesCheck );
             RzmCallback callback = new RzmCallback(PAGE_NAME, true, getExternalParameters(), getLogedInUserId());
             TransactionDomainEntityEditorListener editor = new TransactionDomainEntityEditorListener(getAdminServices(), changes, callback, getApplicationStateManager());
             editor.setMessageUtil(getMessageUtil());
@@ -319,11 +326,12 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             page.setEditor(editor);
             page.setDomainId(getDomainId());
             page.setBorderHeader("REQUESTS");
+            page.setDisplayRadicalChangesMessage(false);
             getRequestCycle().activate(page);
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomain().getName()));
+            setDisplayRadicalChangesMessage(true);
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }
@@ -335,7 +343,7 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
     }
 
 
-    private static class TransactionDomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
+    private static class TransactionDomainEntityEditorListener implements PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> {
 
         private AdminServices services;
         private TransactionActionsVOWrapper changes;
@@ -350,43 +358,46 @@ public abstract class  DomainView extends AdminPage implements PageBeginRenderLi
             this.manager = manager;
         }
 
-        public void saveEntity(AdminPage adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle)
-            throws
-            NoObjectFoundException,
-            NoDomainModificationException,
-            TransactionExistsException,
-            NameServerChangeNotAllowedException {
+        public void saveEntity(DomainChangesConfirmation adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle, boolean useRadicalChangeCheck)
+                throws NoObjectFoundException {
+            {
 
 
-            if (changes.offerSeparateRequest() || changes.mustSplitrequest()) {
-                RequestSplitConfirmation page =
-                    (RequestSplitConfirmation) cycle.getPage(RequestSplitConfirmation.PAGE_NAME);
-                page.setDomainId(domainVOWrapper.getId());
+                if (changes.offerSeparateRequest() || changes.mustSplitrequest()) {
+                    RequestSplitConfirmation page =
+                            (RequestSplitConfirmation) cycle.getPage(RequestSplitConfirmation.PAGE_NAME);
+                    page.setDomainId(domainVOWrapper.getId());
+                    page.setDomainName(domainVOWrapper.getName());
+                    page.setCallback(callback);
+                    page.setMustSplit(changes.mustSplitrequest());
+                    cycle.activate(page);
+                    return;
+                }
+
+                Summary page = (Summary) cycle.getPage(Summary.PAGE_NAME);
+                page.setCallback(new PageCallback(Home.PAGE_NAME));
                 page.setDomainName(domainVOWrapper.getName());
-                page.setCallback(callback);
-                page.setMustSplit(changes.mustSplitrequest());
-                cycle.activate(page);
-                return;
-            }
-
-            Summary page = (Summary) cycle.getPage(Summary.PAGE_NAME);
-            page.setCallback(new PageCallback(Home.PAGE_NAME));
-            page.setDomainName(domainVOWrapper.getName());
-            page.setDomainId(domainVOWrapper.getId());
-            boolean split = changes.mustSplitrequest();
-            List<TransactionVOWrapper> list = null;
-            Visit visit = (Visit) manager.get("visit");
-            try {
-                list = services.createDomainModificationTrunsaction(domainVOWrapper, split, visit.getRequestMetaParameters());
-                visit.markAsNotVisited(domainVOWrapper.getId());
-                page.setTikets(list);
-                cycle.activate(page);
-            } catch (DNSTechnicalCheckExceptionWrapper e) {
-                adminPage.setErrorMessage(e.getMessage());
-            } catch (SharedNameServersCollisionException e) {
-                adminPage.setErrorMessage(messageUtil.getSharedNameServersCollisionMessage(e.getNameServers()));
-            } catch (RadicalAlterationException e) {
-                adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(domainVOWrapper.getName()));
+                page.setDomainId(domainVOWrapper.getId());
+                boolean split = changes.mustSplitrequest();
+                Visit visit = (Visit) manager.get("visit");
+                try {
+                    List<TransactionVOWrapper> list = services.createDomainModificationTrunsaction(domainVOWrapper, split, visit.getRequestMetaParameters(), useRadicalChangeCheck);
+                    visit.markAsNotVisited(domainVOWrapper.getId());
+                    page.setTikets(list);
+                    cycle.activate(page);
+                } catch (DNSTechnicalCheckExceptionWrapper e) {
+                    adminPage.setErrorMessage(e.getMessage());
+                } catch (SharedNameServersCollisionException e) {
+                    adminPage.setErrorMessage(messageUtil.getSharedNameServersCollisionMessage(e.getNameServers()));
+                } catch (RadicalAlterationException e) {
+                    adminPage.setErrorMessage(messageUtil.getRadicalAlterationCheckMessage(e.getDomainName()));
+                } catch (NoDomainModificationException e) {
+                    adminPage.setErrorMessage(messageUtil.getNoDomainModificationMessage(e.getDomainName()));
+                } catch (NameServerChangeNotAllowedException e) {
+                    adminPage.setErrorMessage(messageUtil.getNameServerChangeNotAllowedErrorMessage());
+                } catch (TransactionExistsException e) {
+                    adminPage.setErrorMessage(messageUtil.getTransactionExistMessage(e.getDomainName()));
+                }
             }
         }
 

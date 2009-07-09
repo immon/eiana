@@ -79,6 +79,8 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
         })
     public abstract IComponent getPendingGlueMessage();
 
+//    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+//    public abstract IComponent getPendingRadicalChangesComponent();
 
     @InjectPage(Summary.PAGE_NAME)
     public abstract Summary getSummaryPage();
@@ -105,9 +107,6 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
-    public abstract void setDomainName(String name);
-    public abstract String getDomainName();
-
     @InitialValue("literal:false")
     @Persist("client")
     public abstract void setTransactionPending(boolean value);
@@ -117,6 +116,13 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
     @Persist("client")
     public abstract void setImpactedPartyPending(boolean b);
     public abstract boolean isImpactedPartyPending();
+
+    @InitialValue("literal:false")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
+
+    public abstract void setDomainName(String name);
+    public abstract String getDomainName();
 
     public abstract void setCountryName(String countryName);
 
@@ -145,13 +151,11 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
     protected Object[] getExternalParameters() {
         DomainVOWrapper domain = getModifiedDomain();
         if (domain != null) {
-            return new Object[]{getDomainId(),
-                getSplitRequest(),
-                isTransactionPending(),
-                isImpactedPartyPending(),
-                domain};
+            return new Object[]{
+                    getDomainId(), getSplitRequest(), isTransactionPending(), isImpactedPartyPending(), domain};
         }
-        return new Object[]{getDomainId(), getSplitRequest(), isTransactionPending(), isImpactedPartyPending()};
+        return new Object[]{getDomainId(),
+                getSplitRequest(), isTransactionPending(), isImpactedPartyPending()};
 
 
     }
@@ -159,39 +163,41 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0 || parameters.length < 4) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
+
         setDomainId((Long) parameters[0]);
         setSplitRequest((Integer) parameters[1]);
         setTransactionPending(Boolean.valueOf(parameters[2].toString()));
         setImpactedPartyPending(Boolean.valueOf(parameters[3].toString()));
+
         try {
             restoreCurrentDomain(getDomainId());
-            if (parameters.length == 4) {
-                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
+            if (parameters.length == 5 && parameters[4] != null) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[4]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError("Can not restore session");
             LOGGER.warn("NoObjectFoundException ", e);
         }
     }
-
+    
     public void proceed() {
         try {
             int splitRequest = getSplitRequest();
-            UserServices userServices = getUserServices();
-            DomainVOWrapper domain = getModifiedDomain();
-
-            List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
-            if (splitRequest == TWO_RQUEST || isMustSplit()) {
-                results.addAll(userServices.createTransactions(domain, getVisitState().getSubmitterEmail()));
-            } else {
-                results.add(userServices.createTransaction(domain, getVisitState().getSubmitterEmail()));
-            }
-            Summary page = getSummaryPage();
-            page.setTikets(results);
-            page.setDomainName(getDomainName());
-            getVisitState().markAsNotVisited(getDomainId());
-            getRequestCycle().activate(page);
+             UserServices userServices = getUserServices();
+             DomainVOWrapper domain = getModifiedDomain();
+             List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
+             if (splitRequest == TWO_RQUEST || isMustSplit()) {
+                 results.addAll(userServices.createTransactions(domain, getVisitState().getSubmitterEmail(),isDisplayRadicalChangesMessage()));
+             } else {
+                 results.add(userServices.createTransaction(domain, getVisitState().getSubmitterEmail(), isDisplayRadicalChangesMessage()));
+             }
+             Summary page = getSummaryPage();
+             page.setTikets(results);
+             page.setDomainName(getDomainName());
+             getVisitState().markAsNotVisited(getDomainId());
+             getRequestCycle().activate(page);
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
@@ -205,7 +211,7 @@ public abstract class SeparateRequest extends UserPage implements PageBeginRende
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getModifiedDomain().getName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         }
     }
 

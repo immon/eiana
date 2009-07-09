@@ -1,10 +1,17 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.iana.rzm.web.common.pages.*;
-import org.iana.rzm.web.common.services.*;
-import org.iana.rzm.web.tapestry.components.password.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectObject;
+import org.apache.tapestry.annotations.InjectPage;
+import org.iana.rzm.web.common.pages.BaseLogin;
+import org.iana.rzm.web.common.pages.RzmPage;
+import org.iana.rzm.web.common.services.ExternalPageErrorHandler;
+import org.iana.rzm.web.common.services.RzmAuthenticationService;
+import org.iana.rzm.web.tapestry.components.password.CreateNewPasswordEditor;
+import org.iana.rzm.web.tapestry.components.password.PasswordEditor;
 
 public abstract class CreateNewPassword extends RzmPage implements PasswordEditor, IExternalPage {
 
@@ -36,6 +43,7 @@ public abstract class CreateNewPassword extends RzmPage implements PasswordEdito
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters == null || parameters.length < 2) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         String userName = (String) parameters[0];

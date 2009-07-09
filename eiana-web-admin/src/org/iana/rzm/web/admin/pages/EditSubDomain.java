@@ -81,7 +81,9 @@ public abstract class EditSubDomain extends AdminPage implements SubDomainAttrib
         if(parameters.length < 4){
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
+        
         Long domainId = (Long) parameters[0];
         setDomainId(domainId);
         setWhoisServer((String) parameters[1]);

@@ -5,6 +5,7 @@ import org.apache.tapestry.IComponent;
 import org.apache.tapestry.IExternalPage;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InitialValue;
 import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.callback.ICallback;
@@ -126,13 +127,14 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
             })
     public abstract IComponent getPendingGlueMessage();
 
-
-
-    @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
-    public abstract IComponent getCountryNameComponent();
+//    @Component(id = "country", type = "Insert", bindings = {"value=prop:country"})
+//    public abstract IComponent getCountryNameComponent();
 
     @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:country", "domainName=prop:domain.name"})
     public abstract IComponent getDomainHeaderComponentComponent();
+
+    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+    public abstract IComponent getPendingRadicalChangesComponent();
 
 
     @InjectPage(UserContactEditor.PAGE_NAME)
@@ -161,6 +163,12 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     public abstract DomainVOWrapper getModifiedDomain();
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
+    @InitialValue("literal:false")
+    @Persist("client")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
+
+
     public abstract boolean isGlueMember();
     public abstract void setGlueMember(boolean value);
 
@@ -173,9 +181,9 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     protected Object[] getExternalParameters() {
         DomainVOWrapper modified = getModifiedDomain();
         if(modified != null){
-            return new Object[]{getDomainId(), modified};
+            return new Object[]{getDomainId(), isDisplayRadicalChangesMessage(), modified};
         }else{
-            return new Object[]{getDomainId()};
+            return new Object[]{getDomainId(), isDisplayRadicalChangesMessage()};
         }
     }
 
@@ -211,16 +219,18 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
     }
 
     public void activateExternalPage(Object[] params, IRequestCycle cycle) {
-        if (params.length == 0 || params.length < 1) {
+        if (params.length == 0 || params.length < 2) {
             getExternalPageErrorHandler().handleExternalPageError(
-                    getMessageUtil().getSessionRestorefailedMessage());
+                getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         Long domainId = (Long) params[0];
         setDomainId(domainId);
+        setDisplayRadicalChangesMessage(Boolean.valueOf(params[1].toString()));
         try {
-            if(params.length == 2){
-                restoreModifiedDomain((DomainVOWrapper) params[1]);
+            if(params.length == 3 && params[3] != null){
+                restoreModifiedDomain((DomainVOWrapper) params[2]);
             }
         } catch (NoObjectFoundException e) {
             getExternalPageErrorHandler().handleExternalPageError(
@@ -248,15 +258,17 @@ public abstract class ReviewDomain extends UserPage implements PageBeginRenderLi
 
     public ReviewDomainChanges saveEdit(long domainId) {
         try {
+            boolean useRadicalChangesCheck = !isDisplayRadicalChangesMessage();
             ReviewDomainChanges page = getReviewChangesPage();
             page.setDomainId(getDomainId());
             page.setCountryName(getCountry());
-            page.setTransactionChanges(getUserServices().getChanges(getDomain()));
+            page.setTransactionChanges(getUserServices().getChanges(getDomain(), useRadicalChangesCheck));
+            page.setDisplayRadicalChangesMessage(false);
             return page;
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomain().getName()));
+            setDisplayRadicalChangesMessage(true);
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         }

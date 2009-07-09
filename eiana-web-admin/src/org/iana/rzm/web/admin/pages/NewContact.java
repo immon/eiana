@@ -8,6 +8,7 @@ import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.callback.ICallback;
 import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.common.NoObjectFoundException;
 import org.iana.rzm.web.common.DomainChangeType;
 import org.iana.rzm.web.common.model.ContactVOWrapper;
 import org.iana.rzm.web.common.model.DomainVOWrapper;
@@ -59,22 +60,34 @@ public abstract class NewContact extends AdminPage implements ContactAttributesE
 
     protected Object[] getExternalParameters() {
         return new Object[]{
-            getContactType(), getContactAttributes(), getCallback(), getModifiedDomain()
+            getDomainId(), getContactType(), getContactAttributes(), getCallback(), getModifiedDomain()
         };
     }
 
     @SuppressWarnings("unchecked")
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
-        //try{
-        //if (parameters.length < 4) {
-        //    getExternalPageErrorHandler().handleExternalPageError(
-        //        getMessageUtil().getSessionRestorefailedMessage());
-        //}
-        //
-        //} catch (NoObjectFoundException e) {
-        //    getExternalPageErrorHandler().handleExternalPageError(
-        //        getMessageUtil().getSessionRestorefailedMessage());
-        //}
+        try{
+            if (parameters.length < 4) {
+                getExternalPageErrorHandler().handleExternalPageError(
+                    getMessageUtil().getSessionRestorefailedMessage());
+                return;
+            }
+
+            setDomainId(Long.parseLong(parameters[0].toString()));
+            setContactType(parameters[1].toString());
+            setContactAttributes((Map<String, String>) parameters[2]);
+            setCallback((ICallback) parameters[3]);
+            if(parameters.length == 5 && parameters[4] != null){
+                restoreCurrentDomain(getDomainId());
+                DomainVOWrapper o = (DomainVOWrapper) parameters[4];
+                if(getDomainId() == o.getId() ) {
+                    restoreModifiedDomain(o);
+                }
+            }
+        } catch (NoObjectFoundException e) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
     
     }
 

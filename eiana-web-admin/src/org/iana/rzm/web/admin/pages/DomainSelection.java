@@ -1,14 +1,19 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.commons.lang.*;
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.apache.tapestry.valid.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.callback.*;
-import org.iana.rzm.web.common.model.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.valid.IValidationDelegate;
+import org.apache.tapestry.valid.ValidationConstraint;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.RequestMetaParameters;
+import org.iana.rzm.web.common.callback.RzmCallback;
+import org.iana.rzm.web.common.model.DomainVOWrapper;
 
 public abstract class DomainSelection extends AdminPage implements IExternalPage {
 
@@ -58,6 +63,7 @@ public abstract class DomainSelection extends AdminPage implements IExternalPage
         if(parameters.length < 1 ){
             getExternalPageErrorHandler().handleExternalPageError(
                     getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         setCallback((ICallback) parameters[0]);

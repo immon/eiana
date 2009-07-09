@@ -1,17 +1,29 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.apache.tapestry.event.*;
-import org.iana.criteria.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.model.criteria.*;
-import org.iana.rzm.web.common.query.*;
-import org.iana.rzm.web.common.query.retriver.*;
-import org.iana.rzm.web.tapestry.components.list.*;
-import org.iana.rzm.web.user.services.*;
-import org.iana.web.tapestry.components.browser.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Bean;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.criteria.Criterion;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.model.criteria.SortOrder;
+import org.iana.rzm.web.common.query.PaginatedEntityQuery;
+import org.iana.rzm.web.common.query.QueryBuilderUtil;
+import org.iana.rzm.web.common.query.retriver.EntityRetriver;
+import org.iana.rzm.web.tapestry.components.list.ImpactedPartiesListRequest;
+import org.iana.rzm.web.tapestry.components.list.ListRequests;
+import org.iana.rzm.web.tapestry.components.list.SortFactory;
+import org.iana.rzm.web.user.services.UserServices;
+import org.iana.web.tapestry.components.browser.Browser;
+import org.iana.web.tapestry.components.browser.EntityQuery;
+import org.iana.web.tapestry.components.browser.PaginatedEntity;
+import org.iana.web.tapestry.components.browser.QueryException;
 
 
 public abstract class UserRequestsPerspective extends UserPage
@@ -88,6 +100,7 @@ public abstract class UserRequestsPerspective extends UserPage
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0 || parameters.length < 2) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         EntityRetriver entityRetriver = (EntityRetriver) parameters[0];

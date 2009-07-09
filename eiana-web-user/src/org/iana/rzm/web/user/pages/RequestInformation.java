@@ -1,8 +1,11 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
 
 
 public abstract class RequestInformation extends UserPage implements IExternalPage {
@@ -43,6 +46,7 @@ public abstract class RequestInformation extends UserPage implements IExternalPa
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
         if(parameters.length == 0){
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         setRequestId((Long)parameters[0]);

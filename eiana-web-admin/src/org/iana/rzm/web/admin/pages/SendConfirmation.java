@@ -1,16 +1,23 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.model.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.LinkTraget;
+import org.iana.rzm.web.common.RzmApplicationError;
+import org.iana.rzm.web.common.model.NotificationVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.List;
 
 public abstract class SendConfirmation extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
@@ -84,6 +91,7 @@ public abstract class SendConfirmation extends AdminPage implements PageBeginRen
         if(parameters.length == 0 || parameters[0] == null){
             getExternalPageErrorHandler().handleExternalPageError(
                     getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         Long requestId = (Long) parameters[0];

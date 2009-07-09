@@ -1,14 +1,18 @@
 package org.iana.rzm.web.admin.pages;
 
 import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.Bean;
 import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InitialValue;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.event.PageBeginRenderListener;
 import org.apache.tapestry.event.PageEvent;
 import org.iana.rzm.facade.auth.AccessDeniedException;
 import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.facade.system.trans.*;
+import org.iana.rzm.facade.system.trans.RadicalAlterationException;
+import org.iana.rzm.facade.system.trans.SharedNameServersCollisionException;
 import org.iana.rzm.web.admin.pages.listeners.PageEditorListener;
 import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
 import org.iana.rzm.web.common.model.ActionVOWrapper;
@@ -19,10 +23,9 @@ import org.iana.rzm.web.common.utils.CounterBean;
 
 import java.util.List;
 
-public abstract class DomainChangesConfirmation extends AdminPage implements PageBeginRenderListener {
+public abstract class DomainChangesConfirmation extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
     public static final String PAGE_NAME = "DomainChangesConfirmation" ;
-
 
     @Component(id = "domainHeader", type = "rzmLib:DomainHeader", bindings = {"countryName=prop:countryName", "domainName=prop:domainName"})
     public abstract IComponent getDomainHeaderComponentComponent();
@@ -51,6 +54,9 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     @Component(id = "form", type = "Form")
     public abstract IComponent getFormComponent();
 
+//    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+//    public abstract IComponent getPendingRadicalChangesComponent();
+
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
 
@@ -66,8 +72,8 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     public abstract void setActionList(List<ActionVOWrapper> list);
 
     @Persist("client")
-    public abstract PageEditorListener<DomainVOWrapper> getEditor();
-    public abstract void setEditor(PageEditorListener<DomainVOWrapper> editor);
+    public abstract PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> getEditor();
+    public abstract void setEditor(PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> editor);
 
     @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
@@ -79,6 +85,11 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     @Persist("client")
     public abstract String getBorderHeader();
     public abstract void setBorderHeader(String header);
+
+    @InitialValue("literal:false")
+    @Persist("client")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
 
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
@@ -112,7 +123,7 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
         setCountryName(getAdminServices().getCountryName(currentDomain.getName()));
         try {
             if (getActionList() == null) {
-                TransactionActionsVOWrapper transactionActions = getAdminServices().getChanges(currentDomain);
+                TransactionActionsVOWrapper transactionActions = getAdminServices().getChanges(currentDomain, false);
                 setActionList(transactionActions.getChanges());
             }
         } catch (NoObjectFoundException e) {
@@ -130,28 +141,41 @@ public abstract class DomainChangesConfirmation extends AdminPage implements Pag
     protected Object[] getExternalParameters() {
         DomainVOWrapper domain = getModifiedDomain();
         if (domain != null) {
-            return new Object[]{getDomainId(), getActionList(), domain};
+            return new Object[]{getDomainId(), getActionList(), isDisplayRadicalChangesMessage(), domain};
         }
-        return new Object[]{getDomainId(), getActionList()};
+        return new Object[]{getDomainId(), getActionList(),isDisplayRadicalChangesMessage()};
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
+
+        if (parameters.length < 3) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+            return;
+        }
+
+        setDomainId(Long.valueOf(parameters[0].toString()));
+        setActionList((List<ActionVOWrapper>) parameters[1]);
+        setDisplayRadicalChangesMessage(Boolean.valueOf(parameters[2].toString()));
+        try {
+            restoreCurrentDomain(getDomainId());
+            if (parameters.length > 3 && parameters[3] != null) {
+                restoreModifiedDomain((DomainVOWrapper) parameters[3]);
+            }
+        } catch (NoObjectFoundException e) {
+            getExternalPageErrorHandler().handleExternalPageError(
+                getMessageUtil().getSessionRestorefailedMessage());
+        }
     }
 
 
     public void proceed() {
         try {
-            getEditor().saveEntity(this,getVisitState().getModifiedDomain(getDomainId()), getRequestCycle());
+            getEditor().saveEntity(this,getVisitState().getModifiedDomain(getDomainId()), getRequestCycle(), isDisplayRadicalChangesMessage());
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
-        } catch (NoDomainModificationException e) {
-            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
-        } catch (TransactionExistsException e) {
-            // todo: properly handle this exception in the UI
-        } catch (NameServerChangeNotAllowedException e) {
-            // todo: proper handling of this exception
-            setErrorMessage(getMessageUtil().getNameServerChangeNotAllowedErrorMessage());
-        } catch (SharedNameServersCollisionException e) {
-            e.printStackTrace();
-        } catch (RadicalAlterationException e) {
-            e.printStackTrace();
         }
     }
 
