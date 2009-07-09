@@ -4,6 +4,7 @@ import org.apache.tapestry.IComponent;
 import org.apache.tapestry.IExternalPage;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InitialValue;
 import org.apache.tapestry.annotations.InjectPage;
 import org.apache.tapestry.annotations.Persist;
 import org.apache.tapestry.callback.ICallback;
@@ -51,22 +52,22 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
     @Component(id = "proceed", type = "LinkSubmit", bindings = {"action=listener:proceed"})
     public abstract IComponent getLinkSubmitComponent();
 
+    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+    public abstract IComponent getPendingRadicalChangesComponent();
+
     @InjectPage(Summary.PAGE_NAME)
     public abstract Summary getRequestSummaryPage();
 
     @Persist("client")
     public abstract void setCallback(ICallback callback);
-
     public abstract ICallback getCallback();
 
     @Persist("client")
     public abstract void setDomainId(long domainId);
-
     public abstract long getDomainId();
 
     @Persist("client")
     public abstract void setSplitRequest(int value);
-
     public abstract int getSplitRequest();
 
     @Persist("client")
@@ -75,11 +76,13 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
 
     @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
-
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
-    public abstract void setDomainName(String name);
+    @InitialValue("literal:false")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
 
+    public abstract void setDomainName(String name);
     public abstract String getDomainName();
 
     public abstract void setCountryName(String countryName);
@@ -109,6 +112,7 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0 || parameters.length < 3) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
         setDomainId((Long) parameters[0]);
         setSplitRequest((Integer) parameters[1]);
@@ -130,9 +134,8 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
             AdminServices adminServices = getAdminServices();
             DomainVOWrapper domain = getModifiedDomain();
             boolean split = splitRequest == TWO_RQUEST;
-
             List<TransactionVOWrapper> results = new ArrayList<TransactionVOWrapper>();
-            results.addAll(adminServices.createDomainModificationTrunsaction(domain, split,  getVisitState().getRequestMetaParameters()));
+            results.addAll(adminServices.createDomainModificationTrunsaction(domain, split,  getVisitState().getRequestMetaParameters(), isDisplayRadicalChangesMessage()));
             Summary page = getRequestSummaryPage();
             page.setDomainId(domain.getId());
             page.setTikets(results);
@@ -144,16 +147,17 @@ public abstract class RequestSplitConfirmation extends AdminPage implements Page
         } catch (NoObjectFoundException e) {
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
-            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(e.getDomainName()));
+            setErrorMessage(getMessageUtil().getNoDomainModificationMessage(e.getDomainName()));
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
+            setErrorMessage(getMessageUtil().getTransactionExistMessage(e.getDomainName()));
         } catch (NameServerChangeNotAllowedException e) {
             setErrorMessage(getMessageUtil().getNameServerChangeNotAllowedErrorMessage());
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomainName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         }
     }
 

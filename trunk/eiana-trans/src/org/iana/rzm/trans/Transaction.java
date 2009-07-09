@@ -533,4 +533,8 @@ public class Transaction implements TrackedObject {
         return getData().requiresSpecialReview();
     }
 
+    public boolean isNewEPPStatus(EPPChangeStatus status){
+        EPPChangeStatus current = getEPPStatus();
+        return current == null || current != status;
+    }
 }

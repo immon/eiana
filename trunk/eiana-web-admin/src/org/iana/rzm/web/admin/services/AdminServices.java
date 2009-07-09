@@ -24,7 +24,7 @@ import java.util.Set;
 
 public interface AdminServices extends RzmServices, WhoisDataProducer, ZoneProducer {
 
-    List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params)
+    List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params, boolean useRadicalChangeCheck)
         throws
         AccessDeniedException,
         NoObjectFoundException,

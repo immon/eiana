@@ -107,7 +107,7 @@ public abstract class BaseExpiredPasswordChange extends RzmPage {
         if (getNewPassword().equals(getCurrentPassword())) {
             setErrorField((IFormComponent) getComponent("newPassword"), getMessageUtil().getPasswordTheSameMessage());
         } else if (!getNewPassword().equals(getConfirmNewPassword())) {
-            setErrorField((IFormComponent) getComponent("newPassword"), getMessageUtil().getPasswordMismatchMessage());
+            setErrorField((IFormComponent) getComponent("newPassword"), getMessageUtil().getPasswordMissmatchErrorMessage());
         }
     }
 

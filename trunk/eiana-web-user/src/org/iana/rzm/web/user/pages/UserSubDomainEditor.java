@@ -97,6 +97,7 @@ public abstract class UserSubDomainEditor extends UserPage
             if(parameters.length < 4){
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
+                return;
         }
         Long domainId = (Long) parameters[0];
         setDomainId(domainId);

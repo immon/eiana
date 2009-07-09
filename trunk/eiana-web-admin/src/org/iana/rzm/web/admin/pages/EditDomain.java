@@ -1,20 +1,29 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.apache.tapestry.engine.state.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.admin.pages.editors.*;
-import org.iana.rzm.web.admin.pages.listeners.*;
-import org.iana.rzm.web.admin.services.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.callback.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.query.retriver.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectObject;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.apache.tapestry.engine.state.ApplicationStateManager;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.admin.pages.editors.DomainAttributeEditor;
+import org.iana.rzm.web.admin.pages.listeners.PageEditorListener;
+import org.iana.rzm.web.admin.services.AdminServices;
+import org.iana.rzm.web.common.LinkTraget;
+import org.iana.rzm.web.common.Visit;
+import org.iana.rzm.web.common.callback.RzmCallback;
+import org.iana.rzm.web.common.model.ContactVOWrapper;
+import org.iana.rzm.web.common.model.DomainVOWrapper;
+import org.iana.rzm.web.common.model.SystemDomainVOWrapper;
+import org.iana.rzm.web.common.query.retriver.OpenTransactionForDomainsRetriver;
 
-import java.util.*;
+import java.util.Arrays;
 
 public abstract class EditDomain extends AdminPage implements DomainAttributeEditor, PageBeginRenderListener, LinkTraget, IExternalPage {
 
@@ -110,6 +119,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
         if (parameters == null || parameters.length == 0) {
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         Long domainId = (Long) parameters[0];
@@ -239,7 +249,7 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
         getVisitState().resetModifiedDomain(getDomainId());
     }
 
-    private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper> {
+    private static class DomainEntityEditorListener implements PageEditorListener<DomainVOWrapper, DomainChangesConfirmation> {
 
         private AdminServices services;
         private ICallback callback;
@@ -253,7 +263,8 @@ public abstract class EditDomain extends AdminPage implements DomainAttributeEdi
             this.stateManager = stateManager;
         }
 
-        public void saveEntity(AdminPage adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle) {
+        public void saveEntity(DomainChangesConfirmation adminPage, DomainVOWrapper domainVOWrapper, IRequestCycle cycle,
+                               boolean useRadicalChangeCheck) {
             services.updateDomain(domainVOWrapper);
             Visit visit = (Visit) stateManager.get("visit");
             visit.markAsNotVisited(domainVOWrapper.getId());

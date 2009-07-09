@@ -1,9 +1,12 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.callback.*;
-import org.iana.rzm.web.common.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.callback.ICallback;
+import org.iana.rzm.web.common.LinkTraget;
 
 public abstract class WithdrawRequest extends UserPage implements IExternalPage, LinkTraget {
 
@@ -33,6 +36,7 @@ public abstract class WithdrawRequest extends UserPage implements IExternalPage,
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
         setRequestId((Long) parameters[0]);
     }

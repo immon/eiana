@@ -1,15 +1,22 @@
 package org.iana.rzm.web.user.pages;
 
-import org.apache.log4j.*;
-import org.apache.tapestry.*;
+import org.apache.log4j.Logger;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.iana.rzm.web.common.*;
-import org.iana.rzm.web.common.changes.*;
-import org.iana.rzm.web.common.model.*;
-import org.iana.rzm.web.common.utils.*;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.iana.rzm.web.common.SummaryBean;
+import org.iana.rzm.web.common.changes.ChangeMessageBuilder;
+import org.iana.rzm.web.common.model.ActionVOWrapper;
+import org.iana.rzm.web.common.model.ChangeVOWrapper;
+import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
+import org.iana.rzm.web.common.utils.CounterBean;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Summary extends UserPage implements PageBeginRenderListener, IExternalPage {
 
@@ -105,6 +112,7 @@ public abstract class Summary extends UserPage implements PageBeginRenderListene
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle){
         if(parameters.length == 0 || parameters.length < 2){
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         setTikets((List<TransactionVOWrapper>) parameters[0]);

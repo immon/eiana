@@ -86,6 +86,7 @@ public abstract class EditNameServerList extends AdminPage implements PageBeginR
         if (parameters.length < 3) {
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
         Long domainId = (Long) parameters[0];
         setDomainId(domainId);

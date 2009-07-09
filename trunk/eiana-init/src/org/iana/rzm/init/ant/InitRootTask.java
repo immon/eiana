@@ -1,9 +1,6 @@
 package org.iana.rzm.init.ant;
 
 import org.hibernate.Session;
-import org.iana.config.Config;
-import org.iana.config.Parameter;
-import org.iana.config.impl.SingleParameter;
 import org.iana.rzm.domain.Domain;
 import org.iana.rzm.domain.DomainManager;
 import org.iana.rzm.init.ant.decorators.DomainDecorator;
@@ -42,34 +39,17 @@ public class InitRootTask extends HibernateTask {
 
 
     public void doExecute(Session session) throws Exception {
+
         UserManager userManager = (UserManager) SpringInitContext.getContext().getBean("userManager");
         RZMUser user = createUser("root", "Simon", "Raveh", "names&numbers", "simon.raveh@icann.org", new AdminRole(AdminRole.AdminType.ROOT));
         userManager.create(user);
-        user =
-                createUser("naelaAdmin",
-                        "Naela",
-                        "Sarras",
-                        "naelaAdmin",
-                        "naela.sarras@icann.org",
-                        new AdminRole(AdminRole.AdminType.IANA));
+        user = createUser("naelaAdmin", "Naela", "Sarras", "naelaAdmin", "naela.sarras@icann.org", new AdminRole(AdminRole.AdminType.IANA));
+        userManager.create(user);
+        user = createUser("doc", "doc", "doc", "doc", "iana.doc@gmail.com", new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
+        userManager.create(user);
+        user = createUser("verisign", "verisign", "verisign", "verisign", "iana.verisign@gmail.com", new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
         userManager.create(user);
 
-        user =
-                createUser("doc",
-                        "doc",
-                        "doc",
-                        "doc",
-                        "iana.doc@gmail.com",
-                        new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
-        userManager.create(user);
-        user =
-                createUser("verisign",
-                        "verisign",
-                        "verisign",
-                        "verisign",
-                        "iana.verisign@gmail.com",
-                        new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
-        userManager.create(user);
         DomainManager domainManager = (DomainManager) SpringInitContext.getContext().getBean("domainManager");
 
 
@@ -78,11 +58,9 @@ public class InitRootTask extends HibernateTask {
             domain.setEnableEmails(true);
             domainManager.create(domain);
         }
-        setupConfigParams(session);
     }
 
     private RZMUser createUser(String loginName, String firstName, String lastName, String password, String email, Role role) {
-
         RZMUser user = new RZMUser();
         user.setLoginName(loginName);
         user.setFirstName(firstName);
@@ -94,31 +72,6 @@ public class InitRootTask extends HibernateTask {
         return user;
     }
 
-    private void setupConfigParams(Session session) {
-        String subConfigName = "NotificationSenderBean.";
-        SingleParameter singleParam;
-        singleParam = new SingleParameter(subConfigName + "emailMailhost", "localhost");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-        singleParam = new SingleParameter(subConfigName + "emailMailer", "[RZM]");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-        singleParam = new SingleParameter(subConfigName + "emailFromAddress", "rzm@iana.org");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-
-        singleParam = new SingleParameter(subConfigName + "mailsmtpFrom", "rt-sender@rs.icann.org");
-        singleParam.setOwner(Config.DEFAULT_OWNER);
-        singleParam.setFromDate(System.currentTimeMillis());
-        singleParam.setToDate(System.currentTimeMillis() + Parameter.DAY);
-        session.save(singleParam);
-    }
 
 
     private Reader createReader(String filename) throws UnsupportedEncodingException {

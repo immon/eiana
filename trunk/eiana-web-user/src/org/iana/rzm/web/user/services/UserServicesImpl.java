@@ -59,7 +59,7 @@ public class UserServicesImpl implements UserServices {
     }
 
     public String getCountryName(String name) {
-        if(name == null){
+        if (name == null) {
             LOGGER.warn("Calling UserServicesImpl.getCountryName with  null");
             return "";
         }
@@ -133,10 +133,10 @@ public class UserServicesImpl implements UserServices {
     }
 
     public void changePassword(String username, String oldPassword, String newPassword, String confirmedNewPassword)
-        throws PasswordChangeException {
+            throws PasswordChangeException {
 
         try {
-            changePasswordService.changePassword(username,oldPassword, newPassword, confirmedNewPassword);
+            changePasswordService.changePassword(username, oldPassword, newPassword, confirmedNewPassword);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
@@ -174,10 +174,10 @@ public class UserServicesImpl implements UserServices {
                 for (RoleVO.Type role : roles) {
                     SystemRoleVOWrapper userRole = new SystemRoleVOWrapper(role);
                     Timestamp modified = vo.getModified() == null ? vo.getCreated() : vo.getModified();
-                    if(!once){
+                    if (!once) {
                         userDomains.add(new UserDomain(vo.getObjId(), vo.getName(), userRole.getTypeAsString(), modified));
                         once = true;
-                    }else{
+                    } else {
                         UserDomain userDomain = ListUtil.find(userDomains, new ListUtil.Predicate<UserDomain>() {
                             public boolean evaluate(UserDomain object) {
                                 return object.getDomainId() == vo.getObjId();
@@ -194,19 +194,20 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail)
-        throws
-        AccessDeniedException,
-        NoObjectFoundException,
-        NoDomainModificationException,
-        DNSTechnicalCheckExceptionWrapper,
-        TransactionExistsException,
-        NameServerChangeNotAllowedException,
-        SharedNameServersCollisionException,
-        RadicalAlterationException {
+    public TransactionVOWrapper createTransaction(DomainVOWrapper domainVOWrapper, String submmiterEmail, boolean useRadicalChangesCheck)
+            throws
+            AccessDeniedException,
+            NoObjectFoundException,
+            NoDomainModificationException,
+            DNSTechnicalCheckExceptionWrapper,
+            TransactionExistsException,
+            NameServerChangeNotAllowedException,
+            SharedNameServersCollisionException,
+            RadicalAlterationException {
 
         try {
-            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, PerformTechnicalCheck.ON, null);
+            PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+            List<TransactionVO> list = transactionService.createTransactions(domainVOWrapper.getDomainVO(), false, submmiterEmail, type, null);
             return new TransactionVOWrapper(list.get(0));
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
@@ -214,16 +215,21 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail)
-            throws AccessDeniedException, NoObjectFoundException, NoDomainModificationException, TransactionExistsException, NameServerChangeNotAllowedException,
-    SharedNameServersCollisionException,RadicalAlterationException{
-        try {
-            List<TransactionVO> list;
-            if (submitterEmail != null) {
-                list = transactionService.createTransactions(domain.getDomainVO(), true, submitterEmail);
-            } else {
-                list = transactionService.createTransactions(domain.getDomainVO(), true);
-            }
+    public List<TransactionVOWrapper> createTransactions(DomainVOWrapper domain, String submitterEmail, boolean useRadicalChangesCheck)
+            throws
+            AccessDeniedException,
+            NoObjectFoundException,
+            NoDomainModificationException,
+            TransactionExistsException,
+            NameServerChangeNotAllowedException,
+            SharedNameServersCollisionException,
+            RadicalAlterationException,
+            DNSTechnicalCheckExceptionWrapper {
+
+        try{
+            PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+            List<TransactionVO> list = null;
+            list = transactionService.createTransactions(domain.getDomainVO(), true, submitterEmail, type, null);
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
@@ -233,7 +239,6 @@ public class UserServicesImpl implements UserServices {
             LOGGER.warn("InfrastructureException", e);
             throw new RzmApplicationException(e);
         }
-
     }
 
     public TransactionVOWrapper getTransaction(long requestId) throws NoObjectFoundException, AccessDeniedException {
@@ -258,11 +263,11 @@ public class UserServicesImpl implements UserServices {
     public List<TransactionVOWrapper> getTransactions(Criterion criterion, int offset, int length, SortOrder sort) {
         List<TransactionVO> list = null;
         try {
-            if(sort != null && sort.isValid()){
+            if (sort != null && sort.isValid()) {
                 Order order = new Order(new RequestFieldNameResolver().resolve(sort.getFieldName()), sort.isAscending());
-                 list = transactionService.find(criterion, order, offset, length);
-            }else{
-                 list = transactionService.find(criterion,  offset, length);
+                list = transactionService.find(criterion, order, offset, length);
+            } else {
+                list = transactionService.find(criterion, offset, length);
             }
 
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
@@ -276,10 +281,11 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain)
-        throws NoObjectFoundException, AccessDeniedException,SharedNameServersCollisionException,RadicalAlterationException {
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper modifiedDomain, boolean useRadicalChangesCheck)
+            throws NoObjectFoundException, AccessDeniedException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
-            TransactionActionsVO vo = detectorService.detectTransactionActions(modifiedDomain.getDomainVO());
+            PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;            
+            TransactionActionsVO vo = detectorService.detectTransactionActions(modifiedDomain.getDomainVO(),type);
             return new TransactionActionsVOWrapper(vo);
         } catch (InfrastructureException e) {
             LOGGER.warn("InfrastructureException", e);
@@ -288,9 +294,9 @@ public class UserServicesImpl implements UserServices {
     }
 
     public void withdrawnTransaction(long requestId)
-        throws
-        NoObjectFoundException,
-        TransactionCannotBeWithdrawnException {
+            throws
+            NoObjectFoundException,
+            TransactionCannotBeWithdrawnException {
         try {
             transactionService.withdrawTransaction(requestId);
         } catch (InfrastructureException e) {

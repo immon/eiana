@@ -1,15 +1,15 @@
 package org.iana.rzm.trans.epp.info;
 
-import org.iana.rzm.trans.epp.EPPException;
-import org.iana.rzm.trans.epp.SimpleIdGenerator;
+import org.apache.log4j.Logger;
+import org.iana.epp.EPPClient;
+import org.iana.rzm.trans.Transaction;
 import org.iana.rzm.trans.TransactionException;
 import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.epp.EPPException;
+import org.iana.rzm.trans.epp.SimpleIdGenerator;
 import org.iana.rzm.trans.errors.ErrorHandler;
-import org.iana.epp.EPPClient;
-import org.iana.ticketing.TicketingService;
 import org.iana.ticketing.TicketingException;
-import org.apache.log4j.Logger;
+import org.iana.ticketing.TicketingService;
 
 /**
  * @author Piotr Tkaczyk
@@ -58,26 +58,49 @@ public class EPPChangeInfoProcessor implements EPPStatusQuery {
     }
 
     private void process(Transaction trans, EPPChangeStatus status) throws TransactionException {
-        try {
-            boolean updated = trans.updateEPPStatus(status);
-            if (updated) {
-                ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
-                if (status == EPPChangeStatus.complete) {
-                    trans.complete();
-                } else if (status == EPPChangeStatus.docApproved) {
-                    trans.usdocAccepted();
-                } else if (status == EPPChangeStatus.docRejected) {
-                    trans.usdocRejected();
-                } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
-                    trans.generated();
-                } else if (status.getOrderNumber() == -1) {
-                    String msg = "EPP exception status: " + status;
-                    trans.exception(msg);
-                }
+        boolean updated = trans.isNewEPPStatus(status);
+        if (updated) {
+            if (status == EPPChangeStatus.complete) {
+                trans.complete();
+            } else if (status == EPPChangeStatus.docApproved) {
+                trans.usdocAccepted();
+            } else if (status == EPPChangeStatus.docRejected) {
+                trans.usdocRejected();
+            } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
+                trans.generated();
+            } else if (status.getOrderNumber() == -1) {
+                String msg = "EPP exception status: " + status;
+                trans.exception(msg);
             }
-        } catch (TicketingException e) {
-            throw new TransactionException(e);
+
+            trans.updateEPPStatus(status);
+
+            try {
+                ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
+            } catch (TicketingException e) {
+                throw new TransactionException(e);
+            }
         }
+//        try {
+//            boolean updated = trans.updateEPPStatus(status);
+//            if (updated) {
+//                ticketingService.addComment(trans.getTicketID(), "EPP status: " + status);
+//                if (status == EPPChangeStatus.complete) {
+//                    trans.complete();
+//                } else if (status == EPPChangeStatus.docApproved) {
+//                    trans.usdocAccepted();
+//                } else if (status == EPPChangeStatus.docRejected) {
+//                    trans.usdocRejected();
+//                } else if (status.getOrderNumber() >= EPPChangeStatus.generated.getOrderNumber()) {
+//                    trans.generated();
+//                } else if (status.getOrderNumber() == -1) {
+//                    String msg = "EPP exception status: " + status;
+//                    trans.exception(msg);
+//                }
+//            }
+//        } catch (TicketingException e) {
+//            throw new TransactionException(e);
+//        }
     }
 
 

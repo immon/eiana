@@ -32,6 +32,7 @@ public abstract class WithdrawRequest extends AdminPage implements IExternalPage
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
         setRequestId((Long) parameters[0]);
     }

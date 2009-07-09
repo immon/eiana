@@ -1,14 +1,22 @@
 package org.iana.rzm.web.admin.pages;
 
-import org.apache.tapestry.*;
-import org.apache.tapestry.annotations.*;
-import org.apache.tapestry.event.*;
-import org.apache.tapestry.form.*;
-import org.iana.rzm.facade.admin.trans.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.web.common.model.*;
+import org.apache.tapestry.IComponent;
+import org.apache.tapestry.IExternalPage;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.annotations.Component;
+import org.apache.tapestry.annotations.InjectPage;
+import org.apache.tapestry.annotations.Persist;
+import org.apache.tapestry.event.PageBeginRenderListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.admin.trans.NoSuchStateException;
+import org.iana.rzm.facade.admin.trans.StateUnreachableException;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.web.common.model.TransactionStateVOWrapper;
+import org.iana.rzm.web.common.model.TransactionVOWrapper;
 
-import java.io.*;
+import java.io.Serializable;
 
 public abstract class EditTransactionState extends AdminPage implements PageBeginRenderListener, IExternalPage {
 
@@ -52,6 +60,7 @@ public abstract class EditTransactionState extends AdminPage implements PageBegi
     public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
         if (parameters.length == 0) {
             getExternalPageErrorHandler().handleExternalPageError(getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         setRequestId((Long) parameters[0]);

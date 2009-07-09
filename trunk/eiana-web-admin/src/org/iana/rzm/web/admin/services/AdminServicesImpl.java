@@ -121,10 +121,11 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain)
+    public TransactionActionsVOWrapper getChanges(DomainVOWrapper domain, boolean useRadicalChangesCheck)
             throws NoObjectFoundException, SharedNameServersCollisionException, RadicalAlterationException {
         try {
-            TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO());
+            PerformTechnicalCheck type = useRadicalChangesCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+            TransactionActionsVO vo = detectorService.detectTransactionActions(domain.getDomainVO(), type);
             return new TransactionActionsVOWrapper(vo);
         } catch (NoObjectFoundException e) {
             LOGGER.warn("NoObjectFoundException", e);
@@ -161,13 +162,12 @@ public class AdminServicesImpl implements AdminServices, Serializable {
     }
 
     public List<String> parseErrors(String technicalErrors) {
-        return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);       
+        return technicalErrorsXmlParser.getTechnicalCheckErrors(technicalErrors);
 
     }
 
-    public List<TransactionVOWrapper> createDomainModificationTrunsaction(DomainVOWrapper domain,
-                                                                          boolean splitNameServerChange,
-                                                                          RequestMetaParameters params)
+    public List<TransactionVOWrapper> createDomainModificationTrunsaction(
+            DomainVOWrapper domain, boolean splitNameServerChange, RequestMetaParameters params, boolean useRadicalChangeCheck)
             throws
             AccessDeniedException,
             NoObjectFoundException,
@@ -178,14 +178,17 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             NameServerChangeNotAllowedException,
             SharedNameServersCollisionException,
             RadicalAlterationException {
-        try {
+
+             try {
+
+            PerformTechnicalCheck check = useRadicalChangeCheck ? PerformTechnicalCheck.ON : PerformTechnicalCheck.ON_NO_RADICAL_ALTERATION;
+
             List<TransactionVO> list =
-                    transactionService.createTransactions(domain.getDomainVO(),
-                            splitNameServerChange,
-                            params.getEmail(),
-                            PerformTechnicalCheck.OFF,
-                            params.getComment());
-            
+                transactionService.createTransactions(domain.getDomainVO(),
+                                                      splitNameServerChange,
+                                                      params.getEmail(),
+                                                      check,
+                                                      params.getComment());
             List<TransactionVOWrapper> result = new ArrayList<TransactionVOWrapper>();
             for (TransactionVO transactionVO : list) {
                 result.add(new TransactionVOWrapper(transactionVO));
@@ -193,7 +196,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
             return result;
         } catch (InfrastructureException e) {
             throw new RzmApplicationException(e);
-        }        
+        }
     }
 
     public void updateTransaction(TransactionVOWrapper transaction) throws RzmServerException {
@@ -320,7 +323,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public VersignConfigVOWrpper getVerisignConfigSettings(){
+    public VersignConfigVOWrpper getVerisignConfigSettings() {
         try {
             return new VersignConfigVOWrpper(configManager.getVerisignOrgConfig());
         } catch (InfrastructureException e) {
@@ -329,7 +332,7 @@ public class AdminServicesImpl implements AdminServices, Serializable {
         }
     }
 
-    public USDoCConfigVOWrapper getDoCConfigSettings(){
+    public USDoCConfigVOWrapper getDoCConfigSettings() {
         try {
             return new USDoCConfigVOWrapper(configManager.getUSDoCOrgConfig());
         } catch (InfrastructureException e) {

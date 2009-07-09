@@ -90,6 +90,9 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Component(id = "isGlueChange", type = "If", bindings = {"condition=prop:glueChange", "element=literal:div"})
     public abstract IComponent getIsGlueChange();
 
+//    @Component(id="pendingRadicalChanges", type="If", bindings = {"condition=prop:displayRadicalChangesMessage"})
+//    public abstract IComponent getPendingRadicalChangesComponent();
+
 
     @Bean(ChangeMessageBuilder.class)
     public abstract ChangeMessageBuilder getMessageBuilder();
@@ -120,12 +123,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @Persist("client")
     @InitialValue("literal:false")
     public abstract void setSeparateRequest(boolean value);
-
     public abstract boolean isSeparateRequest();
 
     @Persist("client")
     public abstract DomainVOWrapper getModifiedDomain();
-
     public abstract void setModifiedDomain(DomainVOWrapper domain);
 
     @Persist("client")
@@ -140,6 +141,10 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     @InitialValue("literal:false")
     public abstract void setImpactedPartyPending(boolean b);
     public abstract boolean isImpactedPartyPending();
+
+    @InitialValue("literal:false")
+    public abstract void setDisplayRadicalChangesMessage(boolean b);
+    public abstract boolean isDisplayRadicalChangesMessage();
 
     public abstract ActionVOWrapper getAction();
 
@@ -254,6 +259,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         if (parameters.length == 0 || parameters.length < 5) {
             getExternalPageErrorHandler().handleExternalPageError(
                 getMessageUtil().getSessionRestorefailedMessage());
+            return;
         }
 
         Long domainId = (Long) parameters[0];
@@ -301,7 +307,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
     private void returnSummaryPage() {
         try {
             DomainVOWrapper domain = getVisitState().getCurrentDomain(getDomainId());
-            TransactionVOWrapper transaction = getUserServices().createTransaction(domain, getSubmitterEmail());
+            TransactionVOWrapper transaction = getUserServices().createTransaction(domain, getSubmitterEmail(), isDisplayRadicalChangesMessage());
             Summary summaryPage = getSummaryPage();
             summaryPage.setTikets(Arrays.asList(transaction));
             summaryPage.setDomainName(domain.getName());
@@ -311,7 +317,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
             log(LOGGER, "No Object Found Exception", Level.WARN);
             getObjectNotFoundHandler().handleObjectNotFound(e, GeneralError.PAGE_NAME);
         } catch (NoDomainModificationException e) {
-            setErrorMessage(getMessageUtil().getDomainModificationErrorMessage(getDomainName()));
+            setErrorMessage(getMessageUtil().getNoDomainModificationMessage(getDomainName()));
         } catch (DNSTechnicalCheckExceptionWrapper e) {
             setErrorMessage(e.getMessage());
         } catch (TransactionExistsException e) {
@@ -321,7 +327,7 @@ public abstract class ReviewDomainChanges extends UserPage implements PageBeginR
         } catch (SharedNameServersCollisionException e) {
             setErrorMessage(getMessageUtil().getSharedNameServersCollisionMessage(e.getNameServers()));
         } catch (RadicalAlterationException e) {
-            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(getDomainName()));
+            setErrorMessage(getMessageUtil().getRadicalAlterationCheckMessage(e.getDomainName()));
         }
     }
 
