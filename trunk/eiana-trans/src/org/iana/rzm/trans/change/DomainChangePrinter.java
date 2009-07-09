@@ -13,171 +13,195 @@ import java.util.Map;
  * @author Jakub Laszkiewicz
  */
 public class DomainChangePrinter {
-    private static Map<String, String> values = new HashMap<String, String>();
+    private static Map<String, String> dbValues = new HashMap<String, String>();
+    private static Map<String, String> nsValues = new HashMap<String, String>();
+    private static Map<String, String> allValues = new HashMap<String, String>();
 
     static {
-        values.put("supportingOrg.name", "Name: ");
+        dbValues.put("supportingOrg.name", "Name: ");
 
-        values.put("supportingOrg.jobTitle", "Job Title: ");
+        dbValues.put("supportingOrg.jobTitle", "Job Title: ");
 
-        values.put("supportingOrg.organization", "Organization: ");
+        dbValues.put("supportingOrg.organization", "Organization: ");
 
-        values.put("supportingOrg.address.textAddress", "Address: ");
+        dbValues.put("supportingOrg.address.textAddress", "Address: ");
 
-        values.put("supportingOrg.address.countryCode", "Country code: ");
+        dbValues.put("supportingOrg.address.countryCode", "Country code: ");
 
-        values.put("supportingOrg.phoneNumber", "Phone Number: ");
+        dbValues.put("supportingOrg.phoneNumber", "Phone Number: ");
 
-        values.put("supportingOrg.altPhoneNumber", "Alternative Phone Number: ");
+        dbValues.put("supportingOrg.altPhoneNumber", "Alternative Phone Number: ");
 
-        values.put("supportingOrg.faxNumber", "Fax Number: ");
+        dbValues.put("supportingOrg.faxNumber", "Fax Number: ");
 
-        values.put("supportingOrg.altFaxNumber", "Alternative Fax Number");
+        dbValues.put("supportingOrg.altFaxNumber", "Alternative Fax Number");
 
-        values.put("supportingOrg.email", "Public Email: ");
+        dbValues.put("supportingOrg.email", "Public Email: ");
 
-        values.put("supportingOrg.privateEmail", "Private Email: ");
+        dbValues.put("supportingOrg.privateEmail", "Private Email: ");
 
-        values.put("supportingOrg.role", "Role: ");
+        dbValues.put("supportingOrg.role", "Role: ");
 
-        values.put("adminContact.name", "Name: ");
+        dbValues.put("adminContact.name", "Name: ");
 
-        values.put("adminContact.jobTitle", "Job Title: ");
+        dbValues.put("adminContact.jobTitle", "Job Title: ");
 
-        values.put("adminContact.organization", "Organization: ");
+        dbValues.put("adminContact.organization", "Organization: ");
 
-        values.put("adminContact.address.textAddress", "Address: ");
+        dbValues.put("adminContact.address.textAddress", "Address: ");
 
-        values.put("adminContact.address.countryCode", "Country Code: ");
+        dbValues.put("adminContact.address.countryCode", "Country Code: ");
 
-        values.put("adminContact.phoneNumber", "Phone Number: ");
+        dbValues.put("adminContact.phoneNumber", "Phone Number: ");
 
-        values.put("adminContact.altPhoneNumber", "Alternative Phone Number: ");
+        dbValues.put("adminContact.altPhoneNumber", "Alternative Phone Number: ");
 
-        values.put("adminContact.faxNumber", "Fax Number: ");
+        dbValues.put("adminContact.faxNumber", "Fax Number: ");
 
-        values.put("adminContact.altFaxNumber", "Alternative Fax Number: ");
+        dbValues.put("adminContact.altFaxNumber", "Alternative Fax Number: ");
 
-        values.put("adminContact.email", "Public Email: ");
+        dbValues.put("adminContact.email", "Public Email: ");
 
-        values.put("adminContact.privateEmail", "Private Email: ");
+        dbValues.put("adminContact.privateEmail", "Private Email: ");
 
-        values.put("adminContact.role", "Role: ");
+        dbValues.put("adminContact.role", "Role: ");
 
-        values.put("techContact.name", "Name: ");
+        dbValues.put("techContact.name", "Name: ");
 
-        values.put("techContact.jobTitle", "Job Title: ");
+        dbValues.put("techContact.jobTitle", "Job Title: ");
 
-        values.put("techContact.organization", "Organization: ");
+        dbValues.put("techContact.organization", "Organization: ");
 
-        values.put("techContact.address.textAddress", "Address: ");
+        dbValues.put("techContact.address.textAddress", "Address: ");
 
-        values.put("techContact.address.countryCode", "Country Code: ");
+        dbValues.put("techContact.address.countryCode", "Country Code: ");
 
-        values.put("techContact.phoneNumber", "Phone Number: ");
+        dbValues.put("techContact.phoneNumber", "Phone Number: ");
 
-        values.put("techContact.altPhoneNumber", "Alternative Phone Number: ");
+        dbValues.put("techContact.altPhoneNumber", "Alternative Phone Number: ");
 
-        values.put("techContact.faxNumber", "Fax Number: ");
+        dbValues.put("techContact.faxNumber", "Fax Number: ");
 
-        values.put("techContact.altFaxNumber", "Alternative Fax Number: ");
+        dbValues.put("techContact.altFaxNumber", "Alternative Fax Number: ");
 
-        values.put("techContact.email", "Public Email: ");
+        dbValues.put("techContact.email", "Public Email: ");
 
-        values.put("techContact.privateEmail", "Private Email: ");
+        dbValues.put("techContact.privateEmail", "Private Email: ");
 
-        values.put("techContact.role", "Role: ");
+        dbValues.put("techContact.role", "Role: ");
 
-        values.put("nameServers.name", "Name: ");
+        dbValues.put("whoisServer", "WHOIS Server: ");
 
-        values.put("nameServers.addresses.address", "IP address: ");
+        dbValues.put("registryUrl", "Registry URL: ");
 
-        values.put("nameServers.addresses.type", "Type: ");
+        dbValues.put("adminContact", "Administrative Contact");
+        dbValues.put("techContact", "Technical Contact");
+        dbValues.put("supportingOrg", "Sponsoring Organization");
 
-        values.put("whoisServer", "WHOIS Server: ");
+        dbValues.put("adminContact.address", "Address");
+        dbValues.put("techContact.address", "Address");
+        dbValues.put("supportingOrg.address", "Address");
 
-        values.put("registryUrl", "Registry URL: ");
 
-        values.put("adminContact", "Administrative Contact");
-        values.put("techContact", "Technical Contact");
-        values.put("supportingOrg", "Sponsoring Organization");
 
-        values.put("adminContact.address", "Address");
-        values.put("techContact.address", "Address");
-        values.put("supportingOrg.address", "Address");
+        nsValues.put("nameServers.name", "Name: ");
+        nsValues.put("nameServers.addresses.address", "IP address: ");
 
-        values.put("nameServers", "Name Server");
-        values.put("nameServers.addresses", "IP Addresses");
+        nsValues.put("nameServers.addresses.type", "Type: ");
 
+        nsValues.put("nameServers", "Name Server");
+        nsValues.put("nameServers.addresses", "IP Addresses");
+
+        allValues.putAll(dbValues);
+        allValues.putAll(nsValues);
     }
 
     public static String print(ObjectChange domainChange) {
+        return print(domainChange, allValues);
+    }
+
+    public static String printNsChage(ObjectChange domainChange) {
+        return print(domainChange, nsValues);
+    }
+
+    public static String printDbChange(ObjectChange domainChange) {
+        return print(domainChange, dbValues);
+    }
+
+    private static String print(ObjectChange domainChange, Map<String, String> values ) {
         StringBuffer buffer = new StringBuffer();
         Map<String, Change> changes = domainChange.getFieldChanges();
-        buffer.append(printChangeMap(changes, null));
+        buffer.append(printChangeMap(changes, null, values));
         return buffer.toString();
     }
 
-    private static String printChangeMap(Map<String, Change> changes, String prefix) {
+
+    private static String printChangeMap(Map<String, Change> changes, String prefix, Map<String, String> values) {
         StringBuffer buffer = new StringBuffer();
         prefix = prefix == null ? "" : prefix + ".";
         for (String key : changes.keySet()) {
             Change change = changes.get(key);
-            buffer.append(printChange(change, prefix + key));
+            buffer.append(printChange(change, prefix + key, values));
         }
         return buffer.toString();
     }
 
-    private static String printChange(Change change, String key) {
+    private static String printChange(Change change, String key, Map<String, String> values) {
         StringBuffer buffer = new StringBuffer();
         if (change instanceof SimpleChange) {
             SimpleChange simple = (SimpleChange) change;
-            buffer.append(printSimpleChange(simple, key));
+            buffer.append(printSimpleChange(simple, key, values));
         } else {
             if (change instanceof ObjectChange) {
                 ObjectChange objectChange = (ObjectChange) change;
-                buffer.append(getValue(key));
-                buffer.append("\n");
-                buffer.append(printChangeMap(objectChange.getFieldChanges(), key));
+                String value = getValue(key, values);
+                if (value != null) {
+                    buffer.append(value);
+                    buffer.append("\n");
+                    buffer.append(printChangeMap(objectChange.getFieldChanges(), key, values));
+                }
             } else if (change instanceof CollectionChange) {
                 CollectionChange collChange = (CollectionChange) change;
                 if (collChange.isAddition()) buffer.append("[ADDED] ");
                 else if (collChange.isRemoval()) buffer.append("[REMOVED] ");
                 else if (collChange.isModification()) buffer.append("[MODIFIED] ");
                 for (Change c : collChange.getAdded())
-                    buffer.append(printChange(c, key));
+                    buffer.append(printChange(c, key, values));
                 for (Change c : collChange.getRemoved())
-                    buffer.append(printChange(c, key));
+                    buffer.append(printChange(c, key, values));
                 for (Change c : collChange.getModified())
-                    buffer.append(printChange(c, key));
+                    buffer.append(printChange(c, key, values));
             }
         }
         return buffer.toString();
     }
 
-    private static String printSimpleChange(SimpleChange change, String key) {
+    private static String printSimpleChange(SimpleChange change, String key, Map<String, String> values) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(getValue(key));
-        if (change.isAddition()) {
-            buffer.append("[added new value] ");
-            buffer.append(change.getNewValue());
-            buffer.append("\n");
-        } else if (change.isRemoval()) {
-            buffer.append("[removed value] ");
-            buffer.append(change.getOldValue());
-            buffer.append("\n");
-        } else {
-            buffer.append("[old value] ");
-            buffer.append(change.getOldValue());
-            buffer.append(" [updated to] ");
-            buffer.append(change.getNewValue());
-            buffer.append("\n");
+        String value = getValue(key, values);
+        if (value != null) {
+            buffer.append(value);
+            if (change.isAddition()) {
+                buffer.append("[added new value] ");
+                buffer.append(change.getNewValue());
+                buffer.append("\n");
+            } else if (change.isRemoval()) {
+                buffer.append("[removed value] ");
+                buffer.append(change.getOldValue());
+                buffer.append("\n");
+            } else {
+                buffer.append("[old value] ");
+                buffer.append(change.getOldValue());
+                buffer.append(" [updated to] ");
+                buffer.append(change.getNewValue());
+                buffer.append("\n");
+            }
         }
         return buffer.toString();
     }
 
-    private static String getValue(String key) {
+    private static String getValue(String key, Map<String, String> values) {
         String ret = values.get(key);
-        return ret == null ? key : ret;
+        return ret == null ? null : ret;
     }
 }

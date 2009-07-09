@@ -640,7 +640,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "Authorized:\n" +
                 "\n" +
                 "[+] Begin Change Request Summary: DO NOT EDIT BELOW\n" +
-                "{change}\n" +
+                "{db-change}\n" +
                 "[-] End Change Request Summary: DO NOT EDIT ABOVE");
         templateDef.setSigned(true);
         templateDef.setKeyFileName("eiana.secret.pgp.asc");

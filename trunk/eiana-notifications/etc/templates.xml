@@ -712,7 +712,7 @@ Internet Assigned Numbers Authority
 Authorized:
 
 [+] Begin Change Request Summary: DO NOT EDIT BELOW
-{change}
+{db-change}
 [-] End Change Request Summary: DO NOT EDIT ABOVE
 </iana:content>
 <iana:signed>true</iana:signed>
