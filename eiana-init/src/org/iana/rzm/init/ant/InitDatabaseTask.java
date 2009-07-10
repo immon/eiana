@@ -10,6 +10,7 @@ import org.iana.rzm.domain.*;
 import org.iana.rzm.user.AdminRole;
 import org.iana.rzm.user.RZMUser;
 import org.iana.rzm.user.SystemRole;
+import org.iana.rzm.user.UserManager;
 
 import java.net.MalformedURLException;
 import java.util.*;
@@ -94,17 +95,25 @@ public class InitDatabaseTask extends HibernateTask {
 
 
     public void doExecute(Session session) throws MalformedURLException, NameServerAlreadyExistsException, InvalidIPAddressException {
+
+        UserManager userManager = (UserManager) SpringInitContext.getContext().getBean("userManager");
+
+        RZMUser root = setupUser(new RZMUser(), "root");
+        root.addRole(new AdminRole(AdminRole.AdminType.ROOT));
+        userManager.create(root);
+
         RZMUser iana = setupUser(new RZMUser(), "iana");
         iana.addRole(new AdminRole(AdminRole.AdminType.IANA));
-        session.save(iana);
+        userManager.create(iana);
 
         RZMUser govOversight = setupUser(new RZMUser(), "gov_oversight");
         govOversight.addRole(new AdminRole(AdminRole.AdminType.GOV_OVERSIGHT));
-        session.save(govOversight);
+        userManager.create(govOversight);
 
         RZMUser zonePublisher = setupUser(new RZMUser(), "zone_publisher");
         zonePublisher.addRole(new AdminRole(AdminRole.AdminType.ZONE_PUBLISHER));
-        session.save(zonePublisher);
+        userManager.create(zonePublisher);
+
 
         for (String domain : domains) {
             session.save(setupSystemUser(domain + "-ac1", setupSystemRole(

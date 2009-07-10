@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 public class TemplateDef {
@@ -85,7 +86,7 @@ public class TemplateDef {
     }
 
     public Set<String> getAddressees() {
-        return addressees;
+        return (addressees == null)? new HashSet<String>() : addressees;
     }
 
     public void setAddressees(Set<String> addressees) {
