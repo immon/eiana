@@ -28,6 +28,6 @@ public class AdminEmailTemplateManagerTest {
     public void testGetTemplates() throws Exception {
         List<EmailTemplateVO> emailTemplates = statelessAdminEmailTemplateManager.getEmailTemplates();
         assert emailTemplates != null;
-        assert emailTemplates.size() == 25;
+        assert !emailTemplates.isEmpty();
     }
 }

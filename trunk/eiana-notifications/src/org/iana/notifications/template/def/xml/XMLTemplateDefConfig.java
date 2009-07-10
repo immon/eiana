@@ -77,6 +77,6 @@ public class XMLTemplateDefConfig implements TemplateDefConfig {
     }
 
     public List<TemplateDef> getTemplateDefs() {
-        return Collections.EMPTY_LIST;
+        return getTemplatesList();
     }
 }
