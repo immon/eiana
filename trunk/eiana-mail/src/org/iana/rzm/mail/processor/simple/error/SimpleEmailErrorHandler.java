@@ -6,8 +6,14 @@ import org.iana.notifications.NotificationSender;
 import org.iana.notifications.PAddressee;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.notifications.PNotification;
+import org.iana.notifications.producers.NotificationProducer;
+import org.iana.notifications.producers.NotificationProducerException;
+import org.iana.notifications.producers.defaults.DefaultAddresseeProducer;
 
 import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -18,11 +24,15 @@ public class SimpleEmailErrorHandler implements EmailErrorHandler {
 
     private static final String RESPONSE_PREFIX = "Re: ";
 
-    private NotificationSender notifier;
+    public static final String GENERAL_EMAIL_EXCEPTION_NOTIFICATION_PRODUCER = "generalEmailExceptionNotificationProducer";
 
-    public SimpleEmailErrorHandler(NotificationSender notifier) {
+    private NotificationSender notifier;
+    private Map<String, NotificationProducer> notificationProducers;
+
+    public SimpleEmailErrorHandler(NotificationSender notifier, Map<String, NotificationProducer> notificationProducers) {
         CheckTool.checkNull(notifier, "notification sender");
         this.notifier = notifier;
+        this.notificationProducers = notificationProducers;
     }
 
     public void error(String to, String originalSubject, String originalContent, String message) {
@@ -53,10 +63,43 @@ public class SimpleEmailErrorHandler implements EmailErrorHandler {
         return "> " + line;
     }
 
-    public void error(String to, String subject, String content, Exception e) {
-        String msg = e.getMessage();
-        if (msg == null) msg = "Exception " + e.getClass() + " occured.";
+    public void error(String to, String subject, String content, Exception exception) {
+        String msg = exception.getMessage();
+        if (msg == null) msg = "Exception " + exception.getClass() + " occured.";
         error(to, subject, content, msg);
     }
 
+    public void error(String to, String subject, String content, Exception exception, String notificationProducer) {
+        try {
+            String nProducer = notificationProducer;
+
+            if(nProducer == null || nProducer.trim().length() == 0) nProducer = GENERAL_EMAIL_EXCEPTION_NOTIFICATION_PRODUCER;
+
+            NotificationProducer producer = notificationProducers.get(nProducer);
+
+            if (producer == null) {
+                logger.error("There is no defined notification producer for: " + nProducer);
+                error(to, subject, content, exception);
+            } else {
+                Map<String, Object> dataSource = new HashMap<String, Object>();
+                dataSource.put(DefaultAddresseeProducer.ADDRESSEE, new PAddressee(to, to));
+
+                dataSource.put("subject", subject);
+                dataSource.put("content", content);
+
+                String msg = exception.getMessage();
+                if (msg == null) msg = "Exception " + exception.getClass() + " occured.";
+                dataSource.put("message", msg);
+
+                List<PNotification> pNotifications = producer.produce(dataSource);
+                for (PNotification notification : pNotifications) {
+                    notifier.send(notification);
+                }
+            }
+        } catch (NotificationProducerException e) {
+            logger.error("Unexpected notification producer exception", e);
+        } catch (NotificationSenderException e) {
+            logger.error("Unexpected notifier exception", e);
+        }
+    }
 }
