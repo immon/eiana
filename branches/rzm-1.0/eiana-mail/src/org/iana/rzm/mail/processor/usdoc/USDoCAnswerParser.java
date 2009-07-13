@@ -1,13 +1,12 @@
 package org.iana.rzm.mail.processor.usdoc;
 
+import org.apache.log4j.Logger;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.mail.processor.regex.RegexParser;
+import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
-import org.iana.rzm.mail.processor.simple.AnswerParser;
-import org.iana.rzm.mail.processor.ticket.TicketData;
-import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 
@@ -67,30 +66,30 @@ public class USDoCAnswerParser implements EmailParser {
                         .append("\n").append("Content: ").append(content);
                 logger.warn(builder.toString());
                 logger.error("cannot parse USDoC email content", e);
-                throw e;
+                throw new USDoCParseException(e);
             }
         } catch (NumberFormatException e) {
-            throw new EmailParseException(e);
+            throw new USDoCParseException(e);
         }
     }
 
-    private Object[] parseSubject(String subject) throws EmailParseException {
+    private Object[] parseSubject(String subject) throws USDoCParseException {
         try {
             return new Object[]{databaseChangePattern.parse(subject), Boolean.FALSE};
         } catch (ParseException e) {
             try {
                 return new Object[]{nsChangePattern.parse(subject), Boolean.TRUE};
             } catch (ParseException e1) {
-                throw new EmailParseException("Subject does not match any USDoC subject pattern");
+                throw new USDoCParseException("Subject does not match any USDoC subject pattern");
             }
         }
     }
 
-    private RegexParser.Tokens parseContent(String content) throws EmailParseException {
+    private RegexParser.Tokens parseContent(String content) throws USDoCParseException {
         try {
             return contentPattern.parse(content);
         } catch (ParseException e) {
-            throw new EmailParseException("Content does not match USDoC content pattern");
+            throw new USDoCParseException("Content does not match USDoC content pattern");
         }
     }
 

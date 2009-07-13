@@ -863,5 +863,57 @@ The authentication process failed for the email:
 <iana:signed>false</iana:signed>
 </iana:template>
 
+<iana:template>
+<iana:type>contact-parse-exception</iana:type>
+<iana:subject>Re: {subject}</iana:subject>
+<iana:content>
+The parsing process failed for the email:
+{content}
+
+Exception:
+{message}
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+<iana:template>
+<iana:type>usdoc-parse-exception</iana:type>
+<iana:subject>Re: {subject}</iana:subject>
+<iana:content>
+The parsing process failed for the email:
+{content}
+
+Exception:
+{message}
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+<iana:template>
+<iana:type>request-not-found</iana:type>
+<iana:subject>Re: {subject}</iana:subject>
+<iana:content>
+Request not found for the email:
+{content}
+
+Exception:
+{message}
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+<iana:template>
+<iana:type>general-email-exception</iana:type>
+<iana:subject>Re: {subject}</iana:subject>
+<iana:content>
+General email procesing exception for:
+{content}
+
+Exception:
+{message}
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
 
 </iana:templates>

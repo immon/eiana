@@ -14,6 +14,7 @@ import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.processor.AbstractEmailProcessor;
 import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
 import org.iana.rzm.mail.processor.simple.processor.IllegalMessageDataException;
+import org.iana.rzm.mail.processor.simple.processor.NoRequestEmailProcessException;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class VeriSignMailProcessor extends AbstractEmailProcessor {
                 mailLogger.logMail(trans.getTicketID(), msg.getFrom(), msg.getSubject(), msg.getBody());
             }
         } catch (InfrastructureException e) {
-            throw new EmailProcessException("cannot find transactions for " + mail.getDomainName(), e);
+            throw new NoRequestEmailProcessException("cannot find transactions for " + mail.getDomainName(), e);
         }
     }
 
