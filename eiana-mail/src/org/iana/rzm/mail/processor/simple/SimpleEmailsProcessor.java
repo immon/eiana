@@ -90,9 +90,14 @@ public class SimpleEmailsProcessor implements MailsProcessor {
         logger.error(e.getMessage(), e);
     }
 
-    private void error(String from, String subject, String content, Exception e) {
+    private void error(String from, String subject, String content, EmailParseException e) {
         log(e);
-        error.error(from, subject, content, e);
+        error.error(from, subject, content, e, e.getNotificationProducerName());
+    }
+
+    private void error(String from, String subject, String content, EmailProcessException e) {
+        log(e);
+        error.error(from, subject, content, e, e.getNotificationProducerName());
     }
 
     private void error(String from, String subject, String content, String msg) {

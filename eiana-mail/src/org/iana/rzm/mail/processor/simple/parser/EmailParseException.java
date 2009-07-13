@@ -19,4 +19,8 @@ public class EmailParseException extends Exception {
     public EmailParseException(Throwable cause) {
         super(cause);
     }
+
+    public String getNotificationProducerName() {
+        return "generalEmailExceptionNotificationProducer";
+    }
 }
