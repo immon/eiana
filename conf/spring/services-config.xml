@@ -29,7 +29,7 @@
                 <value>kim.davies@icann.org></value>
             </list>
         </property>
-        <property name="defaultEmail" value="rzm-test@iana.org"/>
+        <property name="defaultEmail" value="piotrt@nask.pl"/>
     </bean>
 
     <bean id="persistentNotificationSender" class="org.iana.notifications.PNotificationStore">
@@ -658,6 +658,54 @@
         <constructor-arg index="3" ref="zonePublicationAlertDataProducer"/>
     </bean>
 
+    <bean id="contactParseExceptionNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+        </constructor-arg>
+        <constructor-arg index="2" ref="contactParseExceptionTemplateProducer"/>
+        <constructor-arg index="3">
+            <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="usdocParseExceptionNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+        </constructor-arg>
+        <constructor-arg index="2" ref="usdocParseExceptionTemplateProducer"/>
+        <constructor-arg index="3">
+            <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="requestNotFoundNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+        </constructor-arg>
+        <constructor-arg index="2" ref="requestNotFoundTemplateProducer"/>
+        <constructor-arg index="3">
+            <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="generalEmailExceptionNotificationProducer"
+          class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+        <constructor-arg index="0" ref="templateFactory"/>
+        <constructor-arg index="1">
+            <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+        </constructor-arg>
+        <constructor-arg index="2" ref="generalEmailExceptionTemplateProducer"/>
+        <constructor-arg index="3">
+            <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+        </constructor-arg>
+    </bean>
+
     <!-- Addressee producers -->
 
     <bean id="contactConfirmationACAddresseeProducer"
@@ -848,6 +896,34 @@
           class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
         <property name="template">
             <value>zone-publication-alert</value>
+        </property>
+    </bean>
+
+    <bean id="contactParseExceptionTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>contact-parse-exception</value>
+        </property>
+    </bean>
+
+    <bean id="usdocParseExceptionTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>usdoc-parse-exception</value>
+        </property>
+    </bean>
+
+    <bean id="requestNotFoundTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>request-not-found</value>
+        </property>
+    </bean>
+
+    <bean id="generalEmailExceptionTemplateProducer"
+          class="org.iana.notifications.producers.defaults.DefaultTemplateNameProducer">
+        <property name="template">
+            <value>general-email-exception</value>
         </property>
     </bean>
 
@@ -1482,6 +1558,14 @@
         <constructor-arg index="2">
             <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
                 <constructor-arg ref="persistentNotificationSender"/>
+                <constructor-arg>
+                    <map>
+                        <entry key="contactParseExceptionNotificationProducer" value-ref="contactParseExceptionNotificationProducer"/>
+                        <entry key="usdocParseExceptionNotificationProducer" value-ref="usdocParseExceptionNotificationProducer"/>
+                        <entry key="requestNotFoundNotificationProducer" value-ref="requestNotFoundNotificationProducer"/>
+                        <entry key="generalEmailExceptionNotificationProducer" value-ref="generalEmailExceptionNotificationProducer"/>
+                    </map>
+                </constructor-arg>
             </bean>
         </constructor-arg>
     </bean>

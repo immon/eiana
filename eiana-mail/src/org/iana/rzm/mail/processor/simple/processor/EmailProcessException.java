@@ -19,5 +19,8 @@ public class EmailProcessException extends Exception {
     public EmailProcessException(Throwable cause) {
         super(cause);
     }
-    
+
+    public String getNotificationProducerName() {
+        return "generalEmailExceptionNotificationProducer";
+    }
 }

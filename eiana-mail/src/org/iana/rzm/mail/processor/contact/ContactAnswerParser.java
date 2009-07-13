@@ -27,6 +27,8 @@ public class ContactAnswerParser implements EmailParser {
 
     public static final String ACCEPT = "accept";
 
+    public static final String ERROR_TEMPLATE = "contact-parser-error";
+
     private RegexParser subjectPattern;
 
     private RegexParser contentPattern;
@@ -58,7 +60,7 @@ public class ContactAnswerParser implements EmailParser {
                 return new TicketData(ticketID);
             }
         } catch (NumberFormatException e) {
-            throw new EmailParseException(e);
+            throw new ContactParseException(e);
         }
     }
 
@@ -70,7 +72,7 @@ public class ContactAnswerParser implements EmailParser {
         try {
             return subjectPattern.parse(subject);
         } catch (ParseException e) {
-            throw new EmailParseException("Subject does not match contact confirmation subject pattern", e);
+            throw new ContactParseException("Subject does not match contact confirmation subject pattern", e);
         }
     }
 
@@ -78,7 +80,7 @@ public class ContactAnswerParser implements EmailParser {
         try {
             return contentPattern.parse(content);
         } catch (ParseException e) {
-            throw new EmailParseException("Content does not match contact confirmation content pattern", e);
+            throw new ContactParseException("Content does not match contact confirmation content pattern", e);
         }
     }
 

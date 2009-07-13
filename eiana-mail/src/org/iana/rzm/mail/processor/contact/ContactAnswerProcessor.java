@@ -37,7 +37,7 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
         try {
             List<TransactionVO> transactions = transactionService.getByTicketID(answer.getTicketID());
             if (transactions == null || transactions.isEmpty()) {
-                throw new EmailProcessException("Cannot find transaction by ticket-id: " + answer.getTicketID() + ".");
+                throw new NoRequestEmailProcessException("Cannot find transaction by ticket-id: " + answer.getTicketID() + ".");
             }
             if (transactions.size() > 1) {
                 throw new EmailProcessException("Ticket-id " + answer.getTicketID() + " is not unique.");
@@ -50,7 +50,7 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
                 transactionService.rejectTransaction(transaction.getTransactionID(), answer.getToken());
             }
         } catch (NoObjectFoundException e) {
-            throw new EmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
+            throw new NoRequestEmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
         } catch (InfrastructureException e) {
             throw new EmailProcessException("Unexpected exception during processing.", e);
         }
