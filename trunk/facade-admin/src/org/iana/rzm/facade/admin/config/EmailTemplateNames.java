@@ -8,7 +8,6 @@ public interface EmailTemplateNames {
     String CONTACT_CONFIRMATION = "contact-confirmation";
     String TECHNICAL_DEFICIENIES = "technical-deficiencies";
     String NORMAL_REDELEGATION_PROCESSING = "normal_redelegation-processing";
-    String THIRD_PARTY_CONSULTATION = "third_party-consultation";
     String COMPLETED_NSCHANGE = "completed-nschange";
     String COMPLETED = "completed";
     String WITHDRAWN = "withdrawn";
@@ -33,7 +32,6 @@ public interface EmailTemplateNames {
         CONTACT_CONFIRMATION,
         TECHNICAL_DEFICIENIES,
         NORMAL_REDELEGATION_PROCESSING,
-        THIRD_PARTY_CONSULTATION,
         COMPLETED_NSCHANGE,
         COMPLETED,
         WITHDRAWN,

@@ -184,50 +184,6 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         session.save(templateDef);
 
         templateDef = new TemplateDef();
-        templateDef.setType("third_party-consultation");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
-        templateDef.setSubject("[IANA #{ticket}] Your consent is required to alter {domainName} domain ({token})");
-        templateDef.setContent(
-                "Dear {name},\n" +
-                "\n" +
-                "The Internet Assigned Numbers Authority (IANA), in its role as\n" +
-                "manager of the DNS root zone, has received a request to alter the\n" +
-                "information associated with the {domainName} domain. The changes\n" +
-                "requested are as follows:\n" +
-                "\n" +
-                "{changes}\n" +
-                "\n" +
-                "We have marked in our database a \"special instruction\" that your\n" +
-                "or your organisation must consent to this change before it can\n" +
-                "proceed.\n" +
-                "\n" +
-                "Please review this change to ensure it is correct, and then indicate\n" +
-                "your approval or disapproval by visiting the following link:\n" +
-                "\n" +
-                "    {url}\n" +
-                "\n" +
-                "For your reference, this request has been assigned ticket number\n" +
-                "{ticket}. Current administrative and technical contacts for a domain\n" +
-                "can review the status of this request at any time at our website at\n" +
-                "\n" +
-                "    {url}\n" +
-                "\n" +
-                "If you have any questions regarding this request, please reply to\n" +
-                "this email and we will try to assist you. Please ensure you do not\n" +
-                "modify the subject as we need the reference number intact to ensure\n" +
-                "the speediest processing of your enquiry.\n" +
-                "\n" +
-                "With kindest regards,\n" +
-                "\n" +
-                "Root Zone Management\n" +
-                "Internet Assigned Numbers Authority\n" +
-                "\n" +
-                "NOTE: This has been an automated message, sent to you as you are\n" +
-                "listed as a party to this request.");
-        templateDef.setSigned(false);
-        session.save(templateDef);
-
-        templateDef = new TemplateDef();
         templateDef.setType("completed-nschange");
         templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("[IANA #{ticket}] Change to {domainName} domain completed");
