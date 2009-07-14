@@ -106,7 +106,7 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
         //not used
         templateDef = new TemplateDef();
         templateDef.setType("technical-deficiencies");
-        templateDef.setAddressees(new HashSet<String>(Arrays.asList("IANA")));
+        templateDef.setAddressees(new HashSet<String>(Arrays.asList("AC", "TC", "SUBMITTER")));
         templateDef.setSubject("[IANA #{ticket}] Please remedy technical problems for {domainName}");
         templateDef.setContent(
                 "Hello,\n" +
