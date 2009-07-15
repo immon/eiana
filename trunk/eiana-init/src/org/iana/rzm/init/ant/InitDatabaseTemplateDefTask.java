@@ -309,6 +309,8 @@ public class InitDatabaseTemplateDefTask extends HibernateTask {
                 "We have been requested to withdraw this request, and therefore this\n" +
                 "request has been closed without prejudice.\n" +
                 "\n" +
+                "{widthdrawnReason}\n" +
+                "\n" +
                 "If you have any questions regarding this request, please reply to\n" +
                 "this email and we will try to assist you. Please ensure you do not\n" +
                 "modify the subject as we need the reference number intact to ensure\n" +
