@@ -20,12 +20,12 @@ The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to delegate
 the {domainName} domain from {submitter}.
 
+As a proposed new contact for this domain you must consent to this
+change for it to be implemented.
+
 The proposed data associated with this domain is as follows:
 
 {changes}
-
-As a proposed new contact for this domain you must consent to this
-change.
 
 Please review this change to ensure it is correct, and then indicate
 your approval or disapproval by visiting the following link:
@@ -64,19 +64,19 @@ listed as a party to this request.
 <iana:addressee>AC_CONFIRM</iana:addressee>
 <iana:addressee>TC_CONFIRM</iana:addressee>
 </iana:addressees>
-<iana:subject>[IANA #{ticket}] Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
+<iana:subject>[IANA #{ticket}] Your confirmation requested to change {domainName} domain (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
-manager of the DNS root zone, has received a request to alter the
+manager of the DNS root zone, has received a request to change the
 information associated with the {domainName} domain from {submitter}. The
 changes requested are as follows:
 
 {changes}
 
 As a listed contact, or proposed new contact, for this domain you
-must consent to this change.
+must consent to this change for it to be implemented.
 
 {newContactOnly}
 Please review this change to ensure it is correct, and then indicate
@@ -122,15 +122,16 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-with reference number {ticket}.
+with reference number {ticket}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 We have detected that there are technical problems with the request
-you have submitted. The following errors were identified:
+that has been submitted. The following errors were identified:
 
 {errors}
 
 We are unable to proceed until either these errors are remedied,
-or you provide an explanation why this is desired behaviour and
+or an explanation is provided on why this is desired behaviour and
 why the request can proceed.
 
 Please read our technical requirements at
@@ -141,9 +142,9 @@ the website at the following URL:
 
 {url}
 
-You have 30 days to remedy this, or we will automatically close
-your request without prejudice. After this time you are free to
-submit your request again once you have fixed the technical
+We will automatically close your request without prejudice after
+30 days if the problem is not fixed. After this time you are free 
+to submit your request again once you have fixed the technical
 problems.
 
 If you have any questions regarding this request, please reply to
@@ -178,7 +179,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}.
+{ticket}. As a listed contact, or proposed new contact, for this 
+domain we are providing you with this update.
 
 This request is now being manually processed. In the case of
 changes to the Supporting Organisation, this is considered a
@@ -219,7 +221,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}, lodged on {requestDate}.
+{ticket}, lodged on {requestDate}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 This request has now been completed!
 
@@ -259,7 +262,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-{ticket}, lodged on {requestDate}.
+{ticket}, lodged on {requestDate}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 This request has now been completed!
 
@@ -302,7 +306,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-with reference number {ticket}.
+with reference number {ticket}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 We have been requested to withdraw this request, and therefore this
 request has been closed without prejudice.
@@ -339,7 +344,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-with reference number {ticket}.
+with reference number {ticket}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 We have administratively closed this request without prejudice.
 
@@ -373,7 +379,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-with reference number {ticket}.
+with reference number {ticket}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 We have moved your request into an "exception" state. This means
 that for some reason our automated workflow system is not able to
@@ -420,7 +427,8 @@ listed as a party to this request.
 Hello,
 
 This is an update regarding the IANA Root Zone Management request
-with reference number {ticket}.
+with reference number {ticket}. As a listed contact, or proposed 
+new contact, for this domain we are providing you with this update.
 
 One of the contact persons for this domain have rejected this change,
 and therefore this request has been closed.
@@ -451,7 +459,7 @@ listed as a party to this request.
 <iana:addressee>AC</iana:addressee>
 <iana:addressee>TC</iana:addressee>
 </iana:addressees>
-<iana:subject>[IANA #{ticket}] REMINDER: Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
+<iana:subject>[IANA #{ticket}] REMINDER: Your confirmation requested to change {domainName} domain (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
 
@@ -466,7 +474,7 @@ root-mgmt@iana.org.
 ***
 
 The Internet Assigned Numbers Authority (IANA), in its role as
-manager of the DNS root zone, has received a request to alter the
+manager of the DNS root zone, has received a request to change the
 information associated with the {domainName} domain. The changes
 requested are as follows:
 
@@ -515,7 +523,7 @@ listed as a party to this request.
 Dear {name},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
-manager of the DNS root zone, has received a request to alter the
+manager of the DNS root zone, has received a request to change the
 IP address of an authoritative nameserver. As this nameserver
 is used by the {domainName} domain, it requires your consent
 for this change to be implemented. It is likely this request has
@@ -557,7 +565,7 @@ listed as a party to this request.
 </iana:template>
 
 <iana:template>
-<iana:type>impacted_parties-confirmation-remainder</iana:type>
+<iana:type>impacted_parties-confirmation-reminder</iana:type>
 <iana:addressees>
 <iana:addressee>AC_IMPACTED_PARTIES</iana:addressee>
 <iana:addressee>TC_IMPACTED_PARTIES</iana:addressee>
@@ -567,7 +575,7 @@ listed as a party to this request.
 Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
-manager of the DNS root zone, has received a request to alter the
+manager of the DNS root zone, has received a request to change the
 information associated with the {domainName} domain. The changes
 requested are as follows:
 
@@ -806,37 +814,78 @@ Request change data:
 
 <iana:template>
 <iana:type>usdoc-authentication-failure</iana:type>
-<iana:subject>Re: {subject}</iana:subject>
+<iana:subject>Invalid PGP Key! Re: {subject}</iana:subject>
 <iana:content>
-The authentication process failed for the email:
+Hello,
 
+We received the following message regarding authorisation of a root zone
+change request. We were unable to validate this request because the PGP
+signature on the email was not valid. It has been sent to IANA staff for
+manual review. In the mean time if you know you have made a mistake and
+are able to correct the mistake, you can retransmit your authorisation at
+this time.
+
+The message we received is as follows:
+
+--- BEGIN MESSAGE ---
 {content}
+--- END MESSAGE ---
+
+This message has been automatically generated. If you have any
+questions or concerns, please email them to root-mgmt@iana.org
+with a subject of "[IANA #{ticket}]".
+
+Root Zone Services
+Internet Assigned Numbers Authority
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
 <iana:template>
 <iana:type>contact-parse-exception</iana:type>
-<iana:subject>Re: {subject}</iana:subject>
+<iana:subject>RZM Email Parsing Problem; Re: {subject}</iana:subject>
 <iana:content>
-The parsing process failed for the email:
-{content}
-
-Exception:
+IANA Staff:
+	
+The parsing process failed for an email. The error message is:
 {message}
+
+The message content is as follows:
+--- BEGIN MESSAGE ---
+{content}
+--- END MESSAGE ---
+
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
 <iana:template>
 <iana:type>usdoc-parse-exception</iana:type>
-<iana:subject>Re: {subject}</iana:subject>
+<iana:subject>Unreadable Authorisation! Re: {subject}</iana:subject>
 <iana:content>
-The parsing process failed for the email:
-{content}
+Hello,
 
-Exception:
-{message}
+We received the following message regarding authorisation of a root zone
+change request. We were unable to process this request because the email
+could not be parsed. We were unable to find the authorisation line 
+automatically.
+
+It has been sent to IANA staff for manual review. In the mean time if you 
+know you have made a mistake and are able to correct the mistake, you can 
+retransmit your authorisation at this time.
+
+The message we received is as follows:
+
+--- BEGIN MESSAGE ---
+{content}
+--- END MESSAGE ---
+
+This message has been automatically generated. If you have any
+questions or concerns, please email them to root-mgmt@iana.org
+with a subject of "[IANA #{ticket}]".
+
+Root Zone Services
+Internet Assigned Numbers Authority
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
@@ -845,24 +894,46 @@ Exception:
 <iana:type>request-not-found</iana:type>
 <iana:subject>Re: {subject}</iana:subject>
 <iana:content>
-Request not found for the email:
-{content}
+Hello,
 
-Exception:
-{message}
+We received the following message regarding a root zone change request. 
+We were unable to automatically process this request as the reference
+number supplied in the email is not valid.
+
+Your message has been sent to IANA staff for manual review. In the mean
+time if you know you have made a mistake and are able to correct the 
+mistake, you can retransmit your authorisation at this time.
+
+The message we received is as follows:
+
+--- BEGIN MESSAGE ---
+{content}
+--- END MESSAGE ---
+
+This message has been automatically generated. If you have any
+questions or concerns, please email them to root-mgmt@iana.org
+with a subject of "[IANA #{ticket}]".
+
+Root Zone Services
+Internet Assigned Numbers Authority
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
 <iana:template>
 <iana:type>general-email-exception</iana:type>
-<iana:subject>Re: {subject}</iana:subject>
+<iana:subject>RZM Email Parsing Problem; Re: {subject}</iana:subject>
 <iana:content>
-General email procesing exception for:
-{content}
+IANA Staff:
 
-Exception:
+The parsing process failed for an email. The error message is:
 {message}
+
+The message content is as follows:
+--- BEGIN MESSAGE ---
+{content}
+--- END MESSAGE ---
+
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
