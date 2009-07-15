@@ -10,8 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class TemplateDef {
@@ -26,10 +26,8 @@ public class TemplateDef {
     @Basic
     private boolean signed;
     @Basic
-    private String keyFileName;
-    @Basic
-    private String keyPassphrase;
-
+    private String keyName;
+    
     @CollectionOfElements
     private Set<String> addressees;
 
@@ -69,20 +67,12 @@ public class TemplateDef {
         this.signed = Boolean.parseBoolean(signed);
     }
 
-    public String getKeyFileName() {
-        return keyFileName;
+    public String getKeyName() {
+        return keyName;
     }
 
-    public void setKeyFileName(String keyFileName) {
-        this.keyFileName = keyFileName;
-    }
-
-    public String getKeyPassphrase() {
-        return keyPassphrase;
-    }
-
-    public void setKeyPassphrase(String keyPassphrase) {
-        this.keyPassphrase = keyPassphrase;
+    public void setKeyName(String keyName) {
+        this.keyName = keyName;
     }
 
     public Set<String> getAddressees() {

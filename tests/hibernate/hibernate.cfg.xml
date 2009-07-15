@@ -64,6 +64,7 @@
         <mapping class="org.iana.rzm.trans.TransactionData"/>
         
         <mapping class="org.iana.notifications.template.def.TemplateDef" />
+        <mapping class="org.iana.notifications.template.pgp.PgpKey" />
 
         <mapping class="org.iana.rzm.trans.epp.poll.PollMsg"/>
 
