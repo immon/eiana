@@ -112,8 +112,20 @@
         <constructor-arg ref="userManager"/>
         <constructor-arg ref="templatesConfigLoader"/>
     </bean>
+    
+    <bean id="statelessAdminPgpKeyManager" class="org.iana.rzm.facade.admin.config.impl.StatelessAdminPgpKeyManagerImpl">
+        <constructor-arg ref="userManager"/>
+        <constructor-arg ref="pgpKeyConfig"/>
+        <constructor-arg ref="templatesConfigLoader"/>
+    </bean>
 
     <bean id="dbTemplatesConfig" class="org.iana.notifications.template.def.dao.HibernateTemplateDefDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="pgpKeyConfig" class="org.iana.notifications.template.pgp.dao.HibernatePgpKeyDAO">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
@@ -526,7 +538,8 @@
 
     <bean id="templateFactory" class="org.iana.notifications.template.factory.DefaultTemplateFactory">
         <constructor-arg index="0" ref="templatesConfigLoader"/>
-        <constructor-arg index="1">
+        <constructor-arg index="1" ref="pgpKeyConfig"/>
+        <constructor-arg index="2">
             <bean class="org.iana.notifications.template.simple.DefaultStringTemplateAlgorithm"/>
         </constructor-arg>
         <property name="producers">
@@ -1820,7 +1833,9 @@
                                   execution(public * org.iana.rzm.trans.dao.ProcessDAO.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.domain.dns.AdminDNSServiceImpl.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.config.impl.StatelessAdminEmailTemplateManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.StatelessAdminPgpKeyManagerImpl.*(..)) ||
                                   execution(public * org.iana.rzm.facade.admin.config.impl.AdminEmailTemplateManagerImpl.*(..)) ||
+                                  execution(public * org.iana.rzm.facade.admin.config.impl.AdminPgpKeyManagerImpl.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmCommandExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmTimerExecutor.*(..)) ||
                                   execution(public * org.iana.rzm.startup.jbpm.JbpmExceptionHandler.*(..)) ||

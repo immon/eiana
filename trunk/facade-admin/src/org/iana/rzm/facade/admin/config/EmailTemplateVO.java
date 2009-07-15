@@ -16,6 +16,8 @@ public class EmailTemplateVO implements Serializable {
 
     private boolean signed;
 
+    private String keyName;
+
     private Set<String> addressees;
 
     public String getName() {
@@ -48,6 +50,14 @@ public class EmailTemplateVO implements Serializable {
 
     public void setSigned(boolean signed) {
         this.signed = signed;
+    }
+
+    public String getKeyName() {
+        return keyName;
+    }
+
+    public void setKeyName(String keyName) {
+        this.keyName = keyName;
     }
 
     public Set<String> getAddressees() {

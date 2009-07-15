@@ -101,6 +101,10 @@
         <property name="serviceInterface" value="org.iana.rzm.facade.admin.config.StatelessAdminEmailTemplateManager"/>
     </bean>
 
+    <bean id="remotePgpKey" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+        <property name="service" ref="statelessAdminPgpKeyManager"/>
+        <property name="serviceInterface" value="org.iana.rzm.facade.admin.config.StatelessAdminPgpKeyManager"/>
+    </bean>
 
     <bean id="remoteMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
@@ -123,6 +127,7 @@
                 <prop key="/remoteSecureIdServiceBean">remoteSecureIdServiceBean</prop>
                 <prop key="/remoteConfig">remoteConfig</prop>
                 <prop key="/remoteTemplate">remoteTemplate</prop>
+                <prop key="/remotePgpKey">remotePgpKey</prop>
             </props>
         </property>
     </bean>

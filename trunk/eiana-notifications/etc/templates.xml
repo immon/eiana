@@ -671,8 +671,7 @@ Authorized:
 [-] End Change Request Summary: DO NOT EDIT ABOVE
 </iana:content>
 <iana:signed>true</iana:signed>
-<iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
-<iana:keyPassphrase>tester</iana:keyPassphrase>
+<iana:keyName>defaultKey</iana:keyName>
 </iana:template>
 
 <!--todo-->
@@ -714,8 +713,7 @@ Authorized:
 {receipt}
 </iana:content>
 <iana:signed>true</iana:signed>
-<iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
-<iana:keyPassphrase>tester</iana:keyPassphrase>
+<iana:keyName>defaultKey</iana:keyName>
 </iana:template>
 
 <!--todo-->
@@ -737,8 +735,7 @@ Root Zone Management
 NOTE: This is an automated message.
 </iana:content>
 <iana:signed>true</iana:signed>
-<iana:keyFileName>eiana.secret.pgp.asc</iana:keyFileName>
-<iana:keyPassphrase>tester</iana:keyPassphrase>
+<iana:keyName>defaultKey</iana:keyName>
 </iana:template>
 
 <iana:template>
