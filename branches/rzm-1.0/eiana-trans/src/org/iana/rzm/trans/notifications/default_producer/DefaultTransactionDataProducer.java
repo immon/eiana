@@ -39,6 +39,13 @@ public class DefaultTransactionDataProducer implements DataProducer {
         values.put("implementationDate", td.getStateEndDate(TransactionState.Name.PENDING_USDOC_APPROVAL));
         values.put("serialNumber", td.getSerialNumber());
         values.put("reason", td.getStateMessage());
+
+        String widthdrawnReason = td.getWidthdrawnReason();
+        if (widthdrawnReason == null || widthdrawnReason.trim().length() == 0)
+            widthdrawnReason = "No reason.";
+
+        values.put("widthdrawnReason", widthdrawnReason);
+
         values.putAll(getSpecificValuesMap(dataSource));
         return values;
     }

@@ -104,6 +104,10 @@ public class TransactionData {
     @Column(length = 4096)
     private String usdocNotes;
 
+    @Basic
+    @Column(length = 4096)
+    private String widthdrawnReason;
+
     @Embedded
     private USDoCConfirmation confirmation;
 
@@ -397,6 +401,15 @@ public class TransactionData {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+
+    public String getWidthdrawnReason() {
+        return widthdrawnReason;
+    }
+
+    public void setWidthdrawnReason(String widthdrawnReason) {
+        this.widthdrawnReason = widthdrawnReason;
     }
 
     public String getTechnicalErrors() {

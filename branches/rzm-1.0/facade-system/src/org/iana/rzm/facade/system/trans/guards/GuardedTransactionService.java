@@ -2,7 +2,6 @@ package org.iana.rzm.facade.system.trans.guards;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -108,5 +107,9 @@ public class GuardedTransactionService extends AbstractRZMStatefulService implem
 
     public void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
         statelessTransactionService.withdrawTransaction(id, getAuthenticatedUser());
+    }
+
+    public void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException {
+        statelessTransactionService.withdrawTransaction(id, reason, getAuthenticatedUser());
     }
 }

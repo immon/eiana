@@ -1,6 +1,5 @@
 package org.iana.rzm.facade.system.trans;
 
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -32,6 +31,8 @@ public interface TransactionService extends RZMStatefulService, FinderService<Tr
     void rejectTransaction(long id, String token) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     void withdrawTransaction(long id) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+
+    void withdrawTransaction(long id, String reason) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
 
     // temporary method - not to break the tests
 

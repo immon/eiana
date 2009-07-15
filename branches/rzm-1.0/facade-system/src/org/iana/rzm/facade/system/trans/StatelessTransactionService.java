@@ -2,7 +2,6 @@ package org.iana.rzm.facade.system.trans;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -56,4 +55,7 @@ public interface StatelessTransactionService {
     public void transitTransaction(long id, String transitionName, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 
     public void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+
+    public void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+
 }
