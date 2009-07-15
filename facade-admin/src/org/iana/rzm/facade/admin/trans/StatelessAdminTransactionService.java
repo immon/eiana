@@ -2,7 +2,6 @@ package org.iana.rzm.facade.admin.trans;
 
 import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
-import org.iana.dns.check.DNSTechnicalCheckException;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.facade.auth.AccessDeniedException;
@@ -77,6 +76,8 @@ public interface StatelessAdminTransactionService {
     public void confirmByUSDoC(long id, boolean nsChange, boolean accept, AuthenticatedUser authUser) throws NoObjectFoundException, org.iana.rzm.facade.system.trans.IllegalTransactionStateException, AccessDeniedException, InfrastructureException;
 
     void withdrawTransaction(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
+
+    void withdrawTransaction(long id, String reason, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, TransactionCannotBeWithdrawnException, InfrastructureException;
 
     public List<TransactionVO> getByTicketID(long id, AuthenticatedUser authenticatedUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException;
 }
