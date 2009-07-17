@@ -4,10 +4,10 @@ import org.iana.dns.*;
 
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.List;
-import java.util.HashSet;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -31,6 +31,8 @@ class BindExport {
     private static final String TAB = "\t";
 
     private static final String SPACE = " ";
+
+    private static final String DOT = ".";
 
     private static final String SERIAL = "serial";
 
@@ -107,7 +109,10 @@ class BindExport {
         String domainName = domain.getFullyQualifiedName();
         for (DNSHost host : domain.getNameServers()) {
             _prints(domainName);
-            _prints(IN);
+
+            if (!DOT.equals(domainName))
+                _prints(IN);
+
             _prints(NS);
             _println(host.getFullyQualifiedName());
             // if (host.isInDomain(domain))
