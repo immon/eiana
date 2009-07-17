@@ -115,7 +115,9 @@ listed as a party to this request.
 <iana:template>
 <iana:type>technical-deficiencies</iana:type>
 <iana:addressees>
-<iana:addressee>IANA</iana:addressee>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Please remedy technical problems for {domainName}</iana:subject>
 <iana:content>
@@ -172,7 +174,7 @@ listed as a party to this request.
 <iana:addressees>
 <iana:addressee>AC</iana:addressee>
 <iana:addressee>TC</iana:addressee>
-<iana:addressee>SO</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Processing has commenced for {domainName} request</iana:subject>
 <iana:content>
@@ -255,7 +257,9 @@ listed as a party to this request.
 <iana:template>
 <iana:type>completed</iana:type>
 <iana:addressees>
-<iana:addressee>IANA</iana:addressee>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Change to {domainName} domain completed</iana:subject>
 <iana:content>
@@ -374,6 +378,9 @@ listed as a party to this request.
 <iana:template>
 <iana:type>exception</iana:type>
 <iana:addressees>
+<iana:addressee>AC</iana:addressee>
+<iana:addressee>TC</iana:addressee>
+<iana:addressee>SUBMITTER</iana:addressee>
 <iana:addressee>IANA</iana:addressee>
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Status update for {domainName} domain</iana:subject>
@@ -634,7 +641,6 @@ listed as a party to this request.
 <iana:signed>false</iana:signed>
 </iana:template>
 
-<!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation</iana:type>
 <iana:addressees>
@@ -676,7 +682,6 @@ Authorized:
 <iana:keyName>defaultKey</iana:keyName>
 </iana:template>
 
-<!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation-nschange</iana:type>
 <iana:addressees>
@@ -718,7 +723,6 @@ Authorized:
 <iana:keyName>defaultKey</iana:keyName>
 </iana:template>
 
-<!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation-remainder</iana:type>
 <iana:addressees>
