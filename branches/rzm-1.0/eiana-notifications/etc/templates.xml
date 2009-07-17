@@ -8,10 +8,6 @@
 
 <iana:template>
 <iana:type>contact-confirmation-newTLD</iana:type>
-<iana:addressees>
-<iana:addressee>AC_CONFIRM</iana:addressee>
-<iana:addressee>TC_CONFIRM</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Your confirmation requested to delegate {domainName} domain (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
@@ -60,10 +56,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>contact-confirmation</iana:type>
-<iana:addressees>
-<iana:addressee>AC_CONFIRM</iana:addressee>
-<iana:addressee>TC_CONFIRM</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
@@ -114,9 +106,6 @@ listed as a party to this request.
 <!-- not used-->
 <iana:template>
 <iana:type>technical-deficiencies</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Please remedy technical problems for {domainName}</iana:subject>
 <iana:content>
 Hello,
@@ -164,11 +153,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>normal_redelegation-processing</iana:type>
-<iana:addressees>
-<iana:addressee>AC</iana:addressee>
-<iana:addressee>TC</iana:addressee>
-<iana:addressee>SO</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Processing has commenced for {domainName} request</iana:subject>
 <iana:content>
 Hello,
@@ -205,11 +189,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>completed-nschange</iana:type>
-<iana:addressees>
-<iana:addressee>AC</iana:addressee>
-<iana:addressee>TC</iana:addressee>
-<iana:addressee>SUBMITTER</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Change to {domainName} domain completed</iana:subject>
 <iana:content>
 Hello,
@@ -247,9 +226,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>completed</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Change to {domainName} domain completed</iana:subject>
 <iana:content>
 Hello,
@@ -288,11 +264,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>withdrawn</iana:type>
-<iana:addressees>
-<iana:addressee>AC</iana:addressee>
-<iana:addressee>TC</iana:addressee>
-<iana:addressee>SUBMITTER</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Change request withdrawn for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
@@ -327,11 +298,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>admin-closed</iana:type>
-<iana:addressees>
-<iana:addressee>AC</iana:addressee>
-<iana:addressee>TC</iana:addressee>
-<iana:addressee>SUBMITTER</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Change request administratively closed for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
@@ -363,9 +329,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>exception</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Status update for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
@@ -408,11 +371,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>rejected</iana:type>
-<iana:addressees>
-<iana:addressee>AC</iana:addressee>
-<iana:addressee>TC</iana:addressee>
-<iana:addressee>SUBMITTER</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Change request rejected for {domainName} domain</iana:subject>
 <iana:content>
 Hello,
@@ -445,10 +403,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>contact-confirmation-reminder</iana:type>
-<iana:addressees>
-<iana:addressee>AC</iana:addressee>
-<iana:addressee>TC</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] REMINDER: Your confirmation requested to alter {domainName} domain (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
@@ -504,10 +458,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation</iana:type>
-<iana:addressees>
-<iana:addressee>AC_IMPACTED_PARTIES</iana:addressee>
-<iana:addressee>TC_IMPACTED_PARTIES</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] Your confirmation requested to update your nameserver(s) ({token})</iana:subject>
 <iana:content>
 Dear {name},
@@ -556,10 +506,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>impacted_parties-confirmation-remainder</iana:type>
-<iana:addressees>
-<iana:addressee>AC_IMPACTED_PARTIES</iana:addressee>
-<iana:addressee>TC_IMPACTED_PARTIES</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] REMINDER: Your confirmation requested to update your nameserver(s) (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
@@ -604,9 +550,6 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>zone-insertion-alert</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>Domain modification</iana:subject>
 <iana:content>Zone Insertion Alert for {domainName}. Only {period} days left.</iana:content>
 <iana:signed>false</iana:signed>
@@ -614,20 +557,13 @@ listed as a party to this request.
 
 <iana:template>
 <iana:type>zone-publication-alert</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>Domain modification</iana:subject>
 <iana:content>Zone Publication Alert for {domainName}. Only {period} days left.</iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
-<!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation</iana:type>
-<iana:addressees>
-<iana:addressee>GOV_OVERSIGHT</iana:addressee>
-</iana:addressees>
 <iana:subject>[Root change {ticket}] Database change to {domainName}</iana:subject>
 <iana:content>
 Dear NTIA:
@@ -665,12 +601,8 @@ Authorized:
 <iana:keyPassphrase>woolamal00rrxv</iana:keyPassphrase>
 </iana:template>
 
-<!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation-nschange</iana:type>
-<iana:addressees>
-<iana:addressee>GOV_OVERSIGHT</iana:addressee>
-</iana:addressees>
 <iana:subject>[Root change {ticket}:{retry}] Name server change to {domainName}</iana:subject>
 <iana:content>
 Dear NTIA:
@@ -707,12 +639,8 @@ Authorized:
 <iana:keyPassphrase>woolamal00rrxv</iana:keyPassphrase>
 </iana:template>
 
-<!--todo-->
 <iana:template>
 <iana:type>usdoc-confirmation-remainder</iana:type>
-<iana:addressees>
-<iana:addressee>GOV_OVERSIGHT</iana:addressee>
-</iana:addressees>
 <iana:subject>[IANA #{ticket}] NTIA authorisation reminder for {domainName}</iana:subject>
 <iana:content>
 Hello,
@@ -770,9 +698,6 @@ The following exception happened:
 
 <iana:template>
 <iana:type>special-review</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>New transaction with special review domain</iana:subject>
 <iana:content>
 Current domain: {domainName} has special review flag set on.
@@ -782,9 +707,6 @@ Current domain: {domainName} has special review flag set on.
 
 <iana:template>
 <iana:type>manual-review</iana:type>
-<iana:addressees>
-<iana:addressee>IANA</iana:addressee>
-</iana:addressees>
 <iana:subject>Request {ticket} for domain {domainName} in manual review state</iana:subject>
 <iana:content>
 IANA staff:
