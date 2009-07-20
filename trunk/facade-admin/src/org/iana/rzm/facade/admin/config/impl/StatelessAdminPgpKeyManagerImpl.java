@@ -64,7 +64,7 @@ public class StatelessAdminPgpKeyManagerImpl extends AbstractRZMStatelessService
     private boolean isPgpKeyInUse(String name) {
         List<TemplateDef> templateDefs = templateDefConfig.getTemplateDefs();
         for (TemplateDef templateDef : templateDefs ) {
-            if (templateDef.getKeyName().equals(name))
+            if (name.equals(templateDef.getKeyName()))
                 return true;
         }
 
