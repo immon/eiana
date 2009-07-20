@@ -32,8 +32,8 @@ public class DNSZoneExportTest {
                 "\t\t\t\t\t86400 ; minimum\n" +
                 ")\n" +
                 "$TTL 518400\n" +
-                ". IN NS a.root-servers.net.\n" +
-                ". IN NS b.root-servers.net.\n" +
+                ". NS a.root-servers.net.\n" +
+                ". NS b.root-servers.net.\n" +
                 "a.root-servers.net. IN A 198.41.0.4\n" +
                 "a.root-servers.net. IN AAAA 2001:503:ba3e:0:0:0:2:30\n" +
                 "b.root-servers.net. IN A 128.63.2.53\n" +
@@ -59,8 +59,8 @@ public class DNSZoneExportTest {
                 "\t\t\t\t\t86400 ; minimum\n" +
                 ")\n" +
                 "$TTL 518400\n" +
-                ". IN NS a.root-servers.net.\n" +
-                ". IN NS b.root-servers.net.\n" +
+                ". NS a.root-servers.net.\n" +
+                ". NS b.root-servers.net.\n" +
                 "a.root-servers.net. IN A 198.41.0.4\n" +
                 "a.root-servers.net. IN AAAA 2001:503:ba3e:0:0:0:2:30\n" +
                 "b.root-servers.net. IN A 128.63.2.53\n" +
