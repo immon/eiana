@@ -42,13 +42,14 @@ public class ParameterManagerImpl implements ParameterManager {
         Set<String> ret = new HashSet<String>();
         Set<String> names = dao.getParameterNames(owner, name);
         if (names == null || names.isEmpty()) return null;
+
+        if (name == null || name.trim().length() == 0) return names;
+
         for (String n : names) {
-            if (!name.contains(".") && (!n.contains("."))) {
-                ret.add(n);
-            } else {
-                int dotIndex = n.lastIndexOf(".");
-                if (dotIndex > 0 && n.substring(0, dotIndex).equals(name))
-                    ret.add(n.substring(dotIndex + 1));
+            if (n.startsWith(name)) {
+                String subName = n.substring(name.length());
+                if (subName.length() > 1 && subName.indexOf(".") == 0)
+                    ret.add(subName.substring(1));
             }
         }
         return (ret.isEmpty()) ? null : ret;
