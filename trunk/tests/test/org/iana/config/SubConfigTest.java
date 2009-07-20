@@ -49,6 +49,19 @@ public class SubConfigTest extends RollbackableSpringContextTest {
         subSingleParam.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(subSingleParam);
 
+        subSingleParam = new SingleParameter("sub1.sub2_1.param14", Boolean.toString(true));
+        subSingleParam.setOwner(OWNER);
+        subSingleParam.setFromDate(System.currentTimeMillis() - 100000);
+        subSingleParam.setToDate(System.currentTimeMillis() + 100000);
+        hibernateConfigDAO.addParameter(subSingleParam);
+
+        SingleParameter subSingleParamAnotherUser = new SingleParameter("sub1.sub2_1.param15", Boolean.toString(true));
+        subSingleParamAnotherUser.setOwner("Another_" + OWNER);
+        subSingleParamAnotherUser.setFromDate(System.currentTimeMillis() - 100000);
+        subSingleParamAnotherUser.setToDate(System.currentTimeMillis() + 100000);
+        hibernateConfigDAO.addParameter(subSingleParam);
+
+
         SingleParameter singleParam1 = new SingleParameter("param11", Boolean.toString(true));
         singleParam1.setOwner(OWNER);
         singleParam1.setFromDate(System.currentTimeMillis() - 100000);
@@ -64,6 +77,8 @@ public class SubConfigTest extends RollbackableSpringContextTest {
         setParameter.setFromDate(System.currentTimeMillis() - 100000);
         setParameter.setToDate(System.currentTimeMillis() + 100000);
         hibernateConfigDAO.addParameter(setParameter);
+
+
     }
 
     @Test
@@ -86,10 +101,16 @@ public class SubConfigTest extends RollbackableSpringContextTest {
         OwnedConfig ownedConfig = new OwnedConfig(OWNER, parameterManager);
 
         Set<String> retNames = ownedConfig.getParameterNames();
-        assert retNames != null && retNames.size() == 1 && retNames.contains("param11");
+        assert retNames != null && retNames.size() == 6;
+
+        retNames = ownedConfig.getSubConfig("sub1").getParameterNames();
+        assert retNames != null && retNames.size() == 5;
+
+        retNames = ownedConfig.getSubConfig("sub1").getSubConfig("sub2").getParameterNames();
+        assert retNames != null && retNames.size() == 2;
 
         retNames = ownedConfig.getSubConfig("sub1").getSubConfig("sub2_1").getParameterNames();
-        assert retNames != null && retNames.size() == 1 && retNames.contains("param13");
+        assert retNames != null && retNames.size() == 2;
     }
 
     @Test
