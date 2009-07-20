@@ -30,15 +30,21 @@ public class RootServersProducerImpl implements RootServersProducer {
 
     public List<DNSHost> getRootServers() throws ConfigException {
         Config rootServerConfig = config.getSubConfig(rootServerParamNames);
-        if (rootServerConfig == null || rootServerConfig.getParameterNames() == null){
+
+        if (rootServerConfig == null)
             return rootServers;
-        }
+
+        Set<String> configRootServers = rootServerConfig.getParameterNames();
+
+        if (configRootServers == null || configRootServers.isEmpty())
+            return rootServers;
+
         return toDNSHostList(rootServerConfig);
     }
 
     public boolean hasRootServers() throws ConfigException {
-        Config rootServerConfig = config.getSubConfig(rootServerParamNames);
-        return rootServerConfig.getParameterNames().size() > 0;
+        List<DNSHost> retRootServers = getRootServers();
+        return (retRootServers != null) && (retRootServers.size() > 0);
     }
 
     public List<DNSHost> getDefaultServers() throws ConfigException {
@@ -58,14 +64,13 @@ public class RootServersProducerImpl implements RootServersProducer {
 
     private List<DNSHost> toDNSHostList(Config rootServerConfig) throws ConfigException {
         List<DNSHost> dnsHostsList = new ArrayList<DNSHost>();
-        if (rootServerConfig != null) {
-            for (String rootServer : rootServerConfig.getParameterNames()) {
-                Set<String> serverAddresses = config.getParameterSet(rootServer);
-                DNSHostImpl dnsHost = new DNSHostImpl(rootServer);
-                dnsHost.setIPAddressesAsStrings(serverAddresses);
-                dnsHostsList.add(dnsHost);
-            }
+        for (String rootServer : rootServerConfig.getParameterNames()) {
+            Set<String> serverAddresses = rootServerConfig.getParameterSet(rootServer);
+            DNSHostImpl dnsHost = new DNSHostImpl(rootServer);
+            dnsHost.setIPAddressesAsStrings(serverAddresses);
+            dnsHostsList.add(dnsHost);
         }
+
         return dnsHostsList;
     }
 
