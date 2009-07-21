@@ -13,9 +13,11 @@ import org.iana.rzm.mail.processor.simple.parser.VerisignEmailParseException;
 import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
 import org.iana.rzm.mail.processor.simple.processor.EmailProcessor;
 
+import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 
 /**
@@ -72,14 +74,33 @@ public class SimpleEmailsProcessor implements MailsProcessor {
             if (content instanceof String) {
                 String stringContent = (String) content;
                 process(from.getAddress(), subject, stringContent);
-            } else {
-                error(from.getAddress(), subject, null, "Not supported message format. Please send plain text message.");
+                return;
             }
+
+            if (content instanceof MimeMultipart) {
+               if(processMultipart(from.getAddress(), subject, (MimeMultipart) content))
+                   return;
+            }
+
+            error(from.getAddress(), subject, null, "Not supported message format. Please send plain text message.");
+
         } catch (MessagingException e) {
             log(e);
         } catch (IOException e) {
             log(e);
         }
+    }
+
+    private boolean processMultipart(String adress, String subject, MimeMultipart content) throws MailsProcessorException, MessagingException, IOException {
+        for (int i=0; i < content.getCount(); i++) {
+            BodyPart bp = content.getBodyPart(i);
+            Object bpContent = bp.getContent();
+            if (bpContent instanceof String) {
+                process(adress, subject, (String) bpContent);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void log(String msg) {
