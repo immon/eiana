@@ -1,7 +1,7 @@
 package org.iana.dns;
 
-import org.iana.config.impl.ConfigException;
 import org.iana.config.Parameter;
+import org.iana.config.impl.ConfigException;
 
 import java.util.List;
 
@@ -19,5 +19,7 @@ public interface RootServersProducer {
     List<DNSHost> getDefaultServers() throws ConfigException;
 
     List<Parameter> toConfig(List<DNSHost> rootServers) throws ConfigException;
+
+    void updateRootServers(List<DNSHost> rootServers) throws ConfigException;
 
 }

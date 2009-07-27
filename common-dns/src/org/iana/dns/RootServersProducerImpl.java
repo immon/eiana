@@ -18,6 +18,7 @@ import java.util.Set;
 public class RootServersProducerImpl implements RootServersProducer {
 
     Config config;
+    ParameterManager parameterManager;
 
     List<DNSHost> rootServers;
 
@@ -25,6 +26,7 @@ public class RootServersProducerImpl implements RootServersProducer {
         if (parameterManager == null)
             throw new IllegalArgumentException("parameter manager is null");
         config = new OwnedConfig(parameterManager);
+        this.parameterManager = parameterManager;
         this.rootServers = rootServers;
     }
 
@@ -74,4 +76,12 @@ public class RootServersProducerImpl implements RootServersProducer {
         return dnsHostsList;
     }
 
+    public void updateRootServers(List<DNSHost> rootServers) throws ConfigException {
+        if (rootServers != null && !rootServers.isEmpty()) {
+            List<Parameter> toUpdate = toConfig(rootServers);
+            for (Parameter param : toUpdate) {
+                parameterManager.updateParameter(Config.DEFAULT_OWNER, param);    
+            }
+        }
+    }
 }

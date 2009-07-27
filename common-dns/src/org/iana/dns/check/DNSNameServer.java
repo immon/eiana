@@ -1,13 +1,20 @@
 package org.iana.dns.check;
 
-import org.apache.log4j.*;
-import org.iana.dns.*;
-import org.iana.dns.check.exceptions.*;
+import org.apache.log4j.Logger;
+import org.iana.dns.DNSDomain;
+import org.iana.dns.DNSHost;
+import org.iana.dns.DNSIPAddress;
+import org.iana.dns.check.exceptions.EmptyIPAddressListException;
+import org.iana.dns.check.exceptions.NameServerUnreachableException;
 import org.xbill.DNS.*;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A helper class that represents a host which is a name server for a domain. During
@@ -152,6 +159,12 @@ public class DNSNameServer {
 
     public boolean isAuthoritative() throws NameServerUnreachableException{
         return ((getSOAByUDP() != null) && (getSOAByUDP().getHeader().getFlag(Flags.AA)));
+    }
+
+    public List<Record> getAnswerSection() throws NameServerUnreachableException {
+        return (getSOA() != null) ?
+                Arrays.asList(getSOA().getSectionArray(Section.ANSWER)) :
+                new ArrayList<Record>();
     }
 
     public List<Record> getAuthoritySection() throws NameServerUnreachableException {

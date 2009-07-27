@@ -2,8 +2,8 @@ package org.iana.config;
 
 import org.iana.config.impl.ConfigException;
 
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -20,6 +20,8 @@ public interface ConfigDAO {
     void removeParameter(Parameter parameter) throws ConfigException;
 
     void removeParameter(String owner, String name) throws ConfigException;
+
+    void updateParameter(Parameter parameter) throws ConfigException;
 
     Set<String> getParameterNames(String owner, String name) throws ConfigException;
 

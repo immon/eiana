@@ -2038,6 +2038,7 @@
                 <ref bean="mailsReceiverTrigger"/>
                 <ref bean="eppReceiverTrigger"/>
                 <ref bean="eppPollTrigger"/>
+                <ref bean="fromDNSUpdateTrigger"/>
             </list>
         </property>
     </bean>
@@ -2130,6 +2131,26 @@
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
+    </bean>
+
+    <!-- From DNS Update  -->
+
+    <bean id="fromDNSUpdateTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="fromDNSUpdate"/>
+        <!-- 10s delay -->
+        <property name="startDelay" value="10000"/>
+        <!-- every 7days -->
+        <property name="repeatInterval" value="604800000"/>
+    </bean>
+
+    <bean id="fromDNSUpdate" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="fromDNSUpdateAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="fromDNSUpdateAction" class="org.iana.dns.FromDNSUpdateAction">
+        <constructor-arg ref="rootServersProducerBean"/>
+        <property name="retries" value="2"/>
     </bean>
 
     <!-- DNS Export Configuration -->
