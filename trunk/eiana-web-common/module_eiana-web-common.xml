@@ -13,6 +13,12 @@
   </path>
   
   <path id="eiana-web-common.module.classpath">
+    <pathelement location="${common-mail.output.dir}"/>
+    <pathelement location="${common-mail.testoutput.dir}"/>
+    <pathelement location="${common-criteria.output.dir}"/>
+    <pathelement location="${common-criteria.testoutput.dir}"/>
+    <pathelement location="${common-dns.output.dir}"/>
+    <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${facade-common.output.dir}"/>
     <pathelement location="${facade-common.testoutput.dir}"/>
     <pathelement location="${common-config.output.dir}"/>
@@ -29,12 +35,10 @@
     <pathelement location="${integration-rt.testoutput.dir}"/>
     <pathelement location="${integration-securid.output.dir}"/>
     <pathelement location="${integration-securid.testoutput.dir}"/>
-    <pathelement location="${common-criteria.output.dir}"/>
-    <pathelement location="${common-criteria.testoutput.dir}"/>
-    <pathelement location="${common-dns.output.dir}"/>
-    <pathelement location="${common-dns.testoutput.dir}"/>
     <pathelement location="${eiana-notifications.output.dir}"/>
     <pathelement location="${eiana-notifications.testoutput.dir}"/>
+    <pathelement location="${common-objectdiff.output.dir}"/>
+    <pathelement location="${common-objectdiff.testoutput.dir}"/>
     <path refid="library.tapestry.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/iana-commons/IanaCommons.jar"/>
     <path refid="library.log4j.classpath"/>
@@ -43,8 +47,9 @@
     <path refid="library.spring.classpath"/>
     <pathelement location="${module.eiana-web-common.basedir}/../lib/idn/libidn-1.8.jar"/>
     <path refid="library.hibernate.classpath"/>
-    <path refid="library.rzm-ui-components.classpath"/>
     <path refid="library.secureid.classpath"/>
+    <pathelement location="${module.eiana-web-common.basedir}/../lib/jdom/jdom.jar"/>
+    <path refid="library.testng-5.5-jdk15.classpath"/>
   </path>
   
   
@@ -62,10 +67,16 @@
     </dirset>
   </path>
   
+  <path id="eiana-web-common.module.test.sourcepath">
+    <dirset dir="${module.eiana-web-common.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.eiana-web-common" depends="compile.module.eiana-web-common.production,compile.module.eiana-web-common.tests" description="Compile module eiana-web-common"/>
   
-  <target name="compile.module.eiana-web-common.production" depends="compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-codevalues,compile.module.eiana-startup,compile.module.integration-rt,compile.module.integration-securid,compile.module.common-criteria,compile.module.common-dns,compile.module.eiana-notifications" description="Compile module eiana-web-common; production classes">
+  <target name="compile.module.eiana-web-common.production" depends="compile.module.common-mail,compile.module.common-criteria,compile.module.common-dns,compile.module.facade-common,compile.module.facade-system,compile.module.eiana-util,compile.module.common-codevalues,compile.module.eiana-startup,compile.module.integration-rt,compile.module.integration-securid,compile.module.eiana-notifications,compile.module.common-objectdiff" description="Compile module eiana-web-common; production classes">
     <mkdir dir="${eiana-web-common.output.dir}"/>
     <javac destdir="${eiana-web-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.eiana-web-common}"/>
@@ -83,7 +94,23 @@
     </copy>
   </target>
   
-  <target name="compile.module.eiana-web-common.tests" depends="compile.module.eiana-web-common.production" description="compile module eiana-web-common; test classes" unless="skip.tests"/>
+  <target name="compile.module.eiana-web-common.tests" depends="compile.module.eiana-web-common.production" description="compile module eiana-web-common; test classes" unless="skip.tests">
+    <mkdir dir="${eiana-web-common.testoutput.dir}"/>
+    <javac destdir="${eiana-web-common.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.eiana-web-common}"/>
+      <classpath refid="eiana-web-common.module.classpath"/>
+      <classpath location="${eiana-web-common.output.dir}"/>
+      <src refid="eiana-web-common.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.eiana-web-common"/>
+    </javac>
+    
+    <copy todir="${eiana-web-common.testoutput.dir}">
+      <fileset dir="${module.eiana-web-common.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.eiana-web-common" description="cleanup module">
     <delete dir="${eiana-web-common.output.dir}"/>

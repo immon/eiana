@@ -70,4 +70,30 @@ public class ParameterManagerImpl implements ParameterManager {
         }
         return (ret.isEmpty()) ? null : ret;
     }
+
+    public void updateParameter(String owner, Parameter param) throws ConfigException {
+        Parameter retParam = dao.getParameter(owner, param.getName());
+        if (retParam != null) {
+            if (!retParam.getClass().equals(param.getClass()) )
+                throw new ConfigException("cannot update paramtere of different type current: " + param + " updated: " + retParam);
+
+            if (retParam instanceof SingleParameter) {
+                ((SingleParameter) retParam).setValue(param.getParameter());
+            } else {
+                if (retParam instanceof ListParameter) {
+                    ((ListParameter) retParam).setValues(param.getParameterList());
+                } else {
+                    if (retParam instanceof SetParameter) {
+                        ((SetParameter) retParam).setValues(param.getParameterSet());
+                    } else {
+                        throw new ConfigException("unknown parameter type: " + retParam);
+                    }
+                }
+            }
+
+            dao.updateParameter(retParam);
+        } else {
+            dao.addParameter(param);
+        }
+    }
 }

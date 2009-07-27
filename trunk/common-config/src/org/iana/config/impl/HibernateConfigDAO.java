@@ -5,10 +5,10 @@ import org.iana.config.Parameter;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -62,6 +62,15 @@ public class HibernateConfigDAO extends HibernateDaoSupport implements ConfigDAO
 
     public void removeParameter(String owner, String name) throws ConfigException {
         removeParameter(getParameter(owner, name));
+    }
+
+
+    public void updateParameter(Parameter parameter) throws ConfigException {
+    try {
+            getHibernateTemplate().update(parameter);
+        } catch (DataAccessException e) {
+            throw new ConfigException(e);
+        }
     }
 
     public Set<String> getParameterNames(String owner, String name) throws ConfigException {

@@ -122,6 +122,9 @@
         <fileset dir="${lib.dir}/apache-commons">
             <include name="**/*.jar"/>
         </fileset>
+         <fileset dir="${lib.dir}/dnsjava">
+            <include name="**/*.jar"/>
+        </fileset>
         <fileset dir="${lib.dir}/nask-commons">
             <include name="**/*.jar"/>
         </fileset>

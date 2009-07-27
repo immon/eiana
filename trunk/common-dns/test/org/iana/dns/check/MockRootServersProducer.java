@@ -61,4 +61,7 @@ public class MockRootServersProducer implements RootServersProducer {
     public List<Parameter> toConfig(List<DNSHost> rootServers) throws ConfigException {
         return null;
     }
+
+    public void updateRootServers(List<DNSHost> rootServers) throws ConfigException {
+    }
 }

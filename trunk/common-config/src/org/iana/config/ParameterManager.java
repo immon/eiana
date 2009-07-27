@@ -20,4 +20,5 @@ public interface ParameterManager {
 
     public Set<String> getSubConfigNames(String owner, String name) throws ConfigException;
 
+    public void updateParameter(String owner, Parameter param) throws ConfigException;
 }
