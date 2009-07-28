@@ -40,8 +40,8 @@ public class DomainNameValidator {
                 throw new InvalidDomainNameException(name, LABEL_TOO_LONG);
             if (piece.length() == 0)
                 throw new InvalidDomainNameException(name, LABEL_EMPTY);
-            if (!Character.isLetter(piece.charAt(0)))
-                throw new InvalidDomainNameException(name, LABEL_FIRT_CHAR_NOT_LETTER);
+            if (!Character.isLetterOrDigit(piece.charAt(0)))
+                throw new InvalidDomainNameException(name, LABEL_FIRST_CHAR_NOT_LETTER_OR_DIGIT);
             if (!Character.isLetterOrDigit(piece.charAt(piece.length() - 1)))
                 throw new InvalidDomainNameException(name, LABEL_LAST_CHAR_NOT_LETTER_OR_DIGIT);
         }

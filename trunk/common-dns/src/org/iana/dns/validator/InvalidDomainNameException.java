@@ -8,7 +8,7 @@ public class InvalidDomainNameException extends RuntimeException {
         NAME_TOO_LONG,
         LABEL_TOO_LONG,
         LABEL_EMPTY,
-        LABEL_FIRT_CHAR_NOT_LETTER,
+        LABEL_FIRST_CHAR_NOT_LETTER_OR_DIGIT,
         LABEL_LAST_CHAR_NOT_LETTER_OR_DIGIT
     }
 
