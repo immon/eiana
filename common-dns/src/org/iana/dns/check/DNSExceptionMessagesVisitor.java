@@ -64,8 +64,8 @@ public class DNSExceptionMessagesVisitor implements DNSTechnicalCheckExceptionVi
                 .append(e.getExpected()).append(", received: ").append(e.getReceived()).append("\n");
     }
 
-    public void acceptReservedIPv4Exception(ReservedIPv4Exception e) {
-        buffer.append("IP address is restricted according to RFC 3330: ")
+    public void acceptReservedIPv4Exception(ReservedIPException e) {
+        buffer.append("IP address is restricted: ")
                 .append(e.getIpAddress().getAddress()).append(" for host: ").append(e.getHostName())
                 .append(" and domain: ").append(domainTLDName(e.getDomainName())).append("\n");
     }

@@ -114,7 +114,7 @@ public class DNSExceptionXMLVisitorTest {
             "\t\t\t<value name=\"ns\">3</value>\n" +
             "\t\t</expected>\n" +
             "\t</exception>\n" +
-            "\t<exception name=\"ReservedIPv4Exception\">\n" +
+            "\t<exception name=\"ReservedIPException\">\n" +
             "\t\t<host>b.nic.de</host>\n" +
             "\t\t<other>\n" +
             "\t\t\t<value name=\"ip\">127.0.0.1</value>\n" +
@@ -207,7 +207,7 @@ public class DNSExceptionXMLVisitorTest {
 
         multiEx.addException(new NotEnoughNameServersException(domain, 3, 2));
 
-        multiEx.addException(new ReservedIPv4Exception(domain, host5, DNSIPAddressImpl.createIPAddress("127.0.0.1")));
+        multiEx.addException(new ReservedIPException(domain, host5, DNSIPAddressImpl.createIPAddress("127.0.0.1")));
 
         Map<Long, List<DNSHost>> serialNbrs = new HashMap<Long, List<DNSHost>>();
 

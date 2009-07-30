@@ -2,12 +2,10 @@ package org.iana.dns.check;
 
 import org.iana.dns.DNSDomain;
 import org.iana.dns.DNSIPAddress;
-import static org.iana.dns.DNSIPAddress.Type.IPv4;
-import org.iana.dns.DNSIPv4Address;
 import org.iana.dns.check.exceptions.EmptyIPAddressListException;
 import org.iana.dns.check.exceptions.NotEnoughNameServersException;
 import org.iana.dns.check.exceptions.NotUniqueIPAddressException;
-import org.iana.dns.check.exceptions.ReservedIPv4Exception;
+import org.iana.dns.check.exceptions.ReservedIPException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,12 +46,10 @@ public class MinimumNameServersAndNoReservedIPsCheck extends AbstractDNSDomainTe
             } else {
                 int uniqueSize = uniqueIPv4Addresses.size();
                 for (DNSIPAddress ipAddress : currentIps) {
-                    if ((ipAddress.getType() == IPv4)) {
-                        if (((DNSIPv4Address) ipAddress).isReserved()) {
-                            e.addException(new ReservedIPv4Exception(domain, currentNs.getHost(), ipAddress));
-                        } else {
-                            uniqueIPv4Addresses.add(ipAddress.getAddress());
-                        }
+                    if (ipAddress.isReserved()) {
+                        e.addException(new ReservedIPException(domain, currentNs.getHost(), ipAddress));
+                    } else {
+                        uniqueIPv4Addresses.add(ipAddress.getAddress());
                     }
                 }
                 if (uniqueSize < uniqueIPv4Addresses.size())

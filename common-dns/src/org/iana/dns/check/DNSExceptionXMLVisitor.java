@@ -164,7 +164,7 @@ public class DNSExceptionXMLVisitor implements DNSTechnicalCheckExceptionVisitor
         exceptions.add(exceptionDataDecorator);
     }
 
-    public void acceptReservedIPv4Exception(ReservedIPv4Exception e) {
+    public void acceptReservedIPv4Exception(ReservedIPException e) {
         ExceptionDataDecorator exceptionDataDecorator = new ExceptionDataDecorator(getSimpleName(e));
         exceptionDataDecorator.setHostName(e.getHostName());
         DNSIPAddress ipAddress = e.getIpAddress();
