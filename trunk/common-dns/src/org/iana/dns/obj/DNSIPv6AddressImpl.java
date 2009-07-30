@@ -5,6 +5,7 @@ import org.iana.dns.DNSIPv6Address;
 import org.iana.dns.DNSVisitor;
 import org.iana.dns.validator.IPAddressValidator;
 import org.iana.dns.validator.InvalidIPv6AddressException;
+import org.iana.dns.validator.ReservedIPAddressChecker;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -78,5 +79,9 @@ public class DNSIPv6AddressImpl extends DNSIPAddressImpl implements DNSIPv6Addre
 
     public void accept(DNSVisitor visitor) {
         visitor.visitIPv6Address(this);
+    }
+
+    public boolean isReserved() {
+        return ReservedIPAddressChecker.check(this);
     }
 }

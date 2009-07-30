@@ -36,7 +36,7 @@ public interface DNSTechnicalCheckExceptionVisitor {
 
     public void acceptNotEnoughNameServersException(NotEnoughNameServersException e);
 
-    public void acceptReservedIPv4Exception(ReservedIPv4Exception e);
+    public void acceptReservedIPv4Exception(ReservedIPException e);
 
     public void acceptSerialNumberNotEqualException(SerialNumberNotEqualException e);
 

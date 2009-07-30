@@ -7,13 +7,4 @@ package org.iana.dns;
  */
 public interface DNSIPv4Address extends DNSIPAddress {
 
-    /**
-     * Determines whether this IP address has been allocated or assigned
-     * for special use according to RFC 3330.
-     *
-     * @return true if this IP address has been allocated or assigned
-     *         for special use according to RFC 3330; false otherwise.
-     */
-    boolean isReserved();
-
 }

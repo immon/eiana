@@ -14,7 +14,7 @@ public class ReservedIPv4MessageBuilderTest {
     @Test
     public void testBuildMessage() throws Exception {
 
-        String xml = "<exception name=\"ReservedIPv4Exception\">\n" +
+        String xml = "<exception name=\"ReservedIPException\">\n" +
                 "\t\t<host>b.nic.de</host>\n" +
                 "\t\t<other>\n" +
                 "\t\t\t<value name=\"ip\">127.0.0.1</value>\n" +

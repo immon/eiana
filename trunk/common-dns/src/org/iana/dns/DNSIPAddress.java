@@ -46,4 +46,13 @@ public interface DNSIPAddress extends DNSObject, Comparable<DNSIPAddress> {
      * @return an array of the parts of this IP address.
      */
     int[] getInts();
+
+    /**
+     * Determines whether this IP address has been allocated or assigned
+     * for special use according to RFC 3330.
+     *
+     * @return true if this IP address has been allocated or assigned
+     *         for special use according to RFC 3330; false otherwise.
+     */
+    boolean isReserved();
 }

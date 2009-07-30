@@ -10,7 +10,7 @@ import org.iana.dns.check.DNSTechnicalCheckExceptionVisitor;
  *
  * @author Piotr Tkaczyk
  */
-public class ReservedIPv4Exception extends DomainTechnicalCheckException {
+public class ReservedIPException extends DomainTechnicalCheckException {
 
     DNSIPAddress ipAddress;
 
@@ -21,7 +21,7 @@ public class ReservedIPv4Exception extends DomainTechnicalCheckException {
      * @param host      current host
      * @param ipAddress wrong IP address
      */
-    public ReservedIPv4Exception(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
+    public ReservedIPException(DNSDomain domain, DNSHost host, DNSIPAddress ipAddress) {
         super(domain, host);
         this.ipAddress = ipAddress;
     }
@@ -35,7 +35,7 @@ public class ReservedIPv4Exception extends DomainTechnicalCheckException {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        ReservedIPv4Exception that = (ReservedIPv4Exception) o;
+        ReservedIPException that = (ReservedIPException) o;
 
         if (ipAddress != null ? !ipAddress.equals(that.ipAddress) : that.ipAddress != null) return false;
 
