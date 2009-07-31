@@ -139,10 +139,13 @@ why the request can proceed.
 Please read our technical requirements at
     http://www.iana.org/procedures/nameserver-requirements.html
 
-You can retest your servers, or provide this reasoning, through
-the website at the following URL:
+You can retest your servers through the website at the following URL:
 
 {url}
+
+If you wish to provide an explanation on why you believe the
+request should proceed despite these errors, please reply to
+this email and an IANA staff member will respond.
 
 We will automatically close your request without prejudice after
 30 days if the problem is not fixed. After this time you are free 
@@ -316,6 +319,7 @@ new contact, for this domain we are providing you with this update.
 We have been requested to withdraw this request, and therefore this
 request has been closed without prejudice.
 
+    
 {widthdrawnReason}
 
 If you have any questions regarding this request, please reply to
@@ -529,7 +533,7 @@ listed as a party to this request.
 </iana:addressees>
 <iana:subject>[IANA #{ticket}] Your confirmation requested to update your nameserver(s) ({token})</iana:subject>
 <iana:content>
-Dear {name},
+Dear {name} {title},
 
 The Internet Assigned Numbers Authority (IANA), in its role as
 manager of the DNS root zone, has received a request to change the
@@ -626,8 +630,16 @@ listed as a party to this request.
 <iana:addressees>
 <iana:addressee>IANA</iana:addressee>
 </iana:addressees>
-<iana:subject>Domain modification</iana:subject>
-<iana:content>Zone Insertion Alert for {domainName}. Only {period} days left.</iana:content>
+<iana:subject>Alert: Change to {domainName} still pending zone insertion</iana:subject>
+<iana:content>
+IANA Staff:
+
+The change in ticket {request} has now been pending with VeriSign for
+implementation for {days} days, and the change has not been approved by
+VeriSign yet for placement in the root zone. This may require follow-up
+with VeriSign. There are only {period} days left before this ticket
+will go into exception state.
+</iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
@@ -636,8 +648,15 @@ listed as a party to this request.
 <iana:addressees>
 <iana:addressee>IANA</iana:addressee>
 </iana:addressees>
-<iana:subject>Domain modification</iana:subject>
-<iana:content>Zone Publication Alert for {domainName}. Only {period} days left.</iana:content>
+<iana:subject>Alert: Scheduled change to {domainName} not seen in root zone</iana:subject>
+<iana:content>
+IANA Staff:
+
+The change in ticket {request} has now been pending with VeriSign for
+publication for {days} days, and the change has still not been seen
+in the root zone. This may require follow-up with VeriSign. There are
+only {period} days left before this ticket will go into exception state.
+</iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
 
@@ -846,17 +865,31 @@ Internet Assigned Numbers Authority
 
 <iana:template>
 <iana:type>contact-parse-exception</iana:type>
-<iana:subject>RZM Email Parsing Problem; Re: {subject}</iana:subject>
+<iana:subject>Error reading your email; Re: {subject}</iana:subject>
 <iana:content>
-IANA Staff:
-	
-The parsing process failed for an email. The error message is:
+To whom it may concern:
+
+We received your email to our automated root zone system, which is
+designed to receive responses to automated requests. We were unable
+to successfully read any commands from this message, so it has been
+passed to IANA staff for manual review.
+
+If you were trying to transmit a command and you know what you did
+wrong, you may resend another email to the system to try again.
+
 {message}
 
-The message content is as follows:
+The message content we received from you is as follows:
 --- BEGIN MESSAGE ---
 {content}
 --- END MESSAGE ---
+
+With kindest regards,
+
+Root Zone Management
+Internet Assigned Numbers Authority
+
+NOTE: This has been an automated message.
 
 </iana:content>
 <iana:signed>false</iana:signed>
@@ -922,24 +955,5 @@ Internet Assigned Numbers Authority
 </iana:content>
 <iana:signed>false</iana:signed>
 </iana:template>
-
-<iana:template>
-<iana:type>general-email-exception</iana:type>
-<iana:subject>RZM Email Parsing Problem; Re: {subject}</iana:subject>
-<iana:content>
-IANA Staff:
-
-The parsing process failed for an email. The error message is:
-{message}
-
-The message content is as follows:
---- BEGIN MESSAGE ---
-{content}
---- END MESSAGE ---
-
-</iana:content>
-<iana:signed>false</iana:signed>
-</iana:template>
-
 
 </iana:templates>
