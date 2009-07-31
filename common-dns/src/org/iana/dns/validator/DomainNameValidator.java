@@ -19,6 +19,7 @@ public class DomainNameValidator {
         if (name == null) return null;
         name = name.toLowerCase();
         if (name.endsWith(".")) name = name.substring(0, name.length()-1);
+        name = name.trim();
         return name;
     }
 
