@@ -146,7 +146,7 @@ class BindExport {
         String hostName = host.getFullyQualifiedName();
         for (DNSIPAddress addr : host.getIPAddresses()) {
             _prints(hostName);
-            _prints(IN);
+//            _prints(IN);
             switch (addr.getType()) {
                 case IPv4:
                     _prints(A); break;
