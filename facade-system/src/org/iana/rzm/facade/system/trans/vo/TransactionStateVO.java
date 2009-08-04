@@ -23,6 +23,7 @@ public class TransactionStateVO implements Serializable {
         PENDING_SUPP_TECH_CHECK,
         PENDING_SUPP_TECH_CHECK_REMEDY,
         PENDING_USDOC_APPROVAL,
+        PENDING_CLARIFICATIONS,
         PENDING_ZONE_INSERTION,
         PENDING_ZONE_PUBLICATION,
         PENDING_ZONE_TESTING,
