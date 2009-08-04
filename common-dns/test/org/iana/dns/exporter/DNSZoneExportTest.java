@@ -34,10 +34,10 @@ public class DNSZoneExportTest {
                 "$TTL 518400\n" +
                 ". NS a.root-servers.net.\n" +
                 ". NS b.root-servers.net.\n" +
-                "a.root-servers.net. IN A 198.41.0.4\n" +
-                "a.root-servers.net. IN AAAA 2001:503:ba3e:0:0:0:2:30\n" +
-                "b.root-servers.net. IN A 128.63.2.53\n" +
-                "b.root-servers.net. IN AAAA 2001:500:1:0:0:0:803f:235\n";
+                "a.root-servers.net. A 198.41.0.4\n" +
+                "a.root-servers.net. AAAA 2001:503:ba3e:0:0:0:2:30\n" +
+                "b.root-servers.net. A 128.63.2.53\n" +
+                "b.root-servers.net. AAAA 2001:500:1:0:0:0:803f:235\n";
 
         valid = valid.replaceAll("\\n", System.getProperty("line.separator"));
         assert valid.equalsIgnoreCase(out.toString());
@@ -61,21 +61,21 @@ public class DNSZoneExportTest {
                 "$TTL 518400\n" +
                 ". NS a.root-servers.net.\n" +
                 ". NS b.root-servers.net.\n" +
-                "a.root-servers.net. IN A 198.41.0.4\n" +
-                "a.root-servers.net. IN AAAA 2001:503:ba3e:0:0:0:2:30\n" +
-                "b.root-servers.net. IN A 128.63.2.53\n" +
-                "b.root-servers.net. IN AAAA 2001:500:1:0:0:0:803f:235\n" +
+                "a.root-servers.net. A 198.41.0.4\n" +
+                "a.root-servers.net. AAAA 2001:503:ba3e:0:0:0:2:30\n" +
+                "b.root-servers.net. A 128.63.2.53\n" +
+                "b.root-servers.net. AAAA 2001:500:1:0:0:0:803f:235\n" +
                 "$TTL 172800\n" +
                 "by. IN NS arwena.nask.waw.pl.\n" +
                 "pl. IN NS a-dns.pl.\n" +
                 "pl. IN NS a.root-servers.net.\n" +
                 "pl. IN NS b-dns.pl.\n" +
                 "pl. IN NS f-dns.pl.\n" +
-                "a-dns.pl. IN A 195.187.245.44\n" +
-                "arwena.nask.waw.pl. IN A 193.59.201.28\n" +
-                "b-dns.pl. IN A 80.50.50.10\n" +
-                "f-dns.pl. IN A 217.17.46.189\n" +
-                "f-dns.pl. IN AAAA 2001:1a68:0:10:0:0:0:189\n";
+                "a-dns.pl. A 195.187.245.44\n" +
+                "arwena.nask.waw.pl. A 193.59.201.28\n" +
+                "b-dns.pl. A 80.50.50.10\n" +
+                "f-dns.pl. A 217.17.46.189\n" +
+                "f-dns.pl. AAAA 2001:1a68:0:10:0:0:0:189\n";
 
         valid = valid.replaceAll("\\n", System.getProperty("line.separator"));
         assert valid.equalsIgnoreCase(out.toString());
