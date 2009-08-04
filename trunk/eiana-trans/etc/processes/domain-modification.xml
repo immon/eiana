@@ -40,6 +40,7 @@
         <transition name="TRANSITION_PENDING_SUPP_TECH_CHECK" to="PENDING_SUPP_TECH_CHECK"/>
         <transition name="TRANSITION_PENDING_SUPP_TECH_CHECK_REMEDY" to="PENDING_SUPP_TECH_CHECK_REMEDY"/>
         <transition name="TRANSITION_PENDING_USDOC_APPROVAL" to="PENDING_USDOC_APPROVAL"/>
+        <transition name="TRANSITION_PENDING_CLARIFICATIONS" to="PENDING_CLARIFICATIONS"/>
         <transition name="TRANSITION_PENDING_ZONE_INSERTION" to="PENDING_ZONE_INSERTION"/>
         <transition name="TRANSITION_PENDING_ZONE_PUBLICATION" to="PENDING_ZONE_PUBLICATION"/>
         <transition name="TRANSITION_PENDING_ZONE_TESTING" to="PENDING_ZONE_TESTING"/>
@@ -458,8 +459,19 @@
                 </action>
             </transition>
             <transition name="admin-reject" to="REJECTED_TRANSPARENT"/>
+            <transition name="withdraw" to="PENDING_CLARIFICATIONS"/>
             <transition name="alert" to="EXCEPTION"/>
         </state>
+
+        <state name="PENDING_CLARIFICATIONS">
+            <event type='node-enter'>
+                <action class="org.iana.rzm.trans.process.pending_clarifications.PendingClarificationsAction"/>
+            </event>
+            <transition name="accept" to="PENDING_USDOC_APPROVAL"/>
+            <transition name="alert" to="EXCEPTION"/>
+        </state>
+
+
 
         <decision name="NS_CHANGE_DECISION">
             <handler class="org.iana.rzm.trans.process.pending_zone_insertion.NameServerChange"/>
