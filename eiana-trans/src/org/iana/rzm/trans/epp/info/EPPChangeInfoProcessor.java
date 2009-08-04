@@ -46,15 +46,27 @@ public class EPPChangeInfoProcessor implements EPPStatusQuery {
     }
 
     public EPPChangeStatus queryStatusAndProcess(long transactionID) throws EPPException, TransactionException {
-        Transaction trans = transactionManager.getTransaction(transactionID);
-        EPPChangeStatus response = queryStatus(trans);
-        process(trans, response);
-        return response;
+        try {
+            Transaction trans = transactionManager.getTransaction(transactionID);
+            EPPChangeStatus response = queryStatus(trans);
+            process(trans, response);
+            return response;
+        } catch (Exception e) {
+            logger.error("quering info and processing", e);
+            eppErrorHandler.handleException(e);
+            throw new EPPException(e);
+        }
     }
 
     private EPPChangeStatus queryStatus(Transaction trans) throws EPPException {
-        EPPChangeInfoReq req = new EPPChangeInfoReq(eppClient, new SimpleIdGenerator());
-        return req.queryStatus(trans);
+        try {
+            EPPChangeInfoReq req = new EPPChangeInfoReq(eppClient, new SimpleIdGenerator());
+            return req.queryStatus(trans);
+        } catch (Exception e) {
+            logger.error("quering info and processing", e);
+            eppErrorHandler.handleException(e);
+            throw new EPPException(e);
+        }
     }
 
     private void process(Transaction trans, EPPChangeStatus status) throws TransactionException {

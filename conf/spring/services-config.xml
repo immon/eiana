@@ -2320,11 +2320,7 @@
         <constructor-arg>
             <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
                 <constructor-arg index="0" ref="templateFactory"/>
-                <constructor-arg index="1">
-                    <list>
-                        <value>system-errors@iana.org</value>
-                    </list>
-                </constructor-arg>
+                <constructor-arg index="1" ref="defaultAddresseeProducer"/>
                 <constructor-arg index="2" value="epp-error"/>
                 <constructor-arg index="3" ref="eppErrorDataProducer"/>
             </bean>
