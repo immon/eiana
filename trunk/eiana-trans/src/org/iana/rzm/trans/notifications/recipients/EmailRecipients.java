@@ -5,9 +5,9 @@ import org.iana.notifications.producers.AddresseeProducer;
 import org.iana.rzm.common.validators.CheckTool;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -37,8 +37,8 @@ public class EmailRecipients implements AddresseeProducer {
         }
 
         for (String e : emails) {
-            if (CheckTool.isCorrectEmali(email)) {
-                ret.add(new PAddressee(email, email));
+            if (CheckTool.isCorrectEmali(e)) {
+                ret.add(new PAddressee(e, e));
             }
         }
 

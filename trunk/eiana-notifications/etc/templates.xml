@@ -793,6 +793,9 @@ requested the recover the password for this account via our website.
 
 <iana:template>
 <iana:type>epp-error</iana:type>
+<iana:addressees>
+<iana:addressee>SYSTEM_ERRORS</iana:addressee>
+</iana:addressees>
 <iana:subject>EPP Poll Exception</iana:subject>
 <iana:content>
 The following exception happened:
