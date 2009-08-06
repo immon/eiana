@@ -32,11 +32,16 @@ public class InitDatabaseTask extends HibernateTask {
         return contact;
     }
 
-    public static Host setupHost(Host host) throws InvalidIPAddressException {
+    public static Host setupHost1(Host host) throws InvalidIPAddressException {
         host.setName(host.getName());
         host.addIPAddress(IPAddress.createIPv4Address("1.2.3.4"));
-        host.addIPAddress(IPAddress.createIPv4Address("5.6.7.8"));
         host.addIPAddress(IPAddress.createIPv6Address("1234:5678::90AB"));
+        return host;
+    }
+
+    public static Host setupHost2(Host host) throws InvalidIPAddressException {
+        host.setName(host.getName());
+        host.addIPAddress(IPAddress.createIPv4Address("5.6.7.8"));
         host.addIPAddress(IPAddress.createIPv6Address("CDEF::1234:5678"));
         return host;
     }
@@ -50,8 +55,8 @@ public class InitDatabaseTask extends HibernateTask {
         domain.setSupportingOrg(setupContact(new Contact(), "supporting-org", name, "US"));
         domain.setWhoisServer("whois." + name);
         domain.setAdminContact(setupContact(new Contact(), "admin", name, "US"));
-        domain.addNameServer(setupHost(new Host("ns1." + name)));
-        domain.addNameServer(setupHost(new Host("ns2." + name)));
+        domain.addNameServer(setupHost1(new Host("ns1." + name)));
+        domain.addNameServer(setupHost2(new Host("ns2." + name)));
         domain.setTechContact(setupContact(new Contact(), "tech", name, "US"));
         return domain;
     }

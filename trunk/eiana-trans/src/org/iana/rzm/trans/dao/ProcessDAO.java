@@ -35,6 +35,10 @@ public interface ProcessDAO {
 
     public List<ProcessInstance> findOpenProcessInstances(final String domainName);
 
+    public List<ProcessInstance> findAllOpenProcessInstances();
+
+    public List<ProcessInstance> findOpenProcessInstancesForNameServer(String nameServer);
+
     public List<ProcessInstance> findAllProcessInstances(final String domainName);
 
     public List<ProcessInstance> findAllProcessInstances(final RZMUser user);

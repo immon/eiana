@@ -50,6 +50,10 @@ public interface TransactionManager {
 
     List<Transaction> findAll();
 
+    List<Transaction> findAllOpen();
+
+    List<Transaction> findOpenForNameServer(String nameServer);
+
     List<Transaction> find(Criterion criteria);
 
     List<Transaction> find(Criterion criteria, int offset, int limit);

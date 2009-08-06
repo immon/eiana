@@ -2,9 +2,8 @@ package org.iana.rzm.trans.dao;
 
 import org.hibernate.Query;
 import org.iana.criteria.Criterion;
-import org.iana.rzm.trans.process.general.springsupport.JbpmContextFactory;
-import org.iana.rzm.trans.TransactionData;
 import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.process.general.springsupport.JbpmContextFactory;
 import org.iana.rzm.user.RZMUser;
 import org.jbpm.JbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;
@@ -208,6 +207,56 @@ public class JbpmProcessDAO implements ProcessDAO {
                             "   and pi.end is null"
             );
             query.setString("name", domainName);
+            return query.list();
+        } finally {
+            ctx.close();
+        }
+    }
+
+    public List<ProcessInstance> findAllOpenProcessInstances() {
+        JbpmContext ctx = jbpmContextFactory.getJbpmContext();
+        try {
+            Query query = ctx.getSession().createQuery(
+                    "select pi " +
+                            "from ProcessInstance as pi, " +
+                            "HibernateLongInstance as hli, " +
+                            "TransactionData as td " +
+                            "   inner join td.currentDomain as domain " +
+                            "where hli.value.class = 'org.iana.rzm.trans.TransactionData' " +
+                            "   and hli.value.id = td.objId " +
+                            "   and pi = hli.processInstance " +
+                            "   and pi.end is null"
+            );
+            return query.list();
+        } finally {
+            ctx.close();
+        }
+    }
+
+    public List<ProcessInstance> findOpenProcessInstancesForNameServer(String nameServer) {
+         JbpmContext ctx = jbpmContextFactory.getJbpmContext();
+        try {
+            Query query = ctx.getSession().createQuery(
+                    "select pi " +
+                    "from ProcessInstance as pi, " +
+                    "HibernateLongInstance as hli, " +
+                    "TransactionData as td " +
+                    "   inner join td.currentDomain as domain " +
+                    "   inner join td.domainChange as dChange " +
+                    "   inner join dChange.fieldChangeList as fChangeList " +
+                    "   inner join fChangeList.change as change " +
+                    "   left join change.added as cAdded " +
+                    "   left join change.removed as cRemoved " +
+                    "   left join change.modified as cModified, " +
+                    "   ObjectChange oChange " +
+                    "where hli.value.class = 'org.iana.rzm.trans.TransactionData' " +
+                    "   and hli.value.id = td.objId " +
+                    "   and pi = hli.processInstance " +
+                    "   and pi.end is null " +
+                    "   and fChangeList.fieldName = 'nameServers' " +
+                    "   and ((cAdded = oChange or cRemoved = oChange or cModified = oChange) and oChange.id = :ns) "
+            );
+            query.setString("ns", nameServer);
             return query.list();
         } finally {
             ctx.close();

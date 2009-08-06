@@ -5,6 +5,7 @@ import org.iana.criteria.Criterion;
 import org.iana.criteria.Order;
 import org.iana.criteria.SortCriterion;
 import org.iana.dns.check.DNSTechnicalCheck;
+import org.iana.objectdiff.DiffConfiguration;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -39,8 +40,8 @@ public class StatelessAdminTransactionServiceImpl extends StatelessTransactionSe
 
     private UserManager userManager;
 
-    public StatelessAdminTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, DNSTechnicalCheck dnsTechnicalCheckNoRA, EPPStatusQuery query) {
-        super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck, dnsTechnicalCheckNoRA);
+    public StatelessAdminTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, DNSTechnicalCheck dnsTechnicalCheckNoRA, EPPStatusQuery query, DiffConfiguration diffConfiguration) {
+        super(userManager, transactionManager, domainManager, transactionDetectorService, dnsTechnicalCheck, dnsTechnicalCheckNoRA, diffConfiguration);
         CheckTool.checkNull(query, "null epp status query");
         this.query = query;
         this.transactionManager = transactionManager;
