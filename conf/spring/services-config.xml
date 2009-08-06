@@ -189,6 +189,7 @@
         <constructor-arg index="4" ref="dnsTechnicalCheckBean"/>
         <constructor-arg index="5" ref="dnsTechnicalCheckBeanNoRadicalAlteration"/>
         <constructor-arg index="6" ref="eppReceiverAction"/>
+        <constructor-arg index="7" ref="diffConfig"/>
     </bean>
 
     <!-- ######################################################################## -->
@@ -519,6 +520,7 @@
         <constructor-arg ref="detectorService"/>
         <constructor-arg ref="dnsTechnicalCheckBean"/>
         <constructor-arg ref="dnsTechnicalCheckBeanNoRadicalAlteration"/>
+        <constructor-arg ref="diffConfig"/>
     </bean>
 
     <!-- ######################################################################## -->

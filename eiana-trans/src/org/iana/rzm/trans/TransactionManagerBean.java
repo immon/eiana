@@ -130,6 +130,16 @@ public class TransactionManagerBean implements TransactionManager {
         return toTransactions(processInstances);
     }
 
+    public List<Transaction> findAllOpen() {
+        List<ProcessInstance> processInstances = processDAO.findAllOpenProcessInstances();
+        return toTransactions(processInstances);
+    }
+
+    public List<Transaction> findOpenForNameServer(String nameServer) {
+        List<ProcessInstance> processInstances = processDAO.findOpenProcessInstancesForNameServer(nameServer);
+        return toTransactions(processInstances);
+    }
+
     public List<Transaction> find(Criterion criteria) {
         List<ProcessInstance> processInstances = processDAO.find(criteria);
         return toTransactions(processInstances);

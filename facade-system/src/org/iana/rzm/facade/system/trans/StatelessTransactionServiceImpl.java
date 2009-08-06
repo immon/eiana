@@ -7,6 +7,7 @@ import org.iana.criteria.SortCriterion;
 import org.iana.dns.DNSDomain;
 import org.iana.dns.check.DNSTechnicalCheck;
 import org.iana.dns.check.DNSTechnicalCheckException;
+import org.iana.objectdiff.*;
 import org.iana.rzm.common.exceptions.InfrastructureException;
 import org.iana.rzm.common.exceptions.InvalidCountryCodeException;
 import org.iana.rzm.common.validators.CheckTool;
@@ -44,18 +45,22 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
 
     private UserManager userManager;
 
-    public StatelessTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, DNSTechnicalCheck dnsTechnicalCheckNoRA) {
+    private DiffConfiguration diffConfiguration;
+
+    public StatelessTransactionServiceImpl(UserManager userManager, TransactionManager transactionManager, DomainManager domainManager, TransactionDetectorService transactionDetectorService, DNSTechnicalCheck dnsTechnicalCheck, DNSTechnicalCheck dnsTechnicalCheckNoRA, DiffConfiguration diffConfiguration) {
         CheckTool.checkNull(transactionManager, "transaction manager");
         CheckTool.checkNull(domainManager, "domain manager");
         CheckTool.checkNull(transactionDetectorService, "change detector");
         CheckTool.checkNull(dnsTechnicalCheck, "technical check");
         CheckTool.checkNull(dnsTechnicalCheckNoRA, "technical check no radical alteration");
+        CheckTool.checkNull(diffConfiguration, "diff configuration");
         this.userManager = userManager;
         this.transactionManager = transactionManager;
         this.domainManager = domainManager;
         this.transactionDetectorService = transactionDetectorService;
         this.technicalCheck = dnsTechnicalCheck;
         this.technicalCheckNoRadicalAlteration = dnsTechnicalCheckNoRA;
+        this.diffConfiguration = diffConfiguration;
     }
 
     public TransactionVO get(long id, AuthenticatedUser authUser) throws AccessDeniedException, NoObjectFoundException, InfrastructureException {
@@ -145,11 +150,16 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
 
     private void existsTransaction(String domainName) throws TransactionExistsException {
         List<Transaction> list = transactionManager.findOpenTransactions(domainName);
-        if (list.size() > 0) throw new TransactionExistsException(domainName);
+        if (list.size() > 0) 
+            throw new TransactionExistsException(domainName);
     }
 
-    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, PerformTechnicalCheck performTechnicalCheck, String comment, AuthenticatedUser authUser) throws NoModificationException, CloneNotSupportedException {
+    private TransactionVO createTransaction(Domain currentDomain, Domain modifiedDomain, List<TransactionActionVO> actions, String submitterEmail, PerformTechnicalCheck performTechnicalCheck, String comment, AuthenticatedUser authUser) throws NoModificationException, CloneNotSupportedException, NameServerChangeNotAllowedException {
+
         Domain md = currentDomain.clone();
+
+        Set<String> alreadyUsedNameServers = new HashSet<String>();
+
         for (TransactionActionVO action : actions) {
             if (TransactionActionVO.MODIFY_TC.equals(action.getName())) {
                 md.setTechContact(modifiedDomain.getTechContact());
@@ -166,17 +176,122 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
                     ObjectValueVO val = (ObjectValueVO) vo.getValue();
                     if (ChangeVO.Type.ADDITION.equals(vo.getType()) || vo.isAddition()) {
                         md.addNameServer(modifiedDomain.getNameServer(val.getName()));
+                        List<Transaction> transactions = transactionManager.findOpenForNameServer(val.getName());
+                        for (Transaction trans : transactions) {
+                            ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, diffConfiguration);
+                            ObjectChange transDomainChange = trans.getDomainChange();
+                            if (!isSameNameServerAddition(domainChange, transDomainChange, val.getName())) {
+                                alreadyUsedNameServers.add(val.getName());
+                            }
+                        }
                     } else if (ChangeVO.Type.REMOVAL.equals(vo.getType())) {
                         md.removeNameServer(val.getName());
+                        if (isNameServerAlreadyInUse(val.getName())) {
+                            alreadyUsedNameServers.add(val.getName());
+                        }
                     } else if (ChangeVO.Type.UPDATE.equals(vo.getType())) {
                         md.setNameServer(modifiedDomain.getNameServer(val.getName()));
+                        if (isNameServerAlreadyInUse(val.getName())) {
+                            alreadyUsedNameServers.add(val.getName());
+                        }
                     }
                 }
             }
         }
+
+        if (!alreadyUsedNameServers.isEmpty())
+            throw new NameServerChangeNotAllowedException("for: " + alreadyUsedNameServers);
+
+
+//
+//        if (!touchedNameServers.isEmpty()) {
+//
+//            Set<String> usedNameservers = new HashSet<String>();
+//
+//            ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, diffConfiguration);
+//
+//            List<Transaction> openedTransactions = transactionManager.findAllOpen();
+//
+//            for (Transaction oTransaction : openedTransactions) {
+//                ObjectChange oChange = oTransaction.getDomainChange();
+//                Map<String, Change> fieldChanges = oChange.getFieldChanges();
+//                if (fieldChanges.containsKey("nameServers")) {
+//                    CollectionChange nameServersChange = (CollectionChange) fieldChanges.get("nameServers");
+//                    for (Change c : nameServersChange.getAdded()) {
+//                        for (String ns : touchedNameServers) {
+//                            ObjectChange oc = ((ObjectChange) c);
+//                            if (ns.equals(oc.getId())) {
+//                                Map<String, Change> domainFieldChanges = domainChange.getFieldChanges();
+//                                if (domainFieldChanges.containsKey("nameServers")) {
+//                                    CollectionChange domainNameServersChange = (CollectionChange) domainFieldChanges.get("nameServers");
+//                                    for (Change c1 : domainNameServersChange.getAdded()) {
+//                                        ObjectChange oc1 = ((ObjectChange) c1);
+//                                        if (oc1.getId().equals(oc.getId())) {
+//                                            Change fc1 = oc1.getFieldChange("addresses");
+//                                            Change fc2 = oc.getFieldChange("addresses");
+//                                            if (fc1 != null && fc2 != null && !fc1.equals(fc2)) {
+//                                                usedNameservers.add(oc1.getId());
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                    for (Change c : nameServersChange.getRemoved()) {
+//                        for (String ns : touchedNameServers) {
+//                            ObjectChange oc = ((ObjectChange) c);
+//                            if (ns.equals(oc.getId()))
+//                                usedNameservers.add(ns);
+//                        }
+//                    }
+//                    for (Change c : nameServersChange.getModified()) {
+//                        for (String ns : touchedNameServers) {
+//                            ObjectChange oc = ((ObjectChange) c);
+//                            if (ns.equals(oc.getId())) {
+//                                usedNameservers.add(ns);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            if (!usedNameservers.isEmpty())
+//                throw new NameServerChangeNotAllowedException("for: " + usedNameservers);
+//
+//        }
+
+
         Transaction trans = transactionManager.createDomainModificationTransaction(md, submitterEmail, authUser.getUserName());
         trans.setComment(comment);
         return TransactionConverter.toTransactionVO(trans);
+    }
+
+    private boolean isSameNameServerAddition(ObjectChange current, ObjectChange existing, String nameServer) {
+        ObjectChange currentObjChange = getNameServerChangeFromObjectChange(current, nameServer);
+        ObjectChange existingObjChange = getNameServerChangeFromObjectChange(existing, nameServer);
+
+        return (currentObjChange.equals(existingObjChange));
+    }
+
+    private ObjectChange getNameServerChangeFromObjectChange(ObjectChange objectChange, String nameServer) {
+        Map<String, Change> fieldChanges = objectChange.getFieldChanges();
+            if (fieldChanges.containsKey("nameServers")) {
+                CollectionChange nameServersChange = (CollectionChange) fieldChanges.get("nameServers");
+                for (Change c : nameServersChange.getAdded()) {
+                    ObjectChange oc = ((ObjectChange) c);
+                    if (nameServer.equals(oc.getId())) {
+                        return oc;
+                    }
+                }
+            }
+
+        return null;
+    }
+
+    private boolean isNameServerAlreadyInUse(String nameServer) {
+        List<Transaction> transactions = transactionManager.findOpenForNameServer(nameServer);
+        return (transactions != null && !transactions.isEmpty());
     }
 
     final protected Timestamp now() {
