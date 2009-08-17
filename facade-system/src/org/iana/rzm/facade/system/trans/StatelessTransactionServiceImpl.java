@@ -202,66 +202,6 @@ public class StatelessTransactionServiceImpl implements StatelessTransactionServ
         if (!alreadyUsedNameServers.isEmpty())
             throw new NameServerChangeNotAllowedException("for: " + alreadyUsedNameServers);
 
-
-//
-//        if (!touchedNameServers.isEmpty()) {
-//
-//            Set<String> usedNameservers = new HashSet<String>();
-//
-//            ObjectChange domainChange = (ObjectChange) ChangeDetector.diff(currentDomain, modifiedDomain, diffConfiguration);
-//
-//            List<Transaction> openedTransactions = transactionManager.findAllOpen();
-//
-//            for (Transaction oTransaction : openedTransactions) {
-//                ObjectChange oChange = oTransaction.getDomainChange();
-//                Map<String, Change> fieldChanges = oChange.getFieldChanges();
-//                if (fieldChanges.containsKey("nameServers")) {
-//                    CollectionChange nameServersChange = (CollectionChange) fieldChanges.get("nameServers");
-//                    for (Change c : nameServersChange.getAdded()) {
-//                        for (String ns : touchedNameServers) {
-//                            ObjectChange oc = ((ObjectChange) c);
-//                            if (ns.equals(oc.getId())) {
-//                                Map<String, Change> domainFieldChanges = domainChange.getFieldChanges();
-//                                if (domainFieldChanges.containsKey("nameServers")) {
-//                                    CollectionChange domainNameServersChange = (CollectionChange) domainFieldChanges.get("nameServers");
-//                                    for (Change c1 : domainNameServersChange.getAdded()) {
-//                                        ObjectChange oc1 = ((ObjectChange) c1);
-//                                        if (oc1.getId().equals(oc.getId())) {
-//                                            Change fc1 = oc1.getFieldChange("addresses");
-//                                            Change fc2 = oc.getFieldChange("addresses");
-//                                            if (fc1 != null && fc2 != null && !fc1.equals(fc2)) {
-//                                                usedNameservers.add(oc1.getId());
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    for (Change c : nameServersChange.getRemoved()) {
-//                        for (String ns : touchedNameServers) {
-//                            ObjectChange oc = ((ObjectChange) c);
-//                            if (ns.equals(oc.getId()))
-//                                usedNameservers.add(ns);
-//                        }
-//                    }
-//                    for (Change c : nameServersChange.getModified()) {
-//                        for (String ns : touchedNameServers) {
-//                            ObjectChange oc = ((ObjectChange) c);
-//                            if (ns.equals(oc.getId())) {
-//                                usedNameservers.add(ns);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            if (!usedNameservers.isEmpty())
-//                throw new NameServerChangeNotAllowedException("for: " + usedNameservers);
-//
-//        }
-
-
         Transaction trans = transactionManager.createDomainModificationTransaction(md, submitterEmail, authUser.getUserName());
         trans.setComment(comment);
         return TransactionConverter.toTransactionVO(trans);
