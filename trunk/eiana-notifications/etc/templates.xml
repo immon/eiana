@@ -531,7 +531,7 @@ listed as a party to this request.
 <iana:addressee>AC_IMPACTED_PARTIES</iana:addressee>
 <iana:addressee>TC_IMPACTED_PARTIES</iana:addressee>
 </iana:addressees>
-<iana:subject>[IANA #{ticket}] Your confirmation requested to update your nameserver(s) ({token})</iana:subject>
+<iana:subject>[IANA #{ticket}] Your confirmation requested to update your nameserver(s) (%{token})</iana:subject>
 <iana:content>
 Dear {name} {title},
 
