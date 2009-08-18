@@ -66,7 +66,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
             if (!templates.containsKey(name)) {
                 TemplateDef def = templateConfig.getTemplateDef(name);
                 if (def != null) {
-                    Template ret = new SimpleTemplate(def.getSubject(), def.getContent(), defaultTemplateAlgorithm);
+                    Template ret = new SimpleTemplate(def, defaultTemplateAlgorithm);
                     if (def.getAddressees() != null && !def.getAddressees().isEmpty()) {
                         ret.setAddresseeProducer(new ConfiguredRecipients(producers, def.getAddressees()));
                     }

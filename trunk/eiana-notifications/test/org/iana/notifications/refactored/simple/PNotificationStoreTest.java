@@ -80,7 +80,7 @@ public class PNotificationStoreTest {
         Set<PAddressee> addrs = new HashSet<PAddressee>();
         addrs.add(new PAddressee("name", "email"));
         PContent cnt = new PContent("subject", "body");
-        return new PNotification("type", addrs, cnt, persistent);
+        return new PNotification("type", "default", addrs, cnt, persistent);
     }
 
 }

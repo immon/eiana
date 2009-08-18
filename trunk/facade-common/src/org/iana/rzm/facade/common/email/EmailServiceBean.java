@@ -1,15 +1,15 @@
 package org.iana.rzm.facade.common.email;
 
-import org.iana.rzm.common.validators.CheckTool;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.facade.user.UserVO;
-import org.iana.rzm.facade.common.NoObjectFoundException;
-import org.iana.rzm.user.UserManager;
-import org.iana.rzm.user.RZMUser;
 import org.iana.notifications.NotificationSender;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.notifications.PAddressee;
 import org.iana.notifications.PNotification;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.user.UserVO;
+import org.iana.rzm.user.RZMUser;
+import org.iana.rzm.user.UserManager;
 
 /**
  * A notification-based implementation of EmailService.
@@ -36,7 +36,7 @@ public class EmailServiceBean implements EmailService {
     public void sendEmail(String addresseeEmail, String addresseeName, String subject, String body) throws InfrastructureException {
         CheckTool.checkNull(addresseeEmail, "null addressee email");
         try {
-            sender.send(new PNotification(
+            sender.send(new PNotification(PNotification.UNKNOWN, PNotification.DEFAULT_MAIL_SENDER,
                     new PAddressee(addresseeName, addresseeEmail),
                     subject,
                     body));
@@ -55,7 +55,7 @@ public class EmailServiceBean implements EmailService {
         RZMUser user = userManager.get(userName);
         if (user == null) throw new NoObjectFoundException(userName, "user");
         try {
-            sender.send(new PNotification(
+            sender.send(new PNotification(PNotification.UNKNOWN, PNotification.DEFAULT_MAIL_SENDER,
                     new PAddressee(user.getName(), user.getEmail()),
                     subject,
                     body));

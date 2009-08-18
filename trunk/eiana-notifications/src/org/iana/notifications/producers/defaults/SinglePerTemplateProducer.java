@@ -45,7 +45,7 @@ public class SinglePerTemplateProducer extends AbstractNotificationProducer {
                 Map<String, String> values = dataProducer.getValuesMap(dataSource);
                 PContent content = template.instantiate(values);
                 PNotification notification = new PNotification(
-                        templateName, addressees, content, persistent
+                        templateName, template.getMailSenderType(), addressees, content, persistent
                 );
                 notifications.add(notification);
             }

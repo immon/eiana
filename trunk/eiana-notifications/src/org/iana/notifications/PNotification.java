@@ -17,12 +17,17 @@ public class PNotification implements Serializable {
 
     public static final String UNKNOWN = "unknown";
 
+    public static final String DEFAULT_MAIL_SENDER = "defaultNotificationSender";
+
     @Id
     @GeneratedValue
     Long id;
 
     @Basic
     private String type;
+
+    @Basic
+    private String mailSenderType;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
@@ -45,24 +50,24 @@ public class PNotification implements Serializable {
     protected PNotification() {
     }
 
-    public PNotification(PAddressee addressee, String subject, String body) {
+    public PNotification(String type, String mailSenderType, PAddressee addressee, String subject, String body) {
         CheckTool.checkNull(addressee, "addressee");
         Set<PAddressee> addressees = new HashSet<PAddressee>();
         addressees.add(addressee);
         PContent content = new PContent(subject, body);
-        init(UNKNOWN, addressees, content, false);
+        init(type, mailSenderType, addressees, content, false);
     }
 
-    public PNotification(Set<PAddressee> addressees, String subject, String body) {
+    public PNotification(String type, String mailSenderType, Set<PAddressee> addressees, String subject, String body) {
         PContent content = new PContent(subject, body);
-        init(UNKNOWN, addressees, content, false);
+        init(type, mailSenderType, addressees, content, false);
     }
 
-    public PNotification(String type, Set<PAddressee> addressees, PContent content, boolean persistent) {
-        init(type, addressees, content, persistent);
+    public PNotification(String type, String mailSenderType, Set<PAddressee> addressees, PContent content, boolean persistent) {
+        init(type, mailSenderType, addressees, content, persistent);
     }
 
-    private void init(String type, Set<PAddressee> addressees, PContent content, boolean persistent) {
+    private void init(String type, String mailSendreType, Set<PAddressee> addressees, PContent content, boolean persistent) {
         CheckTool.checkNull(type, "type");
         // todo: consider whether to check for empty collection or not...
         // as for now turned off
@@ -70,6 +75,7 @@ public class PNotification implements Serializable {
         CheckTool.checkNull(addressees, "addressees");
         CheckTool.checkNull(content, "content");
         this.type = type;
+        this.mailSenderType = mailSendreType;
         this.addressees = addressees;
         this.content = content;
         this.persistent = persistent;
@@ -83,6 +89,10 @@ public class PNotification implements Serializable {
 
     public String getType() {
         return type;
+    }
+
+    public String getMailSenderType() {
+        return mailSenderType;
     }
 
     public Set<PAddressee> getAddressees() {

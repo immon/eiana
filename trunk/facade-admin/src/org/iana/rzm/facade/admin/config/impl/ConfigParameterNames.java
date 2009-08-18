@@ -2,7 +2,6 @@ package org.iana.rzm.facade.admin.config.impl;
 
 import org.iana.mail.pop3.Pop3MailReceiver;
 import org.iana.notifications.email.EmailConstants;
-import org.iana.notifications.email.EmailSender;
 import org.iana.notifications.template.factory.DefaultTemplateFactory;
 import org.iana.rzm.facade.auth.AuthenticationService;
 
@@ -11,27 +10,27 @@ import org.iana.rzm.facade.auth.AuthenticationService;
  */
 public interface ConfigParameterNames {
 
-    String SMTP_CLASS = EmailSender.class.getSimpleName();
+    String SMTP = "SMTP";
 
-    String SMTP_MAILER = SMTP_CLASS + "." + EmailConstants.SMTP_MAILER;
+    String SMTP_MAILER = EmailConstants.SMTP_MAILER;
 
-    String SMTP_HOST = SMTP_CLASS + "." + EmailConstants.SMTP_MAILHOST;
+    String SMTP_HOST = EmailConstants.SMTP_MAILHOST;
 
-    String SMTP_PORT = SMTP_CLASS + "." + EmailConstants.SMTP_MAILHOST_PORT;
+    String SMTP_PORT = EmailConstants.SMTP_MAILHOST_PORT;
 
-    String SMTP_FROM_ADDRESS = SMTP_CLASS + "." + EmailConstants.SMTP_FROM_ADDRESS;
+    String SMTP_FROM_ADDRESS = EmailConstants.SMTP_FROM_ADDRESS;
 
-    String SMTP_USER_NAME = SMTP_CLASS + "." + EmailConstants.SMTP_USER_NAME;
+    String SMTP_USER_NAME = EmailConstants.SMTP_USER_NAME;
 
-    String SMTP_USER_PWD = SMTP_CLASS + "." + EmailConstants.SMTP_USER_PWD;
-
-    // string value of Boolean.TRUE or Boolean.FALSE
-    String SMTP_USE_SSL = SMTP_CLASS + "." + EmailConstants.SMTP_USE_SSL;
+    String SMTP_USER_PWD = EmailConstants.SMTP_USER_PWD;
 
     // string value of Boolean.TRUE or Boolean.FALSE
-    String SMTP_USE_TLS = SMTP_CLASS + "." + EmailConstants.SMTP_USE_TLS;
+    String SMTP_USE_SSL = EmailConstants.SMTP_USE_SSL;
 
-    String SMTP_FROM = SMTP_CLASS + "." + EmailConstants.SMTP_SMTP_FROM;
+    // string value of Boolean.TRUE or Boolean.FALSE
+    String SMTP_USE_TLS = EmailConstants.SMTP_USE_TLS;
+
+    String SMTP_FROM = EmailConstants.SMTP_SMTP_FROM;
 
     String POP3_CLASS = Pop3MailReceiver.class.getSimpleName();
     

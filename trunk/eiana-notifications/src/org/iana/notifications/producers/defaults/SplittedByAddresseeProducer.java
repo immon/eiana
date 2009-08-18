@@ -43,7 +43,7 @@ public class SplittedByAddresseeProducer extends AbstractNotificationProducer {
                     Set<PAddressee> addressees = new HashSet<PAddressee>();
                     addressees.add(addreessee);
                     PNotification notification = new PNotification(
-                            templateName, addressees, content, persistent
+                            templateName, template.getMailSenderType(),  addressees, content, persistent
                     );
                     notifications.add(notification);
                 }

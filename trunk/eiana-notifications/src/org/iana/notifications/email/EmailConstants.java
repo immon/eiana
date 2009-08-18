@@ -11,4 +11,8 @@ public interface EmailConstants {
     String SMTP_USE_SSL = "emailUseSSL";
     String SMTP_USE_TLS = "emailUseTLS";
     String SMTP_SMTP_FROM = "mailSmtpFrom";
+
+
+    String PROPERTIES_SUB_CONFIG_NAME = "subConfigName";
+    String PROPERTIES_PARAMTER_MANAGER = "paramterManager";
 }

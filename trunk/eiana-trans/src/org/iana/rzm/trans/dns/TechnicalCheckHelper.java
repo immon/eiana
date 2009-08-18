@@ -124,7 +124,7 @@ public class TechnicalCheckHelper implements CheckHelper {
         Template template = templateFactory.getTemplate(templateName);
         PContent content = template.instantiate(values);
         Set<PAddressee> addressees = getAddressees(domain, trans);
-        return new PNotification(addressees, content.getSubject(), content.getBody());
+        return new PNotification(templateName, template.getMailSenderType(), addressees, content.getSubject(), content.getBody());
     }
 
     private Set<PAddressee> getAddressees(Domain domain, Transaction trans) {

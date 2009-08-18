@@ -3,6 +3,7 @@ package org.iana.rzm.facade.admin.config.impl;
 import org.iana.config.impl.ConfigException;
 import org.iana.mail.pop3.Pop3MailReceiver;
 import org.iana.notifications.email.EmailSender;
+import org.iana.notifications.email.TemplateTypeDependentEmailSender;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,17 +15,17 @@ import java.util.Map;
  */
 public class SimpleParameterRetriever implements ConfigParameterRetriever {
 
-    private EmailSender smtp;
+    private TemplateTypeDependentEmailSender multiSmtp;
 
     private Pop3MailReceiver pop3;
 
-    public SimpleParameterRetriever(EmailSender smtp, Pop3MailReceiver pop3) {
-        this.smtp = smtp;
+    public SimpleParameterRetriever(TemplateTypeDependentEmailSender multiSmtp, Pop3MailReceiver pop3) {
+        this.multiSmtp = multiSmtp;
         this.pop3 = pop3;
     }
 
     public Map<String, String> getParameter(String name) throws ConfigException {
-        if (ConfigParameterNames.SMTP_CLASS.equals(name)) {
+        if (ConfigParameterNames.SMTP.equals(name)) {
             return getSmtpValues();
         } else if (ConfigParameterNames.POP3_CLASS.equals(name)) {
             return getPop3Values();
@@ -33,19 +34,33 @@ public class SimpleParameterRetriever implements ConfigParameterRetriever {
     }
 
     Map<String, String> getSmtpValues() throws ConfigException {
+
         Map<String, String> ret = new HashMap<String, String>();
-        ret.put(ConfigParameterNames.SMTP_MAILER, smtp.getEmailMailer());
-        ret.put(ConfigParameterNames.SMTP_HOST, smtp.getEmailMailhost());
-        Integer port = smtp.getEmailMailhostPort();
-        ret.put(ConfigParameterNames.SMTP_PORT, port == null ? null : port.toString());
-        ret.put(ConfigParameterNames.SMTP_FROM_ADDRESS, smtp.getEmailFromAddress());
-        ret.put(ConfigParameterNames.SMTP_USER_NAME, smtp.getEmailUserName());
-        ret.put(ConfigParameterNames.SMTP_USER_PWD,  smtp.getEmailUserPassword());
-        ret.put(ConfigParameterNames.SMTP_USE_SSL,  String.valueOf(smtp.isEmailUseSSL()));
-        ret.put(ConfigParameterNames.SMTP_USE_TLS,  String.valueOf(smtp.isEmailUseTLS()));
-        ret.put(ConfigParameterNames.SMTP_FROM,  smtp.getMailSmtpFrom());
+
+        for (String senderName : multiSmtp.getEmailSenderNames()) {
+            EmailSender sender = multiSmtp.getEmailSender(senderName);
+            ret.putAll(getSenderParameters(senderName, sender));
+        }
+
         return ret;
     }
+
+    private Map<String, String> getSenderParameters(String senderName, EmailSender sender) throws ConfigException {
+        Map<String, String> retMap = new HashMap<String, String>();
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_MAILER, sender.getEmailMailer());
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_HOST, sender.getEmailMailhost());
+        Integer port = sender.getEmailMailhostPort();
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_PORT, port == null ? null : port.toString());
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_FROM_ADDRESS, sender.getEmailFromAddress());
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_USER_NAME, sender.getEmailUserName());
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_USER_PWD,  sender.getEmailUserPassword());
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_USE_SSL,  String.valueOf(sender.isEmailUseSSL()));
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_USE_TLS,  String.valueOf(sender.isEmailUseTLS()));
+        retMap.put(senderName + "." + ConfigParameterNames.SMTP_FROM,  sender.getMailSmtpFrom());
+
+        return retMap;
+    }
+
 
     Map<String, String> getPop3Values() throws ConfigException {
         Map<String, String> ret = new HashMap<String, String>();

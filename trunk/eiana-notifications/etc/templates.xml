@@ -665,6 +665,7 @@ only {period} days left before this ticket will go into exception state.
 <iana:addressees>
 <iana:addressee>GOV_OVERSIGHT</iana:addressee>
 </iana:addressees>
+<iana:mailSenderType>verisignUsDocMailSender</iana:mailSenderType>
 <iana:subject>[Root change {ticket}] Database change to {domainName}</iana:subject>
 <iana:content>
 Dear NTIA:
@@ -707,6 +708,7 @@ Authorized:
 <iana:addressee>GOV_OVERSIGHT</iana:addressee>
 <iana:addressee>ZONE_PUBLISHER</iana:addressee>
 </iana:addressees>
+<iana:mailSenderType>verisignUsDocMailSender</iana:mailSenderType>
 <iana:subject>[Root change {ticket}:{retry}] Name server change to {domainName}</iana:subject>
 <iana:content>
 Dear NTIA:
@@ -747,6 +749,7 @@ Authorized:
 <iana:addressees>
 <iana:addressee>GOV_OVERSIGHT</iana:addressee>
 </iana:addressees>
+<iana:mailSenderType>verisignUsDocMailSender</iana:mailSenderType>
 <iana:subject>[IANA #{ticket}] NTIA authorisation reminder for {domainName}</iana:subject>
 <iana:content>
 Hello,

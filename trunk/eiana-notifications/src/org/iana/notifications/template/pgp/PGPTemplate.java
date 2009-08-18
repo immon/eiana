@@ -39,6 +39,10 @@ public class PGPTemplate implements Template {
         template.setAddresseeProducer(producer);
     }
 
+    public String getMailSenderType() {
+        return template.getMailSenderType();
+    }
+
     private String sign(String text) throws TemplateInstantiationException {
         try {
             return PGPUtils.signMessage(text, key, keyPassphrase);
