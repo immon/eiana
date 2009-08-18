@@ -17,6 +17,10 @@ import java.util.Set;
 public class TemplateDef {
     @Id
     private String type;
+
+    @Basic
+    private String mailSenderType;
+
     @Basic
     @Column(length = 1024)
     private String subject;
@@ -37,6 +41,14 @@ public class TemplateDef {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getMailSenderType() {
+        return mailSenderType;
+    }
+
+    public void setMailSenderType(String mailSenderType) {
+        this.mailSenderType = mailSenderType;
     }
 
     public String getSubject() {

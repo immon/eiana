@@ -19,7 +19,7 @@ public class PNotificationTest {
         Set<PAddressee> addrs = new HashSet<PAddressee>();
         addrs.add(new PAddressee("name", "email"));
         PContent cnt = new PContent("subject", "body");
-        PNotification src = new PNotification("type", addrs, cnt, false);
+        PNotification src = new PNotification("type", "default", addrs, cnt, false);
         // todo: test
 /*
         assertEquals("type", src.getType());

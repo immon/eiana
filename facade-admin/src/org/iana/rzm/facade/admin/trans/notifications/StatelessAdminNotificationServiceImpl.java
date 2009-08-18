@@ -1,19 +1,19 @@
 package org.iana.rzm.facade.admin.trans.notifications;
 
-import org.iana.rzm.facade.system.notification.NotificationVO;
-import org.iana.rzm.facade.system.notification.NotificationConverter;
-import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
-import org.iana.rzm.facade.auth.AuthenticatedUser;
-import org.iana.rzm.common.exceptions.InfrastructureException;
-import org.iana.rzm.trans.Transaction;
-import org.iana.rzm.trans.NoSuchTransactionException;
-import org.iana.rzm.trans.TransactionState;
-import org.iana.rzm.trans.TransactionManager;
-import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
-import org.iana.notifications.PNotification;
+import org.iana.notifications.NotificationSender;
 import org.iana.notifications.NotificationSenderException;
 import org.iana.notifications.PAddressee;
-import org.iana.notifications.NotificationSender;
+import org.iana.notifications.PNotification;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.facade.admin.trans.FacadeTransactionException;
+import org.iana.rzm.facade.auth.AuthenticatedUser;
+import org.iana.rzm.facade.system.notification.NotificationConverter;
+import org.iana.rzm.facade.system.notification.NotificationVO;
+import org.iana.rzm.trans.NoSuchTransactionException;
+import org.iana.rzm.trans.Transaction;
+import org.iana.rzm.trans.TransactionManager;
+import org.iana.rzm.trans.TransactionState;
+import org.iana.rzm.trans.confirmation.contact.ContactIdentity;
 
 import java.util.*;
 
@@ -133,7 +133,7 @@ public class StatelessAdminNotificationServiceImpl implements StatelessAdminNoti
     private void resend(PNotification notification, Set<String> set, String comment) throws NotificationSenderException {
         Set<PAddressee> addressees = new HashSet<PAddressee>();
         for (String email : set) addressees.add(new PAddressee(email, email));
-        PNotification tosend = new PNotification(addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
+        PNotification tosend = new PNotification(notification.getType(), notification.getMailSenderType(), addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
         notificationSender.send(tosend);
     }
 
@@ -142,7 +142,7 @@ public class StatelessAdminNotificationServiceImpl implements StatelessAdminNoti
         for (PAddressee addr : notification.getAddressees()) {
             addressees.add(new PAddressee(addr.getName(), addr.getEmail()));
         }
-        PNotification tosend = new PNotification(addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
+        PNotification tosend = new PNotification(notification.getType(), notification.getMailSenderType(), addressees, notification.getContent().getSubject(), comment(notification.getContent().getBody(), comment));
         notificationSender.send(tosend);
     }
 }

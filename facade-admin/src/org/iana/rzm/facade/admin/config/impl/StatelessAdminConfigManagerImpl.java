@@ -43,7 +43,7 @@ public class StatelessAdminConfigManagerImpl extends AbstractRZMStatelessService
         // init pop3 parameters
         initParameter(defaultParameterRetriever.getParameter(ConfigParameterNames.POP3_CLASS));
         // init smtp parameters
-        initParameter(defaultParameterRetriever.getParameter(ConfigParameterNames.SMTP_CLASS));
+        initParameter(defaultParameterRetriever.getParameter(ConfigParameterNames.SMTP));
         // init root name servers
         if (getRootNames() == null) {
             addRootNameservers(rootServers.getDefaultServers());

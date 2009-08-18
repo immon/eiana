@@ -1195,17 +1195,54 @@
         </property>
     </bean>
 
-    <bean id="NotificationSenderBean" class="org.iana.notifications.email.EmailSender">
-        <constructor-arg index="0" value="localhost"/>
+    <bean id="NotificationSenderBean" class="org.iana.notifications.email.TemplateTypeDependentEmailSender">
+        <constructor-arg>
+            <map>
+                <entry key="defaultNotificationSender" value-ref="defaultNotificationSenderBean"/>
+                <entry key="verisignUsDocMailSender" value-ref="verisignUsDocNotificationSenderBean"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="defaultNotificationSenderBean" class="org.iana.notifications.email.EmailSender">
+        <constructor-arg index="0" value="smtp.nask.waw.pl"/>
         <constructor-arg index="1" value="[RZM]"/>
-        <constructor-arg index="2" value="rzm-dev@iana.org"/>
-        <constructor-arg index="3" value=""/>
-        <constructor-arg index="4" value=""/>
+        <constructor-arg index="2" value="piotrt@nask.pl"/>
+        <constructor-arg index="3" value="piotrt"/>
+        <constructor-arg index="4" value="iv96Q*nh"/>
+        <constructor-arg index="5" value="defaultNotificationSender"/>
         <property name="config">
             <ref bean="parameterManager"/>
         </property>
         <property name="mailSmtpFrom">
-            <value>simon.raveh@icann.org</value>
+            <value>piotrt@nask.pl</value>
+        </property>
+        <!--
+        <property name="port">
+            <value>995</value>
+        </property>
+        <property name="ssl">
+            <value>true</value>
+        </property>
+        <property name="tls">
+            <value>true</value>
+        </property>
+        -->
+    </bean>
+
+    <bean id="verisignUsDocNotificationSenderBean" class="org.iana.notifications.email.EmailSender">
+        <constructor-arg index="0" value="smtp.nask.waw.pl"/>
+        <constructor-arg index="1" value="[RZM]"/>
+        <constructor-arg index="2" value="piotr.tkaczyk@nask.pl"/>
+        <constructor-arg index="3" value="piotrt"/>
+        <constructor-arg index="4" value="iv96Q*nh"/>
+        <constructor-arg index="5" value="verisignUsDocNotificationSender"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
+        </property>
+        <property name="mailSmtpFrom">
+            <value>piotr.tkaczyk@nask.pl</value>
         </property>
         <!--
         <property name="port">

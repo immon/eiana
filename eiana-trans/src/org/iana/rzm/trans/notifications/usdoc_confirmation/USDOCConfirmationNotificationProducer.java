@@ -1,22 +1,21 @@
 package org.iana.rzm.trans.notifications.usdoc_confirmation;
 
-import org.iana.notifications.producers.defaults.AbstractNotificationProducer;
-import org.iana.notifications.producers.DataProducer;
+import org.iana.notifications.PAddressee;
+import org.iana.notifications.PContent;
+import org.iana.notifications.PNotification;
 import org.iana.notifications.producers.AddresseeProducer;
-import org.iana.notifications.producers.TemplateNameProducer;
+import org.iana.notifications.producers.DataProducer;
 import org.iana.notifications.producers.NotificationProducerException;
-import org.iana.notifications.template.factory.TemplateFactory;
+import org.iana.notifications.producers.TemplateNameProducer;
+import org.iana.notifications.producers.defaults.AbstractNotificationProducer;
 import org.iana.notifications.template.Template;
 import org.iana.notifications.template.TemplateInstantiationException;
 import org.iana.notifications.template.TemplateNotFoundException;
-import org.iana.notifications.PNotification;
-import org.iana.notifications.PAddressee;
-import org.iana.notifications.PContent;
-import org.iana.rzm.trans.TransactionData;
+import org.iana.notifications.template.factory.TemplateFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -48,7 +47,7 @@ public class USDOCConfirmationNotificationProducer extends AbstractNotificationP
                 Map<String, String> values = dataProducer.getValuesMap(dataSource);
                 PContent content = template.instantiate(values);
                 PNotification notification = new PNotification(
-                                      templateName, addressees, content, persistent);
+                                      templateName, template.getMailSenderType(), addressees, content, persistent);
                 notifications.add(notification);
             }
 

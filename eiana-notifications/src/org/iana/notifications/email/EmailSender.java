@@ -33,20 +33,22 @@ public class EmailSender implements NotificationSender, EmailConstants {
     private String mailSmtpFrom;
     private Config config;
 
+    private String subConfigName;
+
     private transient static Logger logger = Logger.getLogger(EmailSender.class);
 
     public EmailSender(String mailHost, String mailer, String fromAddress,
-                                  String userName, String password) {
-        this(mailHost, null, mailer, fromAddress, userName, password, false, false);
+                                  String userName, String password, String subConfigName) {
+        this(mailHost, null, mailer, fromAddress, userName, password, false, false, subConfigName);
     }
 
     public EmailSender(String mailHost, String mailer, String fromAddress,
-                                  String userName, String password, boolean useSSL, boolean useTLS) {
-        this(mailHost, null, mailer, fromAddress, userName, password, useSSL, useTLS);
+                                  String userName, String password, boolean useSSL, boolean useTLS, String subConfigName) {
+        this(mailHost, null, mailer, fromAddress, userName, password, useSSL, useTLS, subConfigName);
     }
 
     public EmailSender(String mailHost, Integer mailHostPort, String mailer, String fromAddress,
-                                  String userName, String password, boolean useSSL, boolean useTLS) {
+                                  String userName, String password, boolean useSSL, boolean useTLS, String subConfigName) {
         CheckTool.checkEmpty(mailHost, "mailHost param is null or empty");
         CheckTool.checkEmpty(mailer, "mailer param is null or empty");
         CheckTool.checkEmpty(fromAddress, "fromAddress param is null or empty");
@@ -58,10 +60,12 @@ public class EmailSender implements NotificationSender, EmailConstants {
         this.emailUserPassword = (password == null || password.trim().length() == 0) ? null : password;
         this.emailUseSSL = useSSL;
         this.emailUseTLS = useTLS;
+        this.subConfigName = subConfigName;
     }
 
     public void setConfig(ParameterManager manager) throws ConfigException {
-        config = new OwnedConfig(manager).getSubConfig(getClass().getSimpleName());
+        if (subConfigName != null && subConfigName.trim().length() > 0)
+            config = new OwnedConfig(manager).getSubConfig(subConfigName);
     }
 
     public void setPort(Integer emailMailhostPort) {

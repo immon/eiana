@@ -14,4 +14,5 @@ public interface Template {
 
     PContent instantiate(Object data) throws TemplateInstantiationException ;
 
+    String getMailSenderType();
 }

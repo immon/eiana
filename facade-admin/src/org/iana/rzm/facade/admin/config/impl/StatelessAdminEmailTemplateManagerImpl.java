@@ -50,6 +50,7 @@ public class StatelessAdminEmailTemplateManagerImpl extends AbstractRZMStateless
     private TemplateDef toTemplateDef(EmailTemplateVO src) {
         TemplateDef ret = new TemplateDef();
         ret.setType(src.getName());
+        ret.setMailSenderType(src.getMailSenderType());
         ret.setSubject(src.getSubject());
         ret.setContent(src.getContent());
         ret.setSigned(src.isSigned());
@@ -70,6 +71,7 @@ public class StatelessAdminEmailTemplateManagerImpl extends AbstractRZMStateless
     private EmailTemplateVO toTemplateVO(TemplateDef src) {
         EmailTemplateVO ret = new EmailTemplateVO();
         ret.setName(src.getType());
+        ret.setMailSenderType(src.getMailSenderType());
         ret.setSubject(src.getSubject());
         ret.setContent(src.getContent());
         ret.setSigned(src.isSigned());

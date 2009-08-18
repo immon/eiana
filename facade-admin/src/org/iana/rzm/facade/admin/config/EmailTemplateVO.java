@@ -10,6 +10,8 @@ public class EmailTemplateVO implements Serializable {
 
     private String name;
 
+    private String mailSenderType;
+
     private String subject;
 
     private String content;
@@ -26,6 +28,14 @@ public class EmailTemplateVO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMailSenderType() {
+        return mailSenderType;
+    }
+
+    public void setMailSenderType(String mailSenderType) {
+        this.mailSenderType = mailSenderType;
     }
 
     public String getSubject() {

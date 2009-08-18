@@ -38,7 +38,7 @@ public class WhiteListNotificationSender implements NotificationSender {
             }
         }
 
-        PNotification newNotif = new PNotification(newAddressees, notification.getContent().getSubject(), notification.getContent().getBody());
+        PNotification newNotif = new PNotification(notification.getType(), notification.getMailSenderType(), newAddressees, notification.getContent().getSubject(), notification.getContent().getBody());
         notificationSender.send(newNotif);
     }
 
