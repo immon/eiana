@@ -7,10 +7,7 @@ import org.iana.rzm.mail.processor.MailsProcessorException;
 import org.iana.rzm.mail.processor.simple.data.Message;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.error.EmailErrorHandler;
-import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
-import org.iana.rzm.mail.processor.simple.parser.VerisignEmailParseException;
-import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
 import org.iana.rzm.mail.processor.simple.processor.EmailProcessor;
 
 import javax.mail.BodyPart;
@@ -49,14 +46,8 @@ public class SimpleEmailsProcessor implements MailsProcessor {
         try {
             MessageData data = parser.parse(from, subject, content);
             processor.process(new Message(from, subject, content, data));
-        } catch (VerisignEmailParseException e) {
-            log(e);
-        } catch (EmailParseException e) {
-            error(from, subject, content, e);
-        } catch (EmailProcessException e) {
-            error(from, subject, content, e);
         } catch (Exception e) {
-            error(from, subject, content, "Unexptected exception.");
+            error(from, subject, content, new Exception("Unexptected exception.", e));
         }
     }
 
@@ -82,7 +73,7 @@ public class SimpleEmailsProcessor implements MailsProcessor {
                    return;
             }
 
-            error(from.getAddress(), subject, null, "Not supported message format. Please send plain text message.");
+            error(from.getAddress(), subject, null, new Exception("Not supported message format. Please send plain text message."));
 
         } catch (MessagingException e) {
             log(e);
@@ -111,19 +102,9 @@ public class SimpleEmailsProcessor implements MailsProcessor {
         logger.error(e.getMessage(), e);
     }
 
-    private void error(String from, String subject, String content, EmailParseException e) {
-        log(e);
-        error.error(from, subject, content, e, e.getNotificationProducerName());
-    }
-
-    private void error(String from, String subject, String content, EmailProcessException e) {
-        log(e);
-        error.error(from, subject, content, e, e.getNotificationProducerName());
-    }
-
-    private void error(String from, String subject, String content, String msg) {
-        log(msg);
-        error.error(from, subject, content, msg);
+    private void error(String from, String subject, String content, Exception e) {
+        logger.error(e);
+        error.error(from, subject, content, e);
     }
 
 }

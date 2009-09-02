@@ -698,7 +698,7 @@ public class ProcessDAOTest extends RollbackableSpringContextTest {
             Set<Long> processIds2 = new HashSet<Long>();
             for (ProcessInstance pi : processes2) processIds2.add(pi.getId());
 
-            assert domain2ProcIds.equals(processIds2);
+            assert domain2ProcIds.equals(processIds2) : "" + domain2ProcIds + " | " + processIds2 ;
 
             Criterion criteria3 = new Lower("end", date1);
             List<ProcessInstance> processes3 = processDAO.find(criteria3);

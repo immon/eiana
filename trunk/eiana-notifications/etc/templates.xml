@@ -933,6 +933,33 @@ Internet Assigned Numbers Authority
 </iana:template>
 
 <iana:template>
+<iana:type>usdoc-process-exception</iana:type>
+<iana:subject>Processing Error! Re: {subject}</iana:subject>
+<iana:content>
+Hello,
+
+We received the following message regarding authorisation of a root zone
+change request. Because of:
+
+{message}
+
+The message we received is as follows:
+
+--- BEGIN MESSAGE ---
+{content}
+--- END MESSAGE ---
+
+This message has been automatically generated. If you have any
+questions or concerns, please email them to root-mgmt@iana.org
+with a subject of "[IANA #{ticket}]".
+
+Root Zone Services
+Internet Assigned Numbers Authority
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+<iana:template>
 <iana:type>request-not-found</iana:type>
 <iana:subject>Re: {subject}</iana:subject>
 <iana:content>
@@ -955,6 +982,29 @@ The message we received is as follows:
 This message has been automatically generated. If you have any
 questions or concerns, please email them to root-mgmt@iana.org
 with a subject of "[IANA #{ticket}]".
+
+Root Zone Services
+Internet Assigned Numbers Authority
+</iana:content>
+<iana:signed>false</iana:signed>
+</iana:template>
+
+<iana:template>
+<iana:type>mail-processing-exception</iana:type>
+<iana:addressees>
+<iana:addressee>SYSTEM_ERRORS</iana:addressee>
+</iana:addressees>
+<iana:subject>Mail processing exception</iana:subject>
+<iana:content>
+Hello,
+
+Processing of mail data
+From: {from}
+Subject: {subject}
+Content: {content}
+
+Has been ended with the following exception:
+{exception}
 
 Root Zone Services
 Internet Assigned Numbers Authority

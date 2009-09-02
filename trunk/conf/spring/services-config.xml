@@ -102,7 +102,7 @@
         <constructor-arg>
             <bean class="org.iana.rzm.facade.admin.config.impl.SimpleParameterRetriever">
                 <constructor-arg ref="NotificationSenderBean"/>
-                <constructor-arg ref="mailReceiver"/>    
+                <constructor-arg ref="contactsMailReceiver"/>
             </bean>
         </constructor-arg>
         <constructor-arg ref="rootServersProducerBean"/>
@@ -1523,7 +1523,25 @@
         </property>
     </bean>
 
-    <bean id="mailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
+    <bean id="contactsMailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
+        <constructor-arg index="0" value="m00.icann.org"/>
+        <constructor-arg index="1" value="rzm-dev"/>
+        <constructor-arg index="2" value="upowilgeod"/>
+        <property name="config">
+            <ref bean="parameterManager"/>
+        </property>
+        <property name="port">
+            <value>995</value>
+        </property>
+        <property name="debug">
+            <value>true</value>
+        </property>
+        <property name="ssl">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <bean id="govMailReceiver" class=" org.iana.mail.pop3.Pop3MailReceiver">
         <constructor-arg index="0" value="m00.icann.org"/>
         <constructor-arg index="1" value="rzm-dev"/>
         <constructor-arg index="2" value="upowilgeod"/>
@@ -1689,9 +1707,7 @@
     </bean>
 
     <bean id="plainVerisignMailParser" class="org.iana.rzm.mail.processor.verisign.VeriSignMailParser">
-        <!--<constructor-arg index="0" value="rzmsdev@lnxdev-rz163.vrsn.com"/> Verisign email address is now stored in database-->
-        <constructor-arg index="0" ref="parameterManager"/>
-        <constructor-arg index="1">
+        <constructor-arg index="0">
             <bean class="org.iana.rzm.mail.processor.regex.RegexParser">
                 <constructor-arg>
                     <map>
@@ -1706,23 +1722,11 @@
     </bean>
 
     <bean id="usdocAnswerProcessor" class="org.iana.rzm.mail.processor.usdoc.USDoCAnswerProcessor">
-        <constructor-arg ref="authenticationServiceBean"/>
-        <constructor-arg ref="guardedAdminTransactionService"/>
-        <constructor-arg ref="mailLogger"/>
-        <constructor-arg ref="ticketingService"/>
-        <constructor-arg>
-            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
-                <constructor-arg ref="templateFactory"/>
-                <constructor-arg>
-                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
-                </constructor-arg>
-                <constructor-arg value="usdoc-authentication-failure"/>
-                <constructor-arg>
-                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg index="0" ref="authenticationServiceBean"/>
+        <constructor-arg index="1" ref="guardedAdminTransactionService"/>
+        <constructor-arg index="2" ref="mailLogger"/>
+        <constructor-arg index="3" ref="parameterManager"/>
+        <property name="usdocEmailDomain" value="no-mail.org"/>
     </bean>
 
     <bean id="contactAnswerProcessor" class="org.iana.rzm.mail.processor.contact.ContactAnswerProcessor">
@@ -1737,19 +1741,43 @@
     </bean>
 
     <bean id="verisignMailProcessor" class="org.iana.rzm.mail.processor.verisign.VeriSignMailProcessor">
-        <constructor-arg ref="transSystemTransactionService"/>
-        <constructor-arg ref="mailLogger"/>
-        <constructor-arg ref="authenticationServiceBean"/>
+        <constructor-arg index="0" ref="transSystemTransactionService"/>
+        <constructor-arg index="1" ref="mailLogger"/>
+        <constructor-arg index="2" ref="authenticationServiceBean"/>
+        <constructor-arg index="3" ref="parameterManager"/>
     </bean>
 
-    <bean id="mailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
+    <bean id="contactsMailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
         <constructor-arg index="0">
             <bean class="org.iana.rzm.mail.processor.simple.parser.CompositeEmailParser">
                 <constructor-arg>
                     <list>
                         <ref bean="contactAnswerParser"/>
-                        <ref bean="usdocAnswerParser"/>
                         <ref bean="impactedPartyAnswerParser"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.iana.rzm.mail.processor.simple.processor.CompositeEmailProcessor">
+                <constructor-arg>
+                    <list>
+                        <ref bean="contactAnswerProcessor"/>
+                        <ref bean="impactedPartyAnswerProcessor"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2" ref="simpleEmailErrorHandler">
+        </constructor-arg>
+    </bean>
+
+    <bean id="govMailsProcessor" class="org.iana.rzm.mail.processor.simple.SimpleEmailsProcessor">
+        <constructor-arg index="0">
+            <bean class="org.iana.rzm.mail.processor.simple.parser.CompositeEmailParser">
+                <constructor-arg>
+                    <list>
+                        <ref bean="usdocAnswerParser"/>
                         <ref bean="verisignMailParser"/>
                     </list>
                 </constructor-arg>
@@ -1759,27 +1787,160 @@
             <bean class="org.iana.rzm.mail.processor.simple.processor.CompositeEmailProcessor">
                 <constructor-arg>
                     <list>
-                        <ref bean="impactedPartyAnswerProcessor"/>
-                        <ref bean="contactAnswerProcessor"/>
                         <ref bean="usdocAnswerProcessor"/>
                         <ref bean="verisignMailProcessor"/>
                     </list>
                 </constructor-arg>
             </bean>
         </constructor-arg>
-        <constructor-arg index="2">
-            <bean class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
-                <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg index="2" ref="simpleEmailErrorHandler">
+        </constructor-arg>
+    </bean>
+
+    <bean id="simpleEmailErrorHandler" class="org.iana.rzm.mail.processor.simple.error.SimpleEmailErrorHandler">
+        <constructor-arg>
+            <map>
+                <entry key="ContactMessageParseException" value-ref="contactMessageParseExceptionErrorHandler"/>
+                <entry key="ContactRequestProcessException" value-ref="contactRequestProcessExceptionErrorHandler"/>
+                <entry key="USDoCAuthenticationFailureException" value-ref="USDoCAuthenticationFailureExceptionErrorHandler"/>
+                <entry key="USDoCMessageParseException" value-ref="USDoCMessageParseExceptionErrorHandler"/>
+                <entry key="USDoCRequestProcessException" value-ref="USDoCRequestProcessExceptionErrorHandler"/>
+                <entry key="VerisignAuthenticationFailureException" value-ref="VerisignProcessExceptionErrorHandler"/>
+                <entry key="VerisignProcessException" value-ref="VerisignProcessExceptionErrorHandler"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="contactMessageParseExceptionErrorHandler"
+          class="org.iana.rzm.mail.processor.simple.error.ContactMessageParseExceptionErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
                 <constructor-arg>
-                    <map>
-                        <entry key="contactParseExceptionNotificationProducer" value-ref="contactParseExceptionNotificationProducer"/>
-                        <entry key="usdocParseExceptionNotificationProducer" value-ref="usdocParseExceptionNotificationProducer"/>
-                        <entry key="requestNotFoundNotificationProducer" value-ref="requestNotFoundNotificationProducer"/>
-                        <entry key="generalEmailExceptionNotificationProducer" value-ref="generalEmailExceptionNotificationProducer"/>
-                    </map>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="contact-parse-exception"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
                 </constructor-arg>
             </bean>
         </constructor-arg>
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="contactRequestProcessExceptionErrorHandler"
+          class="org.iana.rzm.mail.processor.simple.error.ContactRequestProcessExceptionErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="mail-processing-exception"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="request-not-found"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="USDoCAuthenticationFailureExceptionErrorHandler"
+          class="org.iana.rzm.mail.processor.simple.error.USDoCAuthenticationFailureExceptionErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="usdoc-authentication-failure"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="USDoCMessageParseExceptionErrorHandler"
+          class="org.iana.rzm.mail.processor.simple.error.USDoCMessageParseExceptionErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="usdoc-parse-exception"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="USDoCRequestProcessExceptionErrorHandler"
+          class="org.iana.rzm.mail.processor.simple.error.USDoCRequestProcessExceptionErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="mail-processing-exception"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="usdoc-process-exception"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
+    </bean>
+
+    <bean id="VerisignProcessExceptionErrorHandler"
+          class="org.iana.rzm.mail.processor.simple.error.VerisignProcessExceptionErrorHandler">
+        <constructor-arg>
+            <bean class="org.iana.notifications.producers.defaults.SinglePerTemplateProducer">
+                <constructor-arg ref="templateFactory"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultAddresseeProducer"/>
+                </constructor-arg>
+                <constructor-arg value="mail-processing-exception"/>
+                <constructor-arg>
+                    <bean class="org.iana.notifications.producers.defaults.DefaultDataProducer"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="persistentNotificationSender"/>
+        <constructor-arg ref="ticketingService"/>
     </bean>
 
     <!-- code values -->
@@ -2074,7 +2235,8 @@
         <property name="triggers">
             <list>
                 <ref bean="dnsTrigger"/>
-                <ref bean="mailsReceiverTrigger"/>
+                <ref bean="contactsMailsReceiverTrigger"/>
+                <ref bean="govMailsReceiverTrigger"/>
                 <ref bean="eppReceiverTrigger"/>
                 <ref bean="eppPollTrigger"/>
                 <ref bean="fromDNSUpdateTrigger"/>
@@ -2082,22 +2244,40 @@
         </property>
     </bean>
 
-    <bean id="mailsReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="mailsReceiver"/>
+    <bean id="contactsMailsReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="contactsMailsReceiver"/>
         <!-- 10s delay -->
         <property name="startDelay" value="10000"/>
         <!-- every 5min -->
         <property name="repeatInterval" value="360000"/>
     </bean>
 
-    <bean id="mailsReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="mailsReceiverAction"/>
+    <bean id="govMailsReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="govMailsReceiver"/>
+        <!-- 20s delay -->
+        <property name="startDelay" value="20000"/>
+        <!-- every 5min -->
+        <property name="repeatInterval" value="360000"/>
+    </bean>
+
+    <bean id="contactsMailsReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="contactsMailsReceiverAction"/>
         <property name="targetMethod" value="execute"/>
     </bean>
 
-    <bean id="mailsReceiverAction" class="org.iana.rzm.mail.MailsProcessingAction">
-        <constructor-arg ref="mailReceiver"/>
-        <constructor-arg ref="mailsProcessor"/>
+    <bean id="govMailsReceiver" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="govMailsReceiverAction"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <bean id="contactsMailsReceiverAction" class="org.iana.rzm.mail.MailsProcessingAction">
+        <constructor-arg ref="contactsMailReceiver"/>
+        <constructor-arg ref="contactsMailsProcessor"/>
+    </bean>
+
+    <bean id="govMailsReceiverAction" class="org.iana.rzm.mail.MailsProcessingAction">
+        <constructor-arg ref="govMailReceiver"/>
+        <constructor-arg ref="govMailsProcessor"/>
     </bean>
 
     <bean id="eppReceiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">

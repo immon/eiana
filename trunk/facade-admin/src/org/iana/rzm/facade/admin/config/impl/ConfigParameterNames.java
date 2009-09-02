@@ -63,6 +63,8 @@ public interface ConfigParameterNames {
 
     String USDOC_EMAIL = AuthenticationService.USDOC_EMAIL;
 
+    String USDOC_EMAIL_DOMAIN = AuthenticationService.USDOC_EMAIL_DOMAIN;
+
     String[] PARAMETERS = {
          SMTP_MAILER,
          SMTP_HOST,
@@ -85,7 +87,8 @@ public interface ConfigParameterNames {
          VERISIGN_PUBLIC_KEY,
          VERISIGN_EMAIL,
          USDOC_PUBLIC_KEY,
-         USDOC_EMAIL
+         USDOC_EMAIL,
+         USDOC_EMAIL_DOMAIN
     };
 
 }

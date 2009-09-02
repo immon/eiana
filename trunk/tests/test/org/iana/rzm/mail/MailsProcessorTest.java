@@ -45,7 +45,8 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
     protected ProcessDAO processDAO;
     protected UserManager userManager;
     protected DomainManager domainManager;
-    protected MailsProcessor mailsProcessor;
+    protected MailsProcessor contactsMailsProcessor;
+    protected MailsProcessor govMailsProcessor;
     protected DiffConfiguration diffConfig;
     protected AuthenticationService authenticationServiceBean;
     protected TransactionService transSystemTransactionService;
@@ -186,9 +187,9 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
             Iterator<String> tokenIterator = tokens.iterator();
 
             String subject = EMAIL_SUBJECT_PREFIX + EMAIL_SUBJECT_IANA + transaction.getTicketID() + EMAIL_SUBJECT + "mailrecdomain " + EMAIL_SUBJECT_TOKEN_PREFIX + tokenIterator.next() + EMAIL_SUBJECT_TOKEN_POSTFIX;
-            mailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
+            contactsMailsProcessor.process(EMAIL_AC, subject, loadFromFile(CONTENT_AC_FILE_NAME));
             subject = EMAIL_SUBJECT_PREFIX + EMAIL_SUBJECT_IANA + + transaction.getTicketID() + EMAIL_SUBJECT + "mailrecdomain " + EMAIL_SUBJECT_TOKEN_PREFIX + tokenIterator.next() + EMAIL_SUBJECT_TOKEN_POSTFIX;
-            mailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
+            contactsMailsProcessor.process(EMAIL_TC, subject, loadFromFile(CONTENT_TC_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
             assert transaction != null;
@@ -230,7 +231,7 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
             Iterator<String> tokenIterator = tokens.iterator();
 
             String subject = EMAIL_SUBJECT_PREFIX + USDOC_PREFIX + transaction.getTicketID() + USDOC_NS_SUFIX + "mailrecdomain";
-            mailsProcessor.process(EMAIL_USDOC, subject, loadFromFile(USDOC_ACCEPT_CONTENT_FILE_NAME));
+            govMailsProcessor.process(EMAIL_USDOC, subject, loadFromFile(USDOC_ACCEPT_CONTENT_FILE_NAME));
 
             transaction = transSystemTransactionService.get(domainTrId);
             assert transaction != null;
@@ -243,7 +244,7 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
 
     @Test(dependsOnMethods = "testProcessSignedConfirmationMail")
     public void testProcessTemplateMailNoChange() throws Exception {
-        mailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME_NO_CHANGE));
+        contactsMailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME_NO_CHANGE));
 
         try {
             // todo: test
@@ -262,7 +263,7 @@ public class MailsProcessorTest extends RollbackableSpringContextTest {
     @Test(dependsOnMethods = "testProcessTemplateMailNoChange")
     public void testProcessTemplateMail() throws Exception {
         try {
-            mailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME));
+            contactsMailsProcessor.process(EMAIL_AC, TEMPLATE_EMAIL_SUBJECT, loadFromFile(TEMPLATE_CONTENT_AC_FILE_NAME));
 
             setServicesUser("sys1mailrec");
 //            TransactionCriteriaVO criteria = new TransactionCriteriaVO();
