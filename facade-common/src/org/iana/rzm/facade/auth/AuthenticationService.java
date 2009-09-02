@@ -9,6 +9,7 @@ package org.iana.rzm.facade.auth;
  */
 public interface AuthenticationService {
 
+    static final String USDOC_EMAIL_DOMAIN = "usdocEmailDomain";
     static final String USDOC_EMAIL = "usdocEmail";
     static final String USDOC_PUBLIC_KEY = "usdocPublicKey";
 

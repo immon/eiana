@@ -2,10 +2,9 @@ package org.iana.rzm.mail.test;
 
 import org.iana.rzm.mail.processor.contact.ContactAnswer;
 import org.iana.rzm.mail.processor.contact.ContactAnswerParser;
+import org.iana.rzm.mail.processor.contact.ContactMessageParseException;
 import org.iana.rzm.mail.processor.regex.RegexParser;
-import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
-import org.iana.rzm.mail.processor.ticket.TicketData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -66,31 +65,25 @@ public class ContactParserTest {
         assert answer.isAccept();
     }
 
-    @Test
+    @Test (expectedExceptions = ContactMessageParseException.class)
     public void testInvalidAccept() throws Exception {
         String subject = "[IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I'm trying to accept content... Dear sdadas";
-        TicketData data = (TicketData) parser.parse("a@example.tld",  subject, content);
-        assert 1 == data.getTicketID();
-        assert !(data instanceof ContactAnswer);
+        parser.parse("a@example.tld",  subject, content);
     }
 
-    @Test
+    @Test (expectedExceptions = ContactMessageParseException.class)
     public void testInvalidDecline() throws Exception {
         String subject = "[IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = " I'm trying to decline content... Dear sdsdsd";
-        MessageData data = parser.parse("a@example.tld",  subject, content);
-        assert !(data instanceof ContactAnswer);
-        assert data instanceof TicketData;
+        parser.parse("a@example.tld",  subject, content);
     }
 
-    @Test
+    @Test (expectedExceptions = ContactMessageParseException.class)
     public void testAcceptAndDeclinePresent() throws Exception {
         String subject = "Re: Odp: [IANA #1] Your confirmation requested to alter ac domain (%1sa2d3)";
         String content = "  I accept I decline \n > Dear content...";
-        TicketData data = (TicketData) parser.parse("a@example.tld",  subject, content);
-        assert 1 == data.getTicketID();
-        assert !(data instanceof ContactAnswer);
+        parser.parse("a@example.tld",  subject, content);
     }
 
     @Test(expectedExceptions = EmailParseException.class)

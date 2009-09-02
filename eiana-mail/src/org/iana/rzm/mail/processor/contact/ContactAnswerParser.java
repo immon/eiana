@@ -1,13 +1,12 @@
 package org.iana.rzm.mail.processor.contact;
 
+import org.apache.log4j.Logger;
 import org.iana.rzm.common.validators.CheckTool;
 import org.iana.rzm.mail.processor.regex.RegexParser;
+import org.iana.rzm.mail.processor.simple.AnswerParser;
 import org.iana.rzm.mail.processor.simple.data.MessageData;
 import org.iana.rzm.mail.processor.simple.parser.EmailParseException;
 import org.iana.rzm.mail.processor.simple.parser.EmailParser;
-import org.iana.rzm.mail.processor.simple.AnswerParser;
-import org.iana.rzm.mail.processor.ticket.TicketData;
-import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 
@@ -56,11 +55,10 @@ public class ContactAnswerParser implements EmailParser {
                 String accept = contentTokens.token(ACCEPT);
                 return createAnswer(ticketID, domainName, token, answerParser.check(accept));
             } catch (EmailParseException e) {
-                logger.error("cannot parse contact/impacted party email content", e);
-                return new TicketData(ticketID);
+                throw new ContactMessageParseException("cannot parse contact/impacted party email content", e, ticketID);
             }
         } catch (NumberFormatException e) {
-            throw new ContactParseException(e);
+            throw new ContactMessageParseException(e);
         }
     }
 

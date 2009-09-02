@@ -1,15 +1,19 @@
 package org.iana.rzm.mail.processor.contact;
 
-import org.iana.rzm.common.exceptions.*;
-import org.iana.rzm.common.validators.*;
-import org.iana.rzm.facade.common.*;
-import org.iana.rzm.facade.system.trans.*;
-import org.iana.rzm.facade.system.trans.vo.*;
-import org.iana.rzm.mail.processor.*;
-import org.iana.rzm.mail.processor.simple.data.*;
-import org.iana.rzm.mail.processor.simple.processor.*;
+import org.iana.rzm.common.exceptions.InfrastructureException;
+import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.facade.common.NoObjectFoundException;
+import org.iana.rzm.facade.system.trans.TransactionService;
+import org.iana.rzm.facade.system.trans.vo.TransactionStateVO;
+import org.iana.rzm.facade.system.trans.vo.TransactionVO;
+import org.iana.rzm.mail.processor.MailLogger;
+import org.iana.rzm.mail.processor.simple.data.Message;
+import org.iana.rzm.mail.processor.simple.data.MessageData;
+import org.iana.rzm.mail.processor.simple.processor.AbstractEmailProcessor;
+import org.iana.rzm.mail.processor.simple.processor.EmailProcessException;
+import org.iana.rzm.mail.processor.simple.processor.IllegalMessageDataException;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Patrycja Wegrzynowicz
@@ -34,31 +38,32 @@ public class ContactAnswerProcessor extends AbstractEmailProcessor {
     protected void _process(Message msg) throws EmailProcessException {
         ContactAnswer answer = (ContactAnswer) msg.getData();
         mailLogger.logMail(answer.getTicketID(), msg.getFrom(), msg.getSubject(), msg.getBody());
+        TransactionVO transaction = null;
         try {
             List<TransactionVO> transactions = transactionService.getByTicketID(answer.getTicketID());
             if (transactions == null || transactions.isEmpty()) {
-                throw new NoRequestEmailProcessException("Cannot find transaction by ticket-id: " + answer.getTicketID() + ".");
+                throw new ContactRequestProcessException("Cannot find transaction by ticket-id: " + answer.getTicketID() + ".", msg);
             }
             if (transactions.size() > 1) {
-                throw new EmailProcessException("Ticket-id " + answer.getTicketID() + " is not unique.");
+                throw new ContactRequestProcessException("Ticket-id " + answer.getTicketID() + " is not unique.", msg);
             }
-            TransactionVO transaction = transactions.get(0);
-            validate(transaction, answer);
+            transaction = transactions.get(0);
+            validate(transaction, msg);
             if (answer.isAccept()) {
                 transactionService.acceptTransaction(transaction.getTransactionID(), answer.getToken());
             } else {
                 transactionService.rejectTransaction(transaction.getTransactionID(), answer.getToken());
             }
         } catch (NoObjectFoundException e) {
-            throw new NoRequestEmailProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e);
+            throw new ContactRequestProcessException("No transaction found with ticket-id: " + answer.getTicketID() + ".", e, msg, transaction);
         } catch (InfrastructureException e) {
-            throw new EmailProcessException("Unexpected exception during processing.", e);
+            throw new ContactRequestProcessException("Unexpected exception during processing.", e, msg, transaction);
         }
     }
 
-    protected void validate(TransactionVO transaction, ContactAnswer answer) throws EmailProcessException {
+    protected void validate(TransactionVO transaction, Message msg) throws EmailProcessException {
         if (transaction.getState().getName() != TransactionStateVO.Name.PENDING_CONTACT_CONFIRMATION) {
-            throw new EmailProcessException("Transaction is not in an appropriate state to perform this operation.");
+            throw new ContactRequestProcessException("Transaction is not in an appropriate state to perform this operation.", msg, transaction);
         }
         // todo: check whether email data conforms transaction data
     }
