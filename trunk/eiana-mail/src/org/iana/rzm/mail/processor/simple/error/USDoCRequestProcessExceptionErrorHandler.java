@@ -8,6 +8,7 @@ import org.iana.notifications.producers.NotificationProducer;
 import org.iana.notifications.producers.NotificationProducerException;
 import org.iana.notifications.producers.defaults.DefaultAddresseeProducer;
 import org.iana.rzm.common.validators.CheckTool;
+import org.iana.rzm.mail.processor.usdoc.USDoCAnswer;
 import org.iana.rzm.mail.processor.usdoc.USDoCRequestProcessException;
 import org.iana.ticketing.TicketingService;
 
@@ -71,7 +72,9 @@ public class USDoCRequestProcessExceptionErrorHandler extends AbstractErrorHandl
             dataSource.put("subject", subject);
             dataSource.put("content", content);
 
-            dataSource.put("ticket", exception.getTransaction().getTicketID());
+            USDoCAnswer answer = (USDoCAnswer) exception.getMailMsg().getData();
+
+            dataSource.put("ticket", answer.getTicketID());
 
             String msg = exception.getMessage();
             if (msg == null) msg = "Exception " + exception.getClass() + " occured.";
